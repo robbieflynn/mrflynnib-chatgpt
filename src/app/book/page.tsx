@@ -1,0 +1,14 @@
+import type { Metadata } from "next";
+import { ButtonLink, Container, Eyebrow, PageHero, PlaceholderNote } from "@/components/ui";
+import { siteConfig } from "@/lib/site";
+
+export const metadata: Metadata = { title: "The Mr Flynn IB Mathematics book", description: "Learn about Rob Flynn's IB Mathematics book, see sample material and find purchase information." };
+
+export default function BookPage() {
+  return <>
+    <PageHero eyebrow="The book" title="A practical IB Mathematics companion students can actually use." intro="A dedicated sales page designed for the book’s real title, cover, promise, sample pages, reviews and purchasing options." />
+    <section className="section-tight"><Container className="split"><div className="book-cover"><small>Rob Flynn</small><strong>[Book title]</strong><p>Clear explanations. Better questions. Smarter revision.</p></div><div className="stack-lg"><Eyebrow>What the book should communicate</Eyebrow><h2>Useful at the desk, not left on the shelf.</h2><p className="lede">The strongest positioning will identify one precise problem the book solves and show sample material that proves its teaching style.</p><ul className="check-list"><li>Who the book is for and which IB pathway it covers</li><li>How it differs from a textbook or question bank</li><li>What students can expect inside</li><li>Where and in which formats it can be purchased</li></ul><ButtonLink href={siteConfig.bookUrl} external>Buy the book</ButtonLink><PlaceholderNote>Add the exact title, subtitle, cover artwork, ISBN, price, retailers, territories, formats, publication details, sample pages and reviews.</PlaceholderNote></div></Container></section>
+    <section className="section surface-soft"><Container className="grid-3"><article className="card stack"><span className="badge">Explain</span><h3>Clear teaching</h3><p className="muted">Show how the book makes difficult ideas more accessible.</p></article><article className="card stack"><span className="badge">Practise</span><h3>Purposeful questions</h3><p className="muted">Show the progression from examples to independent work.</p></article><article className="card stack"><span className="badge">Revise</span><h3>Exam relevance</h3><p className="muted">Show how the material supports syllabus coverage and assessment.</p></article></Container></section>
+    <section className="section"><Container className="split"><div className="stack"><Eyebrow>Continue learning</Eyebrow><h2>Connect the book to the wider platform.</h2><p className="lede">Readers should be able to move naturally from the book into a relevant video lesson, free resource or full course without turning the page into a crowded product catalogue.</p></div><div className="cluster"><ButtonLink href="/courses">Explore courses</ButtonLink><ButtonLink href="/resources" secondary>Use free resources</ButtonLink></div></Container></section>
+  </>;
+}
