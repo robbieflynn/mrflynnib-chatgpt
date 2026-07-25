@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ButtonLink, Container, Eyebrow, PlaceholderNote } from "@/components/ui";
 import { CourseCard } from "@/components/course-card";
@@ -16,13 +17,23 @@ export default function HomePage() {
             <div className="cluster"><ButtonLink href="/courses">Find your course</ButtonLink><ButtonLink href="/resources" secondary>Explore free resources</ButtonLink></div>
             <p className="small muted">Already enrolled? <Link className="text-link" href="/login">Log in through Teachable</Link></p>
           </div>
-          <div className="hero-visual" aria-label="Illustration of an IB Mathematics video lesson">
-            <div className="math-board stack-lg">
-              <span className="badge">A clearer way through IB Maths</span>
-              <p className="math-line">f(x) = ax² + bx + c</p>
-              <p className="math-line">P(A ∩ B) = P(A)P(B|A)</p>
-              <p className="math-line">∫ f(x) dx</p>
-              <p style={{ color: "rgba(255,255,255,.66)", maxWidth: 380 }}>Understand the idea. See it applied. Practise the IB question.</p>
+          <div className="hero-visual hero-photo-stage" aria-label="Rob Flynn, founder of Mr Flynn IB">
+            <div className="hero-photo-wrap">
+              <Image
+                src="/images/rob-flynn.webp"
+                alt="Rob Flynn, IB Mathematics teacher and founder of Mr Flynn IB"
+                fill
+                priority
+                sizes="(max-width: 900px) 100vw, 46vw"
+                className="hero-photo"
+              />
+            </div>
+            <div className="hero-credential-card stack">
+              <span className="badge">Meet your teacher</span>
+              <div>
+                <strong>Rob Flynn</strong>
+                <p className="small muted">IB teacher, examiner and moderator</p>
+              </div>
             </div>
             <div className="lesson-card stack">
               <div className="cluster"><span className="play">▶</span><div><strong>Personal video lessons</strong><p className="small muted">Pause, replay and return whenever you need.</p></div></div>
@@ -86,7 +97,7 @@ export default function HomePage() {
       <section className="section surface-soft">
         <Container className="stack-xl">
           <div className="split">
-            <div className="stack"><Eyebrow>Free resources</Eyebrow><h2>Useful before you buy anything.</h2><p className="lede">Practical articles and videos should earn trust by solving real IB Mathematics problems—not by pretending every page needs an immediate sale.</p><ButtonLink href="/resources">Browse all resources</ButtonLink></div>
+            <div className="stack-lg"><div className="stack"><Eyebrow>Free resources</Eyebrow><h2>Useful before you buy anything.</h2><p className="lede">Practical articles and videos should earn trust by solving real IB Mathematics problems—not by pretending every page needs an immediate sale.</p><ButtonLink href="/resources">Browse all resources</ButtonLink></div><figure className="featured-resource-image"><Image src="/images/dubai-mathematics.webp" width={1191} height={562} alt="A Dubai skyline photograph overlaid with mathematical curves and coordinate axes" sizes="(max-width: 900px) 100vw, 48vw" /><figcaption>Real-world mathematics: modelling curves against the Dubai skyline.</figcaption></figure></div>
             <div className="stack">
               {resources.map((resource) => <Link key={resource.slug} href={`/resources/${resource.slug}`} className="card card-hover stack"><div className="cluster"><span className="badge">{resource.audience}</span><span className="small muted">{resource.readTime}</span></div><h3>{resource.title}</h3><p className="muted">{resource.summary}</p></Link>)}
             </div>

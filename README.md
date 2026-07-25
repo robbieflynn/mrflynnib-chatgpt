@@ -49,3 +49,7 @@ Open `http://localhost:3000`.
 ## Architecture decision
 
 The public website owns brand, positioning, SEO, audience journeys and lead generation. Teachable owns course checkout, login and lesson delivery. Supabase is used only where the main site needs to store enquiries; it is not added as a duplicate learning platform.
+
+## Image update
+
+The project now includes Rob Flynn's supplied portrait, the Mr Flynn IB brand mark and lockup, and the Dubai mathematics graphic. The brand mark is also used as the browser and Apple touch icon. Images are stored in `public/images` and rendered with Next.js Image optimisation.
