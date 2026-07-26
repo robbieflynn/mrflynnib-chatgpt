@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       console.info("Preview enquiry:", record);
       return NextResponse.json({ message: "Preview mode: the form works, but Supabase must be configured before launch." });
     }
-    return NextResponse.json({ message: "The enquiry service is being configured. Please email hello@mrflynnib.com." }, { status: 503 });
+    return NextResponse.json({ message: "The enquiry service is being configured. Please email contact@mrflynnib.com." }, { status: 503 });
   }
 
   const response = await fetch(`${supabaseUrl}/rest/v1/enquiries`, {
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
   if (!response.ok) {
     console.error("Supabase enquiry insert failed", response.status, await response.text());
-    return NextResponse.json({ message: "We could not send your enquiry. Please email hello@mrflynnib.com." }, { status: 502 });
+    return NextResponse.json({ message: "We could not send your enquiry. Please email contact@mrflynnib.com." }, { status: 502 });
   }
 
   return NextResponse.json({ message: "Thanks — your enquiry has been received. We’ll be in touch." });

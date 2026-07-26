@@ -43,7 +43,3 @@ export function PageHero({ eyebrow, title, intro }: { eyebrow: string; title: st
     </section>
   );
 }
-
-export function PlaceholderNote({ children }: { children: ReactNode }) {
-  return <p className="placeholder-note"><strong>Content needed:</strong> {children}</p>;
-}

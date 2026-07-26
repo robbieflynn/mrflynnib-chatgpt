@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ButtonLink, Container, Eyebrow, PlaceholderNote } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { resources } from "@/lib/content";
 
 const articleCopy: Record<string, { sections: { heading: string; body: string }[] }> = {
@@ -29,5 +29,5 @@ export default async function ResourcePage({ params }: { params: Promise<{ slug:
   const resource = resources.find((item) => item.slug === slug);
   if (!resource) notFound();
   const article = articleCopy[slug];
-  return <article><section className="page-hero"><Container className="narrow stack-lg"><div className="cluster"><span className="badge">{resource.audience}</span><span className="small muted">{resource.readTime}</span></div><h1>{resource.title}</h1><p className="lede">{resource.summary}</p></Container></section><section className="section-tight"><Container className="narrow stack-xl">{article.sections.map((section) => <section className="stack" key={section.heading}><h2 style={{ fontSize: "clamp(1.8rem,4vw,2.7rem)" }}>{section.heading}</h2><p className="lede">{section.body}</p></section>)}<PlaceholderNote>This is credible launch copy, not a final long-form SEO article. Add Rob’s examples, diagrams, video embeds, downloadable material and precise curriculum references.</PlaceholderNote><div className="card stack-lg"><Eyebrow>Need a structured next step?</Eyebrow><h2>See the course built for your pathway.</h2><ButtonLink href="/courses">Explore courses</ButtonLink></div></Container></section></article>;
+  return <article><section className="page-hero"><Container className="narrow stack-lg"><div className="cluster"><span className="badge">{resource.audience}</span><span className="small muted">{resource.readTime}</span></div><h1>{resource.title}</h1><p className="lede">{resource.summary}</p></Container></section><section className="section-tight"><Container className="narrow stack-xl">{article.sections.map((section) => <section className="stack" key={section.heading}><h2 style={{ fontSize: "clamp(1.8rem,4vw,2.7rem)" }}>{section.heading}</h2><p className="lede">{section.body}</p></section>)}<div className="card stack-lg"><Eyebrow>Need a structured next step?</Eyebrow><h2>See the course built for your pathway.</h2><ButtonLink href="/courses">Explore courses</ButtonLink></div></Container></section></article>;
 }

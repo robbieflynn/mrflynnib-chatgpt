@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui";
-import { LogoMark } from "@/components/logo";
+import { LogoLockup } from "@/components/logo";
 import { siteConfig } from "@/lib/site";
 
 export function SiteFooter() {
@@ -9,14 +9,14 @@ export function SiteFooter() {
       <Container>
         <div className="footer-grid">
           <div className="stack">
-            <Link href="/" className="brand"><LogoMark /><span>Mr Flynn IB</span></Link>
+            <Link href="/" className="brand footer-brand"><LogoLockup /></Link>
             <p style={{ color: "rgba(255,255,255,.7)", maxWidth: 420 }}>
               Expert-led IB Mathematics courses, tutoring, resources and school access—explained clearly by Rob Flynn.
             </p>
           </div>
           <div className="stack">
             <strong>Learn</strong>
-            <div className="footer-list"><Link href="/courses">Courses</Link><Link href="/resources">Free resources</Link><Link href="/book">Book</Link><Link href="/login">Student login</Link></div>
+            <div className="footer-list"><Link href="/courses">Courses</Link><Link href="/ia">IA guidance</Link><Link href="/question-bank">Question bank</Link><Link href="/book">Book</Link><Link href="/login">Student login</Link></div>
           </div>
           <div className="stack">
             <strong>Work with us</strong>

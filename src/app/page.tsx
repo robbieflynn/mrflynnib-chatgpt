@@ -1,254 +1,229 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ButtonLink, Container, Eyebrow, PlaceholderNote } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { CourseCard } from "@/components/course-card";
-import { FaqList } from "@/components/faq-list";
-import { courses, faqs, resources } from "@/lib/content";
+import { VideoEmbed } from "@/components/video-embed";
+import { courses } from "@/lib/content";
+import { siteConfig } from "@/lib/site";
+import { testimonials } from "@/lib/testimonials";
 
-const pathways = [
+const mainOffers = [
   {
-    label: "Students",
-    icon: "∑",
-    title: "Learn your course clearly",
-    body: "Choose AA or AI, HL or SL, then build understanding topic by topic with lessons you can replay.",
+    number: "01",
+    label: "Main offering",
+    title: "Online courses",
+    body: "Complete AA and AI courses at Higher and Standard Level, organised by the real IB syllabus and taught by Rob Flynn.",
     href: "/courses",
     cta: "Find your course",
+    className: "offer-card-primary",
   },
   {
-    label: "Parents",
-    icon: "↗",
-    title: "Find the right support",
-    body: "Understand the options, see what is included and choose between a course and more personal support.",
-    href: "/tutoring",
-    cta: "Explore support",
+    number: "02",
+    label: "Free for now",
+    title: "Question bank",
+    body: "Build fluency with focused IB Mathematics questions and clear routes through each topic.",
+    href: "/question-bank",
+    cta: "Explore the question bank",
+    className: "",
   },
   {
-    label: "Teachers",
-    icon: "π",
-    title: "Extend your classroom",
-    body: "Give students another expert explanation, targeted revision and resources they can use independently.",
-    href: "/resources",
-    cta: "Browse teacher resources",
-  },
-  {
-    label: "Schools",
-    icon: "⌂",
-    title: "Support a whole cohort",
-    body: "Explore structured licences, teacher onboarding and a straightforward quotation process for your department.",
+    number: "03",
+    label: "For departments",
+    title: "Schools",
+    body: "Give a whole cohort access to every course with simple annual pricing and one school invoice.",
     href: "/schools",
-    cta: "View school licences",
+    cta: "View school options",
+    className: "",
+  },
+  {
+    number: "04",
+    label: "Personal support",
+    title: "Tutoring",
+    body: "Contact Mr Flynn IB directly to discuss focused individual support and current availability.",
+    href: "/tutoring",
+    cta: "Ask about tutoring",
+    className: "",
   },
 ] as const;
 
-const platformOffers = [
-  { number: "01", title: "Video courses", body: "Complete course journeys for AA and AI, delivered through Teachable.", href: "/courses" },
-  { number: "02", title: "Free learning library", body: "Useful explanations, revision plans, videos and practical IB guidance.", href: "/resources" },
-  { number: "03", title: "Private tutoring", body: "Selective, focused support for students who need direct diagnosis and feedback.", href: "/tutoring" },
-  { number: "04", title: "School access", body: "A scalable way for departments to give students consistent expert support.", href: "/schools" },
-  { number: "05", title: "Books and tools", body: "A growing collection of resources designed around the real IB Mathematics journey.", href: "/book" },
-] as const;
+const featuredTestimonials = testimonials.filter((testimonial) => testimonial.featured);
 
 export default function HomePage() {
   return (
     <>
-      <div
-        role="status"
-        className="bg-yellow-300 px-6 py-8 text-center text-4xl font-black tracking-tight text-slate-950 sm:text-6xl"
-      >
-        hello Lena. Je t&apos;aime
-      </div>
-      <section className="home-hero">
-        <div className="hero-grid-pattern" aria-hidden="true" />
-        <div className="hero-orb hero-orb-one" aria-hidden="true" />
-        <div className="hero-orb hero-orb-two" aria-hidden="true" />
-        <Container className="home-hero-grid">
-          <div className="home-hero-copy">
-            <div className="hero-kicker"><span className="hero-kicker-dot" />The home of clear IB Mathematics</div>
-            <h1>IB Maths, <span>explained properly.</span></h1>
+      <section className="new-hero">
+        <div className="hero-math hero-math-one" aria-hidden="true">f(x)</div>
+        <div className="hero-math hero-math-two" aria-hidden="true">∫</div>
+        <Container className="new-hero-grid">
+          <div className="new-hero-copy">
+            <div className="hero-kicker"><span className="hero-kicker-dot" />Expert-led IB Mathematics</div>
+            <h1>The home of <span>IB Mathematics.</span></h1>
             <p className="home-hero-lede">
-              Expert-led courses, free lessons and focused support for IB Mathematics students, parents, teachers and schools.
+              Clear courses, trusted IA guidance and focused support for students, teachers and schools—taught by Rob Flynn.
             </p>
             <div className="cluster hero-actions">
-              <ButtonLink href="/courses">Explore courses</ButtonLink>
-              <ButtonLink href="/resources" secondary>Start with free resources</ButtonLink>
+              <ButtonLink href="/courses">Find your course</ButtonLink>
+              <ButtonLink href="/ia" secondary>Explore IA guidance</ButtonLink>
             </div>
-            <div className="hero-trust-line">
-              <div className="hero-avatar">
-                <Image src="/images/rob-flynn.webp" alt="" fill sizes="48px" />
-              </div>
-              <p><strong>Learn with Rob Flynn</strong><span>IB teacher, examiner and moderator</span></p>
+            <div className="hero-credentials" aria-label="Rob Flynn's credentials">
+              <span>IB teacher</span><i />
+              <span>Examiner</span><i />
+              <span>Moderator</span>
             </div>
           </div>
 
-          <div className="platform-preview" aria-label="A preview of the Mr Flynn IB learning platform">
-            <div className="platform-window-bar">
-              <span className="platform-window-brand"><Image src="/images/mr-flynn-mark.png" alt="" width={27} height={24} />Mr Flynn IB</span>
-              <span className="platform-window-status"><i />Lesson ready</span>
-            </div>
-            <div className="platform-preview-main">
-              <div className="platform-portrait">
-                <Image
-                  src="/images/rob-flynn.webp"
-                  alt="Rob Flynn, founder and teacher at Mr Flynn IB"
-                  fill
-                  priority
-                  sizes="(max-width: 900px) 88vw, 43vw"
-                />
-                <div className="portrait-gradient" />
-                <div className="portrait-caption">
-                  <span>Today’s lesson</span>
-                  <strong>Making calculus make sense</strong>
-                </div>
-                <button className="video-play" type="button" aria-label="Video lesson preview">▶</button>
-              </div>
-              <div className="platform-side-panel">
-                <p className="platform-label">Your IB pathway</p>
-                <div className="course-selector-card active"><span>AA</span><div><strong>Analysis & Approaches</strong><small>HL and SL</small></div></div>
-                <div className="course-selector-card"><span>AI</span><div><strong>Applications & Interpretation</strong><small>HL and SL</small></div></div>
-                <div className="progress-card">
-                  <div><span>Course clarity</span><strong>68%</strong></div>
-                  <div className="progress-track"><i /></div>
-                  <small>Clear explanations. Purposeful practice. Better decisions.</small>
-                </div>
+          <div className="hero-portrait-wrap">
+            <div className="hero-portrait-card">
+              <Image
+                src="/images/rob-flynn.webp"
+                alt="Rob Flynn, IB Mathematics teacher, examiner and moderator"
+                fill
+                priority
+                sizes="(max-width: 900px) 92vw, 46vw"
+              />
+              <div className="hero-portrait-shade" />
+              <div className="hero-portrait-caption">
+                <span>Learn with</span>
+                <strong>Rob Flynn</strong>
               </div>
             </div>
-            <div className="floating-proof floating-proof-one"><strong>1M+</strong><span>video views</span></div>
-            <div className="floating-proof floating-proof-two"><span className="proof-tick">✓</span><p><strong>Examiner insight</strong><small>Built into every explanation</small></p></div>
+            <a className="hero-video-chip" href="https://www.youtube.com/watch?v=o3aDg3PZraY&list=PLcvv9pSnukaU11Abk84eQ1OZVqXsqATQh&index=3" target="_blank" rel="noreferrer">
+              <span className="play-dot">▶</span>
+              <span><small>Watch a free lesson</small><strong>See how Rob teaches</strong></span>
+            </a>
+            <div className="hero-view-chip"><strong>1M+</strong><span>YouTube views</span></div>
           </div>
         </Container>
       </section>
 
-      <section className="home-proof" aria-label="Rob Flynn's experience and reach">
-        <Container className="home-proof-grid">
-          <div><strong>IB examiner</strong><span>Assessment insight</span></div>
-          <div><strong>IB moderator</strong><span>Standards and communication</span></div>
-          <div><strong>1M+ video views</strong><span>Students around the world</span></div>
-          <div><strong>Thousands taught</strong><span>Across the IB journey</span></div>
+      <section className="proof-strip" aria-label="Why students learn with Mr Flynn IB">
+        <Container className="proof-strip-grid">
+          <div><strong>4</strong><span>complete IB Mathematics courses</span></div>
+          <div><strong>1M+</strong><span>YouTube views worldwide</span></div>
+          <div><strong>IB</strong><span>teacher, examiner and moderator insight</span></div>
+          <div><strong>24/7</strong><span>replay lessons when you need them</span></div>
         </Container>
       </section>
 
-      <section className="section path-section">
+      <section className="section offers-section">
         <Container className="stack-xl">
           <div className="section-heading-row">
-            <div className="stack">
-              <Eyebrow>Choose your path</Eyebrow>
-              <h2>One platform. Four different starting points.</h2>
-            </div>
-            <p className="lede">Students, parents, teachers and schools need different answers. Start with the route that matches what you are trying to do today.</p>
+            <div className="stack"><Eyebrow>Start here</Eyebrow><h2>What do you need today?</h2></div>
+            <p className="lede">Choose the route that matches your goal. Courses are the complete learning experience; the other areas give you more focused support.</p>
           </div>
-          <div className="path-grid">
-            {pathways.map((path) => (
-              <Link className="path-card" href={path.href} key={path.label}>
-                <div className="path-card-top"><span className="path-icon">{path.icon}</span><span className="path-label">{path.label}</span></div>
-                <div className="stack"><h3>{path.title}</h3><p>{path.body}</p></div>
-                <span className="path-link">{path.cta}<i>→</i></span>
+          <div className="offer-grid">
+            {mainOffers.map((offer) => (
+              <Link className={`offer-card ${offer.className}`.trim()} href={offer.href} key={offer.title}>
+                <div className="offer-card-top"><span>{offer.number}</span><small>{offer.label}</small></div>
+                <div className="stack"><h3>{offer.title}</h3><p>{offer.body}</p></div>
+                <span className="offer-link">{offer.cta}<i aria-hidden="true">→</i></span>
               </Link>
             ))}
           </div>
         </Container>
       </section>
 
-      <section className="platform-section">
-        <Container className="platform-section-grid">
-          <div className="platform-section-copy stack-lg">
-            <Eyebrow>More than a course website</Eyebrow>
-            <h2>A growing home for the whole IB Mathematics journey.</h2>
-            <p className="lede">Mr Flynn IB brings the important pieces together: expert teaching, independent study, personal support and school access. The website is the front door; the platform keeps expanding behind it.</p>
-            <div className="cluster"><ButtonLink href="/courses">See the courses</ButtonLink><ButtonLink href="/about" secondary>Why Mr Flynn IB</ButtonLink></div>
-          </div>
-          <div className="platform-orbit" aria-label="The parts of the Mr Flynn IB platform">
-            <div className="orbit-lines" aria-hidden="true" />
-            <div className="orbit-centre"><Image src="/images/mr-flynn-mark.png" alt="Mr Flynn IB" width={76} height={68} /><strong>Mr Flynn IB</strong><span>Clear teaching at the centre</span></div>
-            {platformOffers.map((offer, index) => (
-              <Link className={`orbit-card orbit-card-${index + 1}`} href={offer.href} key={offer.title}>
-                <span>{offer.number}</span><div><strong>{offer.title}</strong><small>{offer.body}</small></div>
-              </Link>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="section course-section">
+      <section className="section courses-home-section">
         <Container className="stack-xl">
-          <div className="section-heading-row">
-            <div className="stack"><Eyebrow>Online courses</Eyebrow><h2>Your exact syllabus, organised and explained.</h2></div>
-            <p className="lede">Choose AA or AI at Higher or Standard Level. Learn on your own schedule through structured video lessons hosted securely on Teachable.</p>
+          <div className="courses-heading">
+            <div className="stack"><Eyebrow>Online courses</Eyebrow><h2>Your syllabus, clearly explained.</h2><p className="lede">Choose your exact pathway. Every course is organised across the five IB topic areas and delivered through Teachable.</p></div>
+            <div className="price-callout"><span>Most popular access</span><strong>$79</strong><small>Two full years</small></div>
           </div>
           <div className="grid-4 course-grid-home">{courses.map((course) => <CourseCard key={course.slug} course={course} />)}</div>
-          <PlaceholderNote>Before launch, add the live Teachable link, confirmed availability, price and genuine evidence for each course.</PlaceholderNote>
+          <div className="centre"><ButtonLink href="/courses" secondary>Compare all four courses</ButtonLink></div>
         </Container>
       </section>
 
-      <section className="learning-section">
-        <Container className="learning-grid">
-          <div className="learning-copy stack-lg">
-            <Eyebrow>The teaching method</Eyebrow>
-            <h2>Clarity first. Then practice that actually means something.</h2>
-            <p className="lede">Students often do not need more content. They need the right explanation, at the right speed, followed by questions that build judgement rather than just repetition.</p>
-            <ButtonLink href="/about" secondary>Meet Rob Flynn</ButtonLink>
+      <section className="ia-home-section">
+        <Container className="ia-home-grid">
+          <div className="ia-copy stack-lg">
+            <Eyebrow>Internal Assessment</Eyebrow>
+            <h2>IA guidance students around the world trust.</h2>
+            <p className="lede">The IA is one of the areas that made Mr Flynn IB well known. Start with the complete video guide, explore possible ideas, then go deeper with the book.</p>
+            <div className="cluster"><ButtonLink href="/ia">Explore the IA hub</ButtonLink><ButtonLink href="/book" secondary>See the IA book</ButtonLink></div>
           </div>
-          <div className="learning-steps">
-            <article><span>01</span><div><h3>Understand</h3><p>Slow the idea down and see why the method works.</p></div></article>
-            <article><span>02</span><div><h3>Connect</h3><p>Link new ideas to the mathematics you already know.</p></div></article>
-            <article><span>03</span><div><h3>Apply</h3><p>Use carefully selected examples to build independence.</p></div></article>
-            <article><span>04</span><div><h3>Perform</h3><p>Make good decisions when the question no longer looks familiar.</p></div></article>
-          </div>
-        </Container>
-      </section>
-
-      <section className="section resource-showcase">
-        <Container className="resource-showcase-grid">
-          <div className="resource-feature">
-            <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline with mathematical curves and coordinate axes" fill sizes="(max-width: 900px) 100vw, 48vw" />
-            <div className="resource-feature-overlay" />
-            <div className="resource-feature-copy"><span>Featured idea</span><h2>Mathematics is not a list of tricks.</h2><p>See how modelling, curves and interpretation connect classroom mathematics to the world around us.</p><Link href="/resources" className="resource-feature-link">Explore free resources →</Link></div>
-          </div>
-          <div className="resource-list-panel stack-lg">
-            <div className="stack"><Eyebrow>Free learning library</Eyebrow><h2>Useful before you buy anything.</h2><p className="muted">Practical guidance should earn trust by solving a real problem—not by forcing every visitor into a sales page.</p></div>
-            <div className="home-resource-list">
-              {resources.map((resource) => (
-                <Link href={`/resources/${resource.slug}`} key={resource.slug}>
-                  <span>{resource.audience}</span><div><strong>{resource.title}</strong><small>{resource.readTime} read</small></div><i>→</i>
-                </Link>
-              ))}
-            </div>
-            <ButtonLink href="/resources" secondary>Browse the full library</ButtonLink>
+          <div className="ia-route-grid">
+            <a className="ia-route-card" href="https://www.youtube.com/watch?v=pp_CLHH8OgY&list=PLcvv9pSnukaVkFh_OkFceh0aD9Ov02UjV" target="_blank" rel="noreferrer">
+              <span className="ia-card-number">01</span>
+              <div><small>Playlist</small><h3>The complete IA guide</h3><p>Work through the full process, one clear stage at a time.</p></div>
+              <strong>Watch on YouTube →</strong>
+            </a>
+            <a className="ia-route-card ia-route-card-light" href="https://www.youtube.com/watch?v=e5cLTtFzKnI&list=PLcvv9pSnukaVyAMiGPRxJsh6L2wydKFPm" target="_blank" rel="noreferrer">
+              <span className="ia-card-number">02</span>
+              <div><small>Playlist</small><h3>IA ideas and modelling</h3><p>See how promising mathematical ideas can become strong explorations.</p></div>
+              <strong>Explore ideas →</strong>
+            </a>
           </div>
         </Container>
       </section>
 
-      <section className="section founder-section">
-        <Container className="founder-grid">
-          <figure className="founder-photo">
-            <Image src="/images/rob-flynn.webp" alt="Rob Flynn, IB Mathematics teacher, examiner and moderator" fill sizes="(max-width: 900px) 100vw, 42vw" />
-            <figcaption><strong>Rob Flynn</strong><span>Founder and teacher</span></figcaption>
-          </figure>
-          <div className="founder-copy stack-lg">
-            <Eyebrow>Expert-led, not anonymous</Eyebrow>
-            <h2>Students learn better when the explanation feels human.</h2>
-            <p className="lede">Mr Flynn IB is built around Rob’s ability to make difficult mathematics feel clear, connected and manageable—without pretending the subject is easier than it is.</p>
-            <ul className="founder-points">
-              <li><span>✓</span><div><strong>Experienced IB Mathematics teacher</strong><p>Teaching grounded in the real curriculum and the problems students actually face.</p></div></li>
-              <li><span>✓</span><div><strong>Examiner and moderator insight</strong><p>A practical understanding of how mathematical work is communicated and assessed.</p></div></li>
-              <li><span>✓</span><div><strong>Personal video teaching</strong><p>Clear explanations students can pause, replay and revisit whenever they need them.</p></div></li>
-            </ul>
-            <div className="cluster"><ButtonLink href="/about">Read Rob’s story</ButtonLink><ButtonLink href="/tutoring" secondary>Explore tutoring</ButtonLink></div>
+      <section className="section lesson-section">
+        <Container className="lesson-grid">
+          <div className="lesson-video"><VideoEmbed title="Equation of a straight line — sample Mr Flynn IB lesson" videoId="o3aDg3PZraY" /></div>
+          <div className="lesson-copy stack-lg">
+            <Eyebrow>Try a lesson</Eyebrow>
+            <h2>See whether Rob&apos;s teaching style works for you.</h2>
+            <p className="lede">A course should earn your confidence before you buy it. Watch a full example and see the pace, explanation and worked-question approach for yourself.</p>
+            <blockquote className="outcome-quote">
+              <p>“Your videos made me go from a 4 at the start of the year to a 7 in my first-semester exams.”</p>
+              <footer>Abdulaziz · Saudi Arabia</footer>
+            </blockquote>
           </div>
         </Container>
       </section>
 
-      <section className="section surface faq-home">
-        <Container className="faq-home-grid">
-          <div className="stack"><Eyebrow>Common questions</Eyebrow><h2>Start with the practical answers.</h2><p className="lede">Where the courses live, what is covered and how schools or tutoring clients can work with Mr Flynn IB.</p><ButtonLink href="/faq" secondary>See every question</ButtonLink></div>
-          <FaqList items={faqs.slice(0, 4)} />
+      <section className="section testimonials-section">
+        <Container className="stack-xl">
+          <div className="section-heading-row">
+            <div className="stack"><Eyebrow>Student experiences</Eyebrow><h2>Clear explanations. Real confidence.</h2></div>
+            <p className="lede">Students use Mr Flynn IB to fill gaps, prepare for assessments and understand what moved too quickly in class.</p>
+          </div>
+          <div className="testimonial-grid">
+            {featuredTestimonials.map((testimonial) => (
+              <figure className="testimonial-card" key={testimonial.name}>
+                <span className="quote-mark" aria-hidden="true">“</span>
+                <blockquote>{testimonial.quote}</blockquote>
+                <figcaption><strong>{testimonial.name}</strong><span>{testimonial.location}</span></figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="centre"><ButtonLink href="/results" secondary>Read more student experiences</ButtonLink></div>
+        </Container>
+      </section>
+
+      <section className="section book-home-section">
+        <Container className="book-home-grid">
+          <div className="book-home-visual">
+            <div className="book-shadow" />
+            <Image src="/images/ib-mathematics-ia-book-cover.jpg" alt="Cover of IB Mathematics IA: The Complete Guide to the Internal Assessment by Robert Flynn" width={481} height={680} sizes="(max-width: 800px) 62vw, 360px" />
+          </div>
+          <div className="stack-lg">
+            <Eyebrow>The IA book</Eyebrow>
+            <h2>The complete guide to the Internal Assessment.</h2>
+            <p className="lede">A practical, 320-page guide that breaks the Maths IA into clear, manageable stages and explains what examiners are looking for.</p>
+            <ul className="check-list book-points"><li>Clear stages from choosing an idea to the final submission</li><li>Examiner-informed guidance and real mathematical examples</li><li>Written specifically for IB Mathematics students</li></ul>
+            <div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href={siteConfig.bookUrl} secondary external>View on Amazon</ButtonLink></div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="dubai-band">
+        <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline with mathematical curves and coordinate axes" fill sizes="100vw" />
+        <div className="dubai-band-overlay" />
+        <Container className="dubai-band-copy">
+          <span>Built for the real IB classroom</span>
+          <h2>Expert teaching, wherever you are.</h2>
+          <p>Learn at your own pace, revisit difficult ideas and keep the whole syllabus within reach.</p>
         </Container>
       </section>
 
       <section className="final-cta-section">
-        <Container className="final-cta-card">
-          <div className="final-cta-mark"><Image src="/images/mr-flynn-mark.png" alt="" width={64} height={57} /></div>
-          <div className="stack"><span>Ready when you are</span><h2>Find the clearest next step in your IB Mathematics journey.</h2></div>
-          <div className="cluster"><ButtonLink href="/courses">Explore courses</ButtonLink><ButtonLink href="/resources" secondary>Use free resources first</ButtonLink></div>
+        <Container>
+          <div className="final-cta-card">
+            <div className="final-cta-mark"><Image src="/images/mr-flynn-mark.png" alt="" width={58} height={52} /></div>
+            <div className="stack"><span>Ready to begin?</span><h2>Start with the course made for you.</h2><p>AA or AI. Higher or Standard Level. Two years of access for $79.</p></div>
+            <div className="cluster"><ButtonLink href="/courses">Find your course</ButtonLink><ButtonLink href="/ia" secondary>Explore IA guidance</ButtonLink></div>
+          </div>
         </Container>
       </section>
     </>

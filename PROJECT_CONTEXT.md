@@ -37,23 +37,50 @@ These are roadmap possibilities, not commitments to build everything immediately
 
 Courses cover the IB Mathematics pathways AA HL, AA SL, AI HL, and AI SL. Teachable hosts course checkout, enrolment, login, and learning delivery. MrFlynnIB.com should provide premium course landing pages, previews, curriculum information, FAQs, evidence, and clear calls to action, then send customers deliberately and seamlessly to the correct Teachable destination. Existing students need an obvious Teachable login route.
 
+The established main individual offer is **US$79 for two-year access** and should be presented as the most popular option. Shorter access periods may be offered later, but their exact prices are not yet confirmed and must not make the two-year option less compelling.
+
 Do not duplicate Teachable's learning platform unless a later strategic decision provides a compelling reason.
 
 ### Book
 
-The website includes a book area intended to explain the book, its audience, the problem it solves, reviews or sample material, and verified purchase links. It should support additional books later and cross-promote relevant offers without becoming cluttered. Exact book details and purchase links must be confirmed rather than invented.
+Rob's book is **IB Mathematics IA: The Complete Guide to the Internal Assessment**, published under the name Robert Flynn by Zouev Elite Publishing in 2025. It is a 320-page paperback with ISBN-10 `1068444231` and ISBN-13 `9781068444234`. The verified purchase destination supplied by Rob is `https://www.amazon.ae/dp/1068444231`. The website should give the book a dedicated page, connect it to Rob's wider IA expertise, and cross-promote relevant free IA videos without becoming cluttered.
 
 ### Private tutoring
 
-Tutoring should feel selective, premium, personal, and results-focused—not like a cheap hourly marketplace. The site should explain fit, pathways supported, Rob's approach, session process, availability, commitment, pricing or enquiry strategy, and whether provision is directly from Rob or a future approved team. The application captures useful student, parent, school, timezone, course, grade, target, exam, difficulty, and availability information.
+For the current launch, the tutoring route should remain intentionally simple and should say: **“For more information about tutoring, please email contact@mrflynnib.com.”** The email address must be clickable. Do not promise availability, prices, delivery by Rob personally, or a detailed tutoring process until Rob confirms those details.
 
 ### School licences
 
 The school offer is for teachers, departments, IB coordinators, school leaders, finance teams, and educational organisations. It should clearly explain access, included resources, possible licence tiers, duration, onboarding, teacher support, reporting where appropriate, departmental benefits, and the quotation or demonstration process. The system should be able to support proposals, invoices, and institutional access later.
 
+Current proposed launch pricing is annual and remains subject to final approval:
+
+- 10 student licences at US$50 each: US$500 per year
+- 25 student licences at US$40 each: US$1,000 per year
+- 50 student licences at US$30 each: US$1,500 per year
+- 100 student licences at US$20 each: US$2,000 per year
+- More than 100 students: custom quote
+
+These should be sold as fixed cohort packages with a single school invoice rather than presenting schools with consumer-style subscriptions. The 50-seat option is a likely candidate for the school page's “Most popular” treatment. Before publication, confirm what every student and teacher receives, account provisioning, support, renewal terms, taxes, and whether a smaller intermediate cohort tier is needed.
+
 ### Free content
 
 Useful free content builds trust and demand. This can include YouTube lessons, revision guides, topic explanations, formula resources, exam strategy, practice questions, calculators, interactive tools, downloads, email learning, sample lessons, and teacher resources. Free content should genuinely help before asking visitors to buy and should lead naturally to the most relevant next step.
+
+The verified homepage sample lesson is `https://www.youtube.com/watch?v=o3aDg3PZraY&list=PLcvv9pSnukaU11Abk84eQ1OZVqXsqATQh&index=3`. Use video ID `o3aDg3PZraY` for the privacy-enhanced embed and do not invent a title that has not been verified.
+
+### Question bank
+
+The question bank is one of the four principal product routes and should be presented as free for now, with the possibility of paid access later. Its first website version may be a clear “coming soon” destination rather than an invented live bank, but it should explain the intended value and allow the product to grow without redesigning the homepage.
+
+### Internal Assessment (IA)
+
+IA guidance is a major part of Rob's reputation and should be treated as a prominent, dedicated website area rather than buried inside general course or free-resource content. The homepage should introduce this expertise clearly and lead to an IA section containing Rob's videos, his complete IA guide playlist, an IA ideas playlist, and the IA book. The playlists should remain clearly distinguished so visitors can choose between learning the full process and exploring possible topics.
+
+Verified YouTube sources:
+
+- Complete IA guide playlist: `https://www.youtube.com/watch?v=pp_CLHH8OgY&list=PLcvv9pSnukaVkFh_OkFceh0aD9Ov02UjV` (opens with “IB Math IA Complete Guide Part 1: An Introduction”)
+- IA ideas playlist: `https://www.youtube.com/watch?v=e5cLTtFzKnI&list=PLcvv9pSnukaVyAMiGPRxJsh6L2wydKFPm` (opens with “IB Math IA: Modelling a Skateboard Ramp”)
 
 ## Audiences and journeys
 
@@ -76,7 +103,11 @@ The desired identity is intelligent, calm, clear, modern, personal, academic wit
 
 Avoid generic education clichés, excessive stock photography, cartoonish visuals, clutter, aggressive sales language, and template-like layouts. Use generous space, purposeful hierarchy, strong typography, Rob's authentic presence, and the existing blue Mr Flynn IB branding. Stripe, Linear, Apple, and other high-quality modern product experiences can inspire clarity and polish, but their visual identities should not be copied.
 
-The established homepage direction uses the phrase **“IB Maths, explained properly.”** and gives clear routes to students, parents, teachers, and schools. Rob's supplied assets include the blue Mr Flynn IB mark, full logo, professional portrait, and a Dubai mathematics graphic. The mark is used in navigation, footer, and browser icons; the portrait supports founder credibility; the Dubai graphic is used selectively rather than as the principal hero image.
+The homepage headline is **“The home of IB Mathematics.”** The four principal routes are **Courses, Question bank, Schools, and Tutoring**, with Courses receiving the strongest commercial emphasis. The book and IA each receive prominent separate sections rather than becoming a fifth primary route.
+
+Rob's supplied assets include the blue Mr Flynn IB mark, full joined logo, professional portrait, and a Dubai mathematics graphic. Use the full joined Mr Flynn IB logo in the top-left header and retain the standalone blue mark for the favicon. The portrait supports founder credibility. The Dubai graphic should be used selectively as a mid-page visual rather than as the principal hero image.
+
+Remove the temporary yellow workflow banner and simplify the previous busy hero mockup. Do not show invented progress percentages, “lesson ready” states, or unverified interface metrics. The `1M+` proof point must explicitly say **YouTube views**.
 
 Copy should be clear, specific, warm, confident, expert, and persuasive without pressure. Avoid vague phrases such as “unlock your potential” unless attached to specific evidence. Never invent facts to make copy sound finished.
 
@@ -102,7 +133,16 @@ The repository currently contains:
 - metadata, sitemap, robots, Open Graph, analytics hooks, and security headers
 - responsive components and supplied brand imagery
 
-Launch information still requiring verified input includes live Teachable URLs, precise course availability and prices, book details and purchase link, genuine testimonials and outcomes, tutoring availability and commercial details, confirmed school licence terms, production analytics configuration, and completed legal review.
+Verified Teachable course destinations are:
+
+- AA HL: `https://mrflynnib.com/p/aa-hl`
+- AA SL: `https://mrflynnib.com/p/aa-sl`
+- AI HL: `https://mrflynnib.com/p/ai-hl`
+- AI SL: `https://mrflynnib.com/p/ai-sl`
+
+Rob supplied genuine testimonials from 18 named students across Hong Kong, Italy, the UK, India, Canada, Poland, Sweden, Tunisia, Spain, Greece, Denmark, South Korea, Portugal, Saudi Arabia, the UAE, and Egypt, and explicitly approved using their first names and locations. Preserve their meaning and make only light spelling or punctuation corrections. The strongest verified outcome currently supplied is Abdulaziz's report of moving from a 4 to a 7 in his first-semester exams; present it as that student's statement, not as a guaranteed result.
+
+Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes short-term individual pricing, final school licence operational terms, the question bank's first usable content, production analytics configuration, and completed legal review.
 
 ## Agreed working relationship
 
@@ -124,14 +164,12 @@ Accuracy and transparency are especially important. Earlier assistance incorrect
 
 ## Current work in progress
 
-A temporary workflow test was requested: add a large banner at the top of the homepage saying exactly **“hello Lena. Je t'aime”** without changing other content.
-
-The banner is implemented on branch `agent/add-homepage-success-banner`. That branch also contains this durable project context and the repository-level Codex instructions, so it is the single reviewable branch for completing the workflow test. Lint completed with one pre-existing warning in `postcss.config.mjs`, and the full Next.js production build passed on 26 July 2026. GitHub CLI authentication is configured for Rob's `robbieflynn` account, the branch has been pushed, and draft pull request #1 is open. Vercel preview deployment is working and Rob has successfully accessed the protected preview. Nothing has been merged into `main` or published to production.
+The temporary banner workflow test succeeded and is being replaced by the first complete content-led website redesign on branch `agent/homepage-redesign`. The redesign is authorised for a Vercel preview but must not be merged or published to production until Rob approves the finished preview.
 
 The local repository also contains untracked generated dependency/build items from verification (`node_modules/`, `.next/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`). These are not part of the banner commit and must not be added to a pull request without an intentional dependency-management decision.
 
 ## Immediate next steps
 
-1. Let Rob confirm the updated temporary banner in the refreshed Vercel preview for draft pull request #1.
-2. Remove the temporary banner after the test, using the same preview-and-approval workflow.
-3. Reconcile and remove unneeded generated local files without including them in product commits.
+1. Build and verify the redesigned homepage and the supporting course, IA, school, book, question-bank, and tutoring journeys.
+2. Push a focused branch and provide a Vercel preview for Rob's visual review.
+3. Iterate on the preview, then merge and publish only after Rob explicitly approves it.

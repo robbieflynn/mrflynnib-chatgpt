@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ButtonLink, Container, Eyebrow, PageHero, PlaceholderNote } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow, PageHero } from "@/components/ui";
 
 export const metadata: Metadata = { title: "About Rob Flynn", description: "Meet Rob Flynn, the IB Mathematics teacher, examiner and moderator behind Mr Flynn IB." };
 
@@ -33,7 +33,7 @@ export default function AboutPage() {
             />
           </div>
         </div>
-        <div className="stack-lg"><Eyebrow>Rob Flynn</Eyebrow><h2>Experience matters most when students can feel it in the teaching.</h2><p className="lede">Rob is an experienced IB Mathematics teacher who has also worked as an examiner and moderator. He has taught and supported thousands of students, and his educational videos have received more than one million views.</p><p>His core strength is not merely knowing the syllabus. It is seeing where a student’s understanding has broken down, then explaining the idea in a way that makes the next question possible.</p><PlaceholderNote>Add a fact-checked career timeline, school experience, examining roles that may be publicly stated, qualifications, current location or teaching context if relevant.</PlaceholderNote></div>
+        <div className="stack-lg"><Eyebrow>Rob Flynn</Eyebrow><h2>Experience matters most when students can feel it in the teaching.</h2><p className="lede">Rob is an experienced IB Mathematics teacher who has also worked as an examiner and moderator. He has taught and supported thousands of students, and his educational videos have received more than one million YouTube views.</p><p>His core strength is not merely knowing the syllabus. It is seeing where a student’s understanding has broken down, then explaining the idea in a way that makes the next question possible.</p></div>
       </Container>
     </section>
     <section className="section surface-ink"><Container className="grid-4"><div className="number-card"><strong>IB</strong><h3>Teacher</h3><p>Classroom experience across the course.</p></div><div className="number-card"><strong>IB</strong><h3>Examiner</h3><p>Insight into assessment and method.</p></div><div className="number-card"><strong>IB</strong><h3>Moderator</h3><p>Understanding of standards and communication.</p></div><div className="number-card"><strong>1M+</strong><h3>Video views</h3><p>Explanations used by students worldwide.</p></div></Container></section>

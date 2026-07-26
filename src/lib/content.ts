@@ -9,6 +9,9 @@ export type Course = {
   outcomes: string[];
   modules: string[];
   teachableUrl: string;
+  price: number;
+  originalPrice: number;
+  access: string;
   featured?: boolean;
 };
 
@@ -29,7 +32,10 @@ export const courses: Course[] = [
       "Use the calculator strategically rather than mechanically",
     ],
     modules: ["Algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_HL_URL ?? "#teachable-aa-hl-url-needed",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_HL_URL ?? "https://mrflynnib.com/p/aa-hl",
+    price: 79,
+    originalPrice: 160,
+    access: "Two-year access",
     featured: true,
   },
   {
@@ -48,7 +54,10 @@ export const courses: Course[] = [
       "Revise efficiently across the full course",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_SL_URL ?? "#teachable-aa-sl-url-needed",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_SL_URL ?? "https://mrflynnib.com/p/aa-sl",
+    price: 79,
+    originalPrice: 160,
+    access: "Two-year access",
   },
   {
     slug: "applications-interpretation-hl",
@@ -66,7 +75,10 @@ export const courses: Course[] = [
       "Connect topics across extended questions",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_HL_URL ?? "#teachable-ai-hl-url-needed",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_HL_URL ?? "https://mrflynnib.com/p/ai-hl",
+    price: 79,
+    originalPrice: 160,
+    access: "Two-year access",
   },
   {
     slug: "applications-interpretation-sl",
@@ -84,7 +96,10 @@ export const courses: Course[] = [
       "Build a repeatable exam approach",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_SL_URL ?? "#teachable-ai-sl-url-needed",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_SL_URL ?? "https://mrflynnib.com/p/ai-sl",
+    price: 79,
+    originalPrice: 160,
+    access: "Two-year access",
   },
 ];
 
@@ -121,12 +136,12 @@ export const faqs = [
   {
     question: "Which IB Mathematics courses are covered?",
     answer:
-      "The initial site structure supports Analysis & Approaches and Applications & Interpretation at both Higher and Standard Level. Final availability should be updated to match the live Teachable catalogue.",
+      "Courses are available for Analysis & Approaches and Applications & Interpretation at both Higher and Standard Level: AA HL, AA SL, AI HL and AI SL.",
   },
   {
     question: "Is tutoring taught personally by Rob?",
     answer:
-      "The current positioning assumes a selective application process. The final page should state clearly whether sessions are taught only by Rob or also by approved tutors working under the Mr Flynn IB brand.",
+      "Please email contact@mrflynnib.com for current tutoring information and availability.",
   },
   {
     question: "Can a school buy access for several students?",
