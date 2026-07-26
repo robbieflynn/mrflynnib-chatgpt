@@ -124,15 +124,14 @@ Accuracy and transparency are especially important. Earlier assistance incorrect
 
 ## Current work in progress
 
-A temporary workflow test was requested: add a large banner at the top of the homepage saying exactly **“Yes, it worked.”** without changing other content.
+A temporary workflow test was requested: add a large banner at the top of the homepage saying exactly **“hello Lena. Je t'aime”** without changing other content.
 
-The banner is implemented on branch `agent/add-homepage-success-banner`. That branch also contains this durable project context and the repository-level Codex instructions, so it is the single reviewable branch for completing the workflow test. Lint completed with one pre-existing warning in `postcss.config.mjs`, and the full Next.js production build passed on 26 July 2026. GitHub CLI authentication is now configured for Rob's `robbieflynn` account, the branch has been pushed, and draft pull request #1 is open. Vercel reports the preview deployment as ready, but opening the preview redirects to Vercel's protected login page; the banner has therefore not yet been visually verified in the deployed preview.
+The banner is implemented on branch `agent/add-homepage-success-banner`. That branch also contains this durable project context and the repository-level Codex instructions, so it is the single reviewable branch for completing the workflow test. Lint completed with one pre-existing warning in `postcss.config.mjs`, and the full Next.js production build passed on 26 July 2026. GitHub CLI authentication is configured for Rob's `robbieflynn` account, the branch has been pushed, and draft pull request #1 is open. Vercel preview deployment is working and Rob has successfully accessed the protected preview. Nothing has been merged into `main` or published to production.
 
 The local repository also contains untracked generated dependency/build items from verification (`node_modules/`, `.next/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`). These are not part of the banner commit and must not be added to a pull request without an intentional dependency-management decision.
 
 ## Immediate next steps
 
-1. Open the protected Vercel preview for draft pull request #1 and sign in when prompted.
-2. Let Rob confirm the workflow by viewing the temporary banner.
-3. Remove the temporary banner after the test, using the same preview-and-approval workflow.
-4. Reconcile and remove unneeded generated local files without including them in product commits.
+1. Let Rob confirm the updated temporary banner in the refreshed Vercel preview for draft pull request #1.
+2. Remove the temporary banner after the test, using the same preview-and-approval workflow.
+3. Reconcile and remove unneeded generated local files without including them in product commits.
