@@ -71,7 +71,9 @@ The verified homepage sample lesson is `https://www.youtube.com/watch?v=o3aDg3PZ
 
 ### Question bank
 
-The question bank is one of the four principal product routes and should be presented as free for now, with the possibility of paid access later. Its first website version may be a clear “coming soon” destination rather than an invented live bank, but it should explain the intended value and allow the product to grow without redesigning the homepage.
+The question bank is one of the four principal product routes and should be presented as free for now, with the possibility of paid access later. Rob supplied the first working collection as a self-contained HTML artifact created with Claude. It contains 53 legacy HL questions from four May 2014 papers, complete mark schemes, filters, and nine questions with mathematical diagrams. This verified content is now the foundation of the native website question bank rather than a “coming soon” placeholder.
+
+Keep the first release transparent about its scope: it currently contains Legacy HL rather than the four present-day AA/AI pathways. Students should be able to search and filter by course, paper, topic, subtopic, difficulty, and exam session, and reveal the mark scheme only when ready. Preserve the mathematical notation and diagrams when extending or migrating the data. Future additions should use the same structured data model so the bank can grow without redesigning the page.
 
 ### Internal Assessment (IA)
 
@@ -148,7 +150,7 @@ Verified Teachable course destinations are:
 
 Rob supplied genuine testimonials from 18 named students across Hong Kong, Italy, the UK, India, Canada, Poland, Sweden, Tunisia, Spain, Greece, Denmark, South Korea, Portugal, Saudi Arabia, the UAE, and Egypt, and explicitly approved using their first names and locations. Preserve their meaning and make only light spelling or punctuation corrections. The strongest verified outcome currently supplied is Abdulaziz's report of moving from a 4 to a 7 in his first-semester exams; present it as that student's statement, not as a guaranteed result.
 
-Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes short-term individual pricing, final school licence operational terms, the question bank's first usable content, production analytics configuration, and completed legal review.
+Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes short-term individual pricing, final school licence operational terms, production analytics configuration, and completed legal review.
 
 ## Agreed working relationship
 
@@ -172,7 +174,7 @@ Accuracy and transparency are especially important. Earlier assistance incorrect
 
 The temporary banner workflow test succeeded and has been superseded by the first complete content-led website redesign on branch `agent/homepage-redesign`. Draft pull request #2 is the active review: `https://github.com/robbieflynn/mrflynnib-chatgpt/pull/2`. Its Vercel preview is `https://mrflynnib-chatgpt-git-agent-homepage-redesign-mr-flynn-ib.vercel.app`.
 
-The preview includes the redesigned homepage and complete course, IA, school, book, question-bank, tutoring, testimonial, navigation, metadata, and legal-draft journeys. Lint passes with one pre-existing PostCSS warning and no errors; the Next.js production build passes and generates all 30 routes. The deployed Vercel preview has also been opened and rendered successfully. It must not be merged or published to production until Rob approves it.
+The preview includes the redesigned homepage and complete course, IA, school, book, tutoring, testimonial, navigation, metadata, and legal-draft journeys. The question-bank route is being upgraded from its placeholder into a usable native bank based on Rob's supplied 53-question collection. Lint passes with one pre-existing PostCSS warning and no errors; the Next.js production build passes and generates all 30 routes. The deployed Vercel preview has also been opened and rendered successfully. It must not be merged or published to production until Rob approves it.
 
 The local repository also contains untracked generated dependency/build items from verification (`node_modules/`, `.next/`, `.pnpm-store/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`). These are not part of the website commit and must not be added to a pull request without an intentional dependency-management decision.
 

@@ -1,0 +1,4035 @@
+[
+  {
+    "id": "M14TZ1HL_P1_Q1",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 1,
+    "section": "A",
+    "marks": 5,
+    "difficulty": "Easy",
+    "title": "Remainder theorem — find a and b",
+    "body": "When the polynomial \\(3x^3 + ax + b\\) is divided by \\((x-2)\\), the remainder is 2, and when divided by \\((x+1)\\), it is 5. Find the value of \\(a\\) and the value of \\(b\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "Substitute \\(x=2\\): \\(2a+b+24=2\\Rightarrow 2a+b=-22\\)",
+            "M1A1"
+          ],
+          [
+            "Substitute \\(x=-1\\): \\(-a-b+3=5\\Rightarrow -a-b=2\\)",
+            "A1"
+          ],
+          [
+            "Attempt to solve simultaneously",
+            "M1"
+          ],
+          [
+            "\\(a=-10,\\ b=-2\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Functions",
+        "sub": "Polynomials"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q2",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 2,
+    "section": "A",
+    "marks": 4,
+    "difficulty": "Easy",
+    "title": "Four numbers from mean, median, mode",
+    "body": "Four numbers are such that their mean is 13, their median is 14 and their mode is 15. Find the four numbers.",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "Sum of the four numbers divided by 4 is 13",
+            "M1"
+          ],
+          [
+            "Two of the numbers must be 15 (the mode)",
+            "A1"
+          ],
+          [
+            "As the median is 14, one of the middle numbers is 13",
+            "A1"
+          ],
+          [
+            "Fourth number is \\(52-15-15-13=9\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Basic stats"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q3",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 3,
+    "section": "A",
+    "marks": 5,
+    "difficulty": "Medium",
+    "title": "Telescoping logarithm product",
+    "body": "Consider \\(a = \\log_2 3 \\times \\log_3 4 \\times \\log_4 5 \\times \\cdots \\times \\log_{31} 32\\). Given that \\(a \\in \\mathbb{Z}\\), find the value of \\(a\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "Rewrite each term as \\(\\log_k(k+1)=\\dfrac{\\log(k+1)}{\\log k}\\)",
+            "M1"
+          ],
+          [
+            "Product telescopes: \\(\\dfrac{\\log3}{\\log2}\\times\\dfrac{\\log4}{\\log3}\\times\\cdots\\times\\dfrac{\\log32}{\\log31}\\)",
+            "A1"
+          ],
+          [
+            "\\(=\\dfrac{\\log32}{\\log2}\\)",
+            "A1"
+          ],
+          [
+            "\\(=\\dfrac{5\\log2}{\\log2}\\)",
+            "M1"
+          ],
+          [
+            "\\(=5\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Exponents and logs"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q4",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 4,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Medium",
+    "title": "Cubic roots and Vieta's formulas",
+    "body": "The equation \\(5x^3 + 48x^2 + 100x + 2 = a\\) has roots \\(r_1\\), \\(r_2\\) and \\(r_3\\). Given that \\(r_1+r_2+r_3+r_1r_2r_3=0\\), find the value of \\(a\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "Sum of roots: \\(r_1+r_2+r_3=-\\dfrac{48}{5}\\)",
+            "M1"
+          ],
+          [
+            "Product of roots: \\(r_1r_2r_3=-\\dfrac{2-a}{5}\\)",
+            "A1"
+          ],
+          [
+            "Set up the given condition: \\(-\\dfrac{48}{5}-\\dfrac{2-a}{5}=0\\)",
+            "M1"
+          ],
+          [
+            "Multiply through by 5: \\(-48-(2-a)=0\\)",
+            "A1"
+          ],
+          [
+            "Simplify: \\(a-50=0\\)",
+            "M1"
+          ],
+          [
+            "\\(a=50\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Functions",
+        "sub": "Polynomials"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q5",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 5,
+    "section": "A",
+    "marks": 8,
+    "difficulty": "Medium-Hard",
+    "title": "Half-angle identities, then a definite integral",
+    "parts": [
+      [
+        "a",
+        "Use the identity \\(\\cos 2\\theta = 2\\cos^2\\theta - 1\\) to prove that \\(\\cos\\tfrac12 x = \\sqrt{\\tfrac{1+\\cos x}{2}}\\), \\(0\\le x\\le \\pi\\).",
+        "2"
+      ],
+      [
+        "b",
+        "Find a similar expression for \\(\\sin\\tfrac12 x\\), \\(0\\le x\\le \\pi\\).",
+        "2"
+      ],
+      [
+        "c",
+        "Hence find the value of \\(\\displaystyle\\int_0^{\\pi/2}\\left(\\sqrt{1+\\cos x}+\\sqrt{1-\\cos x}\\right)\\,dx\\).",
+        "4"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\cos\\tfrac12x=\\pm\\sqrt{\\tfrac{1+\\cos x}{2}}\\)",
+            "M1"
+          ],
+          [
+            "Positive since \\(0\\le x\\le\\pi\\Rightarrow\\cos\\tfrac12x\\ge0\\)",
+            "R1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Using \\(\\cos2\\theta=1-2\\sin^2\\theta\\) with \\(\\theta=\\tfrac12x\\)",
+            "M1"
+          ],
+          [
+            "\\(\\sin\\tfrac12x=\\sqrt{\\tfrac{1-\\cos x}{2}}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "Integrand: \\(\\sqrt2\\cos\\tfrac12x+\\sqrt2\\sin\\tfrac12x\\)",
+            "A1"
+          ],
+          [
+            "Integrate: \\(\\Big[2\\sqrt2\\sin\\tfrac12x-2\\sqrt2\\cos\\tfrac12x\\Big]_0^{\\pi/2}\\)",
+            "A1"
+          ],
+          [
+            "Evaluate at \\(x=\\tfrac\\pi2\\) and \\(x=0\\)",
+            "A1"
+          ],
+          [
+            "\\(=2\\sqrt2\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Trig equations and identities"
+      },
+      {
+        "main": "Calculus",
+        "sub": "Basic integration"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q6",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 6,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Medium",
+    "title": "Sketch g(x) from the graph of f(x)",
+    "body": "The axes below show the graph of \\(y=f(x)\\) for \\(-4\\le x\\le 4\\). Let \\(g(x)=\\displaystyle\\int_{-4}^{x} f(t)\\,dt\\) for \\(-4\\le x\\le 4\\).",
+    "diagram": "q6",
+    "diagram2": "q6blank",
+    "diagramCaption": "Left: y = f(x). Right: blank axes for sketching y = g(x).",
+    "parts": [
+      [
+        "a",
+        "State the value of \\(x\\) at which \\(g(x)\\) is a minimum.",
+        "1"
+      ],
+      [
+        "b",
+        "On the second set of axes, sketch the graph of \\(y=g(x)\\).",
+        "5"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "The minimum of \\(g\\) occurs where \\(f\\) changes sign from negative to positive: \\(x=1\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Point \\((-4,0)\\)",
+            "A1"
+          ],
+          [
+            "Point \\((0,-4)\\)",
+            "A1"
+          ],
+          [
+            "Minimum at \\(x=1\\) in approximately the correct place",
+            "A1"
+          ],
+          [
+            "Point \\((4,0)\\)",
+            "A1"
+          ],
+          [
+            "Correct shape, continuous through \\(x=0\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Basic integration"
+      }
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 300 230\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"45.65217391304347\" y1=\"30\" x2=\"45.65217391304347\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"71.7391304347826\" y1=\"30\" x2=\"71.7391304347826\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"97.82608695652173\" y1=\"30\" x2=\"97.82608695652173\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"123.91304347826087\" y1=\"30\" x2=\"123.91304347826087\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"150\" y1=\"30\" x2=\"150\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"176.08695652173913\" y1=\"30\" x2=\"176.08695652173913\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"202.17391304347828\" y1=\"30\" x2=\"202.17391304347828\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"228.2608695652174\" y1=\"30\" x2=\"228.2608695652174\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"254.34782608695653\" y1=\"30\" x2=\"254.34782608695653\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"188.91304347826087\" x2=\"270\" y2=\"188.91304347826087\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"170.43478260869566\" x2=\"270\" y2=\"170.43478260869566\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"151.95652173913044\" x2=\"270\" y2=\"151.95652173913044\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"133.47826086956522\" x2=\"270\" y2=\"133.47826086956522\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"115\" x2=\"270\" y2=\"115\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"96.52173913043478\" x2=\"270\" y2=\"96.52173913043478\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"78.04347826086956\" x2=\"270\" y2=\"78.04347826086956\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"59.565217391304344\" x2=\"270\" y2=\"59.565217391304344\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"41.086956521739125\" x2=\"270\" y2=\"41.086956521739125\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"115\" x2=\"270\" y2=\"115\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"150\" y1=\"200\" x2=\"150\" y2=\"30\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><path d=\" M 45.65 133.48 L 97.83 133.48 L 150.00 133.48\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.4\"/><path d=\" M 150.00 115.00 L 202.17 87.28 L 254.35 59.57\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.4\"/><circle cx=\"150\" cy=\"133.47826086956522\" r=\"3\" fill=\"#143c78\"/><circle cx=\"254.34782608695653\" cy=\"59.565217391304344\" r=\"3\" fill=\"#143c78\"/><text x=\"276\" y=\"119\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">x</text><text x=\"136\" y=\"24\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">y</text><text x=\"45.65217391304347\" y=\"129\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"middle\">-4</text><text x=\"97.82608695652173\" y=\"129\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"middle\">-2</text><text x=\"202.17391304347828\" y=\"129\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"middle\">2</text><text x=\"254.34782608695653\" y=\"129\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"middle\">4</text><text x=\"142\" y=\"191.91304347826087\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">-4</text><text x=\"142\" y=\"154.95652173913044\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">-2</text><text x=\"142\" y=\"81.04347826086956\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">2</text><text x=\"142\" y=\"44.086956521739125\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">4</text></svg>",
+    "diagram2Svg": "<svg viewBox=\"0 0 300 230\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"45.65217391304347\" y1=\"30\" x2=\"45.65217391304347\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"71.7391304347826\" y1=\"30\" x2=\"71.7391304347826\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"97.82608695652173\" y1=\"30\" x2=\"97.82608695652173\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"123.91304347826087\" y1=\"30\" x2=\"123.91304347826087\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"150\" y1=\"30\" x2=\"150\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"176.08695652173913\" y1=\"30\" x2=\"176.08695652173913\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"202.17391304347828\" y1=\"30\" x2=\"202.17391304347828\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"228.2608695652174\" y1=\"30\" x2=\"228.2608695652174\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"254.34782608695653\" y1=\"30\" x2=\"254.34782608695653\" y2=\"200\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"188.91304347826087\" x2=\"270\" y2=\"188.91304347826087\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"170.43478260869566\" x2=\"270\" y2=\"170.43478260869566\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"151.95652173913044\" x2=\"270\" y2=\"151.95652173913044\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"133.47826086956522\" x2=\"270\" y2=\"133.47826086956522\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"115\" x2=\"270\" y2=\"115\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"96.52173913043478\" x2=\"270\" y2=\"96.52173913043478\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"78.04347826086956\" x2=\"270\" y2=\"78.04347826086956\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"59.565217391304344\" x2=\"270\" y2=\"59.565217391304344\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"41.086956521739125\" x2=\"270\" y2=\"41.086956521739125\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"30\" y1=\"115\" x2=\"270\" y2=\"115\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"150\" y1=\"200\" x2=\"150\" y2=\"30\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><text x=\"276\" y=\"119\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">x</text><text x=\"136\" y=\"24\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">y</text><text x=\"45.65217391304347\" y=\"129\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"middle\">-4</text><text x=\"97.82608695652173\" y=\"129\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"middle\">-2</text><text x=\"202.17391304347828\" y=\"129\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"middle\">2</text><text x=\"254.34782608695653\" y=\"129\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"middle\">4</text><text x=\"142\" y=\"191.91304347826087\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">-4</text><text x=\"142\" y=\"154.95652173913044\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">-2</text><text x=\"142\" y=\"81.04347826086956\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">2</text><text x=\"142\" y=\"44.086956521739125\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">4</text></svg>"
+  },
+  {
+    "id": "M14TZ1HL_P1_Q7",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 7,
+    "section": "A",
+    "marks": 5,
+    "difficulty": "Easy-Medium",
+    "title": "Cosine rule in an equilateral triangle",
+    "body": "The triangle \\(ABC\\) is equilateral with side 3 cm. The point \\(D\\) lies on \\([BC]\\) such that \\(BD=1\\) cm. Find \\(\\cos D\\hat{A}C\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(AD^2=3^2+1^2-2(3)(1)\\cos60^\\circ\\)",
+            "M1"
+          ],
+          [
+            "\\(AD^2=7\\)",
+            "A1"
+          ],
+          [
+            "\\(\\cos D\\hat AC=\\dfrac{AD^2+AC^2-DC^2}{2\\cdot AD\\cdot AC}\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac{7+9-4}{2\\sqrt7(3)}\\)",
+            "A1"
+          ],
+          [
+            "\\(=\\dfrac{2}{\\sqrt7}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Sectors and triangles"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q8",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 8,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Medium",
+    "title": "Acceleration from v(s) via chain rule",
+    "body": "A body is moving in a straight line. When it is \\(s\\) metres from a fixed point \\(O\\), its velocity is \\(v=-\\dfrac{1}{s^2}\\), \\(s>0\\). Find the acceleration of the body when it is 50 cm from \\(O\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(v=-s^{-2}\\Rightarrow\\dfrac{dv}{ds}=2s^{-3}=\\dfrac2{s^3}\\)",
+            "M1A1"
+          ],
+          [
+            "\\(a=v\\dfrac{dv}{ds}=-\\dfrac1{s^2}\\times\\dfrac2{s^3}=-\\dfrac2{s^5}\\)",
+            "M1A1"
+          ],
+          [
+            "At \\(s=0.5\\) m: \\(a=-\\dfrac{2}{(0.5)^5}=-64\\text{ m s}^{-2}\\)",
+            "M1A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Kinematics"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q9",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 9,
+    "section": "A",
+    "marks": 9,
+    "difficulty": "Hard",
+    "title": "Implicit differentiation with arctan",
+    "body": "A curve has equation \\(\\arctan x^2 + \\arctan y^2 = \\dfrac{\\pi}{4}\\).",
+    "parts": [
+      [
+        "a",
+        "Find \\(\\dfrac{dy}{dx}\\) in terms of \\(x\\) and \\(y\\).",
+        "4"
+      ],
+      [
+        "b",
+        "Find the gradient of the curve at the point where \\(x=\\dfrac{1}{\\sqrt2}\\) and \\(y<0\\).",
+        "5"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Differentiate implicitly (method)",
+            "M1"
+          ],
+          [
+            "LHS: \\(\\dfrac{4x}{1+x^4}\\)",
+            "A1"
+          ],
+          [
+            "RHS: \\(\\dfrac{4y^3}{1+y^4}\\dfrac{dy}{dx}\\)",
+            "A1"
+          ],
+          [
+            "Rearrange: \\(\\dfrac{dy}{dx}=-\\dfrac{x(1+y^4)}{y^3(1+x^4)}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(y^2=\\tan\\left(\\tfrac\\pi4-\\arctan\\tfrac12\\right)\\)",
+            "M1"
+          ],
+          [
+            "Expand using the tangent subtraction formula",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac{1-\\tfrac12}{1+\\tfrac12}=\\dfrac13\\)",
+            "A1"
+          ],
+          [
+            "\\(y=-\\dfrac1{\\sqrt3}\\)",
+            "A1"
+          ],
+          [
+            "Substitute into (a): \\(\\dfrac{dy}{dx}=\\dfrac{4\\sqrt6}{9}\\) (accept equivalent forms)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Implicit differentiation"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q10",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 10,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Medium-Hard",
+    "title": "Find cos 4x from sin x + cos x",
+    "body": "Given that \\(\\sin x + \\cos x = \\dfrac{2}{3}\\), find \\(\\cos 4x\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\((\\sin x+\\cos x)^2=\\sin^2x+2\\sin x\\cos x+\\cos^2x=\\tfrac49\\)",
+            "M1A1"
+          ],
+          [
+            "Using \\(\\sin^2x+\\cos^2x=1\\): \\(1+2\\sin x\\cos x=\\tfrac49\\)",
+            "M1"
+          ],
+          [
+            "Using \\(2\\sin x\\cos x=\\sin2x\\): \\(\\sin2x=-\\tfrac59\\)",
+            "M1"
+          ],
+          [
+            "\\(\\cos4x=1-2\\sin^22x\\)",
+            "M1"
+          ],
+          [
+            "\\(=1-2\\left(\\tfrac{25}{81}\\right)=\\tfrac{31}{81}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Trig equations and identities"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q11",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 11,
+    "section": "B",
+    "marks": 21,
+    "difficulty": "Hard",
+    "title": "Full curve analysis of f(x) = ln(x)/x",
+    "body": "Consider the function \\(f(x)=\\dfrac{\\ln x}{x}\\), \\(x>0\\). The sketch shows \\(y=f(x)\\) and its tangent at \\(A\\), where the curve crosses the \\(x\\)-axis; \\(B\\) is the maximum point; \\(C\\) is the point of inflection.",
+    "diagram": "q11",
+    "diagramCaption": "Diagram not to scale — recomputed exactly from f(x) = ln(x)/x.",
+    "parts": [
+      [
+        "a",
+        "Show that \\(f'(x)=\\dfrac{1-\\ln x}{x^2}\\).",
+        "2"
+      ],
+      [
+        "b",
+        "Find the coordinates of \\(B\\), the maximum point.",
+        "3"
+      ],
+      [
+        "c",
+        "Find the coordinates of \\(C\\), the point of inflection.",
+        "5"
+      ],
+      [
+        "d",
+        "Find the equation of the tangent to the graph of \\(f\\) at \\(A\\).",
+        "4"
+      ],
+      [
+        "e",
+        "Find the area enclosed by the curve \\(y=f(x)\\), the tangent at \\(A\\), and the line \\(x=e\\).",
+        "7"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Quotient rule: \\(f'(x)=\\dfrac{x\\cdot\\tfrac1x-\\ln x}{x^2}\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac{1-\\ln x}{x^2}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(1-\\ln x=0\\) has solution \\(x=e\\)",
+            "M1A1"
+          ],
+          [
+            "\\(y=\\tfrac1e\\), maximum at \\(\\left(e,\\tfrac1e\\right)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(f''(x)=\\dfrac{-x-(1-\\ln x)(2x)}{x^4}\\)",
+            "M1A1"
+          ],
+          [
+            "\\(=\\dfrac{2\\ln x-3}{x^3}\\)",
+            "(A1)"
+          ],
+          [
+            "Point of inflexion where \\(f''(x)=0\\Rightarrow x=e^{3/2}\\)",
+            "M1"
+          ],
+          [
+            "\\(y=\\tfrac32e^{-3/2}\\), so \\(C=\\left(e^{3/2},\\tfrac32e^{-3/2}\\right)\\)",
+            "A1A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "\\(f(1)=0\\)",
+            "A1"
+          ],
+          [
+            "\\(f'(1)=1\\)",
+            "(A1)"
+          ],
+          [
+            "\\(y=x+c\\), through \\((1,0)\\)",
+            "M1"
+          ],
+          [
+            "Tangent: \\(y=x-1\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "e",
+        [
+          [
+            "Area \\(=\\displaystyle\\int_1^e\\left((x-1)-\\dfrac{\\ln x}{x}\\right)dx\\)",
+            "M1A1A1"
+          ],
+          [
+            "\\(\\displaystyle\\int\\dfrac{\\ln x}{x}dx=\\dfrac{(\\ln x)^2}{2}\\)",
+            "M1A1"
+          ],
+          [
+            "\\(\\displaystyle\\int(x-1)dx=\\dfrac{x^2}{2}-x\\)",
+            "A1"
+          ],
+          [
+            "Evaluating from \\(1\\) to \\(e\\): \\(\\tfrac12e^2-e\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Basic differentiation"
+      }
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 460 260\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"59.565217391304344\" y1=\"34\" x2=\"59.565217391304344\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"102.17391304347827\" y1=\"34\" x2=\"102.17391304347827\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"144.7826086956522\" y1=\"34\" x2=\"144.7826086956522\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"187.3913043478261\" y1=\"34\" x2=\"187.3913043478261\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"230\" y1=\"34\" x2=\"230\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"272.6086956521739\" y1=\"34\" x2=\"272.6086956521739\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"315.2173913043478\" y1=\"34\" x2=\"315.2173913043478\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"357.82608695652175\" y1=\"34\" x2=\"357.82608695652175\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"400.4347826086956\" y1=\"34\" x2=\"400.4347826086956\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"185.27272727272728\" x2=\"426\" y2=\"185.27272727272728\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"127.09090909090908\" x2=\"426\" y2=\"127.09090909090908\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"68.90909090909088\" x2=\"426\" y2=\"68.90909090909088\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"127.09090909090908\" x2=\"426\" y2=\"127.09090909090908\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"59.565217391304344\" y1=\"226\" x2=\"59.565217391304344\" y2=\"34\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><path d=\" M 62.12 2855.25 L 63.74 1507.94 L 65.35 982.33 L 66.97 713.26 L 68.58 554.00 L 70.20 450.73 L 71.81 379.43 L 73.43 327.87 L 75.04 289.27 L 76.66 259.55 L 78.27 236.15 L 79.89 217.38 L 81.50 202.09 L 83.12 189.47 L 84.74 178.94 L 86.35 170.05 L 87.97 162.50 L 89.58 156.03 L 91.20 150.44 L 92.81 145.59 L 94.43 141.36 L 96.04 137.65 L 97.66 134.38 L 99.27 131.49 L 100.89 128.93 L 102.50 126.65 L 104.12 124.61 L 105.73 122.78 L 107.35 121.14 L 108.96 119.67 L 110.58 118.34 L 112.19 117.14 L 113.81 116.06 L 115.43 115.07 L 117.04 114.18 L 118.66 113.37 L 120.27 112.64 L 121.89 111.97 L 123.50 111.36 L 125.12 110.80 L 126.73 110.29 L 128.35 109.83 L 129.96 109.41 L 131.58 109.03 L 133.19 108.67 L 134.81 108.35 L 136.42 108.06 L 138.04 107.80 L 139.65 107.56 L 141.27 107.34 L 142.88 107.14 L 144.50 106.96 L 146.12 106.79 L 147.73 106.64 L 149.35 106.51 L 150.96 106.39 L 152.58 106.28 L 154.19 106.19 L 155.81 106.10 L 157.42 106.03 L 159.04 105.96 L 160.65 105.90 L 162.27 105.85 L 163.88 105.81 L 165.50 105.78 L 167.11 105.75 L 168.73 105.73 L 170.34 105.71 L 171.96 105.70 L 173.57 105.69 L 175.19 105.69 L 176.80 105.69 L 178.42 105.69 L 180.04 105.70 L 181.65 105.72 L 183.27 105.73 L 184.88 105.75 L 186.50 105.77 L 188.11 105.80 L 189.73 105.82 L 191.34 105.85 L 192.96 105.88 L 194.57 105.91 L 196.19 105.95 L 197.80 105.98 L 199.42 106.02 L 201.03 106.06 L 202.65 106.10 L 204.26 106.14 L 205.88 106.19 L 207.49 106.23 L 209.11 106.28 L 210.73 106.32 L 212.34 106.37 L 213.96 106.42 L 215.57 106.47 L 217.19 106.52 L 218.80 106.57 L 220.42 106.62 L 222.03 106.67 L 223.65 106.72 L 225.26 106.77 L 226.88 106.82 L 228.49 106.88 L 230.11 106.93 L 231.72 106.98 L 233.34 107.04 L 234.95 107.09 L 236.57 107.15 L 238.18 107.20 L 239.80 107.25 L 241.42 107.31 L 243.03 107.36 L 244.65 107.42 L 246.26 107.47 L 247.88 107.53 L 249.49 107.58 L 251.11 107.64 L 252.72 107.69 L 254.34 107.75 L 255.95 107.80 L 257.57 107.86 L 259.18 107.91 L 260.80 107.97 L 262.41 108.02 L 264.03 108.08 L 265.64 108.13 L 267.26 108.18 L 268.87 108.24 L 270.49 108.29 L 272.11 108.35 L 273.72 108.40 L 275.34 108.45 L 276.95 108.51 L 278.57 108.56 L 280.18 108.61 L 281.80 108.67 L 283.41 108.72 L 285.03 108.77 L 286.64 108.82 L 288.26 108.88 L 289.87 108.93 L 291.49 108.98 L 293.10 109.03 L 294.72 109.08 L 296.33 109.13 L 297.95 109.18 L 299.56 109.24 L 301.18 109.29 L 302.80 109.34 L 304.41 109.39 L 306.03 109.44 L 307.64 109.49 L 309.26 109.54 L 310.87 109.58 L 312.49 109.63 L 314.10 109.68 L 315.72 109.73 L 317.33 109.78 L 318.95 109.83 L 320.56 109.88 L 322.18 109.92 L 323.79 109.97 L 325.41 110.02 L 327.02 110.06 L 328.64 110.11 L 330.25 110.16 L 331.87 110.20 L 333.48 110.25 L 335.10 110.30 L 336.72 110.34 L 338.33 110.39 L 339.95 110.43 L 341.56 110.48 L 343.18 110.52 L 344.79 110.57 L 346.41 110.61 L 348.02 110.65 L 349.64 110.70 L 351.25 110.74 L 352.87 110.79 L 354.48 110.83 L 356.10 110.87 L 357.71 110.91 L 359.33 110.96 L 360.94 111.00 L 362.56 111.04 L 364.17 111.08 L 365.79 111.12 L 367.41 111.17 L 369.02 111.21 L 370.64 111.25 L 372.25 111.29 L 373.87 111.33 L 375.48 111.37 L 377.10 111.41 L 378.71 111.45 L 380.33 111.49 L 381.94 111.53 L 383.56 111.57 L 385.17 111.61 L 386.79 111.65 L 388.40 111.69 L 390.02 111.72 L 391.63 111.76 L 393.25 111.80 L 394.86 111.84 L 396.48 111.88 L 398.10 111.91 L 399.71 111.95 L 401.33 111.99 L 402.94 112.03 L 404.56 112.06 L 406.17 112.10 L 407.79 112.14 L 409.40 112.17 L 411.02 112.21 L 412.63 112.24 L 414.25 112.28 L 415.86 112.31 L 417.48 112.35\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.2\"/><path d=\" M 42.52 208.55 L 95.78 135.82 L 149.04 63.09\" fill=\"none\" stroke=\"#b71c1c\" stroke-width=\"1.8\" stroke-dasharray=\"6 4\"/><line x1=\"175.38766051695063\" y1=\"226\" x2=\"175.38766051695063\" y2=\"34\" stroke=\"#c7ccd6\" stroke-width=\"1\" stroke-dasharray=\"2 3\"/><circle cx=\"102.17391304347827\" cy=\"127.09090909090908\" r=\"3\" fill=\"#143c78\"/><text x=\"92.17391304347827\" y=\"143.09090909090907\" font-size=\"11\" fill=\"#143c78\">A(1, 0)</text><circle cx=\"175.38766051695063\" cy=\"105.68701433184336\" r=\"3\" fill=\"#143c78\"/><text x=\"169.38766051695063\" y=\"95.68701433184336\" font-size=\"11\" fill=\"#143c78\">B(e, 1/e)</text><circle cx=\"250.52414299701317\" cy=\"107.61773147795522\" r=\"3\" fill=\"#143c78\"/><text x=\"258.5241429970132\" y=\"101.61773147795522\" font-size=\"11\" fill=\"#143c78\">C</text><text x=\"432\" y=\"131.09090909090907\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">x</text><text x=\"45.565217391304344\" y=\"28\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">y</text></svg>"
+  },
+  {
+    "id": "M14TZ1HL_P1_Q12",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 12,
+    "section": "B",
+    "marks": 22,
+    "difficulty": "Hard",
+    "title": "3D square, plane, perpendicular line and reflection",
+    "body": "\\(O(0,0,0)\\), \\(A(6,0,0)\\), \\(B(6,-\\sqrt{24},\\sqrt{12})\\), \\(C(0,-\\sqrt{24},\\sqrt{12})\\).",
+    "parts": [
+      [
+        "a",
+        "Show that O, A, B, C form a square.",
+        "3"
+      ],
+      [
+        "b",
+        "Find the coordinates of M, the midpoint of [OB].",
+        "1"
+      ],
+      [
+        "c",
+        "Show that the plane \\(\\Pi\\) containing OABC has equation \\(y+\\sqrt2\\,z=0\\).",
+        "3"
+      ],
+      [
+        "d",
+        "Find a vector equation of the line L, through M, perpendicular to \\(\\Pi\\).",
+        "3"
+      ],
+      [
+        "e",
+        "Find D, the intersection of L with the plane \\(y=0\\).",
+        "3"
+      ],
+      [
+        "f",
+        "Find E, the reflection of D in the plane \\(\\Pi\\).",
+        "3"
+      ],
+      [
+        "g",
+        "Find the angle \\(O\\hat{D}A\\), and state what this tells you about solid OABCDE.",
+        "6"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(|\\overrightarrow{OA}|=|\\overrightarrow{CB}|=6\\)",
+            "A1"
+          ],
+          [
+            "\\(|\\overrightarrow{OC}|=|\\overrightarrow{AB}|=6\\)",
+            "A1"
+          ],
+          [
+            "\\(\\overrightarrow{OA}\\cdot\\overrightarrow{OC}=0\\), therefore a square",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(M=\\left(3,-\\sqrt6,\\sqrt3\\right)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(\\overrightarrow{OA}\\times\\overrightarrow{OC}\\) gives a normal vector",
+            "M1A1"
+          ],
+          [
+            "Showing \\(d=0\\) since the plane passes through the origin",
+            "M1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "\\(\\mathbf r=\\left(3,-\\sqrt6,\\sqrt3\\right)+\\lambda(0,1,\\sqrt2)\\)",
+            "A1A1A1"
+          ]
+        ]
+      ],
+      [
+        "e",
+        [
+          [
+            "Using \\(y=0\\) to find \\(\\lambda\\)",
+            "M1"
+          ],
+          [
+            "Substitute \\(\\lambda\\) into the equation from (d)",
+            "M1"
+          ],
+          [
+            "\\(D=(3,0,3\\sqrt3)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "f",
+        [
+          [
+            "\\(\\lambda\\) for \\(E\\) is the negative of \\(\\lambda\\) for \\(D\\)",
+            "M1"
+          ],
+          [
+            "\\(E=(3,-2\\sqrt6,-\\sqrt3)\\)",
+            "A1A1"
+          ]
+        ]
+      ],
+      [
+        "g",
+        [
+          [
+            "\\(\\overrightarrow{DA}\\cdot\\overrightarrow{DO}=18\\)",
+            "M1A1"
+          ],
+          [
+            "\\(\\cos O\\hat DA=\\dfrac{18}{36}=\\tfrac12\\)",
+            "M1"
+          ],
+          [
+            "\\(O\\hat DA=60^\\circ\\)",
+            "A1"
+          ],
+          [
+            "OABCDE is a regular octahedron, made up of 8 equilateral triangles",
+            "A2"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Vectors"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P1_Q13",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ1 HL P1",
+    "qnum": 13,
+    "section": "B",
+    "marks": 17,
+    "difficulty": "Hard",
+    "title": "Complex geometric sequence and its spiral geometry",
+    "body": "A geometric sequence \\(\\{u_n\\}\\) with complex terms is defined by \\(u_{n+1}=(1+i)u_n\\), \\(u_1=3\\). A second sequence \\(v_n=u_nu_{n+k}\\), \\(k\\in\\mathbb{N}\\). A third sequence \\(w_n=|u_n-u_{n+1}|\\).",
+    "parts": [
+      [
+        "a",
+        "Find the fourth term, in the form \\(x+yi\\).",
+        "3"
+      ],
+      [
+        "b",
+        "Find the sum of the first 20 terms, in the form \\(a\\times(1+2^m)\\).",
+        "4"
+      ],
+      [
+        "c",
+        "Show \\(\\{v_n\\}\\) is geometric, state its first term, and show its ratio is independent of k.",
+        "5"
+      ],
+      [
+        "d",
+        "Show \\(\\{w_n\\}\\) is geometric, and state its geometrical significance on the complex plane.",
+        "5"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(r=1+i\\)",
+            "(A1)"
+          ],
+          [
+            "\\(u_4=3(1+i)^3\\)",
+            "M1"
+          ],
+          [
+            "\\(=-6+6i\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(S_{20}=\\dfrac{3\\big((1+i)^{20}-1\\big)}{i}\\)",
+            "M1"
+          ],
+          [
+            "\\((1+i)^2=2i\\Rightarrow(1+i)^{20}=(2i)^{10}=2^{10}i^{10}=-1024\\)",
+            "M1"
+          ],
+          [
+            "\\(S_{20}=\\dfrac{3(-1024-1)}{i}=\\dfrac{-3075}{i}=3075i\\)",
+            "A1"
+          ],
+          [
+            "\\(=3\\big(1+2^{10}\\big)i\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(\\dfrac{v_{n+1}}{v_n}=\\dfrac{u_{n+1}u_{n+1+k}}{u_nu_{n+k}}=(1+i)(1+i)\\)",
+            "M1"
+          ],
+          [
+            "\\(=(1+i)^2\\), a constant",
+            "A1"
+          ],
+          [
+            "Hence \\(\\{v_n\\}\\) is geometric",
+            "R1"
+          ],
+          [
+            "First term \\(v_1=u_1u_{1+k}=9(1+i)^k\\)",
+            "A1"
+          ],
+          [
+            "Common ratio \\((1+i)^2=2i\\), independent of \\(k\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "\\(w_n=|u_n-u_{n+1}|=\\big|3(1+i)^{n-1}-3(1+i)^n\\big|\\)",
+            "M1"
+          ],
+          [
+            "\\(=3(1+i)^{n-1}\\big(1-(1+i)\\big)\\)",
+            "M1"
+          ],
+          [
+            "\\(=3\\big(\\sqrt2\\big)^{n-1}\\)",
+            "A1"
+          ],
+          [
+            "This is the general term of a geometric sequence, ratio \\(\\sqrt2\\)",
+            "R1"
+          ],
+          [
+            "Geometrically: distances between successive points \\(u_n\\) form a geometric sequence",
+            "R1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Complex numbers"
+      },
+      {
+        "main": "Number and Algebra",
+        "sub": "Sequences and series, and finance"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q1",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 1,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Easy",
+    "title": "Independence test from conditional probability",
+    "body": "Events \\(A\\) and \\(B\\) are such that \\(\\mathrm{P}(A)=\\dfrac{2}{5}\\), \\(\\mathrm{P}(B)=\\dfrac{11}{20}\\) and \\(\\mathrm{P}(A\\,|\\,B)=\\dfrac{2}{11}\\).",
+    "parts": [
+      [
+        "a",
+        "Find \\(\\mathrm{P}(A\\cap B)\\).",
+        "2"
+      ],
+      [
+        "b",
+        "Find \\(\\mathrm{P}(A\\cup B)\\).",
+        "2"
+      ],
+      [
+        "c",
+        "State, with a reason, whether or not events \\(A\\) and \\(B\\) are independent.",
+        "2"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\mathrm P(A\\cap B)=\\mathrm P(A|B)\\times\\mathrm P(B)\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\tfrac{2}{11}\\times\\tfrac{11}{20}=\\tfrac1{10}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\mathrm P(A\\cup B)=\\mathrm P(A)+\\mathrm P(B)-\\mathrm P(A\\cap B)\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\tfrac25+\\tfrac{11}{20}-\\tfrac1{10}=\\tfrac{17}{20}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "No &mdash; events \\(A\\) and \\(B\\) are not independent",
+            "A1"
+          ],
+          [
+            "Since \\(\\mathrm P(A|B)=\\tfrac2{11}\\ne\\mathrm P(A)=\\tfrac25\\)",
+            "R1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Probability"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q2",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 2,
+    "section": "A",
+    "marks": 5,
+    "difficulty": "Easy-Medium",
+    "title": "Solve an exponential equation in terms of ln2, ln3",
+    "body": "Solve the equation \\(8^{x-1}=6^{3x}\\). Express your answer in terms of \\(\\ln 2\\) and \\(\\ln 3\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(3(x-1)\\ln2=3x\\ln(2\\times3)\\)",
+            "M1"
+          ],
+          [
+            "\\(3x\\ln2-3\\ln2=3x\\ln2+3x\\ln3\\)",
+            "A1"
+          ],
+          [
+            "\\(-3\\ln2=3x\\ln3\\)",
+            "(M1)"
+          ],
+          [
+            "\\(x=-\\dfrac{3\\ln2}{3\\ln3}\\)",
+            "A1"
+          ],
+          [
+            "\\(x=-\\dfrac{\\ln2}{\\ln3}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Exponents and logs"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q3",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 3,
+    "section": "A",
+    "marks": 5,
+    "difficulty": "Medium",
+    "title": "Infinite solutions and the line of intersection of three planes",
+    "body": "The following system of equations represents three planes in space:\\[ x+y+2z=-2,\\quad 3x-y+14z=6,\\quad x+2y=-5. \\]",
+    "parts": [
+      [
+        "a",
+        "Show that the system of equations has an infinite number of solutions.",
+        "2"
+      ],
+      [
+        "b",
+        "Find the parametric equations of the line of intersection of the three planes.",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Row reduce the augmented matrix",
+            "M1"
+          ],
+          [
+            "A row of zeroes implies infinite solutions",
+            "R1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Let \\(y=t\\)",
+            "M1"
+          ],
+          [
+            "\\(x=-5-2t\\)",
+            "A1"
+          ],
+          [
+            "\\(z=\\dfrac{3+t}{2}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Vectors"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q4",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 4,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Medium",
+    "title": "New quadratic from squared roots",
+    "body": "The roots of the quadratic equation \\(2x^2+4x-1=0\\) are \\(\\alpha\\) and \\(\\beta\\). Without solving the equation,",
+    "parts": [
+      [
+        "a",
+        "find the value of \\(\\alpha^2+\\beta^2\\);",
+        "4"
+      ],
+      [
+        "b",
+        "find a quadratic equation with roots \\(\\alpha^2\\) and \\(\\beta^2\\).",
+        "2"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\alpha+\\beta=-2\\)",
+            "A1"
+          ],
+          [
+            "\\(\\alpha\\beta=-\\tfrac12\\)",
+            "A1"
+          ],
+          [
+            "\\(\\alpha^2+\\beta^2=(\\alpha+\\beta)^2-2\\alpha\\beta\\)",
+            "M1"
+          ],
+          [
+            "\\(=(-2)^2-2\\left(-\\tfrac12\\right)=5\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\((x-\\alpha^2)(x-\\beta^2)=x^2-(\\alpha^2+\\beta^2)x+(\\alpha\\beta)^2\\)",
+            "M1"
+          ],
+          [
+            "\\(x^2-5x+\\tfrac14=0\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Functions",
+        "sub": "Polynomials"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q5",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 5,
+    "section": "A",
+    "marks": 5,
+    "difficulty": "Medium",
+    "title": "Sketch and solve |cos(x/4)|",
+    "body": "Consider the function \\(y=\\left|\\cos\\left(\\dfrac{x}{4}\\right)\\right|\\) for \\(0\\le x\\le 8\\pi\\).",
+    "diagram": "q5tz2",
+    "diagramCaption": "y = |cos(x/4)| plotted exactly over 0 ≤ x ≤ 8π.",
+    "parts": [
+      [
+        "a",
+        "Sketch the graph of \\(y=\\left|\\cos\\left(\\dfrac{x}{4}\\right)\\right|\\) for \\(0\\le x\\le 8\\pi\\).",
+        "2"
+      ],
+      [
+        "b",
+        "Solve \\(\\left|\\cos\\left(\\dfrac{x}{4}\\right)\\right|=\\dfrac12\\) for \\(0\\le x\\le 8\\pi\\).",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Correct shape (reflecting negative parts of \\(\\cos\\tfrac x4\\) upward)",
+            "A1"
+          ],
+          [
+            "Correct domain and range shown",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\tfrac x4=\\tfrac\\pi3\\Rightarrow x=\\tfrac{4\\pi}3\\)",
+            "A1"
+          ],
+          [
+            "Attempt to find the other solutions using symmetry",
+            "M1"
+          ],
+          [
+            "\\(x=\\tfrac{8\\pi}3,\\ \\tfrac{16\\pi}3,\\ \\tfrac{20\\pi}3\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Trig equations and identities"
+      },
+      {
+        "main": "Functions",
+        "sub": "Modulus functions"
+      }
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 460 220\" xmlns=\"http://www.w3.org/2000/svg\"><line x1=\"34\" y1=\"186\" x2=\"426\" y2=\"186\" stroke=\"#16233b\" stroke-width=\"1.4\"/><line x1=\"34\" y1=\"186\" x2=\"34\" y2=\"34\" stroke=\"#16233b\" stroke-width=\"1.4\"/><path d=\" M 34.00 53.83 L 35.31 53.86 L 36.61 53.94 L 37.92 54.09 L 39.23 54.29 L 40.53 54.55 L 41.84 54.87 L 43.15 55.24 L 44.45 55.68 L 45.76 56.17 L 47.07 56.71 L 48.37 57.32 L 49.68 57.98 L 50.99 58.70 L 52.29 59.47 L 53.60 60.30 L 54.91 61.18 L 56.21 62.12 L 57.52 63.11 L 58.83 64.15 L 60.13 65.25 L 61.44 66.41 L 62.75 67.61 L 64.05 68.87 L 65.36 70.18 L 66.67 71.53 L 67.97 72.94 L 69.28 74.40 L 70.59 75.91 L 71.89 77.47 L 73.20 79.07 L 74.51 80.72 L 75.81 82.42 L 77.12 84.16 L 78.43 85.95 L 79.73 87.78 L 81.04 89.65 L 82.35 91.57 L 83.65 93.52 L 84.96 95.52 L 86.27 97.56 L 87.57 99.63 L 88.88 101.75 L 90.19 103.90 L 91.49 106.09 L 92.80 108.31 L 94.11 110.57 L 95.41 112.86 L 96.72 115.18 L 98.03 117.53 L 99.33 119.91 L 100.64 122.32 L 101.95 124.76 L 103.25 127.23 L 104.56 129.72 L 105.87 132.24 L 107.17 134.78 L 108.48 137.34 L 109.79 139.93 L 111.09 142.53 L 112.40 145.16 L 113.71 147.80 L 115.01 150.46 L 116.32 153.13 L 117.63 155.82 L 118.93 158.52 L 120.24 161.23 L 121.55 163.96 L 122.85 166.69 L 124.16 169.43 L 125.47 172.18 L 126.77 174.94 L 128.08 177.70 L 129.39 180.47 L 130.69 183.23 L 132.00 186.00 L 133.31 183.23 L 134.61 180.47 L 135.92 177.70 L 137.23 174.94 L 138.53 172.18 L 139.84 169.43 L 141.15 166.69 L 142.45 163.96 L 143.76 161.23 L 145.07 158.52 L 146.37 155.82 L 147.68 153.13 L 148.99 150.46 L 150.29 147.80 L 151.60 145.16 L 152.91 142.53 L 154.21 139.93 L 155.52 137.34 L 156.83 134.78 L 158.13 132.24 L 159.44 129.72 L 160.75 127.23 L 162.05 124.76 L 163.36 122.32 L 164.67 119.91 L 165.97 117.53 L 167.28 115.18 L 168.59 112.86 L 169.89 110.57 L 171.20 108.31 L 172.51 106.09 L 173.81 103.90 L 175.12 101.75 L 176.43 99.63 L 177.73 97.56 L 179.04 95.52 L 180.35 93.52 L 181.65 91.57 L 182.96 89.65 L 184.27 87.78 L 185.57 85.95 L 186.88 84.16 L 188.19 82.42 L 189.49 80.72 L 190.80 79.07 L 192.11 77.47 L 193.41 75.91 L 194.72 74.40 L 196.03 72.94 L 197.33 71.53 L 198.64 70.18 L 199.95 68.87 L 201.25 67.61 L 202.56 66.41 L 203.87 65.25 L 205.17 64.15 L 206.48 63.11 L 207.79 62.12 L 209.09 61.18 L 210.40 60.30 L 211.71 59.47 L 213.01 58.70 L 214.32 57.98 L 215.63 57.32 L 216.93 56.71 L 218.24 56.17 L 219.55 55.68 L 220.85 55.24 L 222.16 54.87 L 223.47 54.55 L 224.77 54.29 L 226.08 54.09 L 227.39 53.94 L 228.69 53.86 L 230.00 53.83 L 231.31 53.86 L 232.61 53.94 L 233.92 54.09 L 235.23 54.29 L 236.53 54.55 L 237.84 54.87 L 239.15 55.24 L 240.45 55.68 L 241.76 56.17 L 243.07 56.71 L 244.37 57.32 L 245.68 57.98 L 246.99 58.70 L 248.29 59.47 L 249.60 60.30 L 250.91 61.18 L 252.21 62.12 L 253.52 63.11 L 254.83 64.15 L 256.13 65.25 L 257.44 66.41 L 258.75 67.61 L 260.05 68.87 L 261.36 70.18 L 262.67 71.53 L 263.97 72.94 L 265.28 74.40 L 266.59 75.91 L 267.89 77.47 L 269.20 79.07 L 270.51 80.72 L 271.81 82.42 L 273.12 84.16 L 274.43 85.95 L 275.73 87.78 L 277.04 89.65 L 278.35 91.57 L 279.65 93.52 L 280.96 95.52 L 282.27 97.56 L 283.57 99.63 L 284.88 101.75 L 286.19 103.90 L 287.49 106.09 L 288.80 108.31 L 290.11 110.57 L 291.41 112.86 L 292.72 115.18 L 294.03 117.53 L 295.33 119.91 L 296.64 122.32 L 297.95 124.76 L 299.25 127.23 L 300.56 129.72 L 301.87 132.24 L 303.17 134.78 L 304.48 137.34 L 305.79 139.93 L 307.09 142.53 L 308.40 145.16 L 309.71 147.80 L 311.01 150.46 L 312.32 153.13 L 313.63 155.82 L 314.93 158.52 L 316.24 161.23 L 317.55 163.96 L 318.85 166.69 L 320.16 169.43 L 321.47 172.18 L 322.77 174.94 L 324.08 177.70 L 325.39 180.47 L 326.69 183.23 L 328.00 186.00 L 329.31 183.23 L 330.61 180.47 L 331.92 177.70 L 333.23 174.94 L 334.53 172.18 L 335.84 169.43 L 337.15 166.69 L 338.45 163.96 L 339.76 161.23 L 341.07 158.52 L 342.37 155.82 L 343.68 153.13 L 344.99 150.46 L 346.29 147.80 L 347.60 145.16 L 348.91 142.53 L 350.21 139.93 L 351.52 137.34 L 352.83 134.78 L 354.13 132.24 L 355.44 129.72 L 356.75 127.23 L 358.05 124.76 L 359.36 122.32 L 360.67 119.91 L 361.97 117.53 L 363.28 115.18 L 364.59 112.86 L 365.89 110.57 L 367.20 108.31 L 368.51 106.09 L 369.81 103.90 L 371.12 101.75 L 372.43 99.63 L 373.73 97.56 L 375.04 95.52 L 376.35 93.52 L 377.65 91.57 L 378.96 89.65 L 380.27 87.78 L 381.57 85.95 L 382.88 84.16 L 384.19 82.42 L 385.49 80.72 L 386.80 79.07 L 388.11 77.47 L 389.41 75.91 L 390.72 74.40 L 392.03 72.94 L 393.33 71.53 L 394.64 70.18 L 395.95 68.87 L 397.25 67.61 L 398.56 66.41 L 399.87 65.25 L 401.17 64.15 L 402.48 63.11 L 403.79 62.12 L 405.09 61.18 L 406.40 60.30 L 407.71 59.47 L 409.01 58.70 L 410.32 57.98 L 411.63 57.32 L 412.93 56.71 L 414.24 56.17 L 415.55 55.68 L 416.85 55.24 L 418.16 54.87 L 419.47 54.55 L 420.77 54.29 L 422.08 54.09 L 423.39 53.94 L 424.69 53.86 L 426.00 53.83\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.2\"/><line x1=\"34\" y1=\"186\" x2=\"34\" y2=\"191\" stroke=\"#16233b\" stroke-width=\"1\"/><text x=\"34\" y=\"204\" font-size=\"10\" fill=\"#5b6b85\" text-anchor=\"middle\">0</text><line x1=\"132\" y1=\"186\" x2=\"132\" y2=\"191\" stroke=\"#16233b\" stroke-width=\"1\"/><text x=\"132\" y=\"204\" font-size=\"10\" fill=\"#5b6b85\" text-anchor=\"middle\">2π</text><line x1=\"230\" y1=\"186\" x2=\"230\" y2=\"191\" stroke=\"#16233b\" stroke-width=\"1\"/><text x=\"230\" y=\"204\" font-size=\"10\" fill=\"#5b6b85\" text-anchor=\"middle\">4π</text><line x1=\"328\" y1=\"186\" x2=\"328\" y2=\"191\" stroke=\"#16233b\" stroke-width=\"1\"/><text x=\"328\" y=\"204\" font-size=\"10\" fill=\"#5b6b85\" text-anchor=\"middle\">6π</text><line x1=\"426\" y1=\"186\" x2=\"426\" y2=\"191\" stroke=\"#16233b\" stroke-width=\"1\"/><text x=\"426\" y=\"204\" font-size=\"10\" fill=\"#5b6b85\" text-anchor=\"middle\">8π</text><text x=\"432\" y=\"190\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">x</text><text x=\"16\" y=\"28\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">y</text><text x=\"26\" y=\"56.82608695652172\" font-size=\"9\" fill=\"#5b6b85\" text-anchor=\"end\">1</text></svg>"
+  },
+  {
+    "id": "M14TZ2HL_P1_Q6",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 6,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Medium",
+    "title": "Rhombus diagonals are perpendicular (vector proof)",
+    "body": "\\(PQRS\\) is a rhombus. Given that \\(\\overrightarrow{PQ}=\\mathbf{a}\\) and \\(\\overrightarrow{QR}=\\mathbf{b}\\),",
+    "parts": [
+      [
+        "a",
+        "express the vectors \\(\\overrightarrow{PR}\\) and \\(\\overrightarrow{QS}\\) in terms of \\(\\mathbf{a}\\) and \\(\\mathbf{b}\\);",
+        "2"
+      ],
+      [
+        "b",
+        "hence show that the diagonals in a rhombus intersect at right angles.",
+        "4"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\overrightarrow{PR}=\\mathbf a+\\mathbf b\\)",
+            "A1"
+          ],
+          [
+            "\\(\\overrightarrow{QS}=\\mathbf b-\\mathbf a\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\overrightarrow{PR}\\cdot\\overrightarrow{QS}=(\\mathbf a+\\mathbf b)\\cdot(\\mathbf b-\\mathbf a)\\)",
+            "M1"
+          ],
+          [
+            "\\(=|\\mathbf b|^2-|\\mathbf a|^2\\)",
+            "A1"
+          ],
+          [
+            "For a rhombus, \\(|\\mathbf a|=|\\mathbf b|\\)",
+            "R1"
+          ],
+          [
+            "Hence \\(|\\mathbf b|^2-|\\mathbf a|^2=0\\), so the diagonals are perpendicular",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Vectors"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q7",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 7,
+    "section": "A",
+    "marks": 7,
+    "difficulty": "Medium",
+    "title": "Complex reciprocal equation, then polar form of the conjugate",
+    "body": "Consider the complex numbers \\(u=2+3i\\) and \\(v=3+2i\\).",
+    "parts": [
+      [
+        "a",
+        "Given that \\(\\dfrac{1}{u}+\\dfrac{1}{v}=\\dfrac{10}{w}\\), express \\(w\\) in the form \\(a+bi\\), \\(a,b\\in\\mathbb{R}\\).",
+        "4"
+      ],
+      [
+        "b",
+        "Find \\(w^{*}\\) and express it in the form \\(re^{i\\theta}\\).",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\dfrac1u+\\dfrac1v=\\dfrac{2-3i}{13}+\\dfrac{3-2i}{13}=\\dfrac{5-5i}{13}\\)",
+            "M1A1"
+          ],
+          [
+            "\\(\\dfrac{10}{w}=\\dfrac{5-5i}{13}\\Rightarrow w=\\dfrac{130}{5-5i}\\)",
+            "A1"
+          ],
+          [
+            "\\(w=13+13i\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(w^*=13-13i\\)",
+            "A1"
+          ],
+          [
+            "\\(r=|w^*|=13\\sqrt2\\)",
+            "A1"
+          ],
+          [
+            "\\(\\theta=-\\tfrac\\pi4\\), so \\(w^*=13\\sqrt2\\,e^{-i\\pi/4}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Complex numbers"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q8",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 8,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Medium",
+    "title": "Continuity of a piecewise function, then reflect and translate",
+    "body": "The function \\(f\\) is defined by\\[ f(x)=\\begin{cases} 1-2x, & x\\le 2 \\\\ \\dfrac34(x-2)^2-3, & x>2 \\end{cases} \\]",
+    "parts": [
+      [
+        "a",
+        "Determine whether or not \\(f\\) is continuous.",
+        "2"
+      ],
+      [
+        "b",
+        "The graph of the function \\(g\\) is obtained by applying the following transformations to the graph of \\(f\\): a reflection in the \\(y\\)-axis followed by a translation by the vector \\(\\begin{pmatrix}2\\\\0\\end{pmatrix}\\). Find \\(g(x)\\).",
+        "4"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(f(2^-)=1-2(2)=-3\\) and \\(f(2^+)=\\tfrac34(0)^2-3=-3\\)",
+            "A1"
+          ],
+          [
+            "Both one-sided values agree, so \\(f\\) is continuous at \\(x=2\\)",
+            "R1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Reflect in the \\(y\\)-axis: replace \\(x\\) with \\(-x\\)",
+            "M1"
+          ],
+          [
+            "Translate by \\(\\begin{pmatrix}2\\\\0\\end{pmatrix}\\): replace \\(x\\) with \\(x-2\\)",
+            "M1"
+          ],
+          [
+            "Correct domains for each branch of \\(g\\)",
+            "A1"
+          ],
+          [
+            "\\(g(x)=1+2x\\) for \\(x\\ge0\\); \\(g(x)=\\tfrac34(x+2)^2-3\\) for \\(x<0\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Functions",
+        "sub": "Transformations"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q9",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 9,
+    "section": "A",
+    "marks": 7,
+    "difficulty": "Hard",
+    "title": "Geometric series with sine/cosine terms — ratio, convergence, sum to infinity",
+    "body": "The first three terms of a geometric sequence are \\(\\sin x\\), \\(\\sin 2x\\) and \\(4\\sin x\\cos^2 x\\), where \\(-\\dfrac{\\pi}{2}<x<\\dfrac{\\pi}{2}\\).",
+    "parts": [
+      [
+        "a",
+        "Find the common ratio \\(r\\).",
+        "1"
+      ],
+      [
+        "b",
+        "Find the set of values of \\(x\\) for which the geometric series \\(\\sin x+\\sin 2x+4\\sin x\\cos^2 x+\\cdots\\) converges.",
+        "3"
+      ],
+      [
+        "c",
+        "Consider \\(x=\\arccos\\left(\\dfrac14\\right)\\), \\(x>0\\). Show that the sum to infinity of this series is \\(\\dfrac{\\sqrt{15}}{2}\\).",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(r=\\dfrac{\\sin2x}{\\sin x}=2\\cos x\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Converges when \\(|r|<1\\): \\(|2\\cos x|<1\\)",
+            "M1"
+          ],
+          [
+            "\\(-\\tfrac\\pi2<x<-\\tfrac\\pi3\\)",
+            "A1"
+          ],
+          [
+            "\\(\\tfrac\\pi3<x<\\tfrac\\pi2\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(S_\\infty=\\dfrac{\\sin x}{1-2\\cos x}\\)",
+            "M1"
+          ],
+          [
+            "With \\(x=\\arccos\\tfrac14\\): \\(\\sin x=\\tfrac{\\sqrt{15}}4\\)",
+            "A1"
+          ],
+          [
+            "\\(S_\\infty=\\dfrac{\\sqrt{15}/4}{1-1/2}=\\dfrac{\\sqrt{15}}2\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Sequences and series, and finance"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q10",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 10,
+    "section": "A",
+    "marks": 7,
+    "difficulty": "Hard",
+    "title": "Trig-substitution integral (x = a sec θ)",
+    "body": "Use the substitution \\(x=a\\sec\\theta\\) to show that\\[ \\int_{a\\sqrt2}^{2a} \\dfrac{dx}{x^3\\sqrt{x^2-a^2}} = \\dfrac{1}{24a^3}\\left(3\\sqrt3+\\pi-6\\right). \\]",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(x=a\\sec\\theta\\Rightarrow dx=a\\sec\\theta\\tan\\theta\\,d\\theta\\)",
+            "A1"
+          ],
+          [
+            "New limits: \\(x=a\\sqrt2\\Rightarrow\\theta=\\tfrac\\pi4\\); \\(x=2a\\Rightarrow\\theta=\\tfrac\\pi3\\)",
+            "A1"
+          ],
+          [
+            "\\(\\displaystyle\\int\\dfrac{a\\sec\\theta\\tan\\theta}{a^3\\sec^3\\theta\\cdot a\\tan\\theta}\\,d\\theta\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac1{a^3}\\displaystyle\\int_{\\pi/4}^{\\pi/3}\\cos^2\\theta\\,d\\theta\\)",
+            "A1"
+          ],
+          [
+            "Using \\(\\cos^2\\theta=\\tfrac12(1+\\cos2\\theta)\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac1{2a^3}\\Big[\\theta+\\tfrac12\\sin2\\theta\\Big]_{\\pi/4}^{\\pi/3}\\)",
+            "A1"
+          ],
+          [
+            "\\(=\\dfrac1{24a^3}\\big(3\\sqrt3+\\pi-6\\big)\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration by substitution"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q11",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 11,
+    "section": "B",
+    "marks": 12,
+    "difficulty": "Hard",
+    "title": "Faulty batteries (Bayes) and a hypergeometric-style transistor distribution",
+    "parts": [
+      [
+        "a",
+        "Mobile phone batteries are produced by two machines. Machine A produces 60% of the daily output and machine B produces 40%. On average, 2% of batteries produced by machine A are faulty and 1% of batteries produced by machine B are faulty. (i) Draw a tree diagram clearly showing the respective probabilities. (ii) A battery is selected at random. Find the probability that it is faulty. (iii) A battery is selected at random and found to be faulty. Find the probability that it was produced by machine A.",
+        "6"
+      ],
+      [
+        "b",
+        "In a pack of seven transistors, three are found to be defective. Three transistors are selected from the pack at random without replacement. The discrete random variable \\(X\\) represents the number of defective transistors selected. (i) Find \\(\\mathrm{P}(X=2)\\). (ii) Copy and complete the probability distribution table for \\(X=0,1,2,3\\). (iii) Determine \\(\\mathrm{E}(X)\\).",
+        "6"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Correctly labelled tree diagram",
+            "A1A1"
+          ],
+          [
+            "\\(\\mathrm P(F)=0.6(0.02)+0.4(0.01)\\)",
+            "M1"
+          ],
+          [
+            "\\(=0.016\\)",
+            "A1"
+          ],
+          [
+            "\\(\\mathrm P(A|F)=\\dfrac{0.6(0.02)}{0.016}\\)",
+            "M1"
+          ],
+          [
+            "\\(=0.75\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\mathrm P(X=2)=\\dfrac{\\binom33\\binom41}{\\binom73}\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac{12}{35}\\)",
+            "A1"
+          ],
+          [
+            "Full table: \\(\\mathrm P(X=0)=\\tfrac4{35},\\ \\mathrm P(X=1)=\\tfrac{18}{35},\\ \\mathrm P(X=2)=\\tfrac{12}{35},\\ \\mathrm P(X=3)=\\tfrac1{35}\\)",
+            "A2"
+          ],
+          [
+            "\\(\\mathrm E(X)=\\displaystyle\\sum x\\,\\mathrm P(X=x)\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\tfrac{45}{35}=\\tfrac97\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Probability"
+      },
+      {
+        "main": "Statistics and Probability",
+        "sub": "Discrete random variables"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q12",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 12,
+    "section": "B",
+    "marks": 18,
+    "difficulty": "Hard",
+    "title": "Skew lines, a parallel plane, and a line meeting a plane at 60°",
+    "body": "Given the points \\(A(1,0,4)\\), \\(B(2,3,-1)\\) and \\(C(0,1,-2)\\),",
+    "parts": [
+      [
+        "a",
+        "find the vector equation of the line \\(L_1\\) passing through the points A and B.",
+        "2"
+      ],
+      [
+        "b",
+        "The line \\(L_2\\) has Cartesian equation \\(\\dfrac{x-1}{3}=\\dfrac{y+2}{1}=\\dfrac{z-1}{-2}\\). Show that \\(L_1\\) and \\(L_2\\) are skew lines.",
+        "5"
+      ],
+      [
+        "c",
+        "Consider the plane \\(\\Pi_1\\), parallel to both lines \\(L_1\\) and \\(L_2\\). Point C lies in the plane \\(\\Pi_1\\). Find the Cartesian equation of the plane \\(\\Pi_1\\).",
+        "4"
+      ],
+      [
+        "d",
+        "The line \\(L_3\\) has vector equation \\(\\mathbf{r}=\\begin{pmatrix}3\\\\0\\\\1\\end{pmatrix}+\\lambda\\begin{pmatrix}k\\\\1\\\\-1\\end{pmatrix}\\). The plane \\(\\Pi_2\\) has Cartesian equation \\(x+y=12\\). The angle between the line \\(L_3\\) and the plane \\(\\Pi_2\\) is \\(60^\\circ\\). (i) Find the value of \\(k\\). (ii) Find the point of intersection P of the line \\(L_3\\) and the plane \\(\\Pi_2\\).",
+        "7"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Direction vector \\(\\overrightarrow{AB}=(1,3,-5)\\)",
+            "A1"
+          ],
+          [
+            "\\(L_1:\\mathbf r=(1,0,4)+t(1,3,-5)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Express \\(L_1\\) and \\(L_2\\) in parametric form",
+            "M1A1"
+          ],
+          [
+            "Attempt to solve for \\(x\\) and \\(y\\) simultaneously",
+            "M1"
+          ],
+          [
+            "\\(t=-\\tfrac34\\), \\(s=-\\tfrac14\\)",
+            "A1"
+          ],
+          [
+            "Substituting into the \\(z\\)-equations gives \\(z=\\tfrac{31}4\\) from \\(L_1\\) but \\(z=\\tfrac32\\) from \\(L_2\\) &mdash; a contradiction, so \\(L_1\\), \\(L_2\\) are skew",
+            "R1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "Find the cross product of the direction vectors of \\(L_1\\) and \\(L_2\\)",
+            "M1"
+          ],
+          [
+            "\\(=(-1,13,8)\\)",
+            "A1"
+          ],
+          [
+            "Substitute point \\(C\\) to find \\(d\\)",
+            "M1"
+          ],
+          [
+            "\\(\\Pi_1:-x+13y+8z=3\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "Use the angle-between-line-and-plane formula",
+            "M1"
+          ],
+          [
+            "\\(\\cos\\theta=\\dfrac{k+1}{\\sqrt2\\sqrt{k^2+2}}\\)",
+            "A1"
+          ],
+          [
+            "Obtain the quadratic \\(k^2-4k+4=0\\)",
+            "M1"
+          ],
+          [
+            "\\(k=2\\)",
+            "A1"
+          ],
+          [
+            "Substitute \\(L_3\\) into \\(\\Pi_2:x+y=12\\)",
+            "M1"
+          ],
+          [
+            "\\(\\lambda=3\\)",
+            "A1"
+          ],
+          [
+            "\\(P=(9,3,-2)\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Vectors"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P1_Q13",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 13,
+    "section": "B",
+    "marks": 16,
+    "difficulty": "Hard",
+    "title": "Full analysis of f(x) = (x+1)/(x²+1): derivatives, inflexions, area",
+    "body": "The graph of the function \\(f(x)=\\dfrac{x+1}{x^2+1}\\) is shown below, with the point \\(A(1,1)\\) marked as a point of inflexion.",
+    "diagram": "q13tz2",
+    "diagramCaption": "y = (x+1)/(x²+1), with the shaded region between x = -1 and x = 1 recomputed exactly.",
+    "parts": [
+      [
+        "a",
+        "Find \\(f'(x)\\).",
+        "2"
+      ],
+      [
+        "b",
+        "Hence find the \\(x\\)-coordinates of the points where the gradient of the graph of \\(f\\) is zero.",
+        "1"
+      ],
+      [
+        "c",
+        "Find \\(f''(x)\\), expressing your answer in the form \\(\\dfrac{p(x)}{(x^2+1)^3}\\), where \\(p(x)\\) is a polynomial of degree 3.",
+        "3"
+      ],
+      [
+        "d",
+        "The point \\((1,1)\\) is a point of inflexion. There are two other points of inflexion. Find the \\(x\\)-coordinates of the other two points of inflexion.",
+        "4"
+      ],
+      [
+        "e",
+        "Find the area of the shaded region. Express your answer in the form \\(\\dfrac{\\pi}{a}-\\ln\\sqrt{b}\\), where \\(a\\) and \\(b\\) are integers.",
+        "6"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(f'(x)=\\dfrac{(x^2+1)-(x+1)(2x)}{(x^2+1)^2}\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac{1-2x-x^2}{(x^2+1)^2}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(1-2x-x^2=0\\Rightarrow x=-1\\pm\\sqrt2\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "Differentiate \\(f'(x)\\) using the quotient rule",
+            "A1"
+          ],
+          [
+            "\\(f''(x)=\\dfrac{2x^3+6x^2-6x-2}{(x^2+1)^3}\\)",
+            "A1"
+          ],
+          [
+            "Equivalently \\(\\dfrac{2(x^3+3x^2-3x-1)}{(x^2+1)^3}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "Recognize \\((x-1)\\) is a factor of \\(x^3+3x^2-3x-1\\)",
+            "R1"
+          ],
+          [
+            "\\((x-1)(x^2+4x+1)=x^3+3x^2-3x-1\\)",
+            "M1"
+          ],
+          [
+            "\\(x^2+4x+1=0\\)",
+            "A1"
+          ],
+          [
+            "\\(x=-2\\pm\\sqrt3\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "e",
+        [
+          [
+            "Area \\(=\\displaystyle\\int_{-1}^0\\dfrac{x+1}{x^2+1}dx\\)",
+            "M1"
+          ],
+          [
+            "Split into \\(\\displaystyle\\int\\dfrac{x}{x^2+1}dx+\\int\\dfrac{1}{x^2+1}dx\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\tfrac12\\ln(x^2+1)+\\arctan x\\)",
+            "A1A1"
+          ],
+          [
+            "Evaluate from \\(-1\\) to \\(0\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\tfrac\\pi4-\\ln\\sqrt2\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Basic differentiation"
+      }
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 460 260\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"47.288135593220346\" y1=\"34\" x2=\"47.288135593220346\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"80.5084745762712\" y1=\"34\" x2=\"80.5084745762712\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"113.72881355932203\" y1=\"34\" x2=\"113.72881355932203\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"146.94915254237287\" y1=\"34\" x2=\"146.94915254237287\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"180.16949152542372\" y1=\"34\" x2=\"180.16949152542372\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"213.38983050847457\" y1=\"34\" x2=\"213.38983050847457\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"246.61016949152543\" y1=\"34\" x2=\"246.61016949152543\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"279.8305084745763\" y1=\"34\" x2=\"279.8305084745763\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"313.0508474576271\" y1=\"34\" x2=\"313.0508474576271\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"346.2711864406779\" y1=\"34\" x2=\"346.2711864406779\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"379.4915254237288\" y1=\"34\" x2=\"379.4915254237288\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"412.7118644067796\" y1=\"34\" x2=\"412.7118644067796\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"203.84615384615384\" x2=\"426\" y2=\"203.84615384615384\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"130\" x2=\"426\" y2=\"130\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"56.15384615384619\" x2=\"426\" y2=\"56.15384615384619\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"130\" x2=\"426\" y2=\"130\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"213.38983050847457\" y1=\"226\" x2=\"213.38983050847457\" y2=\"34\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><path d=\"M 180.17 130.00 L 180.17 130.00 L 181.28 128.73 L 182.38 127.37 L 183.49 125.92 L 184.60 124.38 L 185.71 122.74 L 186.81 120.99 L 187.92 119.15 L 189.03 117.19 L 190.14 115.13 L 191.24 112.96 L 192.35 110.67 L 193.46 108.28 L 194.56 105.78 L 195.67 103.17 L 196.78 100.46 L 197.89 97.66 L 198.99 94.77 L 200.10 91.80 L 201.21 88.77 L 202.32 85.69 L 203.42 82.58 L 204.53 79.44 L 205.64 76.31 L 206.75 73.20 L 207.85 70.12 L 208.96 67.12 L 210.07 64.20 L 211.18 61.38 L 212.28 58.69 L 213.39 56.15 L 214.50 53.78 L 215.60 51.58 L 216.71 49.57 L 217.82 47.77 L 218.93 46.17 L 220.03 44.79 L 221.14 43.63 L 222.25 42.67 L 223.36 41.93 L 224.46 41.38 L 225.57 41.04 L 226.68 40.88 L 227.79 40.89 L 228.89 41.06 L 230.00 41.38 L 231.11 41.84 L 232.21 42.43 L 233.32 43.12 L 234.43 43.91 L 235.54 44.79 L 236.64 45.75 L 237.75 46.76 L 238.86 47.83 L 239.97 48.95 L 241.07 50.10 L 242.18 51.28 L 243.29 52.48 L 244.40 53.70 L 245.50 54.92 L 246.61 56.15 L 246.61 130.00 Z\" fill=\"#cfd8ea\" fill-opacity=\"0.6\" stroke=\"none\"/><path d=\" M 40.64 141.06 L 42.10 141.13 L 43.56 141.19 L 45.01 141.26 L 46.47 141.32 L 47.93 141.39 L 49.38 141.46 L 50.84 141.53 L 52.30 141.59 L 53.75 141.66 L 55.21 141.73 L 56.67 141.80 L 58.12 141.88 L 59.58 141.95 L 61.04 142.02 L 62.49 142.09 L 63.95 142.17 L 65.41 142.24 L 66.86 142.31 L 68.32 142.39 L 69.78 142.46 L 71.23 142.54 L 72.69 142.62 L 74.15 142.69 L 75.60 142.77 L 77.06 142.85 L 78.52 142.92 L 79.97 143.00 L 81.43 143.08 L 82.89 143.16 L 84.34 143.24 L 85.80 143.32 L 87.25 143.40 L 88.71 143.48 L 90.17 143.56 L 91.62 143.64 L 93.08 143.71 L 94.54 143.79 L 95.99 143.87 L 97.45 143.95 L 98.91 144.03 L 100.36 144.11 L 101.82 144.18 L 103.28 144.26 L 104.73 144.33 L 106.19 144.41 L 107.65 144.48 L 109.10 144.55 L 110.56 144.62 L 112.02 144.69 L 113.47 144.76 L 114.93 144.82 L 116.39 144.88 L 117.84 144.94 L 119.30 145.00 L 120.76 145.05 L 122.21 145.10 L 123.67 145.14 L 125.13 145.18 L 126.58 145.22 L 128.04 145.25 L 129.50 145.27 L 130.95 145.28 L 132.41 145.29 L 133.87 145.29 L 135.32 145.28 L 136.78 145.27 L 138.24 145.24 L 139.69 145.20 L 141.15 145.14 L 142.60 145.07 L 144.06 144.99 L 145.52 144.89 L 146.97 144.77 L 148.43 144.63 L 149.89 144.46 L 151.34 144.28 L 152.80 144.06 L 154.26 143.82 L 155.71 143.54 L 157.17 143.23 L 158.63 142.88 L 160.08 142.49 L 161.54 142.05 L 163.00 141.56 L 164.45 141.02 L 165.91 140.42 L 167.37 139.75 L 168.82 139.01 L 170.28 138.19 L 171.74 137.29 L 173.19 136.29 L 174.65 135.20 L 176.11 134.00 L 177.56 132.68 L 179.02 131.23 L 180.48 129.66 L 181.93 127.93 L 183.39 126.06 L 184.85 124.02 L 186.30 121.81 L 187.76 119.42 L 189.22 116.85 L 190.67 114.09 L 192.13 111.14 L 193.59 108.00 L 195.04 104.67 L 196.50 101.16 L 197.96 97.48 L 199.41 93.66 L 200.87 89.71 L 202.32 85.67 L 203.78 81.56 L 205.24 77.44 L 206.69 73.34 L 208.15 69.31 L 209.61 65.40 L 211.06 61.66 L 212.52 58.13 L 213.98 54.87 L 215.43 51.91 L 216.89 49.27 L 218.35 46.98 L 219.80 45.06 L 221.26 43.51 L 222.72 42.33 L 224.17 41.51 L 225.63 41.02 L 227.09 40.86 L 228.54 40.99 L 230.00 41.38 L 231.46 42.02 L 232.91 42.85 L 234.37 43.87 L 235.83 45.04 L 237.28 46.33 L 238.74 47.72 L 240.20 49.19 L 241.65 50.71 L 243.11 52.29 L 244.57 53.89 L 246.02 55.50 L 247.48 57.12 L 248.94 58.73 L 250.39 60.33 L 251.85 61.91 L 253.31 63.47 L 254.76 65.00 L 256.22 66.50 L 257.68 67.96 L 259.13 69.39 L 260.59 70.78 L 262.04 72.13 L 263.50 73.45 L 264.96 74.72 L 266.41 75.96 L 267.87 77.16 L 269.33 78.32 L 270.78 79.45 L 272.24 80.54 L 273.70 81.60 L 275.15 82.62 L 276.61 83.61 L 278.07 84.57 L 279.52 85.50 L 280.98 86.40 L 282.44 87.27 L 283.89 88.11 L 285.35 88.92 L 286.81 89.71 L 288.26 90.48 L 289.72 91.22 L 291.18 91.94 L 292.63 92.63 L 294.09 93.31 L 295.55 93.96 L 297.00 94.59 L 298.46 95.21 L 299.92 95.80 L 301.37 96.38 L 302.83 96.94 L 304.29 97.49 L 305.74 98.02 L 307.20 98.53 L 308.66 99.03 L 310.11 99.52 L 311.57 99.99 L 313.03 100.45 L 314.48 100.90 L 315.94 101.34 L 317.40 101.76 L 318.85 102.17 L 320.31 102.57 L 321.76 102.97 L 323.22 103.35 L 324.68 103.72 L 326.13 104.08 L 327.59 104.43 L 329.05 104.78 L 330.50 105.11 L 331.96 105.44 L 333.42 105.76 L 334.87 106.07 L 336.33 106.38 L 337.79 106.68 L 339.24 106.97 L 340.70 107.25 L 342.16 107.53 L 343.61 107.80 L 345.07 108.07 L 346.53 108.33 L 347.98 108.58 L 349.44 108.83 L 350.90 109.07 L 352.35 109.31 L 353.81 109.54 L 355.27 109.77 L 356.72 109.99 L 358.18 110.21 L 359.64 110.43 L 361.09 110.64 L 362.55 110.84 L 364.01 111.04 L 365.46 111.24 L 366.92 111.43 L 368.38 111.62 L 369.83 111.81 L 371.29 111.99 L 372.75 112.17 L 374.20 112.35 L 375.66 112.52 L 377.11 112.69 L 378.57 112.86 L 380.03 113.02 L 381.48 113.18 L 382.94 113.34 L 384.40 113.49 L 385.85 113.64 L 387.31 113.79 L 388.77 113.94 L 390.22 114.08 L 391.68 114.22 L 393.14 114.36 L 394.59 114.50 L 396.05 114.64 L 397.51 114.77 L 398.96 114.90 L 400.42 115.03 L 401.88 115.15 L 403.33 115.28 L 404.79 115.40 L 406.25 115.52 L 407.70 115.64 L 409.16 115.75 L 410.62 115.87 L 412.07 115.98 L 413.53 116.09 L 414.99 116.20 L 416.44 116.31 L 417.90 116.41 L 419.36 116.52\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.2\"/><circle cx=\"246.61016949152543\" cy=\"56.15384615384619\" r=\"3\" fill=\"#143c78\"/><text x=\"252.61016949152543\" y=\"50.15384615384619\" font-size=\"11\" fill=\"#143c78\">A(1, 1)</text><text x=\"432\" y=\"134\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">x</text><text x=\"199.38983050847457\" y=\"28\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">y</text></svg>"
+  },
+  {
+    "id": "M14TZ2HL_P1_Q14",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 1",
+    "paper": "May 2014 TZ2 HL P1",
+    "qnum": 14,
+    "section": "B",
+    "marks": 14,
+    "difficulty": "Hard",
+    "title": "arctan(x) + arctan(1/x): composite function, derivative, odd/even",
+    "body": "Consider the following functions:\\[ h(x)=\\arctan(x),\\ x\\in\\mathbb{R}, \\qquad g(x)=\\dfrac{1}{x},\\ x\\in\\mathbb{R},\\ x\\ne 0. \\]",
+    "parts": [
+      [
+        "a",
+        "Sketch the graph of \\(y=h(x)\\).",
+        "2"
+      ],
+      [
+        "b",
+        "Find an expression for the composite function \\(h\\circ g(x)\\) and state its domain.",
+        "2"
+      ],
+      [
+        "c",
+        "Given that \\(f(x)=h(x)+h\\circ g(x)\\), (i) find \\(f'(x)\\) in simplified form; (ii) show that \\(f(x)=\\dfrac{\\pi}{2}\\) for \\(x>0\\).",
+        "7"
+      ],
+      [
+        "d",
+        "Nigel states that \\(f\\) is an odd function and Tom argues that \\(f\\) is an even function. (i) State who is correct and justify your answer. (ii) Hence find the value of \\(f(x)\\) for \\(x<0\\).",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Correct shape (increasing, S-shaped, through the origin)",
+            "A1"
+          ],
+          [
+            "Asymptotic behaviour shown at \\(y=\\pm\\tfrac\\pi2\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(h\\circ g(x)=\\arctan\\left(\\tfrac1x\\right)\\)",
+            "A1"
+          ],
+          [
+            "Domain of \\(h\\circ g\\) equals the domain of \\(g\\): \\(x\\in\\mathbb R,\\ x\\ne0\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(f'(x)=\\dfrac1{1+x^2}+\\dfrac1{1+1/x^2}\\times\\left(-\\dfrac1{x^2}\\right)\\)",
+            "M1A1"
+          ],
+          [
+            "\\(=\\dfrac1{1+x^2}-\\dfrac{1}{x^2+1}\\)",
+            "(A1)"
+          ],
+          [
+            "\\(=0\\)",
+            "A1"
+          ],
+          [
+            "Since \\(f'(x)=0\\), \\(f\\) is constant for \\(x>0\\)",
+            "R1"
+          ],
+          [
+            "\\(f(1)=\\tfrac\\pi4+\\tfrac\\pi4\\)",
+            "M1A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "Nigel is correct",
+            "A1"
+          ],
+          [
+            "\\(\\arctan x\\) and \\(\\tfrac1x\\) are both odd, and the sum of a composition of odd functions is odd",
+            "R1"
+          ],
+          [
+            "Hence \\(f(x)=-\\tfrac\\pi2\\) for \\(x<0\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Basic differentiation"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q1",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 1,
+    "section": "A",
+    "marks": 4,
+    "difficulty": "Easy",
+    "title": "Complex root of a quadratic — find a and b",
+    "body": "One root of the equation \\(x^2+ax+b=0\\) is \\(2+3i\\) where \\(a,b\\in\\mathbb{R}\\). Find the value of \\(a\\) and the value of \\(b\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "The other root is \\(2-3i\\)",
+            "(A1)"
+          ],
+          [
+            "Sum of roots: \\(4=-a\\)",
+            "M1"
+          ],
+          [
+            "\\(a=-4\\)",
+            "A1"
+          ],
+          [
+            "Product of roots: \\(13=b\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Complex numbers"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q2",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 2,
+    "section": "A",
+    "marks": 5,
+    "difficulty": "Medium",
+    "title": "Normal distribution — find the variance from a percentile",
+    "body": "A student sits a national test and is told that the marks follow a normal distribution with mean 100. The student receives a mark of 124 and is told that he is at the 68th percentile. Calculate the variance of the distribution.",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(X\\sim N(100,\\sigma^2)\\)",
+            ""
+          ],
+          [
+            "\\(\\mathrm P(X<124)=0.68\\)",
+            "M1A1"
+          ],
+          [
+            "\\(\\dfrac{24}{\\sigma}=0.4676\\ldots\\)",
+            "M1"
+          ],
+          [
+            "\\(\\sigma=51.315\\ldots\\)",
+            "A1"
+          ],
+          [
+            "Variance \\(=2630\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Normal distribution"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q3",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 3,
+    "section": "A",
+    "marks": 4,
+    "difficulty": "Medium",
+    "title": "Distributing toys among children (combinations)",
+    "body": "Find the number of ways in which seven different toys can be given to three children, if the youngest is to receive three toys and the others receive two toys each.",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "Ways to choose the youngest child's 3 toys: \\(\\binom73\\)",
+            "A1"
+          ],
+          [
+            "Multiply by \\(\\binom42\\) (for the next child's 2 toys)",
+            "M1A1"
+          ],
+          [
+            "\\(\\binom73\\binom42=210\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Counting principles"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q4",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 4,
+    "section": "A",
+    "marks": 6,
+    "difficulty": "Medium",
+    "title": "System of equations with a parameter — non-unique solutions",
+    "body": "A system of equations is given below.\\[ x+2y-z=2,\\quad 2x+y+z=1,\\quad -x+4y+az=4. \\]",
+    "parts": [
+      [
+        "a",
+        "Find the value of \\(a\\) so that the system does not have a unique solution.",
+        "4"
+      ],
+      [
+        "b",
+        "Show that the system has a solution for any value of \\(a\\).",
+        "2"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Eliminate a variable to reduce to two equations (plus \\(a\\))",
+            "M1A1"
+          ],
+          [
+            "Reduce further to a single equation in \\(a\\) and one variable: \\((a+5)z=0\\)",
+            "A1"
+          ],
+          [
+            "If not a unique solution then \\(a=-5\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "If \\(a=-5\\), the last equation is always true, so there are infinitely many solutions",
+            "R1"
+          ],
+          [
+            "If \\(a\\ne-5\\), there is a unique solution",
+            "R1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Vectors"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q5",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 5,
+    "section": "A",
+    "marks": 8,
+    "difficulty": "Medium-Hard",
+    "title": "Region between a curve and a line, rotated to form a solid",
+    "body": "The shaded region \\(S\\) is enclosed between the curve \\(y=x+2\\cos x\\), for \\(0\\le x\\le2\\pi\\), and the line \\(y=x\\).",
+    "diagram": "q5p2tz1",
+    "diagramCaption": "y = x and y = x + 2cos(x) over 0 ≤ x ≤ 2π, with the enclosed region S shaded.",
+    "parts": [
+      [
+        "a",
+        "Find the coordinates of the points where the line meets the curve.",
+        "3"
+      ],
+      [
+        "b",
+        "The region \\(S\\) is rotated by \\(2\\pi\\) about the \\(x\\)-axis to generate a solid. (i) Write down an integral that represents the volume \\(V\\) of the solid. (ii) Find the volume \\(V\\).",
+        "5"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Solve \\(2\\cos x=0\\Rightarrow x=\\tfrac\\pi2,\\ \\tfrac{3\\pi}2\\)",
+            "A1A1"
+          ],
+          [
+            "Coordinates: \\(\\left(\\tfrac\\pi2,\\tfrac\\pi2\\right)\\), \\(\\left(\\tfrac{3\\pi}2,\\tfrac{3\\pi}2\\right)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(V=\\pi\\displaystyle\\int_{\\pi/2}^{3\\pi/2}\\Big(x^2-(x+2\\cos x)^2\\Big)dx\\)",
+            "A1A1A1"
+          ],
+          [
+            "\\(=6\\pi^2\\ (\\approx59.2)\\)",
+            "A2"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Volume of revolution"
+      }
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 460 280\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"57.26027397260274\" y1=\"36\" x2=\"57.26027397260274\" y2=\"244\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"110.41095890410958\" y1=\"36\" x2=\"110.41095890410958\" y2=\"244\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"163.56164383561642\" y1=\"36\" x2=\"163.56164383561642\" y2=\"244\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"216.71232876712327\" y1=\"36\" x2=\"216.71232876712327\" y2=\"244\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"269.86301369863014\" y1=\"36\" x2=\"269.86301369863014\" y2=\"244\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"323.01369863013696\" y1=\"36\" x2=\"323.01369863013696\" y2=\"244\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"376.16438356164383\" y1=\"36\" x2=\"376.16438356164383\" y2=\"244\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"233.27835051546393\" x2=\"424\" y2=\"233.27835051546393\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"211.83505154639175\" x2=\"424\" y2=\"211.83505154639175\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"190.39175257731958\" x2=\"424\" y2=\"190.39175257731958\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"168.9484536082474\" x2=\"424\" y2=\"168.9484536082474\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"147.50515463917526\" x2=\"424\" y2=\"147.50515463917526\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"126.06185567010309\" x2=\"424\" y2=\"126.06185567010309\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"104.61855670103091\" x2=\"424\" y2=\"104.61855670103091\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"83.17525773195874\" x2=\"424\" y2=\"83.17525773195874\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"61.73195876288659\" x2=\"424\" y2=\"61.73195876288659\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"40.28865979381442\" x2=\"424\" y2=\"40.28865979381442\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"36\" y1=\"233.27835051546393\" x2=\"424\" y2=\"233.27835051546393\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"57.26027397260274\" y1=\"244\" x2=\"57.26027397260274\" y2=\"36\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><path d=\"M 140.75 199.60 L 140.75 199.60 L 143.53 200.72 L 146.32 201.83 L 149.10 202.94 L 151.88 204.02 L 154.66 205.08 L 157.45 206.11 L 160.23 207.11 L 163.01 208.06 L 165.80 208.96 L 168.58 209.81 L 171.36 210.60 L 174.14 211.33 L 176.93 211.99 L 179.71 212.57 L 182.49 213.08 L 185.28 213.50 L 188.06 213.84 L 190.84 214.08 L 193.63 214.23 L 196.41 214.28 L 199.19 214.23 L 201.97 214.07 L 204.76 213.81 L 207.54 213.44 L 210.32 212.95 L 213.11 212.35 L 215.89 211.64 L 218.67 210.81 L 221.46 209.86 L 224.24 208.80 L 227.02 207.62 L 229.80 206.32 L 232.59 204.90 L 235.37 203.37 L 238.15 201.72 L 240.94 199.96 L 243.72 198.09 L 246.50 196.11 L 249.28 194.02 L 252.07 191.83 L 254.85 189.53 L 257.63 187.14 L 260.42 184.65 L 263.20 182.06 L 265.98 179.40 L 268.77 176.64 L 271.55 173.81 L 274.33 170.91 L 277.11 167.94 L 279.90 164.90 L 282.68 161.80 L 285.46 158.65 L 288.25 155.46 L 291.03 152.22 L 293.81 148.94 L 296.60 145.64 L 299.38 142.31 L 302.16 138.96 L 304.94 135.60 L 307.73 132.23 L 307.73 132.23 L 307.73 132.23 L 304.94 133.35 L 302.16 134.47 L 299.38 135.60 L 296.60 136.72 L 293.81 137.84 L 291.03 138.97 L 288.25 140.09 L 285.46 141.21 L 282.68 142.33 L 279.90 143.46 L 277.11 144.58 L 274.33 145.70 L 271.55 146.83 L 268.77 147.95 L 265.98 149.07 L 263.20 150.19 L 260.42 151.32 L 257.63 152.44 L 254.85 153.56 L 252.07 154.68 L 249.28 155.81 L 246.50 156.93 L 243.72 158.05 L 240.94 159.18 L 238.15 160.30 L 235.37 161.42 L 232.59 162.54 L 229.80 163.67 L 227.02 164.79 L 224.24 165.91 L 221.46 167.04 L 218.67 168.16 L 215.89 169.28 L 213.11 170.40 L 210.32 171.53 L 207.54 172.65 L 204.76 173.77 L 201.97 174.89 L 199.19 176.02 L 196.41 177.14 L 193.63 178.26 L 190.84 179.39 L 188.06 180.51 L 185.28 181.63 L 182.49 182.75 L 179.71 183.88 L 176.93 185.00 L 174.14 186.12 L 171.36 187.24 L 168.58 188.37 L 165.80 189.49 L 163.01 190.61 L 160.23 191.74 L 157.45 192.86 L 154.66 193.98 L 151.88 195.10 L 149.10 196.23 L 146.32 197.35 L 143.53 198.47 L 140.75 199.60 Z\" fill=\"#cfd8ea\" fill-opacity=\"0.6\" stroke=\"none\"/><path d=\" M 46.63 237.57 L 52.65 235.14 L 58.68 232.71 L 64.70 230.28 L 70.73 227.85 L 76.75 225.42 L 82.77 222.99 L 88.80 220.56 L 94.82 218.13 L 100.84 215.69 L 106.87 213.26 L 112.89 210.83 L 118.92 208.40 L 124.94 205.97 L 130.96 203.54 L 136.99 201.11 L 143.01 198.68 L 149.03 196.25 L 155.06 193.82 L 161.08 191.39 L 167.11 188.96 L 173.13 186.53 L 179.15 184.10 L 185.18 181.67 L 191.20 179.24 L 197.22 176.81 L 203.25 174.38 L 209.27 171.95 L 215.29 169.52 L 221.32 167.09 L 227.34 164.66 L 233.37 162.23 L 239.39 159.80 L 245.41 157.37 L 251.44 154.94 L 257.46 152.51 L 263.48 150.08 L 269.51 147.65 L 275.53 145.22 L 281.56 142.79 L 287.58 140.36 L 293.60 137.93 L 299.63 135.50 L 305.65 133.07 L 311.67 130.64 L 317.70 128.21 L 323.72 125.78 L 329.75 123.35 L 335.77 120.92 L 341.79 118.49 L 347.82 116.05 L 353.84 113.62 L 359.86 111.19 L 365.89 108.76 L 371.91 106.33 L 377.94 103.90 L 383.96 101.47 L 389.98 99.04 L 396.01 96.61 L 402.03 94.18 L 408.05 91.75\" fill=\"none\" stroke=\"#8a6d1d\" stroke-width=\"1.6\"/><path d=\" M 46.63 195.54 L 48.44 194.54 L 50.24 193.60 L 52.05 192.70 L 53.86 191.85 L 55.67 191.05 L 57.47 190.31 L 59.28 189.61 L 61.09 188.96 L 62.89 188.36 L 64.70 187.81 L 66.51 187.31 L 68.32 186.86 L 70.12 186.45 L 71.93 186.10 L 73.74 185.79 L 75.54 185.53 L 77.35 185.31 L 79.16 185.15 L 80.97 185.02 L 82.77 184.95 L 84.58 184.91 L 86.39 184.92 L 88.19 184.97 L 90.00 185.07 L 91.81 185.20 L 93.62 185.37 L 95.42 185.58 L 97.23 185.83 L 99.04 186.12 L 100.84 186.44 L 102.65 186.79 L 104.46 187.18 L 106.27 187.59 L 108.07 188.04 L 109.88 188.52 L 111.69 189.02 L 113.49 189.55 L 115.30 190.10 L 117.11 190.68 L 118.92 191.28 L 120.72 191.90 L 122.53 192.53 L 124.34 193.18 L 126.14 193.85 L 127.95 194.53 L 129.76 195.22 L 131.56 195.93 L 133.37 196.64 L 135.18 197.36 L 136.99 198.08 L 138.79 198.81 L 140.60 199.54 L 142.41 200.26 L 144.21 200.99 L 146.02 201.72 L 147.83 202.43 L 149.64 203.15 L 151.44 203.85 L 153.25 204.55 L 155.06 205.23 L 156.86 205.90 L 158.67 206.55 L 160.48 207.19 L 162.29 207.81 L 164.09 208.41 L 165.90 208.99 L 167.71 209.55 L 169.51 210.08 L 171.32 210.59 L 173.13 211.07 L 174.94 211.52 L 176.74 211.95 L 178.55 212.34 L 180.36 212.70 L 182.16 213.02 L 183.97 213.31 L 185.78 213.57 L 187.59 213.79 L 189.39 213.97 L 191.20 214.11 L 193.01 214.21 L 194.81 214.26 L 196.62 214.28 L 198.43 214.25 L 200.24 214.18 L 202.04 214.07 L 203.85 213.91 L 205.66 213.70 L 207.46 213.45 L 209.27 213.15 L 211.08 212.80 L 212.89 212.40 L 214.69 211.96 L 216.50 211.47 L 218.31 210.92 L 220.11 210.33 L 221.92 209.69 L 223.73 209.00 L 225.54 208.26 L 227.34 207.47 L 229.15 206.63 L 230.96 205.75 L 232.76 204.81 L 234.57 203.82 L 236.38 202.79 L 238.19 201.70 L 239.99 200.57 L 241.80 199.39 L 243.61 198.17 L 245.41 196.90 L 247.22 195.58 L 249.03 194.22 L 250.84 192.81 L 252.64 191.36 L 254.45 189.87 L 256.26 188.33 L 258.06 186.76 L 259.87 185.14 L 261.68 183.49 L 263.48 181.79 L 265.29 180.07 L 267.10 178.30 L 268.91 176.50 L 270.71 174.67 L 272.52 172.81 L 274.33 170.91 L 276.13 168.99 L 277.94 167.04 L 279.75 165.06 L 281.56 163.06 L 283.36 161.04 L 285.17 158.99 L 286.98 156.92 L 288.78 154.83 L 290.59 152.73 L 292.40 150.61 L 294.21 148.48 L 296.01 146.33 L 297.82 144.17 L 299.63 142.01 L 301.43 139.83 L 303.24 137.65 L 305.05 135.47 L 306.86 133.28 L 308.66 131.10 L 310.47 128.91 L 312.28 126.73 L 314.08 124.55 L 315.89 122.37 L 317.70 120.21 L 319.51 118.05 L 321.31 115.90 L 323.12 113.77 L 324.93 111.65 L 326.73 109.55 L 328.54 107.46 L 330.35 105.40 L 332.16 103.35 L 333.96 101.32 L 335.77 99.32 L 337.58 97.35 L 339.38 95.40 L 341.19 93.48 L 343.00 91.58 L 344.81 89.72 L 346.61 87.89 L 348.42 86.09 L 350.23 84.33 L 352.03 82.60 L 353.84 80.91 L 355.65 79.26 L 357.46 77.64 L 359.26 76.07 L 361.07 74.54 L 362.88 73.05 L 364.68 71.60 L 366.49 70.19 L 368.30 68.83 L 370.11 67.52 L 371.91 66.24 L 373.72 65.02 L 375.53 63.84 L 377.33 62.71 L 379.14 61.63 L 380.95 60.60 L 382.76 59.62 L 384.56 58.68 L 386.37 57.79 L 388.18 56.96 L 389.98 56.17 L 391.79 55.43 L 393.60 54.74 L 395.40 54.10 L 397.21 53.51 L 399.02 52.97 L 400.83 52.48 L 402.63 52.04 L 404.44 51.64 L 406.25 51.30 L 408.05 51.00\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.2\"/><text x=\"387.215876600778\" y=\"249.27835051546393\" font-size=\"10\" fill=\"#5b6b85\" text-anchor=\"end\">2π</text><text x=\"224.23807528669036\" y=\"164.659793814433\" font-size=\"12\" fill=\"#16233b\" font-style=\"italic\">S</text></svg>"
+  },
+  {
+    "id": "M14TZ1HL_P2_Q6",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 6,
+    "section": "A",
+    "marks": 10,
+    "difficulty": "Hard",
+    "title": "Inequality and integral for f(x) = x(x+2)⁶",
+    "body": "Let \\(f(x)=x(x+2)^6\\).",
+    "parts": [
+      [
+        "a",
+        "Solve the inequality \\(f(x)>x\\).",
+        "5"
+      ],
+      [
+        "b",
+        "Find \\(\\displaystyle\\int f(x)\\,dx\\).",
+        "5"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Consider \\(x(x+2)^6-x=0\\): zeros at \\(x=0\\), \\(x=-1\\), \\(x=-3\\)",
+            "M1A1A1"
+          ],
+          [
+            "Solution: \\(-3<x<-1\\) or \\(x>0\\)",
+            "A1A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Substitute \\(u=x+2\\Rightarrow du=dx\\)",
+            "M1"
+          ],
+          [
+            "\\(\\displaystyle\\int(u-2)u^6\\,du\\)",
+            "M1A1"
+          ],
+          [
+            "\\(=\\dfrac18u^8-\\dfrac27u^7\\ (+c)\\)",
+            "(A1)"
+          ],
+          [
+            "\\(=\\dfrac18(x+2)^8-\\dfrac27(x+2)^7\\ (+c)\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Basic integration"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q7",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 7,
+    "section": "A",
+    "marks": 8,
+    "difficulty": "Hard",
+    "title": "Proof by mathematical induction — divisibility by 5",
+    "body": "Prove, by mathematical induction, that \\(7^{8n+3}+2\\), \\(n\\in\\mathbb{N}\\), is divisible by 5.",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "If \\(n=0\\): \\(7^3+2=345\\), which is divisible by 5, hence true for \\(n=0\\)",
+            "A1"
+          ],
+          [
+            "Assume true for \\(n=k\\): \\(7^{8k+3}+2=5p,\\ p\\in\\mathbb{Z}\\)",
+            "M1A1"
+          ],
+          [
+            "Consider \\(n=k+1\\): \\(7^{8(k+1)+3}+2\\)",
+            "M1"
+          ],
+          [
+            "\\(=7^8\\cdot7^{8k+3}+2\\)",
+            "M1"
+          ],
+          [
+            "\\(=7^8(5p-2)+2\\)",
+            "A1"
+          ],
+          [
+            "\\(=5\\big(7^8p-2305920\\big)\\)",
+            "A1"
+          ],
+          [
+            "Hence true for \\(n=k+1\\) whenever true for \\(n=k\\); since true for \\(n=0\\), true for all \\(n\\in\\mathbb{N}\\)",
+            "R1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Proof"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q8",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 8,
+    "section": "A",
+    "marks": 8,
+    "difficulty": "Hard",
+    "title": "Binomial expansion term, then a dice/cookie probability",
+    "body": "Find the term in \\(x^5\\) in the expansion of \\((3x+A)(2x+B)^6\\).\\n\\nMina and Norbert each have a fair cubical die with faces labelled 1, 2, 3, 4, 5 and 6; they throw it to decide if they are going to eat a cookie. Mina throws her die just once and she eats a cookie if she throws a four, a five or a six. Norbert throws his die six times and each time eats a cookie if he throws a five or a six.",
+    "parts": [
+      [
+        "a",
+        "Find the term in \\(x^5\\) in the expansion of \\((3x+A)(2x+B)^6\\).",
+        "4"
+      ],
+      [
+        "b",
+        "Calculate the probability that five cookies are eaten.",
+        "4"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Term in \\(x^5\\) of \\((2x+B)^6\\): \\(\\binom65(2x)^5B=192Bx^5\\); multiply by \\(A\\)",
+            "M1A1"
+          ],
+          [
+            "Term in \\(x^4\\) of \\((2x+B)^6\\): \\(\\binom64(2x)^4B^2=240B^2x^4\\); multiply by \\(3x\\)",
+            "A1"
+          ],
+          [
+            "\\(=(192AB+720B^2)x^5\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\mathrm P(5\\text{ eaten})=\\mathrm P(M\\text{ eats }1)\\mathrm P(N\\text{ eats }4)+\\mathrm P(M\\text{ eats }0)\\mathrm P(N\\text{ eats }5)\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\tfrac12\\binom64\\left(\\tfrac13\\right)^4\\left(\\tfrac23\\right)^2+\\tfrac12\\binom65\\left(\\tfrac13\\right)^5\\left(\\tfrac23\\right)\\)",
+            "A1A1"
+          ],
+          [
+            "\\(=\\tfrac4{81}\\ (\\approx0.0494)\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Binomial expansion"
+      },
+      {
+        "main": "Statistics and Probability",
+        "sub": "Binomial distribution"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q9",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 9,
+    "section": "A",
+    "marks": 7,
+    "difficulty": "Hard",
+    "title": "Poisson distribution — birds on a power line over a week",
+    "body": "The number of birds seen on a power line on any day can be modelled by a Poisson distribution with mean 5.84.",
+    "parts": [
+      [
+        "a",
+        "Find the probability that during a certain seven-day week, more than 40 birds have been seen on the power line.",
+        "2"
+      ],
+      [
+        "b",
+        "On Monday there were more than 10 birds seen on the power line. Show that the probability of there being more than 40 birds seen on the power line from that Monday to the following Sunday, inclusive, can be expressed as \\(\\dfrac{\\mathrm P(X>40)+\\sum_{r=11}^{40}\\mathrm P(X=r)\\mathrm P(Y>40-r)}{\\mathrm P(X>10)}\\), where \\(X\\sim\\mathrm{Po}(5.84)\\) and \\(Y\\sim\\mathrm{Po}(35.04)\\).",
+        "5"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Mean for the week: \\(7\\times5.84=40.88\\)",
+            "(A1)"
+          ],
+          [
+            "\\(\\mathrm P(S>40)=1-\\mathrm P(S\\le40)=0.513\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Required probability \\(=\\dfrac{\\mathrm P(\\text{more than 10 Monday AND more than 40 over the week})}{\\mathrm P(\\text{more than 10 on Monday})}\\)",
+            "M1"
+          ],
+          [
+            "Numerator possibilities: more than 40 on Monday alone; or 11 on Monday with more than 29 over the rest of the week; and so on up to 40 on Monday with more than 0 over the rest of the week",
+            "R1R1R1"
+          ],
+          [
+            "With \\(X\\) the count on Monday and \\(Y\\) the count Tuesday&ndash;Sunday, the numerator is \\(\\mathrm P(X>40)+\\sum_{r=11}^{40}\\mathrm P(X=r)\\mathrm P(Y>40-r)\\)",
+            "M1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Discrete random variables"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q10",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 10,
+    "section": "B",
+    "marks": 21,
+    "difficulty": "Hard",
+    "title": "Full curve analysis of f(x) = (e²ˣ+1)/(eˣ−2): asymptotes, tangents, normal",
+    "body": "Let \\(f(x)=\\dfrac{e^{2x}+1}{e^x-2}\\).",
+    "parts": [
+      [
+        "a",
+        "Find the equations of the horizontal and vertical asymptotes of the curve \\(y=f(x)\\).",
+        "4"
+      ],
+      [
+        "b",
+        "(i) Find \\(f'(x)\\). (ii) Show that the curve has exactly one point where its tangent is horizontal. (iii) Find the coordinates of this point.",
+        "8"
+      ],
+      [
+        "c",
+        "Find the equation of \\(L_1\\), the normal to the curve at the point where it crosses the \\(y\\)-axis.",
+        "4"
+      ],
+      [
+        "d",
+        "The line \\(L_2\\) is parallel to \\(L_1\\) and tangent to the curve \\(y=f(x)\\). Find the equation of the line \\(L_2\\).",
+        "5"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "As \\(x\\to-\\infty\\), \\(y\\to-\\tfrac12\\), so \\(y=-\\tfrac12\\) is an asymptote",
+            "M1A1"
+          ],
+          [
+            "\\(e^x-2=0\\Rightarrow x=\\ln2\\ (\\approx0.693)\\) is an asymptote",
+            "M1A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(f'(x)=\\dfrac{2(e^x-2)e^{2x}-(e^{2x}+1)e^x}{(e^x-2)^2}=\\dfrac{e^{3x}-4e^{2x}-e^x}{(e^x-2)^2}\\)",
+            "M1A1"
+          ],
+          [
+            "\\(f'(x)=0\\) when \\(e^{3x}-4e^{2x}-e^x=0\\Rightarrow e^x(e^{2x}-4e^x-1)=0\\)",
+            "M1"
+          ],
+          [
+            "\\(e^x=0\\), \\(e^x=-0.236\\), or \\(e^x=4.24\\ (=2+\\sqrt5)\\)",
+            "A1A1"
+          ],
+          [
+            "Since \\(e^x>0\\), exactly one of these gives a valid solution",
+            "R1"
+          ],
+          [
+            "Coordinates: \\((1.44,\\,8.47)\\)",
+            "A1A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(f'(0)=-4\\)",
+            "A1"
+          ],
+          [
+            "Gradient of normal \\(=\\tfrac14\\)",
+            "M1"
+          ],
+          [
+            "\\(f(0)=-2\\)",
+            "A1"
+          ],
+          [
+            "\\(L_1: y=\\tfrac14x-2\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "\\(f'(x)=\\tfrac14\\)",
+            "M1"
+          ],
+          [
+            "\\(x=1.46\\)",
+            "M1A1"
+          ],
+          [
+            "\\(f(1.46)=8.47\\)",
+            "A1"
+          ],
+          [
+            "\\(L_2: y-8.47=\\tfrac14(x-1.46)\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Basic differentiation"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q11",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 11,
+    "section": "B",
+    "marks": 21,
+    "difficulty": "Hard",
+    "title": "Linear PDF — mean, median, and standard deviation in terms of μ",
+    "body": "A random variable \\(X\\) has probability density function\\[ f(x)=\\begin{cases} ax+b, & 2\\le x\\le3 \\\\ 0, & \\text{otherwise} \\end{cases},\\quad a,b\\in\\mathbb{R}. \\]",
+    "parts": [
+      [
+        "a",
+        "Show that \\(5a+2b=2\\).",
+        "4"
+      ],
+      [
+        "b",
+        "Let \\(\\mathrm E(X)=\\mu\\). (i) Show that \\(a=12\\mu-30\\). (ii) Find a similar expression for \\(b\\) in terms of \\(\\mu\\).",
+        "7"
+      ],
+      [
+        "c",
+        "Let the median of the distribution be \\(2.3\\). (i) Find the value of \\(\\mu\\). (ii) Find the value of the standard deviation of \\(X\\).",
+        "10"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\displaystyle\\int_2^3(ax+b)\\,dx=1\\)",
+            "M1A1"
+          ],
+          [
+            "\\(\\Big[\\tfrac12ax^2+bx\\Big]_2^3=1\\)",
+            "A1"
+          ],
+          [
+            "\\(\\tfrac52a+b=1\\Rightarrow5a+2b=2\\)",
+            "M1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\displaystyle\\int_2^3(ax^2+bx)\\,dx=\\mu\\)",
+            "M1A1"
+          ],
+          [
+            "\\(\\Big[\\tfrac13ax^3+\\tfrac12bx^2\\Big]_2^3=\\mu\\)",
+            "A1"
+          ],
+          [
+            "\\(\\tfrac{19}3a+\\tfrac52b=\\mu\\)",
+            "A1"
+          ],
+          [
+            "Eliminate \\(b\\) using \\(5a+2b=2\\)",
+            "M1"
+          ],
+          [
+            "\\(\\tfrac1{12}a+\\tfrac52=\\mu\\Rightarrow a=12\\mu-30\\)",
+            "A1"
+          ],
+          [
+            "\\(b=1-\\tfrac52(12\\mu-30)=76-30\\mu\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(\\displaystyle\\int_2^{2.3}(ax+b)\\,dx=0.5\\)",
+            "M1A1"
+          ],
+          [
+            "\\(0.645a+0.3b=0.5\\)",
+            "A1"
+          ],
+          [
+            "\\(0.645(12\\mu-30)+0.3(76-30\\mu)=0.5\\)",
+            "M1"
+          ],
+          [
+            "\\(\\mu=2.34\\ \\left(=\\tfrac{295}{126}\\right)\\)",
+            "A1"
+          ],
+          [
+            "\\(\\mathrm E(X^2)=\\displaystyle\\int_2^3x^2(ax+b)\\,dx\\)",
+            "M1"
+          ],
+          [
+            "With \\(a=-\\tfrac{40}{21}\\), \\(b=\\tfrac{121}{21}\\): \\(\\mathrm E(X^2)=5.539\\ldots\\ \\left(=\\tfrac{349}{63}\\right)\\)",
+            "A1"
+          ],
+          [
+            "\\(\\mathrm{Var}(X)=5.539\\ldots-(2.341\\ldots)^2=0.05813\\ldots\\)",
+            "M1"
+          ],
+          [
+            "\\(\\sigma=0.241\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Continuous random variables"
+      }
+    ]
+  },
+  {
+    "id": "M14TZ1HL_P2_Q12",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ1 HL P2",
+    "qnum": 12,
+    "section": "B",
+    "marks": 18,
+    "difficulty": "Hard",
+    "title": "f(x) = |x| − 1 composed with itself, zeros of fⁿ",
+    "body": "Let \\(f(x)=|x|-1\\). The graph of \\(y=g(x)\\) is shown in the original paper; from it, \\(g(0)=4\\) and \\(g(1)=0\\).",
+    "diagram": "q12p2tz1",
+    "diagramCaption": "y = |x| − 1, used in parts (b)–(e) below.",
+    "parts": [
+      [
+        "a",
+        "(i) Find the value of \\((f\\circ g)(1)\\). (ii) Find the value of \\((f\\circ g\\circ g)(1)\\). (iii) Sketch the graph of \\(y=(f\\circ g)(x)\\).",
+        "5"
+      ],
+      [
+        "b",
+        "(i) Sketch the graph of \\(y=f(x)\\). (ii) State the zeros of \\(f\\).",
+        "3"
+      ],
+      [
+        "c",
+        "(i) Sketch the graph of \\(y=(f\\circ f)(x)\\). (ii) State the zeros of \\(f\\circ f\\).",
+        "3"
+      ],
+      [
+        "d",
+        "Given that we can denote \\(\\underbrace{f\\circ f\\circ\\cdots\\circ f}_{n\\text{ times}}\\) as \\(f^n\\), (i) find the zeros of \\(f^3\\); (ii) find the zeros of \\(f^4\\); (iii) deduce the zeros of \\(f^8\\).",
+        "3"
+      ],
+      [
+        "e",
+        "The zeros of \\(f^{2n}\\) are \\(a_1,a_2,a_3,\\ldots,a_N\\). (i) State the relation between \\(n\\) and \\(N\\). (ii) Find, and simplify, an expression for \\(\\displaystyle\\sum_{r=1}^N|a_r|\\) in terms of \\(n\\).",
+        "4"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\((f\\circ g)(1)=f(g(1))=f(0)=-1\\)",
+            "M1A1"
+          ],
+          [
+            "\\((f\\circ g\\circ g)(1)=f(g(g(1)))=f(g(0))=f(4)=3\\)",
+            "A1"
+          ],
+          [
+            "Sketch \\((f\\circ g)(x)=|g(x)|-1\\): reflect any part of \\(g\\)'s graph below the \\(x\\)-axis upward, then translate down by 1",
+            "M1A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Sketch \\(y=|x|-1\\): V-shape with vertex \\((0,-1)\\)",
+            "M1A1"
+          ],
+          [
+            "Zeros: \\(x=\\pm1\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "Sketch \\((f\\circ f)(x)=\\big||x|-1\\big|-1\\): reflect the part of (b) below the \\(x\\)-axis upward, then translate down by 1",
+            "M1A1"
+          ],
+          [
+            "Zeros: \\(x=0,\\pm2\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "Zeros of \\(f^3\\): \\(x=\\pm1,\\pm3\\)",
+            "A1"
+          ],
+          [
+            "Zeros of \\(f^4\\): \\(x=0,\\pm2,\\pm4\\)",
+            "A1"
+          ],
+          [
+            "Zeros of \\(f^8\\): \\(x=0,\\pm2,\\pm4,\\pm6,\\pm8\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "e",
+        [
+          [
+            "Zeros occur as \\((1,3),(2,5),\\ldots\\)",
+            "M1A1"
+          ],
+          [
+            "\\(N=2n+1\\)",
+            "A1"
+          ],
+          [
+            "Using the sum of an arithmetic series: \\(4(1+2+\\cdots+n)=2n(n+1)\\)",
+            "M1A1"
+          ]
+        ]
+      ]
+    ],
+    "topics": [
+      {
+        "main": "Functions",
+        "sub": "Modulus functions"
+      }
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 380 260\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"52.35294117647058\" y1=\"34\" x2=\"52.35294117647058\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"98.23529411764706\" y1=\"34\" x2=\"98.23529411764706\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"144.11764705882354\" y1=\"34\" x2=\"144.11764705882354\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"190\" y1=\"34\" x2=\"190\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"235.8823529411765\" y1=\"34\" x2=\"235.8823529411765\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"281.7647058823529\" y1=\"34\" x2=\"281.7647058823529\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"327.64705882352945\" y1=\"34\" x2=\"327.64705882352945\" y2=\"226\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"212.75862068965517\" x2=\"346\" y2=\"212.75862068965517\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"179.6551724137931\" x2=\"346\" y2=\"179.6551724137931\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"146.55172413793105\" x2=\"346\" y2=\"146.55172413793105\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"113.44827586206897\" x2=\"346\" y2=\"113.44827586206897\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"80.34482758620686\" x2=\"346\" y2=\"80.34482758620686\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"47.2413793103448\" x2=\"346\" y2=\"47.2413793103448\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"34\" y1=\"146.55172413793105\" x2=\"346\" y2=\"146.55172413793105\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"190\" y1=\"226\" x2=\"190\" y2=\"34\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><path d=\" M 43.18 73.72 L 45.62 75.49 L 48.07 77.26 L 50.52 79.02 L 52.96 80.79 L 55.41 82.55 L 57.86 84.32 L 60.31 86.08 L 62.75 87.85 L 65.20 89.61 L 67.65 91.38 L 70.09 93.14 L 72.54 94.91 L 74.99 96.68 L 77.44 98.44 L 79.88 100.21 L 82.33 101.97 L 84.78 103.74 L 87.22 105.50 L 89.67 107.27 L 92.12 109.03 L 94.56 110.80 L 97.01 112.57 L 99.46 114.33 L 101.91 116.10 L 104.35 117.86 L 106.80 119.63 L 109.25 121.39 L 111.69 123.16 L 114.14 124.92 L 116.59 126.69 L 119.04 128.46 L 121.48 130.22 L 123.93 131.99 L 126.38 133.75 L 128.82 135.52 L 131.27 137.28 L 133.72 139.05 L 136.16 140.81 L 138.61 142.58 L 141.06 144.34 L 143.51 146.11 L 145.95 147.88 L 148.40 149.64 L 150.85 151.41 L 153.29 153.17 L 155.74 154.94 L 158.19 156.70 L 160.64 158.47 L 163.08 160.23 L 165.53 162.00 L 167.98 163.77 L 170.42 165.53 L 172.87 167.30 L 175.32 169.06 L 177.76 170.83 L 180.21 172.59 L 182.66 174.36 L 185.11 176.12 L 187.55 177.89 L 190.00 179.66 L 192.45 177.89 L 194.89 176.12 L 197.34 174.36 L 199.79 172.59 L 202.24 170.83 L 204.68 169.06 L 207.13 167.30 L 209.58 165.53 L 212.02 163.77 L 214.47 162.00 L 216.92 160.23 L 219.36 158.47 L 221.81 156.70 L 224.26 154.94 L 226.71 153.17 L 229.15 151.41 L 231.60 149.64 L 234.05 147.88 L 236.49 146.11 L 238.94 144.34 L 241.39 142.58 L 243.84 140.81 L 246.28 139.05 L 248.73 137.28 L 251.18 135.52 L 253.62 133.75 L 256.07 131.99 L 258.52 130.22 L 260.96 128.46 L 263.41 126.69 L 265.86 124.92 L 268.31 123.16 L 270.75 121.39 L 273.20 119.63 L 275.65 117.86 L 278.09 116.10 L 280.54 114.33 L 282.99 112.57 L 285.44 110.80 L 287.88 109.03 L 290.33 107.27 L 292.78 105.50 L 295.22 103.74 L 297.67 101.97 L 300.12 100.21 L 302.56 98.44 L 305.01 96.68 L 307.46 94.91 L 309.91 93.14 L 312.35 91.38 L 314.80 89.61 L 317.25 87.85 L 319.69 86.08 L 322.14 84.32 L 324.59 82.55 L 327.04 80.79 L 329.48 79.02 L 331.93 77.26 L 334.38 75.49 L 336.82 73.72\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.2\"/><circle cx=\"144.11764705882354\" cy=\"146.55172413793105\" r=\"3\" fill=\"#143c78\"/><circle cx=\"235.8823529411765\" cy=\"146.55172413793105\" r=\"3\" fill=\"#143c78\"/><text x=\"352\" y=\"150.55172413793105\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">x</text><text x=\"176\" y=\"28\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">y</text></svg>"
+  },
+  {
+    "id": "M14TZ2HL_P2_Q1",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 1,
+    "section": "A",
+    "marks": 6,
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Sequences and series, and finance"
+      }
+    ],
+    "difficulty": "Medium",
+    "title": "Arithmetic sum divisible by 7, then a negative partial sum",
+    "parts": [
+      [
+        "a",
+        "(i) Find the sum of all integers, between 10 and 200, which are divisible by 7. (ii) Express the above sum using sigma notation.",
+        "4"
+      ],
+      [
+        "b",
+        "An arithmetic sequence has first term 1000 and common difference of \\(-6\\). The sum of the first \\(n\\) terms of this sequence is negative. Find the least value of \\(n\\).",
+        "2"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(n=27\\) (terms from 14 to 196)",
+            "A1"
+          ],
+          [
+            "\\(S_{27}=\\dfrac{14+196}{2}\\times27\\)",
+            "M1"
+          ],
+          [
+            "\\(=2835\\)",
+            "A1"
+          ],
+          [
+            "\\(\\displaystyle\\sum_{n=1}^{27}(7+7n)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\dfrac n2\\big(2000-6(n-1)\\big)<0\\)",
+            "M1"
+          ],
+          [
+            "\\(n=335\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q2",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 2,
+    "section": "A",
+    "marks": 5,
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Normal distribution"
+      }
+    ],
+    "difficulty": "Medium",
+    "title": "Normal distribution from quartiles — bear cub weights",
+    "body": "The weights, in kg, of one-year-old bear cubs are modelled by a normal distribution with mean \\(\\mu\\) and standard deviation \\(\\sigma\\).",
+    "parts": [
+      [
+        "a",
+        "Given that the upper quartile weight is \\(21.3\\) kg and the lower quartile weight is \\(17.1\\) kg, calculate the value of \\(\\mu\\) and the value of \\(\\sigma\\).",
+        "4"
+      ],
+      [
+        "b",
+        "A random sample of 100 of these bear cubs is selected. Find the expected number of bear cubs weighing more than \\(22\\) kg.",
+        "1"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\mu=\\tfrac12(17.1+21.3)\\)",
+            "M1"
+          ],
+          [
+            "\\(\\mu=19.2\\) kg",
+            "A1"
+          ],
+          [
+            "\\(z\\)-value for the upper quartile \\(=0.674489\\ldots\\); \\(\\dfrac{21.3-19.2}{\\sigma}=0.674489\\ldots\\)",
+            "M1"
+          ],
+          [
+            "\\(\\sigma=3.11\\) kg",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(100\\times\\mathrm P(X>22)=100\\times0.184241\\ldots\\)",
+            "A1"
+          ],
+          [
+            "\\(=18\\)",
+            ""
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q3",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 3,
+    "section": "A",
+    "marks": 5,
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Basic integration"
+      }
+    ],
+    "difficulty": "Medium",
+    "title": "Area between two intersecting curves",
+    "body": "The graphs of \\(y=x^2e^{-x}\\) and \\(y=1-2\\sin x\\) for \\(2\\le x\\le7\\) intersect at points A and B. The \\(x\\)-coordinates of A and B are \\(x_A\\) and \\(x_B\\).",
+    "parts": [
+      [
+        "a",
+        "Find the value of \\(x_A\\) and the value of \\(x_B\\).",
+        "2"
+      ],
+      [
+        "b",
+        "Find the area enclosed between the two graphs for \\(x_A\\le x\\le x_B\\).",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(x_A=2.87\\)",
+            "A1"
+          ],
+          [
+            "\\(x_B=6.78\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\displaystyle\\int_{2.87}^{6.78}\\big(1-2\\sin x-x^2e^{-x}\\big)\\,dx\\)",
+            "M1A1"
+          ],
+          [
+            "\\(=6.76\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q4",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 4,
+    "section": "A",
+    "marks": 6,
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Sectors and triangles"
+      }
+    ],
+    "difficulty": "Medium",
+    "title": "Two intersecting circles — angle and shaded area",
+    "body": "Two intersecting circles have radii 4 cm and 3 cm. The centre \\(C\\) of the smaller circle lies on the circumference of the bigger circle. \\(O\\) is the centre of the bigger circle, and the two circles intersect at points A and B.",
+    "diagram": "q4p2tz2",
+    "diagramCaption": "The two circles (radius 4 and radius 3) with centre C on the circumference of the larger circle; shading follows the original paper.",
+    "parts": [
+      [
+        "a",
+        "Find \\(B\\hat OC\\).",
+        "2"
+      ],
+      [
+        "b",
+        "Find the area of the shaded region.",
+        "4"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(2\\arcsin\\left(\\dfrac{1.5}4\\right)\\)",
+            "M1"
+          ],
+          [
+            "\\(\\alpha=0.769^c\\ (44.0^\\circ)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "One segment: \\(\\tfrac12(4)^2(0.769)-\\tfrac12(4)^2\\sin(0.769)\\)",
+            "M1A1"
+          ],
+          [
+            "\\(=0.588\\ldots\\)",
+            "(A1)"
+          ],
+          [
+            "\\(2\\times\\)segment \\(=1.18\\ \\text{cm}^2\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 380 300\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"53.63636363636364\" y1=\"40\" x2=\"53.63636363636364\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"80.9090909090909\" y1=\"40\" x2=\"80.9090909090909\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"108.18181818181819\" y1=\"40\" x2=\"108.18181818181819\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"135.45454545454544\" y1=\"40\" x2=\"135.45454545454544\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"162.72727272727275\" y1=\"40\" x2=\"162.72727272727275\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"190\" y1=\"40\" x2=\"190\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"217.27272727272728\" y1=\"40\" x2=\"217.27272727272728\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"244.54545454545456\" y1=\"40\" x2=\"244.54545454545456\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"271.8181818181818\" y1=\"40\" x2=\"271.8181818181818\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"299.0909090909091\" y1=\"40\" x2=\"299.0909090909091\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"326.3636363636364\" y1=\"40\" x2=\"326.3636363636364\" y2=\"260\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"246.8\" x2=\"340\" y2=\"246.8\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"224.8\" x2=\"340\" y2=\"224.8\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"202.8\" x2=\"340\" y2=\"202.8\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"180.8\" x2=\"340\" y2=\"180.8\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"158.8\" x2=\"340\" y2=\"158.8\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"136.8\" x2=\"340\" y2=\"136.8\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"114.80000000000001\" x2=\"340\" y2=\"114.80000000000001\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"92.80000000000001\" x2=\"340\" y2=\"92.80000000000001\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"70.80000000000001\" x2=\"340\" y2=\"70.80000000000001\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"48.80000000000001\" x2=\"340\" y2=\"48.80000000000001\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"40\" y1=\"158.8\" x2=\"340\" y2=\"158.8\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"190\" y1=\"260\" x2=\"190\" y2=\"40\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><circle cx=\"190\" cy=\"158.8\" r=\"109.09090909090912\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2\"/><circle cx=\"299.0909090909091\" cy=\"158.8\" r=\"81.81818181818181\" fill=\"none\" stroke=\"#8a6d1d\" stroke-width=\"2\"/><line x1=\"190\" y1=\"158.8\" x2=\"299.0909090909091\" y2=\"158.8\" stroke=\"#5b6b85\" stroke-width=\"1\" stroke-dasharray=\"3,2\"/><circle cx=\"190\" cy=\"158.8\" r=\"2.6\" fill=\"#16233b\"/><text x=\"180\" y=\"172.8\" font-size=\"12\" fill=\"#16233b\">O</text><circle cx=\"299.0909090909091\" cy=\"158.8\" r=\"2.6\" fill=\"#16233b\"/><text x=\"307.0909090909091\" y=\"172.8\" font-size=\"12\" fill=\"#16233b\">C</text><circle cx=\"268.4090909090909\" cy=\"97.61636248146078\" r=\"2.6\" fill=\"#16233b\"/><text x=\"276.4090909090909\" y=\"91.61636248146078\" font-size=\"12\" fill=\"#16233b\">A</text><circle cx=\"268.4090909090909\" cy=\"219.98363751853924\" r=\"2.6\" fill=\"#16233b\"/><text x=\"276.4090909090909\" y=\"233.98363751853924\" font-size=\"12\" fill=\"#16233b\">B</text></svg>"
+  },
+  {
+    "id": "M14TZ2HL_P2_Q5",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 5,
+    "section": "A",
+    "marks": 6,
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Binomial expansion"
+      }
+    ],
+    "difficulty": "Hard",
+    "title": "Coefficient of x⁻² in a product of two binomial expansions",
+    "body": "Find the coefficient of \\(x^{-2}\\) in the expansion of \\((x-1)^3\\left(\\dfrac1x+2x\\right)^6\\).",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\((x-1)^3=x^3-3x^2+3x-1\\)",
+            "A1"
+          ],
+          [
+            "Expand \\(\\left(\\tfrac1x+2x\\right)^6\\): \\(64x^6+192x^4+240x^2+\\tfrac{60}{x^2}+\\tfrac{12}{x^4}+\\tfrac1{x^6}+160\\)",
+            "(M1)A1A1"
+          ],
+          [
+            "Combine the relevant terms: \\(\\tfrac{60}{x^2}\\times(-1)+\\tfrac{12}{x^4}\\times(-3x^2)\\)",
+            "(M1)"
+          ],
+          [
+            "Coefficient of \\(x^{-2}\\) is \\(-96\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q6",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 6,
+    "section": "A",
+    "marks": 7,
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Binomial distribution"
+      }
+    ],
+    "difficulty": "Medium-Hard",
+    "title": "Credit card vs cash payments — binomial probability",
+    "body": "Six customers wait in a queue in a supermarket. A customer can choose to pay with cash or a credit card. Assume that whether or not a customer pays with a credit card is independent of any other customer's method of payment. It is known that 60% of customers choose to pay with a credit card.",
+    "parts": [
+      [
+        "a",
+        "Find the probability that: (i) the first three customers pay with a credit card and the next three pay with cash; (ii) exactly three of the six customers pay with a credit card.",
+        "4"
+      ],
+      [
+        "b",
+        "There are \\(n\\) customers waiting in another queue in the same supermarket. The probability that at least one customer pays with cash is greater than \\(0.995\\). Find the minimum value of \\(n\\).",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(0.6^3\\times0.4^3\\)",
+            "M1"
+          ],
+          [
+            "\\(=0.0138\\)",
+            "A1"
+          ],
+          [
+            "Recognize the binomial distribution \\(X\\sim B(6,0.6)\\)",
+            "M1"
+          ],
+          [
+            "\\(\\mathrm P(X=3)=\\binom63(0.6)^3(0.4)^3=0.276\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\mathrm P(Y=0)<0.005\\)",
+            "M1"
+          ],
+          [
+            "\\(0.6^n<0.005\\)",
+            "M1"
+          ],
+          [
+            "\\(n>10.4\\Rightarrow n=11\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q7",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 7,
+    "section": "A",
+    "marks": 8,
+    "topics": [
+      {
+        "main": "Functions",
+        "sub": "Rational functions"
+      }
+    ],
+    "difficulty": "Medium",
+    "title": "Rational function — asymptotes and inverse",
+    "body": "The function \\(f\\) is defined as \\(f(x)=-3+\\dfrac1{x-2}\\), \\(x\\ne2\\).",
+    "diagram": "q7p2tz2",
+    "diagramCaption": "y = -3 + 1/(x-2), with asymptotes x = 2 and y = -3.",
+    "parts": [
+      [
+        "a",
+        "(i) Sketch the graph of \\(y=f(x)\\), clearly indicating any asymptotes and axes intercepts. (ii) Write down the equations of any asymptotes and the coordinates of any axes intercepts.",
+        "4"
+      ],
+      [
+        "b",
+        "Find the inverse function \\(f^{-1}\\), stating its domain.",
+        "4"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Correct shape with asymptotes \\(x=2\\) and \\(y=-3\\) clearly shown",
+            "A1A1A1"
+          ],
+          [
+            "Intercepts: \\((2.33,0)\\) and \\((0,-3.5)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "Interchange \\(x\\) and \\(y\\): \\(x=-3+\\dfrac1{y-2}\\)",
+            "M1"
+          ],
+          [
+            "Make \\(y\\) the subject: \\(y-2=\\dfrac1{x+3}\\)",
+            "M1"
+          ],
+          [
+            "\\(f^{-1}(x)=2+\\dfrac1{x+3}\\), \\(x\\ne-3\\)",
+            "A1A1"
+          ]
+        ]
+      ]
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 420 300\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"53.63636363636364\" y1=\"38\" x2=\"53.63636363636364\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"84.9090909090909\" y1=\"38\" x2=\"84.9090909090909\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"116.18181818181819\" y1=\"38\" x2=\"116.18181818181819\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"147.45454545454544\" y1=\"38\" x2=\"147.45454545454544\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"178.72727272727272\" y1=\"38\" x2=\"178.72727272727272\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"210\" y1=\"38\" x2=\"210\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"241.27272727272728\" y1=\"38\" x2=\"241.27272727272728\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"272.54545454545456\" y1=\"38\" x2=\"272.54545454545456\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"303.8181818181818\" y1=\"38\" x2=\"303.8181818181818\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"335.0909090909091\" y1=\"38\" x2=\"335.0909090909091\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"366.3636363636364\" y1=\"38\" x2=\"366.3636363636364\" y2=\"262\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"254\" x2=\"382\" y2=\"254\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"238\" x2=\"382\" y2=\"238\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"222\" x2=\"382\" y2=\"222\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"206\" x2=\"382\" y2=\"206\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"190\" x2=\"382\" y2=\"190\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"174\" x2=\"382\" y2=\"174\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"158\" x2=\"382\" y2=\"158\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"142\" x2=\"382\" y2=\"142\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"126\" x2=\"382\" y2=\"126\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"110\" x2=\"382\" y2=\"110\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"94\" x2=\"382\" y2=\"94\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"78\" x2=\"382\" y2=\"78\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"62\" x2=\"382\" y2=\"62\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"46\" x2=\"382\" y2=\"46\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"126\" x2=\"382\" y2=\"126\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"147.45454545454544\" y1=\"262\" x2=\"147.45454545454544\" y2=\"38\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"210\" y1=\"38\" x2=\"210\" y2=\"262\" stroke=\"#a9b4c6\" stroke-width=\"1.2\" stroke-dasharray=\"4,3\"/><line x1=\"38\" y1=\"174\" x2=\"382\" y2=\"174\" stroke=\"#a9b4c6\" stroke-width=\"1.2\" stroke-dasharray=\"4,3\"/><path d=\" M 44.25 177.02 L 45.60 177.04 L 46.94 177.07 L 48.28 177.09 L 49.62 177.12 L 50.97 177.15 L 52.31 177.17 L 53.65 177.20 L 54.99 177.23 L 56.33 177.26 L 57.68 177.28 L 59.02 177.31 L 60.36 177.34 L 61.70 177.37 L 63.04 177.40 L 64.39 177.44 L 65.73 177.47 L 67.07 177.50 L 68.41 177.53 L 69.75 177.57 L 71.10 177.60 L 72.44 177.64 L 73.78 177.67 L 75.12 177.71 L 76.47 177.75 L 77.81 177.79 L 79.15 177.82 L 80.49 177.86 L 81.83 177.90 L 83.18 177.95 L 84.52 177.99 L 85.86 178.03 L 87.20 178.07 L 88.54 178.12 L 89.89 178.17 L 91.23 178.21 L 92.57 178.26 L 93.91 178.31 L 95.26 178.36 L 96.60 178.41 L 97.94 178.47 L 99.28 178.52 L 100.62 178.57 L 101.97 178.63 L 103.31 178.69 L 104.65 178.75 L 105.99 178.81 L 107.33 178.87 L 108.68 178.94 L 110.02 179.00 L 111.36 179.07 L 112.70 179.14 L 114.04 179.21 L 115.39 179.29 L 116.73 179.36 L 118.07 179.44 L 119.41 179.52 L 120.76 179.61 L 122.10 179.69 L 123.44 179.78 L 124.78 179.87 L 126.12 179.97 L 127.47 180.06 L 128.81 180.16 L 130.15 180.27 L 131.49 180.37 L 132.83 180.48 L 134.18 180.60 L 135.52 180.72 L 136.86 180.84 L 138.20 180.97 L 139.55 181.10 L 140.89 181.24 L 142.23 181.38 L 143.57 181.53 L 144.91 181.69 L 146.26 181.85 L 147.60 182.02 L 148.94 182.19 L 150.28 182.38 L 151.62 182.57 L 152.97 182.77 L 154.31 182.98 L 155.65 183.21 L 156.99 183.44 L 158.33 183.68 L 159.68 183.94 L 161.02 184.22 L 162.36 184.50 L 163.70 184.81 L 165.05 185.13 L 166.39 185.47 L 167.73 185.84 L 169.07 186.23 L 170.41 186.64 L 171.76 187.08 L 173.10 187.56 L 174.44 188.07 L 175.78 188.62 L 177.12 189.22 L 178.47 189.87 L 179.81 190.57 L 181.15 191.34 L 182.49 192.19 L 183.84 193.12 L 185.18 194.16 L 186.52 195.31 L 187.86 196.60 L 189.20 198.06 L 190.55 199.72 L 191.89 201.63 L 193.23 203.84 L 194.57 206.43 L 195.91 209.52 L 197.26 213.26 L 198.60 217.89 L 199.94 223.74 L 201.28 231.40 L 202.62 241.84 L 203.97 256.94 L 205.31 280.67\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.2\"/><path d=\" M 214.69 67.33 L 216.03 91.06 L 217.38 106.16 L 218.72 116.60 L 220.06 124.26 L 221.40 130.11 L 222.74 134.74 L 224.09 138.48 L 225.43 141.57 L 226.77 144.16 L 228.11 146.37 L 229.45 148.28 L 230.80 149.94 L 232.14 151.40 L 233.48 152.69 L 234.82 153.84 L 236.16 154.88 L 237.51 155.81 L 238.85 156.66 L 240.19 157.43 L 241.53 158.13 L 242.88 158.78 L 244.22 159.38 L 245.56 159.93 L 246.90 160.44 L 248.24 160.92 L 249.59 161.36 L 250.93 161.77 L 252.27 162.16 L 253.61 162.53 L 254.95 162.87 L 256.30 163.19 L 257.64 163.50 L 258.98 163.78 L 260.32 164.06 L 261.67 164.32 L 263.01 164.56 L 264.35 164.79 L 265.69 165.02 L 267.03 165.23 L 268.38 165.43 L 269.72 165.62 L 271.06 165.81 L 272.40 165.98 L 273.74 166.15 L 275.09 166.31 L 276.43 166.47 L 277.77 166.62 L 279.11 166.76 L 280.45 166.90 L 281.80 167.03 L 283.14 167.16 L 284.48 167.28 L 285.82 167.40 L 287.17 167.52 L 288.51 167.63 L 289.85 167.73 L 291.19 167.84 L 292.53 167.94 L 293.88 168.03 L 295.22 168.13 L 296.56 168.22 L 297.90 168.31 L 299.24 168.39 L 300.59 168.48 L 301.93 168.56 L 303.27 168.64 L 304.61 168.71 L 305.96 168.79 L 307.30 168.86 L 308.64 168.93 L 309.98 169.00 L 311.32 169.06 L 312.67 169.13 L 314.01 169.19 L 315.35 169.25 L 316.69 169.31 L 318.03 169.37 L 319.38 169.43 L 320.72 169.48 L 322.06 169.53 L 323.40 169.59 L 324.74 169.64 L 326.09 169.69 L 327.43 169.74 L 328.77 169.79 L 330.11 169.83 L 331.46 169.88 L 332.80 169.93 L 334.14 169.97 L 335.48 170.01 L 336.82 170.05 L 338.17 170.10 L 339.51 170.14 L 340.85 170.18 L 342.19 170.21 L 343.53 170.25 L 344.88 170.29 L 346.22 170.33 L 347.56 170.36 L 348.90 170.40 L 350.25 170.43 L 351.59 170.47 L 352.93 170.50 L 354.27 170.53 L 355.61 170.56 L 356.96 170.60 L 358.30 170.63 L 359.64 170.66 L 360.98 170.69 L 362.32 170.72 L 363.67 170.74 L 365.01 170.77 L 366.35 170.80 L 367.69 170.83 L 369.03 170.85 L 370.38 170.88 L 371.72 170.91 L 373.06 170.93 L 374.40 170.96 L 375.75 170.98\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.2\"/><circle cx=\"220.4138181818182\" cy=\"126\" r=\"3\" fill=\"#8a6d1d\"/><circle cx=\"147.45454545454544\" cy=\"182\" r=\"3\" fill=\"#8a6d1d\"/><text x=\"214\" y=\"48\" font-size=\"10\" fill=\"#5b6b85\">x=2</text><text x=\"378\" y=\"168\" font-size=\"10\" fill=\"#5b6b85\" text-anchor=\"end\">y=-3</text></svg>"
+  },
+  {
+    "id": "M14TZ2HL_P2_Q8",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 8,
+    "section": "A",
+    "marks": 4,
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Discrete random variables"
+      }
+    ],
+    "difficulty": "Hard",
+    "title": "Poisson distribution from a probability equation",
+    "body": "The random variable \\(X\\) has a Poisson distribution with mean \\(\\mu\\). Given that \\(\\mathrm P(X=2)+\\mathrm P(X=3)=\\mathrm P(X=5)\\),",
+    "parts": [
+      [
+        "a",
+        "find the value of \\(\\mu\\);",
+        "2"
+      ],
+      [
+        "b",
+        "find the probability that \\(X\\) lies within one standard deviation of the mean.",
+        "2"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\dfrac{\\mu^2e^{-\\mu}}{2!}+\\dfrac{\\mu^3e^{-\\mu}}{3!}=\\dfrac{\\mu^5e^{-\\mu}}{5!}\\)",
+            "M1"
+          ],
+          [
+            "\\(\\mu=5.55\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\sigma=\\sqrt{5.55\\ldots}=2.356\\ldots\\)",
+            "M1"
+          ],
+          [
+            "\\(\\mathrm P(3.19\\le X\\le7.9)=\\mathrm P(4\\le X\\le7)=0.607\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q9",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 9,
+    "section": "A",
+    "marks": 5,
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Related rates of change"
+      }
+    ],
+    "difficulty": "Medium-Hard",
+    "title": "Related rates — sand poured into a cone",
+    "body": "Sand is being poured to form a cone of height \\(h\\) cm and base radius \\(r\\) cm. The height remains equal to the base radius at all times. The height of the cone is increasing at a rate of \\(0.5\\text{ cm min}^{-1}\\). Find the rate at which sand is being poured, in \\(\\text{cm}^3\\text{min}^{-1}\\), when the height is \\(4\\) cm.",
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "Volume of a cone \\(V=\\tfrac13\\pi r^2h\\); with \\(h=r\\), \\(V=\\tfrac13\\pi h^3\\)",
+            "M1"
+          ],
+          [
+            "\\(\\dfrac{dV}{dh}=\\pi h^2\\)",
+            "(A1)"
+          ],
+          [
+            "At \\(h=4\\): \\(\\dfrac{dV}{dt}=\\pi\\times4^2\\times0.5\\) (using \\(\\dfrac{dV}{dt}=\\dfrac{dV}{dh}\\times\\dfrac{dh}{dt}\\))",
+            "M1A1"
+          ],
+          [
+            "\\(=8\\pi\\ (\\approx25.1)\\ \\text{cm}^3\\text{min}^{-1}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q10",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 10,
+    "section": "A",
+    "marks": 8,
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Implicit differentiation"
+      }
+    ],
+    "difficulty": "Hard",
+    "title": "Implicit differentiation of (x²+y²)² = 4xy², then a normal line",
+    "body": "Consider the curve with equation \\((x^2+y^2)^2=4xy^2\\).",
+    "parts": [
+      [
+        "a",
+        "Use implicit differentiation to find an expression for \\(\\dfrac{dy}{dx}\\).",
+        "5"
+      ],
+      [
+        "b",
+        "Find the equation of the normal to the curve at the point \\((1,1)\\).",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Expand the brackets: \\(x^4+2x^2y^2+y^4=4xy^2\\)",
+            "M1"
+          ],
+          [
+            "Differentiate implicitly: \\(4x^3+4xy^2+4x^2y\\dfrac{dy}{dx}+4y^3\\dfrac{dy}{dx}=4y^2+8xy\\dfrac{dy}{dx}\\)",
+            "M1A1A1"
+          ],
+          [
+            "\\(\\dfrac{dy}{dx}=\\dfrac{-x^3-xy^2+y^2}{yx^2-2xy+y^3}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "At \\((1,1)\\), \\(\\dfrac{dy}{dx}\\) is undefined (vertical tangent)",
+            "M1A1"
+          ],
+          [
+            "Normal is horizontal: \\(y=1\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q11",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 11,
+    "section": "B",
+    "marks": 13,
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Continuous random variables"
+      }
+    ],
+    "difficulty": "Hard",
+    "title": "PDF a·x·cos(x) — mode, median and conditional probability",
+    "body": "The probability density function of a random variable \\(X\\) is defined as\\[ f(x)=\\begin{cases} ax\\cos x, & 0\\le x\\le\\tfrac\\pi2 \\\\ 0, & \\text{elsewhere} \\end{cases},\\quad a\\in\\mathbb{R}. \\]",
+    "parts": [
+      [
+        "a",
+        "Show that \\(a=\\dfrac2{\\pi-2}\\).",
+        "5"
+      ],
+      [
+        "b",
+        "Find \\(\\mathrm P\\left(X<\\tfrac\\pi4\\right)\\).",
+        "2"
+      ],
+      [
+        "c",
+        "Find: (i) the mode of \\(X\\); (ii) the median of \\(X\\).",
+        "4"
+      ],
+      [
+        "d",
+        "Find \\(\\mathrm P\\left(X<\\tfrac\\pi8\\,\\middle|\\,X<\\tfrac\\pi4\\right)\\).",
+        "2"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(a\\displaystyle\\int_0^{\\pi/2}x\\cos x\\,dx=1\\)",
+            "M1"
+          ],
+          [
+            "Integrate by parts, \\(u=x\\), \\(v'=\\cos x\\): \\(\\int x\\cos x\\,dx=x\\sin x+\\cos x\\)",
+            "M1A1"
+          ],
+          [
+            "\\(\\Big[x\\sin x+\\cos x\\Big]_0^{\\pi/2}=\\tfrac\\pi2-1\\)",
+            "A1"
+          ],
+          [
+            "\\(a=\\dfrac1{\\pi/2-1}=\\dfrac2{\\pi-2}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\mathrm P\\left(X<\\tfrac\\pi4\\right)=\\dfrac2{\\pi-2}\\displaystyle\\int_0^{\\pi/4}x\\cos x\\,dx\\)",
+            "M1"
+          ],
+          [
+            "\\(=0.460\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "Mode \\(=0.860\\) (the \\(x\\)-value of the maximum on the graph)",
+            "A1"
+          ],
+          [
+            "\\(\\dfrac2{\\pi-2}\\displaystyle\\int_0^m x\\cos x\\,dx=0.5\\)",
+            "M1"
+          ],
+          [
+            "\\(m\\sin m+\\cos m-1=\\dfrac{\\pi-2}4\\)",
+            "M1"
+          ],
+          [
+            "Median \\(=0.826\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "\\(\\mathrm P\\left(X<\\tfrac\\pi8\\,\\middle|\\,X<\\tfrac\\pi4\\right)=\\dfrac{\\mathrm P(X<\\pi/8)}{\\mathrm P(X<\\pi/4)}\\)",
+            "M1"
+          ],
+          [
+            "\\(=0.283\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q12",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 12,
+    "section": "B",
+    "marks": 15,
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Optimization"
+      }
+    ],
+    "difficulty": "Hard",
+    "title": "Minimizing pipe-laying cost across a river, with an angle constraint",
+    "body": "Engineers need to lay pipes to connect two cities A and B that are separated by a river of width 450 metres. They plan to lay the pipes under the river from A to X and then under the ground from X to B. The cost of laying the pipes under the river is five times the cost of laying the pipes under the ground. Let \\(EX=x\\), where \\(E\\) is the point on the near bank closest to A (with \\(AE=450\\) m), and \\(EB=1000\\) m along the far bank. Let \\(k\\) be the cost, in dollars per metre, of laying the pipes under the ground.",
+    "parts": [
+      [
+        "a",
+        "Show that the total cost \\(C\\), in dollars, of laying the pipes from A to B is given by \\(C=5k\\sqrt{202500+x^2}+(1000-x)k\\).",
+        "2"
+      ],
+      [
+        "b",
+        "(i) Find \\(\\dfrac{dC}{dx}\\). (ii) Hence find the value of \\(x\\) for which the total cost is a minimum, justifying that this value is a minimum.",
+        "7"
+      ],
+      [
+        "c",
+        "Find the minimum total cost in terms of \\(k\\).",
+        "1"
+      ],
+      [
+        "d",
+        "The angle at which the pipes are joined is \\(A\\hat XB=\\theta\\). Find \\(\\theta\\) for the value of \\(x\\) calculated in (b).",
+        "2"
+      ],
+      [
+        "e",
+        "For safety reasons \\(\\theta\\) must be at least \\(120^\\circ\\). Given this new requirement, (i) find the new value of \\(x\\) which minimises the total cost; (ii) find the percentage increase in the minimum total cost.",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(C=AX\\times5k+XB\\times k\\)",
+            "M1"
+          ],
+          [
+            "\\(=5k\\sqrt{450^2+x^2}+(1000-x)k=5k\\sqrt{202500+x^2}+(1000-x)k\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\dfrac{dC}{dx}=k\\left[\\dfrac{5x}{\\sqrt{202500+x^2}}-1\\right]\\)",
+            "M1A1"
+          ],
+          [
+            "Attempt to solve \\(\\dfrac{dC}{dx}=0\\)",
+            "M1"
+          ],
+          [
+            "\\(\\dfrac{5x}{\\sqrt{202500+x^2}}=1\\)",
+            "(A1)"
+          ],
+          [
+            "\\(x=91.9\\) m",
+            "A1"
+          ],
+          [
+            "At \\(x=91\\): \\(\\dfrac{dC}{dx}<0\\)",
+            "M1"
+          ],
+          [
+            "At \\(x=92\\): \\(\\dfrac{dC}{dx}>0\\), confirming a minimum",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(C_{\\min}=3205k\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "\\(\\arctan\\left(\\dfrac{450}{91.9}\\right)=78.463\\ldots^\\circ\\)",
+            "M1"
+          ],
+          [
+            "\\(\\theta=180-78.463\\ldots=102^\\circ\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "e",
+        [
+          [
+            "When \\(\\theta=120^\\circ\\), \\(x=260\\) m",
+            "A1"
+          ],
+          [
+            "Percentage increase \\(=\\dfrac{133.728\\ldots}{3204.54\\ldots}\\times100\\%\\)",
+            "M1"
+          ],
+          [
+            "\\(=4.17\\%\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q13",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 13,
+    "section": "B",
+    "marks": 20,
+    "topics": [
+      {
+        "main": "Number and Algebra",
+        "sub": "Complex numbers"
+      },
+      {
+        "main": "Number and Algebra",
+        "sub": "Proof"
+      }
+    ],
+    "difficulty": "Hard",
+    "title": "De Moivre's theorem by induction, then an Argand-diagram problem",
+    "body": "Consider \\(z=r(\\cos\\theta+i\\sin\\theta)\\), \\(z\\in\\mathbb{C}\\).",
+    "parts": [
+      [
+        "a",
+        "Use mathematical induction to prove that \\(z^n=r^n(\\cos n\\theta+i\\sin n\\theta)\\), \\(n\\in\\mathbb{Z}^+\\).",
+        "7"
+      ],
+      [
+        "b",
+        "Given \\(u=1+\\sqrt3i\\) and \\(v=1-i\\), (i) express \\(u\\) and \\(v\\) in modulus-argument form; (ii) hence find \\(u^3v^4\\).",
+        "4"
+      ],
+      [
+        "c",
+        "The complex numbers \\(u\\) and \\(v\\) are represented by point A and point B respectively on an Argand diagram. Plot point A and point B on the Argand diagram.",
+        "1"
+      ],
+      [
+        "d",
+        "Point A is rotated through \\(\\tfrac\\pi2\\) in the anticlockwise direction about the origin O to become point \\(A'\\). Point B is rotated through \\(\\tfrac\\pi2\\) in the clockwise direction about O to become point \\(B'\\). Find the area of triangle \\(OA'B'\\).",
+        "3"
+      ],
+      [
+        "e",
+        "Given that \\(u\\) and \\(v\\) are roots of the equation \\(z^4+bz^3+cz^2+dz+e=0\\), where \\(b,c,d,e\\in\\mathbb{R}\\), find the values of \\(b\\), \\(c\\), \\(d\\) and \\(e\\).",
+        "5"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(n=1\\): LHS \\(=\\) RHS \\(=r(\\cos\\theta+i\\sin\\theta)\\), so \\(P(1)\\) is true",
+            "R1"
+          ],
+          [
+            "Assume true for \\(n=k\\): \\(r^k(\\cos\\theta+i\\sin\\theta)^k=r^k(\\cos k\\theta+i\\sin k\\theta)\\)",
+            "M1"
+          ],
+          [
+            "Consider \\(n=k+1\\): \\(r^{k+1}(\\cos\\theta+i\\sin\\theta)^{k+1}=r^{k+1}(\\cos\\theta+i\\sin\\theta)^k(\\cos\\theta+i\\sin\\theta)\\)",
+            "M1"
+          ],
+          [
+            "\\(=r^{k+1}\\big(\\cos k\\theta+i\\sin k\\theta\\big)(\\cos\\theta+i\\sin\\theta)\\)",
+            "A1"
+          ],
+          [
+            "Expand using the angle-addition formulas: \\(=r^{k+1}\\big(\\cos(k\\theta+\\theta)+i\\sin(k\\theta+\\theta)\\big)\\)",
+            "A1"
+          ],
+          [
+            "\\(=r^{k+1}\\big(\\cos(k+1)\\theta+i\\sin(k+1)\\theta\\big)\\), so \\(n=k+1\\) is true",
+            "A1"
+          ],
+          [
+            "\\(P(k)\\) true implies \\(P(k+1)\\) true, and \\(P(1)\\) is true; therefore, by induction, true for all \\(n\\ge1\\)",
+            "R1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(u=2\\,\\mathrm{cis}\\left(\\tfrac\\pi3\\right)\\)",
+            "A1"
+          ],
+          [
+            "\\(v=2\\,\\mathrm{cis}\\left(-\\tfrac\\pi4\\right)\\)",
+            "A1"
+          ],
+          [
+            "\\(u^3=2^3\\mathrm{cis}(\\pi)=-8\\); \\(v^4=4\\,\\mathrm{cis}(-\\pi)=-4\\)",
+            "(M1)"
+          ],
+          [
+            "\\(u^3v^4=32\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "Plot A and B in their correct quadrants, aligned vertically, with \\(|u|>|v|\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "Area \\(=\\tfrac12\\times2\\times2\\times\\sin\\left(\\tfrac{5\\pi}{12}\\right)\\)",
+            "M1A1"
+          ],
+          [
+            "\\(=1.37\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "e",
+        [
+          [
+            "\\((z-1+i)(z-1-i)=z^2-2z+2\\)",
+            "M1A1"
+          ],
+          [
+            "\\((z-1-\\sqrt3i)(z-1+\\sqrt3i)=z^2-2z+4\\)",
+            "A1"
+          ],
+          [
+            "\\((z^2-2z+2)(z^2-2z+4)=z^4-4z^3+10z^2-12z+8\\)",
+            "M1A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "M14TZ2HL_P2_Q14",
+    "course": "Legacy HL",
+    "paperNumber": "Paper 2",
+    "paper": "May 2014 TZ2 HL P2",
+    "qnum": 14,
+    "section": "B",
+    "marks": 12,
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Kinematics"
+      },
+      {
+        "main": "Calculus",
+        "sub": "Integration by substitution"
+      }
+    ],
+    "difficulty": "Hard",
+    "title": "Velocity function, substitution integral, distance and acceleration",
+    "body": "Particle A moves such that its velocity \\(v\\text{ ms}^{-1}\\), at time \\(t\\) seconds, is given by \\(v(t)=\\dfrac{t}{12+t^4}\\), \\(t\\ge0\\).",
+    "diagram": "q14ap2tz2",
+    "diagramCaption": "y = v(t) = t/(12+t⁴), with its local maximum marked.",
+    "parts": [
+      [
+        "a",
+        "Sketch the graph of \\(y=v(t)\\). Indicate clearly the local maximum and write down its coordinates.",
+        "2"
+      ],
+      [
+        "b",
+        "Use the substitution \\(u=t^2\\) to find \\(\\displaystyle\\int\\dfrac{t}{12+t^4}\\,dt\\).",
+        "4"
+      ],
+      [
+        "c",
+        "Find the exact distance travelled by particle A between \\(t=0\\) and \\(t=6\\) seconds. Give your answer in the form \\(k\\arctan(b)\\), \\(k,b\\in\\mathbb{R}\\).",
+        "3"
+      ],
+      [
+        "d",
+        "Particle B moves such that its velocity \\(v\\text{ ms}^{-1}\\) is related to its displacement \\(s\\) m, by the equation \\(v(s)=\\arcsin(\\sqrt s)\\). Find the acceleration of particle B when \\(s=0.1\\) m.",
+        "3"
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "Correct shape, domain \\(t\\ge0\\)",
+            "A1"
+          ],
+          [
+            "Local maximum at \\((1.41,\\,0.0884)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(u=t^2\\Rightarrow\\dfrac{du}{dt}=2t\\)",
+            "A1"
+          ],
+          [
+            "\\(\\displaystyle\\int\\dfrac{t}{12+t^4}\\,dt=\\tfrac12\\int\\dfrac{du}{12+u^2}\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac1{2\\sqrt{12}}\\arctan\\left(\\dfrac{u}{\\sqrt{12}}\\right)\\ (+c)\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac1{4\\sqrt3}\\arctan\\left(\\dfrac{t^2}{2\\sqrt3}\\right)\\ (+c)\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "c",
+        [
+          [
+            "\\(\\displaystyle\\int_0^6\\dfrac{t}{12+t^4}\\,dt\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\left[\\dfrac1{4\\sqrt3}\\arctan\\left(\\dfrac{t^2}{2\\sqrt3}\\right)\\right]_0^6\\)",
+            "M1"
+          ],
+          [
+            "\\(=\\dfrac1{4\\sqrt3}\\arctan\\left(\\dfrac{18}{\\sqrt3}\\right)\\) m",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "d",
+        [
+          [
+            "\\(\\dfrac{dv}{ds}=\\dfrac1{2\\sqrt{s(1-s)}}\\)",
+            "(A1)"
+          ],
+          [
+            "\\(a=v\\dfrac{dv}{ds}=\\arcsin(\\sqrt s)\\times\\dfrac1{2\\sqrt{s(1-s)}}\\)",
+            "(M1)"
+          ],
+          [
+            "At \\(s=0.1\\): \\(a=0.536\\ \\text{ms}^{-2}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ],
+    "diagramSvg": "<svg viewBox=\"0 0 420 260\" xmlns=\"http://www.w3.org/2000/svg\"><defs><marker id=\"arrow\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"3\" orient=\"auto\"><path d=\"M0,0 L6,3 L0,6 Z\" fill=\"#16233b\"/></marker></defs><line x1=\"58.23529411764706\" y1=\"38\" x2=\"58.23529411764706\" y2=\"222\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"108.8235294117647\" y1=\"38\" x2=\"108.8235294117647\" y2=\"222\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"159.41176470588235\" y1=\"38\" x2=\"159.41176470588235\" y2=\"222\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"210\" y1=\"38\" x2=\"210\" y2=\"222\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"260.5882352941177\" y1=\"38\" x2=\"260.5882352941177\" y2=\"222\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"311.1764705882353\" y1=\"38\" x2=\"311.1764705882353\" y2=\"222\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"361.7647058823529\" y1=\"38\" x2=\"361.7647058823529\" y2=\"222\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"193.69230769230768\" x2=\"382\" y2=\"193.69230769230768\" stroke=\"#e6e9f0\" stroke-width=\"1\"/><line x1=\"38\" y1=\"193.69230769230768\" x2=\"382\" y2=\"193.69230769230768\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><line x1=\"58.23529411764706\" y1=\"222\" x2=\"58.23529411764706\" y2=\"38\" stroke=\"#16233b\" stroke-width=\"1.4\" marker-end=\"url(#arrow)\"/><path d=\" M 58.24 193.69 L 59.80 190.04 L 61.37 186.38 L 62.94 182.72 L 64.51 179.07 L 66.08 175.41 L 67.64 171.76 L 69.21 168.10 L 70.78 164.45 L 72.35 160.80 L 73.92 157.16 L 75.49 153.52 L 77.05 149.89 L 78.62 146.26 L 80.19 142.65 L 81.76 139.06 L 83.33 135.48 L 84.90 131.93 L 86.46 128.40 L 88.03 124.91 L 89.60 121.45 L 91.17 118.04 L 92.74 114.68 L 94.30 111.37 L 95.87 108.12 L 97.44 104.95 L 99.01 101.86 L 100.58 98.85 L 102.15 95.94 L 103.71 93.13 L 105.28 90.44 L 106.85 87.87 L 108.42 85.42 L 109.99 83.12 L 111.56 80.97 L 113.12 78.97 L 114.69 77.13 L 116.26 75.46 L 117.83 73.96 L 119.40 72.64 L 120.96 71.51 L 122.53 70.56 L 124.10 69.79 L 125.67 69.22 L 127.24 68.83 L 128.81 68.62 L 130.37 68.60 L 131.94 68.76 L 133.51 69.09 L 135.08 69.59 L 136.65 70.25 L 138.22 71.06 L 139.78 72.02 L 141.35 73.12 L 142.92 74.35 L 144.49 75.69 L 146.06 77.14 L 147.62 78.70 L 149.19 80.34 L 150.76 82.06 L 152.33 83.86 L 153.90 85.71 L 155.47 87.62 L 157.03 89.57 L 158.60 91.56 L 160.17 93.57 L 161.74 95.61 L 163.31 97.65 L 164.88 99.71 L 166.44 101.76 L 168.01 103.82 L 169.58 105.86 L 171.15 107.89 L 172.72 109.90 L 174.28 111.89 L 175.85 113.86 L 177.42 115.80 L 178.99 117.71 L 180.56 119.59 L 182.13 121.43 L 183.69 123.25 L 185.26 125.02 L 186.83 126.76 L 188.40 128.46 L 189.97 130.12 L 191.54 131.75 L 193.10 133.33 L 194.67 134.88 L 196.24 136.39 L 197.81 137.86 L 199.38 139.29 L 200.94 140.69 L 202.51 142.05 L 204.08 143.37 L 205.65 144.65 L 207.22 145.90 L 208.79 147.12 L 210.35 148.30 L 211.92 149.45 L 213.49 150.56 L 215.06 151.65 L 216.63 152.70 L 218.20 153.72 L 219.76 154.71 L 221.33 155.68 L 222.90 156.61 L 224.47 157.52 L 226.04 158.41 L 227.60 159.27 L 229.17 160.10 L 230.74 160.91 L 232.31 161.69 L 233.88 162.45 L 235.45 163.20 L 237.01 163.91 L 238.58 164.61 L 240.15 165.29 L 241.72 165.95 L 243.29 166.59 L 244.86 167.21 L 246.42 167.82 L 247.99 168.41 L 249.56 168.98 L 251.13 169.53 L 252.70 170.07 L 254.26 170.60 L 255.83 171.11 L 257.40 171.60 L 258.97 172.08 L 260.54 172.55 L 262.11 173.01 L 263.67 173.45 L 265.24 173.88 L 266.81 174.30 L 268.38 174.71 L 269.95 175.11 L 271.52 175.50 L 273.08 175.87 L 274.65 176.24 L 276.22 176.60 L 277.79 176.94 L 279.36 177.28 L 280.92 177.61 L 282.49 177.93 L 284.06 178.25 L 285.63 178.55 L 287.20 178.85 L 288.77 179.14 L 290.33 179.42 L 291.90 179.70 L 293.47 179.97 L 295.04 180.23 L 296.61 180.49 L 298.18 180.73 L 299.74 180.98 L 301.31 181.21 L 302.88 181.45 L 304.45 181.67 L 306.02 181.89 L 307.58 182.11 L 309.15 182.32 L 310.72 182.52 L 312.29 182.72 L 313.86 182.92 L 315.43 183.11 L 316.99 183.30 L 318.56 183.48 L 320.13 183.66 L 321.70 183.83 L 323.27 184.00 L 324.84 184.17 L 326.40 184.33 L 327.97 184.49 L 329.54 184.65 L 331.11 184.80 L 332.68 184.95 L 334.24 185.09 L 335.81 185.24 L 337.38 185.38 L 338.95 185.51 L 340.52 185.65 L 342.09 185.78 L 343.65 185.90 L 345.22 186.03 L 346.79 186.15 L 348.36 186.27 L 349.93 186.39 L 351.50 186.50 L 353.06 186.62 L 354.63 186.73 L 356.20 186.83 L 357.77 186.94 L 359.34 187.04 L 360.90 187.14 L 362.47 187.24 L 364.04 187.34 L 365.61 187.44 L 367.18 187.53 L 368.75 187.62 L 370.31 187.71 L 371.88 187.80\" fill=\"none\" stroke=\"#143c78\" stroke-width=\"2.2\"/><circle cx=\"129.77786256710954\" cy=\"68.58880025161082\" r=\"3\" fill=\"#8a6d1d\"/><text x=\"135.77786256710954\" y=\"62.58880025161082\" font-size=\"11\" fill=\"#8a6d1d\">(1.41, 0.0884)</text><text x=\"388\" y=\"197.69230769230768\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">t</text><text x=\"44.23529411764706\" y=\"32\" font-size=\"11\" fill=\"#16233b\" font-style=\"italic\">v</text></svg>"
+  }
+]
