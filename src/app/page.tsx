@@ -8,12 +8,12 @@ import { testimonials } from "@/lib/testimonials";
 const mainOffers = [
   {
     number: "01",
-    label: "Main offering",
+    label: "All four pathways",
     title: "Online courses",
-    body: "Complete AA and AI courses at Higher and Standard Level, organised around the real IB syllabus.",
+    body: "Complete courses for AA HL, AA SL, AI HL and AI SL, organised around the IB Mathematics syllabus.",
     href: "/courses",
-    cta: "Find your course",
-    className: "offer-card-primary",
+    cta: "Explore the courses",
+    className: "",
   },
   {
     number: "02",
@@ -50,7 +50,7 @@ export default function HomePage() {
   return (
     <>
       <section className="new-hero new-hero-simple">
-        <div className="hero-math hero-math-one" aria-hidden="true">f(x)</div>
+        <div className="hero-math hero-math-one" aria-hidden="true">𝑓(𝑥)</div>
         <div className="hero-math hero-math-two" aria-hidden="true">∫</div>
         <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
@@ -66,12 +66,9 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="section offers-section">
+      <section className="section offers-section" id="offers">
         <Container className="stack-xl">
-          <div className="section-heading-row">
-            <div className="stack"><Eyebrow>Start here</Eyebrow><h2>What do you need today?</h2></div>
-            <p className="lede">Choose the route that matches your goal. Courses are the complete learning experience; the other areas give you more focused support.</p>
-          </div>
+          <h2>What do you need today?</h2>
           <div className="offer-grid">
             {mainOffers.map((offer) => (
               <Link className={`offer-card ${offer.className}`.trim()} href={offer.href} key={offer.title}>
@@ -86,28 +83,22 @@ export default function HomePage() {
 
       <section className="section who-section" id="about-mr-flynn">
         <Container className="who-grid">
-          <div className="stack-lg">
-            <Eyebrow>Who is Mr Flynn?</Eyebrow>
-            <h2>Experienced IB insight, explained clearly.</h2>
-            <p className="lede">Mr Flynn is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons have helped students around the world understand difficult ideas more clearly.</p>
-            <ButtonLink href="/about" secondary>About Mr Flynn</ButtonLink>
+          <figure className="who-photo">
+            <Image src="/images/rob-flynn.webp" alt="Mr Flynn, IB Mathematics teacher, examiner and IA moderator" fill sizes="(max-width: 900px) 92vw, 38vw" />
+          </figure>
+          <div className="who-content stack-xl">
+            <div className="stack-lg">
+              <Eyebrow>Who is Mr Flynn?</Eyebrow>
+              <h2>Experienced IB insight, explained clearly.</h2>
+              <p className="lede">Mr Flynn is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons help IB students succeed in IB Mathematics.</p>
+            </div>
+            <div className="who-proof-grid" aria-label="Mr Flynn's experience">
+              <article><span>01</span><strong>Experienced teacher</strong><p>Focused on teaching the IB Mathematics curriculum clearly.</p></article>
+              <article><span>02</span><strong>IB examiner</strong><p>Assessment insight grounded in direct examination experience.</p></article>
+              <article><span>03</span><strong>IA moderator</strong><p>Clear guidance on what strong Internal Assessments need to demonstrate.</p></article>
+              <article className="who-proof-featured"><span>1M+</span><strong>YouTube views</strong><p>Trusted explanations watched by IB Mathematics students around the world.</p></article>
+            </div>
           </div>
-          <div className="who-proof-grid" aria-label="Mr Flynn's experience">
-            <article><span>01</span><strong>Experienced teacher</strong><p>Years of classroom experience teaching the IB Mathematics curriculum.</p></article>
-            <article><span>02</span><strong>IB examiner</strong><p>Assessment insight grounded in direct experience of IB Mathematics examinations.</p></article>
-            <article><span>03</span><strong>IA moderator</strong><p>Clear guidance on what strong Internal Assessments need to demonstrate.</p></article>
-            <article className="who-proof-featured"><span>1M+</span><strong>YouTube views</strong><p>Trusted explanations watched by IB Mathematics students around the world.</p></article>
-          </div>
-        </Container>
-      </section>
-
-      <section className="dubai-band dubai-band-home">
-        <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline with mathematical curves and coordinate axes" fill sizes="100vw" />
-        <div className="dubai-band-overlay" />
-        <Container className="dubai-band-copy">
-          <span>Built for the real IB classroom</span>
-          <h2>Expert teaching, wherever you are.</h2>
-          <p>Learn at your own pace, revisit difficult ideas and keep the whole syllabus within reach.</p>
         </Container>
       </section>
 
@@ -138,7 +129,7 @@ export default function HomePage() {
         <Container className="stack-xl">
           <div className="section-heading-row lesson-heading">
             <div className="stack"><Eyebrow>Example lesson</Eyebrow><h2>Watch a complete lesson.</h2></div>
-            <p className="lede">See the pace, explanation and worked-question approach before choosing a course.</p>
+            <p className="lede">See the pace, explanation and worked-question approach in a complete IB Mathematics lesson.</p>
           </div>
           <div className="lesson-grid lesson-grid-feature">
             <div className="lesson-video"><VideoEmbed title="Equation of a straight line — sample Mr Flynn IB lesson" videoId="o3aDg3PZraY" /></div>
@@ -154,7 +145,9 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="section testimonials-section">
+      <section className="section testimonials-section testimonials-dubai" id="student-experiences">
+        <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline and the Burj Al Arab with mathematical graphs" fill sizes="100vw" />
+        <div className="testimonials-dubai-overlay" />
         <Container className="stack-xl">
           <div className="section-heading-row">
             <div className="stack"><Eyebrow>Student experiences</Eyebrow><h2>Clear explanations. Real confidence.</h2></div>
