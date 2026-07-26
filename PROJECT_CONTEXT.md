@@ -164,12 +164,15 @@ Accuracy and transparency are especially important. Earlier assistance incorrect
 
 ## Current work in progress
 
-The temporary banner workflow test succeeded and is being replaced by the first complete content-led website redesign on branch `agent/homepage-redesign`. The redesign is authorised for a Vercel preview but must not be merged or published to production until Rob approves the finished preview.
+The temporary banner workflow test succeeded and has been superseded by the first complete content-led website redesign on branch `agent/homepage-redesign`. Draft pull request #2 is the active review: `https://github.com/robbieflynn/mrflynnib-chatgpt/pull/2`. Its Vercel preview is `https://mrflynnib-chatgpt-git-agent-homepage-redesign-mr-flynn-ib.vercel.app`.
 
-The local repository also contains untracked generated dependency/build items from verification (`node_modules/`, `.next/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`). These are not part of the banner commit and must not be added to a pull request without an intentional dependency-management decision.
+The preview includes the redesigned homepage and complete course, IA, school, book, question-bank, tutoring, testimonial, navigation, metadata, and legal-draft journeys. Lint passes with one pre-existing PostCSS warning and no errors; the Next.js production build passes and generates all 30 routes. The deployed Vercel preview has also been opened and rendered successfully. It must not be merged or published to production until Rob approves it.
+
+The local repository also contains untracked generated dependency/build items from verification (`node_modules/`, `.next/`, `.pnpm-store/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`). These are not part of the website commit and must not be added to a pull request without an intentional dependency-management decision.
 
 ## Immediate next steps
 
-1. Build and verify the redesigned homepage and the supporting course, IA, school, book, question-bank, and tutoring journeys.
-2. Push a focused branch and provide a Vercel preview for Rob's visual review.
-3. Iterate on the preview, then merge and publish only after Rob explicitly approves it.
+1. Rob reviews the Vercel preview on desktop and mobile and identifies any copy, layout, pricing, or journey changes.
+2. Codex iterates on the same branch and preview until Rob approves the finished website.
+3. Confirm school licence operations, production analytics and final legal copy before production launch.
+4. Merge and publish only after Rob explicitly approves it.
