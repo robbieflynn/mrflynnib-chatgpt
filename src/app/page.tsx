@@ -1,9 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ButtonLink, Container, Eyebrow } from "@/components/ui";
-import { CourseCard } from "@/components/course-card";
 import { VideoEmbed } from "@/components/video-embed";
-import { courses } from "@/lib/content";
 import { siteConfig } from "@/lib/site";
 import { testimonials } from "@/lib/testimonials";
 
@@ -12,7 +10,7 @@ const mainOffers = [
     number: "01",
     label: "Main offering",
     title: "Online courses",
-    body: "Complete AA and AI courses at Higher and Standard Level, organised by the real IB syllabus and taught by Rob Flynn.",
+    body: "Complete AA and AI courses at Higher and Standard Level, organised around the real IB syllabus.",
     href: "/courses",
     cta: "Find your course",
     className: "offer-card-primary",
@@ -51,57 +49,20 @@ const featuredTestimonials = testimonials.filter((testimonial) => testimonial.fe
 export default function HomePage() {
   return (
     <>
-      <section className="new-hero">
+      <section className="new-hero new-hero-simple">
         <div className="hero-math hero-math-one" aria-hidden="true">f(x)</div>
         <div className="hero-math hero-math-two" aria-hidden="true">∫</div>
-        <Container className="new-hero-grid">
+        <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
-            <div className="hero-kicker"><span className="hero-kicker-dot" />Expert-led IB Mathematics</div>
             <h1>The home of <span>IB Mathematics.</span></h1>
             <p className="home-hero-lede">
-              Clear courses, trusted IA guidance and focused support for students, teachers and schools—taught by Rob Flynn.
+              Complete IB Mathematics courses, trusted IA guidance and focused support for students, teachers and schools.
             </p>
             <div className="cluster hero-actions">
               <ButtonLink href="/courses">Find your course</ButtonLink>
               <ButtonLink href="/ia" secondary>Explore IA guidance</ButtonLink>
             </div>
-            <div className="hero-credentials" aria-label="Rob Flynn's credentials">
-              <span>IB teacher</span><i />
-              <span>Examiner</span><i />
-              <span>Moderator</span>
-            </div>
           </div>
-
-          <div className="hero-portrait-wrap">
-            <div className="hero-portrait-card">
-              <Image
-                src="/images/rob-flynn.webp"
-                alt="Rob Flynn, IB Mathematics teacher, examiner and moderator"
-                fill
-                priority
-                sizes="(max-width: 900px) 92vw, 46vw"
-              />
-              <div className="hero-portrait-shade" />
-              <div className="hero-portrait-caption">
-                <span>Learn with</span>
-                <strong>Rob Flynn</strong>
-              </div>
-            </div>
-            <a className="hero-video-chip" href="https://www.youtube.com/watch?v=o3aDg3PZraY&list=PLcvv9pSnukaU11Abk84eQ1OZVqXsqATQh&index=3" target="_blank" rel="noreferrer">
-              <span className="play-dot">▶</span>
-              <span><small>Watch a free lesson</small><strong>See how Rob teaches</strong></span>
-            </a>
-            <div className="hero-view-chip"><strong>1M+</strong><span>YouTube views</span></div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="proof-strip" aria-label="Why students learn with Mr Flynn IB">
-        <Container className="proof-strip-grid">
-          <div><strong>4</strong><span>complete IB Mathematics courses</span></div>
-          <div><strong>1M+</strong><span>YouTube views worldwide</span></div>
-          <div><strong>IB</strong><span>teacher, examiner and moderator insight</span></div>
-          <div><strong>24/7</strong><span>replay lessons when you need them</span></div>
         </Container>
       </section>
 
@@ -123,14 +84,30 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="section courses-home-section">
-        <Container className="stack-xl">
-          <div className="courses-heading">
-            <div className="stack"><Eyebrow>Online courses</Eyebrow><h2>Your syllabus, clearly explained.</h2><p className="lede">Choose your exact pathway. Every course is organised across the five IB topic areas and delivered through Teachable.</p></div>
-            <div className="price-callout"><span>Most popular access</span><strong>$79</strong><small>Two full years</small></div>
+      <section className="section who-section" id="about-mr-flynn">
+        <Container className="who-grid">
+          <div className="stack-lg">
+            <Eyebrow>Who is Mr Flynn?</Eyebrow>
+            <h2>Experienced IB insight, explained clearly.</h2>
+            <p className="lede">Mr Flynn is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons have helped students around the world understand difficult ideas more clearly.</p>
+            <ButtonLink href="/about" secondary>About Mr Flynn</ButtonLink>
           </div>
-          <div className="grid-4 course-grid-home">{courses.map((course) => <CourseCard key={course.slug} course={course} />)}</div>
-          <div className="centre"><ButtonLink href="/courses" secondary>Compare all four courses</ButtonLink></div>
+          <div className="who-proof-grid" aria-label="Mr Flynn's experience">
+            <article><span>01</span><strong>Experienced teacher</strong><p>Years of classroom experience teaching the IB Mathematics curriculum.</p></article>
+            <article><span>02</span><strong>IB examiner</strong><p>Assessment insight grounded in direct experience of IB Mathematics examinations.</p></article>
+            <article><span>03</span><strong>IA moderator</strong><p>Clear guidance on what strong Internal Assessments need to demonstrate.</p></article>
+            <article className="who-proof-featured"><span>1M+</span><strong>YouTube views</strong><p>Trusted explanations watched by IB Mathematics students around the world.</p></article>
+          </div>
+        </Container>
+      </section>
+
+      <section className="dubai-band dubai-band-home">
+        <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline with mathematical curves and coordinate axes" fill sizes="100vw" />
+        <div className="dubai-band-overlay" />
+        <Container className="dubai-band-copy">
+          <span>Built for the real IB classroom</span>
+          <h2>Expert teaching, wherever you are.</h2>
+          <p>Learn at your own pace, revisit difficult ideas and keep the whole syllabus within reach.</p>
         </Container>
       </section>
 
@@ -139,7 +116,7 @@ export default function HomePage() {
           <div className="ia-copy stack-lg">
             <Eyebrow>Internal Assessment</Eyebrow>
             <h2>IA guidance students around the world trust.</h2>
-            <p className="lede">The IA is one of the areas that made Mr Flynn IB well known. Start with the complete video guide, explore possible ideas, then go deeper with the book.</p>
+            <p className="lede">Start with the complete video guide, explore possible ideas, then go deeper with the book.</p>
             <div className="cluster"><ButtonLink href="/ia">Explore the IA hub</ButtonLink><ButtonLink href="/book" secondary>See the IA book</ButtonLink></div>
           </div>
           <div className="ia-route-grid">
@@ -158,16 +135,21 @@ export default function HomePage() {
       </section>
 
       <section className="section lesson-section">
-        <Container className="lesson-grid">
-          <div className="lesson-video"><VideoEmbed title="Equation of a straight line — sample Mr Flynn IB lesson" videoId="o3aDg3PZraY" /></div>
-          <div className="lesson-copy stack-lg">
-            <Eyebrow>Try a lesson</Eyebrow>
-            <h2>See whether Rob&apos;s teaching style works for you.</h2>
-            <p className="lede">A course should earn your confidence before you buy it. Watch a full example and see the pace, explanation and worked-question approach for yourself.</p>
-            <blockquote className="outcome-quote">
-              <p>“Your videos made me go from a 4 at the start of the year to a 7 in my first-semester exams.”</p>
-              <footer>Abdulaziz · Saudi Arabia</footer>
-            </blockquote>
+        <Container className="stack-xl">
+          <div className="section-heading-row lesson-heading">
+            <div className="stack"><Eyebrow>Example lesson</Eyebrow><h2>Watch a complete lesson.</h2></div>
+            <p className="lede">See the pace, explanation and worked-question approach before choosing a course.</p>
+          </div>
+          <div className="lesson-grid lesson-grid-feature">
+            <div className="lesson-video"><VideoEmbed title="Equation of a straight line — sample Mr Flynn IB lesson" videoId="o3aDg3PZraY" /></div>
+            <div className="lesson-result-panel stack-lg">
+              <Eyebrow>Student experience</Eyebrow>
+              <h3>Clear explanations can change how Mathematics feels.</h3>
+              <blockquote className="outcome-quote">
+                <p>“Your videos made me go from a 4 at the start of the year to a 7 in my first-semester exams.”</p>
+                <footer>Abdulaziz · Saudi Arabia</footer>
+              </blockquote>
+            </div>
           </div>
         </Container>
       </section>
@@ -203,26 +185,6 @@ export default function HomePage() {
             <p className="lede">A practical, 320-page guide that breaks the Maths IA into clear, manageable stages and explains what examiners are looking for.</p>
             <ul className="check-list book-points"><li>Clear stages from choosing an idea to the final submission</li><li>Examiner-informed guidance and real mathematical examples</li><li>Written specifically for IB Mathematics students</li></ul>
             <div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href={siteConfig.bookUrl} secondary external>View on Amazon</ButtonLink></div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="dubai-band">
-        <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline with mathematical curves and coordinate axes" fill sizes="100vw" />
-        <div className="dubai-band-overlay" />
-        <Container className="dubai-band-copy">
-          <span>Built for the real IB classroom</span>
-          <h2>Expert teaching, wherever you are.</h2>
-          <p>Learn at your own pace, revisit difficult ideas and keep the whole syllabus within reach.</p>
-        </Container>
-      </section>
-
-      <section className="final-cta-section">
-        <Container>
-          <div className="final-cta-card">
-            <div className="final-cta-mark"><Image src="/images/mr-flynn-mark.png" alt="" width={58} height={52} /></div>
-            <div className="stack"><span>Ready to begin?</span><h2>Start with the course made for you.</h2><p>AA or AI. Higher or Standard Level. Two years of access for $79.</p></div>
-            <div className="cluster"><ButtonLink href="/courses">Find your course</ButtonLink><ButtonLink href="/ia" secondary>Explore IA guidance</ButtonLink></div>
           </div>
         </Container>
       </section>
