@@ -126,17 +126,16 @@ Accuracy and transparency are especially important. Earlier assistance incorrect
 
 A temporary workflow test was requested: add a large banner at the top of the homepage saying exactly **“Hello, it worked.”** without changing other content.
 
-The banner was implemented and committed locally on branch `agent/add-homepage-success-banner` with commit `59e20ae`. Lint completed with one pre-existing warning in `postcss.config.mjs`, and the full Next.js production build passed. The push was blocked because local GitHub authentication was not configured; therefore no remote branch, pull request, or Vercel preview had been created at the time this context was written.
+The banner is implemented on local branch `agent/add-homepage-success-banner`. That branch now also contains this durable project context and the repository-level Codex instructions, so it is the single reviewable branch for completing the workflow test. Lint completed with one pre-existing warning in `postcss.config.mjs`, and the full Next.js production build passed on 26 July 2026. A fresh push attempt was blocked because local GitHub authentication was not configured (`could not read Username for 'https://github.com'`); therefore no remote branch, pull request, or Vercel preview exists yet.
 
 The local repository also contains untracked generated dependency/build items from verification (`node_modules/`, `.next/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`). These are not part of the banner commit and must not be added to a pull request without an intentional dependency-management decision.
 
 ## Immediate next steps
 
 1. Complete GitHub write authentication for the local repository.
-2. Push `agent/add-homepage-success-banner`.
+2. Push the ready local branch `agent/add-homepage-success-banner`, which contains both the permanent project context and temporary banner.
 3. Open a draft pull request targeting `main`.
 4. Wait for and report the Vercel preview URL.
 5. Let Rob confirm the workflow by viewing the temporary banner.
 6. Remove the temporary banner after the test, using the same preview-and-approval workflow.
 7. Reconcile and remove unneeded generated local files without including them in product commits.
-
