@@ -307,6 +307,10 @@ textarea { min-height: 130px; resize: vertical; }
 .who-section { overflow: hidden; background: white; }
 .who-text-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
 .who-text-grid > .stack-lg { align-items: flex-start; }
+.who-person-row { display: flex; align-items: center; gap: 1.25rem; }
+.who-photo-small { position: relative; width: 150px; height: 150px; flex: 0 0 150px; margin: 0; overflow: hidden; border: 5px solid white; border-radius: 50%; background: var(--sky); box-shadow: 0 18px 48px rgba(11,21,48,.14); }
+.who-photo-small img { object-fit: cover; object-position: center 18%; }
+.who-person-row .lede { font-size: 1rem; }
 .who-proof-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 .who-proof-grid article { min-height: 195px; padding: 1.35rem; display: flex; flex-direction: column; gap: .7rem; border: 1px solid var(--line); border-radius: 1.25rem; background: #fbfaf6; }
 .who-proof-grid article > span { color: var(--teal-dark); font-size: .78rem; font-weight: 950; letter-spacing: .08em; }
@@ -332,7 +336,10 @@ textarea { min-height: 130px; resize: vertical; }
 .course-price strong { color: var(--teal-dark); font-size: 2rem; letter-spacing: -.05em; }
 .course-price span { color: var(--muted); font-size: .78rem; }
 
-.ia-home-section { padding: clamp(6rem, 10vw, 9rem) 0; overflow: hidden; background: radial-gradient(circle at 15% 10%, rgba(35,127,202,.28), transparent 33%), #071024; color: white; }
+.ia-home-section { position: relative; padding: clamp(6rem, 10vw, 9rem) 0; overflow: hidden; background: #071024; color: white; }
+.ia-home-background { object-fit: cover; object-position: center; opacity: .48; }
+.ia-home-image-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(7,16,36,.96), rgba(7,16,36,.7) 60%, rgba(7,16,36,.58)), linear-gradient(0deg, rgba(7,16,36,.45), transparent 55%); }
+.ia-home-section > .container { position: relative; z-index: 2; }
 .ia-home-grid { display: grid; grid-template-columns: .78fr 1.22fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
 .ia-home-section .eyebrow { color: #7ac5ff; }
 .ia-home-section .lede { color: rgba(255,255,255,.72); }
@@ -364,17 +371,6 @@ textarea { min-height: 130px; resize: vertical; }
 .outcome-quote footer { margin-top: .65rem; color: var(--muted); font-size: .8rem; }
 
 .testimonials-section { background: #fbfaf6; }
-.testimonials-dubai { overflow: hidden; background: var(--ink); color: white; }
-.testimonials-dubai-visual { position: relative; min-height: 520px; display: grid; align-items: center; overflow: hidden; }
-.testimonials-dubai-visual > img { object-fit: cover; object-position: center; }
-.testimonials-dubai-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(7,16,36,.86), rgba(7,16,36,.18) 64%, rgba(7,16,36,.08)), linear-gradient(0deg, rgba(7,16,36,.22), transparent 45%); }
-.testimonials-dubai-heading { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr .7fr; gap: clamp(3rem, 8vw, 8rem); align-items: end; color: white; }
-.testimonials-dubai-heading .eyebrow { color: #8bcbfb; }
-.testimonials-dubai-heading .lede { color: rgba(255,255,255,.82); text-shadow: 0 2px 18px rgba(7,16,36,.4); }
-.testimonials-dubai-content { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #071024; }
-.testimonials-dubai .testimonial-card { border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.94); color: var(--ink); backdrop-filter: blur(12px); }
-.testimonials-dubai .button-secondary { border-color: rgba(255,255,255,.55); background: rgba(255,255,255,.08); color: white; }
-.testimonials-dubai .button-secondary:hover { background: white; color: var(--ink); }
 .testimonial-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; }
 .testimonial-card { min-height: 285px; margin: 0; padding: 1.45rem; display: flex; flex-direction: column; gap: 1rem; border: 1px solid var(--line); border-radius: 1.25rem; background: white; box-shadow: 0 12px 34px rgba(11,21,48,.035); }
 .testimonial-grid .testimonial-card:nth-child(1), .testimonial-grid .testimonial-card:nth-child(2) { grid-column: span 3; }
@@ -573,7 +569,7 @@ textarea { min-height: 130px; resize: vertical; }
   .new-hero-grid, .ia-home-grid, .lesson-grid, .book-home-grid, .course-index-hero-grid, .course-detail-grid, .ia-page-hero-grid, .ia-book-cta-grid, .question-bank-hero-grid, .schools-hero-grid, .book-page-grid, .book-author-grid { grid-template-columns: 1fr; }
   .new-hero { padding-top: 4rem; }
   .new-hero h1 { max-width: 9ch; }
-  .who-text-grid, .testimonials-dubai-heading { grid-template-columns: 1fr; }
+  .who-text-grid { grid-template-columns: 1fr; }
   .hero-portrait-wrap { width: min(100%, 640px); min-height: 600px; margin-inline: auto; }
   .proof-strip-grid { grid-template-columns: repeat(2, 1fr); }
   .proof-strip-grid > div:nth-child(2) { border-right: 0; }
@@ -609,7 +605,7 @@ textarea { min-height: 130px; resize: vertical; }
   .proof-strip-grid > div:last-child { border-bottom: 0; }
   .offer-card-primary { grid-column: auto; }
   .offer-card { min-height: 300px; }
-  .testimonials-dubai-visual { min-height: 430px; }
+  .who-photo-small { width: 120px; height: 120px; flex-basis: 120px; }
   .courses-heading { gap: 1.5rem; }
   .ia-route-card { min-height: 340px; }
   .book-home-visual { min-height: 470px; }

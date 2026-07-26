@@ -86,7 +86,12 @@ export default function HomePage() {
           <div className="stack-lg">
             <Eyebrow>Who is Mr Flynn?</Eyebrow>
             <h2>Experienced IB insight, explained clearly.</h2>
-            <p className="lede">Mr Flynn is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons have helped IB students across the world succeed in IB Mathematics.</p>
+            <div className="who-person-row">
+              <figure className="who-photo-small">
+                <Image src="/images/rob-flynn.webp" alt="Mr Flynn" fill sizes="150px" />
+              </figure>
+              <p className="lede">Mr Flynn is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons have helped IB students across the world succeed in IB Mathematics.</p>
+            </div>
           </div>
           <div className="who-proof-grid" aria-label="Mr Flynn's experience">
             <article><span>01</span><strong>Experienced teacher</strong><p>Focused on teaching the IB Mathematics curriculum clearly.</p></article>
@@ -117,6 +122,8 @@ export default function HomePage() {
       </section>
 
       <section className="ia-home-section" id="ia-guidance">
+        <Image className="ia-home-background" src="/images/dubai-mathematics.webp" alt="" fill sizes="100vw" />
+        <div className="ia-home-image-overlay" />
         <Container className="ia-home-grid">
           <div className="ia-copy stack-lg">
             <Eyebrow>Internal Assessment</Eyebrow>
@@ -139,29 +146,23 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="testimonials-dubai" id="student-experiences">
-        <div className="testimonials-dubai-visual">
-          <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline and the Burj Al Arab with mathematical graphs" fill sizes="100vw" />
-          <div className="testimonials-dubai-overlay" />
-          <Container className="testimonials-dubai-heading">
-            <div className="stack"><Eyebrow>Student experiences</Eyebrow><h2>Clear explanations.<br />Real confidence.</h2></div>
+      <section className="section testimonials-section" id="student-experiences">
+        <Container className="stack-xl">
+          <div className="section-heading-row">
+            <div className="stack"><Eyebrow>Student experiences</Eyebrow><h2>Clear explanations. Real confidence.</h2></div>
             <p className="lede">Students use Mr Flynn IB to fill gaps, prepare for assessments and understand what moved too quickly in class.</p>
-          </Container>
-        </div>
-        <div className="testimonials-dubai-content">
-          <Container className="stack-xl">
-            <div className="testimonial-grid">
-              {featuredTestimonials.map((testimonial) => (
-                <figure className="testimonial-card" key={testimonial.name}>
-                  <span className="quote-mark" aria-hidden="true">“</span>
-                  <blockquote>{testimonial.quote}</blockquote>
-                  <figcaption><strong>{testimonial.name}</strong><span>{testimonial.location}</span></figcaption>
-                </figure>
-              ))}
-            </div>
-            <div className="centre"><ButtonLink href="/results" secondary>Read more student experiences</ButtonLink></div>
-          </Container>
-        </div>
+          </div>
+          <div className="testimonial-grid">
+            {featuredTestimonials.map((testimonial) => (
+              <figure className="testimonial-card" key={testimonial.name}>
+                <span className="quote-mark" aria-hidden="true">“</span>
+                <blockquote>{testimonial.quote}</blockquote>
+                <figcaption><strong>{testimonial.name}</strong><span>{testimonial.location}</span></figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="centre"><ButtonLink href="/results" secondary>Read more student experiences</ButtonLink></div>
+        </Container>
       </section>
 
       <section className="section book-home-section">
