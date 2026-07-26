@@ -10,7 +10,7 @@ const mainOffers = [
     number: "01",
     label: "All four pathways",
     title: "Online courses",
-    body: "Complete courses for AA HL, AA SL, AI HL and AI SL, organised around the IB Mathematics syllabus.",
+    body: "Complete online courses for all IB Mathematics courses.",
     href: "/courses",
     cta: "Explore the courses",
     className: "",
@@ -28,7 +28,7 @@ const mainOffers = [
     number: "03",
     label: "For departments",
     title: "Schools",
-    body: "Give a whole cohort access to every course with simple annual pricing and one school invoice.",
+    body: "IB Mathematics course access for students, departments and schools.",
     href: "/schools",
     cta: "View school options",
     className: "",
@@ -82,27 +82,41 @@ export default function HomePage() {
       </section>
 
       <section className="section who-section" id="about-mr-flynn">
-        <Container className="who-grid">
-          <figure className="who-photo">
-            <Image src="/images/rob-flynn.webp" alt="Mr Flynn, IB Mathematics teacher, examiner and IA moderator" fill sizes="(max-width: 900px) 92vw, 38vw" />
-          </figure>
-          <div className="who-content stack-xl">
-            <div className="stack-lg">
-              <Eyebrow>Who is Mr Flynn?</Eyebrow>
-              <h2>Experienced IB insight, explained clearly.</h2>
-              <p className="lede">Mr Flynn is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons help IB students succeed in IB Mathematics.</p>
-            </div>
-            <div className="who-proof-grid" aria-label="Mr Flynn's experience">
-              <article><span>01</span><strong>Experienced teacher</strong><p>Focused on teaching the IB Mathematics curriculum clearly.</p></article>
-              <article><span>02</span><strong>IB examiner</strong><p>Assessment insight grounded in direct examination experience.</p></article>
-              <article><span>03</span><strong>IA moderator</strong><p>Clear guidance on what strong Internal Assessments need to demonstrate.</p></article>
-              <article className="who-proof-featured"><span>1M+</span><strong>YouTube views</strong><p>Trusted explanations watched by IB Mathematics students around the world.</p></article>
+        <Container className="who-text-grid">
+          <div className="stack-lg">
+            <Eyebrow>Who is Mr Flynn?</Eyebrow>
+            <h2>Experienced IB insight, explained clearly.</h2>
+            <p className="lede">Mr Flynn is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons have helped IB students across the world succeed in IB Mathematics.</p>
+          </div>
+          <div className="who-proof-grid" aria-label="Mr Flynn's experience">
+            <article><span>01</span><strong>Experienced teacher</strong><p>Focused on teaching the IB Mathematics curriculum clearly.</p></article>
+            <article><span>02</span><strong>IB examiner</strong><p>Assessment insight grounded in direct examination experience.</p></article>
+            <article><span>03</span><strong>IA moderator</strong><p>Clear guidance on what strong Internal Assessments need to demonstrate.</p></article>
+            <article className="who-proof-featured"><span>1 million+</span><strong>YouTube views</strong><p>Trusted explanations watched by IB Mathematics students around the world.</p></article>
+          </div>
+        </Container>
+      </section>
+
+      <section className="section lesson-section" id="example-lesson">
+        <Container className="stack-xl">
+          <div className="section-heading-row lesson-heading">
+            <div className="stack"><Eyebrow>Example lesson</Eyebrow><h2>Watch a complete lesson.</h2></div>
+            <p className="lede">See the pace, explanation and worked-question approach in a complete IB Mathematics lesson.</p>
+          </div>
+          <div className="lesson-grid lesson-grid-feature">
+            <div className="lesson-video"><VideoEmbed title="Equation of a straight line — sample Mr Flynn IB lesson" videoId="o3aDg3PZraY" /></div>
+            <div className="lesson-result-panel stack-lg">
+              <Eyebrow>Student experience</Eyebrow>
+              <blockquote className="outcome-quote">
+                <p>“Your videos made me go from a 4 at the start of the year to a 7 in my first-semester exams.”</p>
+                <footer>Abdulaziz · Saudi Arabia</footer>
+              </blockquote>
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="ia-home-section">
+      <section className="ia-home-section" id="ia-guidance">
         <Container className="ia-home-grid">
           <div className="ia-copy stack-lg">
             <Eyebrow>Internal Assessment</Eyebrow>
@@ -125,45 +139,29 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="section lesson-section">
-        <Container className="stack-xl">
-          <div className="section-heading-row lesson-heading">
-            <div className="stack"><Eyebrow>Example lesson</Eyebrow><h2>Watch a complete lesson.</h2></div>
-            <p className="lede">See the pace, explanation and worked-question approach in a complete IB Mathematics lesson.</p>
-          </div>
-          <div className="lesson-grid lesson-grid-feature">
-            <div className="lesson-video"><VideoEmbed title="Equation of a straight line — sample Mr Flynn IB lesson" videoId="o3aDg3PZraY" /></div>
-            <div className="lesson-result-panel stack-lg">
-              <Eyebrow>Student experience</Eyebrow>
-              <h3>Clear explanations can change how Mathematics feels.</h3>
-              <blockquote className="outcome-quote">
-                <p>“Your videos made me go from a 4 at the start of the year to a 7 in my first-semester exams.”</p>
-                <footer>Abdulaziz · Saudi Arabia</footer>
-              </blockquote>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="section testimonials-section testimonials-dubai" id="student-experiences">
-        <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline and the Burj Al Arab with mathematical graphs" fill sizes="100vw" />
-        <div className="testimonials-dubai-overlay" />
-        <Container className="stack-xl">
-          <div className="section-heading-row">
-            <div className="stack"><Eyebrow>Student experiences</Eyebrow><h2>Clear explanations. Real confidence.</h2></div>
+      <section className="testimonials-dubai" id="student-experiences">
+        <div className="testimonials-dubai-visual">
+          <Image src="/images/dubai-mathematics.webp" alt="Dubai skyline and the Burj Al Arab with mathematical graphs" fill sizes="100vw" />
+          <div className="testimonials-dubai-overlay" />
+          <Container className="testimonials-dubai-heading">
+            <div className="stack"><Eyebrow>Student experiences</Eyebrow><h2>Clear explanations.<br />Real confidence.</h2></div>
             <p className="lede">Students use Mr Flynn IB to fill gaps, prepare for assessments and understand what moved too quickly in class.</p>
-          </div>
-          <div className="testimonial-grid">
-            {featuredTestimonials.map((testimonial) => (
-              <figure className="testimonial-card" key={testimonial.name}>
-                <span className="quote-mark" aria-hidden="true">“</span>
-                <blockquote>{testimonial.quote}</blockquote>
-                <figcaption><strong>{testimonial.name}</strong><span>{testimonial.location}</span></figcaption>
-              </figure>
-            ))}
-          </div>
-          <div className="centre"><ButtonLink href="/results" secondary>Read more student experiences</ButtonLink></div>
-        </Container>
+          </Container>
+        </div>
+        <div className="testimonials-dubai-content">
+          <Container className="stack-xl">
+            <div className="testimonial-grid">
+              {featuredTestimonials.map((testimonial) => (
+                <figure className="testimonial-card" key={testimonial.name}>
+                  <span className="quote-mark" aria-hidden="true">“</span>
+                  <blockquote>{testimonial.quote}</blockquote>
+                  <figcaption><strong>{testimonial.name}</strong><span>{testimonial.location}</span></figcaption>
+                </figure>
+              ))}
+            </div>
+            <div className="centre"><ButtonLink href="/results" secondary>Read more student experiences</ButtonLink></div>
+          </Container>
+        </div>
       </section>
 
       <section className="section book-home-section">

@@ -305,17 +305,15 @@ textarea { min-height: 130px; resize: vertical; }
 .offer-card:hover .offer-link i { transform: translateX(4px); }
 
 .who-section { overflow: hidden; background: white; }
-.who-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
-.who-photo { position: relative; min-height: 720px; margin: 0; overflow: hidden; border-radius: 1.6rem; background: var(--sky); box-shadow: var(--shadow); }
-.who-photo img { object-fit: cover; object-position: center 14%; }
-.who-content > .stack-lg { align-items: flex-start; }
+.who-text-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
+.who-text-grid > .stack-lg { align-items: flex-start; }
 .who-proof-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
 .who-proof-grid article { min-height: 195px; padding: 1.35rem; display: flex; flex-direction: column; gap: .7rem; border: 1px solid var(--line); border-radius: 1.25rem; background: #fbfaf6; }
 .who-proof-grid article > span { color: var(--teal-dark); font-size: .78rem; font-weight: 950; letter-spacing: .08em; }
 .who-proof-grid article > strong { margin-top: auto; font-size: 1.3rem; letter-spacing: -.025em; }
 .who-proof-grid article > p { color: var(--muted); font-size: .86rem; }
 .who-proof-grid .who-proof-featured { border-color: transparent; background: radial-gradient(circle at 85% 10%, rgba(72,167,239,.32), transparent 38%), var(--ink); color: white; }
-.who-proof-grid .who-proof-featured > span { color: #7ac5ff; font-size: 2.4rem; letter-spacing: -.05em; }
+.who-proof-grid .who-proof-featured > span { color: #7ac5ff; font-size: clamp(1.75rem, 2.8vw, 2.4rem); letter-spacing: -.05em; line-height: 1; white-space: nowrap; }
 .who-proof-grid .who-proof-featured > p { color: rgba(255,255,255,.68); }
 
 .courses-home-section, .courses-page-section { background: #f2f7fb; }
@@ -357,7 +355,7 @@ textarea { min-height: 130px; resize: vertical; }
 .lesson-heading { align-items: end; }
 .lesson-grid-feature { align-items: stretch; }
 .lesson-grid-feature .lesson-video { display: grid; align-items: start; }
-.lesson-result-panel { padding: clamp(1.5rem, 4vw, 3rem); justify-content: center; border: 1px solid var(--line); border-radius: 1.25rem; background: #f2f7fb; }
+.lesson-result-panel { padding: clamp(1.5rem, 4vw, 3rem); align-content: center; border: 1px solid var(--line); border-radius: 1.25rem; background: #f2f7fb; }
 .lesson-result-panel h3 { max-width: 18ch; font-size: clamp(1.7rem, 3vw, 2.6rem); }
 .video-frame { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 1.25rem; background: #071024; box-shadow: 0 24px 70px rgba(11,21,48,.15); }
 .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
@@ -366,11 +364,14 @@ textarea { min-height: 130px; resize: vertical; }
 .outcome-quote footer { margin-top: .65rem; color: var(--muted); font-size: .8rem; }
 
 .testimonials-section { background: #fbfaf6; }
-.testimonials-dubai { position: relative; overflow: hidden; background: var(--ink); color: white; }
-.testimonials-dubai > img { object-fit: cover; object-position: center; }
-.testimonials-dubai-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(7,16,36,.94), rgba(7,16,36,.7)), linear-gradient(0deg, rgba(7,16,36,.45), transparent); }
-.testimonials-dubai > .container { position: relative; z-index: 2; }
-.testimonials-dubai .section-heading-row .lede { color: rgba(255,255,255,.74); }
+.testimonials-dubai { overflow: hidden; background: var(--ink); color: white; }
+.testimonials-dubai-visual { position: relative; min-height: 520px; display: grid; align-items: center; overflow: hidden; }
+.testimonials-dubai-visual > img { object-fit: cover; object-position: center; }
+.testimonials-dubai-overlay { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(7,16,36,.86), rgba(7,16,36,.18) 64%, rgba(7,16,36,.08)), linear-gradient(0deg, rgba(7,16,36,.22), transparent 45%); }
+.testimonials-dubai-heading { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr .7fr; gap: clamp(3rem, 8vw, 8rem); align-items: end; color: white; }
+.testimonials-dubai-heading .eyebrow { color: #8bcbfb; }
+.testimonials-dubai-heading .lede { color: rgba(255,255,255,.82); text-shadow: 0 2px 18px rgba(7,16,36,.4); }
+.testimonials-dubai-content { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #071024; }
 .testimonials-dubai .testimonial-card { border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.94); color: var(--ink); backdrop-filter: blur(12px); }
 .testimonials-dubai .button-secondary { border-color: rgba(255,255,255,.55); background: rgba(255,255,255,.08); color: white; }
 .testimonials-dubai .button-secondary:hover { background: white; color: var(--ink); }
@@ -572,8 +573,7 @@ textarea { min-height: 130px; resize: vertical; }
   .new-hero-grid, .ia-home-grid, .lesson-grid, .book-home-grid, .course-index-hero-grid, .course-detail-grid, .ia-page-hero-grid, .ia-book-cta-grid, .question-bank-hero-grid, .schools-hero-grid, .book-page-grid, .book-author-grid { grid-template-columns: 1fr; }
   .new-hero { padding-top: 4rem; }
   .new-hero h1 { max-width: 9ch; }
-  .who-grid { grid-template-columns: 1fr; }
-  .who-photo { min-height: 620px; }
+  .who-text-grid, .testimonials-dubai-heading { grid-template-columns: 1fr; }
   .hero-portrait-wrap { width: min(100%, 640px); min-height: 600px; margin-inline: auto; }
   .proof-strip-grid { grid-template-columns: repeat(2, 1fr); }
   .proof-strip-grid > div:nth-child(2) { border-right: 0; }
@@ -609,7 +609,7 @@ textarea { min-height: 130px; resize: vertical; }
   .proof-strip-grid > div:last-child { border-bottom: 0; }
   .offer-card-primary { grid-column: auto; }
   .offer-card { min-height: 300px; }
-  .who-photo { min-height: 500px; border-radius: 1.35rem; }
+  .testimonials-dubai-visual { min-height: 430px; }
   .courses-heading { gap: 1.5rem; }
   .ia-route-card { min-height: 340px; }
   .book-home-visual { min-height: 470px; }
