@@ -75,6 +75,8 @@ The question bank is one of the four principal product routes and should be pres
 
 Keep the first release transparent about its scope: it currently contains Legacy HL rather than the four present-day AA/AI pathways. Students should be able to search and filter by course, paper, topic, subtopic, difficulty, and exam session, and reveal the mark scheme only when ready. Preserve the mathematical notation and diagrams when extending or migrating the data. Future additions should use the same structured data model so the bank can grow without redesigning the page.
 
+The question-bank journey should begin with four prominent course choices: **AA HL, AA SL, AI HL, and AI SL**. Treat these as the primary routes rather than burying course choice inside a dropdown. Until verified current-course questions have been classified and added, keep the supplied 53 questions in a clearly separate **Legacy HL archive**; do not guess which current AA/AI course an older question belongs to.
+
 ### Internal Assessment (IA)
 
 IA guidance is a major part of Rob's reputation and should be treated as a prominent, dedicated website area rather than buried inside general course or free-resource content. The homepage should introduce this expertise clearly and lead to an IA section containing Rob's videos, his complete IA guide playlist, an IA ideas playlist, and the IA book. The playlists should remain clearly distinguished so visitors can choose between learning the full process and exploring possible topics.
