@@ -124,7 +124,7 @@ Accuracy and transparency are especially important. Earlier assistance incorrect
 
 ## Current work in progress
 
-A temporary workflow test was requested: add a large banner at the top of the homepage saying exactly **“Hello, it worked.”** without changing other content.
+A temporary workflow test was requested: add a large banner at the top of the homepage saying exactly **“Yes, it worked.”** without changing other content.
 
 The banner is implemented on local branch `agent/add-homepage-success-banner`. That branch now also contains this durable project context and the repository-level Codex instructions, so it is the single reviewable branch for completing the workflow test. Lint completed with one pre-existing warning in `postcss.config.mjs`, and the full Next.js production build passed on 26 July 2026. A fresh push attempt was blocked because local GitHub authentication was not configured (`could not read Username for 'https://github.com'`); therefore no remote branch, pull request, or Vercel preview exists yet.
 
