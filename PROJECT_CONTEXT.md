@@ -57,15 +57,17 @@ For the current launch, the tutoring route should remain intentionally simple an
 
 The school offer is for teachers, departments, IB coordinators, school leaders, finance teams, and educational organisations. It should clearly explain access, included resources, possible licence tiers, duration, onboarding, teacher support, reporting where appropriate, departmental benefits, and the quotation or demonstration process. The system should be able to support proposals, invoices, and institutional access later.
 
-Current proposed launch pricing is annual and remains subject to final approval:
+School packages provide two years of access for a defined student cohort. Each student licence is assigned to one selected course: AA HL, AA SL, AI HL, or AI SL. A school may request different course allocations within its cohort, but an individual student does not receive all four courses. Current agreed launch pricing is:
 
-- 10 student licences at US$50 each: US$500 per year
-- 25 student licences at US$40 each: US$1,000 per year
-- 50 student licences at US$30 each: US$1,500 per year
-- 100 student licences at US$20 each: US$2,000 per year
+- 10 student licences at US$50 each: US$500 total for two years
+- 25 student licences at US$40 each: US$1,000 total for two years
+- 50 student licences at US$30 each: US$1,500 total for two years
+- 100 student licences at US$20 each: US$2,000 total for two years
 - More than 100 students: custom quote
 
-These should be sold as fixed cohort packages with a single school invoice rather than presenting schools with consumer-style subscriptions. The 50-seat option is a likely candidate for the school page's “Most popular” treatment. Before publication, confirm what every student and teacher receives, account provisioning, support, renewal terms, taxes, and whether a smaller intermediate cohort tier is needed.
+These should be sold as fixed cohort packages with one school invoice rather than consumer-style subscriptions. The 50-seat option is the “Most popular” package. Each student receives two years of access to one selected course, complete lessons across all five topic areas, IA guidance, and past-paper solutions. Package buttons should prefill the corresponding student count in the school enquiry form. Keep the final free-text field optional and label it “Any other information”. Before publication, confirm access start dates, account provisioning, support, taxes, mixed-course allocation and renewal arrangements for each new cohort.
+
+School enquiry submissions are stored in Supabase when configured. The website also contains a Resend notification foundation that emails new school enquiries to `contact@mrflynnib.com` by default. Production email requires `RESEND_API_KEY` and a verified `ENQUIRY_FROM_EMAIL`; `ENQUIRY_NOTIFICATION_EMAIL` may override the recipient. The database record remains the reliable copy if email delivery fails. The public site must not be described as sending email notifications until these production settings and a real submission have been tested.
 
 ### Free content
 

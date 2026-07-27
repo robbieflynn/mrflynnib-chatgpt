@@ -54,13 +54,13 @@ export function EnquiryForm({ kind }: { kind: Kind }) {
           <div className="field"><label htmlFor="role">Your role</label><input id="role" name="role" required placeholder="Head of Mathematics, IB Coordinator…" /></div>
           <div className="field"><label htmlFor="schoolName">School name</label><input id="schoolName" name="schoolName" required /></div>
           <div className="field"><label htmlFor="country">Country</label><input id="country" name="country" required /></div>
-          <div className="field"><label htmlFor="studentCount">Estimated student count</label><input id="studentCount" name="studentCount" type="number" min="1" /></div>
+          <div className="field"><label htmlFor="studentCount">Estimated student count</label><input id="studentCount" name="studentCount" type="number" min="1" required /></div>
           <div className="field field-full"><label htmlFor="coursesNeeded">Courses or year groups needed</label><input id="coursesNeeded" name="coursesNeeded" placeholder="For example, AA HL and AA SL, Years 1–2" /></div>
         </>}
 
         {kind === "contact" && <div className="field field-full"><label htmlFor="topic">What can we help with?</label><select id="topic" name="topic" defaultValue="General enquiry"><option>General enquiry</option><option>Course access</option><option>Book</option><option>Tutoring</option><option>School licence</option><option>Media or partnership</option></select></div>}
 
-        <div className="field field-full"><label htmlFor={`${kind}-message`}>{kind === "tutoring" ? "What is the student finding difficult?" : kind === "school" ? "What would you like the licence to achieve?" : "Message"}</label><textarea id={`${kind}-message`} name="message" required /></div>
+        <div className="field field-full"><label htmlFor={`${kind}-message`}>{kind === "tutoring" ? "What is the student finding difficult?" : kind === "school" ? "Any other information (optional)" : "Message"}</label><textarea id={`${kind}-message`} name="message" required={kind !== "school"} /></div>
       </div>
       <div className="cluster">
         <button className="button" type="submit" disabled={status === "sending"}>{status === "sending" ? "Sending…" : kind === "school" ? "Request school information" : kind === "tutoring" ? "Submit tutoring application" : "Send enquiry"}</button>

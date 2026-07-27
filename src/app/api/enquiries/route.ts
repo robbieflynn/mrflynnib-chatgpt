@@ -6,6 +6,58 @@ function isEmail(value: unknown): value is string {
   return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function optionalText(body: Record<string, unknown>, key: string) {
+  const value = body[key];
+  return typeof value === "string" && value.trim() ? value.trim() : "Not provided";
+}
+
+async function sendSchoolEnquiryNotification(body: Record<string, unknown>) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.ENQUIRY_FROM_EMAIL;
+  const to = process.env.ENQUIRY_NOTIFICATION_EMAIL ?? "contact@mrflynnib.com";
+
+  if (!apiKey || !from) {
+    console.warn("School enquiry saved without email notification. Configure RESEND_API_KEY and ENQUIRY_FROM_EMAIL before launch.");
+    return;
+  }
+
+  const schoolName = optionalText(body, "schoolName");
+  const email = optionalText(body, "email");
+  const notification = [
+    "A new school licence enquiry has been submitted.",
+    "",
+    `Name: ${optionalText(body, "name")}`,
+    `Email: ${email}`,
+    `Role: ${optionalText(body, "role")}`,
+    `School: ${schoolName}`,
+    `Country: ${optionalText(body, "country")}`,
+    `Estimated student count: ${optionalText(body, "studentCount")}`,
+    `Courses or year groups: ${optionalText(body, "coursesNeeded")}`,
+    `Other information: ${optionalText(body, "message")}`,
+  ].join("\n");
+
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "User-Agent": "MrFlynnIB-Website/1.0",
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      reply_to: email,
+      subject: `School licence enquiry: ${schoolName}`,
+      text: notification,
+    }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    console.error("School enquiry email notification failed", response.status, await response.text());
+  }
+}
+
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
   try {
@@ -56,6 +108,8 @@ export async function POST(request: Request) {
     console.error("Supabase enquiry insert failed", response.status, await response.text());
     return NextResponse.json({ message: "We could not send your enquiry. Please email contact@mrflynnib.com." }, { status: 502 });
   }
+
+  if (body.kind === "school") await sendSchoolEnquiryNotification(body);
 
   return NextResponse.json({ message: "Thanks. Your enquiry has been received. We’ll be in touch." });
 }

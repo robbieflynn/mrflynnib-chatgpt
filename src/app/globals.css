@@ -621,6 +621,7 @@ textarea { min-height: 130px; resize: vertical; }
 .schools-hero .lede { color: rgba(255,255,255,.7); }
 .school-course-stack { display: grid; gap: .7rem; }
 .school-course-stack > span { margin-bottom: .4rem; color: #7ac5ff; font-size: .72rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.school-course-stack > p { margin: -.35rem 0 .35rem; color: rgba(255,255,255,.68); font-size: .86rem; }
 .school-course-stack > div { padding: 1rem 1.2rem; display: grid; grid-template-columns: 72px 1fr; align-items: center; border: 1px solid rgba(255,255,255,.13); border-radius: 1rem; background: rgba(255,255,255,.075); }
 .school-course-stack small { color: rgba(255,255,255,.55); }
 .school-benefit-strip { padding: 2.2rem 0; background: white; border-bottom: 1px solid var(--line); }
