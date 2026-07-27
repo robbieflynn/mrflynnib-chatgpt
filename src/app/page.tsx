@@ -60,7 +60,6 @@ export default function HomePage() {
             </p>
             <div className="cluster hero-actions">
               <ButtonLink href="/courses">Find your course</ButtonLink>
-              <ButtonLink href="/ia" secondary>Explore IA guidance</ButtonLink>
             </div>
           </div>
         </Container>

@@ -12,6 +12,7 @@ export function SiteHeader() {
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
+          <Link className="header-contact-button" href="/contact">Contact</Link>
           <Link href="/login">Student login</Link>
           <ButtonLink href="/courses" small>Explore courses</ButtonLink>
         </nav>
