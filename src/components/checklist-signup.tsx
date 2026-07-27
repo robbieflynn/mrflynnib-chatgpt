@@ -28,7 +28,7 @@ export function ChecklistSignup() {
       const result = (await response.json()) as { message?: string };
       if (!response.ok) throw new Error(result.message ?? "Please try again.");
       setStatus("success");
-      setMessage("You’re on the list. We’ll email you when your checklist is ready.");
+      setMessage("Thank you. We’ll email the checklist for your selected course.");
       form.reset();
     } catch (error) {
       setStatus("error");
@@ -58,7 +58,7 @@ export function ChecklistSignup() {
         </select>
       </div>
       <button className="button" type="submit" disabled={status === "sending"}>
-        {status === "sending" ? "Joining…" : "Notify me when it’s ready"}
+        {status === "sending" ? "Sending…" : "Email me my checklist"}
       </button>
       <p className="checklist-privacy">We’ll email the checklist and occasional IB Mathematics support. Unsubscribe at any time. See our <Link href="/privacy">privacy policy</Link>.</p>
       {message && <p role="status" className={`form-message checklist-message ${status === "success" ? "form-success" : "form-error"}`}>{message}</p>}

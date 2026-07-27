@@ -427,8 +427,8 @@ textarea { min-height: 130px; resize: vertical; }
 .course-existing-route span { color: rgba(255,255,255,.65); font-size: .88rem; }
 .course-existing-route .button-secondary { color: white; border-color: rgba(255,255,255,.4); }
 .course-existing-route .button-secondary:hover { border-color: white; background: rgba(255,255,255,.1); }
-.course-index-grid .course-card { min-height: 300px; }
-.course-level { color: var(--muted); font-size: .75rem; font-weight: 800; }
+.course-index-grid .course-card { min-height: 250px; }
+.course-index-grid .course-card h3 { max-width: 22ch; }
 .course-inclusions-section { background: white; }
 .inclusion-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; border: 1px solid var(--line); background: var(--line); }
 .inclusion-grid article { min-height: 280px; padding: 1.5rem; display: grid; grid-template-rows: auto minmax(3.4rem, auto) 1fr; align-content: start; gap: 1rem; background: white; }
@@ -440,9 +440,6 @@ textarea { min-height: 130px; resize: vertical; }
 .course-detail-grid { display: grid; grid-template-columns: 1fr minmax(390px, 445px); gap: clamp(3rem, 7vw, 7rem); align-items: start; }
 .course-detail-code { width: 5.2rem; height: 5.2rem; display: grid; place-items: center; border-radius: 1.3rem; background: var(--ink); color: white; font-size: 1.25rem; font-weight: 950; box-shadow: 0 18px 40px rgba(11,21,48,.16); }
 .course-detail-hero h1 { max-width: 12ch; font-size: clamp(3rem, 5vw, 4.9rem); }
-.course-detail-proof { display: flex; flex-wrap: wrap; gap: 1.4rem; }
-.course-detail-proof span { display: grid; color: var(--muted); font-size: .75rem; }
-.course-detail-proof strong { color: var(--ink); font-size: 1.05rem; }
 .course-purchase-card { position: relative; padding: 1.6rem; display: grid; gap: 1rem; border: 1px solid rgba(35,127,202,.25); border-radius: 1.5rem; background: white; box-shadow: 0 30px 80px rgba(11,21,48,.13); }
 .course-purchase-card h2 { max-width: 12ch; font-size: clamp(1.8rem, 3vw, 2.55rem); }
 .course-purchase-card .eyebrow { margin-bottom: 0; }
@@ -470,7 +467,7 @@ textarea { min-height: 130px; resize: vertical; }
 .curriculum-topic summary > small { color: var(--muted); }
 .curriculum-topic summary > i { font-style: normal; font-size: 1.4rem; text-align: center; }
 .curriculum-topic[open] summary > i { transform: rotate(45deg); }
-.curriculum-topic ol { list-style: none; margin: 0; padding: 1rem 1.25rem 1.25rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem 1.2rem; border-top: 1px solid var(--line); }
+.curriculum-topic ol { list-style: none; margin: 0; padding: 1rem 1.25rem 1.25rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: .35rem; border-top: 1px solid var(--line); }
 .curriculum-topic li { min-height: 3rem; padding: .6rem .7rem; display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: .7rem; align-items: start; border-radius: .6rem; color: var(--ink-2); font-size: .84rem; }
 .curriculum-topic li:nth-child(odd) { background: #f6f9fb; }
 .curriculum-lesson-number { padding-top: .06rem; color: var(--teal-dark); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .72rem; font-weight: 900; letter-spacing: -.02em; }
@@ -756,7 +753,7 @@ textarea { min-height: 130px; resize: vertical; }
   .curriculum-topic summary { grid-template-columns: 2rem 1fr 1.5rem; }
   .curriculum-topic summary > small { grid-column: 2; grid-row: 2; }
   .curriculum-topic summary > i { grid-column: 3; grid-row: 1 / span 2; }
-  .curriculum-topic ol, .course-extra-grid { grid-template-columns: 1fr; }
+  .course-extra-grid { grid-template-columns: 1fr; }
   .curriculum-topic ol { padding: .8rem; }
   .curriculum-topic li { grid-template-columns: 3.5rem minmax(0, 1fr); }
   .ia-hero-book { min-height: 480px; }

@@ -87,12 +87,12 @@ export default function HomePage() {
           <div className="stack">
             <Eyebrow>Free syllabus checklists</Eyebrow>
             <h2>Know exactly what you need to cover.</h2>
-            <p className="lede">Choose your IB Mathematics course and join the list for the complete syllabus checklist.</p>
+            <p className="lede">Choose your IB Mathematics course and receive the complete syllabus checklist by email.</p>
             <div className="checklist-courses" aria-label="Available syllabus checklists"><span>AA HL</span><span>AA SL</span><span>AI HL</span><span>AI SL</span></div>
           </div>
           <div className="checklist-form-card">
-            <strong>Be first to receive your checklist</strong>
-            <p>The four downloadable checklists are being prepared. Join now and we’ll email the correct one as soon as it is ready.</p>
+            <strong>Get your complete syllabus checklist</strong>
+            <p>Enter your details and select your course. We’ll email you the correct checklist.</p>
             <ChecklistSignup />
           </div>
         </Container>

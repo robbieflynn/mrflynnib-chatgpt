@@ -48,7 +48,6 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   if (!course) notFound();
 
   const curriculum = curricula[course.shortTitle] ?? [];
-  const lessonCount = curriculum.reduce((total, topic) => total + topic.lessons.length, 0);
 
   return (
     <>
@@ -59,7 +58,6 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <Eyebrow>{course.pathway} · {course.level}</Eyebrow>
             <h1>{course.promise}</h1>
             <p className="lede">{course.description}</p>
-            <div className="course-detail-proof"><span><strong>{lessonCount}</strong> syllabus lessons</span><span><strong>5</strong> topic areas</span><span><strong>3</strong> access options</span></div>
           </div>
           <aside className="course-purchase-card">
             <div className="stack"><Eyebrow>Choose your access</Eyebrow><h2>One complete course. Three access options.</h2><p>Every plan includes the complete {course.shortTitle} course. Choose and purchase your access on Teachable.</p></div>
@@ -74,7 +72,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
       <section className="section course-outcomes-section">
         <Container className="split">
-          <div className="stack"><Eyebrow>What this course builds</Eyebrow><h2>Understand the method—and know when to use it.</h2><p className="lede">The goal is not simply to watch more videos. It is to make unfamiliar IB questions feel more manageable because the underlying mathematics is clear.</p></div>
+          <div className="stack"><Eyebrow>What you’ll learn</Eyebrow><h2>Understand the method—and know when to use it.</h2><p className="lede">The goal is not simply to watch more videos. It is to make unfamiliar IB questions feel more manageable because the underlying mathematics is clear.</p></div>
           <ul className="outcome-list">{course.outcomes.map((outcome, index) => <li key={outcome}><span>0{index + 1}</span><strong>{outcome}</strong></li>)}</ul>
         </Container>
       </section>

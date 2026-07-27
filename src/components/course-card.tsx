@@ -7,14 +7,10 @@ export function CourseCard({ course }: { course: Course }) {
       <div className="card-body">
         <div className="course-card-heading">
           <span className="course-code">{course.shortTitle}</span>
-          <span className="course-level">{course.level === "HL" ? "Higher Level" : "Standard Level"}</span>
         </div>
-        <div className="stack">
-          <h3>{course.pathway}</h3>
-          <p className="muted">{course.promise}</p>
-        </div>
+        <h3>{course.pathway} {course.level}</h3>
       </div>
-      <Link className="text-link" href={`/courses/${course.slug}`}>View {course.shortTitle} course</Link>
+      <Link className="text-link" href={`/courses/${course.slug}`}>View course</Link>
     </article>
   );
 }
