@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import katex from "katex";
 import { notFound } from "next/navigation";
 import curriculumData from "@/data/curricula.json";
 import { ButtonLink, Container, Eyebrow } from "@/components/ui";
@@ -7,6 +7,32 @@ import { courseAccessPlans, courses } from "@/lib/content";
 
 type CurriculumTopic = { name: string; lessons: string[] };
 const curricula = curriculumData as Record<string, CurriculumTopic[]>;
+
+const mathematicalLessonTitles: Record<string, { before: string; expression: string; after?: string }> = {
+  "Graphs of y = (f(x))^2": { before: "Graphs of ", expression: "y = [f(x)]^2" },
+  "Finding f(x)": { before: "Finding ", expression: "f(x)" },
+  "Integrating e^x and 1/x": { before: "Integrating ", expression: "e^x \\text{ and } \\frac{1}{x}" },
+  "Differentiating trig, e^x and lnx": { before: "Differentiating trigonometric functions, ", expression: "e^x \\text{ and } \\ln x" },
+  "Differentiating x^n where n is rational": { before: "Differentiating ", expression: "x^n", after: " where n is rational" },
+  "Integration of x^n where n is rational": { before: "Integration of ", expression: "x^n", after: " where n is rational" },
+  "Integrating e^x": { before: "Integrating ", expression: "e^x" },
+};
+
+function CurriculumLesson({ lesson }: { lesson: string }) {
+  const match = lesson.match(/^(\d+(?:\.\d+)*)\s+(.+)$/);
+  const number = match?.[1] ?? "";
+  const title = match?.[2] ?? lesson;
+  const mathematicalTitle = mathematicalLessonTitles[title];
+
+  return (
+    <li>
+      {number && <span className="curriculum-lesson-number">{number}</span>}
+      <span className="curriculum-lesson-title">
+        {mathematicalTitle ? <>{mathematicalTitle.before}<span className="curriculum-inline-math" dangerouslySetInnerHTML={{ __html: katex.renderToString(mathematicalTitle.expression, { throwOnError: false, output: "html" }) }} />{mathematicalTitle.after}</> : title}
+      </span>
+    </li>
+  );
+}
 
 export function generateStaticParams() { return courses.map(({ slug }) => ({ slug })); }
 
@@ -55,19 +81,24 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
       <section id="curriculum" className="section curriculum-section">
         <Container className="stack-xl">
-          <div className="section-heading-row"><div className="stack"><Eyebrow>Full curriculum</Eyebrow><h2>See exactly what is covered.</h2></div><p className="lede">The curriculum below comes from Rob&apos;s course syllabus. Open any topic to see its complete lesson structure.</p></div>
+          <div className="section-heading-row"><div className="stack"><Eyebrow>Full curriculum</Eyebrow><h2>See exactly what is covered.</h2></div><p className="lede">The curriculum is structured directly from the complete course syllabus. Open any topic to see its lesson sequence.</p></div>
           <div className="curriculum-list">
             {curriculum.map((topic, index) => (
               <details className="curriculum-topic" key={topic.name} open={index === 0}>
                 <summary><span>0{index + 1}</span><strong>{topic.name}</strong><small>{topic.lessons.length} lessons</small><i aria-hidden="true">+</i></summary>
-                <ol>{topic.lessons.map((lesson) => <li key={lesson}>{lesson}</li>)}</ol>
+                <ol>{topic.lessons.map((lesson) => <CurriculumLesson lesson={lesson} key={lesson} />)}</ol>
               </details>
             ))}
           </div>
+          <div className="course-curriculum-extras">
+            <div className="stack"><Eyebrow>Also included</Eyebrow><h2>Support beyond the topic lessons.</h2></div>
+            <div className="course-extra-grid">
+              <article><span>IA</span><div><h3>Internal Assessment guidance</h3><p>Clear guidance for understanding the IA process, developing an idea and improving the finished exploration.</p></div></article>
+              <article><span>PP</span><div><h3>Past-paper solutions</h3><p>Worked solutions that show how to approach IB Mathematics questions and communicate the method clearly.</p></div></article>
+            </div>
+          </div>
         </Container>
       </section>
-
-      <section className="course-final-cta"><Container className="course-final-grid"><div className="stack"><Eyebrow>{course.shortTitle}</Eyebrow><h2>Choose the access that fits where you are in your IB course.</h2><p>Three-month, one-year and recommended two-year access are available for the complete course.</p></div><div><ButtonLink href={course.teachableUrl} external>View access plans and enrol</ButtonLink><Link className="course-login-link" href="/login">Already enrolled? Go to my courses</Link></div></Container></section>
     </>
   );
 }

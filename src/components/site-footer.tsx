@@ -13,6 +13,11 @@ export function SiteFooter() {
             <p style={{ color: "rgba(255,255,255,.7)", maxWidth: 420 }}>
               Complete IB Mathematics courses, tutoring, resources and school access—explained clearly by Mr Flynn.
             </p>
+            <div className="footer-socials" aria-label="Mr Flynn IB social channels">
+              <a className="footer-social-primary" href={siteConfig.youtubeUrl} target="_blank" rel="noreferrer">YouTube</a>
+              <a href={siteConfig.instagramUrl} target="_blank" rel="noreferrer">Instagram</a>
+              <a href={siteConfig.tiktokUrl} target="_blank" rel="noreferrer">TikTok</a>
+            </div>
           </div>
           <div className="stack">
             <strong>Learn</strong>

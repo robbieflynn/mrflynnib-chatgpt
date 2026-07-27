@@ -211,6 +211,10 @@ textarea { min-height: 130px; resize: vertical; }
 .footer a { color: rgba(255,255,255,.72); }
 .footer a:hover { color: white; }
 .footer-list { display: grid; gap: .55rem; }
+.footer-socials { display: flex; flex-wrap: wrap; gap: .55rem; }
+.footer-socials a { padding: .42rem .7rem; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: rgba(255,255,255,.76); font-size: .76rem; font-weight: 800; }
+.footer-socials a:hover { border-color: rgba(255,255,255,.48); background: rgba(255,255,255,.08); color: white; }
+.footer-socials .footer-social-primary { border-color: rgba(122,197,255,.45); background: rgba(35,127,202,.22); color: white; }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,.14); margin-top: 3rem; padding-top: 1.5rem; display: flex; justify-content: space-between; gap: 1rem; color: rgba(255,255,255,.58); font-size: .86rem; }
 
 @media (max-width: 900px) {
@@ -307,6 +311,21 @@ textarea { min-height: 130px; resize: vertical; }
 .offer-card-primary .offer-link { color: white; }
 .offer-link i { font-style: normal; transition: transform .2s ease; }
 .offer-card:hover .offer-link i { transform: translateX(4px); }
+
+.checklist-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: radial-gradient(circle at 12% 15%, rgba(35,127,202,.35), transparent 34%), #071024; color: white; }
+.checklist-grid { display: grid; grid-template-columns: .78fr 1.22fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
+.checklist-section .eyebrow { color: #7ac5ff; }
+.checklist-section .lede { color: rgba(255,255,255,.72); }
+.checklist-courses { display: flex; flex-wrap: wrap; gap: .55rem; }
+.checklist-courses span { padding: .45rem .7rem; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: rgba(255,255,255,.8); font-size: .76rem; font-weight: 850; }
+.checklist-form-card { padding: clamp(1.5rem, 3vw, 2.2rem); display: grid; gap: .7rem; border: 1px solid rgba(255,255,255,.14); border-radius: 1.5rem; background: white; color: var(--ink); box-shadow: 0 30px 75px rgba(0,0,0,.22); }
+.checklist-form-card > strong { font-size: clamp(1.4rem, 2.5vw, 2rem); letter-spacing: -.035em; }
+.checklist-form-card > p { color: var(--muted); }
+.checklist-form { margin-top: .8rem; display: grid; grid-template-columns: .8fr 1.1fr .8fr; gap: .85rem; align-items: end; }
+.checklist-form .button { grid-column: 1 / -1; width: fit-content; }
+.checklist-privacy { grid-column: 1 / -1; color: var(--muted); font-size: .72rem; }
+.checklist-privacy a { color: var(--teal-dark); text-decoration: underline; text-underline-offset: .18em; }
+.checklist-message { grid-column: 1 / -1; }
 
 .who-section { overflow: hidden; background: white; }
 .who-text-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
@@ -412,9 +431,9 @@ textarea { min-height: 130px; resize: vertical; }
 .course-level { color: var(--muted); font-size: .75rem; font-weight: 800; }
 .course-inclusions-section { background: white; }
 .inclusion-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; border: 1px solid var(--line); background: var(--line); }
-.inclusion-grid article { min-height: 280px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; background: white; }
+.inclusion-grid article { min-height: 280px; padding: 1.5rem; display: grid; grid-template-rows: auto minmax(3.4rem, auto) 1fr; align-content: start; gap: 1rem; background: white; }
 .inclusion-grid article > span { color: var(--teal-dark); font-weight: 900; }
-.inclusion-grid article h3 { margin-top: auto; font-size: 1.35rem; }
+.inclusion-grid article h3 { font-size: 1.35rem; }
 .inclusion-grid article p { color: var(--muted); font-size: .88rem; }
 
 .course-detail-hero { padding: clamp(4rem, 6vw, 5.5rem) 0; background: linear-gradient(135deg, #eef7fd, #fbfaf6); }
@@ -436,7 +455,7 @@ textarea { min-height: 130px; resize: vertical; }
 .access-plan-list small { grid-column: 1 / -1; color: var(--muted); font-size: .72rem; }
 .access-plan-list span { width: fit-content; padding: .22rem .45rem; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: .62rem; font-weight: 900; text-transform: uppercase; }
 .access-plan-list b { font-size: 1.55rem; letter-spacing: -.04em; }
-.access-plan-list .access-plan-recommended { border-color: var(--teal); background: var(--teal-soft); box-shadow: 0 10px 25px rgba(35,127,202,.1); }
+.access-plan-list .access-plan-recommended { border-color: rgba(232,170,45,.72); background: white; box-shadow: 0 8px 22px rgba(11,21,48,.05); }
 .course-outcomes-section { background: white; }
 .outcome-list { list-style: none; padding: 0; margin: 0; display: grid; }
 .outcome-list li { padding: 1.1rem 0; display: grid; grid-template-columns: 3rem 1fr; gap: 1rem; align-items: center; border-bottom: 1px solid var(--line); }
@@ -451,16 +470,21 @@ textarea { min-height: 130px; resize: vertical; }
 .curriculum-topic summary > small { color: var(--muted); }
 .curriculum-topic summary > i { font-style: normal; font-size: 1.4rem; text-align: center; }
 .curriculum-topic[open] summary > i { transform: rotate(45deg); }
-.curriculum-topic ol { margin: 0; padding: 1rem 1.5rem 1.5rem 4.2rem; columns: 2; column-gap: 3rem; border-top: 1px solid var(--line); }
-.curriculum-topic li { break-inside: avoid; margin-bottom: .55rem; color: var(--ink-2); font-size: .84rem; }
-.course-final-cta { padding: 5rem 0; background: #071024; color: white; }
-.course-final-grid { display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center; }
-.course-final-grid .eyebrow { color: #7ac5ff; }
-.course-final-grid p { max-width: 56ch; color: rgba(255,255,255,.68); }
-.course-final-grid > div:last-child { display: grid; min-width: 280px; gap: .9rem; }
-.course-login-link { color: rgba(255,255,255,.72); font-size: .82rem; font-weight: 750; text-align: center; text-decoration: underline; text-underline-offset: .2em; }
-.course-login-link:hover { color: white; }
-
+.curriculum-topic ol { list-style: none; margin: 0; padding: 1rem 1.25rem 1.25rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem 1.2rem; border-top: 1px solid var(--line); }
+.curriculum-topic li { min-height: 3rem; padding: .6rem .7rem; display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: .7rem; align-items: start; border-radius: .6rem; color: var(--ink-2); font-size: .84rem; }
+.curriculum-topic li:nth-child(odd) { background: #f6f9fb; }
+.curriculum-lesson-number { padding-top: .06rem; color: var(--teal-dark); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .72rem; font-weight: 900; letter-spacing: -.02em; }
+.curriculum-lesson-title { min-width: 0; }
+.curriculum-inline-math { white-space: nowrap; }
+.curriculum-inline-math .katex { font-size: 1.02em; }
+.course-curriculum-extras { margin-top: 1rem; padding-top: 3rem; display: grid; grid-template-columns: .65fr 1.35fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; border-top: 1px solid rgba(11,21,48,.12); }
+.course-curriculum-extras h2 { font-size: clamp(2rem, 4vw, 3.3rem); }
+.course-extra-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.course-extra-grid article { min-height: 230px; padding: 1.35rem; display: flex; flex-direction: column; gap: 1.3rem; border: 1px solid var(--line); border-radius: 1.1rem; background: white; }
+.course-extra-grid article > span { width: 3rem; height: 3rem; display: grid; place-items: center; border-radius: .8rem; background: var(--ink); color: white; font-size: .75rem; font-weight: 950; }
+.course-extra-grid article > div { display: grid; gap: .65rem; margin-top: auto; }
+.course-extra-grid h3 { font-size: 1.3rem; }
+.course-extra-grid p { color: var(--muted); font-size: .85rem; }
 .ia-page-hero { padding: clamp(5rem, 10vw, 8rem) 0; overflow: hidden; background: radial-gradient(circle at 15% 5%, rgba(35,127,202,.3), transparent 35%), #071024; color: white; }
 .ia-page-hero-grid { display: grid; grid-template-columns: 1fr .72fr; gap: clamp(3rem, 8vw, 8rem); align-items: center; }
 .ia-page-hero .eyebrow { color: #7ac5ff; }
@@ -674,7 +698,7 @@ textarea { min-height: 130px; resize: vertical; }
   .book-home-visual { min-height: 560px; }
   .course-detail-grid { align-items: stretch; }
   .course-purchase-card { width: min(100%, 540px); }
-  .course-final-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .checklist-grid, .course-curriculum-extras { grid-template-columns: 1fr; }
   .all-testimonials { grid-template-columns: repeat(2, 1fr); }
   .book-page-cover img { width: min(62%, 430px); }
   .ia-hero-book { min-height: 540px; }
@@ -701,6 +725,8 @@ textarea { min-height: 130px; resize: vertical; }
   .proof-strip-grid > div:last-child { border-bottom: 0; }
   .offer-card-primary { grid-column: auto; }
   .offer-card { min-height: 300px; }
+  .checklist-form { grid-template-columns: 1fr; }
+  .checklist-form .button { width: 100%; }
   .who-photo-small { width: 120px; height: 120px; flex-basis: 120px; }
   .courses-heading { gap: 1.5rem; }
   .ia-route-card { min-height: 340px; }
@@ -708,7 +734,7 @@ textarea { min-height: 130px; resize: vertical; }
   .dubai-band { min-height: 420px; }
   .course-existing-route { width: 100%; }
   .inclusion-grid { grid-template-columns: 1fr; }
-  .inclusion-grid article { min-height: 230px; }
+  .inclusion-grid article { min-height: 230px; grid-template-rows: auto auto 1fr; }
   .question-bank-hero { padding: 3.5rem 0; }
   .question-bank-hero h1 { max-width: 100%; font-size: clamp(2.8rem, 12vw, 3.5rem); }
   .question-bank-hero .cluster { align-items: flex-start; flex-direction: column; }
@@ -730,7 +756,9 @@ textarea { min-height: 130px; resize: vertical; }
   .curriculum-topic summary { grid-template-columns: 2rem 1fr 1.5rem; }
   .curriculum-topic summary > small { grid-column: 2; grid-row: 2; }
   .curriculum-topic summary > i { grid-column: 3; grid-row: 1 / span 2; }
-  .curriculum-topic ol { columns: 1; padding-left: 3.8rem; }
+  .curriculum-topic ol, .course-extra-grid { grid-template-columns: 1fr; }
+  .curriculum-topic ol { padding: .8rem; }
+  .curriculum-topic li { grid-template-columns: 3.5rem minmax(0, 1fr); }
   .ia-hero-book { min-height: 480px; }
   .ia-hero-book img { width: min(72%, 340px); }
   .ia-hero-book div { right: .2rem; bottom: 1rem; }

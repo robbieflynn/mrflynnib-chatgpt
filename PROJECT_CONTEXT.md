@@ -71,6 +71,16 @@ Useful free content builds trust and demand. This can include YouTube lessons, r
 
 The verified homepage sample lesson is `https://www.youtube.com/watch?v=o3aDg3PZraY&list=PLcvv9pSnukaU11Abk84eQ1OZVqXsqATQh&index=3`. Use video ID `o3aDg3PZraY` for the privacy-enhanced embed and do not invent a title that has not been verified.
 
+Verified official social channels are:
+
+- YouTube: `https://www.youtube.com/mrflynnib`
+- Instagram: `https://www.instagram.com/mrflynnib/`
+- TikTok: `https://www.tiktok.com/@mrflynnib/`
+
+Link these from the global footer so they are available throughout the website. Give YouTube the strongest prominence because it supports Mr Flynn IB's established teaching credibility.
+
+The homepage should offer a secondary **“Get the free syllabus checklist”** route beside the main course button. It should lead to an email-capture section immediately after the four principal route cards and before “Who is Mr Flynn?”. Ask only for first name, email address, and one of AA HL, AA SL, AI HL, or AI SL. Until the downloadable checklists and automated email delivery are complete, describe this honestly as joining the list to receive the checklist when it is ready rather than promising an immediate download.
+
 ### Question bank
 
 The question bank is one of the four principal product routes and should be presented as free for now, with the possibility of paid access later. Rob supplied the first working collection as a self-contained HTML artifact created with Claude. It contains 53 legacy HL questions from four May 2014 papers, complete mark schemes, filters, and nine questions with mathematical diagrams. This verified content is now the foundation of the native website question bank rather than a “coming soon” placeholder.

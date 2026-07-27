@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ButtonLink, Container, Eyebrow } from "@/components/ui";
+import { ChecklistSignup } from "@/components/checklist-signup";
 import { VideoEmbed } from "@/components/video-embed";
 import { siteConfig } from "@/lib/site";
 import { testimonials } from "@/lib/testimonials";
@@ -60,6 +61,7 @@ export default function HomePage() {
             </p>
             <div className="cluster hero-actions">
               <ButtonLink href="/courses">Find your course</ButtonLink>
+              <ButtonLink href="#syllabus-checklist" secondary>Get the free syllabus checklist</ButtonLink>
             </div>
           </div>
         </Container>
@@ -76,6 +78,22 @@ export default function HomePage() {
                 <span className="offer-link">{offer.cta}<i aria-hidden="true">→</i></span>
               </Link>
             ))}
+          </div>
+        </Container>
+      </section>
+
+      <section className="checklist-section" id="syllabus-checklist">
+        <Container className="checklist-grid">
+          <div className="stack">
+            <Eyebrow>Free syllabus checklists</Eyebrow>
+            <h2>Know exactly what you need to cover.</h2>
+            <p className="lede">Choose your IB Mathematics course and join the list for the complete syllabus checklist.</p>
+            <div className="checklist-courses" aria-label="Available syllabus checklists"><span>AA HL</span><span>AA SL</span><span>AI HL</span><span>AI SL</span></div>
+          </div>
+          <div className="checklist-form-card">
+            <strong>Be first to receive your checklist</strong>
+            <p>The four downloadable checklists are being prepared. Join now and we’ll email the correct one as soon as it is ready.</p>
+            <ChecklistSignup />
           </div>
         </Container>
       </section>
