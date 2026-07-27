@@ -6,10 +6,10 @@ import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 export const metadata: Metadata = { title: "IB Mathematics school licences", description: "Two-year access to a selected Mr Flynn IB Mathematics course for classes, departments and school cohorts." };
 
 const tiers = [
-  { students: "10", each: "$50", total: "$500", label: "Small cohort" },
-  { students: "25", each: "$40", total: "$1,000", label: "Growing cohort" },
-  { students: "50", each: "$30", total: "$1,500", label: "Department", popular: true },
-  { students: "100", each: "$20", total: "$2,000", label: "Whole cohort" },
+  { students: "10", each: "$50", total: "$500", label: "10-student package" },
+  { students: "25", each: "$40", total: "$1,000", label: "25-student package" },
+  { students: "50", each: "$30", total: "$1,500", label: "50-student package", popular: true },
+  { students: "100", each: "$20", total: "$2,000", label: "100-student package" },
 ];
 
 export default function SchoolsPage() {
