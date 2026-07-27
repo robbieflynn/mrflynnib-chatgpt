@@ -16,7 +16,7 @@ export function SiteFooter() {
           </div>
           <div className="stack">
             <strong>Learn</strong>
-            <div className="footer-list"><Link href="/courses">Courses</Link><Link href="/ia">IA guidance</Link><Link href="/question-bank">Question bank</Link><Link href="/book">Book</Link><Link href="/login">Student login</Link></div>
+            <div className="footer-list"><Link href="/courses">Courses</Link><Link href="/ia">IA guidance</Link><Link href="/question-bank">Question bank</Link><Link href="/book">Book</Link><Link href="/login">My courses</Link></div>
           </div>
           <div className="stack">
             <strong>Work with us</strong>

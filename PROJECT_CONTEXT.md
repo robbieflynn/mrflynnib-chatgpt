@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 26 July 2026
+Last updated: 27 July 2026
 
 ## Purpose of this file
 
@@ -37,7 +37,9 @@ These are roadmap possibilities, not commitments to build everything immediately
 
 Courses cover the IB Mathematics pathways AA HL, AA SL, AI HL, and AI SL. Teachable hosts course checkout, enrolment, login, and learning delivery. MrFlynnIB.com should provide premium course landing pages, previews, curriculum information, FAQs, evidence, and clear calls to action, then send customers deliberately and seamlessly to the correct Teachable destination. Existing students need an obvious Teachable login route.
 
-The established main individual offer is **US$79 for two-year access** and should be presented as the most popular option. Shorter access periods may be offered later, but their exact prices are not yet confirmed and must not make the two-year option less compelling.
+Every individual course will offer the same three one-time access options: **3 months for US$49**, **1 year for US$69**, and **2 years for US$79**. The two-year option is the recommended, best-value plan. Every option includes the same complete course; only the access period changes. Do not use an invented crossed-out price or make the one-year option more expensive than two years.
+
+Keep the prospective-customer and existing-student journeys distinct. The main Courses page should simply say **“Choose your course”** and present AA HL, AA SL, AI HL, and AI SL without prices or unnecessary course-choice advice. Each individual course page should preview the three access options but use one principal **“View access plans and enrol”** button leading to that course's Teachable purchase page, where the student selects and purchases a plan. Existing students should have a persistent, obvious **“My courses”** route to Teachable in the website navigation and a supporting **“Already enrolled?”** route on course pages.
 
 Do not duplicate Teachable's learning platform unless a later strategic decision provides a compelling reason.
 
@@ -154,7 +156,7 @@ Verified Teachable course destinations are:
 
 Rob supplied genuine testimonials from 18 named students across Hong Kong, Italy, the UK, India, Canada, Poland, Sweden, Tunisia, Spain, Greece, Denmark, South Korea, Portugal, Saudi Arabia, the UAE, and Egypt, and explicitly approved using their first names and locations. Preserve their meaning and make only light spelling or punctuation corrections. The strongest verified outcome currently supplied is Abdulaziz's report of moving from a 4 to a 7 in his first-semester exams; present it as that student's statement, not as a guaranteed result.
 
-Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes short-term individual pricing, final school licence operational terms, production analytics configuration, and completed legal review.
+Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes final school licence operational terms, production analytics configuration, completed legal review, and the Teachable setup for the three confirmed individual-course access plans.
 
 ## Agreed working relationship
 

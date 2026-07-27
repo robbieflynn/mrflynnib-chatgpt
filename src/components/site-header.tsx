@@ -13,7 +13,7 @@ export function SiteHeader() {
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
           <Link className="header-contact-button" href="/contact">Contact</Link>
-          <Link href="/login">Student login</Link>
+          <Link className="header-login-link" href="/login">My courses</Link>
           <ButtonLink href="/courses" small>Explore courses</ButtonLink>
         </nav>
         <details className="mobile-nav">
@@ -21,7 +21,7 @@ export function SiteHeader() {
           <nav className="mobile-panel" aria-label="Mobile navigation">
             {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
             <Link href="/tutoring">Tutoring</Link>
-            <Link href="/login">Student login</Link>
+            <Link className="mobile-student-link" href="/login">My courses</Link>
             <Link href="/contact">Contact</Link>
           </nav>
         </details>

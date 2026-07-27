@@ -9,11 +9,13 @@ export type Course = {
   outcomes: string[];
   modules: string[];
   teachableUrl: string;
-  price: number;
-  originalPrice: number;
-  access: string;
-  featured?: boolean;
 };
+
+export const courseAccessPlans = [
+  { duration: "3 months", price: 49, description: "For focused exam revision", recommended: false },
+  { duration: "1 year", price: 69, description: "For a full academic year", recommended: false },
+  { duration: "2 years", price: 79, description: "For the complete IB journey", recommended: true },
+] as const;
 
 export const courses: Course[] = [
   {
@@ -33,10 +35,6 @@ export const courses: Course[] = [
     ],
     modules: ["Algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
     teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_HL_URL ?? "https://mrflynnib.com/p/aa-hl",
-    price: 79,
-    originalPrice: 160,
-    access: "Two-year access",
-    featured: true,
   },
   {
     slug: "analysis-approaches-sl",
@@ -55,9 +53,6 @@ export const courses: Course[] = [
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
     teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_SL_URL ?? "https://mrflynnib.com/p/aa-sl",
-    price: 79,
-    originalPrice: 160,
-    access: "Two-year access",
   },
   {
     slug: "applications-interpretation-hl",
@@ -76,9 +71,6 @@ export const courses: Course[] = [
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
     teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_HL_URL ?? "https://mrflynnib.com/p/ai-hl",
-    price: 79,
-    originalPrice: 160,
-    access: "Two-year access",
   },
   {
     slug: "applications-interpretation-sl",
@@ -97,9 +89,6 @@ export const courses: Course[] = [
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
     teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_SL_URL ?? "https://mrflynnib.com/p/ai-sl",
-    price: 79,
-    originalPrice: 160,
-    access: "Two-year access",
   },
 ];
 

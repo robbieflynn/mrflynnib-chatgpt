@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import curriculumData from "@/data/curricula.json";
 import { ButtonLink, Container, Eyebrow } from "@/components/ui";
-import { courses } from "@/lib/content";
+import { courseAccessPlans, courses } from "@/lib/content";
 
 type CurriculumTopic = { name: string; lessons: string[] };
 const curricula = curriculumData as Record<string, CurriculumTopic[]>;
@@ -12,7 +13,7 @@ export function generateStaticParams() { return courses.map(({ slug }) => ({ slu
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const course = courses.find((item) => item.slug === slug);
-  return course ? { title: course.title, description: `${course.description} Two-year access for $${course.price}.` } : {};
+  return course ? { title: course.title, description: `${course.description} Choose from three access options.` } : {};
 }
 
 export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -32,15 +33,15 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <Eyebrow>{course.pathway} · {course.level}</Eyebrow>
             <h1>{course.promise}</h1>
             <p className="lede">{course.description}</p>
-            <div className="course-detail-proof"><span><strong>{lessonCount}</strong> syllabus lessons</span><span><strong>5</strong> topic areas</span><span><strong>2 years</strong> access</span></div>
+            <div className="course-detail-proof"><span><strong>{lessonCount}</strong> syllabus lessons</span><span><strong>5</strong> topic areas</span><span><strong>3</strong> access options</span></div>
           </div>
           <aside className="course-purchase-card">
-            <span className="popular-ribbon">Most popular access</span>
-            <div className="purchase-price"><del>${course.originalPrice}</del><strong>${course.price}</strong><span>USD</span></div>
-            <p>One payment for two-year full access.</p>
-            <ul className="check-list"><li>Complete {course.shortTitle} course</li><li>IA guidance and past-paper support</li><li>Learn at your own pace on Teachable</li><li>Revisit lessons whenever needed</li></ul>
-            <ButtonLink href={course.teachableUrl} external>Enrol in {course.shortTitle}</ButtonLink>
-            <small>Enrolment and secure course access continue on Teachable.</small>
+            <div className="stack"><Eyebrow>Choose your access</Eyebrow><h2>One complete course. Three access options.</h2><p>Every plan includes the complete {course.shortTitle} course. Choose and purchase your access on Teachable.</p></div>
+            <ul className="access-plan-list">
+              {courseAccessPlans.map((plan) => <li className={plan.recommended ? "access-plan-recommended" : ""} key={plan.duration}><div><strong>{plan.duration}</strong>{plan.recommended && <span>Recommended</span>}<small>{plan.description}</small></div><b>${plan.price}</b></li>)}
+            </ul>
+            <ButtonLink href={course.teachableUrl} external>View access plans and enrol</ButtonLink>
+            <small>Prices are in US dollars. Payment and secure course access continue on Teachable.</small>
           </aside>
         </Container>
       </section>
@@ -66,7 +67,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
         </Container>
       </section>
 
-      <section className="course-final-cta"><Container className="course-final-grid"><div className="stack"><Eyebrow>{course.shortTitle}</Eyebrow><h2>Keep the whole course within reach.</h2><p>Two-year access gives you time to learn, revisit and revise without buying the course again before your final exams.</p></div><div><strong>${course.price}</strong><span>Two-year full access</span><ButtonLink href={course.teachableUrl} external>Continue to Teachable</ButtonLink></div></Container></section>
+      <section className="course-final-cta"><Container className="course-final-grid"><div className="stack"><Eyebrow>{course.shortTitle}</Eyebrow><h2>Choose the access that fits where you are in your IB course.</h2><p>Three-month, one-year and recommended two-year access are available for the complete course.</p></div><div><ButtonLink href={course.teachableUrl} external>View access plans and enrol</ButtonLink><Link className="course-login-link" href="/login">Already enrolled? Go to my courses</Link></div></Container></section>
     </>
   );
 }
