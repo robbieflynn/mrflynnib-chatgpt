@@ -178,7 +178,10 @@ p { margin: 0; }
 .page-hero { padding: 5rem 0 3.5rem; }
 .page-hero h1 { font-size: clamp(2.8rem, 6vw, 5.3rem); max-width: 15ch; }
 .breadcrumbs { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .85rem; color: var(--muted); }
-.breadcrumbs span::before { content: "/"; margin-right: .5rem; }
+.breadcrumbs > :not(:first-child)::before { content: "/"; margin-right: .5rem; color: currentColor; opacity: .65; }
+.breadcrumbs a:hover { color: var(--teal-dark); }
+.course-index-hero .breadcrumbs, .ia-page-hero .breadcrumbs, .schools-hero .breadcrumbs { color: rgba(255,255,255,.68); }
+.course-index-hero .breadcrumbs a:hover, .ia-page-hero .breadcrumbs a:hover, .schools-hero .breadcrumbs a:hover { color: white; }
 
 .faq-list { border-top: 1px solid var(--line); }
 .faq-item { border-bottom: 1px solid var(--line); }
@@ -649,6 +652,11 @@ textarea { min-height: 130px; resize: vertical; }
 .book-meta { display: flex; flex-wrap: wrap; gap: 1rem; }
 .book-meta span { padding: .8rem 1rem; display: grid; border: 1px solid var(--line); border-radius: .8rem; background: rgba(255,255,255,.7); color: var(--muted); font-size: .72rem; }
 .book-meta strong { color: var(--ink); font-size: .9rem; }
+.amazon-rating { width: fit-content; padding: .7rem .9rem; display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; border: 1px solid rgba(232,170,45,.5); border-radius: .8rem; background: rgba(255,255,255,.72); }
+.amazon-rating strong { font-size: 1.05rem; }
+.amazon-rating span { color: #d99200; letter-spacing: .06em; }
+.amazon-rating small { color: var(--muted); }
+.amazon-rating:hover { border-color: var(--gold); background: white; }
 .book-benefits { background: white; }
 .book-benefits article { padding-top: 1.2rem; border-top: 3px solid var(--gold); }
 .book-benefits article > span { color: var(--teal-dark); font-size: .72rem; font-weight: 900; }
@@ -767,7 +775,7 @@ textarea { min-height: 130px; resize: vertical; }
   .tutoring-symbol { width: 130px; }
 }
 
-/* Homepage v0.2 — premium platform direction */
+/* Homepage v0.2: premium platform direction */
 .home-hero {
   position: relative;
   isolation: isolate;

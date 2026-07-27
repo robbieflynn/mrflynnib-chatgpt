@@ -53,7 +53,7 @@ function unique(values: string[], preferredOrder: string[] = []) {
 }
 
 function normaliseText(value: string) {
-  return value.replaceAll("&mdash;", "—").replaceAll("&ndash;", "–");
+  return value.replaceAll("&ndash;", "–");
 }
 
 function MathText({ children }: { children: string }) {

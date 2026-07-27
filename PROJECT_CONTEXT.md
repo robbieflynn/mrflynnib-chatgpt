@@ -47,6 +47,8 @@ Do not duplicate Teachable's learning platform unless a later strategic decision
 
 Rob's book is **IB Mathematics IA: The Complete Guide to the Internal Assessment**, published under the name Robert Flynn by Zouev Elite Publishing in 2025. It is a 320-page paperback with ISBN-10 `1068444231` and ISBN-13 `9781068444234`. The verified purchase destination supplied by Rob is `https://www.amazon.ae/dp/1068444231`. The website should give the book a dedicated page, connect it to Rob's wider IA expertise, and cross-promote relevant free IA videos without becoming cluttered.
 
+The Amazon UAE listing was verified on 27 July 2026 as showing **5.0 out of 5 from 3 reviews**. The book page may show this as a restrained linked rating, but it is time-sensitive and must be rechecked before production launch or future copy changes.
+
 ### Private tutoring
 
 For the current launch, the tutoring route should remain intentionally simple and should say: **“For more information about tutoring, please email contact@mrflynnib.com.”** The email address must be clickable. Do not promise availability, prices, delivery by Rob personally, or a detailed tutoring process until Rob confirms those details.
@@ -68,6 +70,8 @@ These should be sold as fixed cohort packages with a single school invoice rathe
 ### Free content
 
 Useful free content builds trust and demand. This can include YouTube lessons, revision guides, topic explanations, formula resources, exam strategy, practice questions, calculators, interactive tools, downloads, email learning, sample lessons, and teacher resources. Free content should genuinely help before asking visitors to buy and should lead naturally to the most relevant next step.
+
+The unfinished standalone written **Free Resources** area and its three starter articles have been removed from the current website, navigation and sitemap. Do not restore or link to a general Resources section until Rob chooses to develop it properly. The verified YouTube lessons, IA playlists, syllabus checklist and question bank remain the current free-content routes.
 
 The verified homepage sample lesson is `https://www.youtube.com/watch?v=o3aDg3PZraY&list=PLcvv9pSnukaU11Abk84eQ1OZVqXsqATQh&index=3`. Use video ID `o3aDg3PZraY` for the privacy-enhanced embed and do not invent a title that has not been verified.
 
@@ -137,6 +141,10 @@ Remove the temporary yellow workflow banner and simplify the previous busy hero 
 
 Copy should be clear, specific, warm, confident, expert, and persuasive without pressure. Avoid vague phrases such as “unlock your potential” unless attached to specific evidence. Never invent facts to make copy sound finished.
 
+Avoid em dashes in all customer-facing website copy. Rewrite sentences naturally with full stops, commas, colons or separate clauses instead of mechanically substituting hyphens. Do not call the founder “Rob” or “Rob Flynn” in public website copy. Use **Mr Flynn IB**. Preserve **Robert Flynn** only where the formal published author name is appropriate, such as book metadata, the cover description and the book's author section.
+
+Use visible breadcrumb navigation on internal pages so visitors can move through the website without relying on browser history. Breadcrumbs should begin with Home and show the current section, with a parent route where one exists, such as **Home / Courses / AA HL**.
+
 ## Current website and technology
 
 Repository: `robbieflynn/mrflynnib-chatgpt`
@@ -150,7 +158,7 @@ The repository currently contains:
 - a premium platform-style homepage
 - course catalogue and individual AA/AI, HL/SL pages
 - Teachable enrolment and login foundations
-- free resource library and starter resource pages
+- verified free video, syllabus-checklist and question-bank routes
 - tutoring page and application form
 - school licence page and enquiry form
 - book, About, Results, Contact, and FAQ pages

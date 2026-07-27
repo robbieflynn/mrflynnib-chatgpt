@@ -8,7 +8,7 @@
     "section": "A",
     "marks": 5,
     "difficulty": "Easy",
-    "title": "Remainder theorem — find a and b",
+    "title": "Remainder theorem: find a and b",
     "body": "When the polynomial \\(3x^3 + ax + b\\) is divided by \\((x-2)\\), the remainder is 2, and when divided by \\((x+1)\\), it is 5. Find the value of \\(a\\) and the value of \\(b\\).",
     "markscheme": [
       [
@@ -550,7 +550,7 @@
     "title": "Full curve analysis of f(x) = ln(x)/x",
     "body": "Consider the function \\(f(x)=\\dfrac{\\ln x}{x}\\), \\(x>0\\). The sketch shows \\(y=f(x)\\) and its tangent at \\(A\\), where the curve crosses the \\(x\\)-axis; \\(B\\) is the maximum point; \\(C\\) is the point of inflection.",
     "diagram": "q11",
-    "diagramCaption": "Diagram not to scale — recomputed exactly from f(x) = ln(x)/x.",
+    "diagramCaption": "Diagram not to scale. Recomputed exactly from f(x) = ln(x)/x.",
     "parts": [
       [
         "a",
@@ -1026,7 +1026,7 @@
         "c",
         [
           [
-            "No &mdash; events \\(A\\) and \\(B\\) are not independent",
+            "No. Events \\(A\\) and \\(B\\) are not independent",
             "A1"
           ],
           [
@@ -1492,7 +1492,7 @@
     "section": "A",
     "marks": 7,
     "difficulty": "Hard",
-    "title": "Geometric series with sine/cosine terms — ratio, convergence, sum to infinity",
+    "title": "Geometric series with sine/cosine terms: ratio, convergence, sum to infinity",
     "body": "The first three terms of a geometric sequence are \\(\\sin x\\), \\(\\sin 2x\\) and \\(4\\sin x\\cos^2 x\\), where \\(-\\dfrac{\\pi}{2}<x<\\dfrac{\\pi}{2}\\).",
     "parts": [
       [
@@ -1764,7 +1764,7 @@
             "A1"
           ],
           [
-            "Substituting into the \\(z\\)-equations gives \\(z=\\tfrac{31}4\\) from \\(L_1\\) but \\(z=\\tfrac32\\) from \\(L_2\\) &mdash; a contradiction, so \\(L_1\\), \\(L_2\\) are skew",
+            "Substituting into the \\(z\\)-equations gives \\(z=\\tfrac{31}4\\) from \\(L_1\\) but \\(z=\\tfrac32\\) from \\(L_2\\). This is a contradiction, so \\(L_1\\), \\(L_2\\) are skew",
             "R1"
           ]
         ]
@@ -2085,7 +2085,7 @@
     "section": "A",
     "marks": 4,
     "difficulty": "Easy",
-    "title": "Complex root of a quadratic — find a and b",
+    "title": "Complex root of a quadratic: find a and b",
     "body": "One root of the equation \\(x^2+ax+b=0\\) is \\(2+3i\\) where \\(a,b\\in\\mathbb{R}\\). Find the value of \\(a\\) and the value of \\(b\\).",
     "markscheme": [
       [
@@ -2126,7 +2126,7 @@
     "section": "A",
     "marks": 5,
     "difficulty": "Medium",
-    "title": "Normal distribution — find the variance from a percentile",
+    "title": "Normal distribution: find the variance from a percentile",
     "body": "A student sits a national test and is told that the marks follow a normal distribution with mean 100. The student receives a mark of 124 and is told that he is at the 68th percentile. Calculate the variance of the distribution.",
     "markscheme": [
       [
@@ -2208,7 +2208,7 @@
     "section": "A",
     "marks": 6,
     "difficulty": "Medium",
-    "title": "System of equations with a parameter — non-unique solutions",
+    "title": "System of equations with a parameter: non-unique solutions",
     "body": "A system of equations is given below.\\[ x+2y-z=2,\\quad 2x+y+z=1,\\quad -x+4y+az=4. \\]",
     "parts": [
       [
@@ -2397,7 +2397,7 @@
     "section": "A",
     "marks": 8,
     "difficulty": "Hard",
-    "title": "Proof by mathematical induction — divisibility by 5",
+    "title": "Proof by mathematical induction: divisibility by 5",
     "body": "Prove, by mathematical induction, that \\(7^{8n+3}+2\\), \\(n\\in\\mathbb{N}\\), is divisible by 5.",
     "markscheme": [
       [
@@ -2520,7 +2520,7 @@
     "section": "A",
     "marks": 7,
     "difficulty": "Hard",
-    "title": "Poisson distribution — birds on a power line over a week",
+    "title": "Poisson distribution: birds on a power line over a week",
     "body": "The number of birds seen on a power line on any day can be modelled by a Poisson distribution with mean 5.84.",
     "parts": [
       [
@@ -2704,7 +2704,7 @@
     "section": "B",
     "marks": 21,
     "difficulty": "Hard",
-    "title": "Linear PDF — mean, median, and standard deviation in terms of μ",
+    "title": "Linear PDF: mean, median, and standard deviation in terms of μ",
     "body": "A random variable \\(X\\) has probability density function\\[ f(x)=\\begin{cases} ax+b, & 2\\le x\\le3 \\\\ 0, & \\text{otherwise} \\end{cases},\\quad a,b\\in\\mathbb{R}. \\]",
     "parts": [
       [
@@ -3022,7 +3022,7 @@
       }
     ],
     "difficulty": "Medium",
-    "title": "Normal distribution from quartiles — bear cub weights",
+    "title": "Normal distribution from quartiles: bear cub weights",
     "body": "The weights, in kg, of one-year-old bear cubs are modelled by a normal distribution with mean \\(\\mu\\) and standard deviation \\(\\sigma\\).",
     "parts": [
       [
@@ -3146,7 +3146,7 @@
       }
     ],
     "difficulty": "Medium",
-    "title": "Two intersecting circles — angle and shaded area",
+    "title": "Two intersecting circles: angle and shaded area",
     "body": "Two intersecting circles have radii 4 cm and 3 cm. The centre \\(C\\) of the smaller circle lies on the circumference of the bigger circle. \\(O\\) is the centre of the bigger circle, and the two circles intersect at points A and B.",
     "diagram": "q4p2tz2",
     "diagramCaption": "The two circles (radius 4 and radius 3) with centre C on the circumference of the larger circle; shading follows the original paper.",
@@ -3252,7 +3252,7 @@
       }
     ],
     "difficulty": "Medium-Hard",
-    "title": "Credit card vs cash payments — binomial probability",
+    "title": "Credit card vs cash payments: binomial probability",
     "body": "Six customers wait in a queue in a supermarket. A customer can choose to pay with cash or a credit card. Assume that whether or not a customer pays with a credit card is independent of any other customer's method of payment. It is known that 60% of customers choose to pay with a credit card.",
     "parts": [
       [
@@ -3322,7 +3322,7 @@
       }
     ],
     "difficulty": "Medium",
-    "title": "Rational function — asymptotes and inverse",
+    "title": "Rational function: asymptotes and inverse",
     "body": "The function \\(f\\) is defined as \\(f(x)=-3+\\dfrac1{x-2}\\), \\(x\\ne2\\).",
     "diagram": "q7p2tz2",
     "diagramCaption": "y = -3 + 1/(x-2), with asymptotes x = 2 and y = -3.",
@@ -3445,7 +3445,7 @@
       }
     ],
     "difficulty": "Medium-Hard",
-    "title": "Related rates — sand poured into a cone",
+    "title": "Related rates: sand poured into a cone",
     "body": "Sand is being poured to form a cone of height \\(h\\) cm and base radius \\(r\\) cm. The height remains equal to the base radius at all times. The height of the cone is increasing at a rate of \\(0.5\\text{ cm min}^{-1}\\). Find the rate at which sand is being poured, in \\(\\text{cm}^3\\text{min}^{-1}\\), when the height is \\(4\\) cm.",
     "markscheme": [
       [
@@ -3548,7 +3548,7 @@
       }
     ],
     "difficulty": "Hard",
-    "title": "PDF a·x·cos(x) — mode, median and conditional probability",
+    "title": "PDF a·x·cos(x): mode, median and conditional probability",
     "body": "The probability density function of a random variable \\(X\\) is defined as\\[ f(x)=\\begin{cases} ax\\cos x, & 0\\le x\\le\\tfrac\\pi2 \\\\ 0, & \\text{elsewhere} \\end{cases},\\quad a\\in\\mathbb{R}. \\]",
     "parts": [
       [

@@ -57,5 +57,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "We could not send your enquiry. Please email contact@mrflynnib.com." }, { status: 502 });
   }
 
-  return NextResponse.json({ message: "Thanks — your enquiry has been received. We’ll be in touch." });
+  return NextResponse.json({ message: "Thanks. Your enquiry has been received. We’ll be in touch." });
 }

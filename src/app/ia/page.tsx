@@ -1,17 +1,17 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { ButtonLink, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { VideoEmbed } from "@/components/video-embed";
 import { siteConfig } from "@/lib/site";
 
-export const metadata: Metadata = { title: "IB Mathematics IA guidance", description: "Free IB Mathematics IA video guides, IA ideas and Robert Flynn's complete Internal Assessment book." };
+export const metadata: Metadata = { title: "IB Mathematics IA guidance", description: "Free IB Mathematics IA video guides, IA ideas and Mr Flynn IB's complete Internal Assessment book." };
 
 export default function IAPage() {
   return (
     <>
       <section className="ia-page-hero">
         <Container className="ia-page-hero-grid">
-          <div className="stack-lg"><Eyebrow>Internal Assessment</Eyebrow><h1>Build an IA you understand—and can explain.</h1><p className="lede">Rob Flynn&apos;s IA guidance is used by students and teachers around the world. Start with the complete free guide, explore mathematical ideas and use the book when you want the whole process beside you.</p><div className="cluster"><ButtonLink href="#videos">Watch the free guides</ButtonLink><ButtonLink href="/book" secondary>Explore the book</ButtonLink></div></div>
+          <div className="stack-lg"><Breadcrumbs items={[{ label: "IA guidance" }]} /><Eyebrow>Internal Assessment</Eyebrow><h1>Build an IA you understand and can explain.</h1><p className="lede">Mr Flynn IB&apos;s IA guidance is used by students and teachers around the world. Start with the complete free guide, explore mathematical ideas and use the book when you want the whole process beside you.</p><div className="cluster"><ButtonLink href="#videos">Watch the free guides</ButtonLink><ButtonLink href="/book" secondary>Explore the book</ButtonLink></div></div>
           <div className="ia-hero-book"><Image src="/images/ib-mathematics-ia-book-cover.jpg" alt="IB Mathematics IA book by Robert Flynn" width={385} height={544} priority /><div><strong>320</strong><span>pages of practical IA guidance</span></div></div>
         </Container>
       </section>
@@ -28,7 +28,7 @@ export default function IAPage() {
         </Container>
       </section>
 
-      <section className="ia-book-cta"><Container className="ia-book-cta-grid"><div><Image src="/images/ib-mathematics-ia-book-cover.jpg" alt="Cover of IB Mathematics IA: The Complete Guide to the Internal Assessment" width={240} height={339} /></div><div className="stack-lg"><Eyebrow>Go deeper</Eyebrow><h2>Keep the complete IA process on your desk.</h2><p className="lede">The 320-page book brings Rob&apos;s guidance into one structured reference, with clear strategies, examiner-informed insight and mathematical examples.</p><div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href={siteConfig.bookUrl} secondary external>View on Amazon</ButtonLink></div></div></Container></section>
+      <section className="ia-book-cta"><Container className="ia-book-cta-grid"><div><Image src="/images/ib-mathematics-ia-book-cover.jpg" alt="Cover of IB Mathematics IA: The Complete Guide to the Internal Assessment" width={240} height={339} /></div><div className="stack-lg"><Eyebrow>Go deeper</Eyebrow><h2>Keep the complete IA process on your desk.</h2><p className="lede">The 320-page book brings Mr Flynn IB&apos;s guidance into one structured reference, with clear strategies, examiner-informed insight and mathematical examples.</p><div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href={siteConfig.bookUrl} secondary external>View on Amazon</ButtonLink></div></div></Container></section>
     </>
   );
 }

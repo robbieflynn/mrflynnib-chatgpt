@@ -3,7 +3,7 @@ export const siteConfig = {
   legalName: "Mr Flynn IB",
   domain: "mrflynnib.com",
   description:
-    "Clear, expert-led IB Mathematics courses, tutoring, resources and school licences from Rob Flynn.",
+    "Clear IB Mathematics courses, IA guidance, tutoring and school licences from Mr Flynn IB.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.mrflynnib.com",
   youtubeUrl:
     process.env.NEXT_PUBLIC_YOUTUBE_URL ?? "https://www.youtube.com/mrflynnib",

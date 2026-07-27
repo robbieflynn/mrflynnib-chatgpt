@@ -29,11 +29,24 @@ export function ButtonLink({
   return <Link className={className} href={href}>{children}</Link>;
 }
 
-export function PageHero({ eyebrow, title, intro }: { eyebrow: string; title: string; intro: string }) {
+export type BreadcrumbItem = { label: string; href?: string };
+
+export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
+  return (
+    <nav className="breadcrumbs" aria-label="Breadcrumb">
+      <Link href="/">Home</Link>
+      {items.map((item, index) => item.href
+        ? <Link href={item.href} key={`${item.href}-${item.label}`}>{item.label}</Link>
+        : <span aria-current={index === items.length - 1 ? "page" : undefined} key={item.label}>{item.label}</span>)}
+    </nav>
+  );
+}
+
+export function PageHero({ eyebrow, title, intro, breadcrumbLabel = eyebrow }: { eyebrow: string; title: string; intro: string; breadcrumbLabel?: string }) {
   return (
     <section className="page-hero">
       <Container className="stack-lg">
-        <div className="breadcrumbs"><Link href="/">Home</Link><span>{eyebrow}</span></div>
+        <Breadcrumbs items={[{ label: breadcrumbLabel }]} />
         <div className="stack">
           <Eyebrow>{eyebrow}</Eyebrow>
           <h1>{title}</h1>

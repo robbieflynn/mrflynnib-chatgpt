@@ -11,7 +11,7 @@ export function SiteFooter() {
           <div className="stack">
             <Link href="/" className="brand footer-brand"><LogoLockup /></Link>
             <p style={{ color: "rgba(255,255,255,.7)", maxWidth: 420 }}>
-              Complete IB Mathematics courses, tutoring, resources and school access—explained clearly by Mr Flynn.
+              Complete IB Mathematics courses, IA guidance, tutoring and school access, explained clearly by Mr Flynn IB.
             </p>
             <div className="footer-socials" aria-label="Mr Flynn IB social channels">
               <a className="footer-social-primary" href={siteConfig.youtubeUrl} target="_blank" rel="noreferrer">YouTube</a>
@@ -29,7 +29,7 @@ export function SiteFooter() {
           </div>
           <div className="stack">
             <strong>Company</strong>
-            <div className="footer-list"><Link href="/about">About Mr Flynn</Link><Link href="/faq">FAQs</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/cookies">Cookies</Link></div>
+            <div className="footer-list"><Link href="/about">About Mr Flynn IB</Link><Link href="/faq">FAQs</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/cookies">Cookies</Link></div>
           </div>
         </div>
         <div className="footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.</span><span>Independent IB Mathematics support. Not affiliated with the International Baccalaureate Organization.</span></div>

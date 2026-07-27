@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { QuestionBank } from "@/components/question-bank";
-import { Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Free IB Mathematics question bank",
@@ -13,6 +13,7 @@ export default function QuestionBankPage() {
       <section className="question-bank-hero">
         <Container className="question-bank-hero-grid">
           <div className="stack-lg">
+            <Breadcrumbs items={[{ label: "Question bank" }]} />
             <div className="cluster"><span className="free-pill">Free for students</span><Eyebrow>Question bank</Eyebrow></div>
             <h1>Practise the question. Understand the method.</h1>
             <p className="lede">Search IB Mathematics questions by topic, paper and difficulty, then open a complete worked mark scheme when you are ready.</p>

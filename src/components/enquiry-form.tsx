@@ -24,7 +24,7 @@ export function EnquiryForm({ kind }: { kind: Kind }) {
       const result = (await response.json()) as { message?: string };
       if (!response.ok) throw new Error(result.message ?? "Please try again.");
       setStatus("success");
-      setMessage(result.message ?? "Thanks — your enquiry has been received.");
+      setMessage(result.message ?? "Thanks. Your enquiry has been received.");
       form.reset();
     } catch (error) {
       setStatus("error");

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import katex from "katex";
 import { notFound } from "next/navigation";
 import curriculumData from "@/data/curricula.json";
-import { ButtonLink, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { courseAccessPlans, courses } from "@/lib/content";
 
 type CurriculumTopic = { name: string; lessons: string[] };
@@ -54,6 +54,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
       <section className="course-detail-hero">
         <Container className="course-detail-grid">
           <div className="stack-lg">
+            <Breadcrumbs items={[{ label: "Courses", href: "/courses" }, { label: course.shortTitle }]} />
             <div className="course-detail-code">{course.shortTitle}</div>
             <Eyebrow>{course.pathway} · {course.level}</Eyebrow>
             <h1>{course.promise}</h1>
@@ -72,7 +73,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
       <section className="section course-outcomes-section">
         <Container className="split">
-          <div className="stack"><Eyebrow>What you’ll learn</Eyebrow><h2>Understand the method—and know when to use it.</h2><p className="lede">The goal is not simply to watch more videos. It is to make unfamiliar IB questions feel more manageable because the underlying mathematics is clear.</p></div>
+          <div className="stack"><Eyebrow>What you’ll learn</Eyebrow><h2>Understand the method and know when to use it.</h2><p className="lede">The goal is not simply to watch more videos. It is to make unfamiliar IB questions feel more manageable because the underlying mathematics is clear.</p></div>
           <ul className="outcome-list">{course.outcomes.map((outcome, index) => <li key={outcome}><span>0{index + 1}</span><strong>{outcome}</strong></li>)}</ul>
         </Container>
       </section>

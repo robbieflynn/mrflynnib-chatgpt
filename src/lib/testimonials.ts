@@ -13,7 +13,7 @@ export const testimonials: Testimonial[] = [
     featured: true,
   },
   {
-    quote: "Mr Flynn breaks maths down into a simple way to follow, gives great examples and explains each topic to the core. I can go back at any time to recap. I would highly recommend it — 10/10!",
+    quote: "Mr Flynn breaks maths down into a simple way to follow, gives great examples and explains each topic to the core. I can go back at any time to recap. I would highly recommend it. 10/10!",
     name: "Daniela",
     location: "Hong Kong",
     featured: true,

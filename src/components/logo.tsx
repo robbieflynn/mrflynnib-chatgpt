@@ -21,7 +21,7 @@ export function LogoLockup() {
       src="/images/mr-flynn-ib-lockup.png"
       width={1400}
       height={356}
-      alt="Mr Flynn IB — IB Mathematics video lessons, IA guidance and past paper solutions"
+      alt="Mr Flynn IB: IB Mathematics video lessons, IA guidance and past paper solutions"
       priority
     />
   );

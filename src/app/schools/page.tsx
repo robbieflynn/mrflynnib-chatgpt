@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { EnquiryForm } from "@/components/enquiry-form";
-import { Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = { title: "IB Mathematics school licences", description: "Annual access to all four Mr Flynn IB Mathematics courses for classes, departments and school cohorts." };
 
@@ -14,7 +14,7 @@ const tiers = [
 export default function SchoolsPage() {
   return (
     <>
-      <section className="schools-hero"><Container className="schools-hero-grid"><div className="stack-lg"><Eyebrow>For schools</Eyebrow><h1>Give every IB Mathematics student another clear explanation.</h1><p className="lede">Annual school access to all four complete courses, with straightforward cohort pricing and one invoice for the department.</p><a className="button" href="#school-options">See school options</a></div><div className="school-course-stack"><span>Included for every student</span><div><strong>AA HL</strong><small>Analysis & Approaches</small></div><div><strong>AA SL</strong><small>Analysis & Approaches</small></div><div><strong>AI HL</strong><small>Applications & Interpretation</small></div><div><strong>AI SL</strong><small>Applications & Interpretation</small></div></div></Container></section>
+      <section className="schools-hero"><Container className="schools-hero-grid"><div className="stack-lg"><Breadcrumbs items={[{ label: "Schools" }]} /><Eyebrow>For schools</Eyebrow><h1>Give every IB Mathematics student another clear explanation.</h1><p className="lede">Annual school access to all four complete courses, with straightforward cohort pricing and one invoice for the department.</p><a className="button" href="#school-options">See school options</a></div><div className="school-course-stack"><span>Included for every student</span><div><strong>AA HL</strong><small>Analysis & Approaches</small></div><div><strong>AA SL</strong><small>Analysis & Approaches</small></div><div><strong>AI HL</strong><small>Applications & Interpretation</small></div><div><strong>AI SL</strong><small>Applications & Interpretation</small></div></div></Container></section>
 
       <section className="school-benefit-strip"><Container className="grid-3"><article><strong>All four courses</strong><span>Support mixed pathways and both year groups.</span></article><article><strong>One annual invoice</strong><span>Simple purchasing for the department or school.</span></article><article><strong>Independent support</strong><span>Students can revisit explanations outside lesson time.</span></article></Container></section>
 

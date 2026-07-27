@@ -101,16 +101,16 @@ export default function HomePage() {
       <section className="section who-section" id="about-mr-flynn">
         <Container className="who-text-grid">
           <div className="stack-lg">
-            <Eyebrow>Who is Mr Flynn?</Eyebrow>
+            <Eyebrow>Who is Mr Flynn IB?</Eyebrow>
             <h2>Experienced IB insight, explained clearly.</h2>
             <div className="who-person-row">
               <figure className="who-photo-small">
-                <Image src="/images/rob-flynn.webp" alt="Mr Flynn" fill sizes="150px" />
+                <Image src="/images/rob-flynn.webp" alt="Mr Flynn IB" fill sizes="150px" />
               </figure>
-              <p className="lede">Mr Flynn is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons have helped IB students across the world succeed in IB Mathematics.</p>
+              <p className="lede">Mr Flynn IB is an experienced IB Mathematics teacher, examiner and IA moderator whose lessons have helped IB students across the world succeed in IB Mathematics.</p>
             </div>
           </div>
-          <div className="who-proof-grid" aria-label="Mr Flynn's experience">
+          <div className="who-proof-grid" aria-label="Mr Flynn IB's experience">
             <article><span>01</span><strong>Experienced teacher</strong><p>Focused on teaching the IB Mathematics curriculum clearly.</p></article>
             <article><span>02</span><strong>IB examiner</strong><p>Assessment insight grounded in direct examination experience.</p></article>
             <article><span>03</span><strong>IA moderator</strong><p>Clear guidance on what strong Internal Assessments need to demonstrate.</p></article>
@@ -126,7 +126,7 @@ export default function HomePage() {
             <p className="lede">See the pace, explanation and worked-question approach in a complete IB Mathematics lesson.</p>
           </div>
           <div className="lesson-grid lesson-grid-feature">
-            <div className="lesson-video"><VideoEmbed title="Equation of a straight line — sample Mr Flynn IB lesson" videoId="o3aDg3PZraY" /></div>
+            <div className="lesson-video"><VideoEmbed title="Equation of a straight line: sample Mr Flynn IB lesson" videoId="o3aDg3PZraY" /></div>
             <div className="lesson-result-panel stack-lg">
               <Eyebrow>Student experience</Eyebrow>
               <blockquote className="outcome-quote">

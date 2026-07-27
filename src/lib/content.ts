@@ -92,30 +92,6 @@ export const courses: Course[] = [
   },
 ];
 
-export const resources = [
-  {
-    slug: "choosing-aa-or-ai",
-    title: "AA or AI? How to choose the right IB Mathematics course",
-    summary: "A practical guide for students and parents comparing content, style and future options.",
-    audience: "Students & parents",
-    readTime: "7 min",
-  },
-  {
-    slug: "ib-maths-revision-plan",
-    title: "A six-week IB Mathematics revision plan",
-    summary: "A realistic structure for revising content, question types and full papers without panic-cramming.",
-    audience: "Students",
-    readTime: "9 min",
-  },
-  {
-    slug: "what-examiners-look-for",
-    title: "What IB Mathematics examiners are actually looking for",
-    summary: "How method, notation, interpretation and communication affect marks.",
-    audience: "Students & teachers",
-    readTime: "8 min",
-  },
-];
-
 export const faqs = [
   {
     question: "Where are the courses hosted?",
@@ -128,7 +104,7 @@ export const faqs = [
       "Courses are available for Analysis & Approaches and Applications & Interpretation at both Higher and Standard Level: AA HL, AA SL, AI HL and AI SL.",
   },
   {
-    question: "Is tutoring taught personally by Rob?",
+    question: "How can I find out about tutoring?",
     answer:
       "Please email contact@mrflynnib.com for current tutoring information and availability.",
   },
