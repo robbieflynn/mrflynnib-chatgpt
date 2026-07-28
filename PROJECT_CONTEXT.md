@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 27 July 2026
+Last updated: 28 July 2026
 
 ## Purpose of this file
 
@@ -87,6 +87,12 @@ Link these from the global footer so they are available throughout the website. 
 
 The homepage should offer a secondary **“Get the free syllabus checklist”** route beside the main course button. It should lead to an email-capture section immediately after the four principal route cards and before “Who is Mr Flynn?”. Ask only for first name, email address, and one of AA HL, AA SL, AI HL, or AI SL, then use a clear **“Email me my checklist”** action. Present the checklists as an established free resource in the customer-facing design rather than as an interest list or forthcoming product. The actual downloadable files and automated email-delivery workflow still need to be completed before publication.
 
+MailerLite is the agreed mailing-list and marketing-email platform. Rob created the account using `mrflynnib@gmail.com` as the private account login and added `mrflynnib.com` as the sending domain so public emails can come from `contact@mrflynnib.com`. The customer-facing checklist form must remain on the Mr Flynn IB website; MailerLite should operate invisibly in the background. The planned journey is a single on-site form, subscriber grouping by AA HL, AA SL, AI HL or AI SL, and automatic delivery of the requested checklist from the Mr Flynn IB domain. Domain authentication is being configured through Cloudflare. Because ordinary business email is routed through Google, the single root SPF record must authorise both Google (`_spf.google.com`) and MailerLite (`_spf.mlsend.com`).
+
+MailerLite sending-domain authentication was completed successfully on 28 July 2026. The authoritative Cloudflare records were independently verified as containing MailerLite's domain verification TXT record, the `litesrv._domainkey` DKIM CNAME, and the combined SPF value `v=spf1 a mx include:_spf.google.com include:_spf.mlsend.com ~all`. The Google MX record remained intact, and MailerLite reported the domain setup as complete.
+
+The four MailerLite subscriber groups have been created: `Syllabus checklist - AA HL` (`194264072949073276`), `Syllabus checklist - AA SL` (`194264085870675092`), `Syllabus checklist - AI HL` (`194264098118042767`), and `Syllabus checklist - AI SL` (`194264136110049031`). These group IDs are public configuration rather than secrets. The homepage form now has a dedicated server-side MailerLite signup route that validates the submission and maps each course to its group. A securely stored `MAILERLITE_API_TOKEN` is still required in Vercel before real submissions can enter these groups.
+
 On the main Courses page, each course card should use its complete visible name, including the level: **Analysis & Approaches HL**, **Analysis & Approaches SL**, **Applications & Interpretation HL**, and **Applications & Interpretation SL**. Keep these cards intentionally simple: course code, complete name, and a “View course” action, without a separate promotional promise. Preserve each course-specific promise on its individual course page. Individual course pages should not show a syllabus-lesson, topic-area, or access-option statistics strip. Introduce the outcomes section as **“What you’ll learn”**. Within each collapsible curriculum topic, show the lessons as one continuous vertical sequence rather than an alternating two-column grid so the syllabus order is unambiguous.
 
 ### Question bank
@@ -154,6 +160,10 @@ Use visible breadcrumb navigation on internal pages so visitors can move through
 Repository: `robbieflynn/mrflynnib-chatgpt`
 
 Public website previously supplied by Rob: `https://mrflynnib-chatgpt.vercel.app/`
+
+Rob currently administers the `mrflynnib.com` domain and business email, including `contact@mrflynnib.com`, through services associated with Bluehost. A public DNS check on 28 July 2026 confirmed that the authoritative nameservers are actually Cloudflare (`harlee.ns.cloudflare.com` and `gannon.ns.cloudflare.com`) and that inbound email is routed through Google (`smtp.google.com`). Treat Cloudflare as the active DNS manager and preserve the Google mail records. Bluehost may remain the registrar or billing route, but that account relationship still needs to be confirmed before cancelling or changing any service. The intended launch arrangement is for the website records to point to Vercel while the existing email-related DNS records remain intact.
+
+The same DNS check confirmed that the root domain and `www` currently resolve to Teachable (`mrflynnib.teachable.com` / `gcp-proxy.teachable.cloud`). This matches Teachable's historical setup instructions, which direct custom-domain users to Cloudflare. Removing the custom domain inside Teachable will not automatically return DNS management to Bluehost. Keep Cloudflare as the DNS manager unless a separate, carefully planned DNS migration is genuinely needed. For launch, first establish a Teachable course subdomain such as `learn.mrflynnib.com`, then point the root and `www` website records to Vercel while preserving Google mail and MailerLite authentication records.
 
 The project is a Next.js App Router website using React, TypeScript, Tailwind CSS, and Vercel. Supabase is prepared for enquiry storage where needed. Stripe should be used only if the main website later needs to process payments directly. Teachable remains the course platform.
 

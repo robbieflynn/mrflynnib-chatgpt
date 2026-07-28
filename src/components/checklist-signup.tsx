@@ -15,20 +15,15 @@ export function ChecklistSignup() {
     const payload = Object.fromEntries(new FormData(form).entries());
 
     try {
-      const response = await fetch("/api/enquiries", {
+      const response = await fetch("/api/checklist-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...payload,
-          kind: "contact",
-          topic: "Syllabus checklist",
-          message: `Free syllabus checklist interest: ${payload.course}`,
-        }),
+        body: JSON.stringify(payload),
       });
       const result = (await response.json()) as { message?: string };
       if (!response.ok) throw new Error(result.message ?? "Please try again.");
       setStatus("success");
-      setMessage("Thank you. We’ll email the checklist for your selected course.");
+      setMessage(result.message ?? "Thank you. We’ll email the checklist for your selected course.");
       form.reset();
     } catch (error) {
       setStatus("error");
