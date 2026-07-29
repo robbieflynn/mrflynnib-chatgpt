@@ -55,7 +55,11 @@ export function ChecklistSignup() {
       <button className="button" type="submit" disabled={status === "sending"}>
         {status === "sending" ? "Sending…" : "Email me my checklist"}
       </button>
-      <p className="checklist-privacy">We’ll email the checklist and occasional IB Mathematics support. Unsubscribe at any time. See our <Link href="/privacy">privacy policy</Link>.</p>
+      <label className="checklist-consent" htmlFor="checklist-marketing">
+        <input id="checklist-marketing" name="marketingConsent" type="checkbox" value="yes" />
+        <span>Yes, send me occasional IB Mathematics lessons, resources and course updates by email. I can unsubscribe at any time.</span>
+      </label>
+      <p className="checklist-privacy">We’ll use your email to send the checklist. Marketing emails are optional. See our <Link href="/privacy">privacy policy</Link>.</p>
       {message && <p role="status" className={`form-message checklist-message ${status === "success" ? "form-success" : "form-error"}`}>{message}</p>}
     </form>
   );

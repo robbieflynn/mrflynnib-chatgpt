@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
-import { Container, PageHero } from "@/components/ui";
-export const metadata: Metadata = { title: "Cookie policy" };
-export default function CookiesPage() { return <><PageHero eyebrow="Legal" breadcrumbLabel="Cookie policy" title="Cookie policy" intro="This policy will describe the technologies used by the completed website and the choices available to visitors." /><section className="section-tight"><Container className="narrow stack-xl"><p className="legal-review-note"><strong>Draft policy:</strong> the final cookie list and consent controls will be confirmed before any non-essential analytics or marketing technologies are enabled.</p><section className="stack"><h2 style={{fontSize:"2rem"}}>Essential technologies</h2><p>These support security, navigation, form operation and the basic delivery of the site.</p></section><section className="stack"><h2 style={{fontSize:"2rem"}}>Analytics</h2><p>Analytics will be enabled only after the final consent approach is chosen. The final policy will document each provider, its purpose and its retention period.</p></section><section className="stack"><h2 style={{fontSize:"2rem"}}>Third-party content</h2><p>Teachable, YouTube, payment services and retailers may set their own technologies when a visitor follows a link or interacts with embedded content.</p></section></Container></section></>; }
+import { redirect } from "next/navigation";
+
+export default function CookiesPage() {
+  redirect("/privacy#cookies");
+}

@@ -28,6 +28,7 @@ export async function POST(request: Request) {
   const email = normalizeEmail(body.email);
   const course = typeof body.course === "string" ? body.course : "";
   const groupId = courseGroups[course as keyof typeof courseGroups];
+  const marketingConsent = body.marketingConsent === "yes";
 
   if (!name || !email || !groupId) {
     return NextResponse.json(
@@ -55,6 +56,9 @@ export async function POST(request: Request) {
       email,
       fields: { name },
       groups: [groupId],
+      ...(marketingConsent
+        ? { opted_in_at: new Date().toISOString().replace("T", " ").slice(0, 19) }
+        : {}),
     }),
     cache: "no-store",
   });
