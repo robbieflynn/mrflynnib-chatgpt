@@ -55,7 +55,10 @@ export default function HomePage() {
         <div className="hero-math hero-math-two" aria-hidden="true">∫</div>
         <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
-            <h1>Everything you need for <span>IB Mathematics.</span></h1>
+            <h1>
+              <span className="hero-title-line">Everything you need</span>
+              <span className="hero-title-line hero-title-accent">for IB Mathematics.</span>
+            </h1>
             <p className="home-hero-lede">
               Complete IB Mathematics courses, trusted IA guidance and focused support for students, teachers and schools.
             </p>
