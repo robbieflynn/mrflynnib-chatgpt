@@ -10,7 +10,7 @@ This is the durable product memory for MrFlynnIB. Future Codex tasks must read i
 
 Rob Flynn is building MrFlynnIB.com into a premium, expert-led home for IB Mathematics. Rob is an experienced IB Mathematics teacher who has worked as an IB examiner and moderator, has taught and supported thousands of students, and has received more than one million views on his educational videos. His central strength is explaining difficult IB Mathematics clearly through personal, engaging video lessons.
 
-Rob lives in Dubai, United Arab Emirates, and currently operates Mr Flynn IB personally rather than through a separate incorporated company. For website legal copy, identify the operator as **Robert Flynn, operating as Mr Flynn IB from Dubai, United Arab Emirates**, unless Rob later establishes and confirms a different legal entity. Use `contact@mrflynnib.com` for legal and privacy enquiries.
+Rob lives in Dubai, United Arab Emirates, and currently operates Mr Flynn IB personally rather than through a separate incorporated company. For website legal and privacy copy, identify the operator as **Robert Flynn, operating as Mr Flynn IB**, without stating his location. Use `contact@mrflynnib.com` for legal and privacy enquiries.
 
 Authority should feel calm and well evidenced rather than boastful or corporate. Trust should come from clear teaching, useful content, genuine outcomes, verified testimonials, founder presence, and a high-quality experience. Content is specifically designed for the IB Mathematics curriculum rather than adapted from generic mathematics material.
 
@@ -199,7 +199,7 @@ The repository currently contains:
 - metadata, sitemap, robots, Open Graph, analytics hooks, and security headers
 - responsive components and supplied brand imagery
 
-The agreed legal-page approach is intentionally minimal. The public website has one concise Privacy Policy and one concise Terms of Use page. Cookie and analytics information is folded into the Privacy Policy, and the old `/cookies` route redirects to that section. The Privacy Policy identifies Robert Flynn as the individual operating Mr Flynn IB but does not state his location. Course payment and checkout details remain governed by the information and applicable terms shown through Teachable, while the website terms cover content, question-bank accounts, personal use, anti-scraping, intellectual property, educational limitations, school and tutoring enquiries, and UAE law as applicable in Dubai. These pages are practical launch drafts and are not a substitute for UAE legal advice.
+The agreed legal-page approach is intentionally minimal. The public website has one concise Privacy Policy and one concise Terms of Use page. Cookie and analytics information is folded into the Privacy Policy, and the old `/cookies` route redirects to that section. Both pages identify Robert Flynn as the individual operating Mr Flynn IB but do not state his location. Course payment and checkout details remain governed by the information and applicable terms shown through Teachable. The current website terms cover personal use, intellectual property, educational limitations, school and tutoring enquiries, availability, external services and contact. Do not add question-bank terms, anti-scraping clauses, a governing-law clause, or references to Dubai or the UAE until Rob chooses to address them later.
 
 Verified Teachable course destinations are:
 
