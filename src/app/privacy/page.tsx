@@ -39,7 +39,7 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Services we use</h2>
-            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting and privacy-focused analytics, MailerLite for email delivery and mailing lists, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrolment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
+            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, MailerLite for email delivery and mailing lists, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrolment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
             <p>These providers process information under their own terms and may process it in countries outside the UAE. We share only the information reasonably needed for each service.</p>
           </section>
 
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
 
           <section className="stack" id="cookies">
             <h2 style={{ fontSize: "2rem" }}>Cookies and analytics</h2>
-            <p>Essential cookies may be used for security and account login. Vercel Web Analytics is designed to provide aggregated website statistics without using cookies or identifying visitors across websites. Privacy-enhanced YouTube embeds may store information when you choose to play a video. We do not currently use advertising cookies.</p>
+            <p>Essential cookies may be used for security and account login. Privacy-enhanced YouTube embeds may store information when you choose to play a video. We do not currently use advertising cookies or non-essential analytics cookies. If this changes, we will update this policy and add a consent choice where required.</p>
           </section>
 
           <section className="stack">
