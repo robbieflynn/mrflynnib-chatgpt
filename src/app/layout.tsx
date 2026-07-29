@@ -7,12 +7,12 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: { default: "Mr Flynn IB | The home of IB Mathematics", template: "%s | Mr Flynn IB" },
+  title: { default: "Mr Flynn IB | Everything you need for IB Mathematics", template: "%s | Mr Flynn IB" },
   description: siteConfig.description,
   openGraph: {
     type: "website",
     siteName: siteConfig.name,
-    title: "Mr Flynn IB | The home of IB Mathematics",
+    title: "Mr Flynn IB | Everything you need for IB Mathematics",
     description: siteConfig.description,
     url: siteConfig.url,
     images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "Mr Flynn IB" }],
