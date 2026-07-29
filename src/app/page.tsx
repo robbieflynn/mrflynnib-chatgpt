@@ -56,8 +56,8 @@ export default function HomePage() {
         <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
             <h1>
-              <span className="hero-title-line">Everything you need</span>
-              <span className="hero-title-line hero-title-accent">for IB Mathematics.</span>
+              <span className="hero-title-line">Your home for</span>
+              <span className="hero-title-line hero-title-accent">IB Mathematics.</span>
             </h1>
             <p className="home-hero-lede">
               Complete IB Mathematics courses, trusted IA guidance and focused support for students, teachers and schools.
