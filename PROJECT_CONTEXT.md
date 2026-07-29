@@ -37,11 +37,11 @@ These are roadmap possibilities, not commitments to build everything immediately
 
 ### Online courses
 
-Courses cover the IB Mathematics pathways AA HL, AA SL, AI HL, and AI SL. Teachable hosts course checkout, enrolment, login, and learning delivery. MrFlynnIB.com should provide premium course landing pages, previews, curriculum information, FAQs, evidence, and clear calls to action, then send customers deliberately and seamlessly to the correct Teachable destination. Existing students need an obvious Teachable login route.
+Courses cover the IB Mathematics pathways AA HL, AA SL, AI HL, and AI SL. Teachable hosts course checkout, enrollment, login, and learning delivery. MrFlynnIB.com should provide premium course landing pages, previews, curriculum information, FAQs, evidence, and clear calls to action, then send customers deliberately and seamlessly to the correct Teachable destination. Existing students need an obvious Teachable login route.
 
 Every individual course will offer the same three one-time access options: **3 months for US$49**, **1 year for US$69**, and **2 years for US$79**. The two-year option is the recommended, best-value plan. Every option includes the same complete course; only the access period changes. Do not use an invented crossed-out price or make the one-year option more expensive than two years.
 
-Keep the prospective-customer and existing-student journeys distinct. The main Courses page should simply say **“Choose your course”** and present AA HL, AA SL, AI HL, and AI SL without prices or unnecessary course-choice advice. Each individual course page should preview the three access options but use one principal **“View access plans and enrol”** button leading to that course's Teachable purchase page, where the student selects and purchases a plan. Existing students should have a persistent, obvious **“My courses”** route to Teachable in the website navigation and a supporting **“Already enrolled?”** route on course pages.
+Keep the prospective-customer and existing-student journeys distinct. The main Courses page should simply say **“Choose your course”** and present AA HL, AA SL, AI HL, and AI SL without prices or unnecessary course-choice advice. Each individual course page should preview the three access options but use one principal **“View access plans and enroll”** button leading to that course's Teachable purchase page, where the student selects and purchases a plan. Existing students should have a persistent, obvious **“My courses”** route to Teachable in the website navigation and a supporting **“Already enrolled?”** route on course pages.
 
 Do not duplicate Teachable's learning platform unless a later strategic decision provides a compelling reason.
 
@@ -165,6 +165,8 @@ Remove the temporary yellow workflow banner and simplify the previous busy hero 
 
 Copy should be clear, specific, warm, confident, expert, and persuasive without pressure. Avoid vague phrases such as “unlock your potential” unless attached to specific evidence. Never invent facts to make copy sound finished.
 
+Use **enroll**, **enrolled** and **enrollment** with two Ls throughout customer-facing copy and project documentation. This is Rob's preferred spelling even where other surrounding copy follows British conventions.
+
 Avoid em dashes in all customer-facing website copy. Rewrite sentences naturally with full stops, commas, colons or separate clauses instead of mechanically substituting hyphens. Do not call the founder “Rob” or “Rob Flynn” in public website copy. Use **Mr Flynn IB**. Preserve **Robert Flynn** only where the formal published author name is appropriate, such as book metadata, the cover description and the book's author section.
 
 Use visible breadcrumb navigation on internal pages so visitors can move through the website without relying on browser history. Breadcrumbs should begin with Home and show the current section, with a parent route where one exists, such as **Home / Courses / AA HL**.
@@ -185,7 +187,7 @@ The repository currently contains:
 
 - a premium platform-style homepage
 - course catalogue and individual AA/AI, HL/SL pages
-- Teachable enrolment and login foundations
+- Teachable enrollment and login foundations
 - verified free video, syllabus-checklist and question-bank routes
 - tutoring page and application form
 - school licence page and enquiry form
@@ -195,7 +197,7 @@ The repository currently contains:
 - metadata, sitemap, robots, Open Graph, analytics hooks, and security headers
 - responsive components and supplied brand imagery
 
-The agreed legal-page approach is intentionally minimal. The public website has one concise Privacy Policy and one concise Terms of Use page. Cookie and analytics information is folded into the Privacy Policy, and the old `/cookies` route redirects to that section. The policy identifies Robert Flynn as the individual operating Mr Flynn IB from Dubai, United Arab Emirates. Course payment and checkout details remain governed by the information and applicable terms shown through Teachable, while the website terms cover content, question-bank accounts, personal use, anti-scraping, intellectual property, educational limitations, school and tutoring enquiries, and UAE law as applicable in Dubai. These pages are practical launch drafts and are not a substitute for UAE legal advice.
+The agreed legal-page approach is intentionally minimal. The public website has one concise Privacy Policy and one concise Terms of Use page. Cookie and analytics information is folded into the Privacy Policy, and the old `/cookies` route redirects to that section. The Privacy Policy identifies Robert Flynn as the individual operating Mr Flynn IB but does not state his location. Course payment and checkout details remain governed by the information and applicable terms shown through Teachable, while the website terms cover content, question-bank accounts, personal use, anti-scraping, intellectual property, educational limitations, school and tutoring enquiries, and UAE law as applicable in Dubai. These pages are practical launch drafts and are not a substitute for UAE legal advice.
 
 Verified Teachable course destinations are:
 

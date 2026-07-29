@@ -22,13 +22,13 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Who we are</h2>
-            <p>Mr Flynn IB is operated by Robert Flynn from Dubai, United Arab Emirates. For privacy questions or requests, email <a className="text-link" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p>
+            <p>Mr Flynn IB is operated by Robert Flynn. For privacy questions or requests, email <a className="text-link" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p>
           </section>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Information we collect</h2>
             <p>We collect information you choose to provide, such as your name, email address, selected course and the contents of an enquiry. If you create a question bank account, we may also store account details, saved progress and information needed to keep the service secure.</p>
-            <p>When you enrol through Teachable, we may receive limited student, enrolment, purchase and course-progress information made available to course creators. Basic technical logs may also be created when you use the website.</p>
+            <p>When you enroll through Teachable, we may receive limited student, enrollment, purchase and course-progress information made available to course creators. Basic technical logs may also be created when you use the website.</p>
           </section>
 
           <section className="stack">
@@ -39,8 +39,8 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Services we use</h2>
-            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, MailerLite for email delivery and mailing lists, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrolment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
-            <p>These providers process information under their own terms and may process it in countries outside the UAE. We share only the information reasonably needed for each service.</p>
+            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, MailerLite for email delivery and mailing lists, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrollment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
+            <p>These providers process information under their own terms and may process it in different countries. We share only the information reasonably needed for each service.</p>
           </section>
 
           <section className="stack">

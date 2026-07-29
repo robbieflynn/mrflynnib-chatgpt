@@ -96,7 +96,7 @@ export const faqs = [
   {
     question: "Where are the courses hosted?",
     answer:
-      "Course lessons and student access are hosted on Teachable. MrFlynnIB.com explains the courses, helps you choose the right one and links securely to Teachable for enrolment and login.",
+      "Course lessons and student access are hosted on Teachable. MrFlynnIB.com explains the courses, helps you choose the right one and links securely to Teachable for enrollment and login.",
   },
   {
     question: "Which IB Mathematics courses are covered?",

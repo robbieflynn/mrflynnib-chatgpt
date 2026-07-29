@@ -27,8 +27,8 @@ export default function TermsPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Courses and Teachable</h2>
-            <p>Course checkout, payment, enrolment, account login and lesson delivery take place through Teachable. The price, access period and other important purchase information are shown before checkout. Teachable&apos;s applicable checkout terms and refund process also apply to purchases made on its platform.</p>
-            <p>Mr Flynn IB remains responsible for the course content and reasonable course support. For help with an enrolment or course, email <a className="text-link" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p>
+            <p>Course checkout, payment, enrollment, account login and lesson delivery take place through Teachable. The price, access period and other important purchase information are shown before checkout. Teachable&apos;s applicable checkout terms and refund process also apply to purchases made on its platform.</p>
+            <p>Mr Flynn IB remains responsible for the course content and reasonable course support. For help with an enrollment or course, email <a className="text-link" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p>
           </section>
 
           <section className="stack">

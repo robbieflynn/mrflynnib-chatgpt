@@ -65,7 +65,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <ul className="access-plan-list">
               {courseAccessPlans.map((plan) => <li className={plan.recommended ? "access-plan-recommended" : ""} key={plan.duration}><div><strong>{plan.duration}</strong>{plan.recommended && <span>Recommended</span>}<small>{plan.description}</small></div><b>${plan.price}</b></li>)}
             </ul>
-            <ButtonLink href={course.teachableUrl} external>View access plans and enrol</ButtonLink>
+            <ButtonLink href={course.teachableUrl} external>View access plans and enroll</ButtonLink>
             <small>Prices are in US dollars. Payment and secure course access continue on Teachable.</small>
           </aside>
         </Container>
