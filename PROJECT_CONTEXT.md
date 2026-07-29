@@ -117,6 +117,8 @@ The agreed launch access model is a two-level free release. Visitors may use a u
 
 Rob has confirmed that he previously worked with the IB and received direct guidance that questions may be used when they have been changed sufficiently. He confirms that the questions intended for this bank have been changed accordingly and does not want their original sources displayed publicly. Treat this as Rob's product-owner confirmation rather than an independently verified legal opinion. Preserve any private provenance or working notes included in supplied files, but do not add public source labels unless Rob requests them or a particular third-party licence expressly requires attribution.
 
+Rob supplied the English November 2020 Legacy HL source papers and matching markschemes for Paper 1, Paper 2 and the Calculus Paper 3. The set has been inspected and contains 27 questions in total: 12 in Paper 1, 11 in Paper 2 and 4 in Calculus Paper 3. The notation, diagrams and question-to-markscheme pairings are readable. Treat these PDFs as private source material for classification and sufficiently changed question-bank content. Do not publish the original paper pages, original markscheme pages or verbatim IB wording.
+
 ### Internal Assessment (IA)
 
 IA guidance is a major part of Rob's reputation and should be treated as a prominent, dedicated website area rather than buried inside general course or free-resource content. The homepage should introduce this expertise clearly and lead to an IA section containing Rob's videos, his complete IA guide playlist, an IA ideas playlist, and the IA book. The playlists should remain clearly distinguished so visitors can choose between learning the full process and exploring possible topics.
