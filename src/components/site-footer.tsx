@@ -11,7 +11,7 @@ export function SiteFooter() {
           <div className="stack">
             <Link href="/" className="brand footer-brand"><LogoLockup /></Link>
             <p style={{ color: "rgba(255,255,255,.7)", maxWidth: 420 }}>
-              Complete IB Mathematics courses, IA guidance, tutoring and school access, explained clearly by Mr Flynn IB.
+              Complete IB Mathematics courses, a growing question bank, IA guidance, tutoring and school access, explained clearly by Mr Flynn IB.
             </p>
             <div className="footer-socials" aria-label="Mr Flynn IB social channels">
               <a className="footer-social-primary" href={siteConfig.youtubeUrl} target="_blank" rel="noreferrer">YouTube</a>

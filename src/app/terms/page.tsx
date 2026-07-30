@@ -18,7 +18,7 @@ export default function TermsPage() {
       />
       <section className="section-tight">
         <Container className="narrow stack-xl">
-          <p className="muted"><strong>Last updated:</strong> 29 July 2026</p>
+          <p className="muted"><strong>Last updated:</strong> 30 July 2026</p>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>About these terms</h2>
@@ -44,7 +44,7 @@ export default function TermsPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Tutoring and schools</h2>
-            <p>The tutoring and school pages invite enquiries only. Availability, pricing, invoicing, student allocation and other arrangements are not confirmed until agreed separately in writing.</p>
+            <p>The tutoring page invites enquiries only. School prices are published on the Schools page, while availability, final student allocation, invoicing and practical arrangements are confirmed separately in writing.</p>
           </section>
 
           <section className="stack">

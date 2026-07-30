@@ -104,6 +104,21 @@ export const faqs = [
       "Courses are available for Analysis & Approaches and Applications & Interpretation at both Higher and Standard Level: AA HL, AA SL, AI HL and AI SL.",
   },
   {
+    question: "What access plans are available?",
+    answer:
+      "Each course has three one-time access options: 3 months for US$49, 1 year for US$69, or 2 years for US$79. The two-year plan offers the best value for students completing the full IB course.",
+  },
+  {
+    question: "Does each access plan include the complete course?",
+    answer:
+      "Yes. Every access plan includes the same complete course. The only difference is how long you can access it.",
+  },
+  {
+    question: "I am already enrolled. How do I access my lessons?",
+    answer:
+      "Use the My courses link at the top of the website. It takes existing students directly to the Teachable login used for course access.",
+  },
+  {
     question: "How can I find out about tutoring?",
     answer:
       "Please email contact@mrflynnib.com for current tutoring information and availability.",
@@ -111,11 +126,21 @@ export const faqs = [
   {
     question: "Can a school buy access for several students?",
     answer:
-      "Yes. School licences are designed for departments that want structured student access, teacher onboarding and a straightforward quotation or invoice process.",
+      "Yes. Schools can purchase two-year student licences using the pricing shown on the Schools page. Each student receives access to one selected course.",
+  },
+  {
+    question: "Can a school request different courses within one cohort?",
+    answer:
+      "Yes. A school can request a mixture of AA HL, AA SL, AI HL and AI SL licences. The course allocation and practical setup are confirmed before invoicing.",
   },
   {
     question: "Do the courses replace school lessons?",
     answer:
       "No. They are designed to strengthen understanding, fill gaps, support revision and provide an expert explanation students can revisit whenever needed.",
+  },
+  {
+    question: "Where can I buy the IA book?",
+    answer:
+      "The book has a dedicated page on this website with more information and a link to purchase it through Amazon.",
   },
 ];

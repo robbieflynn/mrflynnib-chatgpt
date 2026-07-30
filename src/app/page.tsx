@@ -18,7 +18,7 @@ const mainOffers = [
   },
   {
     number: "02",
-    label: "Free for now",
+    label: "Free beta",
     title: "Question bank",
     body: "Build fluency with focused IB Mathematics questions and clear routes through each topic.",
     href: "/question-bank",
