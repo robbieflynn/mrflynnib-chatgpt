@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <SiteHeader />
         <main id="main-content">{children}</main>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );

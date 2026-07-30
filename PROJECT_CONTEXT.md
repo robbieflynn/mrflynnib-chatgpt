@@ -183,7 +183,7 @@ Rob currently administers the `mrflynnib.com` domain and business email, includi
 
 The same DNS check confirmed that the root domain and `www` currently resolve to Teachable (`mrflynnib.teachable.com` / `gcp-proxy.teachable.cloud`). This matches Teachable's historical setup instructions, which direct custom-domain users to Cloudflare. Removing the custom domain inside Teachable will not automatically return DNS management to Bluehost. Keep Cloudflare as the DNS manager unless a separate, carefully planned DNS migration is genuinely needed. For launch, first establish a Teachable course subdomain such as `learn.mrflynnib.com`, then point the root and `www` website records to Vercel while preserving Google mail and MailerLite authentication records.
 
-The project is a Next.js App Router website using React, TypeScript, Tailwind CSS, and Vercel. Supabase is prepared for enquiry storage where needed. Stripe should be used only if the main website later needs to process payments directly. Teachable remains the course platform.
+The project is a Next.js App Router website using React, TypeScript, Tailwind CSS, and Vercel. Vercel Web Analytics was enabled by Rob and integrated into the root website layout on 30 July 2026. It provides anonymised, cookie-free visitor and page-view reporting in the Vercel project dashboard. Supabase is prepared for enquiry storage where needed. Stripe should be used only if the main website later needs to process payments directly. Teachable remains the course platform.
 
 The repository currently contains:
 
@@ -210,7 +210,7 @@ Verified Teachable course destinations are:
 
 Rob supplied genuine testimonials from 18 named students across Hong Kong, Italy, the UK, India, Canada, Poland, Sweden, Tunisia, Spain, Greece, Denmark, South Korea, Portugal, Saudi Arabia, the UAE, and Egypt, and explicitly approved using their first names and locations. Preserve their meaning and make only light spelling or punctuation corrections. The strongest verified outcome currently supplied is Abdulaziz's report of moving from a 4 to a 7 in his first-semester exams; present it as that student's statement, not as a guaranteed result.
 
-Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes final school licence operational terms, production analytics configuration, completed legal review, and the Teachable setup for the three confirmed individual-course access plans.
+Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes final school licence operational terms, completed legal review, and the Teachable setup for the three confirmed individual-course access plans.
 
 ## Agreed working relationship
 

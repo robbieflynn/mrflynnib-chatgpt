@@ -50,7 +50,7 @@ export default function PrivacyPage() {
 
           <section className="stack" id="cookies">
             <h2 style={{ fontSize: "2rem" }}>Cookies and analytics</h2>
-            <p>Essential cookies may be used for security and account login. Privacy-enhanced YouTube embeds may store information when you choose to play a video. We do not currently use advertising cookies or non-essential analytics cookies. If this changes, we will update this policy and add a consent choice where required.</p>
+            <p>We use Vercel Web Analytics to understand general website usage, including page visits, referral sources, approximate location, browser and device information. Vercel provides this information in an anonymised form and does not use cookies for this service. Essential cookies may be used for security and account login. Privacy-enhanced YouTube embeds may store information when you choose to play a video. We do not currently use advertising cookies.</p>
           </section>
 
           <section className="stack">
