@@ -87,23 +87,25 @@ export default function HomePage() {
 
       <section className="checklist-section" id="syllabus-checklist">
         <Container className="checklist-grid">
-          <div className="stack checklist-copy">
-            <Eyebrow>Free syllabus checklists</Eyebrow>
-            <h2>Know exactly what you need to cover.</h2>
-            <p className="lede">Choose your IB Mathematics course and receive the complete syllabus checklist by email.</p>
-            <div className="checklist-courses" aria-label="Available syllabus checklists"><span>AA HL</span><span>AA SL</span><span>AI HL</span><span>AI SL</span></div>
-          </div>
-          <figure className="checklist-preview">
-            <div className="checklist-preview-window">
-              <Image
-                src="/images/aa-hl-checklist-preview.png"
-                alt="Preview of the Mr Flynn IB AA HL complete syllabus checklist"
-                fill
-                sizes="(max-width: 900px) 300px, 260px"
-              />
+          <div className="checklist-promo">
+            <div className="stack checklist-copy">
+              <Eyebrow>Free syllabus checklists</Eyebrow>
+              <h2>Know exactly what you need to cover.</h2>
+              <p className="lede">Choose your IB Mathematics course and receive the complete syllabus checklist by email.</p>
+              <div className="checklist-courses" aria-label="Available syllabus checklists"><span>AA HL</span><span>AA SL</span><span>AI HL</span><span>AI SL</span></div>
             </div>
-            <figcaption>A complete topic-by-topic progress tracker.</figcaption>
-          </figure>
+            <figure className="checklist-preview">
+              <div className="checklist-preview-window">
+                <Image
+                  src="/images/aa-hl-checklist-preview.png"
+                  alt="Preview of the Mr Flynn IB AA HL complete syllabus checklist"
+                  fill
+                  sizes="(max-width: 650px) 280px, 190px"
+                />
+              </div>
+              <figcaption>A complete topic-by-topic progress tracker.</figcaption>
+            </figure>
+          </div>
           <div className="checklist-form-card">
             <strong>Get your complete syllabus checklist</strong>
             <p>Enter your details and select your course. We’ll email you the correct checklist.</p>
