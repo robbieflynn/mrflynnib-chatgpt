@@ -15,7 +15,25 @@ const tiers = [
 export default function SchoolsPage() {
   return (
     <>
-      <section className="schools-hero"><Container className="schools-hero-grid"><div className="stack-lg"><Breadcrumbs items={[{ label: "Schools" }]} /><Eyebrow>For schools</Eyebrow><h1>Give every IB Mathematics student another clear explanation.</h1><p className="lede">Two-year access for a defined student cohort, with straightforward volume pricing.</p><a className="button" href="#school-options">See school options</a></div><div className="school-course-stack"><span>Available course options</span><p>Each student receives one selected course.</p><div><strong>AA HL</strong><small>Analysis & Approaches</small></div><div><strong>AA SL</strong><small>Analysis & Approaches</small></div><div><strong>AI HL</strong><small>Applications & Interpretation</small></div><div><strong>AI SL</strong><small>Applications & Interpretation</small></div></div></Container></section>
+      <section className="schools-hero">
+        <Container className="schools-hero-shell">
+          <Breadcrumbs items={[{ label: "Schools" }]} />
+          <div className="schools-hero-copy stack-lg">
+            <Eyebrow>For schools</Eyebrow>
+            <h1>Give every IB Mathematics student another clear explanation.</h1>
+            <p className="lede">Two-year access for a defined student cohort, with straightforward volume pricing.</p>
+            <a className="button" href="#school-options">See school options</a>
+          </div>
+          <div className="school-course-stack">
+            <span>Available course options</span>
+            <p>Each student receives one selected course.</p>
+            <div><strong>AA HL</strong><small>Analysis &amp; Approaches</small></div>
+            <div><strong>AA SL</strong><small>Analysis &amp; Approaches</small></div>
+            <div><strong>AI HL</strong><small>Applications &amp; Interpretation</small></div>
+            <div><strong>AI SL</strong><small>Applications &amp; Interpretation</small></div>
+          </div>
+        </Container>
+      </section>
 
       <section className="school-benefit-strip"><Container className="grid-3"><article><strong>Two-year access</strong><span>Support students throughout their complete IB course.</span></article><article><strong>One school invoice</strong><span>Simple purchasing for each student cohort.</span></article><article><strong>Independent support</strong><span>Students can revisit explanations outside lesson time.</span></article></Container></section>
 
