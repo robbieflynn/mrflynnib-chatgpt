@@ -39,7 +39,7 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Services we use</h2>
-            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, MailerLite for email delivery and mailing lists, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrollment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
+            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, MailerLite for checklist delivery, mailing lists and school enquiries, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrolment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
             <p>These providers process information under their own terms and may process it in different countries. We share only the information reasonably needed for each service.</p>
           </section>
 

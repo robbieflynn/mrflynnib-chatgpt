@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 const allowedKinds = new Set(["contact", "tutoring", "school"]);
+const schoolEnquiryGroupId = "194431035036927513";
 
 function isEmail(value: unknown): value is string {
   return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -11,51 +12,64 @@ function optionalText(body: Record<string, unknown>, key: string) {
   return typeof value === "string" && value.trim() ? value.trim() : "Not provided";
 }
 
-async function sendSchoolEnquiryNotification(body: Record<string, unknown>) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.ENQUIRY_FROM_EMAIL;
-  const to = process.env.ENQUIRY_NOTIFICATION_EMAIL ?? "contact@mrflynnib.com";
+async function submitSchoolEnquiry(body: Record<string, unknown>, token: string) {
+  const email = String(body.email).trim().toLowerCase();
+  const headers = {
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
 
-  if (!apiKey || !from) {
-    console.warn("School enquiry saved without email notification. Configure RESEND_API_KEY and ENQUIRY_FROM_EMAIL before launch.");
-    return;
+  const existingResponse = await fetch(
+    `https://connect.mailerlite.com/api/subscribers/${encodeURIComponent(email)}?include=groups`,
+    { headers, cache: "no-store" },
+  );
+
+  if (existingResponse.ok) {
+    const existing = (await existingResponse.json()) as { data?: { id?: string } };
+    const subscriberId = existing.data?.id;
+
+    if (subscriberId) {
+      const unassignResponse = await fetch(
+        `https://connect.mailerlite.com/api/subscribers/${subscriberId}/groups/${schoolEnquiryGroupId}`,
+        { method: "DELETE", headers, cache: "no-store" },
+      );
+
+      if (!unassignResponse.ok && unassignResponse.status !== 404) {
+        console.warn("Could not reset existing school enquiry group membership", unassignResponse.status);
+      }
+    }
+  } else if (existingResponse.status !== 404) {
+    console.error("MailerLite subscriber lookup failed", existingResponse.status, await existingResponse.text());
+    return false;
   }
 
-  const schoolName = optionalText(body, "schoolName");
-  const email = optionalText(body, "email");
-  const notification = [
-    "A new school licence enquiry has been submitted.",
-    "",
-    `Name: ${optionalText(body, "name")}`,
-    `Email: ${email}`,
-    `Role: ${optionalText(body, "role")}`,
-    `School: ${schoolName}`,
-    `Country: ${optionalText(body, "country")}`,
-    `Estimated student count: ${optionalText(body, "studentCount")}`,
-    `Courses or year groups: ${optionalText(body, "coursesNeeded")}`,
-    `Other information: ${optionalText(body, "message")}`,
-  ].join("\n");
-
-  const response = await fetch("https://api.resend.com/emails", {
+  const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "User-Agent": "MrFlynnIB-Website/1.0",
-    },
+    headers,
     body: JSON.stringify({
-      from,
-      to: [to],
-      reply_to: email,
-      subject: `School licence enquiry: ${schoolName}`,
-      text: notification,
+      email,
+      fields: {
+        name: String(body.name).trim(),
+        company: optionalText(body, "schoolName"),
+        country: optionalText(body, "country"),
+        school_role: optionalText(body, "role"),
+        estimated_students: optionalText(body, "studentCount"),
+        courses_or_year_groups: optionalText(body, "coursesNeeded"),
+        school_enquiry_message: optionalText(body, "message"),
+      },
+      groups: [schoolEnquiryGroupId],
     }),
     cache: "no-store",
   });
 
   if (!response.ok) {
-    console.error("School enquiry email notification failed", response.status, await response.text());
+    console.error("MailerLite school enquiry failed", response.status, await response.text());
+    return false;
   }
+
+  const result = (await response.json()) as { data?: { status?: string } };
+  return result.data?.status === "active";
 }
 
 export async function POST(request: Request) {
@@ -81,35 +95,51 @@ export async function POST(request: Request) {
     source: "website",
   };
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (body.kind === "school") {
+    const token = process.env.MAILERLITE_API_TOKEN;
 
-  if (!supabaseUrl || !serviceKey) {
-    if (process.env.NODE_ENV !== "production") {
-      console.info("Preview enquiry:", record);
-      return NextResponse.json({ message: "Preview mode: the form works, but Supabase must be configured before launch." });
+    if (!token) {
+      return NextResponse.json(
+        { message: "The school enquiry form is being configured. Please email contact@mrflynnib.com." },
+        { status: 503 },
+      );
     }
-    return NextResponse.json({ message: "The enquiry service is being configured. Please email contact@mrflynnib.com." }, { status: 503 });
+
+    if (!(await submitSchoolEnquiry(body, token))) {
+      return NextResponse.json(
+        { message: "We could not send your enquiry. Please email contact@mrflynnib.com." },
+        { status: 502 },
+      );
+    }
+  } else {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !serviceKey) {
+      if (process.env.NODE_ENV !== "production") {
+        console.info("Preview enquiry:", record);
+        return NextResponse.json({ message: "Preview mode: the form works, but Supabase must be configured before launch." });
+      }
+      return NextResponse.json({ message: "We could not send your enquiry. Please email contact@mrflynnib.com." }, { status: 502 });
+    }
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/enquiries`, {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(record),
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.error("Supabase enquiry insert failed", response.status, await response.text());
+      return NextResponse.json({ message: "We could not send your enquiry. Please email contact@mrflynnib.com." }, { status: 502 });
+    }
   }
-
-  const response = await fetch(`${supabaseUrl}/rest/v1/enquiries`, {
-    method: "POST",
-    headers: {
-      apikey: serviceKey,
-      Authorization: `Bearer ${serviceKey}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    },
-    body: JSON.stringify(record),
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    console.error("Supabase enquiry insert failed", response.status, await response.text());
-    return NextResponse.json({ message: "We could not send your enquiry. Please email contact@mrflynnib.com." }, { status: 502 });
-  }
-
-  if (body.kind === "school") await sendSchoolEnquiryNotification(body);
 
   return NextResponse.json({ message: "Thanks. Your enquiry has been received. We’ll be in touch." });
 }

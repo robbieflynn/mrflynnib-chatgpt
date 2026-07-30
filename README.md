@@ -13,7 +13,7 @@ A complete first-pass Next.js website for **MrFlynnIB.com**, positioning the bus
 - Book, About, Results, Contact and FAQ pages
 - Privacy, terms and cookie-policy foundations
 - Server-side enquiry validation and optional Supabase storage
-- Optional school-enquiry email notifications through Resend
+- School-enquiry routing and internal notifications through MailerLite
 - Metadata, Open Graph image, sitemap, robots rules and security headers
 - GA4 hook, enabled only when an ID is supplied
 - Explicit placeholders rather than invented prices, testimonials or claims
@@ -32,11 +32,10 @@ Open `http://localhost:3000`.
 
 1. Add the live Teachable school, login and course URLs to `.env.local`.
 2. Add the live book purchase URL and YouTube channel URL.
-3. Create a Supabase project and run `supabase/schema.sql`.
-4. Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` as server-only environment variables.
-5. Add `RESEND_API_KEY` and a verified `ENQUIRY_FROM_EMAIL` sender. `ENQUIRY_NOTIFICATION_EMAIL` defaults to `contact@mrflynnib.com` when omitted.
-6. Confirm final course availability, access periods and operational terms.
-7. Complete legal review and configure consent before non-essential tracking.
+3. Add `MAILERLITE_API_TOKEN` for checklist delivery and school-enquiry routing.
+4. Optionally create a Supabase project, run `supabase/schema.sql`, and add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for other enquiry types if they are restored later.
+5. Confirm final course availability, access periods and operational terms.
+6. Complete legal review and configure consent before non-essential tracking.
 
 ## Deployment
 
@@ -48,7 +47,7 @@ Open `http://localhost:3000`.
 
 ## Architecture decision
 
-The public website owns brand, positioning, SEO, audience journeys and lead generation. Teachable owns course checkout, login and lesson delivery. Supabase is used only where the main site needs to store enquiries; it is not added as a duplicate learning platform.
+The public website owns brand, positioning, SEO, audience journeys and lead generation. Teachable owns course checkout, login and lesson delivery. MailerLite handles checklist delivery, mailing-list groups and school-enquiry notifications. Supabase can retain other structured data where needed; it is not added as a duplicate learning platform.
 
 ## Image update
 
