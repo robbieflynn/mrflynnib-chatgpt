@@ -813,6 +813,7 @@ textarea { min-height: 130px; resize: vertical; }
   .qb-course-link-name strong { font-size: .67rem; }
   .qb-course-link-name small { font-size: .61rem; }
   .qb-course-link-arrow { right: .8rem; bottom: .85rem; font-size: 1rem; }
+  .qb-coming-soon { right: .55rem; top: .55rem; padding: .22rem .38rem; font-size: .53rem; }
   .qb-index-legacy { padding-top: .7rem; justify-content: space-between; gap: .5rem; font-size: .66rem; }
   .qb-index-legacy a { padding: .45rem .55rem; gap: .4rem; font-size: .65rem; }
   .qb-index-legacy strong { display: none; }
