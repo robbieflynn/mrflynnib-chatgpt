@@ -16,7 +16,7 @@ export default function QuestionBankPage() {
 
         <div className="qb-index-intro">
           <div className="cluster">
-            <span className="free-pill">Free early access</span>
+            <span className="free-pill">Free beta</span>
             <Eyebrow>Question bank</Eyebrow>
           </div>
           <h1>Choose your question bank.</h1>
@@ -24,16 +24,22 @@ export default function QuestionBankPage() {
         </div>
 
         <div className="qb-course-link-grid" aria-label="Choose your IB Mathematics course">
-          {questionBankCourses.map((course) => (
-            <Link className="qb-course-link" href={`/question-bank/${course.slug}`} key={course.slug}>
+          {questionBankCourses.map((course) => {
+            const content = <>
               <span className="qb-course-link-code">{course.code}</span>
               <span className="qb-course-link-name">
                 <strong>{course.pathway}</strong>
                 <small>{course.level}</small>
               </span>
-              <span className="qb-course-link-arrow" aria-hidden="true">→</span>
-            </Link>
-          ))}
+              {course.available
+                ? <span className="qb-course-link-arrow" aria-hidden="true">→</span>
+                : <span className="qb-coming-soon">Coming soon</span>}
+            </>;
+
+            return course.available
+              ? <Link className="qb-course-link" href={`/question-bank/${course.slug}`} key={course.slug}>{content}</Link>
+              : <div aria-disabled="true" className="qb-course-link is-coming-soon" key={course.slug}>{content}</div>;
+          })}
         </div>
 
         <div className="qb-index-legacy">

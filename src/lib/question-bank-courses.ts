@@ -3,13 +3,14 @@ export type QuestionBankCourse = {
   code: "AA HL" | "AA SL" | "AI HL" | "AI SL";
   pathway: "Analysis & Approaches" | "Applications & Interpretation";
   level: "Higher Level" | "Standard Level";
+  available: boolean;
 };
 
 export const questionBankCourses: QuestionBankCourse[] = [
-  { slug: "aa-hl", code: "AA HL", pathway: "Analysis & Approaches", level: "Higher Level" },
-  { slug: "aa-sl", code: "AA SL", pathway: "Analysis & Approaches", level: "Standard Level" },
-  { slug: "ai-hl", code: "AI HL", pathway: "Applications & Interpretation", level: "Higher Level" },
-  { slug: "ai-sl", code: "AI SL", pathway: "Applications & Interpretation", level: "Standard Level" },
+  { slug: "aa-hl", code: "AA HL", pathway: "Analysis & Approaches", level: "Higher Level", available: true },
+  { slug: "aa-sl", code: "AA SL", pathway: "Analysis & Approaches", level: "Standard Level", available: true },
+  { slug: "ai-hl", code: "AI HL", pathway: "Applications & Interpretation", level: "Higher Level", available: false },
+  { slug: "ai-sl", code: "AI SL", pathway: "Applications & Interpretation", level: "Standard Level", available: false },
 ];
 
 export function getQuestionBankCourse(slug: string) {

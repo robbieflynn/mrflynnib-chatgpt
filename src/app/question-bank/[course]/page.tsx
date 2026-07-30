@@ -39,9 +39,9 @@ export default async function CourseQuestionBankPage({ params }: { params: Promi
               <span>Change course</span>
               <div>
                 {questionBankCourses.map((item) => (
-                  <Link aria-current={item.slug === course.slug ? "page" : undefined} href={`/question-bank/${item.slug}`} key={item.slug}>
-                    {item.code}
-                  </Link>
+                  item.available
+                    ? <Link aria-current={item.slug === course.slug ? "page" : undefined} href={`/question-bank/${item.slug}`} key={item.slug}>{item.code}</Link>
+                    : <span className="is-coming-soon" key={item.slug}>{item.code}<small>Soon</small></span>
                 ))}
               </div>
             </nav>
