@@ -42,12 +42,6 @@ export default function QuestionBankPage() {
           })}
         </div>
 
-        <div className="qb-index-legacy">
-          <span>Studying an older syllabus?</span>
-          <Link href="/question-bank/legacy-hl">
-            Open the Legacy HL archive <strong>53 questions</strong>
-          </Link>
-        </div>
       </Container>
     </section>
   );
