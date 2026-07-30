@@ -323,6 +323,12 @@ textarea { min-height: 130px; resize: vertical; }
 .checklist-section .lede { color: rgba(255,255,255,.72); }
 .checklist-courses { display: flex; flex-wrap: wrap; gap: .55rem; }
 .checklist-courses span { padding: .45rem .7rem; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: rgba(255,255,255,.8); font-size: .76rem; font-weight: 850; }
+.checklist-copy { align-self: start; }
+.checklist-preview { width: min(100%, 440px); margin-top: 1.15rem; }
+.checklist-preview-window { position: relative; aspect-ratio: 1.3; overflow: hidden; border: 1px solid rgba(255,255,255,.2); border-radius: 1rem; background: white; box-shadow: 0 24px 60px rgba(0,0,0,.26); transform: rotate(-1deg); }
+.checklist-preview-window::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(11,21,48,.06); pointer-events: none; }
+.checklist-preview-window img { object-fit: cover; object-position: top; }
+.checklist-preview figcaption { margin-top: .8rem; color: rgba(255,255,255,.66); font-size: .75rem; font-weight: 750; letter-spacing: .01em; }
 .checklist-form-card { padding: clamp(1.5rem, 3vw, 2.2rem); display: grid; gap: .7rem; border: 1px solid rgba(255,255,255,.14); border-radius: 1.5rem; background: white; color: var(--ink); box-shadow: 0 30px 75px rgba(0,0,0,.22); }
 .checklist-form-card > strong { font-size: clamp(1.4rem, 2.5vw, 2rem); letter-spacing: -.035em; }
 .checklist-form-card > p { color: var(--muted); }
