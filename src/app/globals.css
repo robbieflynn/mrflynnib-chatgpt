@@ -676,7 +676,7 @@ textarea { min-height: 130px; resize: vertical; }
 
 .schools-hero { padding: clamp(2rem, 3.5vw, 3rem) 0; background: radial-gradient(circle at 88% 10%, rgba(232,170,45,.24), transparent 30%), #071024; color: white; }
 .schools-hero-shell { display: grid; gap: clamp(1.5rem, 2.5vw, 2.25rem); }
-.schools-hero-layout { display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(2.5rem, 7vw, 7rem); align-items: center; }
+.schools-hero-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2rem, 4vw, 4.25rem); align-items: center; }
 .schools-hero-heading { align-content: center; }
 .schools-hero-heading .eyebrow { margin: 0; }
 .schools-hero-heading h1 { max-width: 11ch; font-size: clamp(3rem, 5.1vw, 5rem); }

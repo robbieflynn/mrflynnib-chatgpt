@@ -56,7 +56,7 @@ export default function SchoolsPage() {
               </article>
             ))}
           </div>
-          <p className="pricing-note">For example, 57 students fall within the 50–99 tier: 57 × $30 = $1,710 for two years. Course allocation, access dates and provisioning are confirmed with the school before invoicing.</p>
+          <p className="pricing-note">Course allocation, access dates and provisioning are confirmed with the school before invoicing.</p>
         </Container>
       </section>
 
