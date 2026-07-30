@@ -705,8 +705,6 @@ textarea { min-height: 130px; resize: vertical; }
 .tier-total { margin-top: auto; padding-top: 1rem; display: flex; justify-content: space-between; border-top: 1px solid var(--line); }
 .tier-total span { color: var(--muted); font-size: .75rem; }
 .pricing-note { max-width: 80ch; color: var(--muted); font-size: .82rem; }
-.schools-included { background: white; }
-
 .book-page-hero { padding: clamp(5rem, 9vw, 8rem) 0; background: linear-gradient(135deg, #e8f4fd, #fbfaf6); }
 .book-page-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(3rem, 8vw, 8rem); align-items: center; }
 .book-page-cover { position: relative; display: grid; place-items: center; }
