@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 29 July 2026
+Last updated: 30 July 2026
 
 ## Purpose of this file
 
@@ -111,7 +111,7 @@ The question bank is one of the four principal product routes and should be pres
 
 Keep the first release transparent about its scope: it currently contains Legacy HL rather than the four present-day AA/AI pathways. Students should be able to search and filter by course, paper, topic, subtopic, difficulty, and exam session, and reveal the mark scheme only when ready. Preserve the mathematical notation and diagrams when extending or migrating the data. Future additions should use the same structured data model so the bank can grow without redesigning the page.
 
-The question-bank journey should begin with four prominent course choices: **AA HL, AA SL, AI HL, and AI SL**. Treat these as the primary routes rather than burying course choice inside a dropdown. Until verified current-course questions have been classified and added, keep the supplied 53 questions in a clearly separate **Legacy HL archive**; do not guess which current AA/AI course an older question belongs to.
+The question-bank journey begins with a dedicated **“Choose your question bank”** screen containing four prominent course choices: **AA HL, AA SL, AI HL, and AI SL**. All four choices must be visible immediately without scrolling on normal desktop and mobile screens. Each choice has its own stable route at `/question-bank/aa-hl`, `/question-bank/aa-sl`, `/question-bank/ai-hl`, or `/question-bank/ai-sl`, with an easy course switcher inside. Until verified current-course questions have been classified and added, keep the supplied 53 questions at `/question-bank/legacy-hl` in a clearly separate **Legacy HL archive**; do not guess which current AA/AI course an older question belongs to.
 
 The agreed launch access model is a two-level free release. Visitors may use a useful public sample without an account. Creating a free MrFlynnIB website account unlocks the remainder of the question bank during an initial one-to-two-month early-access period. Present this honestly as free early access and make clear that access arrangements may change later. Logging in and joining the marketing mailing list must remain separate choices; do not add question-bank account holders to marketing emails without explicit consent. The later paid model, price, duration and any inclusion with Teachable courses or school licences remain to be decided.
 

@@ -35,13 +35,6 @@ const TOPIC_ORDER = [
   "Statistics and Probability",
   "Calculus",
 ];
-const CURRENT_COURSES = [
-  { code: "AA HL", name: "Analysis & Approaches", level: "Higher Level" },
-  { code: "AA SL", name: "Analysis & Approaches", level: "Standard Level" },
-  { code: "AI HL", name: "Applications & Interpretation", level: "Higher Level" },
-  { code: "AI SL", name: "Applications & Interpretation", level: "Standard Level" },
-] as const;
-type CourseChoice = (typeof CURRENT_COURSES)[number]["code"] | "Legacy HL";
 const PAGE_SIZE = 12;
 
 function unique(values: string[], preferredOrder: string[] = []) {
@@ -163,7 +156,6 @@ function QuestionCard({ question }: { question: Question }) {
 
 export function QuestionBank() {
   const [search, setSearch] = useState("");
-  const [course, setCourse] = useState<CourseChoice | "">("");
   const [paperNumber, setPaperNumber] = useState("");
   const [topic, setTopic] = useState("");
   const [subtopic, setSubtopic] = useState("");
@@ -180,7 +172,6 @@ export function QuestionBank() {
 
   const query = search.trim().toLowerCase();
   const filtered = questions.filter((question) => {
-    if (course && question.course !== course) return false;
     if (paperNumber && question.paperNumber !== paperNumber) return false;
     if (paper && question.paper !== paper) return false;
     if (topic && !question.topics.some((item) => item.main === topic)) return false;
@@ -212,67 +203,8 @@ export function QuestionBank() {
     setVisibleCount(PAGE_SIZE);
   }
 
-  function chooseCourse(value: CourseChoice) {
-    setCourse(value);
-    resetFilters();
-  }
-
   return (
     <div className="question-bank-app">
-      <section className="qb-course-picker" aria-labelledby="qb-course-heading">
-        <div className="qb-course-picker-heading">
-          <div>
-            <span>Step 1</span>
-            <h2 id="qb-course-heading">Choose your course</h2>
-          </div>
-          <p>Start with the IB Mathematics course you are studying.</p>
-        </div>
-        <div className="qb-course-buttons">
-          {CURRENT_COURSES.map((item) => (
-            <button
-              aria-pressed={course === item.code}
-              className={course === item.code ? "qb-course-button is-selected" : "qb-course-button"}
-              key={item.code}
-              onClick={() => chooseCourse(item.code)}
-              type="button"
-            >
-              <strong>{item.code}</strong>
-              <span>{item.name}</span>
-              <small>{item.level}</small>
-            </button>
-          ))}
-        </div>
-        <div className="qb-legacy-route">
-          <span>Studying an older syllabus?</span>
-          <button
-            aria-pressed={course === "Legacy HL"}
-            className={course === "Legacy HL" ? "is-selected" : ""}
-            onClick={() => chooseCourse("Legacy HL")}
-            type="button"
-          >
-            Open the Legacy HL archive <strong>53 questions</strong>
-          </button>
-        </div>
-      </section>
-
-      {!course && (
-        <div className="qb-course-prompt">
-          <span>AA or AI?</span>
-          <strong>Select your course above to begin.</strong>
-          <p>The question bank will keep each syllabus separate so you only see relevant practice.</p>
-        </div>
-      )}
-
-      {course && course !== "Legacy HL" && (
-        <div className="qb-course-coming">
-          <span>{course}</span>
-          <strong>The {course} collection is being organised.</strong>
-          <p>The questions supplied so far belong to the older HL syllabus, so they are being kept separate instead of being placed in the wrong current course.</p>
-          <button className="button button-secondary" onClick={() => chooseCourse("Legacy HL")} type="button">Use the Legacy HL archive</button>
-        </div>
-      )}
-
-      {course === "Legacy HL" && <>
       <div className="qb-toolbar" aria-label="Question bank filters">
         <div className="qb-search-field">
           <label htmlFor="qb-search">Search questions</label>
@@ -353,7 +285,6 @@ export function QuestionBank() {
           <button className="button button-secondary" type="button" onClick={resetFilters}>Reset filters</button>
         </div>
       )}
-      </>}
     </div>
   );
 }
