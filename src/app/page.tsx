@@ -100,7 +100,7 @@ export default function HomePage() {
                   src="/images/aa-hl-checklist-preview.png"
                   alt="Preview of the Mr Flynn IB AA HL complete syllabus checklist"
                   fill
-                  sizes="(max-width: 650px) 280px, 190px"
+                  sizes="(max-width: 650px) 220px, 150px"
                 />
               </div>
               <figcaption>A complete topic-by-topic progress tracker.</figcaption>

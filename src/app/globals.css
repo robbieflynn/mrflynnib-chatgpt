@@ -320,11 +320,11 @@ textarea { min-height: 130px; resize: vertical; }
 .checklist-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: radial-gradient(circle at 12% 15%, rgba(35,127,202,.35), transparent 34%), #071024; color: white; }
 .checklist-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(2.5rem, 5vw, 5rem); align-items: center; }
 .checklist-section .eyebrow { color: #7ac5ff; }
-.checklist-section h2 { font-size: clamp(3rem, 5vw, 5rem); }
+.checklist-section h2 { font-size: clamp(2.75rem, 4.2vw, 3.75rem); }
 .checklist-section .lede { color: rgba(255,255,255,.72); }
 .checklist-courses { display: flex; flex-wrap: wrap; gap: .55rem; }
 .checklist-courses span { padding: .45rem .7rem; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: rgba(255,255,255,.8); font-size: .76rem; font-weight: 850; }
-.checklist-promo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, 190px); gap: 1.5rem; align-items: end; }
+.checklist-promo { display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 1.25rem; align-items: end; }
 .checklist-preview { width: 100%; }
 .checklist-preview-window { position: relative; aspect-ratio: 1.3; overflow: hidden; border: 1px solid rgba(255,255,255,.2); border-radius: 1rem; background: white; box-shadow: 0 24px 60px rgba(0,0,0,.26); transform: rotate(-1deg); }
 .checklist-preview-window::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(11,21,48,.06); pointer-events: none; }
@@ -794,7 +794,7 @@ textarea { min-height: 130px; resize: vertical; }
   .offer-card-primary { grid-column: auto; }
   .offer-card { min-height: 300px; }
   .checklist-promo { grid-template-columns: 1fr; }
-  .checklist-preview { width: min(82%, 280px); justify-self: center; }
+  .checklist-preview { width: min(72%, 220px); justify-self: center; }
   .checklist-form { grid-template-columns: 1fr; }
   .checklist-form .button { width: 100%; }
   .who-photo-small { width: 120px; height: 120px; flex-basis: 120px; }
