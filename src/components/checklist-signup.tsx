@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 export function ChecklistSignup() {
+  const router = useRouter();
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
@@ -25,6 +27,8 @@ export function ChecklistSignup() {
       setStatus("success");
       setMessage(result.message ?? "Thank you. We’ll email the checklist for your selected course.");
       form.reset();
+      const course = String(payload.course).toLowerCase().replace(" ", "-");
+      router.push(`/thanks/checklist-${course}`);
     } catch (error) {
       setStatus("error");
       setMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
@@ -32,7 +36,7 @@ export function ChecklistSignup() {
   }
 
   return (
-    <form className="checklist-form" onSubmit={onSubmit} noValidate>
+    <form className="checklist-form" onSubmit={onSubmit} aria-busy={status === "sending"}>
       <input className="hp-field" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
       <div className="field">
         <label htmlFor="checklist-name">First name</label>
@@ -60,7 +64,7 @@ export function ChecklistSignup() {
         <span>Yes, send me occasional IB Mathematics lessons, resources and course updates by email. I can unsubscribe at any time.</span>
       </label>
       <p className="checklist-privacy">We’ll use your email to send the checklist. Marketing emails are optional. See our <Link href="/privacy">privacy policy</Link>.</p>
-      {message && <p role="status" className={`form-message checklist-message ${status === "success" ? "form-success" : "form-error"}`}>{message}</p>}
+      {message && <p role={status === "error" ? "alert" : "status"} className={`form-message checklist-message ${status === "success" ? "form-success" : "form-error"}`}>{message}</p>}
     </form>
   );
 }

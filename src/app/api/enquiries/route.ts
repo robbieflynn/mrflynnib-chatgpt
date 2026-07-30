@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
+import { protectFormRequest, textValue } from "@/lib/request-security";
 
 const allowedKinds = new Set(["contact", "tutoring", "school"]);
 const schoolEnquiryGroupId = "194431035036927513";
 
 function isEmail(value: unknown): value is string {
-  return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  return typeof value === "string" && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 function optionalText(body: Record<string, unknown>, key: string) {
@@ -73,6 +74,9 @@ async function submitSchoolEnquiry(body: Record<string, unknown>, token: string)
 }
 
 export async function POST(request: Request) {
+  const securityError = protectFormRequest(request, { namespace: "enquiry", limit: 10 });
+  if (securityError) return securityError;
+
   let body: Record<string, unknown>;
   try {
     body = (await request.json()) as Record<string, unknown>;
@@ -81,21 +85,40 @@ export async function POST(request: Request) {
   }
 
   if (body.website) return NextResponse.json({ message: "Thanks." });
-  if (!allowedKinds.has(String(body.kind)) || typeof body.name !== "string" || !isEmail(body.email) || typeof body.message !== "string") {
+
+  const kind = textValue(body, "kind", 20);
+  const name = textValue(body, "name", 100);
+  const email = textValue(body, "email", 254).toLowerCase();
+  const message = textValue(body, "message", 5_000);
+
+  const messageTooLong = typeof body.message === "string" && body.message.trim().length > 5_000;
+  if (!allowedKinds.has(kind) || name.length < 2 || !isEmail(email) || typeof body.message !== "string" || messageTooLong || (kind !== "school" && !message)) {
     return NextResponse.json({ message: "Please complete the required fields." }, { status: 400 });
   }
 
+  if (kind === "school") {
+    const role = textValue(body, "role", 150);
+    const schoolName = textValue(body, "schoolName", 200);
+    const country = textValue(body, "country", 100);
+    const studentCount = Number(textValue(body, "studentCount", 6));
+    const coursesNeeded = textValue(body, "coursesNeeded", 500);
+
+    if (!role || !schoolName || !country || !Number.isInteger(studentCount) || studentCount < 1 || studentCount > 10_000 || (body.coursesNeeded && !coursesNeeded)) {
+      return NextResponse.json({ message: "Please complete the required school details." }, { status: 400 });
+    }
+  }
+
   const record = {
-    kind: body.kind,
-    name: body.name.trim(),
-    email: body.email.trim().toLowerCase(),
-    message: body.message.trim(),
+    kind,
+    name,
+    email,
+    message,
     payload: body,
     status: "new",
     source: "website",
   };
 
-  if (body.kind === "school") {
+  if (kind === "school") {
     const token = process.env.MAILERLITE_API_TOKEN;
 
     if (!token) {

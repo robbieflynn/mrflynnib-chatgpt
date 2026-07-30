@@ -205,6 +205,18 @@ textarea { min-height: 130px; resize: vertical; }
 .form-error { background: #fdeaea; color: var(--danger); }
 .hp-field { position: absolute; left: -9999px; }
 
+.outbound-page, .thank-you-page { min-height: 65vh; display: grid; align-items: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 .book-cover { aspect-ratio: 3 / 4; width: min(100%, 370px); margin-inline: auto; padding: 2rem; border-radius: .35rem 1rem 1rem .35rem; color: white; background: linear-gradient(160deg, var(--ink), #15366b); box-shadow: -18px 18px 0 #d8a030, var(--shadow); display: flex; flex-direction: column; justify-content: space-between; }
 .book-cover small { letter-spacing: .15em; text-transform: uppercase; }
 .book-cover strong { font-family: Georgia, serif; font-size: clamp(2.3rem, 5vw, 4rem); line-height: 1; }

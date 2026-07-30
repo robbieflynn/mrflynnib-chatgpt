@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { ChecklistSignup } from "@/components/checklist-signup";
 import { VideoEmbed } from "@/components/video-embed";
-import { siteConfig } from "@/lib/site";
 import { testimonials } from "@/lib/testimonials";
 
 const mainOffers = [
@@ -165,16 +164,16 @@ export default function HomePage() {
             <div className="cluster"><ButtonLink href="/ia">Explore the IA hub</ButtonLink><ButtonLink href="/book" secondary>See the IA book</ButtonLink></div>
           </div>
           <div className="ia-route-grid">
-            <a className="ia-route-card" href="https://www.youtube.com/watch?v=pp_CLHH8OgY&list=PLcvv9pSnukaVkFh_OkFceh0aD9Ov02UjV" target="_blank" rel="noreferrer">
+            <Link className="ia-route-card" href="/go/ia-complete-guide">
               <span className="ia-card-number">01</span>
               <div><small>Playlist</small><h3>The complete IA guide</h3><p>Work through the full process, one clear stage at a time.</p></div>
               <strong>Watch on YouTube →</strong>
-            </a>
-            <a className="ia-route-card ia-route-card-light" href="https://www.youtube.com/watch?v=e5cLTtFzKnI&list=PLcvv9pSnukaVyAMiGPRxJsh6L2wydKFPm" target="_blank" rel="noreferrer">
+            </Link>
+            <Link className="ia-route-card ia-route-card-light" href="/go/ia-ideas">
               <span className="ia-card-number">02</span>
               <div><small>Playlist</small><h3>IA ideas and modelling</h3><p>See how promising mathematical ideas can become strong explorations.</p></div>
               <strong>Explore ideas →</strong>
-            </a>
+            </Link>
           </div>
         </Container>
       </section>
@@ -209,7 +208,7 @@ export default function HomePage() {
             <h2>The complete guide to the Internal Assessment.</h2>
             <p className="lede">A practical, 320-page guide that breaks the Maths IA into clear, manageable stages and explains what examiners are looking for.</p>
             <ul className="check-list book-points"><li>Clear stages from choosing an idea to the final submission</li><li>Examiner-informed guidance and real mathematical examples</li><li>Written specifically for IB Mathematics students</li></ul>
-            <div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href={siteConfig.bookUrl} secondary external>View on Amazon</ButtonLink></div>
+            <div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href="/go/amazon-book" secondary>View on Amazon</ButtonLink></div>
           </div>
         </Container>
       </section>

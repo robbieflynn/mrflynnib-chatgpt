@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import curriculumData from "@/data/curricula.json";
 import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { courseAccessPlans, courses } from "@/lib/content";
+import { courseCheckoutPath } from "@/lib/outbound-destinations";
 
 type CurriculumTopic = { name: string; lessons: string[] };
 const curricula = curriculumData as Record<string, CurriculumTopic[]>;
@@ -65,7 +66,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <ul className="access-plan-list">
               {courseAccessPlans.map((plan) => <li className={plan.recommended ? "access-plan-recommended" : ""} key={plan.duration}><div><strong>{plan.duration}</strong>{plan.recommended && <span>Recommended</span>}<small>{plan.description}</small></div><b>${plan.price}</b></li>)}
             </ul>
-            <ButtonLink href={course.teachableUrl} external>View access plans and enroll</ButtonLink>
+            <ButtonLink href={courseCheckoutPath(course.shortTitle)}>View access plans and enroll</ButtonLink>
             <small>Prices are in US dollars. Payment and secure course access continue on Teachable.</small>
           </aside>
         </Container>

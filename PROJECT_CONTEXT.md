@@ -184,7 +184,7 @@ Rob currently administers the `mrflynnib.com` domain and business email, includi
 
 The same DNS check confirmed that the root domain and `www` currently resolve to Teachable (`mrflynnib.teachable.com` / `gcp-proxy.teachable.cloud`). This matches Teachable's historical setup instructions, which direct custom-domain users to Cloudflare. Removing the custom domain inside Teachable will not automatically return DNS management to Bluehost. Keep Cloudflare as the DNS manager unless a separate, carefully planned DNS migration is genuinely needed. For launch, first establish a Teachable course subdomain such as `learn.mrflynnib.com`, then point the root and `www` website records to Vercel while preserving Google mail and MailerLite authentication records.
 
-The project is a Next.js App Router website using React, TypeScript, Tailwind CSS, and Vercel. Vercel Web Analytics was enabled by Rob and integrated into the root website layout on 30 July 2026. It provides anonymised, cookie-free visitor and page-view reporting in the Vercel project dashboard. Supabase is prepared for enquiry storage where needed. Stripe should be used only if the main website later needs to process payments directly. Teachable remains the course platform.
+The project is a Next.js App Router website using React, TypeScript, Tailwind CSS, and Vercel. Vercel Web Analytics was enabled by Rob and integrated into the root website layout on 30 July 2026. It provides anonymised, cookie-free visitor and page-view reporting in the Vercel project dashboard. Because the Vercel Hobby plan does not include custom analytics events, important launch conversions are recorded as first-party page paths instead. Course checkout, existing-student login, book, social, IA-playlist, contact and tutoring actions pass through short no-index `/go/` routes before opening the verified destination. Successful checklist requests and school enquiries land on course-specific or enquiry-specific no-index `/thanks/` routes. This makes the key actions visible as ordinary page views in Vercel Analytics without another analytics service, cookies or a paid upgrade. Supabase is prepared for enquiry storage where needed. Stripe should be used only if the main website later needs to process payments directly. Teachable remains the course platform.
 
 The repository currently contains:
 
@@ -235,13 +235,19 @@ Accuracy and transparency are especially important. Earlier assistance incorrect
 
 The temporary banner workflow test succeeded and has been superseded by the first complete content-led website redesign on branch `agent/homepage-redesign`. Draft pull request #2 is the active review: `https://github.com/robbieflynn/mrflynnib-chatgpt/pull/2`. Its Vercel preview is `https://mrflynnib-chatgpt-git-agent-homepage-redesign-mr-flynn-ib.vercel.app`.
 
-The preview includes the redesigned homepage and complete course, IA, school, book, tutoring, testimonial, navigation, metadata, and legal-draft journeys. The question-bank route is being upgraded from its placeholder into a usable native bank based on Rob's supplied 53-question collection. Lint passes with one pre-existing PostCSS warning and no errors; the Next.js production build passes and generates all 30 routes. The deployed Vercel preview has also been opened and rendered successfully. It must not be merged or published to production until Rob approves it.
+The preview includes the redesigned homepage and complete course, IA, school, book, tutoring, testimonial, navigation, metadata, and legal-draft journeys. The question-bank route is being upgraded from its placeholder into a usable native bank based on Rob's supplied 53-question collection.
+
+A launch-readiness pass covering QA, conversion measurement and basic error/security hardening was completed locally on 30 July 2026. The complete public route set was rendered at a 390-pixel mobile viewport, and the homepage was also checked at a 1280-pixel desktop viewport. The audit found no unintended horizontal overflow, missing image alternative text or duplicate HTML IDs. The mobile navigation and all four correct individual-course routes were verified. The custom 404 page, runtime error fallback, checklist thank-you pages, school-enquiry thank-you page and outbound destination fallback were also verified. Lint passes with one pre-existing PostCSS warning and no errors; the Next.js production build passes and currently generates 50 static pages, including the no-index conversion routes.
+
+The same pass added a restrictive Content Security Policy, HSTS, referrer, permissions, framing and MIME-type headers; native form validation and accessible status messages; reduced-motion support; request content-type, size and same-origin checks; bounded form inputs; honeypots; and basic per-IP rate limiting. These controls reduce common automated abuse but are not a substitute for managed edge rate limiting if traffic or attacks become substantial. Invalid and cross-origin form requests were tested against the local production build and returned the expected 400 and 403 responses. The updated Vercel preview must still be opened after deployment and must not be merged or published to production until Rob approves it.
 
 The local repository also contains untracked generated dependency/build items from verification (`node_modules/`, `.next/`, `.pnpm-store/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`). These are not part of the website commit and must not be added to a pull request without an intentional dependency-management decision.
 
 ## Immediate next steps
 
-1. Rob reviews the Vercel preview on desktop and mobile and identifies any copy, layout, pricing, or journey changes.
-2. Codex iterates on the same branch and preview until Rob approves the finished website.
-3. Confirm school licence operations, production analytics and final legal copy before production launch.
-4. Merge and publish only after Rob explicitly approves it.
+1. Rob reviews the updated Vercel preview on desktop and mobile and identifies any remaining copy, layout, pricing or journey changes.
+2. Complete and integrate the AA HL and AA SL question banks, including the agreed public sample and free-account access boundary.
+3. Confirm the Teachable subdomain, course checkout plans and existing-student login destinations, then repeat the key journey tests.
+4. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
+5. Point the public domain to Vercel only after the website and Teachable journeys are approved, then repeat analytics, form, email and download tests on the public domain.
+6. Merge and publish only after Rob explicitly approves it.

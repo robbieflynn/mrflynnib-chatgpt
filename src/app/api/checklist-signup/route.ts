@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { protectFormRequest, textValue } from "@/lib/request-security";
 
 const courseGroups = {
   "AA HL": "194264072949073276",
@@ -14,6 +15,9 @@ function normalizeEmail(value: unknown) {
 }
 
 export async function POST(request: Request) {
+  const securityError = protectFormRequest(request, { namespace: "checklist", limit: 20 });
+  if (securityError) return securityError;
+
   let body: Record<string, unknown>;
 
   try {
@@ -24,13 +28,13 @@ export async function POST(request: Request) {
 
   if (body.website) return NextResponse.json({ message: "Thanks." });
 
-  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const name = textValue(body, "name", 100);
   const email = normalizeEmail(body.email);
-  const course = typeof body.course === "string" ? body.course : "";
+  const course = textValue(body, "course", 10);
   const groupId = courseGroups[course as keyof typeof courseGroups];
   const marketingConsent = body.marketingConsent === "yes";
 
-  if (!name || !email || !groupId) {
+  if (!name || name.length < 2 || !email || email.length > 254 || !groupId) {
     return NextResponse.json(
       { message: "Please enter your name, email address and course." },
       { status: 400 },

@@ -11,7 +11,7 @@ export default function CoursesPage() {
       <section className="course-index-hero">
         <Container className="course-index-hero-grid">
           <div className="stack-lg"><Breadcrumbs items={[{ label: "Courses" }]} /><Eyebrow>Online courses</Eyebrow><h1>Choose your course.</h1><p className="lede">Complete online courses for AA HL, AA SL, AI HL and AI SL.</p></div>
-          <div className="course-existing-route"><div><strong>Already enrolled?</strong><span>Go straight to your lessons on Teachable.</span></div><ButtonLink href="/login" secondary>Go to my courses</ButtonLink></div>
+          <div className="course-existing-route"><div><strong>Already enrolled?</strong><span>Go straight to your lessons on Teachable.</span></div><ButtonLink href="/go/my-courses" secondary>Go to my courses</ButtonLink></div>
         </Container>
       </section>
 

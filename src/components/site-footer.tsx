@@ -14,14 +14,14 @@ export function SiteFooter() {
               Complete IB Mathematics courses, a growing question bank, IA guidance, tutoring and school access, explained clearly by Mr Flynn IB.
             </p>
             <div className="footer-socials" aria-label="Mr Flynn IB social channels">
-              <a className="footer-social-primary" href={siteConfig.youtubeUrl} target="_blank" rel="noreferrer">YouTube</a>
-              <a href={siteConfig.instagramUrl} target="_blank" rel="noreferrer">Instagram</a>
-              <a href={siteConfig.tiktokUrl} target="_blank" rel="noreferrer">TikTok</a>
+              <Link className="footer-social-primary" href="/go/youtube">YouTube</Link>
+              <Link href="/go/instagram">Instagram</Link>
+              <Link href="/go/tiktok">TikTok</Link>
             </div>
           </div>
           <div className="stack">
             <strong>Learn</strong>
-            <div className="footer-list"><Link href="/courses">Courses</Link><Link href="/ia">IA guidance</Link><Link href="/question-bank">Question bank</Link><Link href="/book">Book</Link><Link href="/login">My courses</Link></div>
+            <div className="footer-list"><Link href="/courses">Courses</Link><Link href="/ia">IA guidance</Link><Link href="/question-bank">Question bank</Link><Link href="/book">Book</Link><Link href="/go/my-courses">My courses</Link></div>
           </div>
           <div className="stack">
             <strong>Work with us</strong>

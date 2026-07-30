@@ -2,7 +2,6 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { VideoEmbed } from "@/components/video-embed";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = { title: "IB Mathematics IA guidance", description: "Free IB Mathematics IA video guides, IA ideas and Mr Flynn IB's complete Internal Assessment book." };
 
@@ -22,13 +21,13 @@ export default function IAPage() {
         <Container className="stack-xl">
           <div className="section-heading-row"><div className="stack"><Eyebrow>Free video guidance</Eyebrow><h2>Two ways into the IA.</h2></div><p className="lede">Follow the complete guide when you want the whole process, or use the ideas playlist to explore how mathematics can become an investigation.</p></div>
           <div className="ia-video-grid">
-            <article className="ia-video-card"><VideoEmbed title="IB Math IA complete guide playlist" playlistId="PLcvv9pSnukaVkFh_OkFceh0aD9Ov02UjV" /><div className="stack"><span className="badge">Complete guide</span><h3>From introduction to final exploration</h3><p>Work through the IA in a clear sequence and understand the role of each stage.</p><a href="https://www.youtube.com/watch?v=pp_CLHH8OgY&list=PLcvv9pSnukaVkFh_OkFceh0aD9Ov02UjV" target="_blank" rel="noreferrer" className="text-link">Open the playlist on YouTube</a></div></article>
-            <article className="ia-video-card"><VideoEmbed title="IB Math IA ideas playlist" playlistId="PLcvv9pSnukaVyAMiGPRxJsh6L2wydKFPm" /><div className="stack"><span className="badge">Ideas and modelling</span><h3>See possible explorations take shape</h3><p>Use worked ideas to understand the difference between a broad topic and a focused mathematical investigation.</p><a href="https://www.youtube.com/watch?v=e5cLTtFzKnI&list=PLcvv9pSnukaVyAMiGPRxJsh6L2wydKFPm" target="_blank" rel="noreferrer" className="text-link">Open the playlist on YouTube</a></div></article>
+            <article className="ia-video-card"><VideoEmbed title="IB Math IA complete guide playlist" playlistId="PLcvv9pSnukaVkFh_OkFceh0aD9Ov02UjV" /><div className="stack"><span className="badge">Complete guide</span><h3>From introduction to final exploration</h3><p>Work through the IA in a clear sequence and understand the role of each stage.</p><ButtonLink href="/go/ia-complete-guide" secondary>Open the playlist on YouTube</ButtonLink></div></article>
+            <article className="ia-video-card"><VideoEmbed title="IB Math IA ideas playlist" playlistId="PLcvv9pSnukaVyAMiGPRxJsh6L2wydKFPm" /><div className="stack"><span className="badge">Ideas and modelling</span><h3>See possible explorations take shape</h3><p>Use worked ideas to understand the difference between a broad topic and a focused mathematical investigation.</p><ButtonLink href="/go/ia-ideas" secondary>Open the playlist on YouTube</ButtonLink></div></article>
           </div>
         </Container>
       </section>
 
-      <section className="ia-book-cta"><Container className="ia-book-cta-grid"><div><Image src="/images/ib-mathematics-ia-book-cover.jpg" alt="Cover of IB Mathematics IA: The Complete Guide to the Internal Assessment" width={240} height={339} /></div><div className="stack-lg"><Eyebrow>Go deeper</Eyebrow><h2>Keep the complete IA process on your desk.</h2><p className="lede">The 320-page book brings Mr Flynn IB&apos;s guidance into one structured reference, with clear strategies, examiner-informed insight and mathematical examples.</p><div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href={siteConfig.bookUrl} secondary external>View on Amazon</ButtonLink></div></div></Container></section>
+      <section className="ia-book-cta"><Container className="ia-book-cta-grid"><div><Image src="/images/ib-mathematics-ia-book-cover.jpg" alt="Cover of IB Mathematics IA: The Complete Guide to the Internal Assessment" width={240} height={339} /></div><div className="stack-lg"><Eyebrow>Go deeper</Eyebrow><h2>Keep the complete IA process on your desk.</h2><p className="lede">The 320-page book brings Mr Flynn IB&apos;s guidance into one structured reference, with clear strategies, examiner-informed insight and mathematical examples.</p><div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href="/go/amazon-book" secondary>View on Amazon</ButtonLink></div></div></Container></section>
     </>
   );
 }
