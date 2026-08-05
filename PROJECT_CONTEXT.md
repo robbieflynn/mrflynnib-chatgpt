@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 30 July 2026
+Last updated: 5 August 2026
 
 ## Purpose of this file
 
@@ -34,6 +34,18 @@ Possible long-term platform areas include:
 These are roadmap possibilities, not commitments to build everything immediately. New features must solve a real user or business problem and fit the evolving product strategy.
 
 ## Current offers
+
+### IGCSE Mathematics
+
+Mr Flynn IB already has a substantial IGCSE Mathematics teaching library and an established YouTube audience for that work. IGCSE should initially live inside the existing website at `/igcse`, not on a separate domain or under a separate Mr Flynn IGCSE brand. Keep the main brand and homepage primarily focused on IB Mathematics, while making the IGCSE offer easy to discover.
+
+The homepage should retain its four principal IB routes. Immediately beneath them, use one compact secondary feature labelled **“Also from Mr Flynn IB”** to introduce the IGCSE Mathematics area. Do not describe IGCSE as “bonus content” or “extra content”, because it is a substantial offer rather than a small add-on.
+
+The IGCSE area has its own local navigation and four principal routes: **Courses, Question bank, Schools, and Tutoring**. It should feel related to the main Mr Flynn IB website while using a restrained deep academic red accent alongside the existing navy and white. Do not create an IA route inside IGCSE.
+
+Rob has an existing IGCSE course and plans to build a dedicated IGCSE question bank similar to the IB question bank. The exact exam board, syllabus, tier structure, course access link, individual pricing and school pricing have not yet been confirmed. Do not invent those details. Until Rob supplies them, the preview may clearly label these operational details as still to be confirmed and should direct genuine enquiries to `contact@mrflynnib.com`. The IGCSE school-enquiry form may use the existing dedicated MailerLite school-enquiry workflow, but the stored enquiry must identify the curriculum as IGCSE Mathematics.
+
+If the website later introduces a native student account, keep the IB and IGCSE experiences within the same account and backend rather than creating two unrelated login systems. This is a product direction, not authorisation to replace Teachable or build the account system yet.
 
 ### Online courses
 
@@ -156,7 +168,7 @@ Keep the general Contact page deliberately simple. Show `contact@mrflynnib.com` 
 
 The FAQ page should answer the practical questions visitors are most likely to ask before contacting Mr Flynn IB. It now covers course hosting, all four pathways, the three confirmed access plans, what each plan includes, existing-student login, tutoring, school licences and mixed-course allocation, the role of the courses alongside school lessons, and the IA book. Keep answers factual and update them whenever Teachable, pricing or school operations change.
 
-The four principal routes are **Courses, Question bank, Schools, and Tutoring**. They should appear immediately below the homepage hero, without a “Start here” eyebrow or generic route-selection explanation. Treat the four cards consistently rather than making Courses a dark-blue visual exception. Keep the Courses description simple: **“Complete online courses for all IB Mathematics courses.”** Keep the Schools description general and do not mention annual pricing or a single invoice on the homepage card. The four individual course cards, price comparison, and “compare all four courses” prompt belong on the Courses page rather than the homepage because students normally already know their IB pathway.
+The four principal IB routes are **Courses, Question bank, Schools, and Tutoring**. They should appear immediately below the homepage hero, without a “Start here” eyebrow or generic route-selection explanation. Treat the four cards consistently rather than making Courses a dark-blue visual exception. Keep the Courses description simple: **“Complete online courses for all IB Mathematics courses.”** Keep the Schools description general and do not mention annual pricing or a single invoice on the homepage card. The four individual course cards, price comparison, and “compare all four courses” prompt belong on the Courses page rather than the homepage because students normally already know their IB pathway. The separate IGCSE feature follows these four cards and must not be presented as a fifth equal route.
 
 After the four routes, the homepage should include a separate **“Who is Mr Flynn?”** credibility section with a small supporting portrait, not a dominant full-height image, and no “About Mr Flynn” button. Use the relevant evidence: experienced IB Mathematics teacher, IB examiner, IA moderator, and **1 million+ YouTube views**. Its introduction should say that his lessons have helped IB students across the world succeed in IB Mathematics. Avoid calling him “Rob” in customer-facing homepage copy; use “Mr Flynn” or “Mr Flynn IB”. Do not use the generic `24/7` proof point.
 
@@ -199,6 +211,7 @@ The repository currently contains:
 - Supabase-ready enquiry handling and schema
 - metadata, sitemap, robots, Open Graph, analytics hooks, and security headers
 - responsive components and supplied brand imagery
+- a secondary IGCSE Mathematics area with its own red-accented hub and course, question-bank, school and tutoring foundations
 
 The agreed legal-page approach is intentionally minimal. The public website has one concise Privacy Policy and one concise Terms of Use page. Cookie and analytics information is folded into the Privacy Policy, and the old `/cookies` route redirects to that section. Both pages identify Robert Flynn as the individual operating Mr Flynn IB but do not state his location. Course payment and checkout details remain governed by the information and applicable terms shown through Teachable. The current website terms cover personal use, intellectual property, educational limitations, school and tutoring enquiries, availability, external services and contact. Do not add question-bank terms, anti-scraping clauses, a governing-law clause, or references to Dubai or the UAE until Rob chooses to address them later.
 

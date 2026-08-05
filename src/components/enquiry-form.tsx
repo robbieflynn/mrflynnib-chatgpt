@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 type Kind = "contact" | "tutoring" | "school";
 
-export function EnquiryForm({ kind }: { kind: Kind }) {
+export function EnquiryForm({ kind, curriculum = "IB Mathematics" }: { kind: Kind; curriculum?: "IB Mathematics" | "IGCSE Mathematics" }) {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -21,7 +21,7 @@ export function EnquiryForm({ kind }: { kind: Kind }) {
       const response = await fetch("/api/enquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, kind }),
+        body: JSON.stringify({ ...payload, kind, curriculum }),
       });
       const result = (await response.json()) as { message?: string };
       if (!response.ok) throw new Error(result.message ?? "Please try again.");
@@ -58,7 +58,7 @@ export function EnquiryForm({ kind }: { kind: Kind }) {
           <div className="field"><label htmlFor="schoolName">School name</label><input id="schoolName" name="schoolName" required /></div>
           <div className="field"><label htmlFor="country">Country</label><input id="country" name="country" required /></div>
           <div className="field"><label htmlFor="studentCount">Estimated student count</label><input id="studentCount" name="studentCount" type="number" min="1" required /></div>
-          <div className="field field-full"><label htmlFor="coursesNeeded">Courses or year groups needed</label><input id="coursesNeeded" name="coursesNeeded" placeholder="For example, AA HL and AA SL, Years 1–2" /></div>
+          <div className="field field-full"><label htmlFor={`${kind}-coursesNeeded`}>Courses or year groups needed</label><input id={`${kind}-coursesNeeded`} name="coursesNeeded" placeholder={curriculum === "IGCSE Mathematics" ? "For example, Year 10 and Year 11" : "For example, AA HL and AA SL, Years 1–2"} /></div>
         </>}
 
         {kind === "contact" && <div className="field field-full"><label htmlFor="topic">What can we help with?</label><select id="topic" name="topic" defaultValue="General enquiry"><option>General enquiry</option><option>Course access</option><option>Book</option><option>Tutoring</option><option>School licence</option><option>Media or partnership</option></select></div>}
