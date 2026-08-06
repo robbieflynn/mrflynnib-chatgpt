@@ -30,6 +30,7 @@ export default function QuestionBankPage() {
               <span className="qb-course-link-name">
                 <strong>{course.pathway}</strong>
                 <small>{course.level}</small>
+                {course.questionCount && <small>{course.questionCount.toLocaleString("en-GB")} questions</small>}
               </span>
               {course.available
                 ? <span className="qb-course-link-arrow" aria-hidden="true">→</span>

@@ -4,11 +4,12 @@ export type QuestionBankCourse = {
   pathway: "Analysis & Approaches" | "Applications & Interpretation";
   level: "Higher Level" | "Standard Level";
   available: boolean;
+  questionCount?: number;
 };
 
 export const questionBankCourses: QuestionBankCourse[] = [
-  { slug: "aa-hl", code: "AA HL", pathway: "Analysis & Approaches", level: "Higher Level", available: true },
-  { slug: "aa-sl", code: "AA SL", pathway: "Analysis & Approaches", level: "Standard Level", available: true },
+  { slug: "aa-hl", code: "AA HL", pathway: "Analysis & Approaches", level: "Higher Level", available: true, questionCount: 1635 },
+  { slug: "aa-sl", code: "AA SL", pathway: "Analysis & Approaches", level: "Standard Level", available: true, questionCount: 1007 },
   { slug: "ai-hl", code: "AI HL", pathway: "Applications & Interpretation", level: "Higher Level", available: false },
   { slug: "ai-sl", code: "AI SL", pathway: "Applications & Interpretation", level: "Standard Level", available: false },
 ];

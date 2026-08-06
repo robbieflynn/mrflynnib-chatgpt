@@ -605,9 +605,9 @@ textarea { min-height: 130px; resize: vertical; }
 .qb-course-link-arrow { position: absolute; right: 1.2rem; bottom: 1.3rem; color: var(--teal-dark); font-size: 1.2rem; font-weight: 900; }
 .qb-coming-soon { position: absolute; right: .9rem; top: .9rem; padding: .3rem .5rem; border-radius: 999px; background: #eef1f3; color: var(--muted); font-size: .62rem; font-weight: 900; letter-spacing: .045em; text-transform: uppercase; }
 
-.qb-course-page-hero { padding: clamp(3.5rem, 8vw, 6.5rem) 0; background: linear-gradient(135deg, #eaf5ff, #fbfaf6 68%); }
+.qb-course-page-hero { padding: clamp(1.8rem, 4vw, 3rem) 0; background: linear-gradient(135deg, #eaf5ff, #fbfaf6 68%); }
 .qb-course-page-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(2rem, 6vw, 6rem); align-items: end; }
-.qb-course-page-heading h1 { max-width: 14ch; font-size: clamp(3rem, 6vw, 5.7rem); }
+.qb-course-page-heading h1 { max-width: 24ch; font-size: clamp(2.2rem, 4vw, 3.8rem); }
 .qb-course-switcher { min-width: 275px; padding: 1rem; display: grid; gap: .65rem; border: 1px solid rgba(35,127,202,.18); border-radius: 1rem; background: rgba(255,255,255,.76); }
 .qb-course-switcher > span { color: var(--muted); font-size: .68rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .qb-course-switcher > div { display: grid; grid-template-columns: repeat(2, 1fr); gap: .45rem; }
@@ -616,7 +616,15 @@ textarea { min-height: 130px; resize: vertical; }
 .qb-course-switcher a[aria-current="page"] { border-color: var(--ink); background: var(--ink); color: white; }
 .qb-course-switcher div > span.is-coming-soon { grid-template-columns: auto auto; gap: .35rem; background: #f3f5f6; color: #798391; }
 .qb-course-switcher span.is-coming-soon small { padding: .12rem .25rem; border-radius: .3rem; background: white; color: var(--muted); font-size: .48rem; letter-spacing: .04em; text-transform: uppercase; }
-.qb-course-content { padding: clamp(4rem, 8vw, 7rem) 0; background: #f4f7f8; }
+.qb-course-content { padding: 0; background: #f4f7f8; }
+.qb-bank-frame {
+  width: 100%;
+  height: min(78svh, 920px);
+  min-height: 620px;
+  display: block;
+  border: 0;
+  background: #f4f7f8;
+}
 .qb-course-empty { min-height: 360px; padding: clamp(2rem, 6vw, 4.5rem); display: grid; justify-items: center; align-content: center; gap: 1rem; border: 1px dashed #aebbc1; border-radius: 1.5rem; background: white; text-align: center; }
 .qb-course-empty > span { padding: .35rem .6rem; border-radius: 999px; background: var(--teal-soft); color: var(--teal-dark); font-size: .7rem; font-weight: 900; }
 .qb-course-empty h2 { max-width: 18ch; font-size: clamp(2rem, 4.5vw, 3.7rem); }
@@ -955,8 +963,9 @@ textarea { min-height: 130px; resize: vertical; }
   .qb-course-link-name small { font-size: .61rem; }
   .qb-course-link-arrow { right: .8rem; bottom: .85rem; font-size: 1rem; }
   .qb-coming-soon { right: .55rem; top: .55rem; padding: .22rem .38rem; font-size: .53rem; }
-  .qb-course-page-hero { padding: 3rem 0; }
-  .qb-course-page-heading h1 { max-width: 100%; font-size: clamp(2.55rem, 12vw, 3.6rem); }
+  .qb-course-page-hero { padding: 1.75rem 0 2rem; }
+  .qb-course-page-heading h1 { max-width: 100%; font-size: clamp(2.2rem, 10.5vw, 3.2rem); }
+  .qb-bank-frame { height: 78svh; min-height: 540px; }
   .qb-course-empty { min-height: 420px; }
   .qb-course-empty .cluster { width: 100%; }
   .qb-course-empty .button { width: 100%; }
