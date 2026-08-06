@@ -7,6 +7,7 @@
 <style>
   body.qb-embedded{
     margin:0;
+    overflow:hidden;
     background:#f4f7f8;
   }
   body.qb-embedded #qbank-root{
@@ -334,7 +335,8 @@
 </head>
 <body>
 <script>
-  if(new URLSearchParams(window.location.search).get('embedded') === '1'){
+  var EMBEDDED = new URLSearchParams(window.location.search).get('embedded') === '1';
+  if(EMBEDDED){
     document.body.classList.add('qb-embedded');
   }
 </script>
@@ -182492,7 +182494,7 @@
   // Appends the next batch when the sentinel at the end of the list comes
   // within a screen of the viewport. rootMargin buys the append a head start
   // so the list feels continuous rather than stuttering at the bottom.
-  var scrollObserver = (typeof IntersectionObserver !== 'undefined')
+  var scrollObserver = (!EMBEDDED && typeof IntersectionObserver !== 'undefined')
     ? new IntersectionObserver(function(entries){
         entries.forEach(function(en){
           if(en.isIntersecting){ scrollObserver.unobserve(en.target); renderNextBatch(); }
@@ -182961,6 +182963,7 @@
       state.filtered = [];
       state.rendered = 0;
       list.innerHTML = '<div class="qb-empty">No questions match those filters yet.</div>';
+      reportEmbeddedHeight();
       return;
     }
     // Render a batch at a time. Building all 1600+ cards at once produced
@@ -182981,6 +182984,22 @@
         ]
       });
     }
+  }
+
+  // When embedded in the main website, the parent page owns the scrollbar.
+  // Report the bank's current height after every visible change so the iframe
+  // expands with its content instead of creating a second scrolling window.
+  function reportEmbeddedHeight(){
+    if(!EMBEDDED || window.parent === window) return;
+    window.requestAnimationFrame(function(){
+      var root = document.getElementById('qbank-root');
+      window.parent.postMessage({
+        type: 'mrflynnib-question-bank-height',
+        height: Math.ceil(root.getBoundingClientRect().height),
+        rendered: state.rendered,
+        total: state.filtered.length
+      }, window.location.origin);
+    });
   }
 
   // Appends the next PAGE_SIZE cards and typesets only those. Idempotent and
@@ -183017,7 +183036,15 @@
       list.insertAdjacentHTML('beforeend',
         '<div class="qb-more-msg" id="qb-more-msg">All ' + total + ' questions shown.</div>');
     }
+    reportEmbeddedHeight();
   }
+
+  window.addEventListener('message', function(event){
+    if(!EMBEDDED || event.origin !== window.location.origin) return;
+    if(event.data && event.data.type === 'mrflynnib-question-bank-load-more'){
+      renderNextBatch();
+    }
+  });
 
   document.getElementById('qb-topic').addEventListener('change', populateSubtopicOptions);
   ['qb-search','qb-section','qb-topic','qb-subtopic','qb-difficulty','qb-papernum','qb-only'].forEach(function(id){
@@ -183048,6 +183075,7 @@
       panel.removeAttribute('hidden'); btn.textContent = 'Hide mark scheme';
     }
     else { panel.setAttribute('hidden',''); btn.textContent = 'Show mark scheme'; }
+    reportEmbeddedHeight();
   });
 
   loadAndMerge().then(function(){
