@@ -12,7 +12,6 @@ export function SiteHeader() {
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
-          <Link className="header-igcse-link" href="/igcse">IGCSE</Link>
           <Link className="header-contact-button" href="/contact">Contact</Link>
           <Link className="header-login-link" href="/go/my-courses">My courses</Link>
           <ButtonLink href="/courses" small>Explore courses</ButtonLink>
@@ -21,7 +20,6 @@ export function SiteHeader() {
           <summary>Menu</summary>
           <nav className="mobile-panel" aria-label="Mobile navigation">
             {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
-            <Link className="mobile-igcse-link" href="/igcse">IGCSE Mathematics</Link>
             <Link href="/tutoring">Tutoring</Link>
             <Link className="mobile-student-link" href="/go/my-courses">My courses</Link>
             <Link href="/contact">Contact</Link>

@@ -84,25 +84,6 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="igcse-home-entry" aria-labelledby="igcse-home-title">
-        <Container>
-          <Link className="igcse-home-card" href="/igcse">
-            <div className="igcse-home-copy stack">
-              <span className="igcse-kicker">Also from Mr Flynn IB</span>
-              <h2 id="igcse-home-title">IGCSE Mathematics, explained clearly.</h2>
-              <p>Explore the IGCSE course, question bank, school support and tutoring.</p>
-              <strong>Visit the IGCSE Mathematics area <i aria-hidden="true">→</i></strong>
-            </div>
-            <div className="igcse-home-routes" aria-hidden="true">
-              <span>Course</span>
-              <span>Question bank</span>
-              <span>Schools</span>
-              <span>Tutoring</span>
-            </div>
-          </Link>
-        </Container>
-      </section>
-
       <section className="checklist-section" id="syllabus-checklist">
         <Container className="checklist-grid">
           <div className="checklist-promo">
@@ -229,6 +210,25 @@ export default function HomePage() {
             <ul className="check-list book-points"><li>Clear stages from choosing an idea to the final submission</li><li>Examiner-informed guidance and real mathematical examples</li><li>Written specifically for IB Mathematics students</li></ul>
             <div className="cluster"><ButtonLink href="/book">Learn about the book</ButtonLink><ButtonLink href="/go/amazon-book" secondary>View on Amazon</ButtonLink></div>
           </div>
+        </Container>
+      </section>
+
+      <section className="igcse-home-entry" aria-labelledby="igcse-home-title">
+        <Container>
+          <Link className="igcse-home-card" href="/igcse">
+            <div className="igcse-home-copy stack">
+              <span className="igcse-kicker">Also from Mr Flynn IB</span>
+              <h2 id="igcse-home-title">IGCSE Mathematics, explained clearly.</h2>
+              <p>Explore the IGCSE course, question bank, school support and tutoring.</p>
+              <strong>Visit the IGCSE Mathematics area <i aria-hidden="true">→</i></strong>
+            </div>
+            <div className="igcse-home-routes" aria-hidden="true">
+              <span>Course</span>
+              <span>Question bank</span>
+              <span>Schools</span>
+              <span>Tutoring</span>
+            </div>
+          </Link>
         </Container>
       </section>
     </>

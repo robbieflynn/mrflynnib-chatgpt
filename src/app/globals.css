@@ -108,15 +108,12 @@ p { margin: 0; }
 .desktop-nav .header-contact-button { padding: .48rem .75rem; border: 1px solid #aeb8bc; border-radius: 999px; line-height: 1; }
 .desktop-nav .header-contact-button:hover { border-color: var(--teal); background: var(--teal-soft); color: var(--teal-dark); }
 .desktop-nav .header-login-link { color: var(--teal-dark); }
-.desktop-nav .header-igcse-link { padding: .45rem .7rem; border-radius: 999px; background: var(--igcse-red-soft); color: var(--igcse-red-dark); }
-.desktop-nav .header-igcse-link:hover { background: #f9dce1; color: var(--igcse-red-dark); }
 .mobile-nav { display: none; }
 .mobile-nav summary { list-style: none; cursor: pointer; font-weight: 800; }
 .mobile-nav summary::-webkit-details-marker { display:none; }
 .mobile-panel { position: absolute; left: 1rem; right: 1rem; top: 4.3rem; padding: 1rem; background: white; border: 1px solid var(--line); border-radius: 1rem; box-shadow: var(--shadow); }
 .mobile-panel a { display: block; padding: .75rem; font-weight: 750; }
 .mobile-panel .mobile-student-link { margin-top: .45rem; border-radius: .65rem; background: var(--teal-soft); color: var(--teal-dark); }
-.mobile-panel .mobile-igcse-link { border-radius: .65rem; background: var(--igcse-red-soft); color: var(--igcse-red-dark); }
 
 .hero { padding: clamp(4rem, 10vw, 8rem) 0 5rem; overflow: hidden; }
 .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: clamp(2rem, 5vw, 5rem); }
@@ -335,7 +332,7 @@ textarea { min-height: 130px; resize: vertical; }
 .offer-link i { font-style: normal; transition: transform .2s ease; }
 .offer-card:hover .offer-link i { transform: translateX(4px); }
 
-.igcse-home-entry { padding: 0 0 clamp(4.5rem, 7vw, 6.5rem); background: #fbfaf6; }
+.igcse-home-entry { padding: clamp(4.5rem, 7vw, 6.5rem) 0; background: #fbfaf6; }
 .igcse-home-card { min-height: 290px; padding: clamp(1.8rem, 4vw, 3rem); display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; overflow: hidden; position: relative; border: 1px solid rgba(179,38,54,.2); border-radius: 1.6rem; background: radial-gradient(circle at 94% 12%, rgba(179,38,54,.14), transparent 32%), linear-gradient(135deg, #fff, #fff7f8); box-shadow: 0 20px 55px rgba(11,21,48,.06); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
 .igcse-home-card::after { content: "IGCSE"; position: absolute; right: -1rem; bottom: -4.2rem; color: rgba(179,38,54,.035); font-size: clamp(6rem, 15vw, 11rem); font-weight: 950; letter-spacing: -.08em; pointer-events: none; }
 .igcse-home-card:hover { transform: translateY(-4px); border-color: rgba(179,38,54,.42); box-shadow: 0 28px 70px rgba(11,21,48,.1); }
