@@ -11,7 +11,7 @@ export const siteConfig = {
   tiktokUrl: "https://www.tiktok.com/@mrflynnib/",
   bookUrl: process.env.NEXT_PUBLIC_BOOK_URL ?? "https://www.amazon.ae/dp/1068444231",
   teachableLoginUrl:
-    process.env.NEXT_PUBLIC_TEACHABLE_LOGIN_URL ?? "https://mrflynnib.com/sign_in",
+    process.env.NEXT_PUBLIC_TEACHABLE_LOGIN_URL ?? "https://learn.mrflynnib.com/sign_in",
   email: "contact@mrflynnib.com",
 } as const;
 

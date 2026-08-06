@@ -34,7 +34,7 @@ export const courses: Course[] = [
       "Use the calculator strategically rather than mechanically",
     ],
     modules: ["Algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_HL_URL ?? "https://mrflynnib.com/p/aa-hl",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_HL_URL ?? "https://learn.mrflynnib.com/p/aa-hl",
   },
   {
     slug: "analysis-approaches-sl",
@@ -52,7 +52,7 @@ export const courses: Course[] = [
       "Revise efficiently across the full course",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_SL_URL ?? "https://mrflynnib.com/p/aa-sl",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_SL_URL ?? "https://learn.mrflynnib.com/p/aa-sl",
   },
   {
     slug: "applications-interpretation-hl",
@@ -70,7 +70,7 @@ export const courses: Course[] = [
       "Connect topics across extended questions",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_HL_URL ?? "https://mrflynnib.com/p/ai-hl",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_HL_URL ?? "https://learn.mrflynnib.com/p/ai-hl",
   },
   {
     slug: "applications-interpretation-sl",
@@ -88,7 +88,7 @@ export const courses: Course[] = [
       "Build a repeatable exam approach",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_SL_URL ?? "https://mrflynnib.com/p/ai-sl",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_SL_URL ?? "https://learn.mrflynnib.com/p/ai-sl",
   },
 ];
 

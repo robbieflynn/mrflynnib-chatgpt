@@ -21,7 +21,7 @@ export function SiteFooter() {
           </div>
           <div className="stack">
             <strong>Learn</strong>
-            <div className="footer-list"><Link href="/courses">IB courses</Link><Link href="/ia">IA guidance</Link><Link href="/question-bank">IB question bank</Link><Link href="/igcse">IGCSE Mathematics</Link><Link href="/book">Book</Link><Link href="/go/my-courses">My courses</Link></div>
+            <div className="footer-list"><Link href="/courses">IB courses</Link><Link href="/ia">IA guidance</Link><Link href="/question-bank">IB question bank</Link><Link href="/book">Book</Link><Link href="/go/my-courses">My courses</Link></div>
           </div>
           <div className="stack">
             <strong>Work with us</strong>

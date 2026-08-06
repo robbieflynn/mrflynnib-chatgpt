@@ -37,9 +37,9 @@ These are roadmap possibilities, not commitments to build everything immediately
 
 ### IGCSE Mathematics
 
-Mr Flynn IB already has a substantial IGCSE Mathematics teaching library and an established YouTube audience for that work. IGCSE should initially live inside the existing website at `/igcse`, not on a separate domain or under a separate Mr Flynn IGCSE brand. Keep the main brand and homepage primarily focused on IB Mathematics, while making the IGCSE offer easy to discover.
+Mr Flynn IB already has a substantial IGCSE Mathematics teaching library and an established YouTube audience for that work. Rob decided on 6 August 2026 that the initial public launch should remain entirely focused on IB Mathematics. The completed IGCSE preview source should be preserved for a later release, but the launch website must not link to it, include it in the sitemap, or expose its `/igcse` routes publicly.
 
-The homepage should retain its four principal IB routes. Place one compact secondary feature labelled **“Also from Mr Flynn IB”** at the very end of the homepage, after all primary IB content, to introduce the IGCSE Mathematics area. Do not include IGCSE in the global header or primary navigation. A discreet footer link is acceptable. Do not describe IGCSE as “bonus content” or “extra content”, because it is a substantial offer rather than a small add-on.
+When Rob later approves the IGCSE release, the homepage should retain its four principal IB routes and introduce IGCSE only as a compact secondary feature at the very end of the homepage. Do not include IGCSE in the global header or primary navigation. Do not describe IGCSE as “bonus content” or “extra content”, because it is a substantial offer rather than a small add-on.
 
 The IGCSE area has its own local navigation and four principal routes: **Courses, Question bank, Schools, and Tutoring**. Its opening hero should stay clean and must not duplicate these four route choices as a second set of large buttons. Present the four route cards immediately below the hero. It should feel related to the main Mr Flynn IB website while using a restrained deep academic red accent alongside the existing navy and white. Do not create an IA route inside IGCSE.
 
@@ -217,16 +217,18 @@ The repository currently contains:
 
 The agreed legal-page approach is intentionally minimal. The public website has one concise Privacy Policy and one concise Terms of Use page. Cookie and analytics information is folded into the Privacy Policy, and the old `/cookies` route redirects to that section. Both pages identify Robert Flynn as the individual operating Mr Flynn IB but do not state his location. Course payment and checkout details remain governed by the information and applicable terms shown through Teachable. The current website terms cover personal use, intellectual property, educational limitations, school and tutoring enquiries, availability, external services and contact. Do not add question-bank terms, anti-scraping clauses, a governing-law clause, or references to Dubai or the UAE until Rob chooses to address them later.
 
-Verified Teachable course destinations are:
+The Teachable course paths are verified and are being moved to the dedicated `learn.mrflynnib.com` subdomain for launch:
 
-- AA HL: `https://mrflynnib.com/p/aa-hl`
-- AA SL: `https://mrflynnib.com/p/aa-sl`
-- AI HL: `https://mrflynnib.com/p/ai-hl`
-- AI SL: `https://mrflynnib.com/p/ai-sl`
+- AA HL: `https://learn.mrflynnib.com/p/aa-hl`
+- AA SL: `https://learn.mrflynnib.com/p/aa-sl`
+- AI HL: `https://learn.mrflynnib.com/p/ai-hl`
+- AI SL: `https://learn.mrflynnib.com/p/ai-sl`
+
+Rob confirmed on 6 August 2026 that the individual Teachable access plans are complete. The Cloudflare DNS-only CNAME `learn` → `mrflynnib.teachable.com` was added and independently confirmed the same day. Teachable has accepted `learn.mrflynnib.com` and currently shows certificate/domain verification as pending. Do not treat the new destinations as live or move the main domain until Teachable changes this status to verified and the customer journeys pass.
 
 Rob supplied genuine testimonials from 18 named students across Hong Kong, Italy, the UK, India, Canada, Poland, Sweden, Tunisia, Spain, Greece, Denmark, South Korea, Portugal, Saudi Arabia, the UAE, and Egypt, and explicitly approved using their first names and locations. Preserve their meaning and make only light spelling or punctuation corrections. The strongest verified outcome currently supplied is Abdulaziz's report of moving from a 4 to a 7 in his first-semester exams; present it as that student's statement, not as a guaranteed result.
 
-Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes final school licence operational terms, completed legal review, and the Teachable setup for the three confirmed individual-course access plans.
+Rob also supplied full course curriculum spreadsheets for AA HL, AA SL, AI HL, and AI SL. These have been converted into structured project data while leaving the original workbooks unchanged. Launch information still requiring confirmation includes final school licence operational terms and completed legal review.
 
 ## Agreed working relationship
 
@@ -261,8 +263,8 @@ The local repository also contains untracked generated dependency/build items fr
 ## Immediate next steps
 
 1. Rob reviews the updated Vercel preview on desktop and mobile and identifies any remaining copy, layout, pricing or journey changes.
-2. Complete and integrate the AA HL and AA SL question banks, including the agreed public sample and free-account access boundary.
-3. Confirm the Teachable subdomain, course checkout plans and existing-student login destinations, then repeat the key journey tests.
+2. Keep the IGCSE area hidden from the initial public launch while preserving its source for a later release.
+3. Create and verify `learn.mrflynnib.com` for Teachable, then repeat the course checkout and existing-student login journey tests.
 4. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
 5. Point the public domain to Vercel only after the website and Teachable journeys are approved, then repeat analytics, form, email and download tests on the public domain.
 6. Merge and publish only after Rob explicitly approves it.

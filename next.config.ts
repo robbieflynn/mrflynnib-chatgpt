@@ -19,6 +19,16 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  async redirects() {
+    return [
+      { source: "/p/aa-hl", destination: "https://learn.mrflynnib.com/p/aa-hl", permanent: false },
+      { source: "/p/aa-sl", destination: "https://learn.mrflynnib.com/p/aa-sl", permanent: false },
+      { source: "/p/ai-hl", destination: "https://learn.mrflynnib.com/p/ai-hl", permanent: false },
+      { source: "/p/ai-sl", destination: "https://learn.mrflynnib.com/p/ai-sl", permanent: false },
+      { source: "/sign_in", destination: "https://learn.mrflynnib.com/sign_in", permanent: false },
+      { source: "/courses/enrolled", destination: "https://learn.mrflynnib.com/courses/enrolled", permanent: false },
+    ];
+  },
   async headers() {
     return [
       {
