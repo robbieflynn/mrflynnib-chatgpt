@@ -364,8 +364,7 @@ textarea { min-height: 130px; resize: vertical; }
 .checklist-form-card > p { color: var(--muted); }
 .checklist-form { margin-top: .8rem; display: grid; grid-template-columns: .8fr 1.1fr .8fr; gap: .85rem; align-items: end; }
 .checklist-form .button { grid-column: 1 / -1; width: fit-content; }
-.checklist-consent { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr; gap: .65rem; align-items: start; color: var(--ink-2); font-size: .8rem; line-height: 1.5; cursor: pointer; }
-.checklist-consent input { width: 1rem; height: 1rem; margin-top: .1rem; accent-color: var(--teal); }
+.checklist-consent-note { grid-column: 1 / -1; max-width: 44rem; color: var(--ink-2); font-size: .8rem; line-height: 1.5; }
 .checklist-privacy { grid-column: 1 / -1; color: var(--muted); font-size: .72rem; }
 .checklist-privacy a { color: var(--teal-dark); text-decoration: underline; text-underline-offset: .18em; }
 .checklist-message { grid-column: 1 / -1; }
