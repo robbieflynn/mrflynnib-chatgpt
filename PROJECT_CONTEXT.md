@@ -248,23 +248,22 @@ Do not return to full-site ZIP transfers for ordinary development. Keep one repo
 
 Accuracy and transparency are especially important. Earlier assistance incorrectly claimed to have visually inspected a protected live deployment. Never repeat that mistake. State the evidence actually available: code, local render, screenshot, public page, or preview.
 
-## Current work in progress
+## Current production state
 
-The temporary banner workflow test succeeded and has been superseded by the first complete content-led website redesign on branch `agent/homepage-redesign`. Draft pull request #2 is the active review: `https://github.com/robbieflynn/mrflynnib-chatgpt/pull/2`. Its Vercel preview is `https://mrflynnib-chatgpt-git-agent-homepage-redesign-mr-flynn-ib.vercel.app`.
-
-The preview includes the redesigned homepage and complete course, IA, school, book, tutoring, testimonial, navigation, metadata, and legal-draft journeys. The complete supplied 1,710-question package is now integrated into the AA HL and AA SL routes, with course-specific filtering, progressive rendering and one natural page scroll.
+The first complete content-led website redesign was approved and merged through pull request #2 on 7 August 2026. The follow-up headline change to **“Your Home for IB Mathematics.”** was merged through pull request #3 the same day. The production website is live on Vercel at `https://www.mrflynnib.com`; `https://mrflynnib.com` has a valid secure connection and redirects to the `www` address. The production site includes the redesigned homepage and complete course, IA, school, book, tutoring, testimonial, navigation, metadata, legal-draft and conversion-tracking journeys. The supplied 1,710-question package is integrated into the AA HL and AA SL routes, with course-specific filtering, progressive rendering and one natural page scroll. The IGCSE source remains preserved but its links, sitemap entries and public routes are disabled for this initial IB-focused launch.
 
 A launch-readiness pass covering QA, conversion measurement and basic error/security hardening was completed locally on 30 July 2026. The complete public route set was rendered at a 390-pixel mobile viewport, and the homepage was also checked at a 1280-pixel desktop viewport. The audit found no unintended horizontal overflow, missing image alternative text or duplicate HTML IDs. The mobile navigation and all four correct individual-course routes were verified. The custom 404 page, runtime error fallback, checklist thank-you pages, school-enquiry thank-you page and outbound destination fallback were also verified. Lint passes with one pre-existing PostCSS warning and no errors; the Next.js production build passes and currently generates 53 static pages, including the no-index conversion routes.
 
-The same pass added a restrictive Content Security Policy, HSTS, referrer, permissions, framing and MIME-type headers; native form validation and accessible status messages; reduced-motion support; request content-type, size and same-origin checks; bounded form inputs; honeypots; and basic per-IP rate limiting. These controls reduce common automated abuse but are not a substitute for managed edge rate limiting if traffic or attacks become substantial. Invalid and cross-origin form requests were tested against the local production build and returned the expected 400 and 403 responses. The updated Vercel preview must still be opened after deployment and must not be merged or published to production until Rob approves it.
+The same pass added a restrictive Content Security Policy, HSTS, referrer, permissions, framing and MIME-type headers; native form validation and accessible status messages; reduced-motion support; request content-type, size and same-origin checks; bounded form inputs; honeypots; and basic per-IP rate limiting. These controls reduce common automated abuse but are not a substitute for managed edge rate limiting if traffic or attacks become substantial. Invalid and cross-origin form requests were tested against the local production build and returned the expected 400 and 403 responses.
+
+After the domain cutover, the root redirect, secure `www` homepage, Courses, Question bank, Schools, legacy AA HL course redirect, Teachable AA HL destination, robots file and sitemap all returned successfully. Public DNS confirmed `www` points to Vercel and `learn` points to Teachable. Google Workspace MX, Google verification, MailerLite verification and the combined Google/MailerLite SPF record remained present.
 
 The local repository also contains untracked generated dependency/build items from verification (`node_modules/`, `.next/`, `.pnpm-store/`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml`). These are not part of the website commit and must not be added to a pull request without an intentional dependency-management decision.
 
 ## Immediate next steps
 
-1. Rob reviews the updated Vercel preview on desktop and mobile and identifies any remaining copy, layout, pricing or journey changes.
-2. Keep the IGCSE area hidden from the initial public launch while preserving its source for a later release.
-3. Create and verify `learn.mrflynnib.com` for Teachable, then repeat the course checkout and existing-student login journey tests.
-4. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
-5. Point the public domain to Vercel only after the website and Teachable journeys are approved, then repeat analytics, form, email and download tests on the public domain.
-6. Merge and publish only after Rob explicitly approves it.
+1. Run one real checklist request and one real school enquiry on the public domain to reconfirm the MailerLite delivery and enquiry automations after launch.
+2. Monitor Vercel Analytics, Search Console indexing and production errors during the first days after launch.
+3. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
+4. Design and implement the agreed public-sample/free-account boundary for the question bank when Rob is ready.
+5. Keep the IGCSE area hidden while preserving its source for a later approved release.
