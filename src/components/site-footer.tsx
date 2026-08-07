@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui";
-import { LogoMark } from "@/components/logo";
+import { LogoLockup } from "@/components/logo";
 import { siteConfig } from "@/lib/site";
 
 export function SiteFooter() {
@@ -9,14 +9,19 @@ export function SiteFooter() {
       <Container>
         <div className="footer-grid">
           <div className="stack">
-            <Link href="/" className="brand"><LogoMark /><span>Mr Flynn IB</span></Link>
+            <Link href="/" className="brand footer-brand"><LogoLockup /></Link>
             <p style={{ color: "rgba(255,255,255,.7)", maxWidth: 420 }}>
-              Expert-led IB Mathematics courses, tutoring, resources and school access—explained clearly by Rob Flynn.
+              Complete IB Mathematics courses, a growing question bank, IA guidance, tutoring and school access, explained clearly by Mr Flynn IB.
             </p>
+            <div className="footer-socials" aria-label="Mr Flynn IB social channels">
+              <Link className="footer-social-primary" href="/go/youtube">YouTube</Link>
+              <Link href="/go/instagram">Instagram</Link>
+              <Link href="/go/tiktok">TikTok</Link>
+            </div>
           </div>
           <div className="stack">
             <strong>Learn</strong>
-            <div className="footer-list"><Link href="/courses">Courses</Link><Link href="/resources">Free resources</Link><Link href="/book">Book</Link><Link href="/login">Student login</Link></div>
+            <div className="footer-list"><Link href="/courses">IB courses</Link><Link href="/ia">IA guidance</Link><Link href="/question-bank">IB question bank</Link><Link href="/book">Book</Link><Link href="/go/my-courses">My courses</Link></div>
           </div>
           <div className="stack">
             <strong>Work with us</strong>
@@ -24,7 +29,7 @@ export function SiteFooter() {
           </div>
           <div className="stack">
             <strong>Company</strong>
-            <div className="footer-list"><Link href="/about">About Rob</Link><Link href="/faq">FAQs</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link><Link href="/cookies">Cookies</Link></div>
+            <div className="footer-list"><Link href="/about">About Mr Flynn IB</Link><Link href="/faq">FAQs</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div>
           </div>
         </div>
         <div className="footer-bottom"><span>© {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.</span><span>Independent IB Mathematics support. Not affiliated with the International Baccalaureate Organization.</span></div>

@@ -9,8 +9,13 @@ export type Course = {
   outcomes: string[];
   modules: string[];
   teachableUrl: string;
-  featured?: boolean;
 };
+
+export const courseAccessPlans = [
+  { duration: "3 months", price: 49, description: "For focused exam revision", recommended: false },
+  { duration: "1 year", price: 69, description: "For a full academic year", recommended: false },
+  { duration: "2 years", price: 79, description: "For the complete IB journey", recommended: true },
+] as const;
 
 export const courses: Course[] = [
   {
@@ -29,8 +34,7 @@ export const courses: Course[] = [
       "Use the calculator strategically rather than mechanically",
     ],
     modules: ["Algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_HL_URL ?? "#teachable-aa-hl-url-needed",
-    featured: true,
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_HL_URL ?? "https://learn.mrflynnib.com/p/aa-hl",
   },
   {
     slug: "analysis-approaches-sl",
@@ -48,7 +52,7 @@ export const courses: Course[] = [
       "Revise efficiently across the full course",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_SL_URL ?? "#teachable-aa-sl-url-needed",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AA_SL_URL ?? "https://learn.mrflynnib.com/p/aa-sl",
   },
   {
     slug: "applications-interpretation-hl",
@@ -66,7 +70,7 @@ export const courses: Course[] = [
       "Connect topics across extended questions",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_HL_URL ?? "#teachable-ai-hl-url-needed",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_HL_URL ?? "https://learn.mrflynnib.com/p/ai-hl",
   },
   {
     slug: "applications-interpretation-sl",
@@ -84,31 +88,7 @@ export const courses: Course[] = [
       "Build a repeatable exam approach",
     ],
     modules: ["Number & algebra", "Functions", "Geometry & trigonometry", "Statistics & probability", "Calculus"],
-    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_SL_URL ?? "#teachable-ai-sl-url-needed",
-  },
-];
-
-export const resources = [
-  {
-    slug: "choosing-aa-or-ai",
-    title: "AA or AI? How to choose the right IB Mathematics course",
-    summary: "A practical guide for students and parents comparing content, style and future options.",
-    audience: "Students & parents",
-    readTime: "7 min",
-  },
-  {
-    slug: "ib-maths-revision-plan",
-    title: "A six-week IB Mathematics revision plan",
-    summary: "A realistic structure for revising content, question types and full papers without panic-cramming.",
-    audience: "Students",
-    readTime: "9 min",
-  },
-  {
-    slug: "what-examiners-look-for",
-    title: "What IB Mathematics examiners are actually looking for",
-    summary: "How method, notation, interpretation and communication affect marks.",
-    audience: "Students & teachers",
-    readTime: "8 min",
+    teachableUrl: process.env.NEXT_PUBLIC_TEACHABLE_AI_SL_URL ?? "https://learn.mrflynnib.com/p/ai-sl",
   },
 ];
 
@@ -116,26 +96,51 @@ export const faqs = [
   {
     question: "Where are the courses hosted?",
     answer:
-      "Course lessons and student access are hosted on Teachable. MrFlynnIB.com explains the courses, helps you choose the right one and links securely to Teachable for enrolment and login.",
+      "Course lessons and student access are hosted on Teachable. MrFlynnIB.com explains the courses, helps you choose the right one and links securely to Teachable for enrollment and login.",
   },
   {
     question: "Which IB Mathematics courses are covered?",
     answer:
-      "The initial site structure supports Analysis & Approaches and Applications & Interpretation at both Higher and Standard Level. Final availability should be updated to match the live Teachable catalogue.",
+      "Courses are available for Analysis & Approaches and Applications & Interpretation at both Higher and Standard Level: AA HL, AA SL, AI HL and AI SL.",
   },
   {
-    question: "Is tutoring taught personally by Rob?",
+    question: "What access plans are available?",
     answer:
-      "The current positioning assumes a selective application process. The final page should state clearly whether sessions are taught only by Rob or also by approved tutors working under the Mr Flynn IB brand.",
+      "Each course has three one-time access options: 3 months for US$49, 1 year for US$69, or 2 years for US$79. The two-year plan offers the best value for students completing the full IB course.",
+  },
+  {
+    question: "Does each access plan include the complete course?",
+    answer:
+      "Yes. Every access plan includes the same complete course. The only difference is how long you can access it.",
+  },
+  {
+    question: "I am already enrolled. How do I access my lessons?",
+    answer:
+      "Use the My courses link at the top of the website. It takes existing students directly to the Teachable login used for course access.",
+  },
+  {
+    question: "How can I find out about tutoring?",
+    answer:
+      "Please email contact@mrflynnib.com for current tutoring information and availability.",
   },
   {
     question: "Can a school buy access for several students?",
     answer:
-      "Yes. School licences are designed for departments that want structured student access, teacher onboarding and a straightforward quotation or invoice process.",
+      "Yes. Schools can purchase two-year student licences using the pricing shown on the Schools page. Each student receives access to one selected course.",
+  },
+  {
+    question: "Can a school request different courses within one cohort?",
+    answer:
+      "Yes. A school can request a mixture of AA HL, AA SL, AI HL and AI SL licences. The course allocation and practical setup are confirmed before invoicing.",
   },
   {
     question: "Do the courses replace school lessons?",
     answer:
       "No. They are designed to strengthen understanding, fill gaps, support revision and provide an expert explanation students can revisit whenever needed.",
+  },
+  {
+    question: "Where can I buy the IA book?",
+    answer:
+      "The book has a dedicated page on this website with more information and a link to purchase it through Amazon.",
   },
 ];

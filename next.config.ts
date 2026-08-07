@@ -1,8 +1,34 @@
 import type { NextConfig } from "next";
 
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "font-src 'self' data:",
+  "form-action 'self' mailto:",
+  "frame-ancestors 'self'",
+  "frame-src 'self' https://www.youtube-nocookie.com",
+  "img-src 'self' data: blob: https:",
+  "media-src 'self'",
+  "object-src 'none'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "connect-src 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  async redirects() {
+    return [
+      { source: "/p/aa-hl", destination: "https://learn.mrflynnib.com/p/aa-hl", permanent: false },
+      { source: "/p/aa-sl", destination: "https://learn.mrflynnib.com/p/aa-sl", permanent: false },
+      { source: "/p/ai-hl", destination: "https://learn.mrflynnib.com/p/ai-hl", permanent: false },
+      { source: "/p/ai-sl", destination: "https://learn.mrflynnib.com/p/ai-sl", permanent: false },
+      { source: "/sign_in", destination: "https://learn.mrflynnib.com/sign_in", permanent: false },
+      { source: "/courses/enrolled", destination: "https://learn.mrflynnib.com/courses/enrolled", permanent: false },
+    ];
+  },
   async headers() {
     return [
       {
@@ -11,7 +37,9 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" }
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          { key: "Content-Security-Policy", value: contentSecurityPolicy },
         ]
       }
     ];

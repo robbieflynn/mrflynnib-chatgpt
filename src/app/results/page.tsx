@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Container, Eyebrow, PageHero, PlaceholderNote } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
+import { testimonials } from "@/lib/testimonials";
 
-export const metadata: Metadata = { title: "Student results and testimonials", description: "Student and school outcomes from Mr Flynn IB courses, tutoring and resources." };
+export const metadata: Metadata = { title: "Student experiences", description: "Read genuine experiences from IB Mathematics students who have learned with Mr Flynn IB." };
 
 export default function ResultsPage() {
-  return <>
-    <PageHero eyebrow="Results" title="Evidence, not empty superlatives." intro="This page is designed for specific, permission-cleared student, parent and school outcomes. It intentionally avoids fabricated testimonials." />
-    <section className="section-tight"><Container className="stack-xl"><div className="grid-3">{["Course student", "Tutoring family", "School department"].map((type) => <article className="card stack-lg" key={type}><span className="badge">{type}</span><p className="quote">“Add a genuine quotation that explains the starting problem, what changed and the outcome.”</p><p className="small muted">Name or approved attribution · Course · Exam session</p></article>)}</div><PlaceholderNote>Collect 6–10 testimonials with written permission. Prioritise specific stories and representative experiences; do not imply guaranteed grades. Add anonymisation only where genuinely necessary.</PlaceholderNote></Container></section>
-    <section className="section surface-soft"><Container className="stack-xl"><div className="stack"><Eyebrow>Recommended evidence format</Eyebrow><h2>Make every result understandable.</h2></div><div className="grid-3"><article className="card stack"><h3>Starting point</h3><p className="muted">What was difficult before the student used the resource?</p></article><article className="card stack"><h3>Intervention</h3><p className="muted">Which course, tutoring plan or school licence did they use?</p></article><article className="card stack"><h3>Outcome</h3><p className="muted">What changed in understanding, confidence, independence or grade?</p></article></div></Container></section>
-  </>;
+  return (
+    <><section className="results-hero"><Container className="narrow stack-lg"><Breadcrumbs items={[{ label: "Student experiences" }]} /><Eyebrow>Student experiences</Eyebrow><h1>What students say about learning with Mr Flynn IB.</h1><p className="lede">These are genuine comments supplied by students around the world. Individual experiences vary, but the themes are remarkably consistent: clarity, confidence and the ability to revisit difficult ideas.</p></Container></section><section className="section"><Container className="stack-xl"><div className="all-testimonials">{testimonials.map((testimonial) => <figure className="testimonial-card" key={`${testimonial.name}-${testimonial.location}`}><span className="quote-mark" aria-hidden="true">“</span><blockquote>{testimonial.quote}</blockquote><figcaption><strong>{testimonial.name}</strong><span>{testimonial.location}</span></figcaption></figure>)}</div><div className="centre"><ButtonLink href="/courses">Find your course</ButtonLink></div></Container></section></>
+  );
 }

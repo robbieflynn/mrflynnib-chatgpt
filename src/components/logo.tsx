@@ -13,3 +13,16 @@ export function LogoMark() {
     />
   );
 }
+
+export function LogoLockup({ priority = false }: { priority?: boolean }) {
+  return (
+    <Image
+      className="brand-lockup"
+      src="/images/mr-flynn-ib-lockup.png"
+      width={1400}
+      height={356}
+      alt="Mr Flynn IB: IB Mathematics video lessons, IA guidance and past paper solutions"
+      priority={priority}
+    />
+  );
+}

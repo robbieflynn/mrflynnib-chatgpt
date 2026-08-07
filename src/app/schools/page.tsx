@@ -1,15 +1,66 @@
 import type { Metadata } from "next";
 import { EnquiryForm } from "@/components/enquiry-form";
-import { Container, Eyebrow, PageHero, PlaceholderNote } from "@/components/ui";
+import { SchoolTierLink } from "@/components/school-tier-link";
+import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 
-export const metadata: Metadata = { title: "IB Mathematics school licences", description: "Structured Mr Flynn IB course access for schools, departments and student cohorts." };
+export const metadata: Metadata = { title: "IB Mathematics school licences", description: "Two-year access to a selected Mr Flynn IB Mathematics course for classes, departments and school cohorts." };
+
+const tiers = [
+  { students: "10", range: "10–24", each: "$50" },
+  { students: "25", range: "25–49", each: "$40" },
+  { students: "50", range: "50–99", each: "$30" },
+  { students: "100", range: "100+", each: "$20" },
+];
 
 export default function SchoolsPage() {
-  return <>
-    <PageHero eyebrow="For schools" title="Expert IB Mathematics support across the department." intro="Give students clear, on-demand explanations while giving teachers a consistent resource they can recommend with confidence." />
-    <section className="section-tight"><Container className="grid-3"><article className="card stack"><span className="icon-box">⌁</span><h3>Consistent student access</h3><p className="muted">A shared bank of structured explanations students can use in class, at home and during revision.</p></article><article className="card stack"><span className="icon-box">⏱</span><h3>Save teacher time</h3><p className="muted">Reduce repeated reteaching and give absent or struggling students a dependable next step.</p></article><article className="card stack"><span className="icon-box">◫</span><h3>Simple procurement</h3><p className="muted">A school-friendly enquiry, quotation and invoice route rather than individual consumer purchases.</p></article></Container></section>
-    <section className="section surface-ink"><Container className="split"><div className="stack-lg"><Eyebrow>What a licence can include</Eyebrow><h2>Built for departments, not just bulk checkout.</h2><p className="lede">The offer should combine student access with onboarding and a clear institutional relationship.</p></div><div className="grid-2"><div className="number-card"><strong>01</strong><h3>Course access</h3><p>Selected AA and AI courses for the agreed cohort.</p></div><div className="number-card"><strong>02</strong><h3>Onboarding</h3><p>A clear setup route for staff and students.</p></div><div className="number-card"><strong>03</strong><h3>Teacher support</h3><p>Guidance on where the resources fit best.</p></div><div className="number-card"><strong>04</strong><h3>Renewal plan</h3><p>Simple annual review and continuation.</p></div></div></Container></section>
-    <section className="section surface"><Container className="stack-xl"><div className="stack"><Eyebrow>Proposed licence structure</Eyebrow><h2>Three starting points for commercial design.</h2><p className="lede">These are deliberately presented as a framework until the actual Teachable licensing mechanics and pricing are confirmed.</p></div><div className="grid-3"><article className="card stack-lg"><span className="badge">Small cohort</span><h3>Up to 25 students</h3><p className="muted">Suitable for one class or a targeted intervention group.</p></article><article className="card stack-lg"><span className="badge">Department</span><h3>Up to 100 students</h3><p className="muted">Suitable for several classes across pathways or year groups.</p></article><article className="card stack-lg"><span className="badge">Custom</span><h3>Multi-cohort access</h3><p className="muted">For larger schools, groups or tailored implementation.</p></article></div><PlaceholderNote>Set licence duration, prices, named-user rules, transfer policy, usage reporting, teacher accounts, onboarding, renewal and Teachable bulk-enrolment process. Preserve Mr Flynn IB’s IP, brand ownership and customer relationship in any partner arrangement.</PlaceholderNote></Container></section>
-    <section className="section"><Container className="split"><div className="stack-lg"><Eyebrow>Request school information</Eyebrow><h2>Start with your cohort and priorities.</h2><p className="lede">We can then respond with the most relevant access model, demonstration and quotation route.</p></div><EnquiryForm kind="school" /></Container></section>
-  </>;
+  return (
+    <>
+      <section className="schools-hero">
+        <Container className="schools-hero-shell">
+          <Breadcrumbs items={[{ label: "Schools" }]} />
+          <div className="schools-hero-layout">
+            <div className="schools-hero-heading stack">
+              <Eyebrow>For schools</Eyebrow>
+              <h1>Give every IB Mathematics student another clear explanation.</h1>
+            </div>
+            <div className="schools-hero-details stack-lg">
+              <p className="lede">Two-year access for a defined student cohort, with straightforward pricing.</p>
+              <a className="button" href="#school-options">See school options</a>
+              <div className="school-course-stack">
+                <span>Available course options</span>
+                <p>Each student receives one selected course.</p>
+                <div><strong>AA HL</strong><small>Analysis &amp; Approaches</small></div>
+                <div><strong>AA SL</strong><small>Analysis &amp; Approaches</small></div>
+                <div><strong>AI HL</strong><small>Applications &amp; Interpretation</small></div>
+                <div><strong>AI SL</strong><small>Applications &amp; Interpretation</small></div>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section className="school-benefit-strip"><Container className="grid-3"><article><strong>Two-year access</strong><span>Support students throughout their complete IB course.</span></article><article><strong>One school invoice</strong><span>Simple purchasing for each student cohort.</span></article><article><strong>Independent support</strong><span>Students can revisit explanations outside lesson time.</span></article></Container></section>
+
+      <section id="school-options" className="section school-pricing-section">
+        <Container className="stack-xl">
+          <div className="section-heading-row">
+            <div className="stack"><Eyebrow>Two-year school pricing</Eyebrow><h2>Choose the cohort size that fits.</h2></div>
+            <p className="lede">The price per student is based on the total number of licences required.</p>
+          </div>
+          <div className="school-tier-grid">
+            {tiers.map((tier) => (
+              <article className="school-tier" key={tier.students}>
+                <small>{tier.range} students</small>
+                <div className="tier-price"><strong>{tier.each}</strong><span>per student / two years</span></div>
+                <SchoolTierLink students={tier.students} />
+              </article>
+            ))}
+          </div>
+          <p className="pricing-note">Course allocation, access dates and provisioning are confirmed with the school before invoicing.</p>
+        </Container>
+      </section>
+
+      <section id="school-enquiry" className="section"><Container className="split"><div className="stack-lg"><Eyebrow>Request school access</Eyebrow><h2>Tell us about your cohort.</h2><p className="lede">Share the likely number of students, courses and year groups. We will confirm the right package and practical setup before any invoice is issued.</p></div><EnquiryForm kind="school" /></Container></section>
+    </>
+  );
 }

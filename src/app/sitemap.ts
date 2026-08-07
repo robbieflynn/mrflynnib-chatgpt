@@ -1,12 +1,14 @@
 import type { MetadataRoute } from "next";
-import { courses, resources } from "@/lib/content";
+import { courses } from "@/lib/content";
+import { questionBankCourses } from "@/lib/question-bank-courses";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPaths = ["", "/courses", "/resources", "/tutoring", "/schools", "/book", "/about", "/results", "/contact", "/faq", "/privacy", "/terms", "/cookies"];
+  const staticPaths = ["", "/courses", "/ia", "/question-bank", "/tutoring", "/schools", "/book", "/about", "/results", "/contact", "/faq", "/privacy", "/terms"];
   return [
     ...staticPaths.map((path) => ({ url: `${siteConfig.url}${path}`, lastModified: new Date(), changeFrequency: path === "" ? "weekly" as const : "monthly" as const, priority: path === "" ? 1 : .7 })),
     ...courses.map((course) => ({ url: `${siteConfig.url}/courses/${course.slug}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: .8 })),
-    ...resources.map((resource) => ({ url: `${siteConfig.url}/resources/${resource.slug}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: .65 })),
+    ...questionBankCourses.filter((course) => course.available).map((course) => ({ url: `${siteConfig.url}/question-bank/${course.slug}`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: .8 })),
+    { url: `${siteConfig.url}/question-bank/legacy-hl`, lastModified: new Date(), changeFrequency: "monthly", priority: .6 },
   ];
 }

@@ -1,14 +1,46 @@
 import type { Metadata } from "next";
+import katex from "katex";
 import { notFound } from "next/navigation";
-import { ButtonLink, Container, Eyebrow, PlaceholderNote } from "@/components/ui";
-import { courses } from "@/lib/content";
+import curriculumData from "@/data/curricula.json";
+import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
+import { courseAccessPlans, courses } from "@/lib/content";
+import { courseCheckoutPath } from "@/lib/outbound-destinations";
+
+type CurriculumTopic = { name: string; lessons: string[] };
+const curricula = curriculumData as Record<string, CurriculumTopic[]>;
+
+const mathematicalLessonTitles: Record<string, { before: string; expression: string; after?: string }> = {
+  "Graphs of y = (f(x))^2": { before: "Graphs of ", expression: "y = [f(x)]^2" },
+  "Finding f(x)": { before: "Finding ", expression: "f(x)" },
+  "Integrating e^x and 1/x": { before: "Integrating ", expression: "e^x \\text{ and } \\frac{1}{x}" },
+  "Differentiating trig, e^x and lnx": { before: "Differentiating trigonometric functions, ", expression: "e^x \\text{ and } \\ln x" },
+  "Differentiating x^n where n is rational": { before: "Differentiating ", expression: "x^n", after: " where n is rational" },
+  "Integration of x^n where n is rational": { before: "Integration of ", expression: "x^n", after: " where n is rational" },
+  "Integrating e^x": { before: "Integrating ", expression: "e^x" },
+};
+
+function CurriculumLesson({ lesson }: { lesson: string }) {
+  const match = lesson.match(/^(\d+(?:\.\d+)*)\s+(.+)$/);
+  const number = match?.[1] ?? "";
+  const title = match?.[2] ?? lesson;
+  const mathematicalTitle = mathematicalLessonTitles[title];
+
+  return (
+    <li>
+      {number && <span className="curriculum-lesson-number">{number}</span>}
+      <span className="curriculum-lesson-title">
+        {mathematicalTitle ? <>{mathematicalTitle.before}<span className="curriculum-inline-math" dangerouslySetInnerHTML={{ __html: katex.renderToString(mathematicalTitle.expression, { throwOnError: false, output: "html" }) }} />{mathematicalTitle.after}</> : title}
+      </span>
+    </li>
+  );
+}
 
 export function generateStaticParams() { return courses.map(({ slug }) => ({ slug })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const course = courses.find((item) => item.slug === slug);
-  return course ? { title: course.title, description: course.description } : {};
+  return course ? { title: course.title, description: `${course.description} Choose from three access options.` } : {};
 }
 
 export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -16,11 +48,57 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   const course = courses.find((item) => item.slug === slug);
   if (!course) notFound();
 
-  return <>
-    <section className="page-hero"><Container className="split"><div className="stack-lg"><Eyebrow>{course.shortTitle} online course</Eyebrow><h1>{course.title}</h1><p className="lede">{course.promise}</p><div className="cluster"><ButtonLink href={course.teachableUrl} external>View enrolment on Teachable</ButtonLink><ButtonLink href="#curriculum" secondary>See the curriculum</ButtonLink></div><p className="small muted">Course sales and lesson access continue securely on Teachable.</p></div><div className="card stack-lg"><span className="badge">Course overview</span><p>{course.description}</p><ul className="check-list">{course.outcomes.map((item) => <li key={item}>{item}</li>)}</ul></div></Container></section>
-    <section className="section surface"><Container className="split"><div className="stack"><Eyebrow>Who it is for</Eyebrow><h2>For students who want the syllabus to make sense.</h2><p className="lede">This positioning assumes the course supports current {course.shortTitle} students alongside school teaching, independent revision and exam preparation.</p></div><div className="grid-2"><article className="card stack"><h3>Use it throughout the course</h3><p className="muted">Revisit explanations when a school lesson moves too quickly or a topic has not settled.</p></article><article className="card stack"><h3>Use it for revision</h3><p className="muted">Work topic by topic, then combine skills through exam-style practice.</p></article></div></Container></section>
-    <section id="curriculum" className="section"><Container className="stack-xl"><div className="stack"><Eyebrow>Curriculum</Eyebrow><h2>Full-course structure, not disconnected videos.</h2></div><div className="grid-3">{course.modules.map((module, index) => <article className="card stack" key={module}><span className="badge">Module {index + 1}</span><h3>{module}</h3><p className="muted">Add lesson-level curriculum detail and preview links from the live Teachable course.</p></article>)}</div></Container></section>
-    <section className="section surface-soft"><Container className="split"><div className="stack"><Eyebrow>What is included</Eyebrow><h2>A repeatable route from explanation to exam question.</h2></div><ul className="check-list"><li>Personal video explanations from Rob Flynn</li><li>Worked examples selected for each skill</li><li>Topic-by-topic practice guidance</li><li>Exam technique and common-error warnings</li><li>Access through the existing Teachable platform</li></ul></Container></section>
-    <section className="section"><Container className="narrow stack-xl"><PlaceholderNote>Add the exact course price, access period, lesson count, downloadable resources, sample lesson, refund terms and genuine testimonials before publishing.</PlaceholderNote><div className="card stack-lg"><Eyebrow>Ready to see the full course?</Eyebrow><h2>Continue to Teachable.</h2><p className="lede">Review the final price and enrolment details on the secure course page.</p><ButtonLink href={course.teachableUrl} external>View {course.shortTitle} on Teachable</ButtonLink></div></Container></section>
-  </>;
+  const curriculum = curricula[course.shortTitle] ?? [];
+
+  return (
+    <>
+      <section className="course-detail-hero">
+        <Container className="course-detail-grid">
+          <div className="stack-lg">
+            <Breadcrumbs items={[{ label: "Courses", href: "/courses" }, { label: course.shortTitle }]} />
+            <div className="course-detail-code">{course.shortTitle}</div>
+            <Eyebrow>{course.pathway} · {course.level}</Eyebrow>
+            <h1>{course.promise}</h1>
+            <p className="lede">{course.description}</p>
+          </div>
+          <aside className="course-purchase-card">
+            <div className="stack"><Eyebrow>Choose your access</Eyebrow><h2>One complete course. Three access options.</h2><p>Every plan includes the complete {course.shortTitle} course. Choose and purchase your access on Teachable.</p></div>
+            <ul className="access-plan-list">
+              {courseAccessPlans.map((plan) => <li className={plan.recommended ? "access-plan-recommended" : ""} key={plan.duration}><div><strong>{plan.duration}</strong>{plan.recommended && <span>Recommended</span>}<small>{plan.description}</small></div><b>${plan.price}</b></li>)}
+            </ul>
+            <ButtonLink href={courseCheckoutPath(course.shortTitle)}>View access plans and enroll</ButtonLink>
+            <small>Prices are in US dollars. Payment and secure course access continue on Teachable.</small>
+          </aside>
+        </Container>
+      </section>
+
+      <section className="section course-outcomes-section">
+        <Container className="split">
+          <div className="stack"><Eyebrow>What you’ll learn</Eyebrow><h2>Understand the method and know when to use it.</h2><p className="lede">The goal is not simply to watch more videos. It is to make unfamiliar IB questions feel more manageable because the underlying mathematics is clear.</p></div>
+          <ul className="outcome-list">{course.outcomes.map((outcome, index) => <li key={outcome}><span>0{index + 1}</span><strong>{outcome}</strong></li>)}</ul>
+        </Container>
+      </section>
+
+      <section id="curriculum" className="section curriculum-section">
+        <Container className="stack-xl">
+          <div className="section-heading-row"><div className="stack"><Eyebrow>Full curriculum</Eyebrow><h2>See exactly what is covered.</h2></div><p className="lede">The curriculum is structured directly from the complete course syllabus. Open any topic to see its lesson sequence.</p></div>
+          <div className="curriculum-list">
+            {curriculum.map((topic, index) => (
+              <details className="curriculum-topic" key={topic.name} open={index === 0}>
+                <summary><span>0{index + 1}</span><strong>{topic.name}</strong><small>{topic.lessons.length} lessons</small><i aria-hidden="true">+</i></summary>
+                <ol>{topic.lessons.map((lesson) => <CurriculumLesson lesson={lesson} key={lesson} />)}</ol>
+              </details>
+            ))}
+          </div>
+          <div className="course-curriculum-extras">
+            <div className="stack"><Eyebrow>Also included</Eyebrow><h2>Support beyond the topic lessons.</h2></div>
+            <div className="course-extra-grid">
+              <article><span>IA</span><div><h3>Internal Assessment guidance</h3><p>Clear guidance for understanding the IA process, developing an idea and improving the finished exploration.</p></div></article>
+              <article><span>PP</span><div><h3>Past-paper solutions</h3><p>Worked solutions that show how to approach IB Mathematics questions and communicate the method clearly.</p></div></article>
+            </div>
+          </div>
+        </Container>
+      </section>
+    </>
+  );
 }

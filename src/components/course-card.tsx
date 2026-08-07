@@ -5,16 +5,12 @@ export function CourseCard({ course }: { course: Course }) {
   return (
     <article className="card card-hover course-card">
       <div className="card-body">
-        <span className="badge">{course.shortTitle}</span>
-        <div className="stack">
-          <h3>{course.pathway}</h3>
-          <p className="muted">{course.promise}</p>
+        <div className="course-card-heading">
+          <span className="course-code">{course.shortTitle}</span>
         </div>
-        <ul className="check-list small">
-          {course.outcomes.slice(0, 3).map((item) => <li key={item}>{item}</li>)}
-        </ul>
+        <h3>{course.pathway} {course.level}</h3>
       </div>
-      <Link className="text-link" href={`/courses/${course.slug}`}>Explore {course.shortTitle}</Link>
+      <Link className="text-link" href={`/courses/${course.slug}`}>View course</Link>
     </article>
   );
 }
