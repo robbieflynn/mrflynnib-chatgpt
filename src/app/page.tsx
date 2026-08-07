@@ -55,7 +55,7 @@ export default function HomePage() {
         <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
             <h1>
-              <span className="hero-title-line">Making sense of</span>
+              <span className="hero-title-line">Your Home for</span>
               <span className="hero-title-line hero-title-accent">IB Mathematics.</span>
             </h1>
             <p className="home-hero-lede">
