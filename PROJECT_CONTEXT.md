@@ -166,6 +166,8 @@ The homepage headline is **“Your Home for IB Mathematics.”** Display it at a
 
 Keep a clear **Contact** route in the top navigation. Retain **Explore courses** as the header's primary call to action for now, but do not include a separate **Explore IA guidance** button in the homepage hero; the IA section provides that route later on the page.
 
+On mobile, the navigation menu should dismiss naturally when the visitor selects a link, taps the shaded page behind it, presses Escape, or taps the menu control again. Do not make visitors press the menu control a second time simply to recover the page after choosing a destination.
+
 Keep the general Contact page deliberately simple. Show `contact@mrflynnib.com` prominently with a direct email action rather than a general-purpose form. Direct existing students to **My courses** and schools to the dedicated school enquiry form, which remains structured because those enquiries require specific information.
 
 The FAQ page should answer the practical questions visitors are most likely to ask before contacting Mr Flynn IB. It now covers course hosting, all four pathways, the three confirmed access plans, what each plan includes, existing-student login, tutoring, school licences and mixed-course allocation, the role of the courses alongside school lessons, and the IA book. Keep answers factual and update them whenever Teachable, pricing or school operations change.

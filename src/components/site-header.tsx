@@ -2,6 +2,7 @@ import Link from "next/link";
 import { navItems, siteConfig } from "@/lib/site";
 import { ButtonLink, Container } from "@/components/ui";
 import { LogoLockup } from "@/components/logo";
+import { MobileNavigation } from "@/components/mobile-navigation";
 
 export function SiteHeader() {
   return (
@@ -16,15 +17,7 @@ export function SiteHeader() {
           <Link className="header-login-link" href="/go/my-courses">My courses</Link>
           <ButtonLink href="/courses" small>Explore courses</ButtonLink>
         </nav>
-        <details className="mobile-nav">
-          <summary>Menu</summary>
-          <nav className="mobile-panel" aria-label="Mobile navigation">
-            {navItems.map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
-            <Link href="/tutoring">Tutoring</Link>
-            <Link className="mobile-student-link" href="/go/my-courses">My courses</Link>
-            <Link href="/contact">Contact</Link>
-          </nav>
-        </details>
+        <MobileNavigation />
       </Container>
     </header>
   );
