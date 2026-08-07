@@ -224,7 +224,7 @@ The Teachable course paths are verified and are being moved to the dedicated `le
 - AI HL: `https://learn.mrflynnib.com/p/ai-hl`
 - AI SL: `https://learn.mrflynnib.com/p/ai-sl`
 
-Rob confirmed on 6 August 2026 that the individual Teachable access plans are complete. The Cloudflare DNS-only CNAME `learn` → `mrflynnib.teachable.com` was added and independently confirmed the same day. Teachable has accepted `learn.mrflynnib.com` and currently shows certificate/domain verification as pending. Do not treat the new destinations as live or move the main domain until Teachable changes this status to verified and the customer journeys pass.
+Rob confirmed on 6 August 2026 that the individual Teachable access plans are complete. The Cloudflare DNS-only CNAME `learn` → `mrflynnib.teachable.com` was added and independently confirmed the same day. On 7 August 2026, Teachable verified `learn.mrflynnib.com`, Rob made it the primary Teachable domain, all four course purchase pages returned successfully, and Rob confirmed the student login screen works in his browser. The Teachable launch journey is therefore ready.
 
 Rob supplied genuine testimonials from 18 named students across Hong Kong, Italy, the UK, India, Canada, Poland, Sweden, Tunisia, Spain, Greece, Denmark, South Korea, Portugal, Saudi Arabia, the UAE, and Egypt, and explicitly approved using their first names and locations. Preserve their meaning and make only light spelling or punctuation corrections. The strongest verified outcome currently supplied is Abdulaziz's report of moving from a 4 to a 7 in his first-semester exams; present it as that student's statement, not as a guaranteed result.
 
