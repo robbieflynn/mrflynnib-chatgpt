@@ -86,7 +86,7 @@ p { margin: 0; }
   font-weight: 800; cursor: pointer; transition: .2s ease; box-shadow: 0 10px 30px rgba(22,117,95,.16);
 }
 .button:hover { transform: translateY(-2px); background: var(--teal-dark); }
-.button:focus-visible, .text-link:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.button:focus-visible, .text-link:focus-visible, a:focus-visible, .mobile-menu-toggle:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 .button-secondary { background: transparent; color: var(--ink); border-color: #aeb8bc; box-shadow: none; }
 .button-secondary:hover { background: white; border-color: var(--ink); }
 .surface-ink .button-secondary, .surface-teal .button-secondary { color: white; border-color: rgba(255,255,255,.45); }
@@ -109,9 +109,9 @@ p { margin: 0; }
 .desktop-nav .header-contact-button:hover { border-color: var(--teal); background: var(--teal-soft); color: var(--teal-dark); }
 .desktop-nav .header-login-link { color: var(--teal-dark); }
 .mobile-nav { display: none; }
-.mobile-nav summary { list-style: none; cursor: pointer; font-weight: 800; }
-.mobile-nav summary::-webkit-details-marker { display:none; }
-.mobile-panel { position: absolute; left: 1rem; right: 1rem; top: 4.3rem; padding: 1rem; background: white; border: 1px solid var(--line); border-radius: 1rem; box-shadow: var(--shadow); }
+.mobile-menu-toggle { position: relative; z-index: 3; padding: .45rem .2rem; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; }
+.mobile-nav-backdrop { position: fixed; inset: 4.8rem 0 0; z-index: 1; border: 0; background: rgba(7,16,36,.24); cursor: default; }
+.mobile-panel { position: absolute; left: 1rem; right: 1rem; top: 4.3rem; z-index: 2; padding: 1rem; background: white; border: 1px solid var(--line); border-radius: 1rem; box-shadow: var(--shadow); }
 .mobile-panel a { display: block; padding: .75rem; font-weight: 750; }
 .mobile-panel .mobile-student-link { margin-top: .45rem; border-radius: .65rem; background: var(--teal-soft); color: var(--teal-dark); }
 
