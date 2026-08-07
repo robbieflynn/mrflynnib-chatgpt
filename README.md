@@ -32,7 +32,7 @@ Open `http://localhost:3000`.
 
 1. Add the live Teachable school, login and course URLs to `.env.local`.
 2. Add the live book purchase URL and YouTube channel URL.
-3. Add `MAILERLITE_API_TOKEN` for checklist delivery and school-enquiry routing.
+3. Add `MAILERLITE_API_TOKEN` for checklist delivery and school-enquiry routing, plus `MAILERLITE_MARKETING_GROUP_ID` for the separate consent-only mailing-list group.
 4. Optionally create a Supabase project, run `supabase/schema.sql`, and add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for other enquiry types if they are restored later.
 5. Confirm final course availability, access periods and operational terms.
 6. Complete legal review and configure consent before non-essential tracking.

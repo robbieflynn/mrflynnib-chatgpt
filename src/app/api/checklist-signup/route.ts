@@ -32,7 +32,6 @@ export async function POST(request: Request) {
   const email = normalizeEmail(body.email);
   const course = textValue(body, "course", 10);
   const groupId = courseGroups[course as keyof typeof courseGroups];
-  const marketingConsent = body.marketingConsent === "yes";
 
   if (!name || name.length < 2 || !email || email.length > 254 || !groupId) {
     return NextResponse.json(
@@ -49,6 +48,14 @@ export async function POST(request: Request) {
     );
   }
 
+  const marketingGroupId = process.env.MAILERLITE_MARKETING_GROUP_ID;
+  if (!marketingGroupId) {
+    return NextResponse.json(
+      { message: "Mailing-list signup is being configured. Please try again shortly." },
+      { status: 503 },
+    );
+  }
+
   const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
     method: "POST",
     headers: {
@@ -59,10 +66,8 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       email,
       fields: { name },
-      groups: [groupId],
-      ...(marketingConsent
-        ? { opted_in_at: new Date().toISOString().replace("T", " ").slice(0, 19) }
-        : {}),
+      groups: [groupId, marketingGroupId],
+      opted_in_at: new Date().toISOString().replace("T", " ").slice(0, 19),
     }),
     cache: "no-store",
   });
