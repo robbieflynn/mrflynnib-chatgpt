@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type QuestionBankEmbedProps = {
-  course: "AA HL" | "AA SL";
+  course: "AA HL" | "AA SL" | "AI SL";
 };
 
 export function QuestionBankEmbed({ course }: QuestionBankEmbedProps) {
   const query = new URLSearchParams({ course, embedded: "1" });
+  const bankFile = course === "AI SL" ? "ai-bank.html" : "bank.html";
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);
@@ -82,7 +83,7 @@ export function QuestionBankEmbed({ course }: QuestionBankEmbedProps) {
       loading="eager"
       ref={frameRef}
       scrolling="no"
-      src={`/question-bank/bank.html?${query.toString()}`}
+      src={`/question-bank/${bankFile}?${query.toString()}`}
       style={{ height: `${frameHeight}px` }}
       title={`${course} question bank`}
     />
