@@ -24,7 +24,7 @@ export default async function CourseQuestionBankPage({ params }: { params: Promi
   const { course: slug } = await params;
   const course = getQuestionBankCourse(slug);
   if (!course || !course.available) notFound();
-  if (course.code !== "AA HL" && course.code !== "AA SL") notFound();
+  if (course.code !== "AA HL" && course.code !== "AA SL" && course.code !== "AI SL") notFound();
 
   return (
     <>
