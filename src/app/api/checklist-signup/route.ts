@@ -56,13 +56,46 @@ export async function POST(request: Request) {
     );
   }
 
+  const headers = {
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
+
+  const existingResponse = await fetch(
+    `https://connect.mailerlite.com/api/subscribers/${encodeURIComponent(email)}?include=groups`,
+    { headers, cache: "no-store" },
+  );
+
+  if (existingResponse.ok) {
+    const existing = (await existingResponse.json()) as { data?: { id?: string } };
+    const subscriberId = existing.data?.id;
+
+    if (subscriberId) {
+      const unassignResponse = await fetch(
+        `https://connect.mailerlite.com/api/subscribers/${subscriberId}/groups/${marketingGroupId}`,
+        { method: "DELETE", headers, cache: "no-store" },
+      );
+
+      if (!unassignResponse.ok && unassignResponse.status !== 404) {
+        console.error("Could not reset checklist delivery group membership", unassignResponse.status);
+        return NextResponse.json(
+          { message: "We could not resend the checklists. Please try again." },
+          { status: 502 },
+        );
+      }
+    }
+  } else if (existingResponse.status !== 404) {
+    console.error("MailerLite subscriber lookup failed", existingResponse.status, await existingResponse.text());
+    return NextResponse.json(
+      { message: "We could not add you to the checklist list. Please try again." },
+      { status: 502 },
+    );
+  }
+
   const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
     method: "POST",
-    headers: {
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
     body: JSON.stringify({
       email,
       fields: { name },
@@ -81,6 +114,6 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({
-    message: `Thank you. We’ll email the ${course} checklist to ${email}.`,
+    message: `Thank you. We’ll email all four syllabus checklists to ${email}.`,
   });
 }

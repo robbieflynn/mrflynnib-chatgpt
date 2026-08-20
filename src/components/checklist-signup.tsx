@@ -25,7 +25,7 @@ export function ChecklistSignup() {
       const result = (await response.json()) as { message?: string };
       if (!response.ok) throw new Error(result.message ?? "Please try again.");
       setStatus("success");
-      setMessage(result.message ?? "Thank you. We’ll email the checklist for your selected course.");
+      setMessage(result.message ?? "Thank you. We’ll email all four syllabus checklists.");
       form.reset();
       const course = String(payload.course).toLowerCase().replace(" ", "-");
       router.push(`/thanks/checklist-${course}`);
@@ -57,9 +57,9 @@ export function ChecklistSignup() {
         </select>
       </div>
       <button className="button" type="submit" disabled={status === "sending"}>
-        {status === "sending" ? "Sending…" : "Send my checklist and subscribe"}
+        {status === "sending" ? "Sending…" : "Send all four checklists and subscribe"}
       </button>
-      <p className="checklist-consent-note">You’ll receive your checklist plus occasional IB Mathematics resources and course updates from Mr Flynn IB. Unsubscribe anytime.</p>
+      <p className="checklist-consent-note">You’ll receive all four syllabus checklists plus occasional IB Mathematics resources and course updates from Mr Flynn IB. Unsubscribe anytime.</p>
       <p className="checklist-privacy">By clicking the button, you agree to receive these emails. See our <Link href="/privacy">privacy policy</Link>.</p>
       {message && <p role={status === "error" ? "alert" : "status"} className={`form-message checklist-message ${status === "success" ? "form-success" : "form-error"}`}>{message}</p>}
     </form>
