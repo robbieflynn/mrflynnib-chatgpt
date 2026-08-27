@@ -827,6 +827,11 @@ textarea { min-height: 130px; resize: vertical; }
 .igcse-page-marker span { color: white; text-align: right; font-size: clamp(3rem, 7vw, 6rem); line-height: 1; letter-spacing: -.08em; }
 .igcse-content-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #fff; }
 .igcse-content-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
+.igcse-qb-hero { padding: clamp(3.5rem, 7vw, 5.5rem) 0; background: radial-gradient(circle at 87% 15%, rgba(179,38,54,.16), transparent 30%), linear-gradient(135deg, #fff4f5, #fff); }
+.igcse-qb-hero h1 { max-width: 17ch; font-size: clamp(3rem, 5.5vw, 5.4rem); }
+.igcse-qb-hero .lede { max-width: 65ch; }
+.igcse-qb-content { background: #f4f7f8; }
+.igcse-qb-frame { width: 100%; height: max(760px, 82vh); display: block; border: 0; background: #f4f7f8; }
 .igcse-detail-card { padding: clamp(1.7rem, 4vw, 2.8rem); border: 1px solid #e8d5d9; border-radius: 1.5rem; background: #fff7f8; box-shadow: 0 22px 60px rgba(11,21,48,.07); }
 .igcse-detail-card > span { color: var(--igcse-accent-dark); font-size: .72rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
 .igcse-detail-card > strong { font-size: 1.6rem; }

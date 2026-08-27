@@ -1,10 +1,29 @@
 import type { Metadata } from "next";
-import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 
-export const metadata: Metadata = { title: "IGCSE Mathematics question bank", description: "The dedicated IGCSE Mathematics question bank from Mr Flynn IB." };
+export const metadata: Metadata = { title: "Free Edexcel IGCSE Mathematics question bank", description: "Practise Edexcel IGCSE Mathematics questions by topic and difficulty, with complete mark schemes." };
 
 export default function IgcseQuestionBankPage() {
   return (
-    <section className="igcse-coming-page"><Container className="igcse-coming-card"><div className="stack-lg"><Breadcrumbs items={[{ label: "IGCSE Mathematics", href: "/igcse" }, { label: "Question bank" }]} /><Eyebrow>Question bank</Eyebrow><h1>Focused IGCSE Mathematics practice is on the way.</h1><p className="lede">The question bank will sit here once the question sets and final course structure are ready. It will be built as part of this IGCSE area, not as a separate website.</p><div className="cluster"><ButtonLink href="/igcse/courses">Explore the course</ButtonLink><ButtonLink href="/igcse" secondary>Back to IGCSE</ButtonLink></div></div><div className="igcse-coming-visual" aria-hidden="true"><span>Topic</span><span>Difficulty</span><span>Question</span><span>Solution</span></div></Container></section>
+    <>
+      <section className="igcse-qb-hero">
+        <Container className="stack-lg">
+          <Breadcrumbs items={[{ label: "IGCSE Mathematics", href: "/igcse" }, { label: "Question bank" }]} />
+          <div className="stack">
+            <Eyebrow>Free question bank</Eyebrow>
+            <h1>Practise Edexcel IGCSE Mathematics by topic.</h1>
+            <p className="lede">Choose your course, filter the bank and work through focused questions with complete mark schemes.</p>
+          </div>
+        </Container>
+      </section>
+      <section className="igcse-qb-content" aria-label="Edexcel IGCSE Mathematics question bank">
+        <iframe
+          className="igcse-qb-frame"
+          loading="eager"
+          src="/question-bank/igcse-bank.html"
+          title="Edexcel IGCSE Mathematics question bank"
+        />
+      </section>
+    </>
   );
 }
