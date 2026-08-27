@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const routes = [
   { number: "01", label: "Learn the course", title: "Online course", body: "Lessons for every Edexcel IGCSE Mathematics topic, with clear past-paper solutions.", href: "/igcse/courses", cta: "Explore the course" },
-  { number: "02", label: "Practise by topic", title: "Question bank", body: "A dedicated IGCSE Mathematics question bank is being developed for focused practice.", href: "/igcse/question-bank", cta: "See what is coming" },
+  { number: "02", label: "Practise by topic", title: "Question bank", body: "Focused Edexcel IGCSE Mathematics questions with filters and complete mark schemes.", href: "/igcse/question-bank", cta: "Open the question bank" },
   { number: "03", label: "For departments", title: "Schools", body: "Ask about IGCSE Mathematics course access and support for your students.", href: "/igcse/schools", cta: "View school support" },
   { number: "04", label: "Personal support", title: "Tutoring", body: "Contact Mr Flynn IB directly to discuss IGCSE Mathematics tutoring and availability.", href: "/igcse/tutoring", cta: "Ask about tutoring" },
 ] as const;
