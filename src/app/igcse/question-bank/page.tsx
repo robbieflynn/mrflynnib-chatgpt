@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { IgcseQuestionBankEmbed } from "@/components/igcse-question-bank-embed";
 import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Free Edexcel IGCSE Mathematics question bank", description: "Practise Edexcel IGCSE Mathematics questions by topic and difficulty, with complete mark schemes." };
@@ -17,12 +18,7 @@ export default function IgcseQuestionBankPage() {
         </Container>
       </section>
       <section className="igcse-qb-content" aria-label="Edexcel IGCSE Mathematics question bank">
-        <iframe
-          className="igcse-qb-frame"
-          loading="eager"
-          src="/question-bank/igcse-bank.html"
-          title="Edexcel IGCSE Mathematics question bank"
-        />
+        <IgcseQuestionBankEmbed />
       </section>
     </>
   );

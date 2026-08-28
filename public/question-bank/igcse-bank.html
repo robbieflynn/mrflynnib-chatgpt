@@ -170991,6 +170991,34 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
   // observer below appends the next 25 before the student reaches the bottom.
   var PAGE_SIZE = 25;
 
+  // When the bank is embedded in mrflynnib.com, the parent page owns the
+  // scrollbar. Report every height change so the iframe grows with the bank.
+  var IS_EMBEDDED = new URLSearchParams(window.location.search).get('embedded') === '1';
+  function reportEmbeddedHeight(){
+    if(!IS_EMBEDDED || window.parent === window) return;
+    window.parent.postMessage({
+      type: 'mrflynnib-question-bank-height',
+      height: Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+      rendered: state.rendered,
+      total: state.filtered.length
+    }, window.location.origin);
+  }
+  if(IS_EMBEDDED){
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    if(typeof ResizeObserver !== 'undefined'){
+      new ResizeObserver(reportEmbeddedHeight).observe(document.body);
+    }
+    window.addEventListener('load', reportEmbeddedHeight);
+    window.addEventListener('message', function(event){
+      if(event.origin !== window.location.origin) return;
+      if(event.data && event.data.type === 'mrflynnib-question-bank-load-more'){
+        renderNextBatch();
+        reportEmbeddedHeight();
+      }
+    });
+  }
+
   // Appends the next batch when the sentinel at the end of the list comes
   // within a screen of the viewport. rootMargin buys the append a head start
   // so the list feels continuous rather than stuttering at the bottom.
@@ -171687,6 +171715,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       list.insertAdjacentHTML('beforeend',
         '<div class="qb-more-msg" id="qb-more-msg">All ' + total + ' questions shown.</div>');
     }
+    reportEmbeddedHeight();
   }
 
   document.getElementById('qb-topic').addEventListener('change', populateSubtopicOptions);
