@@ -8,17 +8,17 @@ import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: { default: "Mr Flynn IB | Making sense of IB Mathematics", template: "%s | Mr Flynn IB" },
+  title: { default: "Mr Flynn IB | Your Home for IB Mathematics", template: "%s | Mr Flynn IB" },
   description: siteConfig.description,
   openGraph: {
     type: "website",
     siteName: siteConfig.name,
-    title: "Mr Flynn IB | Making sense of IB Mathematics",
+    title: "Mr Flynn IB | Your Home for IB Mathematics",
     description: siteConfig.description,
     url: siteConfig.url,
     images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "Mr Flynn IB" }],
   },
-  twitter: { card: "summary_large_image", title: "Mr Flynn IB | Making sense of IB Mathematics", description: siteConfig.description, images: ["/og-default.svg"] },
+  twitter: { card: "summary_large_image", title: "Mr Flynn IB | Your Home for IB Mathematics", description: siteConfig.description, images: ["/og-default.svg"] },
 };
 
 export const viewport: Viewport = { themeColor: "#0b1530", colorScheme: "light" };
