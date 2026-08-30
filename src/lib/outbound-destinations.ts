@@ -8,6 +8,7 @@ export const outboundDestinations = {
   "course-aa-sl": { label: "AA SL access plans", target: courseDestination("AA SL") },
   "course-ai-hl": { label: "AI HL access plans", target: courseDestination("AI HL") },
   "course-ai-sl": { label: "AI SL access plans", target: courseDestination("AI SL") },
+  "igcse-course": { label: "the Edexcel IGCSE Mathematics course", target: "https://learn.mrflynnib.com/p/igcse" },
   "my-courses": { label: "your Teachable courses", target: siteConfig.teachableLoginUrl },
   "amazon-book": { label: "the IA book on Amazon", target: siteConfig.bookUrl },
   youtube: { label: "Mr Flynn IB on YouTube", target: siteConfig.youtubeUrl },

@@ -54,7 +54,7 @@ export function EnquiryForm({ kind, curriculum = "IB Mathematics" }: { kind: Kin
         </>}
 
         {kind === "school" && <>
-          <div className="field"><label htmlFor="role">Your role</label><input id="role" name="role" required placeholder="Head of Mathematics, IB Coordinator…" /></div>
+          <div className="field"><label htmlFor="role">Your role</label><input id="role" name="role" required placeholder="Head of Mathematics, Curriculum Lead…" /></div>
           <div className="field"><label htmlFor="schoolName">School name</label><input id="schoolName" name="schoolName" required /></div>
           <div className="field"><label htmlFor="country">Country</label><input id="country" name="country" required /></div>
           <div className="field"><label htmlFor="studentCount">Estimated student count</label><input id="studentCount" name="studentCount" type="number" min="1" required /></div>

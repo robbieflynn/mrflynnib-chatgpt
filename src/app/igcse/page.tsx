@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "IGCSE Mathematics",
@@ -17,28 +17,10 @@ const routes = [
 export default function IgcsePage() {
   return (
     <>
-      <section className="igcse-hero">
-        <div className="igcse-hero-symbol igcse-hero-symbol-one" aria-hidden="true">𝑥²</div>
-        <div className="igcse-hero-symbol igcse-hero-symbol-two" aria-hidden="true">π</div>
-        <Container className="igcse-hero-grid">
-          <div className="stack-lg">
-            <Breadcrumbs items={[{ label: "IGCSE Mathematics" }]} />
-            <div className="stack">
-              <Eyebrow>IGCSE Mathematics</Eyebrow>
-              <h1>Making sense of IGCSE Mathematics.</h1>
-              <p className="lede">Clear Edexcel IGCSE Mathematics support from Mr Flynn IB, with complete topic lessons, past-paper solutions and focused practice.</p>
-            </div>
-            <div className="cluster igcse-hero-actions">
-              <ButtonLink href="#igcse-routes">Explore IGCSE Mathematics</ButtonLink>
-              <ButtonLink href="#igcse-checklist" secondary>Get the free Edexcel IGCSE checklist</ButtonLink>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="igcse-route-section" id="igcse-routes">
+      <section className="igcse-route-section igcse-route-section-first">
         <Container className="stack-xl">
-          <div className="igcse-route-heading stack"><Eyebrow>Choose where to start</Eyebrow><h2>What do you need today?</h2></div>
+          <Breadcrumbs items={[{ label: "IGCSE Mathematics" }]} />
+          <div className="igcse-route-heading stack"><Eyebrow>Edexcel IGCSE Mathematics</Eyebrow><h1>What do you need today?</h1></div>
           <div className="igcse-route-grid">
             {routes.map((route) => (
               <Link className="igcse-route-card" href={route.href} key={route.title}>
@@ -47,22 +29,6 @@ export default function IgcsePage() {
                 <strong>{route.cta}<i aria-hidden="true">→</i></strong>
               </Link>
             ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="igcse-checklist-section" id="igcse-checklist">
-        <Container>
-          <div className="igcse-checklist-card">
-            <div className="stack">
-              <Eyebrow>Free syllabus checklist</Eyebrow>
-              <h2>Get your free Edexcel IGCSE Mathematics checklist.</h2>
-              <p>Keep track of every topic and see clearly what you have covered, what needs reviewing and what still needs to be learned.</p>
-            </div>
-            <div className="igcse-checklist-action stack">
-              <a className="button" href="mailto:contact@mrflynnib.com?subject=Free%20Edexcel%20IGCSE%20Mathematics%20checklist">Get the free Edexcel IGCSE checklist</a>
-              <small>The checklist will be sent to you by email.</small>
-            </div>
           </div>
         </Container>
       </section>
