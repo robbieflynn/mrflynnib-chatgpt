@@ -793,8 +793,9 @@ textarea { min-height: 130px; resize: vertical; }
 .igcse-hero-symbol-one { left: 2%; bottom: 0; font-size: clamp(7rem, 16vw, 14rem); transform: rotate(-8deg); }
 .igcse-hero-symbol-two { right: 2%; top: 2%; font-size: clamp(8rem, 18vw, 16rem); }
 .igcse-route-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #fff; }
+.igcse-route-section-first { background: linear-gradient(180deg, #fff7f8, #fff 38%); }
 .igcse-route-heading { justify-items: center; text-align: center; }
-.igcse-route-heading h2 { max-width: none; }
+.igcse-route-heading h1, .igcse-route-heading h2 { max-width: none; }
 .igcse-route-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1rem; }
 .igcse-route-card { min-height: 350px; padding: 1.5rem; display: flex; flex-direction: column; gap: 2rem; border: 1px solid #eadcdf; border-radius: 1.35rem; background: #fffafa; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
 .igcse-route-card:hover { transform: translateY(-5px); border-color: rgba(179,38,54,.45); box-shadow: 0 24px 55px rgba(11,21,48,.09); }
@@ -804,15 +805,6 @@ textarea { min-height: 130px; resize: vertical; }
 .igcse-route-card p { color: var(--muted); font-size: .88rem; }
 .igcse-route-card > strong { margin-top: auto; display: flex; justify-content: space-between; align-items: center; color: var(--igcse-accent-dark); font-size: .8rem; }
 .igcse-route-card > strong i { font-style: normal; }
-.igcse-checklist-section { padding: 0 0 clamp(4.5rem, 8vw, 7rem); background: #fff; }
-.igcse-checklist-card { padding: clamp(2rem, 5vw, 4rem); display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; border-radius: 1.7rem; background: linear-gradient(135deg, #2b0d16, #5c1625); color: white; box-shadow: 0 25px 65px rgba(43,13,22,.18); }
-.igcse-checklist-card .eyebrow { color: #ffb7c1; }
-.igcse-checklist-card h2 { max-width: 16ch; color: white; }
-.igcse-checklist-card p { max-width: 58ch; color: rgba(255,255,255,.72); }
-.igcse-checklist-action { justify-items: start; }
-.igcse-checklist-action .button { background: white; color: var(--igcse-accent-dark); box-shadow: none; }
-.igcse-checklist-action .button:hover { background: #fff1f3; color: var(--igcse-accent-dark); }
-.igcse-checklist-action small { color: rgba(255,255,255,.6); }
 .igcse-principles { padding: clamp(4rem, 8vw, 7rem) 0; background: linear-gradient(135deg, #2b0d16, #4b121f); color: white; }
 .igcse-principles-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
 .igcse-principles .eyebrow { color: #ffb7c1; }
@@ -823,6 +815,8 @@ textarea { min-height: 130px; resize: vertical; }
 .igcse-page-hero { padding: clamp(4rem, 8vw, 7rem) 0; background: radial-gradient(circle at 87% 15%, rgba(179,38,54,.19), transparent 30%), linear-gradient(135deg, #fff4f5, #fff); }
 .igcse-page-hero-grid { display: grid; grid-template-columns: 1fr auto; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
 .igcse-page-hero h1 { max-width: 12ch; font-size: clamp(3.2rem, 6vw, 5.7rem); }
+.igcse-course-page { min-height: 680px; display: grid; align-items: center; }
+.igcse-course-page h1 { max-width: 15ch; }
 .igcse-page-marker { width: clamp(190px, 22vw, 290px); aspect-ratio: 1; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-radius: 50%; background: var(--igcse-accent-dark); color: rgba(255,255,255,.75); font-size: .8rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 0 0 30px rgba(179,38,54,.06); }
 .igcse-page-marker span { color: white; text-align: right; font-size: clamp(3rem, 7vw, 6rem); line-height: 1; letter-spacing: -.08em; }
 .igcse-content-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #fff; }
@@ -844,10 +838,6 @@ textarea { min-height: 130px; resize: vertical; }
 .igcse-coming-visual span { padding: 1rem 1.2rem; border: 1px solid rgba(179,38,54,.18); border-radius: .9rem; background: var(--igcse-accent-soft); color: var(--igcse-accent-dark); font-weight: 850; }
 .igcse-coming-visual span:nth-child(2), .igcse-coming-visual span:nth-child(4) { margin-left: 2.5rem; background: white; }
 
-.igcse-school-strip { padding: 2.4rem 0; border-block: 1px solid #eadcdf; background: white; }
-.igcse-school-strip article { display: grid; gap: .3rem; }
-.igcse-school-strip article::before { content: ""; width: 2rem; height: 3px; margin-bottom: .5rem; background: var(--igcse-accent); }
-.igcse-school-strip span { color: var(--muted); font-size: .82rem; }
 .igcse-school-form-section { background: #fffafa; }
 .igcse-school-form-section .card { border-color: #eadcdf; box-shadow: 0 20px 55px rgba(11,21,48,.06); }
 .igcse-school-form-section input:focus, .igcse-school-form-section textarea:focus, .igcse-school-form-section select:focus { border-color: var(--igcse-accent); outline-color: rgba(179,38,54,.2); }

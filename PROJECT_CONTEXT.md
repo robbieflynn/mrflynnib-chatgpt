@@ -47,7 +47,9 @@ Rob has confirmed that the IGCSE offer is for **Edexcel IGCSE Mathematics**. The
 
 The IGCSE question bank must expand within the website and use the parent page's single natural scrollbar, matching the IB question-bank experience. Do not restore a fixed-height embedded window or a second internal scrollbar.
 
-The IGCSE hub should also promote a free **Edexcel IGCSE Mathematics syllabus checklist** with a clear call to action. Until Rob supplies the approved PDF and a dedicated MailerLite group and delivery automation are configured, use a direct email request to `contact@mrflynnib.com` rather than claiming that automated delivery is available.
+Do not promote an Edexcel IGCSE Mathematics syllabus checklist until Rob supplies and approves one. The IGCSE hub should lead directly with its four route cards rather than a generic “Making sense of IGCSE Mathematics” hero or buttons that merely jump down the same page.
+
+The verified Teachable destination for the existing IGCSE course is `https://learn.mrflynnib.com/p/igcse`. Present the website course page simply around **lessons on every topic and past-paper solutions**, with one principal button leading to this Teachable course.
 
 If the website later introduces a native student account, keep the IB and IGCSE experiences within the same account and backend rather than creating two unrelated login systems. This is a product direction, not authorisation to replace Teachable or build the account system yet.
 

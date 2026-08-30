@@ -293,7 +293,6 @@
 
   /* Rob reads questions off the file by POSITION, and position moves whenever a
      grade or a tag changes. The stamp lets him say which build he is looking at. */
-  .qb-build{ margin-left:9px; opacity:.5; font-size:10.5px; letter-spacing:.02em; }
 
   .qb-footer{
     padding: 10px 22px 18px; font-family: var(--ui);
@@ -308,50 +307,16 @@
     .qb-card{ padding:13px 14px; }
   }
 
-  /* --- Course front door -------------------------------------------------
-     Course is not a filter: a student is in exactly one course and never
-     changes it, whereas topic/difficulty/paper change constantly within a
-     single revision session. So it is chosen once, up front, and remembered.
-     This also fixes a correctness problem: with no course chosen, an AA SL
-     student was shown the 615 AA HL-only questions alongside their own. */
   /* An author `display` rule beats the UA stylesheet's [hidden]{display:none},
      so .qb-controls (flex) and .qb-list (flex) stayed on screen behind the
      gate until this was added. Anything toggled by the hidden attribute in
      this file needs it. */
   #qbank-root [hidden]{ display:none !important; }
 
-  .qb-gate{ padding: 40px 22px 56px; }
-  .qb-gate h2{ margin:0 0 6px; font-size:21px; font-weight:700; color:var(--ink);
-    font-family: var(--ui); letter-spacing:-.01em; }
-  .qb-gate p{ margin:0 0 26px; font-size:14px; color:var(--ink-soft); font-family: var(--ui); }
-  .qb-gate-tiles{ display:flex; gap:16px; flex-wrap:wrap; }
-  .qb-tile{
-    flex:1 1 240px; text-align:left; cursor:pointer; font:inherit;
-    background:#fff; border:1px solid var(--line); border-left:5px solid var(--flynn-blue);
-    border-radius:10px; padding:20px 22px; transition:box-shadow .12s, transform .12s;
-  }
-  .qb-tile:hover{ box-shadow:0 4px 16px rgba(20,40,80,.11); transform:translateY(-1px); }
-  .qb-tile:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
-  .qb-tile b{ display:block; font-size:17px; font-weight:700; color:var(--ink); margin-bottom:3px;
-    font-family: var(--ui); }
-  .qb-tile span{ display:block; font-size:13px; color:var(--ink-soft); font-family: var(--ui); }
   .qb-card-num{
     font-family: var(--ui); font-size:11px; font-weight:600;
     letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:3px;
   }
-  /* Outlined pill in the sticky toolbar, like the site's own "Contact" button:
-     shows the course you are in and switches out of it. */
-  .qb-course-switch{
-    font-family: var(--ui); font-size:12.5px; cursor:pointer; white-space:nowrap;
-    display:inline-flex; align-items:center; gap:7px;
-    padding:8px 14px; border-radius:999px;
-    background:#fff; border:1px solid var(--flynn-blue); color:var(--flynn-blue);
-  }
-  .qb-course-switch b{ font-weight:700; }
-  .qb-course-switch span{ color:var(--ink-soft); }
-  .qb-course-switch:hover{ background:var(--flynn-blue); border-color:var(--flynn-blue); color:#fff; }
-  .qb-course-switch:hover span{ color:rgba(255,255,255,.85); }
-  .qb-course-switch:focus-visible{ outline:2px solid var(--focus); outline-offset:2px; }
   /* Sentinel the scroll observer watches to append the next batch. */
   .qb-more{ height:1px; }
   .qb-more-msg{ text-align:center; padding:14px 0 2px; font-size:12px; color:var(--ink-soft); }
@@ -364,12 +329,6 @@
     <div class="qb-eyebrow"><i></i><span id="qb-brand-course">IGCSE Mathematics</span></div>
     <div class="qb-brand">Question Bank</div>
     <div class="qb-sub">Filter by topic, paper and difficulty.</div>
-  </div>
-
-  <div class="qb-gate" id="qb-gate" hidden>
-    <h2>Which course are you taking?</h2>
-    <p>Pick one to start. You&rsquo;ll only be shown questions that are on your syllabus.</p>
-    <div class="qb-gate-tiles" id="qb-gate-tiles"></div>
   </div>
 
   <div class="qb-controls" id="qb-controls" hidden>
@@ -395,14 +354,7 @@
     <label class="qb-only" id="qb-only-wrap" hidden>
       <input type="checkbox" id="qb-only"> this topic only
     </label>
-    <div class="qb-count"><span id="qb-count-num">0</span> shown<span class="qb-build" title="Build stamp - quote this when you report a question by number">27 Aug 13:25 · 966639</span></div>
-    <!-- The course switch used to live only in the footer, at the bottom of a
-         2000-question page. Rob opened the file, landed straight in HL and had
-         no way of finding SL. It belongs in the sticky toolbar, where it stays
-         on screen and doubles as the reminder of which course you are in. -->
-    <button type="button" class="qb-course-switch" id="qb-change-course" hidden>
-      <b id="qb-course-label"></b><span>change</span>
-    </button>
+    <div class="qb-count"><span id="qb-count-num">0</span> shown</div>
   </div>
 
   <div class="qb-list" id="qb-list" hidden></div>
@@ -171030,17 +170982,6 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       }, { rootMargin: '600px 0px' })
     : null;
 
-  // The chosen course, remembered between visits. Wrapped because a page
-  // opened from file:// in some browsers, or inside a sandboxed frame, throws
-  // on any storage access - in that case the choice simply lasts the session.
-  var COURSE_KEY = 'qb-course';
-  function storedCourse(){
-    try { return window.localStorage.getItem(COURSE_KEY) || ''; } catch(e){ return ''; }
-  }
-  function rememberCourse(c){
-    try { window.localStorage.setItem(COURSE_KEY, c); } catch(e){ /* session only */ }
-  }
-
   // SEED IS THE ONLY SOURCE OF TRUTH.
   //
   // This used to merge whatever the viewer had stored from a previous visit,
@@ -171503,64 +171444,21 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     }
   }
 
-  // --- Course front door ---------------------------------------------------
-  // One tile per course a student can actually work from. Held banks (AI HL,
-  // AI SL) are stored but not taught from, so they are not doors - they stay
-  // reachable through the "show held" checkbox once inside.
-  function buildGate(allCourses){
-    var choices = allCourses.filter(function(c){ return HELD_BANKS.indexOf(c) < 0; });
-    var tiles = document.getElementById('qb-gate-tiles');
-    tiles.innerHTML = choices.map(function(c){
-      // Count what the student will actually land on: the default view, with
-      // off-syllabus, maybes and held questions all hidden.
-      var n = state.all.filter(function(q){
-        if(isHeld(q) || q.offSyllabus || q.provisional) return false;
-        return banksOf(q).indexOf(c) >= 0;
-      }).length;
-      return '<button type="button" class="qb-tile" data-course="'+c+'">'+
-               '<b>'+c+'</b><span>'+n+' questions</span></button>';
-    }).join('');
-    tiles.addEventListener('click', function(e){
-      var t = e.target.closest && e.target.closest('.qb-tile');
-      if(t) chooseCourse(t.getAttribute('data-course'));
-    });
-  }
-
-  function showGate(){
-    document.getElementById('qb-brand-course').textContent = 'IGCSE Mathematics';
-    document.getElementById('qb-gate').removeAttribute('hidden');
-    document.getElementById('qb-controls').setAttribute('hidden','');
-    document.getElementById('qb-list').setAttribute('hidden','');
-    document.getElementById('qb-change-course').setAttribute('hidden','');
-  }
-
   function chooseCourse(c){
     state.course = c;
-    rememberCourse(c);
-    // The subtopic list depends on the course, so rebuild it here as well as on a
-    // topic change - otherwise switching HL -> SL leaves the HL subtopics in place.
     populateSubtopicOptions();
-    document.getElementById('qb-gate').setAttribute('hidden','');
     document.getElementById('qb-controls').removeAttribute('hidden');
     document.getElementById('qb-list').removeAttribute('hidden');
-    document.getElementById('qb-course-label').textContent = c;
-    document.getElementById('qb-brand-course').textContent = 'IGCSE Mathematics \u00b7 ' + c;
-    document.getElementById('qb-change-course').removeAttribute('hidden');
     applyFilters();
   }
 
   function populateFilters(){
     var papers = Array.from(new Set(state.all.map(function(q){return q.paper;})));
-    var courses = orderedUnique(state.all.reduce(function(acc, q){
-      return acc.concat(banksOf(q));
-    }, []), COURSE_ORDER);
-
     var topicSel = document.getElementById('qb-topic');
 
     TOPIC_ORDER.forEach(function(t){
       var o = document.createElement('option'); o.value=t; o.textContent=t; topicSel.appendChild(o);
     });
-    buildGate(courses);
     // The Paper 1 / Paper 2 options are written into the HTML rather than
     // generated: the bank still holds Paper 3 questions (their content is
     // examined inside Papers 1 and 2 of the current course) but Paper 3 is not
@@ -171723,8 +171621,6 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     var _el=document.getElementById(id); if(_el){ _el.addEventListener('input', applyFilters); _el.addEventListener('change', applyFilters); }
   });
 
-  document.getElementById('qb-change-course').addEventListener('click', showGate);
-
   // Mark scheme show/hide (event delegation - cards are re-rendered on every
   // filter change, and appended in batches as the student scrolls). The panel
   // is empty until the first press, so this is also where it gets built.
@@ -171764,11 +171660,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       var papSel = document.getElementById('qb-papernum');
       if(papSel){ papSel.value = ''; papSel.hidden = true; }
     }
-    // Straight into the bank if they have chosen before and that course still
-    // exists; otherwise the front door.
-    var saved = storedCourse();
-    var valid = saved && state.all.some(function(q){ return banksOf(q).indexOf(saved) >= 0; });
-    if(valid) chooseCourse(saved); else showGate();
+    chooseCourse('IGCSE Higher');
   }).catch(function(err){
     document.getElementById('qb-list').innerHTML = '<div class="qb-empty">Could not load stored questions. '+(err && err.message ? err.message : '')+'</div>';
     console.error(err);
