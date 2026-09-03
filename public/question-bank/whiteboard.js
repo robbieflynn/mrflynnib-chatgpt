@@ -55,16 +55,24 @@
   function initialiseBoard(card, open, board) {
     var canvas = board.querySelector('canvas');
     var ctx = canvas.getContext('2d');
-    var strokes = [];
+    var actions = [];
     var activeStroke = null;
     var mode = 'pen';
     var colour = '#0d152e';
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
 
+    function hasVisibleWork() {
+      for (var i = actions.length - 1; i >= 0; i--) {
+        if (actions[i].type === 'clear') return false;
+        if (actions[i].type === 'stroke' || actions[i].type === 'image') return true;
+      }
+      return false;
+    }
+
     function updateButtons() {
-      undo.disabled = strokes.length === 0;
-      clear.disabled = strokes.length === 0;
+      undo.disabled = actions.length === 0;
+      clear.disabled = !hasVisibleWork();
     }
 
     function drawStroke(stroke) {
@@ -88,11 +96,29 @@
       ctx.restore();
     }
 
+    function drawImage(action) {
+      if (!action.image || !action.image.complete) return;
+      ctx.save();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.drawImage(
+        action.image,
+        action.x * canvas.clientWidth,
+        action.y * canvas.clientHeight,
+        action.width * canvas.clientWidth,
+        action.height * canvas.clientHeight
+      );
+      ctx.restore();
+    }
+
     function redraw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.save();
       ctx.scale(canvas.width / canvas.clientWidth, canvas.height / canvas.clientHeight);
-      strokes.forEach(drawStroke);
+      actions.forEach(function (action) {
+        if (action.type === 'clear') ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        else if (action.type === 'image') drawImage(action);
+        else drawStroke(action);
+      });
       ctx.restore();
     }
 
@@ -118,8 +144,8 @@
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       event.preventDefault();
       canvas.setPointerCapture(event.pointerId);
-      activeStroke = { mode: mode, colour: colour, points: [pointFromEvent(event)] };
-      strokes.push(activeStroke);
+      activeStroke = { type: 'stroke', mode: mode, colour: colour, points: [pointFromEvent(event)] };
+      actions.push(activeStroke);
       redraw();
       updateButtons();
     });
@@ -158,9 +184,9 @@
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
       if (action === 'pen' || action === 'eraser') setMode(action);
-      if (action === 'undo' && strokes.length) { strokes.pop(); redraw(); updateButtons(); }
-      if (action === 'clear' && strokes.length && window.confirm('Clear all work from this whiteboard?')) {
-        strokes = [];
+      if (action === 'undo' && actions.length) { actions.pop(); redraw(); updateButtons(); }
+      if (action === 'clear' && hasVisibleWork()) {
+        actions.push({ type: 'clear' });
         redraw();
         updateButtons();
       }
@@ -170,6 +196,73 @@
     board.querySelector('.qb-whiteboard-colour').addEventListener('input', function (event) {
       colour = event.target.value;
       setMode('pen');
+    });
+
+    function importDiagram(svg) {
+      if (board.hidden) open.click();
+      var copy = svg.cloneNode(true);
+      var sourceRect = svg.getBoundingClientRect();
+      if (!copy.getAttribute('xmlns')) copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      if (!copy.getAttribute('width')) copy.setAttribute('width', Math.max(1, sourceRect.width));
+      if (!copy.getAttribute('height')) copy.setAttribute('height', Math.max(1, sourceRect.height));
+      var source = new XMLSerializer().serializeToString(copy);
+      var url = URL.createObjectURL(new Blob([source], { type: 'image/svg+xml' }));
+      var image = new Image();
+      image.onload = function () {
+        var surface = board.querySelector('.qb-whiteboard-surface');
+        var availableWidth = Math.max(1, canvas.clientWidth * .84);
+        var naturalWidth = image.naturalWidth || sourceRect.width || availableWidth;
+        var naturalHeight = image.naturalHeight || sourceRect.height || 240;
+        var scale = Math.min(1, availableWidth / naturalWidth, 380 / naturalHeight);
+        var drawWidth = naturalWidth * scale;
+        var drawHeight = naturalHeight * scale;
+        var visibleTop = Math.max(18, board.scrollTop - surface.offsetTop + 24);
+        var drawTop = Math.min(visibleTop, canvas.clientHeight - drawHeight - 18);
+        actions.push({
+          type: 'image',
+          image: image,
+          x: (canvas.clientWidth - drawWidth) / 2 / canvas.clientWidth,
+          y: drawTop / canvas.clientHeight,
+          width: drawWidth / canvas.clientWidth,
+          height: drawHeight / canvas.clientHeight
+        });
+        URL.revokeObjectURL(url);
+        redraw();
+        updateButtons();
+      };
+      image.onerror = function () { URL.revokeObjectURL(url); };
+      image.src = url;
+    }
+
+    function prepareDiagram(diagram) {
+      if (diagram.getAttribute('data-whiteboard-source')) return;
+      var svgs = diagram.querySelectorAll('svg');
+      if (!svgs.length) return;
+      diagram.setAttribute('data-whiteboard-source', '1');
+      diagram.classList.add('qb-whiteboard-source');
+      Array.prototype.forEach.call(svgs, function (svg) {
+        svg.setAttribute('role', 'button');
+        svg.setAttribute('tabindex', '0');
+        svg.setAttribute('aria-label', 'Add this diagram to the whiteboard');
+        svg.setAttribute('title', 'Add this diagram to the whiteboard');
+      });
+      var hint = document.createElement('span');
+      hint.className = 'qb-diagram-copy-hint';
+      hint.textContent = 'Click a diagram to add it to the whiteboard';
+      diagram.appendChild(hint);
+    }
+
+    Array.prototype.forEach.call(card.querySelectorAll('.qb-diagram'), prepareDiagram);
+    card.querySelector('.qb-question-pane').addEventListener('click', function (event) {
+      var svg = event.target.closest && event.target.closest('.qb-diagram svg');
+      if (svg) importDiagram(svg);
+    });
+    card.querySelector('.qb-question-pane').addEventListener('keydown', function (event) {
+      var svg = event.target.closest && event.target.closest('.qb-diagram svg');
+      if (svg && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
+        importDiagram(svg);
+      }
     });
 
     window.addEventListener('resize', resize);
