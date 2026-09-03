@@ -7,7 +7,7 @@ type QuestionBankEmbedProps = {
 };
 
 export function QuestionBankEmbed({ course }: QuestionBankEmbedProps) {
-  const query = new URLSearchParams({ course, embedded: "1", whiteboard: "1" });
+  const query = new URLSearchParams({ course, embedded: "1", whiteboard: "2" });
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);

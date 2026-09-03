@@ -36,6 +36,11 @@
       '<div class="qb-whiteboard-header">' +
         '<div class="qb-whiteboard-title">Working space <small>Not saved</small></div>' +
         '<div class="qb-whiteboard-tools" role="toolbar" aria-label="Whiteboard tools">' +
+          '<div class="qb-whiteboard-paper-tools" role="group" aria-label="Paper style">' +
+            '<span>Paper</span>' +
+            toolButton('squared-paper', 'Squared', true) +
+            toolButton('blank-paper', 'Blank', false) +
+          '</div>' +
           toolButton('pen', 'Pen', true) +
           toolButton('eraser', 'Eraser', false) +
           '<input class="qb-whiteboard-colour" type="color" value="#0d152e" aria-label="Pen colour">' +
@@ -54,6 +59,7 @@
 
   function initialiseBoard(card, open, board) {
     var canvas = board.querySelector('canvas');
+    var surface = board.querySelector('.qb-whiteboard-surface');
     var ctx = canvas.getContext('2d');
     var actions = [];
     var activeStroke = null;
@@ -170,6 +176,12 @@
       board.querySelector('[data-whiteboard-action="eraser"]').setAttribute('aria-pressed', String(mode === 'eraser'));
     }
 
+    function setPaper(style) {
+      surface.classList.toggle('qb-paper-blank', style === 'blank');
+      board.querySelector('[data-whiteboard-action="squared-paper"]').setAttribute('aria-pressed', String(style === 'squared'));
+      board.querySelector('[data-whiteboard-action="blank-paper"]').setAttribute('aria-pressed', String(style === 'blank'));
+    }
+
     open.addEventListener('click', function () {
       var willOpen = board.hidden;
       board.hidden = !willOpen;
@@ -184,6 +196,8 @@
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
       if (action === 'pen' || action === 'eraser') setMode(action);
+      if (action === 'squared-paper') setPaper('squared');
+      if (action === 'blank-paper') setPaper('blank');
       if (action === 'undo' && actions.length) { actions.pop(); redraw(); updateButtons(); }
       if (action === 'clear' && hasVisibleWork()) {
         actions.push({ type: 'clear' });
@@ -209,7 +223,6 @@
       var url = URL.createObjectURL(new Blob([source], { type: 'image/svg+xml' }));
       var image = new Image();
       image.onload = function () {
-        var surface = board.querySelector('.qb-whiteboard-surface');
         var availableWidth = Math.max(1, canvas.clientWidth * .84);
         var naturalWidth = image.naturalWidth || sourceRect.width || availableWidth;
         var naturalHeight = image.naturalHeight || sourceRect.height || 240;
@@ -274,6 +287,11 @@
   }
 
   scan();
+  // The self-contained bank hydrates its first batch asynchronously. Depending
+  // on cache speed, that batch can arrive just after this shared script.
+  window.setTimeout(scan, 0);
+  window.setTimeout(scan, 250);
+  window.setTimeout(scan, 1000);
   // The bank appends cards after filter changes and load-more messages. These
   // hooks run after its own handlers, avoiding a permanent DOM observer across
   // thousands of questions.
