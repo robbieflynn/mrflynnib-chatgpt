@@ -43,7 +43,7 @@
   max-height: 680px;
   overflow-x: auto;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
   border: 1px solid #d9e2ed;
   border-radius: 12px;
   background: #fff;

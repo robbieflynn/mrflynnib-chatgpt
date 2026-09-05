@@ -77,7 +77,7 @@ export function IgcseQuestionBankEmbed() {
       loading="eager"
       ref={frameRef}
       scrolling="no"
-      src="/question-bank/igcse-bank.html?embedded=1&whiteboard=3"
+      src="/question-bank/igcse-bank.html?embedded=1&whiteboard=4"
       style={{ height: `${frameHeight}px` }}
       title="Edexcel IGCSE Mathematics question bank"
     />
