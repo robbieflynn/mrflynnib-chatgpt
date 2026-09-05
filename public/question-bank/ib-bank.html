@@ -371,7 +371,7 @@
   .qb-more-msg{ text-align:center; padding:14px 0 2px; font-size:12px; color:var(--ink-soft); }
 </style>
 
-<link rel="stylesheet" href="/question-bank/whiteboard.css?v=6">
+<link rel="stylesheet" href="/question-bank/whiteboard.css?v=8">
 </head>
 <body>
 <div id="qbank-root">
@@ -468124,9 +468124,11 @@
   var REQUESTED_COURSE = EMBED_PARAMS.get('course') || '';
   function reportEmbeddedHeight(){
     if(!IS_EMBEDDED || window.parent === window) return;
+    var root = document.getElementById('qbank-root');
+    var contentHeight = root ? Math.ceil(root.getBoundingClientRect().bottom + window.scrollY) : document.body.scrollHeight;
     window.parent.postMessage({
       type: 'mrflynnib-question-bank-height',
-      height: Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+      height: contentHeight,
       rendered: state.rendered,
       total: state.filtered.length
     }, window.location.origin);
@@ -468913,6 +468915,6 @@
 })();
 </script>
 
-<script src="/question-bank/whiteboard.js?v=7"></script>
+<script src="/question-bank/whiteboard.js?v=8"></script>
 </body>
 </html>

@@ -9,6 +9,12 @@
       (pressed !== undefined ? ' aria-pressed="' + pressed + '"' : '') + '>' + label + '</button>';
   }
 
+  function colourButton(value, label, selected) {
+    return '<button type="button" class="qb-whiteboard-colour" data-whiteboard-colour="' + value + '"' +
+      ' aria-label="' + label + ' pen" aria-pressed="' + selected + '"' +
+      ' style="--swatch:' + value + '"><span></span></button>';
+  }
+
   function setupCard(card) {
     if (card.getAttribute('data-whiteboard-ready')) return;
     var body = card.querySelector('.qb-body');
@@ -43,13 +49,29 @@
           '</div>' +
           toolButton('pen', 'Pen', true) +
           toolButton('eraser', 'Eraser', false) +
-          '<input class="qb-whiteboard-colour" type="color" value="#0d152e" aria-label="Pen colour">' +
+          '<div class="qb-whiteboard-colours" role="group" aria-label="Pen colour">' +
+            colourButton('#0d152e', 'Black', true) +
+            colourButton('#2563eb', 'Blue', false) +
+            colourButton('#dc2626', 'Red', false) +
+            colourButton('#15803d', 'Green', false) +
+            colourButton('#7e22ce', 'Purple', false) +
+            colourButton('#ea580c', 'Orange', false) +
+          '</div>' +
+          '<div class="qb-whiteboard-zoom-tools" role="group" aria-label="Whiteboard zoom">' +
+            toolButton('zoom-out', '&minus;') +
+            '<span class="qb-whiteboard-zoom-label" aria-live="polite">100%</span>' +
+            toolButton('zoom-in', '+') +
+          '</div>' +
+          toolButton('expand', 'Expand', false) +
           toolButton('undo', 'Undo') +
           toolButton('clear', 'Clear') +
           '<button type="button" class="qb-whiteboard-tool qb-whiteboard-close" data-whiteboard-action="close" aria-label="Close whiteboard">&times;</button>' +
         '</div>' +
       '</div>' +
-      '<div class="qb-whiteboard-surface"><canvas class="qb-whiteboard-canvas" aria-label="Draw your working here"></canvas></div>';
+      '<div class="qb-whiteboard-surface">' +
+        '<canvas class="qb-whiteboard-image-layer" aria-hidden="true"></canvas>' +
+        '<canvas class="qb-whiteboard-canvas" aria-label="Draw your working here"></canvas>' +
+      '</div>';
 
     workspace.appendChild(question);
     workspace.appendChild(board);
@@ -58,13 +80,16 @@
   }
 
   function initialiseBoard(card, open, board) {
-    var canvas = board.querySelector('canvas');
+    var canvas = board.querySelector('.qb-whiteboard-canvas');
+    var imageCanvas = board.querySelector('.qb-whiteboard-image-layer');
     var surface = board.querySelector('.qb-whiteboard-surface');
     var ctx = canvas.getContext('2d');
+    var imageCtx = imageCanvas.getContext('2d');
     var actions = [];
     var activeStroke = null;
     var mode = 'pen';
     var colour = '#0d152e';
+    var zoom = 1;
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
 
@@ -104,28 +129,35 @@
 
     function drawImage(action) {
       if (!action.image || !action.image.complete) return;
-      ctx.save();
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.drawImage(
+      imageCtx.save();
+      imageCtx.globalCompositeOperation = 'source-over';
+      imageCtx.drawImage(
         action.image,
         action.x * canvas.clientWidth,
         action.y * canvas.clientHeight,
         action.width * canvas.clientWidth,
         action.height * canvas.clientHeight
       );
-      ctx.restore();
+      imageCtx.restore();
     }
 
     function redraw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
       ctx.save();
+      imageCtx.save();
       ctx.scale(canvas.width / canvas.clientWidth, canvas.height / canvas.clientHeight);
+      imageCtx.scale(imageCanvas.width / imageCanvas.clientWidth, imageCanvas.height / imageCanvas.clientHeight);
       actions.forEach(function (action) {
-        if (action.type === 'clear') ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        if (action.type === 'clear') {
+          ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+          imageCtx.clearRect(0, 0, imageCanvas.clientWidth, imageCanvas.clientHeight);
+        }
         else if (action.type === 'image') drawImage(action);
         else drawStroke(action);
       });
       ctx.restore();
+      imageCtx.restore();
     }
 
     function resize() {
@@ -135,6 +167,8 @@
       if (canvas.width === width && canvas.height === height) return;
       canvas.width = width;
       canvas.height = height;
+      imageCanvas.width = width;
+      imageCanvas.height = height;
       redraw();
     }
 
@@ -150,7 +184,8 @@
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       event.preventDefault();
       canvas.setPointerCapture(event.pointerId);
-      activeStroke = { type: 'stroke', mode: mode, colour: colour, points: [pointFromEvent(event)] };
+      var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'eraser' : mode;
+      activeStroke = { type: 'stroke', mode: pointerMode, colour: colour, points: [pointFromEvent(event)] };
       actions.push(activeStroke);
       redraw();
       updateButtons();
@@ -182,6 +217,24 @@
       board.querySelector('[data-whiteboard-action="blank-paper"]').setAttribute('aria-pressed', String(style === 'blank'));
     }
 
+    function setZoom(nextZoom) {
+      zoom = Math.max(.75, Math.min(2, nextZoom));
+      surface.style.width = (zoom * 100) + '%';
+      surface.style.height = (1120 * zoom) + 'px';
+      board.querySelector('.qb-whiteboard-zoom-label').textContent = Math.round(zoom * 100) + '%';
+      board.querySelector('[data-whiteboard-action="zoom-out"]').disabled = zoom <= .75;
+      board.querySelector('[data-whiteboard-action="zoom-in"]').disabled = zoom >= 2;
+      requestAnimationFrame(resize);
+    }
+
+    function setExpanded(expanded) {
+      card.classList.toggle('qb-whiteboard-expanded', expanded);
+      var button = board.querySelector('[data-whiteboard-action="expand"]');
+      button.setAttribute('aria-pressed', String(expanded));
+      button.textContent = expanded ? 'Collapse' : 'Expand';
+      requestAnimationFrame(resize);
+    }
+
     open.addEventListener('click', function () {
       var willOpen = board.hidden;
       board.hidden = !willOpen;
@@ -189,15 +242,28 @@
       open.textContent = willOpen ? 'Close whiteboard' : 'Open whiteboard';
       open.setAttribute('aria-expanded', String(willOpen));
       if (willOpen) requestAnimationFrame(resize);
+      else setExpanded(false);
     });
 
     board.addEventListener('click', function (event) {
+      var colourChoice = event.target.closest('[data-whiteboard-colour]');
+      if (colourChoice) {
+        colour = colourChoice.getAttribute('data-whiteboard-colour');
+        Array.prototype.forEach.call(board.querySelectorAll('[data-whiteboard-colour]'), function (choice) {
+          choice.setAttribute('aria-pressed', String(choice === colourChoice));
+        });
+        setMode('pen');
+        return;
+      }
       var button = event.target.closest('[data-whiteboard-action]');
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
       if (action === 'pen' || action === 'eraser') setMode(action);
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
+      if (action === 'zoom-out') setZoom(zoom - .25);
+      if (action === 'zoom-in') setZoom(zoom + .25);
+      if (action === 'expand') setExpanded(!card.classList.contains('qb-whiteboard-expanded'));
       if (action === 'undo' && actions.length) { actions.pop(); redraw(); updateButtons(); }
       if (action === 'clear' && hasVisibleWork()) {
         actions.push({ type: 'clear' });
@@ -205,11 +271,6 @@
         updateButtons();
       }
       if (action === 'close') open.click();
-    });
-
-    board.querySelector('.qb-whiteboard-colour').addEventListener('input', function (event) {
-      colour = event.target.value;
-      setMode('pen');
     });
 
     function importDiagram(svg) {
@@ -279,6 +340,7 @@
     });
 
     window.addEventListener('resize', resize);
+    setZoom(1);
     updateButtons();
   }
 
@@ -292,6 +354,17 @@
   window.setTimeout(scan, 0);
   window.setTimeout(scan, 250);
   window.setTimeout(scan, 1000);
+  if (typeof MutationObserver !== 'undefined') {
+    new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        Array.prototype.forEach.call(mutation.addedNodes, function (node) {
+          if (node.nodeType !== 1) return;
+          if (node.matches && node.matches('.qb-card')) setupCard(node);
+          Array.prototype.forEach.call(node.querySelectorAll ? node.querySelectorAll('.qb-card') : [], setupCard);
+        });
+      });
+    }).observe(list, { childList: true, subtree: true });
+  }
   // The bank appends cards after filter changes and load-more messages. These
   // hooks run after its own handlers, avoiding a permanent DOM observer across
   // thousands of questions.
