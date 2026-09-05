@@ -50,6 +50,7 @@
           toolButton('pen', 'Pen', true) +
           toolButton('eraser', 'Eraser', false) +
           toolButton('pan', 'Pan', false) +
+          toolButton('move-image', 'Move image', false) +
           '<div class="qb-whiteboard-colours" role="group" aria-label="Pen colour">' +
             colourButton('#0d152e', 'Black', true) +
             colourButton('#2563eb', 'Blue', false) +
@@ -99,6 +100,7 @@
     var actions = [];
     var activeStroke = null;
     var activePan = null;
+    var activeImage = null;
     var straightTimer = null;
     var mode = 'pen';
     var colour = '#0d152e';
@@ -114,6 +116,15 @@
         if (actions[i].type === 'stroke' || actions[i].type === 'image') return true;
       }
       return false;
+    }
+
+    function visibleImages() {
+      var images = [];
+      actions.forEach(function (action) {
+        if (action.type === 'clear') images = [];
+        else if (action.type === 'image') images.push(action);
+      });
+      return images;
     }
 
     function updateButtons() {
@@ -209,6 +220,25 @@
         };
         return;
       }
+      if (pointerMode === 'move-image') {
+        var imagePoint = pointFromEvent(event);
+        var images = visibleImages();
+        for (var i = images.length - 1; i >= 0; i--) {
+          var candidate = images[i];
+          if (imagePoint.x >= candidate.x && imagePoint.x <= candidate.x + candidate.width &&
+              imagePoint.y >= candidate.y && imagePoint.y <= candidate.y + candidate.height) {
+            activeImage = {
+              action: candidate,
+              x: imagePoint.x,
+              y: imagePoint.y,
+              originalX: candidate.x,
+              originalY: candidate.y
+            };
+            break;
+          }
+        }
+        return;
+      }
       activeStroke = { type: 'stroke', mode: pointerMode, colour: colour, points: [pointFromEvent(event)] };
       actions.push(activeStroke);
       redraw();
@@ -220,6 +250,14 @@
         event.preventDefault();
         viewport.scrollLeft = activePan.left - (event.clientX - activePan.x);
         viewport.scrollTop = activePan.top - (event.clientY - activePan.y);
+        return;
+      }
+      if (activeImage && canvas.hasPointerCapture(event.pointerId)) {
+        event.preventDefault();
+        var imagePoint = pointFromEvent(event);
+        activeImage.action.x = Math.max(0, Math.min(1 - activeImage.action.width, activeImage.originalX + imagePoint.x - activeImage.x));
+        activeImage.action.y = Math.max(0, Math.min(1 - activeImage.action.height, activeImage.originalY + imagePoint.y - activeImage.y));
+        redraw();
         return;
       }
       if (!activeStroke || !canvas.hasPointerCapture(event.pointerId)) return;
@@ -248,6 +286,7 @@
       if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
       activeStroke = null;
       activePan = null;
+      activeImage = null;
     }
     canvas.addEventListener('pointerup', endStroke);
     canvas.addEventListener('pointercancel', endStroke);
@@ -257,7 +296,9 @@
       board.querySelector('[data-whiteboard-action="pen"]').setAttribute('aria-pressed', String(mode === 'pen'));
       board.querySelector('[data-whiteboard-action="eraser"]').setAttribute('aria-pressed', String(mode === 'eraser'));
       board.querySelector('[data-whiteboard-action="pan"]').setAttribute('aria-pressed', String(mode === 'pan'));
+      board.querySelector('[data-whiteboard-action="move-image"]').setAttribute('aria-pressed', String(mode === 'move-image'));
       canvas.classList.toggle('qb-whiteboard-panning', mode === 'pan');
+      canvas.classList.toggle('qb-whiteboard-moving-image', mode === 'move-image');
     }
 
     function setPaper(style) {
@@ -307,7 +348,7 @@
       var button = event.target.closest('[data-whiteboard-action]');
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
-      if (action === 'pen' || action === 'eraser' || action === 'pan') setMode(action);
+      if (action === 'pen' || action === 'eraser' || action === 'pan' || action === 'move-image') setMode(action);
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
       if (action === 'zoom-out') setZoom(zoom - .25);
@@ -341,10 +382,30 @@
         var drawHeight = naturalHeight * scale;
         var visibleTop = Math.max(18, viewport.scrollTop + 24);
         var drawTop = Math.min(visibleTop, canvas.clientHeight - drawHeight - 18);
+        var drawLeft = (canvas.clientWidth - drawWidth) / 2;
+        var placedImages = visibleImages();
+        var overlap = true;
+        while (overlap && drawTop + drawHeight <= canvas.clientHeight - 18) {
+          overlap = false;
+          for (var i = 0; i < placedImages.length; i++) {
+            var placed = placedImages[i];
+            var placedLeft = placed.x * canvas.clientWidth;
+            var placedTop = placed.y * canvas.clientHeight;
+            var placedRight = placedLeft + placed.width * canvas.clientWidth;
+            var placedBottom = placedTop + placed.height * canvas.clientHeight;
+            if (drawLeft < placedRight + 18 && drawLeft + drawWidth > placedLeft - 18 &&
+                drawTop < placedBottom + 18 && drawTop + drawHeight > placedTop - 18) {
+              drawTop = placedBottom + 24;
+              overlap = true;
+              break;
+            }
+          }
+        }
+        drawTop = Math.min(drawTop, canvas.clientHeight - drawHeight - 18);
         actions.push({
           type: 'image',
           image: image,
-          x: (canvas.clientWidth - drawWidth) / 2 / canvas.clientWidth,
+          x: drawLeft / canvas.clientWidth,
           y: drawTop / canvas.clientHeight,
           width: drawWidth / canvas.clientWidth,
           height: drawHeight / canvas.clientHeight

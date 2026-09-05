@@ -207,6 +207,7 @@
 }
 .qb-whiteboard-canvas.qb-whiteboard-panning { cursor: grab; }
 .qb-whiteboard-canvas.qb-whiteboard-panning:active { cursor: grabbing; }
+.qb-whiteboard-canvas.qb-whiteboard-moving-image { cursor: move; }
 
 .qb-diagram.qb-whiteboard-source svg {
   border-radius: 7px;
