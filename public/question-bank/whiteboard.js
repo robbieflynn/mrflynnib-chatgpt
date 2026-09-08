@@ -495,20 +495,9 @@
   window.setTimeout(scan, 0);
   window.setTimeout(scan, 250);
   window.setTimeout(scan, 1000);
-  if (typeof MutationObserver !== 'undefined') {
-    new MutationObserver(function (mutations) {
-      mutations.forEach(function (mutation) {
-        Array.prototype.forEach.call(mutation.addedNodes, function (node) {
-          if (node.nodeType !== 1) return;
-          if (node.matches && node.matches('.qb-card')) setupCard(node);
-          Array.prototype.forEach.call(node.querySelectorAll ? node.querySelectorAll('.qb-card') : [], setupCard);
-        });
-      });
-    }).observe(list, { childList: true, subtree: true });
-  }
   // The bank appends cards after filter changes and load-more messages. These
-  // hooks run after its own handlers, avoiding a permanent DOM observer across
-  // thousands of questions.
+  // hooks run after its own handlers and cover every append path without a
+  // permanent DOM observer across thousands of questions.
   document.addEventListener('input', function () { window.setTimeout(scan, 0); });
   document.addEventListener('change', function () { window.setTimeout(scan, 0); });
   window.addEventListener('message', function (event) {
