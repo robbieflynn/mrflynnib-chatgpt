@@ -37,7 +37,7 @@ These are roadmap possibilities, not commitments to build everything immediately
 
 ### IGCSE Mathematics
 
-Mr Flynn IB already has a substantial IGCSE Mathematics teaching library and an established YouTube audience for that work. The initial public launch remained entirely focused on IB Mathematics. On 27 August 2026, Rob approved restoring the completed IGCSE area publicly. Link to it only through the compact secondary feature at the end of the homepage and include its public routes in the sitemap.
+Mr Flynn IB already has a substantial IGCSE Mathematics teaching library and an established YouTube audience for that work. The initial public launch remained entirely focused on IB Mathematics. On 27 August 2026, Rob approved restoring the completed IGCSE area publicly. Link to it through the compact secondary feature at the end of the homepage and a quiet **Edexcel IGCSE Mathematics** text link as the final item in the global footer's **Learn** column, and include its public routes in the sitemap. Rob approved the understated footer placement on 8 September 2026 so IGCSE remains discoverable throughout the site without competing with the primary IB navigation.
 
 The homepage must retain its four principal IB routes and present IGCSE only as a compact secondary feature at the very end of the homepage. Do not include IGCSE in the global header or primary navigation. Do not describe IGCSE as “bonus content” or “extra content”, because it is a substantial offer rather than a small add-on.
 
