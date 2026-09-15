@@ -6,10 +6,10 @@ import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 export const metadata: Metadata = { title: "IB Mathematics school licences", description: "Two-year access to a selected Mr Flynn IB Mathematics course for classes, departments and school cohorts." };
 
 const tiers = [
-  { students: "10", range: "10–24", each: "$50" },
-  { students: "25", range: "25–49", each: "$40" },
-  { students: "50", range: "50–99", each: "$30" },
-  { students: "100", range: "100+", each: "$20" },
+  { students: "10", range: "Licences 1–24", each: "$50" },
+  { students: "25", range: "Licences 25–49", each: "$40" },
+  { students: "50", range: "Licences 50–99", each: "$30" },
+  { students: "100", range: "Licence 100 onward", each: "$20" },
 ];
 
 export default function SchoolsPage() {
@@ -45,18 +45,18 @@ export default function SchoolsPage() {
         <Container className="stack-xl">
           <div className="section-heading-row">
             <div className="stack"><Eyebrow>Two-year school pricing</Eyebrow><h2>Choose the cohort size that fits.</h2></div>
-            <p className="lede">The price per student is based on the total number of licences required.</p>
+            <p className="lede">Pricing is graduated: each rate applies only to the licences within that band.</p>
           </div>
           <div className="school-tier-grid">
             {tiers.map((tier) => (
               <article className="school-tier" key={tier.students}>
-                <small>{tier.range} students</small>
-                <div className="tier-price"><strong>{tier.each}</strong><span>per student / two years</span></div>
+                <small>{tier.range}</small>
+                <div className="tier-price"><strong>{tier.each}</strong><span>per licence in this band / two years</span></div>
                 <SchoolTierLink students={tier.students} />
               </article>
             ))}
           </div>
-          <p className="pricing-note">Course allocation, access dates and provisioning are confirmed with the school before invoicing.</p>
+          <p className="pricing-note"><strong>Minimum order: 10 student licences.</strong> Lower rates apply only to the licences within each band, so the total never decreases when another student is added. Course allocation, access dates and provisioning are confirmed with the school before invoicing.</p>
         </Container>
       </section>
 
