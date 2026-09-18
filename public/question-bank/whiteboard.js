@@ -109,6 +109,29 @@
     var baseHeight = 1120;
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
+    canvas.tabIndex = 0;
+    undo.setAttribute('aria-keyshortcuts', 'Meta+Z Control+Z');
+    undo.title = 'Undo (Command+Z or Ctrl+Z)';
+
+    function undoLastAction() {
+      if (!actions.length) return;
+      window.clearTimeout(straightTimer);
+      activeStroke = null;
+      activePan = null;
+      activeImage = null;
+      actions.pop();
+      redraw();
+      updateButtons();
+    }
+
+    card.addEventListener('keydown', function (event) {
+      if (board.hidden || event.defaultPrevented || event.isComposing ||
+          !(event.metaKey || event.ctrlKey) || event.shiftKey || event.altKey ||
+          event.key.toLowerCase() !== 'z') return;
+      if (event.target.isContentEditable || event.target.closest('input, textarea, select')) return;
+      event.preventDefault();
+      undoLastAction();
+    });
 
     function hasVisibleWork() {
       for (var i = actions.length - 1; i >= 0; i--) {
@@ -209,6 +232,7 @@
     canvas.addEventListener('pointerdown', function (event) {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
       event.preventDefault();
+      canvas.focus({ preventScroll: true });
       canvas.setPointerCapture(event.pointerId);
       var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'eraser' : mode;
       if (pointerMode === 'pan') {
@@ -354,7 +378,7 @@
       if (action === 'zoom-out') setZoom(zoom - .25);
       if (action === 'zoom-in') setZoom(zoom + .25);
       if (action === 'expand') setExpanded(!card.classList.contains('qb-whiteboard-expanded'));
-      if (action === 'undo' && actions.length) { actions.pop(); redraw(); updateButtons(); }
+      if (action === 'undo') undoLastAction();
       if (action === 'clear' && hasVisibleWork()) {
         actions.push({ type: 'clear' });
         redraw();
