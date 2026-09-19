@@ -15,10 +15,7 @@ export default function QuestionBankPage() {
         <Breadcrumbs items={[{ label: "Question bank" }]} />
 
         <div className="qb-index-intro">
-          <div className="cluster">
-            <span className="free-pill">Free beta</span>
-            <Eyebrow>Question bank</Eyebrow>
-          </div>
+          <Eyebrow>Question bank</Eyebrow>
           <h1>Choose your question bank.</h1>
           <p className="lede">Select your IB Mathematics course to see the questions that belong to your syllabus.</p>
         </div>

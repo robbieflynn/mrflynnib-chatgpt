@@ -17,7 +17,7 @@ const mainOffers = [
   },
   {
     number: "02",
-    label: "Free beta",
+    label: null,
     title: "Question bank",
     body: "Build fluency with focused IB Mathematics questions and clear routes through each topic.",
     href: "/question-bank",
@@ -75,7 +75,7 @@ export default function HomePage() {
           <div className="offer-grid">
             {mainOffers.map((offer) => (
               <Link className={`offer-card ${offer.className}`.trim()} href={offer.href} key={offer.title}>
-                <div className="offer-card-top"><span>{offer.number}</span><small>{offer.label}</small></div>
+                <div className="offer-card-top"><span>{offer.number}</span>{offer.label && <small>{offer.label}</small>}</div>
                 <div className="stack"><h3>{offer.title}</h3><p>{offer.body}</p></div>
                 <span className="offer-link">{offer.cta}<i aria-hidden="true">→</i></span>
               </Link>
