@@ -16,9 +16,9 @@ export const metadata: Metadata = {
     title: "Mr Flynn IB | Your Home for IB Mathematics",
     description: siteConfig.description,
     url: siteConfig.url,
-    images: [{ url: "/og-default.svg", width: 1200, height: 630, alt: "Mr Flynn IB" }],
+    images: [{ url: "/images/mr-flynn-ib-preview.png", width: 1200, height: 630, type: "image/png", alt: "Mr Flynn IB | Your Home for IB Mathematics" }],
   },
-  twitter: { card: "summary_large_image", title: "Mr Flynn IB | Your Home for IB Mathematics", description: siteConfig.description, images: ["/og-default.svg"] },
+  twitter: { card: "summary_large_image", title: "Mr Flynn IB | Your Home for IB Mathematics", description: siteConfig.description, images: ["/images/mr-flynn-ib-preview.png"] },
 };
 
 export const viewport: Viewport = { themeColor: "#0b1530", colorScheme: "light" };
