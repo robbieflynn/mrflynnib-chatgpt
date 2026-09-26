@@ -45,6 +45,7 @@ export default async function ThankYouPage({ params }: { params: Promise<{ conve
         <Eyebrow>Checklist requested</Eyebrow>
         <h1>Your {item.course} checklist is on its way.</h1>
         <p className="lede">Check your inbox for the email from Mr Flynn IB. If it does not appear shortly, please check your spam or promotions folder.</p>
+        <p>You can also <a href={`/downloads/mr-flynn-ib-${item.course.toLowerCase().replace(" ", "-")}-syllabus-checklist.pdf`} download className="text-link">download your {item.course} checklist now</a>.</p>
         <div className="cluster"><ButtonLink href="/courses">Explore the courses</ButtonLink><ButtonLink href="/question-bank" secondary>Open the question bank</ButtonLink></div>
       </Container>
     </section>

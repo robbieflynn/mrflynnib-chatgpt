@@ -26,6 +26,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Invalid request." }, { status: 400 });
   }
 
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ message: "Invalid request." }, { status: 400 });
+  }
+
   if (body.website) return NextResponse.json({ message: "Thanks." });
 
   const name = textValue(body, "name", 100);
@@ -40,6 +44,11 @@ export async function POST(request: Request) {
     );
   }
 
+  if (body.marketingConsent !== undefined && typeof body.marketingConsent !== "boolean") {
+    return NextResponse.json({ message: "Invalid email preference." }, { status: 400 });
+  }
+  const marketingConsent = body.marketingConsent === true;
+
   const token = process.env.MAILERLITE_API_TOKEN;
   if (!token) {
     return NextResponse.json(
@@ -49,9 +58,11 @@ export async function POST(request: Request) {
   }
 
   const marketingGroupId = process.env.MAILERLITE_MARKETING_GROUP_ID;
-  if (!marketingGroupId) {
+  const deliveryGroupId = process.env.MAILERLITE_CHECKLIST_GROUP_ID;
+  // Never use the marketing group as the delivery trigger. Fail closed if misconfigured.
+  if (!deliveryGroupId || deliveryGroupId === marketingGroupId || (marketingConsent && !marketingGroupId)) {
     return NextResponse.json(
-      { message: "Mailing-list signup is being configured. Please try again shortly." },
+      { message: "Checklist delivery is being configured. Please try again shortly." },
       { status: 503 },
     );
   }
@@ -66,14 +77,16 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       email,
       fields: { name },
-      groups: [groupId, marketingGroupId],
-      opted_in_at: new Date().toISOString().replace("T", " ").slice(0, 19),
+      groups: [...new Set([groupId, deliveryGroupId, ...(marketingConsent ? [marketingGroupId!] : [])])],
+      ...(marketingConsent ? {
+        opted_in_at: new Date().toISOString().replace("T", " ").slice(0, 19),
+      } : {}),
     }),
     cache: "no-store",
   });
 
   if (!response.ok) {
-    console.error("MailerLite checklist signup failed", response.status, await response.text());
+    console.error("MailerLite checklist signup failed", response.status);
     return NextResponse.json(
       { message: "We could not add you to the checklist list. Please try again." },
       { status: 502 },

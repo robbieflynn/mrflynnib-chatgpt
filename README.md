@@ -52,3 +52,15 @@ The public website owns brand, positioning, SEO, audience journeys and lead gene
 ## Image update
 
 The project now includes Rob Flynn's supplied portrait, the Mr Flynn IB brand mark and lockup, and the Dubai mathematics graphic. The brand mark is also used as the browser and Apple touch icon. Images are stored in `public/images` and rendered with Next.js Image optimisation.
+
+## Optional checklist consent rollout
+
+The form always requests checklist delivery. `marketingConsent` must be the boolean `true` to add someone to `MAILERLITE_MARKETING_GROUP_ID` and record `opted_in_at`. Missing/false consent does neither and does not remove an existing subscription. Never set `status` or `resubscribe` to reactivate unsubscribed contacts. The thank-you page also provides the selected PDF for repeat requests or suppressed email.
+
+Before publishing this branch:
+
+1. Create a dedicated empty MailerLite group for checklist delivery and set its ID as `MAILERLITE_CHECKLIST_GROUP_ID` in Vercel Preview and Production. It must differ from the marketing group ID.
+2. Move the existing “Send all four syllabus checklists” automation's trigger from the marketing group to this delivery group. Do not bulk-add historical subscribers or enable re-entry. Keep the four legacy course automations inactive to prevent duplicate emails. Coordinate the trigger change with publication; the old website still relies on the marketing trigger.
+3. Verify a fresh checked request joins course + delivery + marketing groups and an unchecked request joins only course + delivery. Verify delivery for both, unsubscribe suppression, and repeat requests. Marketing campaigns must target only the marketing group.
+
+The endpoint returns a configuration error until the dedicated group is configured, rather than silently subscribing checklist-only requesters or promising an email with no delivery trigger.
