@@ -293,3 +293,5 @@ The local repository also contains untracked generated dependency/build items fr
 ## Tuition partner preview, 26 September 2026
 
 Rob confirmed a partnership with IB Tutors, from The Tuition Centre in Ireland, and supplied its orange/navy logo. He requested an orange “One-to-one tuition” third homepage hero button, a matching primary-navigation item, and the partner logo at the top right. Build a design preview only. The destination URL is pending; do not invent it, enable a substitute destination, merge or publish until Rob approves. Existing tutoring content remains unchanged pending a separate decision.
+
+Rob revised the tuition preview header to a single row: keep Courses, Question bank, Schools, Contact, My courses and One-to-one tuition visible, put IA guidance and Book in More, remove the redundant header Explore courses button, and make the partner logo smaller than Mr Flynn IB’s. Mobile navigation can retain the full list.

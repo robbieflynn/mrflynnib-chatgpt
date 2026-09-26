@@ -1238,23 +1238,30 @@ textarea { min-height: 130px; resize: vertical; }
 }
 
 /* Tuition partner design preview: destinations await the supplied partner URL. */
-.header-inner { display: grid; grid-template-columns: 1fr auto; gap: .65rem 1.5rem; padding-block: .8rem; }
+.header-inner { display: flex; gap: 1.2rem; padding-block: .55rem; }
 .header-inner .brand { grid-column: 1; grid-row: 1; width: fit-content; }
-.tuition-partner-logo { grid-column: 2; grid-row: 1; position: relative; width: 190px; height: 58px; overflow: hidden; }
+.tuition-partner-logo { flex: 0 0 auto; position: relative; width: 125px; height: 38px; overflow: hidden; }
 .tuition-partner-logo img { position: absolute; width: 157.4%; max-width: none; height: auto; left: -28.6%; top: -132%; mix-blend-mode: multiply; }
-.header-inner .desktop-nav { grid-column: 1 / -1; grid-row: 2; justify-content: center; gap: 1.35rem; border-top: 1px solid var(--line); padding-top: .7rem; }
+.header-inner .desktop-nav { justify-content: center; gap: 1rem; font-size: .85rem; white-space: nowrap; }
 .tuition-nav { border: 0; padding: 0; background: transparent; color: #ae4c00; font: inherit; font-weight: 800; opacity: 1; cursor: default; white-space: nowrap; }
 .button.tuition-button { background: #ff891d; color: #172a3a; border-color: #ff891d; opacity: 1; box-shadow: none; cursor: default; }
 .mobile-panel .tuition-nav { display: block; padding: .75rem; }
 @media (max-width: 1100px) {
-  .header-inner { grid-template-columns: 1fr auto auto; gap: .8rem; }
+  .header-inner { gap: .8rem; }
+  .header-inner .brand { margin-right: auto; }
   .header-inner .desktop-nav { display: none; }
   .header-inner .mobile-nav { display: block; grid-column: 3; grid-row: 1; }
-  .tuition-partner-logo { width: 155px; height: 47px; }
+  .tuition-partner-logo { width: 115px; height: 35px; }
 }
 @media (max-width: 650px) {
   .header-inner { gap: .65rem; padding-block: .55rem; }
   .header-inner .brand-lockup { width: 132px; }
-  .tuition-partner-logo { width: 112px; height: 34px; }
+  .tuition-partner-logo { width: 95px; height: 29px; }
   .mobile-menu-toggle { font-size: .82rem; }
 }
+
+.header-more { position: relative; }
+.header-more summary { cursor: pointer; padding: .5rem 0; }
+.header-more-panel { position: absolute; top: 100%; right: 0; min-width: 155px; padding: .5rem; background: white; border: 1px solid var(--line); border-radius: .75rem; box-shadow: var(--shadow); }
+.header-more-panel a { display: block; padding: .65rem .75rem; border-radius: .4rem; }
+.header-more-panel a:hover { background: var(--teal-soft); }
