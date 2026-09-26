@@ -67,7 +67,7 @@ export function ChecklistSignup() {
         <input id="checklist-marketing" type="checkbox" name="marketingConsent" />
         <span>Email me occasional IB Maths tips, free resources and course updates. I can unsubscribe at any time. <span className="checklist-optional">(Optional)</span></span>
       </label>
-      <p className="checklist-privacy">You’ll receive your checklist whether or not you tick the box. See our <Link href="/privacy">privacy policy</Link>.</p>
+      <p className="checklist-privacy">See our <Link href="/privacy">privacy policy</Link>.</p>
       {message && <p role={status === "error" ? "alert" : "status"} className={`form-message checklist-message ${status === "success" ? "form-success" : "form-error"}`}>{message}</p>}
     </form>
   );
