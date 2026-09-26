@@ -79,6 +79,7 @@ export default function HomePage() {
             <div className="cluster hero-actions">
               <ButtonLink href="/courses">Find your course</ButtonLink>
               <ButtonLink href="#syllabus-checklist" secondary>Get the free syllabus checklist</ButtonLink>
+              <button type="button" className="button tuition-button" disabled title="Partner sign-up link coming soon">One-to-one tuition <span aria-hidden="true">↗</span></button>
             </div>
           </div>
         </Container>
