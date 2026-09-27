@@ -195,8 +195,8 @@
   height: 1120px;
   background-color: #fff;
   background-image:
-    linear-gradient(#edf1f5 1px, transparent 1px),
-    linear-gradient(90deg, #edf1f5 1px, transparent 1px);
+    linear-gradient(#edf1f5 var(--whiteboard-grid-line, 1px), transparent var(--whiteboard-grid-line, 1px)),
+    linear-gradient(90deg, #edf1f5 var(--whiteboard-grid-line, 1px), transparent var(--whiteboard-grid-line, 1px));
   background-size: 24px 24px;
 }
 
