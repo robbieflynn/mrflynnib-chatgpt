@@ -167,13 +167,14 @@
       ctx.save();
       ctx.globalCompositeOperation = stroke.mode === 'eraser' ? 'destination-out' : 'source-over';
       ctx.strokeStyle = stroke.colour;
-      ctx.lineWidth = stroke.mode === 'eraser' ? 24 : 3;
+      // Tool widths are measured on the paper, so existing and new ink scale together.
+      ctx.lineWidth = (stroke.mode === 'eraser' ? 24 : 3) * zoom;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.beginPath();
       var first = stroke.points[0];
       ctx.moveTo(first.x * width, first.y * height);
-      if (stroke.points.length === 1) ctx.lineTo(first.x * width + .01, first.y * height + .01);
+      if (stroke.points.length === 1) ctx.lineTo(first.x * width + .01 * zoom, first.y * height + .01);
       for (var i = 1; i < stroke.points.length; i++) {
         ctx.lineTo(stroke.points[i].x * width, stroke.points[i].y * height);
       }
@@ -423,6 +424,8 @@
       zoom = Math.max(.25, Math.min(2, nextZoom));
       surface.style.width = (baseWidth * zoom) + 'px';
       surface.style.height = (baseHeight * zoom) + 'px';
+      surface.style.backgroundSize = (24 * zoom) + 'px ' + (24 * zoom) + 'px';
+      surface.style.setProperty('--whiteboard-grid-line', zoom + 'px');
       board.querySelector('.qb-whiteboard-zoom-label').textContent = Math.round(zoom * 100) + '%';
       board.querySelector('[data-whiteboard-action="zoom-out"]').disabled = zoom <= .25;
       board.querySelector('[data-whiteboard-action="zoom-in"]').disabled = zoom >= 2;
