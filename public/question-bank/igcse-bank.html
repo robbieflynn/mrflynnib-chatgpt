@@ -409,6 +409,17 @@
 </style>
 
 <link rel="stylesheet" href="/question-bank/whiteboard.css?v=11">
+<style>
+/* Keep long worked equations inside their panel on narrow screens. */
+.qb-question-workspace { grid-template-columns: minmax(0, 1fr); }
+.qb-question-pane { min-width: 0; }
+.qb-solution .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; margin-left: 0; padding-bottom: 4px; }
+@media (max-width: 600px) {
+  .qb-solution { padding: 12px; }
+  .qb-sol-step { flex-direction: column; gap: 5px; align-items: stretch; }
+  .qb-sol-num { flex-basis: auto; }
+}
+</style>
 </head>
 <body>
 <div id="qbank-root">
