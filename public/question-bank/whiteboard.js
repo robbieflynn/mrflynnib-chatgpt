@@ -102,6 +102,11 @@
     var activePan = null;
     var activeImage = null;
     var straightTimer = null;
+    var activePointer = null;
+    var activePointerType = null;
+    var touches = new Map();
+    var pinch = null;
+    var touchGesture = false;
     var mode = 'pen';
     var colour = '#0d152e';
     var zoom = 1;
@@ -229,9 +234,60 @@
       };
     }
 
+    function startPinch() {
+      var points = Array.from(touches.values()).slice(0, 2);
+      var rect = canvas.getBoundingClientRect();
+      var midX = (points[0].x + points[1].x) / 2;
+      var midY = (points[0].y + points[1].y) / 2;
+      pinch = {
+        distance: Math.max(1, Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y)),
+        zoom: zoom,
+        x: (midX - rect.left) / rect.width,
+        y: (midY - rect.top) / rect.height
+      };
+    }
+
+    function cancelTouchAction() {
+      window.clearTimeout(straightTimer);
+      // The first finger may have started drawing before the second arrived.
+      // Remove only that unfinished action, preserving all previous work.
+      if (activeStroke) {
+        var index = actions.indexOf(activeStroke);
+        if (index >= 0) actions.splice(index, 1);
+      }
+      if (activeImage) {
+        activeImage.action.x = activeImage.originalX;
+        activeImage.action.y = activeImage.originalY;
+      }
+      activeStroke = null;
+      activePan = null;
+      activeImage = null;
+      activePointer = null;
+      activePointerType = null;
+      redraw();
+      updateButtons();
+    }
+
     canvas.addEventListener('pointerdown', function (event) {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      // Ignore palm contacts while a pen is drawing.
+      if (event.pointerType === 'touch' && activePointerType === 'pen') return;
+      if (event.pointerType !== 'touch' && (touchGesture || touches.size)) return;
       event.preventDefault();
+      if (event.pointerType === 'touch') {
+        touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        canvas.setPointerCapture(event.pointerId);
+        if (touches.size >= 2) {
+          if (!touchGesture) cancelTouchAction();
+          touchGesture = true;
+          startPinch();
+          return;
+        }
+        if (touchGesture) return;
+      }
+      if (activePointer !== null) return;
+      activePointer = event.pointerId;
+      activePointerType = event.pointerType;
       canvas.focus({ preventScroll: true });
       canvas.setPointerCapture(event.pointerId);
       var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'eraser' : mode;
@@ -270,6 +326,24 @@
     });
 
     canvas.addEventListener('pointermove', function (event) {
+      if (touches.has(event.pointerId)) {
+        touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        if (touchGesture) {
+          event.preventDefault();
+          if (pinch && touches.size >= 2) {
+            var points = Array.from(touches.values()).slice(0, 2);
+            var distance = Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y);
+            var midX = (points[0].x + points[1].x) / 2;
+            var midY = (points[0].y + points[1].y) / 2;
+            setZoom(pinch.zoom * distance / pinch.distance);
+            var rect = viewport.getBoundingClientRect();
+            viewport.scrollLeft = pinch.x * baseWidth * zoom - (midX - rect.left - viewport.clientLeft);
+            viewport.scrollTop = pinch.y * baseHeight * zoom - (midY - rect.top - viewport.clientTop);
+          }
+          return;
+        }
+      }
+      if (event.pointerId !== activePointer) return;
       if (activePan && canvas.hasPointerCapture(event.pointerId)) {
         event.preventDefault();
         viewport.scrollLeft = activePan.left - (event.clientX - activePan.x);
@@ -306,6 +380,19 @@
     });
 
     function endStroke(event) {
+      if (touches.has(event.pointerId)) {
+        touches.delete(event.pointerId);
+        if (touchGesture) {
+          if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+          pinch = null;
+          if (touches.size >= 2) startPinch();
+          if (!touches.size) touchGesture = false;
+          return;
+        }
+      }
+      if (event.pointerId !== activePointer) return;
+      activePointer = null;
+      activePointerType = null;
       window.clearTimeout(straightTimer);
       if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
       activeStroke = null;
@@ -314,6 +401,7 @@
     }
     canvas.addEventListener('pointerup', endStroke);
     canvas.addEventListener('pointercancel', endStroke);
+    canvas.addEventListener('lostpointercapture', endStroke);
 
     function setMode(nextMode) {
       mode = nextMode;
