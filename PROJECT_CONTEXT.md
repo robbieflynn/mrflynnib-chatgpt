@@ -176,6 +176,8 @@ Avoid generic education clichés, excessive stock photography, cartoonish visual
 
 The homepage headline is **“Your Home for IB Mathematics.”** Display it at a restrained size on exactly two lines: **“Your Home for”** followed by **“IB Mathematics.”** The hero should be simple and brand-led: no portrait, credentials, authority strip, “expert-led” label, free-lesson chip, or YouTube metric in the opening banner. Its supporting line should lead with **complete IB Mathematics courses**, trusted IA guidance, and focused support for students, teachers, and schools. Do not end the hero by naming Rob; use the Mr Flynn IB brand voice.
 
+On 27 September 2026, Rob approved replacing the homepage hero’s large ellipse and concentric bands with a faint graph grid and a single rising curve in the lower-right corner. Preserve the existing two-line headline, maths symbols, copy, buttons and background colours.
+
 Search and sharing preview images must use the current supplied Mr Flynn IB logo, blue and cream branding, and **“Your Home for IB Mathematics.”** The shared metadata uses `/images/mr-flynn-ib-preview.png`; the older `/og-default.svg` address also carries the corrected design so it no longer serves the retired wording or placeholder logo.
 
 Keep a clear **Contact** route in the top navigation. Retain **Explore courses** as the header's primary call to action for now, but do not include a separate **Explore IA guidance** button in the homepage hero; the IA section provides that route later on the page.
