@@ -118,12 +118,34 @@
     undo.setAttribute('aria-keyshortcuts', 'Meta+Z Control+Z');
     undo.title = 'Undo (Command+Z or Ctrl+Z)';
 
-    function undoLastAction() {
-      if (!actions.length) return;
+    function capturePointer(id) {
+      // Capture improves dragging outside the sheet, but is not a prerequisite
+      // for drawing: pen drivers can release it during focus/tool transitions.
+      try { canvas.setPointerCapture(id); } catch { /* window handlers remain active */ }
+    }
+
+    function releasePointer(id) {
+      if (canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
+    }
+
+    function resetInteraction() {
+      var ids = Array.from(touches.keys());
+      if (activePointer !== null) ids.push(activePointer);
       window.clearTimeout(straightTimer);
       activeStroke = null;
       activePan = null;
       activeImage = null;
+      activePointer = null;
+      activePointerType = null;
+      touches.clear();
+      pinch = null;
+      touchGesture = false;
+      ids.forEach(releasePointer);
+    }
+
+    function undoLastAction() {
+      if (!actions.length) return;
+      resetInteraction();
       actions.pop();
       redraw();
       updateButtons();
@@ -271,13 +293,22 @@
 
     canvas.addEventListener('pointerdown', function (event) {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if (board.hidden) return;
+      // A pen takes priority over a finger/palm that landed first. Never let
+      // stale touch state lock out the next stylus stroke.
+      if (event.pointerType === 'pen') {
+        if (activePointerType === 'touch') cancelTouchAction();
+        resetInteraction();
+      } else if (event.pointerId === activePointer) {
+        resetInteraction();
+      }
       // Ignore palm contacts while a pen is drawing.
       if (event.pointerType === 'touch' && activePointerType === 'pen') return;
       if (event.pointerType !== 'touch' && (touchGesture || touches.size)) return;
       event.preventDefault();
       if (event.pointerType === 'touch') {
         touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
-        canvas.setPointerCapture(event.pointerId);
+        capturePointer(event.pointerId);
         if (touches.size >= 2) {
           if (!touchGesture) cancelTouchAction();
           touchGesture = true;
@@ -290,7 +321,7 @@
       activePointer = event.pointerId;
       activePointerType = event.pointerType;
       canvas.focus({ preventScroll: true });
-      canvas.setPointerCapture(event.pointerId);
+      capturePointer(event.pointerId);
       var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'eraser' : mode;
       if (pointerMode === 'pan') {
         activePan = {
@@ -326,7 +357,14 @@
       updateButtons();
     });
 
-    canvas.addEventListener('pointermove', function (event) {
+    // Listen on the window as a fallback when pointer capture is unavailable.
+    // The initiating pointer ID still owns the stroke, so hover cannot draw.
+    window.addEventListener('pointermove', function (event) {
+      if ((event.pointerType === 'pen' || event.pointerType === 'mouse') &&
+          event.pointerId === activePointer && event.buttons === 0) {
+        endStroke(event);
+        return;
+      }
       if (touches.has(event.pointerId)) {
         touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
         if (touchGesture) {
@@ -345,13 +383,13 @@
         }
       }
       if (event.pointerId !== activePointer) return;
-      if (activePan && canvas.hasPointerCapture(event.pointerId)) {
+      if (activePan) {
         event.preventDefault();
         viewport.scrollLeft = activePan.left - (event.clientX - activePan.x);
         viewport.scrollTop = activePan.top - (event.clientY - activePan.y);
         return;
       }
-      if (activeImage && canvas.hasPointerCapture(event.pointerId)) {
+      if (activeImage) {
         event.preventDefault();
         var imagePoint = pointFromEvent(event);
         activeImage.action.x = Math.max(0, Math.min(1 - activeImage.action.width, activeImage.originalX + imagePoint.x - activeImage.x));
@@ -359,7 +397,7 @@
         redraw();
         return;
       }
-      if (!activeStroke || !canvas.hasPointerCapture(event.pointerId)) return;
+      if (!activeStroke) return;
       event.preventDefault();
       var point = pointFromEvent(event);
       if (activeStroke.straightened) activeStroke.points[1] = point;
@@ -400,11 +438,17 @@
       activePan = null;
       activeImage = null;
     }
-    canvas.addEventListener('pointerup', endStroke);
-    canvas.addEventListener('pointercancel', endStroke);
-    canvas.addEventListener('lostpointercapture', endStroke);
+    window.addEventListener('pointerup', endStroke);
+    window.addEventListener('pointercancel', endStroke);
+    // Losing capture alone does not mean the pen has lifted. Keep accepting
+    // matching moves until up/cancel, or clear on focus/visibility loss.
+    window.addEventListener('blur', resetInteraction);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) resetInteraction();
+    });
 
     function setMode(nextMode) {
+      resetInteraction();
       mode = nextMode;
       board.querySelector('[data-whiteboard-action="pen"]').setAttribute('aria-pressed', String(mode === 'pen'));
       board.querySelector('[data-whiteboard-action="eraser"]').setAttribute('aria-pressed', String(mode === 'eraser'));
@@ -441,6 +485,7 @@
     }
 
     open.addEventListener('click', function () {
+      resetInteraction();
       var willOpen = board.hidden;
       board.hidden = !willOpen;
       card.classList.toggle('qb-whiteboard-open', willOpen);
