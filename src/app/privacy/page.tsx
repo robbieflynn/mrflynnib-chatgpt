@@ -18,7 +18,7 @@ export default function PrivacyPage() {
       />
       <section className="section-tight">
         <Container className="narrow stack-xl">
-          <p className="muted"><strong>Last updated:</strong> 30 July 2026</p>
+          <p className="muted"><strong>Last updated:</strong> 27 September 2026</p>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Who we are</h2>

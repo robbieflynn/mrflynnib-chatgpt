@@ -51,7 +51,7 @@ Do not promote an Edexcel IGCSE Mathematics syllabus checklist until Rob supplie
 
 The verified Teachable destination for the existing IGCSE course is `https://learn.mrflynnib.com/p/igcse`. Present the website course page simply around **lessons on every topic and past-paper solutions**, with one principal button leading to this Teachable course.
 
-If the website later introduces a native student account, keep the IB and IGCSE experiences within the same account and backend rather than creating two unrelated login systems. This is a product direction, not authorisation to replace Teachable or build the account system yet.
+On 27 September 2026, Rob authorised the first native student-account phase for the question bank. Students should be able to create a free Mr Flynn IB account, sign in, self-mark a question after checking the worked answer, and save questions they got right across devices. The public question bank remains freely browsable without an account. Account creation must remain separate from marketing consent and must not replace Teachable course accounts or course delivery. Keep IB and IGCSE progress within the same account and backend. The first phase does not include automatic mathematical answer marking, teacher accounts, classes or assignments, but its data model should leave room for those later.
 
 ### Online courses
 
@@ -283,5 +283,5 @@ The local repository also contains untracked generated dependency/build items fr
 1. Run one real checklist request and one real school enquiry on the public domain to reconfirm the MailerLite delivery and enquiry automations after launch.
 2. Monitor Vercel Analytics, Search Console indexing and production errors during the first days after launch.
 3. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
-4. Design and implement the agreed public-sample/free-account boundary for the question bank when Rob is ready.
+4. Connect and review the first student-account preview, then configure Supabase Auth, production email delivery and the saved-progress schema before publication.
 5. Verify the supplied Edexcel IGCSE Mathematics question bank in production after the restored IGCSE area is approved and published.

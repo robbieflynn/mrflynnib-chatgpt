@@ -567,6 +567,8 @@ textarea { min-height: 130px; resize: vertical; }
 .qb-index-intro .eyebrow { margin: 0; }
 .qb-index-intro h1 { max-width: none; font-size: clamp(2.9rem, 5.8vw, 5.4rem); }
 .qb-index-intro .lede { max-width: 55ch; }
+.qb-index-account-note { max-width: 58ch; color: var(--muted); font-size: .88rem; }
+.qb-index-account-note a { color: var(--teal-dark); font-weight: 850; text-decoration: underline; text-underline-offset: .18em; }
 .qb-course-link-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .qb-course-link {
   position: relative;
@@ -616,6 +618,23 @@ textarea { min-height: 130px; resize: vertical; }
 .qb-course-switcher div > span.is-coming-soon { grid-template-columns: auto auto; gap: .35rem; background: #f3f5f6; color: #798391; }
 .qb-course-switcher span.is-coming-soon small { padding: .12rem .25rem; border-radius: .3rem; background: white; color: var(--muted); font-size: .48rem; letter-spacing: .04em; text-transform: uppercase; }
 .qb-course-content { padding: 0; background: #f4f7f8; }
+.qb-embed-shell { display: grid; }
+.qb-account-strip {
+  width: min(calc(100% - 2rem), var(--container));
+  margin: 1.2rem auto .25rem;
+  padding: 1rem 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  border: 1px solid #c6dced;
+  border-radius: 1rem;
+  background: #edf7ff;
+}
+.qb-account-strip > div { display: grid; gap: .12rem; }
+.qb-account-strip strong { font-size: .92rem; }
+.qb-account-strip span { color: var(--muted); font-size: .76rem; }
+.qb-account-strip .qb-account-error { color: var(--danger); }
 .qb-bank-frame {
   width: 100%;
   display: block;
@@ -623,6 +642,42 @@ textarea { min-height: 130px; resize: vertical; }
   overflow: hidden;
   background: #f4f7f8;
 }
+
+.account-page {
+  min-height: calc(100svh - 4.8rem);
+  padding: clamp(2rem, 5vw, 4.5rem) 0 clamp(4rem, 8vw, 7rem);
+  background:
+    radial-gradient(circle at 12% 12%, rgba(35,127,202,.18), transparent 30%),
+    radial-gradient(circle at 90% 85%, rgba(232,170,45,.14), transparent 28%),
+    linear-gradient(145deg, #f7fbff, #fbfaf6 72%);
+}
+.account-shell { display: grid; gap: clamp(2rem, 5vw, 4rem); }
+.account-shell-narrow { width: min(calc(100% - 2rem), 680px); }
+.account-layout { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(2rem, 7vw, 7rem); align-items: center; }
+.account-intro h1 { max-width: 10ch; font-size: clamp(3rem, 6vw, 5.4rem); }
+.account-benefits { margin: 0; padding: 0; display: grid; gap: .7rem; list-style: none; }
+.account-benefits li { display: flex; gap: .65rem; color: var(--ink-2); }
+.account-benefits li::before { content: "✓"; color: var(--success); font-weight: 950; }
+.account-card {
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid rgba(35,127,202,.18);
+  border-radius: 1.5rem;
+  background: rgba(255,255,255,.94);
+  box-shadow: var(--shadow);
+}
+.account-card h2 { max-width: 14ch; font-size: clamp(2rem, 4vw, 3.2rem); }
+.account-kicker { color: var(--teal-dark); font-size: .72rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.account-tabs { padding: .3rem; display: grid; grid-template-columns: repeat(2, 1fr); border-radius: .85rem; background: #edf1f3; }
+.account-tabs button { padding: .7rem; border: 0; border-radius: .65rem; background: transparent; color: var(--muted); font-weight: 850; cursor: pointer; }
+.account-tabs button[aria-selected="true"] { background: white; color: var(--ink); box-shadow: 0 5px 18px rgba(11,21,48,.08); }
+.account-form .button { width: 100%; }
+.account-text-button { width: fit-content; margin-inline: auto; padding: .2rem; border: 0; background: transparent; color: var(--teal-dark); font-weight: 800; cursor: pointer; }
+.account-progress-summary { padding: 1.2rem; display: flex; align-items: baseline; gap: .8rem; border-radius: 1rem; background: var(--teal-soft); }
+.account-progress-summary strong { color: var(--teal-dark); font-size: 2.6rem; line-height: 1; }
+.account-progress-summary span { color: var(--ink-2); font-size: .86rem; font-weight: 750; }
+.account-course-counts { display: flex; flex-wrap: wrap; gap: .6rem; }
+.account-course-counts span { padding: .55rem .7rem; display: flex; gap: .55rem; border: 1px solid var(--line); border-radius: .7rem; color: var(--muted); font-size: .8rem; }
+.account-course-counts strong { color: var(--ink); }
 .qb-course-empty { min-height: 360px; padding: clamp(2rem, 6vw, 4.5rem); display: grid; justify-items: center; align-content: center; gap: 1rem; border: 1px dashed #aebbc1; border-radius: 1.5rem; background: white; text-align: center; }
 .qb-course-empty > span { padding: .35rem .6rem; border-radius: 999px; background: var(--teal-soft); color: var(--teal-dark); font-size: .7rem; font-weight: 900; }
 .qb-course-empty h2 { max-width: 18ch; font-size: clamp(2rem, 4.5vw, 3.7rem); }
@@ -1235,4 +1290,11 @@ textarea { min-height: 130px; resize: vertical; }
   .final-cta-section { padding-bottom: 3rem; }
   .final-cta-card { min-height: auto; border-radius: 1.35rem; }
   .final-cta-card .button { width: 100%; }
+}
+
+@media (max-width: 760px) {
+  .account-layout { grid-template-columns: 1fr; }
+  .account-intro h1 { max-width: 12ch; }
+  .qb-account-strip { align-items: stretch; flex-direction: column; }
+  .qb-account-strip .button { width: 100%; }
 }

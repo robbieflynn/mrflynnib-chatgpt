@@ -18,6 +18,7 @@ export default function QuestionBankPage() {
           <Eyebrow>Question bank</Eyebrow>
           <h1>Choose your question bank.</h1>
           <p className="lede">Select your IB Mathematics course to see the questions that belong to your syllabus.</p>
+          <p className="qb-index-account-note">Want to keep track as you practise? <Link href="/account">Sign in or create a free account</Link> to save the questions you get right.</p>
         </div>
 
         <div className="qb-course-link-grid" aria-label="Choose your IB Mathematics course">
