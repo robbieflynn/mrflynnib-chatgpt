@@ -272,7 +272,7 @@ textarea { min-height: 130px; resize: vertical; }
 .centre { display: flex; justify-content: center; }
 
 .new-hero { position: relative; min-height: 720px; padding: clamp(4rem, 8vw, 7rem) 0; overflow: hidden; background: radial-gradient(circle at 10% 10%, rgba(35,127,202,.12), transparent 32%), linear-gradient(180deg, #fbfaf6, #f5f9fc); }
-.new-hero::after { content: ""; position: absolute; inset: auto -10% -35% 45%; height: 520px; border: 1px solid rgba(35,127,202,.13); border-radius: 50%; box-shadow: 0 0 0 70px rgba(35,127,202,.025), 0 0 0 140px rgba(35,127,202,.018); pointer-events: none; }
+.hero-graph { position: absolute; right: -2rem; bottom: -1rem; width: clamp(22rem, 46vw, 42rem); height: auto; color: var(--teal); pointer-events: none; }
 .new-hero-grid { display: grid; grid-template-columns: 1fr .9fr; gap: clamp(3rem, 7vw, 7.5rem); align-items: center; }
 .new-hero-copy { position: relative; z-index: 2; display: grid; gap: 1.8rem; }
 .new-hero h1 { max-width: 8.6ch; font-size: clamp(4rem, 7.7vw, 7.6rem); line-height: .92; letter-spacing: -.068em; }

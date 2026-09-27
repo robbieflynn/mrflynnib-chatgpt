@@ -52,6 +52,21 @@ export default function HomePage() {
       <section className="new-hero new-hero-simple">
         <div className="hero-math hero-math-one" aria-hidden="true">𝑓(𝑥)</div>
         <div className="hero-math hero-math-two" aria-hidden="true">∫</div>
+        <svg className="hero-graph" viewBox="0 0 640 280" fill="none" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="hero-graph-fade" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="white" stopOpacity="0" />
+              <stop offset="1" stopColor="white" stopOpacity="1" />
+            </linearGradient>
+            <mask id="hero-graph-mask">
+              <rect width="640" height="280" fill="url(#hero-graph-fade)" />
+            </mask>
+          </defs>
+          <g mask="url(#hero-graph-mask)" stroke="currentColor">
+            <path d="M0 60H640M0 120H640M0 180H640M0 240H640M100 0V280M200 0V280M300 0V280M400 0V280M500 0V280M600 0V280" strokeOpacity=".07" />
+            <path d="M0 260C150 260 235 235 320 170S505 110 640 10" strokeWidth="1.5" strokeOpacity=".23" />
+          </g>
+        </svg>
         <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
             <h1>
