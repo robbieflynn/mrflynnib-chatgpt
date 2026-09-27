@@ -35,15 +35,26 @@
 .qb-whiteboard-open-button {
   margin: 10px 0 0 8px;
   padding: 7px 16px;
-  color: var(--flynn-blue-dark, #2c5f9e);
+  color: #4b5563;
   background: #fff;
-  border: 1px solid var(--flynn-blue, #407dc4);
+  border: 1px solid #9ca3af;
+}
+
+.qb-whiteboard-open-button::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='m16 3 5 5L8 21H3v-5L16 3Zm-2 2 5 5M3 16l5 5'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .qb-whiteboard-open-button:hover {
-  color: #fff;
-  background: var(--flynn-blue-dark, #2c5f9e);
-  border-color: var(--flynn-blue-dark, #2c5f9e);
+  color: #374151;
+  background: #f3f4f6;
+  border-color: #6b7280;
 }
 
 .qb-whiteboard-open-button:focus-visible,
