@@ -18,7 +18,7 @@ export default function PrivacyPage() {
       />
       <section className="section-tight">
         <Container className="narrow stack-xl">
-          <p className="muted"><strong>Last updated:</strong> 30 July 2026</p>
+          <p className="muted"><strong>Last updated:</strong> 27 September 2026</p>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Who we are</h2>
@@ -27,25 +27,26 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Information we collect</h2>
-            <p>We collect information you choose to provide, such as your name, email address, selected course and the contents of an enquiry. If you create a question bank account, we may also store account details, saved progress and information needed to keep the service secure.</p>
+            <p>We collect information you choose to provide, such as your name, email address, school, role, country and the contents of an enquiry. If you create a question bank account in future, we may also store account details, saved progress and information needed to keep the service secure.</p>
             <p>When you enroll through Teachable, we may receive limited student, enrollment, purchase and course-progress information made available to course creators. Basic technical logs may also be created when you use the website.</p>
+            <p>The syllabus checklists download directly from this website. You do not need to provide personal information to download them.</p>
           </section>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>How we use information</h2>
-            <p>We use information to deliver requested checklists, respond to enquiries, provide and support courses or question bank access, maintain security, understand website performance and comply with legal obligations.</p>
-            <p>We send marketing emails only when you have chosen to receive them or where otherwise permitted by applicable law. You can unsubscribe at any time using the link in an email.</p>
+            <p>We use information to respond to enquiries, provide and support courses or future question bank access, maintain security, understand website performance and comply with legal obligations.</p>
+            <p>Submitting an enquiry or downloading a checklist does not subscribe you to marketing emails.</p>
           </section>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Services we use</h2>
-            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, MailerLite for checklist delivery, mailing lists and school enquiries, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrollment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
+            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, Google Workspace for business email and school-enquiry notifications, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrollment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
             <p>These providers process information under their own terms and may process it in different countries. We share only the information reasonably needed for each service.</p>
           </section>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>How long we keep information</h2>
-            <p>General enquiries are normally kept for up to 24 months after the last contact. Mailing-list information is kept until you unsubscribe, after which limited information may be retained to respect your choice. Account information is kept while the account is active and for a reasonable period afterwards. Records may be kept longer where required for legal, tax, security or dispute purposes.</p>
+            <p>General enquiries are normally kept for up to 24 months after the last contact. Account information is kept while the account is active and for a reasonable period afterwards. Records may be kept longer where required for legal, tax, security or dispute purposes.</p>
           </section>
 
           <section className="stack" id="cookies">

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { protectFormRequest, textValue } from "@/lib/request-security";
 
 const allowedKinds = new Set(["contact", "tutoring", "school"]);
-const schoolEnquiryGroupId = "194431035036927513";
+const allowedCurricula = new Set(["IB Mathematics", "IGCSE Mathematics"]);
 
 function isEmail(value: unknown): value is string {
   return typeof value === "string" && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -13,64 +13,99 @@ function optionalText(body: Record<string, unknown>, key: string) {
   return typeof value === "string" && value.trim() ? value.trim() : "Not provided";
 }
 
-async function submitSchoolEnquiry(body: Record<string, unknown>, token: string) {
-  const email = String(body.email).trim().toLowerCase();
-  const headers = {
-    Accept: "application/json",
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
+function emailHeader(value: string) {
+  return value.replace(/[\r\n]+/g, " ").trim();
+}
 
-  const existingResponse = await fetch(
-    `https://connect.mailerlite.com/api/subscribers/${encodeURIComponent(email)}?include=groups`,
-    { headers, cache: "no-store" },
-  );
+function encodedSubject(value: string) {
+  return `=?UTF-8?B?${Buffer.from(emailHeader(value), "utf8").toString("base64")}?=`;
+}
 
-  if (existingResponse.ok) {
-    const existing = (await existingResponse.json()) as { data?: { id?: string } };
-    const subscriberId = existing.data?.id;
+async function getGoogleAccessToken() {
+  const clientId = process.env.GOOGLE_WORKSPACE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_WORKSPACE_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_WORKSPACE_REFRESH_TOKEN;
 
-    if (subscriberId) {
-      const unassignResponse = await fetch(
-        `https://connect.mailerlite.com/api/subscribers/${subscriberId}/groups/${schoolEnquiryGroupId}`,
-        { method: "DELETE", headers, cache: "no-store" },
-      );
+  if (!clientId || !clientSecret || !refreshToken) return null;
 
-      if (!unassignResponse.ok && unassignResponse.status !== 404) {
-        console.warn("Could not reset existing school enquiry group membership", unassignResponse.status);
-      }
-    }
-  } else if (existingResponse.status !== 404) {
-    console.error("MailerLite subscriber lookup failed", existingResponse.status, await existingResponse.text());
-    return false;
-  }
-
-  const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
+  const response = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
-    headers,
-    body: JSON.stringify({
-      email,
-      fields: {
-        name: String(body.name).trim(),
-        company: optionalText(body, "schoolName"),
-        country: optionalText(body, "country"),
-        school_role: optionalText(body, "role"),
-        estimated_students: optionalText(body, "studentCount"),
-        courses_or_year_groups: `${optionalText(body, "curriculum")}: ${optionalText(body, "coursesNeeded")}`,
-        school_enquiry_message: `${optionalText(body, "curriculum")} enquiry. ${optionalText(body, "message")}`,
-      },
-      groups: [schoolEnquiryGroupId],
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+      grant_type: "refresh_token",
     }),
     cache: "no-store",
   });
 
   if (!response.ok) {
-    console.error("MailerLite school enquiry failed", response.status, await response.text());
+    console.error("Google Workspace token request failed", response.status);
+    return null;
+  }
+
+  const result = (await response.json()) as { access_token?: string };
+  return result.access_token ?? null;
+}
+
+async function sendSchoolEnquiry(body: Record<string, unknown>) {
+  const accessToken = await getGoogleAccessToken();
+  const sender = process.env.GOOGLE_WORKSPACE_SENDER_EMAIL;
+  const recipient = process.env.SCHOOL_ENQUIRY_TO_EMAIL ?? "contact@mrflynnib.com";
+
+  if (!accessToken || !sender) return false;
+
+  const email = String(body.email).trim().toLowerCase();
+  const schoolName = String(body.schoolName).trim();
+  const curriculum = optionalText(body, "curriculum");
+  const messageBody = [
+    `A new ${curriculum} school enquiry was submitted on mrflynnib.com.`,
+    "",
+    `Name: ${String(body.name).trim()}`,
+    `Email: ${email}`,
+    `Role: ${optionalText(body, "role")}`,
+    `School: ${schoolName}`,
+    `Country: ${optionalText(body, "country")}`,
+    `Estimated students: ${optionalText(body, "studentCount")}`,
+    `Courses or year groups: ${optionalText(body, "coursesNeeded")}`,
+    `Curriculum: ${curriculum}`,
+    "",
+    "Other information:",
+    optionalText(body, "message"),
+    "",
+    `Submitted: ${new Date().toISOString()}`,
+  ].join("\r\n");
+
+  const mimeMessage = [
+    `From: Mr Flynn IB Website <${emailHeader(sender)}>`,
+    `To: ${emailHeader(recipient)}`,
+    `Reply-To: ${emailHeader(email)}`,
+    `Subject: ${encodedSubject(`New ${curriculum} school enquiry: ${schoolName}`)}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    "",
+    messageBody,
+  ].join("\r\n");
+
+  const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ raw: Buffer.from(mimeMessage, "utf8").toString("base64url") }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    console.error("Google Workspace school enquiry email failed", response.status);
     return false;
   }
 
-  const result = (await response.json()) as { data?: { status?: string } };
-  return result.data?.status === "active";
+  const result = (await response.json()) as { id?: string };
+  return Boolean(result.id);
 }
 
 export async function POST(request: Request) {
@@ -102,8 +137,9 @@ export async function POST(request: Request) {
     const country = textValue(body, "country", 100);
     const studentCount = Number(textValue(body, "studentCount", 6));
     const coursesNeeded = textValue(body, "coursesNeeded", 500);
+    const curriculum = textValue(body, "curriculum", 50);
 
-    if (!role || !schoolName || !country || !Number.isInteger(studentCount) || studentCount < 1 || studentCount > 10_000 || (body.coursesNeeded && !coursesNeeded)) {
+    if (!role || !schoolName || !country || !Number.isInteger(studentCount) || studentCount < 1 || studentCount > 10_000 || !allowedCurricula.has(curriculum) || (body.coursesNeeded && !coursesNeeded)) {
       return NextResponse.json({ message: "Please complete the required school details." }, { status: 400 });
     }
   }
@@ -119,16 +155,7 @@ export async function POST(request: Request) {
   };
 
   if (kind === "school") {
-    const token = process.env.MAILERLITE_API_TOKEN;
-
-    if (!token) {
-      return NextResponse.json(
-        { message: "The school enquiry form is being configured. Please email contact@mrflynnib.com." },
-        { status: 503 },
-      );
-    }
-
-    if (!(await submitSchoolEnquiry(body, token))) {
+    if (!(await sendSchoolEnquiry(body))) {
       return NextResponse.json(
         { message: "We could not send your enquiry. Please email contact@mrflynnib.com." },
         { status: 502 },
