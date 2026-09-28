@@ -14,7 +14,11 @@ export function ChecklistSignup() {
     setStatus("sending");
     setMessage("");
     const form = event.currentTarget;
-    const payload = Object.fromEntries(new FormData(form).entries());
+    const formData = new FormData(form);
+    const payload = {
+      ...Object.fromEntries(formData.entries()),
+      marketingConsent: formData.get("marketingConsent") === "on",
+    };
 
     try {
       const response = await fetch("/api/checklist-signup", {
@@ -27,7 +31,7 @@ export function ChecklistSignup() {
       setStatus("success");
       setMessage(result.message ?? "Thank you. We’ll email the checklist for your selected course.");
       form.reset();
-      const course = String(payload.course).toLowerCase().replace(" ", "-");
+      const course = String(formData.get("course")).toLowerCase().replace(" ", "-");
       router.push(`/thanks/checklist-${course}`);
     } catch (error) {
       setStatus("error");
@@ -57,10 +61,13 @@ export function ChecklistSignup() {
         </select>
       </div>
       <button className="button" type="submit" disabled={status === "sending"}>
-        {status === "sending" ? "Sending…" : "Send my checklist and subscribe"}
+        {status === "sending" ? "Sending…" : "Send my free checklist"}
       </button>
-      <p className="checklist-consent-note">You’ll receive your checklist plus occasional IB Mathematics resources and course updates from Mr Flynn IB. Unsubscribe anytime.</p>
-      <p className="checklist-privacy">By clicking the button, you agree to receive these emails. See our <Link href="/privacy">privacy policy</Link>.</p>
+      <label className="checklist-consent-note" htmlFor="checklist-marketing">
+        <input id="checklist-marketing" type="checkbox" name="marketingConsent" />
+        <span>Email me occasional IB Maths tips, free resources and course updates. I can unsubscribe at any time. <span className="checklist-optional">(Optional)</span></span>
+      </label>
+      <p className="checklist-privacy">See our <Link href="/privacy">privacy policy</Link>.</p>
       {message && <p role={status === "error" ? "alert" : "status"} className={`form-message checklist-message ${status === "success" ? "form-success" : "form-error"}`}>{message}</p>}
     </form>
   );
