@@ -192,7 +192,7 @@
 
 .qb-whiteboard-surface {
   position: relative;
-  height: 1120px;
+  height: 2240px;
   background-color: #fff;
   background-image:
     linear-gradient(#edf1f5 var(--whiteboard-grid-line, 1px), transparent var(--whiteboard-grid-line, 1px)),
