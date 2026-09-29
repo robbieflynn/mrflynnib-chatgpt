@@ -1237,14 +1237,15 @@ textarea { min-height: 130px; resize: vertical; }
   .final-cta-card .button { width: 100%; }
 }
 
-/* Tuition partner design preview: destinations await the supplied partner URL. */
+/* Tuition partner design preview. */
 .header-inner { display: flex; gap: 1.2rem; padding-block: .55rem; }
 .header-inner .brand { grid-column: 1; grid-row: 1; width: fit-content; }
 .tuition-partner-logo { flex: 0 0 auto; position: relative; width: 125px; height: 38px; overflow: hidden; }
 .tuition-partner-logo img { position: absolute; width: 157.4%; max-width: none; height: auto; left: -28.6%; top: -132%; mix-blend-mode: multiply; }
 .header-inner .desktop-nav { justify-content: center; gap: 1rem; font-size: .85rem; white-space: nowrap; }
-.tuition-nav { border: 0; padding: 0; background: transparent; color: #ae4c00; font: inherit; font-weight: 800; opacity: 1; cursor: default; white-space: nowrap; }
-.button.tuition-button { background: #ff891d; color: #172a3a; border-color: #ff891d; opacity: 1; box-shadow: none; cursor: default; }
+.tuition-nav { border: 0; padding: 0; background: transparent; color: #ae4c00; font: inherit; font-weight: 800; white-space: nowrap; }
+.button.tuition-button { background: #ff891d; color: #172a3a; border-color: #ff891d; box-shadow: none; }
+.button.tuition-button:hover { background: #e87912; border-color: #e87912; }
 .mobile-panel .tuition-nav { display: block; padding: .75rem; }
 @media (max-width: 1100px) {
   .header-inner { gap: .8rem; }

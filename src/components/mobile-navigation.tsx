@@ -48,7 +48,7 @@ export function MobileNavigation() {
           <nav id="mobile-navigation-panel" className="mobile-panel" aria-label="Mobile navigation">
             {navItems.map((item) => <Link key={item.href} href={item.href} onClick={closeMenu}>{item.label}</Link>)}
             <Link href="/tutoring" onClick={closeMenu}>Tutoring</Link>
-            <button type="button" className="tuition-nav" disabled title="Partner sign-up link coming soon">One-to-one tuition</button>
+            <Link href="/go/ib-tutors" className="tuition-nav" onClick={closeMenu}>One-to-one tuition</Link>
             <Link className="mobile-student-link" href="/go/my-courses" onClick={closeMenu}>My courses</Link>
             <Link href="/contact" onClick={closeMenu}>Contact</Link>
           </nav>

@@ -14,7 +14,7 @@ export function SiteHeader() {
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.filter((item) => item.href !== "/ia" && item.href !== "/book").map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
-          <button type="button" className="tuition-nav" disabled title="Partner sign-up link coming soon">One-to-one tuition</button>
+          <Link href="/go/ib-tutors" className="tuition-nav">One-to-one tuition</Link>
           <Link className="header-contact-button" href="/contact">Contact</Link>
           <Link className="header-login-link" href="/go/my-courses">My courses</Link>
           <details className="header-more">
@@ -25,9 +25,9 @@ export function SiteHeader() {
             </div>
           </details>
         </nav>
-        <div className="tuition-partner-logo" title="IB Tutors partner link coming soon">
+        <Link className="tuition-partner-logo" href="/go/ib-tutors" aria-label="Visit IB Tutors at The Tuition Centre">
           <Image src="/images/ib-tutors-logo.jpeg" alt="IB Tutors, from The Tuition Centre" width={1448} height={1086} priority />
-        </div>
+        </Link>
         <MobileNavigation />
       </Container>
     </header>
