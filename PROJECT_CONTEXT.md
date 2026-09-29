@@ -297,3 +297,5 @@ Rob confirmed a partnership with IB Tutors, from The Tuition Centre in Ireland, 
 Rob revised the tuition preview header to a single row: keep Courses, Question bank, Schools, Contact, My courses and One-to-one tuition visible, put IA guidance and Book in More, remove the redundant header Explore courses button, and make the partner logo smaller than Mr Flynn IB’s. Mobile navigation can retain the full list.
 
 On 29 September 2026, Rob refined the preview again: remove the More menu, remove Book from the header and mobile menu, show IA guidance directly in the main header, and place One-to-one tuition at the far right immediately beside the IB Tutors logo. This changes navigation placement only; it does not remove the book page or homepage book content.
+
+Rob then requested restoring the header's **Explore courses** button, removing **My courses** from both desktop and mobile navigation, and ordering the right-side actions as **One-to-one tuition**, **Explore courses**, then the IB Tutors logo.
