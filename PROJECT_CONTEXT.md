@@ -301,3 +301,5 @@ On 29 September 2026, Rob refined the preview again: remove the More menu, remov
 Rob then requested restoring the header's **Explore courses** button, removing **My courses** from both desktop and mobile navigation, and ordering the right-side actions as **One-to-one tuition**, **Explore courses**, then the IB Tutors logo.
 
 Rob subsequently standardised the customer-facing capitalisation to **One-to-One** and requested a fifth homepage route for mobile only. Keep the desktop homepage at its four balanced principal cards. On viewports up to 650 pixels wide, show a compact fifth card after Tutoring titled **One-to-One Tuition with IB Tutors**, link it to `/go/ib-tutors`, list Physics, Chemistry, Biology and Maths, and use the partner's navy and orange palette so it is distinct but harmonious with the homepage.
+
+Keep this mobile-only IB Tutors card on the same white background as the four principal cards. Use navy text and restrained orange accents rather than a dark filled background.
