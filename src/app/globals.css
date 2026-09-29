@@ -327,6 +327,13 @@ textarea { min-height: 130px; resize: vertical; }
 .offer-card-primary .offer-card-top small { color: rgba(255,255,255,.5); }
 .offer-card h3 { font-size: clamp(1.55rem, 2.2vw, 2rem); }
 .offer-card p { color: var(--muted); font-size: .9rem; }
+.offer-card-partner { display: none; overflow: hidden; border-color: rgba(255,137,29,.5); background: white; color: #10283c; box-shadow: inset 0 5px 0 #ff891d, 0 12px 38px rgba(11,21,48,.05); }
+.offer-card-partner:hover { border-color: #ff891d; box-shadow: inset 0 5px 0 #ff891d, 0 25px 60px rgba(16,40,60,.14); }
+.offer-card-partner .offer-card-top > span { color: #cf6500; font-size: 1.1rem; }
+.offer-card-partner .offer-card-top small { color: #536071; }
+.offer-card-partner h3 { color: #10283c; font-size: clamp(1.8rem, 3vw, 2.8rem); }
+.offer-card-partner p { color: #536071; font-size: 1rem; }
+.offer-card-partner .offer-link { color: #b95700; white-space: nowrap; }
 .offer-link { margin-top: auto; display: flex; justify-content: space-between; align-items: center; color: var(--teal-dark); font-size: .82rem; font-weight: 850; }
 .offer-card-primary .offer-link { color: white; }
 .offer-link i { font-style: normal; transition: transform .2s ease; }
@@ -915,6 +922,7 @@ textarea { min-height: 130px; resize: vertical; }
   .proof-strip-grid > div { border-right: 0; border-bottom: 1px solid var(--line); }
   .proof-strip-grid > div:last-child { border-bottom: 0; }
   .offer-card-primary { grid-column: auto; }
+  .offer-card-partner { display: flex; grid-column: auto; min-height: 300px; }
   .offer-card { min-height: 300px; }
   .igcse-home-routes, .igcse-route-grid { grid-template-columns: 1fr; }
   .igcse-home-card { min-height: auto; border-radius: 1.25rem; }
