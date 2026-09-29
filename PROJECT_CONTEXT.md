@@ -289,3 +289,13 @@ The local repository also contains untracked generated dependency/build items fr
 3. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
 4. Design and implement the agreed public-sample/free-account boundary for the question bank when Rob is ready.
 5. Verify the supplied Edexcel IGCSE Mathematics question bank in production after the restored IGCSE area is approved and published.
+
+## Tuition partner preview, 26 September 2026
+
+Rob confirmed a partnership with IB Tutors, from The Tuition Centre in Ireland, and supplied its orange/navy logo. He requested an orange “One-to-one tuition” third homepage hero button, a matching primary-navigation item, and the partner logo at the top right. The verified partner destination supplied by Rob on 29 September 2026 is `https://www.thetuitioncentre.ie/ib-tutors`; route partner actions through the website's `/go/ib-tutors` conversion path. Build a design preview only and do not merge or publish until Rob approves. Existing tutoring content remains unchanged pending a separate decision.
+
+Rob revised the tuition preview header to a single row: keep Courses, Question bank, Schools, Contact, My courses and One-to-one tuition visible, put IA guidance and Book in More, remove the redundant header Explore courses button, and make the partner logo smaller than Mr Flynn IB’s. Mobile navigation can retain the full list.
+
+On 29 September 2026, Rob refined the preview again: remove the More menu, remove Book from the header and mobile menu, show IA guidance directly in the main header, and place One-to-one tuition at the far right immediately beside the IB Tutors logo. This changes navigation placement only; it does not remove the book page or homepage book content.
+
+Rob then requested restoring the header's **Explore courses** button, removing **My courses** from both desktop and mobile navigation, and ordering the right-side actions as **One-to-one tuition**, **Explore courses**, then the IB Tutors logo.

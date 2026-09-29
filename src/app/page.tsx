@@ -79,6 +79,7 @@ export default function HomePage() {
             <div className="cluster hero-actions">
               <ButtonLink href="/courses">Find your course</ButtonLink>
               <ButtonLink href="#syllabus-checklist" secondary>Get the free syllabus checklist</ButtonLink>
+              <Link href="/go/ib-tutors" className="button tuition-button">One-to-one tuition <span aria-hidden="true">↗</span></Link>
             </div>
           </div>
         </Container>
