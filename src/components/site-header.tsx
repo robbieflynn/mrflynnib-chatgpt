@@ -13,21 +13,16 @@ export function SiteHeader() {
           <LogoLockup priority />
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {navItems.filter((item) => item.href !== "/ia" && item.href !== "/book").map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
-          <Link href="/go/ib-tutors" className="tuition-nav">One-to-one tuition</Link>
+          {navItems.filter((item) => item.href !== "/book").map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
           <Link className="header-contact-button" href="/contact">Contact</Link>
           <Link className="header-login-link" href="/go/my-courses">My courses</Link>
-          <details className="header-more">
-            <summary>More</summary>
-            <div className="header-more-panel">
-              <Link href="/ia">IA guidance</Link>
-              <Link href="/book">Book</Link>
-            </div>
-          </details>
         </nav>
-        <Link className="tuition-partner-logo" href="/go/ib-tutors" aria-label="Visit IB Tutors at The Tuition Centre">
-          <Image src="/images/ib-tutors-logo.jpeg" alt="IB Tutors, from The Tuition Centre" width={1448} height={1086} priority />
-        </Link>
+        <div className="tuition-partner-group">
+          <Link href="/go/ib-tutors" className="header-tuition-link">One-to-one tuition</Link>
+          <Link className="tuition-partner-logo" href="/go/ib-tutors" aria-label="Visit IB Tutors at The Tuition Centre">
+            <Image src="/images/ib-tutors-logo.jpeg" alt="IB Tutors, from The Tuition Centre" width={1448} height={1086} priority />
+          </Link>
+        </div>
         <MobileNavigation />
       </Container>
     </header>

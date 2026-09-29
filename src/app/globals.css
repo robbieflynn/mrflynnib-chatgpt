@@ -1240,6 +1240,8 @@ textarea { min-height: 130px; resize: vertical; }
 /* Tuition partner design preview. */
 .header-inner { display: flex; gap: 1.2rem; padding-block: .55rem; }
 .header-inner .brand { grid-column: 1; grid-row: 1; width: fit-content; }
+.tuition-partner-group { display: flex; align-items: center; gap: .75rem; flex: 0 0 auto; }
+.header-tuition-link { color: #ae4c00; font-size: .85rem; font-weight: 800; white-space: nowrap; }
 .tuition-partner-logo { flex: 0 0 auto; position: relative; width: 125px; height: 38px; overflow: hidden; }
 .tuition-partner-logo img { position: absolute; width: 157.4%; max-width: none; height: auto; left: -28.6%; top: -132%; mix-blend-mode: multiply; }
 .header-inner .desktop-nav { justify-content: center; gap: 1rem; font-size: .85rem; white-space: nowrap; }
@@ -1252,6 +1254,7 @@ textarea { min-height: 130px; resize: vertical; }
   .header-inner .brand { margin-right: auto; }
   .header-inner .desktop-nav { display: none; }
   .header-inner .mobile-nav { display: block; grid-column: 3; grid-row: 1; }
+  .header-tuition-link { display: none; }
   .tuition-partner-logo { width: 115px; height: 35px; }
 }
 @media (max-width: 650px) {
@@ -1260,9 +1263,3 @@ textarea { min-height: 130px; resize: vertical; }
   .tuition-partner-logo { width: 95px; height: 29px; }
   .mobile-menu-toggle { font-size: .82rem; }
 }
-
-.header-more { position: relative; }
-.header-more summary { cursor: pointer; padding: .5rem 0; }
-.header-more-panel { position: absolute; top: 100%; right: 0; min-width: 155px; padding: .5rem; background: white; border: 1px solid var(--line); border-radius: .75rem; box-shadow: var(--shadow); }
-.header-more-panel a { display: block; padding: .65rem .75rem; border-radius: .4rem; }
-.header-more-panel a:hover { background: var(--teal-soft); }
