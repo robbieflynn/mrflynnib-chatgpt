@@ -327,9 +327,8 @@ textarea { min-height: 130px; resize: vertical; }
 .offer-card-primary .offer-card-top small { color: rgba(255,255,255,.5); }
 .offer-card h3 { font-size: clamp(1.55rem, 2.2vw, 2rem); }
 .offer-card p { color: var(--muted); font-size: .9rem; }
-.offer-card-partner { grid-column: 1 / -1; min-height: 240px; display: grid; grid-template-columns: minmax(130px, .45fr) minmax(0, 1.5fr) auto; align-items: center; gap: 2rem; overflow: hidden; border-color: rgba(255,137,29,.45); background: radial-gradient(circle at 94% 5%, rgba(255,137,29,.24), transparent 28%), linear-gradient(135deg, #10283c, #173c59); color: white; box-shadow: inset 0 5px 0 #ff891d, 0 18px 48px rgba(16,40,60,.14); }
+.offer-card-partner { display: none; overflow: hidden; border-color: rgba(255,137,29,.45); background: radial-gradient(circle at 94% 5%, rgba(255,137,29,.24), transparent 28%), linear-gradient(135deg, #10283c, #173c59); color: white; box-shadow: inset 0 5px 0 #ff891d, 0 18px 48px rgba(16,40,60,.14); }
 .offer-card-partner:hover { border-color: #ff891d; box-shadow: inset 0 5px 0 #ff891d, 0 25px 60px rgba(16,40,60,.24); }
-.offer-card-partner .offer-card-top { align-self: stretch; flex-direction: column; justify-content: space-between; }
 .offer-card-partner .offer-card-top > span { color: #ffad60; font-size: 1.1rem; }
 .offer-card-partner .offer-card-top small { color: rgba(255,255,255,.68); }
 .offer-card-partner h3 { color: white; font-size: clamp(1.8rem, 3vw, 2.8rem); }
@@ -864,8 +863,6 @@ textarea { min-height: 130px; resize: vertical; }
   .desktop-nav { display: none; }
   .mobile-nav { display: block; }
   .offer-grid { grid-template-columns: repeat(2, 1fr); }
-  .offer-card-partner { grid-template-columns: 1fr; min-height: 320px; }
-  .offer-card-partner .offer-card-top { flex-direction: row; }
   .offer-card-primary { grid-column: span 2; min-height: 320px; }
   .school-tier-grid { grid-template-columns: repeat(2, 1fr); }
   .inclusion-grid { grid-template-columns: repeat(2, 1fr); }
@@ -925,7 +922,7 @@ textarea { min-height: 130px; resize: vertical; }
   .proof-strip-grid > div { border-right: 0; border-bottom: 1px solid var(--line); }
   .proof-strip-grid > div:last-child { border-bottom: 0; }
   .offer-card-primary { grid-column: auto; }
-  .offer-card-partner { grid-column: auto; }
+  .offer-card-partner { display: flex; grid-column: auto; min-height: 300px; }
   .offer-card { min-height: 300px; }
   .igcse-home-routes, .igcse-route-grid { grid-template-columns: 1fr; }
   .igcse-home-card { min-height: auto; border-radius: 1.25rem; }
