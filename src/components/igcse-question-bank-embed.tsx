@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
 
 export function IgcseQuestionBankEmbed() {
   const frameRef = useRef<HTMLIFrameElement>(null);
@@ -8,6 +9,7 @@ export function IgcseQuestionBankEmbed() {
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(760);
+  useQuestionBankAccount(frameRef, "igcse");
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;

@@ -210,6 +210,23 @@ textarea { min-height: 130px; resize: vertical; }
 
 .outbound-page, .thank-you-page { min-height: 65vh; display: grid; align-items: center; }
 
+.account-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.account-card { padding: clamp(1.4rem, 3vw, 2.2rem); border: 1px solid var(--line); border-radius: 1.4rem; background: white; box-shadow: 0 20px 55px rgba(11,21,48,.07); }
+.account-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; padding: .3rem; border-radius: .85rem; background: #edf2f5; }
+.account-tabs button { padding: .65rem; border: 0; border-radius: .65rem; background: transparent; color: var(--muted); font-weight: 800; cursor: pointer; }
+.account-tabs button[aria-selected="true"] { background: white; color: var(--ink); box-shadow: 0 3px 12px rgba(11,21,48,.08); }
+.account-text-button { width: fit-content; padding: 0; border: 0; background: transparent; color: var(--teal-dark); font-weight: 800; cursor: pointer; }
+.account-text-button:hover { text-decoration: underline; }
+.account-benefits { padding: clamp(1.2rem, 2vw, 2rem) 0; }
+.account-benefits h2 { font-size: clamp(2rem, 4vw, 3.4rem); }
+.account-benefits ul { display: grid; gap: .85rem; padding-left: 1.25rem; color: var(--ink-2); }
+.account-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; max-width: 680px; }
+.account-stats > div { padding: 1.4rem; display: grid; gap: .2rem; border: 1px solid var(--line); border-radius: 1rem; background: white; }
+.account-stats strong { color: var(--teal-dark); font-size: 2.4rem; line-height: 1; }
+.account-stats span { color: var(--muted); font-weight: 750; }
+.account-actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+.button:disabled { cursor: wait; opacity: .65; transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
@@ -1273,4 +1290,14 @@ textarea { min-height: 130px; resize: vertical; }
   .header-inner .brand-lockup { width: 132px; }
   .tuition-partner-logo { width: 95px; height: 29px; }
   .mobile-menu-toggle { font-size: .82rem; }
+}
+
+@media (max-width: 900px) {
+  .account-layout { grid-template-columns: 1fr; }
+  .account-benefits { padding-top: 0; }
+}
+
+@media (max-width: 650px) {
+  .account-stats { grid-template-columns: 1fr; }
+  .account-actions { align-items: stretch; flex-direction: column; }
 }

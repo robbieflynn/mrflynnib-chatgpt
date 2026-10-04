@@ -18,7 +18,7 @@ export default function TermsPage() {
       />
       <section className="section-tight">
         <Container className="narrow stack-xl">
-          <p className="muted"><strong>Last updated:</strong> 30 July 2026</p>
+          <p className="muted"><strong>Last updated:</strong> 4 October 2026</p>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>About these terms</h2>
@@ -35,6 +35,12 @@ export default function TermsPage() {
             <h2 style={{ fontSize: "2rem" }}>Permitted use</h2>
             <p>The website, courses, videos, explanations, downloads, branding and original materials are protected by intellectual-property rights. You may use materials for your own learning or teaching as expressly allowed. You may not copy, publish, distribute, sell or commercially exploit them without written permission.</p>
             <p>Do not attempt to disrupt the website, gain unauthorised access, misuse another person&apos;s account or interfere with other users. Access may be suspended where these terms are seriously or repeatedly breached.</p>
+          </section>
+
+          <section className="stack">
+            <h2 style={{ fontSize: "2rem" }}>Question bank accounts</h2>
+            <p>The question banks remain publicly viewable. A free student account lets you save completed-question progress and editable whiteboard working. You are responsible for keeping your sign-in details secure and for the information saved through your account.</p>
+            <p>Saved working is a study aid. Although reasonable steps are taken to protect and retain it, you should keep a separate copy of anything important. Account features may change as the service develops.</p>
           </section>
 
           <section className="stack">

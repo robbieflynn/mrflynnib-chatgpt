@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
 
 type QuestionBankEmbedProps = {
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL";
@@ -13,6 +14,7 @@ export function QuestionBankEmbed({ course }: QuestionBankEmbedProps) {
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(620);
+  useQuestionBankAccount(frameRef, "ib");
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;

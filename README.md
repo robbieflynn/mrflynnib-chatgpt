@@ -8,6 +8,7 @@ A complete first-pass Next.js website for **MrFlynnIB.com**, positioning the bus
 - AA HL, AA SL, AI HL and AI SL course catalogue and dynamic course pages
 - Teachable enrolment links and student-login redirect
 - Free IA videos, direct syllabus-checklist downloads and native question bank
+- Student accounts with synced question progress and editable whiteboard working
 - Tutoring application form
 - School-licence enquiry form and proposed licence tiers
 - Book, About, Results, Contact and FAQ pages
@@ -33,9 +34,10 @@ Open `http://localhost:3000`.
 1. Add the live Teachable school, login and course URLs to `.env.local`.
 2. Add the live book purchase URL and YouTube channel URL.
 3. Configure the Resend variable described below so school enquiries generate an email notification.
-4. Optionally create a Supabase project, run `supabase/schema.sql`, and add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for contact and tutoring enquiries if those forms are restored later.
-5. Confirm final course availability, access periods and operational terms.
-6. Complete legal review and configure consent before non-essential tracking.
+4. Create a Supabase project, run `supabase/schema.sql`, and add `NEXT_PUBLIC_SUPABASE_URL` plus `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` for student accounts. Add the site and callback URLs in Supabase Auth settings.
+5. Optionally add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for contact and tutoring enquiry storage if those forms are restored later.
+6. Confirm final course availability, access periods and operational terms.
+7. Complete legal review and configure consent before non-essential tracking.
 
 ## Resend school-enquiry setup
 
@@ -60,7 +62,7 @@ Never commit the API key. Store it only as an encrypted environment variable in 
 
 ## Architecture decision
 
-The public website owns brand, positioning, SEO, audience journeys and lead generation. Teachable owns course checkout, login and lesson delivery. The website serves the checklist PDFs directly. Resend sends transactional school-enquiry notifications. Supabase can retain other structured data where needed; it is not added as a duplicate learning platform.
+The public website owns brand, positioning, SEO, audience journeys, question-bank accounts and saved practice data. Teachable owns course checkout, login and lesson delivery. The website serves the checklist PDFs directly. Resend sends transactional school-enquiry notifications. Supabase provides secure student authentication, question progress and whiteboard storage; it is not a duplicate course platform.
 
 ## Image update
 

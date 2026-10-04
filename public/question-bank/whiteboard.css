@@ -1,3 +1,34 @@
+.qb-progress-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  width: fit-content;
+  margin: 0 0 .65rem;
+  padding: .42rem .68rem;
+  border: 1px solid #b7c4ce;
+  border-radius: 999px;
+  background: #fff;
+  color: #334155;
+  font-size: .76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.qb-progress-toggle:hover { border-color: #237fca; color: #1267ae; }
+.qb-progress-toggle:disabled { cursor: default; opacity: .68; }
+.qb-progress-toggle.is-complete { border-color: #97d1bd; background: #e9f7f1; color: #176b50; }
+.qb-progress-check {
+  width: 1.15rem;
+  height: 1.15rem;
+  display: inline-grid;
+  place-items: center;
+  border: 1.5px solid currentColor;
+  border-radius: .32rem;
+  line-height: 1;
+}
+.qb-whiteboard-save-status[data-state="saved"] { color: #176b50; }
+.qb-whiteboard-save-status[data-state="saving"] { color: #1267ae; }
+.qb-whiteboard-save-status[data-state="error"] { color: #9f2f2f; }
+
 .qb-question-workspace {
   display: grid;
   gap: 18px;

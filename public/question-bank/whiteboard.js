@@ -40,7 +40,7 @@
     board.setAttribute('aria-label', 'Working whiteboard');
     board.innerHTML =
       '<div class="qb-whiteboard-header">' +
-        '<div class="qb-whiteboard-title">Working space <small>Not saved</small></div>' +
+        '<div class="qb-whiteboard-title">Working space <small class="qb-whiteboard-save-status">Not saved</small></div>' +
         '<div class="qb-whiteboard-tools" role="toolbar" aria-label="Whiteboard tools">' +
           '<div class="qb-whiteboard-paper-tools" role="group" aria-label="Paper style">' +
             '<span>Paper</span>' +
@@ -98,6 +98,12 @@
     var ctx = canvas.getContext('2d');
     var imageCtx = imageCanvas.getContext('2d');
     var actions = [];
+    var questionId = card.getAttribute('data-id');
+    var paperStyle = 'squared';
+    var saveTimer = null;
+    var loadRequested = false;
+    var documentLoaded = false;
+    var localDirty = false;
     var activeStroke = null;
     var activePan = null;
     var activeImage = null;
@@ -114,9 +120,71 @@
     var baseHeight = 2240;
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
+    var saveStatus = board.querySelector('.qb-whiteboard-save-status');
     canvas.tabIndex = 0;
     undo.setAttribute('aria-keyshortcuts', 'Meta+Z Control+Z');
     undo.title = 'Undo (Command+Z or Ctrl+Z)';
+
+    function accountState() {
+      return window.__mrflynnibAccountState || { configured: false, signedIn: false };
+    }
+
+    function setSaveStatus(text, state) {
+      saveStatus.textContent = text;
+      saveStatus.setAttribute('data-state', state || 'idle');
+    }
+
+    function updateAccountStatus() {
+      var account = accountState();
+      if (!account.configured) setSaveStatus('Saving coming soon', 'idle');
+      else if (!account.signedIn) setSaveStatus('Sign in to save', 'idle');
+      else if (!localDirty) setSaveStatus(documentLoaded ? 'Saved' : 'Ready to save', 'saved');
+    }
+
+    function serialiseDocument() {
+      return {
+        version: 1,
+        paper: paperStyle,
+        actions: actions.map(function (action) {
+          if (action.type === 'clear') return { type: 'clear' };
+          if (action.type === 'stroke') return {
+            type: 'stroke',
+            mode: action.mode === 'eraser' ? 'eraser' : 'pen',
+            colour: action.colour,
+            straightened: Boolean(action.straightened),
+            points: action.points.map(function (point) { return { x: point.x, y: point.y }; })
+          };
+          return {
+            type: 'image', source: action.source,
+            x: action.x, y: action.y, width: action.width, height: action.height
+          };
+        })
+      };
+    }
+
+    function scheduleSave() {
+      localDirty = true;
+      window.clearTimeout(saveTimer);
+      if (!accountState().signedIn) {
+        updateAccountStatus();
+        return;
+      }
+      setSaveStatus('Saving…', 'saving');
+      saveTimer = window.setTimeout(function () {
+        window.parent.postMessage({
+          type: 'mrflynnib-whiteboard-save',
+          questionId: questionId,
+          document: serialiseDocument()
+        }, window.location.origin);
+      }, 900);
+    }
+
+    function requestSavedDocument() {
+      if (loadRequested || !accountState().signedIn) return;
+      loadRequested = true;
+      setSaveStatus('Loading saved work…', 'saving');
+      window.parent.postMessage({ type: 'mrflynnib-whiteboard-load', questionId: questionId }, window.location.origin);
+    }
 
     function capturePointer(id) {
       // Capture improves dragging outside the sheet, but is not a prerequisite
@@ -149,6 +217,7 @@
       actions.pop();
       redraw();
       updateButtons();
+      scheduleSave();
     }
 
     card.addEventListener('keydown', function (event) {
@@ -430,6 +499,7 @@
         }
       }
       if (event.pointerId !== activePointer) return;
+      var changed = Boolean(activeStroke || activeImage);
       activePointer = null;
       activePointerType = null;
       window.clearTimeout(straightTimer);
@@ -437,6 +507,7 @@
       activeStroke = null;
       activePan = null;
       activeImage = null;
+      if (changed) scheduleSave();
     }
     window.addEventListener('pointerup', endStroke);
     window.addEventListener('pointercancel', endStroke);
@@ -459,9 +530,11 @@
     }
 
     function setPaper(style) {
+      paperStyle = style === 'blank' ? 'blank' : 'squared';
       surface.classList.toggle('qb-paper-blank', style === 'blank');
       board.querySelector('[data-whiteboard-action="squared-paper"]').setAttribute('aria-pressed', String(style === 'squared'));
       board.querySelector('[data-whiteboard-action="blank-paper"]').setAttribute('aria-pressed', String(style === 'blank'));
+      scheduleSave();
     }
 
     function setZoom(nextZoom) {
@@ -493,6 +566,7 @@
       open.setAttribute('aria-expanded', String(willOpen));
       if (willOpen) requestAnimationFrame(resize);
       else setExpanded(false);
+      if (willOpen) requestSavedDocument();
     });
 
     board.addEventListener('click', function (event) {
@@ -519,6 +593,7 @@
         actions.push({ type: 'clear' });
         redraw();
         updateButtons();
+        scheduleSave();
       }
       if (action === 'close') open.click();
     });
@@ -565,6 +640,7 @@
         actions.push({
           type: 'image',
           image: image,
+          source: source,
           x: drawLeft / canvas.clientWidth,
           y: drawTop / canvas.clientHeight,
           width: drawWidth / canvas.clientWidth,
@@ -573,6 +649,7 @@
         URL.revokeObjectURL(url);
         redraw();
         updateButtons();
+        scheduleSave();
       };
       image.onerror = function () { URL.revokeObjectURL(url); };
       image.src = url;
@@ -643,6 +720,75 @@
     });
     setZoom(1);
     updateButtons();
+    updateAccountStatus();
+
+    window.addEventListener('message', function (event) {
+      if (event.origin !== window.location.origin || event.source !== window.parent || !event.data) return;
+      if (event.data.type === 'mrflynnib-account-state') {
+        updateAccountStatus();
+        if (!board.hidden) requestSavedDocument();
+        return;
+      }
+      if (String(event.data.questionId) !== questionId) return;
+      if (event.data.type === 'mrflynnib-whiteboard-save-result') {
+        if (event.data.ok) {
+          localDirty = false;
+          documentLoaded = true;
+          setSaveStatus('Saved', 'saved');
+        } else {
+          setSaveStatus(event.data.reason === 'too-large' ? 'Too much to save' : 'Save failed', 'error');
+        }
+        return;
+      }
+      if (event.data.type === 'mrflynnib-whiteboard-data') {
+        documentLoaded = true;
+        if (!event.data.ok) {
+          setSaveStatus('Could not load saved work', 'error');
+          return;
+        }
+        if (!event.data.document || localDirty) {
+          updateAccountStatus();
+          if (localDirty) scheduleSave();
+          return;
+        }
+        var stored = event.data.document;
+        var storedActions = Array.isArray(stored.actions) ? stored.actions : [];
+        var restored = [];
+        storedActions.slice(0, 3000).forEach(function (action) {
+          if (!action || typeof action !== 'object') return;
+          if (action.type === 'clear') restored.push({ type: 'clear' });
+          if (action.type === 'stroke' && Array.isArray(action.points)) {
+            restored.push({
+              type: 'stroke',
+              mode: action.mode === 'eraser' ? 'eraser' : 'pen',
+              colour: typeof action.colour === 'string' ? action.colour : '#0d152e',
+              straightened: Boolean(action.straightened),
+              points: action.points.slice(0, 10000).map(function (point) {
+                return { x: Number(point.x) || 0, y: Number(point.y) || 0 };
+              })
+            });
+          }
+          if (action.type === 'image' && typeof action.source === 'string') {
+            var restoredImage = new Image();
+            var imageAction = {
+              type: 'image', image: restoredImage, source: action.source,
+              x: Number(action.x) || 0, y: Number(action.y) || 0,
+              width: Number(action.width) || .5, height: Number(action.height) || .2
+            };
+            restoredImage.onload = redraw;
+            restoredImage.src = action.source;
+            restored.push(imageAction);
+          }
+        });
+        actions = restored;
+        setPaper(stored.paper === 'blank' ? 'blank' : 'squared');
+        localDirty = false;
+        window.clearTimeout(saveTimer);
+        redraw();
+        updateButtons();
+        setSaveStatus('Saved', 'saved');
+      }
+    });
   }
 
   function scan() {

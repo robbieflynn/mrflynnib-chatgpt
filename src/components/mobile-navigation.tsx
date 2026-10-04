@@ -49,6 +49,7 @@ export function MobileNavigation() {
             {navItems.filter((item) => item.href !== "/book").map((item) => <Link key={item.href} href={item.href} onClick={closeMenu}>{item.label}</Link>)}
             <Link href="/tutoring" onClick={closeMenu}>Tutoring</Link>
             <Link href="/go/ib-tutors" className="tuition-nav" onClick={closeMenu}>One-to-One tuition</Link>
+            <Link href="/account" className="mobile-student-link" onClick={closeMenu}>Student sign in</Link>
             <Link href="/contact" onClick={closeMenu}>Contact</Link>
           </nav>
         </>
