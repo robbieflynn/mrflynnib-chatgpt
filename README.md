@@ -7,13 +7,13 @@ A complete first-pass Next.js website for **MrFlynnIB.com**, positioning the bus
 - Responsive homepage with four commercial routes: courses, tutoring, school licences and book
 - AA HL, AA SL, AI HL and AI SL course catalogue and dynamic course pages
 - Teachable enrolment links and student-login redirect
-- Free IA videos, syllabus checklist and native question bank
+- Free IA videos, direct syllabus-checklist downloads and native question bank
 - Tutoring application form
 - School-licence enquiry form and proposed licence tiers
 - Book, About, Results, Contact and FAQ pages
 - Privacy, terms and cookie-policy foundations
 - Server-side enquiry validation and optional Supabase storage
-- School-enquiry routing and internal notifications through MailerLite
+- Transactional school-enquiry notifications through Resend
 - Metadata, Open Graph image, sitemap, robots rules and security headers
 - GA4 hook, enabled only when an ID is supplied
 - Explicit placeholders rather than invented prices, testimonials or claims
@@ -32,10 +32,23 @@ Open `http://localhost:3000`.
 
 1. Add the live Teachable school, login and course URLs to `.env.local`.
 2. Add the live book purchase URL and YouTube channel URL.
-3. Add `MAILERLITE_API_TOKEN` for checklist delivery and school-enquiry routing, plus `MAILERLITE_MARKETING_GROUP_ID` for the separate consent-only mailing-list group.
-4. Optionally create a Supabase project, run `supabase/schema.sql`, and add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for other enquiry types if they are restored later.
+3. Configure the Resend variable described below so school enquiries generate an email notification.
+4. Optionally create a Supabase project, run `supabase/schema.sql`, and add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for contact and tutoring enquiries if those forms are restored later.
 5. Confirm final course availability, access periods and operational terms.
 6. Complete legal review and configure consent before non-essential tracking.
+
+## Resend school-enquiry setup
+
+The school form stays on the website. After validating a submission, the server uses Resend to send a transactional notification to `contact@mrflynnib.com`. The notification contains the form details and sets the enquirer as the reply-to address. It does not create a subscriber or add the sender to a marketing list.
+
+1. Verify `mrflynnib.com` in Resend without changing the existing Google Workspace mail-delivery records.
+2. Create a sending-only API key restricted to `mrflynnib.com`.
+3. Add `RESEND_API_KEY` to Vercel for Preview and Production.
+4. Optionally set `SCHOOL_ENQUIRY_FROM_EMAIL`; it defaults to `Mr Flynn IB Website <website@mrflynnib.com>`.
+5. Optionally set `SCHOOL_ENQUIRY_TO_EMAIL`; it defaults to `contact@mrflynnib.com`.
+6. Redeploy, submit one real preview enquiry and confirm that it arrives before publishing the change.
+
+Never commit the API key. Store it only as an encrypted environment variable in Vercel.
 
 ## Deployment
 
@@ -47,7 +60,7 @@ Open `http://localhost:3000`.
 
 ## Architecture decision
 
-The public website owns brand, positioning, SEO, audience journeys and lead generation. Teachable owns course checkout, login and lesson delivery. MailerLite handles checklist delivery, mailing-list groups and school-enquiry notifications. Supabase can retain other structured data where needed; it is not added as a duplicate learning platform.
+The public website owns brand, positioning, SEO, audience journeys and lead generation. Teachable owns course checkout, login and lesson delivery. The website serves the checklist PDFs directly. Resend sends transactional school-enquiry notifications. Supabase can retain other structured data where needed; it is not added as a duplicate learning platform.
 
 ## Image update
 

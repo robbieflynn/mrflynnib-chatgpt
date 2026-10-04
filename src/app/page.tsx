@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ButtonLink, Container, Eyebrow } from "@/components/ui";
-import { ChecklistSignup } from "@/components/checklist-signup";
 import { VideoEmbed } from "@/components/video-embed";
 import { testimonials } from "@/lib/testimonials";
 
@@ -55,6 +54,13 @@ const mainOffers = [
 
 const featuredTestimonials = testimonials.filter((testimonial) => testimonial.featured);
 
+const checklistDownloads = [
+  { course: "AA HL", href: "/downloads/mr-flynn-ib-aa-hl-syllabus-checklist.pdf" },
+  { course: "AA SL", href: "/downloads/mr-flynn-ib-aa-sl-syllabus-checklist.pdf" },
+  { course: "AI HL", href: "/downloads/mr-flynn-ib-ai-hl-syllabus-checklist.pdf" },
+  { course: "AI SL", href: "/downloads/mr-flynn-ib-ai-sl-syllabus-checklist.pdf" },
+] as const;
+
 export default function HomePage() {
   return (
     <>
@@ -87,7 +93,6 @@ export default function HomePage() {
             </p>
             <div className="cluster hero-actions">
               <ButtonLink href="/courses">Find your course</ButtonLink>
-              <ButtonLink href="#syllabus-checklist" secondary>Get the free syllabus checklist</ButtonLink>
               <Link href="/go/ib-tutors" className="button tuition-button">One-to-One tuition <span aria-hidden="true">↗</span></Link>
             </div>
           </div>
@@ -115,7 +120,7 @@ export default function HomePage() {
             <div className="stack checklist-copy">
               <Eyebrow>Free syllabus checklists</Eyebrow>
               <h2>Know exactly what you need to cover.</h2>
-              <p className="lede">Choose your IB Mathematics course and receive the complete syllabus checklist by email.</p>
+              <p className="lede">Choose your IB Mathematics course and download the complete syllabus checklist immediately.</p>
               <div className="checklist-courses" aria-label="Available syllabus checklists"><span>AA HL</span><span>AA SL</span><span>AI HL</span><span>AI SL</span></div>
             </div>
             <figure className="checklist-preview">
@@ -131,9 +136,17 @@ export default function HomePage() {
             </figure>
           </div>
           <div className="checklist-form-card">
-            <strong>Get your complete syllabus checklist</strong>
-            <p>Enter your details and select your course. We’ll email you the correct checklist.</p>
-            <ChecklistSignup />
+            <strong>Download your checklist</strong>
+            <p>Select your course. No email address or account is required.</p>
+            <div className="checklist-download-grid">
+              {checklistDownloads.map((checklist) => (
+                <a className="checklist-download-card" download href={checklist.href} key={checklist.course}>
+                  <span>{checklist.course}</span>
+                  <strong>Download PDF</strong>
+                </a>
+              ))}
+            </div>
+            <p className="checklist-download-note">Free to save, print and use as your personal topic tracker.</p>
           </div>
         </Container>
       </section>
