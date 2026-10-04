@@ -13,48 +13,12 @@ function optionalText(body: Record<string, unknown>, key: string) {
   return typeof value === "string" && value.trim() ? value.trim() : "Not provided";
 }
 
-function emailHeader(value: string) {
-  return value.replace(/[\r\n]+/g, " ").trim();
-}
-
-function encodedSubject(value: string) {
-  return `=?UTF-8?B?${Buffer.from(emailHeader(value), "utf8").toString("base64")}?=`;
-}
-
-async function getGoogleAccessToken() {
-  const clientId = process.env.GOOGLE_WORKSPACE_CLIENT_ID;
-  const clientSecret = process.env.GOOGLE_WORKSPACE_CLIENT_SECRET;
-  const refreshToken = process.env.GOOGLE_WORKSPACE_REFRESH_TOKEN;
-
-  if (!clientId || !clientSecret || !refreshToken) return null;
-
-  const response = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      client_id: clientId,
-      client_secret: clientSecret,
-      refresh_token: refreshToken,
-      grant_type: "refresh_token",
-    }),
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    console.error("Google Workspace token request failed", response.status);
-    return null;
-  }
-
-  const result = (await response.json()) as { access_token?: string };
-  return result.access_token ?? null;
-}
-
 async function sendSchoolEnquiry(body: Record<string, unknown>) {
-  const accessToken = await getGoogleAccessToken();
-  const sender = process.env.GOOGLE_WORKSPACE_SENDER_EMAIL;
+  const apiKey = process.env.RESEND_API_KEY;
+  const sender = process.env.SCHOOL_ENQUIRY_FROM_EMAIL ?? "Mr Flynn IB Website <website@mrflynnib.com>";
   const recipient = process.env.SCHOOL_ENQUIRY_TO_EMAIL ?? "contact@mrflynnib.com";
 
-  if (!accessToken || !sender) return false;
+  if (!apiKey) return false;
 
   const email = String(body.email).trim().toLowerCase();
   const schoolName = String(body.schoolName).trim();
@@ -75,37 +39,31 @@ async function sendSchoolEnquiry(body: Record<string, unknown>) {
     optionalText(body, "message"),
     "",
     `Submitted: ${new Date().toISOString()}`,
-  ].join("\r\n");
+  ].join("\n");
 
-  const mimeMessage = [
-    `From: Mr Flynn IB Website <${emailHeader(sender)}>`,
-    `To: ${emailHeader(recipient)}`,
-    `Reply-To: ${emailHeader(email)}`,
-    `Subject: ${encodedSubject(`New ${curriculum} school enquiry: ${schoolName}`)}`,
-    "MIME-Version: 1.0",
-    "Content-Type: text/plain; charset=UTF-8",
-    "Content-Transfer-Encoding: 8bit",
-    "",
-    messageBody,
-  ].join("\r\n");
-
-  const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+  const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Accept: "application/json",
+      Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ raw: Buffer.from(mimeMessage, "utf8").toString("base64url") }),
+    body: JSON.stringify({
+      from: sender,
+      to: [recipient],
+      reply_to: email,
+      subject: `New ${curriculum} school enquiry: ${schoolName}`,
+      text: messageBody,
+    }),
     cache: "no-store",
   });
 
   if (!response.ok) {
-    console.error("Google Workspace school enquiry email failed", response.status);
+    console.error("Resend school enquiry email failed", response.status);
     return false;
   }
 
-  const result = (await response.json()) as { id?: string };
-  return Boolean(result.id);
+  return true;
 }
 
 export async function POST(request: Request) {

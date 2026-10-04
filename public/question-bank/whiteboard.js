@@ -111,7 +111,7 @@
     var colour = '#0d152e';
     var zoom = 1;
     var baseWidth = 1400;
-    var baseHeight = 1120;
+    var baseHeight = 2240;
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
     canvas.tabIndex = 0;

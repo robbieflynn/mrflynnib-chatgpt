@@ -41,6 +41,15 @@ const mainOffers = [
     cta: "Ask about tutoring",
     className: "",
   },
+  {
+    number: "05",
+    label: "With IB Tutors",
+    title: "One-to-One Tuition with IB Tutors",
+    body: "Specialist support in Physics, Chemistry, Biology and Maths.",
+    href: "/go/ib-tutors",
+    cta: "Explore IB Tutors",
+    className: "offer-card-partner",
+  },
 ] as const;
 
 const featuredTestimonials = testimonials.filter((testimonial) => testimonial.featured);
@@ -85,6 +94,7 @@ export default function HomePage() {
             <div className="cluster hero-actions">
               <ButtonLink href="/courses">Find your course</ButtonLink>
               <ButtonLink href="#syllabus-checklist" secondary>Get the free syllabus checklist</ButtonLink>
+              <Link href="/go/ib-tutors" className="button tuition-button">One-to-One tuition <span aria-hidden="true">↗</span></Link>
             </div>
           </div>
         </Container>

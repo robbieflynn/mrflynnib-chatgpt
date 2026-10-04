@@ -22,6 +22,7 @@ export const outboundDestinations = {
     label: "IA ideas and modelling on YouTube",
     target: "https://www.youtube.com/watch?v=e5cLTtFzKnI&list=PLcvv9pSnukaVyAMiGPRxJsh6L2wydKFPm",
   },
+  "ib-tutors": { label: "One-to-One tuition with IB Tutors", target: "https://www.thetuitioncentre.ie/ib-tutors" },
   "contact-email": { label: "a new email to Mr Flynn IB", target: `mailto:${siteConfig.email}` },
   "tutoring-email": { label: "a tutoring email to Mr Flynn IB", target: `mailto:${siteConfig.email}` },
 } as const;
