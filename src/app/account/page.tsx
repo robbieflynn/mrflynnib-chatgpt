@@ -30,7 +30,7 @@ export default async function AccountPage() {
     return (
       <>
         <PageHero eyebrow="Student account" title="Save your question-bank progress" intro="Sign in to tick off completed questions and continue your whiteboard working on another device." />
-        <section className="section-tight"><Container className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm /></Suspense><aside className="account-benefits stack"><h2>One account for your practice</h2><ul><li>Use the same account for IB and IGCSE Mathematics.</li><li>Tick off questions as you complete them.</li><li>Return to editable whiteboard working later.</li><li>Keep the question banks free and publicly viewable.</li></ul><p className="small muted">Your course purchases and lessons remain in Teachable. This account is for Mr Flynn IB question-bank tools.</p></aside></Container></section>
+        <section className="section-tight"><Container className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm /></Suspense><aside className="account-benefits stack"><h2>Save your progress</h2><ul><li>Tick off questions as you complete them.</li><li>Return to editable whiteboard working later.</li></ul></aside></Container></section>
       </>
     );
   }
@@ -44,7 +44,7 @@ export default async function AccountPage() {
   return (
     <>
       <PageHero eyebrow="Student account" title={displayName ? `Welcome back, ${displayName}` : "Your question-bank progress"} intro="Your completed questions and whiteboard working are saved securely to this account." />
-      <section className="section-tight"><Container className="stack-lg"><div className="account-stats"><div><strong>{completedCount ?? 0}</strong><span>questions completed</span></div><div><strong>{whiteboardCount ?? 0}</strong><span>saved whiteboards</span></div></div><div className="account-actions"><Link className="button" href="/question-bank">Open IB question bank</Link><Link className="button button-secondary" href="/igcse/question-bank">Open IGCSE question bank</Link><SignOutButton /></div><p className="small muted">Signed in as {user.email}</p></Container></section>
+      <section className="section-tight"><Container className="stack-lg"><div className="account-stats"><div><strong>{completedCount ?? 0}</strong><span>questions completed</span></div><div><strong>{whiteboardCount ?? 0}</strong><span>saved whiteboards</span></div></div><div className="account-actions"><Link className="button" href="/question-bank">Open question bank</Link><SignOutButton /></div><p className="small muted">Signed in as {user.email}</p></Container></section>
     </>
   );
 }

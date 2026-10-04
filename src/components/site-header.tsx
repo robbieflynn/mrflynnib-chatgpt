@@ -14,7 +14,6 @@ export function SiteHeader() {
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.filter((item) => item.href !== "/book").map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
-          <Link className="header-login-link" href="/account">Student sign in</Link>
           <Link className="header-contact-button" href="/contact">Contact</Link>
         </nav>
         <div className="tuition-partner-group">

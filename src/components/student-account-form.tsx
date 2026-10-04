@@ -98,7 +98,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       </form>
       {mode === "sign-in" ? <button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button> : null}
       {mode === "reset" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
-      <p className="small muted">Creating an account saves question-bank progress and whiteboard working. It does not subscribe you to marketing emails. If you are under 13, ask a parent or guardian to help you.</p>
+      <p className="small muted">Creating an account saves question-bank progress and whiteboard working. It does not subscribe you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href="/terms">Terms of Use</Link> and acknowledge the <Link className="text-link" href="/privacy">Privacy Policy</Link>.</p>
     </div>
   );
