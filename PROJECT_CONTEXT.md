@@ -291,3 +291,5 @@ Rob then requested restoring the header's **Explore courses** button, removing *
 Rob subsequently standardised the customer-facing capitalisation to **One-to-One** and requested a fifth homepage route for mobile only. Keep the desktop homepage at its four balanced principal cards. On viewports up to 650 pixels wide, show a compact fifth card after Tutoring titled **One-to-One Tuition with IB Tutors**, link it to `/go/ib-tutors`, list Physics, Chemistry, Biology and Maths, and use the partner's navy and orange palette so it is distinct but harmonious with the homepage.
 
 Keep this mobile-only IB Tutors card on the same white background as the four principal cards. Use navy text and restrained orange accents rather than a dark filled background.
+
+On desktop, order the header actions as **Explore courses**, **One-to-One tuition**, then the IB Tutors logo. This keeps the two IB Tutors destinations beside one another. Leave the mobile navigation order unchanged.

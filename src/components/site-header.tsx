@@ -17,8 +17,8 @@ export function SiteHeader() {
           <Link className="header-contact-button" href="/contact">Contact</Link>
         </nav>
         <div className="tuition-partner-group">
-          <Link href="/go/ib-tutors" className="header-tuition-link">One-to-One tuition</Link>
           <ButtonLink href="/courses" small>Explore courses</ButtonLink>
+          <Link href="/go/ib-tutors" className="header-tuition-link">One-to-One tuition</Link>
           <Link className="tuition-partner-logo" href="/go/ib-tutors" aria-label="Visit IB Tutors at The Tuition Centre">
             <Image src="/images/ib-tutors-logo.jpeg" alt="IB Tutors, from The Tuition Centre" width={1448} height={1086} priority />
           </Link>
