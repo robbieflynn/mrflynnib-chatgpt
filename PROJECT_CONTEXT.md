@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 4 October 2026
+Last updated: 5 October 2026
 
 ## Purpose of this file
 
@@ -136,7 +136,7 @@ On 5 October 2026, Rob approved turning the signed-in student account page into 
 
 Later on 5 October 2026, Rob approved the same progress-dashboard journey for Edexcel IGCSE Mathematics. Keep the IB and IGCSE dashboard views separate even though they use the same student identity. The IGCSE question-bank page must show a clear Student dashboard route, and its dashboard must use the six real IGCSE topic groups, their subtopics and the verified 1,344-question bank. Rob also requested a compact single-line overall progress summary, with the longer dashboard introduction and the “See where you are up to” heading removed from both views.
 
-The student-data Supabase project is hosted specifically in **West EU (Ireland)** (`eu-west-1`). Rob chose Ireland after considering the platform's international audience, EU data residency and the fact that background progress and whiteboard syncing do not require the database to be physically closest to Dubai. The project uses Supabase's Free-plan Nano compute while the product is being tested. Its student tables, ownership policies and account-profile trigger were installed successfully on 4 October 2026. The public project URL and publishable browser key are configured in Vercel for Preview and Production, but the account feature must remain unpublished until the configured Preview passes end-to-end testing and Rob approves it. A first empty Mumbai project was created during setup but was not given the student schema and is not the selected production project; remove it only with Rob's explicit approval.
+The student-data Supabase project is hosted specifically in **West EU (Ireland)** (`eu-west-1`). Rob chose Ireland after considering the platform's international audience, EU data residency and the fact that background progress and whiteboard syncing do not require the database to be physically closest to Dubai. The project uses Supabase's Free-plan Nano compute while the product is being tested. Its student tables, ownership policies and account-profile trigger were installed successfully on 4 October 2026. The public project URL and publishable browser key are configured in Vercel for Preview and Production. After successful account creation, saved-progress and dashboard testing in Preview, Rob approved publication on 5 October 2026. Student sign-in, saved completion ticks, editable whiteboards, and the separate IB and IGCSE progress dashboards are now live in production. A first empty Mumbai project was created during setup but was not given the student schema and is not the selected production project; remove it only with Rob's explicit approval.
 
 Rob has confirmed that he previously worked with the IB and received direct guidance that questions may be used when they have been changed sufficiently. He confirms that the questions intended for this bank have been changed accordingly and does not want their original sources displayed publicly. Treat this as Rob's product-owner confirmation rather than an independently verified legal opinion. Preserve any private provenance or working notes included in supplied files, but do not add public source labels unless Rob requests them or a particular third-party licence expressly requires attribution.
 
@@ -281,7 +281,7 @@ The local repository also contains untracked generated dependency/build items fr
 1. Review the tested MailerLite-removal Preview and obtain Rob's approval before merging or publishing it. After the production form is verified, preserve any MailerLite records the business needs, then cancel MailerLite and remove only its obsolete variables and DNS records.
 2. Monitor Vercel Analytics, Search Console indexing and production errors during the first days after launch.
 3. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
-4. Complete Preview testing and Supabase configuration for student sign-in, saved completion ticks and whiteboard syncing before publishing the account feature.
+4. Monitor student sign-in, saved completion ticks, whiteboard syncing, and IB/IGCSE dashboard use now that the account feature is live.
 5. Verify the supplied Edexcel IGCSE Mathematics question bank in production after the restored IGCSE area is approved and published.
 
 ## Tuition partner preview, 26 September 2026
