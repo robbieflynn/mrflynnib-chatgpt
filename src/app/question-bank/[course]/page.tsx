@@ -20,16 +20,19 @@ export async function generateMetadata({ params }: { params: Promise<{ course: s
   };
 }
 
-export default async function CourseQuestionBankPage({ params }: { params: Promise<{ course: string }> }) {
+export default async function CourseQuestionBankPage({ params, searchParams }: { params: Promise<{ course: string }>; searchParams: Promise<{ topic?: string | string[]; subtopic?: string | string[] }> }) {
   const { course: slug } = await params;
+  const filters = await searchParams;
   const course = getQuestionBankCourse(slug);
   if (!course || !course.available) notFound();
+  const topic = typeof filters.topic === "string" ? filters.topic : undefined;
+  const subtopic = typeof filters.subtopic === "string" ? filters.subtopic : undefined;
 
   return (
     <>
       <section className="qb-course-page-hero">
         <Container className="stack-lg">
-          <Breadcrumbs items={[{ label: "Question bank", href: "/question-bank" }, { label: course.code }]} />
+          <Breadcrumbs items={[{ label: "Student dashboard", href: `/account?course=${course.slug}` }, { label: "Question bank", href: "/question-bank" }, { label: course.code }]} />
           <div className="qb-course-page-heading">
             <div className="stack">
               <Eyebrow>{course.code} question bank</Eyebrow>
@@ -53,7 +56,7 @@ export default async function CourseQuestionBankPage({ params }: { params: Promi
       </section>
 
       <section className="qb-course-content">
-        <QuestionBankEmbed course={course.code} />
+        <QuestionBankEmbed course={course.code} topic={topic} subtopic={subtopic} />
       </section>
     </>
   );

@@ -5,10 +5,14 @@ import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
 
 type QuestionBankEmbedProps = {
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL";
+  topic?: string;
+  subtopic?: string;
 };
 
-export function QuestionBankEmbed({ course }: QuestionBankEmbedProps) {
+export function QuestionBankEmbed({ course, topic, subtopic }: QuestionBankEmbedProps) {
   const query = new URLSearchParams({ course, embedded: "1", whiteboard: "6" });
+  if (topic) query.set("topic", topic);
+  if (subtopic) query.set("subtopic", subtopic);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);
