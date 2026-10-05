@@ -18,7 +18,7 @@ export default function PrivacyPage() {
       />
       <section className="section-tight">
         <Container className="narrow stack-xl">
-          <p className="muted"><strong>Last updated:</strong> 27 September 2026</p>
+          <p className="muted"><strong>Last updated:</strong> 4 October 2026</p>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Who we are</h2>
@@ -27,14 +27,14 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Information we collect</h2>
-            <p>We collect information you choose to provide, such as your name, email address, school, role, country and the contents of an enquiry. If you create a question bank account in future, we may also store account details, saved progress and information needed to keep the service secure.</p>
+            <p>We collect information you choose to provide, such as your name, email address, school, role, country and the contents of an enquiry. If you create a question bank account, we store your account details, completed-question progress, saved whiteboard working and information needed to keep the service secure.</p>
             <p>When you enroll through Teachable, we may receive limited student, enrollment, purchase and course-progress information made available to course creators. Basic technical logs may also be created when you use the website.</p>
             <p>The syllabus checklists download directly from this website. You do not need to provide personal information to download them.</p>
           </section>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>How we use information</h2>
-            <p>We use information to respond to enquiries, provide and support courses or future question bank access, maintain security, understand website performance and comply with legal obligations.</p>
+            <p>We use information to respond to enquiries, provide and support courses or question bank accounts, sync saved progress and whiteboard working, maintain security, understand website performance and comply with legal obligations.</p>
             <p>Submitting an enquiry or downloading a checklist does not subscribe you to marketing emails.</p>
           </section>
 
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>How long we keep information</h2>
-            <p>General enquiries are normally kept for up to 24 months after the last contact. Account information is kept while the account is active and for a reasonable period afterwards. Records may be kept longer where required for legal, tax, security or dispute purposes.</p>
+            <p>General enquiries are normally kept for up to 24 months after the last contact. Account information, saved progress and whiteboard working are kept while the account is active and for a reasonable period afterwards. Records may be kept longer where required for legal, tax, security or dispute purposes.</p>
           </section>
 
           <section className="stack" id="cookies">
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Children</h2>
-            <p>The website is not intended for children under 13 to create accounts or submit personal information without the involvement of a parent or guardian. A parent or guardian may contact us about a child&apos;s information at any time.</p>
+            <p>Children under 13 should not create an account or submit personal information without the involvement of a parent or guardian. We collect only a first name and email address for a basic student account and do not use account creation as marketing consent. A parent or guardian may contact us about a child&apos;s information at any time.</p>
           </section>
 
           <section className="stack">

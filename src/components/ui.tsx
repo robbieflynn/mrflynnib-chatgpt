@@ -42,7 +42,7 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
   );
 }
 
-export function PageHero({ eyebrow, title, intro, breadcrumbLabel = eyebrow }: { eyebrow: string; title: string; intro: string; breadcrumbLabel?: string }) {
+export function PageHero({ eyebrow, title, intro, breadcrumbLabel = eyebrow }: { eyebrow: string; title: string; intro?: string; breadcrumbLabel?: string }) {
   return (
     <section className="page-hero">
       <Container className="stack-lg">
@@ -50,7 +50,7 @@ export function PageHero({ eyebrow, title, intro, breadcrumbLabel = eyebrow }: {
         <div className="stack">
           <Eyebrow>{eyebrow}</Eyebrow>
           <h1>{title}</h1>
-          <p className="lede">{intro}</p>
+          {intro ? <p className="lede">{intro}</p> : null}
         </div>
       </Container>
     </section>
