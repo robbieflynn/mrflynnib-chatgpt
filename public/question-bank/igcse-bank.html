@@ -176362,7 +176362,12 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 
   // When the bank is embedded in mrflynnib.com, the parent page owns the
   // scrollbar. Report every height change so the iframe grows with the bank.
-  var IS_EMBEDDED = new URLSearchParams(window.location.search).get('embedded') === '1';
+  var EMBED_PARAMS = new URLSearchParams(window.location.search);
+  var IS_EMBEDDED = EMBED_PARAMS.get('embedded') === '1';
+  var REQUESTED_COURSE = EMBED_PARAMS.get('course') || '';
+  var REQUESTED_TOPIC = EMBED_PARAMS.get('topic') || '';
+  var REQUESTED_SUBTOPIC = EMBED_PARAMS.get('subtopic') || '';
+  var requestedFiltersApplied = false;
   function reportEmbeddedHeight(){
     if(!IS_EMBEDDED || window.parent === window) return;
     var root = document.getElementById('qbank-root');
@@ -176999,7 +177004,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
   }
 
   function showGate(){
-    document.getElementById('qb-brand-course').textContent = 'IB Mathematics';
+    document.getElementById('qb-brand-course').textContent = 'Edexcel IGCSE Mathematics';
     document.getElementById('qb-gate').removeAttribute('hidden');
     document.getElementById('qb-controls').setAttribute('hidden','');
     document.getElementById('qb-list').setAttribute('hidden','');
@@ -177011,7 +177016,19 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     rememberCourse(c);
     // The subtopic list depends on the course, so rebuild it here as well as on a
     // topic change - otherwise switching HL -> SL leaves the HL subtopics in place.
+    var topicSel = document.getElementById('qb-topic');
+    if(!requestedFiltersApplied && REQUESTED_TOPIC && TOPIC_ORDER.indexOf(REQUESTED_TOPIC) >= 0){
+      topicSel.value = REQUESTED_TOPIC;
+    }
     populateSubtopicOptions();
+    if(!requestedFiltersApplied && REQUESTED_SUBTOPIC){
+      var subtopicSel = document.getElementById('qb-subtopic');
+      var requestedSubtopicExists = Array.prototype.some.call(subtopicSel.options, function(option){
+        return option.value === REQUESTED_SUBTOPIC;
+      });
+      if(requestedSubtopicExists) subtopicSel.value = REQUESTED_SUBTOPIC;
+    }
+    requestedFiltersApplied = true;
     document.getElementById('qb-gate').setAttribute('hidden','');
     document.getElementById('qb-controls').removeAttribute('hidden');
     document.getElementById('qb-list').removeAttribute('hidden');
@@ -177025,7 +177042,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       else { secSel.value = ''; secSel.hidden = true; }
     }
     document.getElementById('qb-course-label').textContent = c;
-    document.getElementById('qb-brand-course').textContent = 'IB Mathematics \u00b7 ' + c;
+    document.getElementById('qb-brand-course').textContent = 'Edexcel IGCSE Mathematics';
     document.getElementById('qb-change-course').removeAttribute('hidden');
     applyFilters();
   }
@@ -177271,9 +177288,16 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     }
     // Straight into the bank if they have chosen before and that course still
     // exists; otherwise the front door.
-    var saved = storedCourse();
-    var valid = saved && state.all.some(function(q){ return banksOf(q).indexOf(saved) >= 0; });
-    if(valid) chooseCourse(saved); else showGate();
+    var requestedValid = REQUESTED_COURSE && state.all.some(function(q){
+      return banksOf(q).indexOf(REQUESTED_COURSE) >= 0;
+    });
+    if(requestedValid){
+      chooseCourse(REQUESTED_COURSE);
+    } else {
+      var saved = storedCourse();
+      var valid = saved && state.all.some(function(q){ return banksOf(q).indexOf(saved) >= 0; });
+      if(valid) chooseCourse(saved); else showGate();
+    }
   }).catch(function(err){
     document.getElementById('qb-list').innerHTML = '<div class="qb-empty">Could not load stored questions. '+(err && err.message ? err.message : '')+'</div>';
     console.error(err);

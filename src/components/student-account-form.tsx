@@ -18,9 +18,14 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const nextPath = searchParams.get("next")?.startsWith("/")
-    ? searchParams.get("next")!
-    : "/account";
+  const requestedNext = searchParams.get("next");
+  const nextPath = requestedNext?.startsWith("/")
+    ? requestedNext
+    : searchParams.get("qualification") === "igcse"
+      ? "/account?qualification=igcse"
+      : searchParams.get("course")
+        ? `/account?course=${encodeURIComponent(searchParams.get("course")!)}`
+        : "/account";
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

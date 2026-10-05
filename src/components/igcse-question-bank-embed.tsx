@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
 
-export function IgcseQuestionBankEmbed() {
+export function IgcseQuestionBankEmbed({ topic, subtopic }: { topic?: string; subtopic?: string }) {
+  const query = new URLSearchParams({ course: "IGCSE Higher", embedded: "1", whiteboard: "6" });
+  if (topic) query.set("topic", topic);
+  if (subtopic) query.set("subtopic", subtopic);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(760);
   const loadingMoreRef = useRef(false);
@@ -79,7 +82,7 @@ export function IgcseQuestionBankEmbed() {
       loading="eager"
       ref={frameRef}
       scrolling="no"
-      src="/question-bank/igcse-bank.html?embedded=1&whiteboard=6"
+      src={`/question-bank/igcse-bank.html?${query.toString()}`}
       style={{ height: `${frameHeight}px` }}
       title="Edexcel IGCSE Mathematics question bank"
     />

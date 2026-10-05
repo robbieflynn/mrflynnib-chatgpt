@@ -19,7 +19,14 @@ function percentage(completed: number, total: number) {
   return total ? Math.round((completed / total) * 100) : 0;
 }
 
-export default async function AccountPage({ searchParams }: { searchParams: Promise<{ course?: string | string[] }> }) {
+type AccountSearchParams = {
+  course?: string | string[];
+  qualification?: string | string[];
+  next?: string | string[];
+};
+
+export default async function AccountPage({ searchParams }: { searchParams: Promise<AccountSearchParams> }) {
+  const pageSearchParams = await searchParams;
   if (!hasSupabaseBrowserConfig()) {
     return (
       <>
@@ -41,9 +48,15 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     );
   }
 
-  const requestedCourse = (await searchParams).course;
+  const requestedCourse = pageSearchParams.course;
+  const requestedQualification = typeof pageSearchParams.qualification === "string" ? pageSearchParams.qualification : "";
+  const requestedNext = typeof pageSearchParams.next === "string" ? pageSearchParams.next : "";
+  const isIgcse = requestedQualification === "igcse" || requestedNext.startsWith("/igcse/");
   const selectedCourse = getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "") ?? questionBankCourses[0];
-  const courseProgress = progressManifest.courses[selectedCourse.code];
+  const courseProgress = isIgcse ? progressManifest.igcse : progressManifest.courses[selectedCourse.code];
+  const bank = isIgcse ? "igcse" : "ib";
+  const questionBankHref = isIgcse ? "/igcse/question-bank" : `/question-bank/${selectedCourse.slug}`;
+  const progressLabel = isIgcse ? "IGCSE" : selectedCourse.code;
   const completedQuestionIds = new Set<string>();
   let pageStart = 0;
 
@@ -51,7 +64,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     const { data, error } = await supabase
       .from("question_progress")
       .select("question_id")
-      .eq("bank", "ib")
+      .eq("bank", bank)
       .eq("completed", true)
       .range(pageStart, pageStart + 999);
     if (error || !data) break;
@@ -63,50 +76,49 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const { count: whiteboardCount } = await supabase
     .from("whiteboard_documents")
     .select("question_id", { count: "exact", head: true })
-    .eq("bank", "ib");
+    .eq("bank", bank);
   const courseCompleted = courseProgress.questionIds.filter((id) => completedQuestionIds.has(id)).length;
   const coursePercentage = percentage(courseCompleted, courseProgress.questionIds.length);
   const displayName = typeof user.user_metadata.display_name === "string" ? user.user_metadata.display_name : "";
 
   return (
     <>
-      <PageHero eyebrow="Student dashboard" title={displayName ? `Welcome back, ${displayName}` : "Your question-bank progress"} intro="Choose your course, see what you have completed, and continue from any topic or subtopic." />
-      <section className="student-dashboard section-tight">
+      <PageHero eyebrow="Student dashboard" title={displayName ? `Welcome back, ${displayName}` : "Your question-bank progress"} />
+      <section className={`student-dashboard section-tight ${isIgcse ? "student-dashboard-igcse" : ""}`}>
         <Container className="stack-xl">
-          <div className="dashboard-course-bar">
-            <div>
-              <span>Your course</span>
-              <strong>{selectedCourse.pathway} {selectedCourse.level}</strong>
+          {isIgcse ? (
+            <div className="dashboard-course-bar dashboard-course-bar-single">
+              <div><span>Your question bank</span><strong>Edexcel IGCSE Mathematics</strong></div>
             </div>
-            <nav aria-label="Choose your course">
-              {questionBankCourses.map((course) => (
-                <Link aria-current={course.slug === selectedCourse.slug ? "page" : undefined} href={`/account?course=${course.slug}`} key={course.slug}>{course.code}</Link>
-              ))}
-            </nav>
-          </div>
+          ) : (
+            <div className="dashboard-course-bar">
+              <div>
+                <span>Your course</span>
+                <strong>{selectedCourse.pathway} {selectedCourse.level}</strong>
+              </div>
+              <nav aria-label="Choose your course">
+                {questionBankCourses.map((course) => (
+                  <Link aria-current={course.slug === selectedCourse.slug ? "page" : undefined} href={`/account?course=${course.slug}`} key={course.slug}>{course.code}</Link>
+                ))}
+              </nav>
+            </div>
+          )}
 
           <div className="dashboard-overview">
-            <div className="dashboard-overview-copy stack">
-              <p className="eyebrow">{selectedCourse.code} progress</p>
-              <h2>{courseCompleted.toLocaleString("en-GB")} of {courseProgress.questionIds.length.toLocaleString("en-GB")} questions completed</h2>
-              <p className="muted">Your overall progress updates whenever you tick a question in the bank.</p>
-              <div className="dashboard-progress" aria-label={`${coursePercentage}% complete`} aria-valuemax={100} aria-valuemin={0} aria-valuenow={coursePercentage} role="progressbar">
-                <span style={{ width: `${coursePercentage}%` }} />
-              </div>
-              <div className="dashboard-overview-meta"><strong>{coursePercentage}%</strong><span>{whiteboardCount ?? 0} saved whiteboards</span></div>
+            <div className="dashboard-overview-title">
+              <span>{progressLabel} progress</span>
+              <strong>{courseCompleted.toLocaleString("en-GB")} of {courseProgress.questionIds.length.toLocaleString("en-GB")} questions completed</strong>
             </div>
-            <div className="dashboard-overview-actions">
-              <Link className="button" href={`/question-bank/${selectedCourse.slug}`}>Continue in question bank</Link>
-              <Link className="button button-secondary" href="/question-bank">Change question bank</Link>
+            <div className="dashboard-progress" aria-label={`${coursePercentage}% complete`} aria-valuemax={100} aria-valuemin={0} aria-valuenow={coursePercentage} role="progressbar">
+              <span style={{ width: `${coursePercentage}%` }} />
             </div>
+            <div className="dashboard-overview-meta"><strong>{coursePercentage}%</strong><span>{whiteboardCount ?? 0} saved whiteboards</span></div>
+            <Link className="button button-small" href={questionBankHref}>Continue in question bank</Link>
           </div>
 
           <div className="dashboard-topics stack-lg">
             <div className="dashboard-section-heading">
-              <div className="stack">
-                <p className="eyebrow">Topics and subtopics</p>
-                <h2>See where you are up to</h2>
-              </div>
+              <p className="eyebrow">Topics and subtopics</p>
               <p className="muted">Open a topic to view every subtopic. Select a subtopic to go straight to those questions.</p>
             </div>
             <div className="dashboard-topic-list">
@@ -126,7 +138,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                       {topic.subtopics.map((subtopic) => {
                         const subtopicCompleted = subtopic.questionIds.filter((id) => completedQuestionIds.has(id)).length;
                         const subtopicPercentage = percentage(subtopicCompleted, subtopic.questionIds.length);
-                        const href = `/question-bank/${selectedCourse.slug}?topic=${encodeURIComponent(topic.name)}&subtopic=${encodeURIComponent(subtopic.name)}`;
+                        const href = isIgcse
+                          ? `/igcse/question-bank?topic=${encodeURIComponent(topic.name)}&subtopic=${encodeURIComponent(subtopic.name)}`
+                          : `/question-bank/${selectedCourse.slug}?topic=${encodeURIComponent(topic.name)}&subtopic=${encodeURIComponent(subtopic.name)}`;
                         return (
                           <Link className="dashboard-subtopic" href={href} key={subtopic.name}>
                             <span><strong>{subtopic.name}</strong><small>{subtopicCompleted} of {subtopic.questionIds.length} completed</small></span>

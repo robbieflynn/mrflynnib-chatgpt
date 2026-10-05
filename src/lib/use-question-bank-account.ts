@@ -33,13 +33,20 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       userRef.current = user;
       completedRef.current = new Set();
       if (user && clientRef.current) {
-        const { data } = await clientRef.current
-          .from("question_progress")
-          .select("question_id")
-          .eq("bank", bank)
-          .eq("completed", true);
-        if (cancelled) return;
-        completedRef.current = new Set((data ?? []).map((row) => String(row.question_id)));
+        let pageStart = 0;
+        while (true) {
+          const { data, error } = await clientRef.current
+            .from("question_progress")
+            .select("question_id")
+            .eq("bank", bank)
+            .eq("completed", true)
+            .range(pageStart, pageStart + 999);
+          if (cancelled) return;
+          if (error || !data) break;
+          data.forEach((row) => completedRef.current.add(String(row.question_id)));
+          if (data.length < 1000) break;
+          pageStart += 1000;
+        }
       }
       send({
         type: "mrflynnib-account-state",
