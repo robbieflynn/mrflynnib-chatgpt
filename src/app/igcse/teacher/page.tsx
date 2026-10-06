@@ -7,7 +7,7 @@ import { createClass } from "@/app/teacher/actions";
 export const metadata: Metadata = { title: "IGCSE teacher dashboard", robots: { index: false, follow: false } };
 
 export default async function IgcseTeacherPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
-  const { supabase, profile } = await requireTeacher();
+  const { supabase, profile } = await requireTeacher("/igcse/teacher");
   const message = await searchParams;
   const { data: classes } = await supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("bank", "igcse").eq("archived", false).order("created_at", { ascending: false });
   return <>
