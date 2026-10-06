@@ -64,6 +64,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const requestedCourse = pageSearchParams.course;
   const requestedQualification = typeof pageSearchParams.qualification === "string" ? pageSearchParams.qualification : "";
   const isIgcse = requestedQualification === "igcse" || requestedNext.startsWith("/igcse/");
+  const { data: profile } = await supabase.from("profiles").select("role,teacher_status").eq("user_id", user.id).maybeSingle();
+  if (profile?.role === "teacher" || profile?.role === "admin") redirect(isIgcse ? "/igcse/teacher" : "/teacher");
   const selectedCourse = getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "") ?? questionBankCourses[0];
   const courseProgress = isIgcse ? progressManifest.igcse : progressManifest.courses[selectedCourse.code];
   const bank = isIgcse ? "igcse" : "ib";
@@ -92,10 +94,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const courseCompleted = courseProgress.questionIds.filter((id) => completedQuestionIds.has(id)).length;
   const coursePercentage = percentage(courseCompleted, courseProgress.questionIds.length);
   const displayName = typeof user.user_metadata.display_name === "string" ? user.user_metadata.display_name : "";
-  const [{ data: profile }, { data: memberships }] = await Promise.all([
-    supabase.from("profiles").select("role,teacher_status").eq("user_id", user.id).maybeSingle(),
-    supabase.from("class_memberships").select("class_id,classes(id,name,course)").eq("student_id", user.id),
-  ]);
+  const { data: memberships } = await supabase.from("class_memberships").select("class_id,classes(id,name,course)").eq("student_id", user.id);
   const classIds = (memberships ?? []).map((membership) => membership.class_id);
   const { data: assignments } = classIds.length
     ? await supabase.from("assignments").select("id,title,due_at,class_id,assignment_questions(count),assignment_question_progress(count),assignment_submissions(status)").in("class_id", classIds).eq("status", "published").order("created_at", { ascending: false })
