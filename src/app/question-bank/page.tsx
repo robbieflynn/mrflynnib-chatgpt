@@ -21,8 +21,8 @@ export default function QuestionBankPage() {
           <div className="qb-account-route">
             <span>Save completed questions and whiteboard working.</span>
             <div className="qb-account-actions">
-              <Link className="button button-small" href="/account">Sign in</Link>
-              <Link className="button button-secondary button-small" href="/account?next=/teacher">Teacher sign in</Link>
+              <Link className="button button-small" href="/account">Student dashboard</Link>
+              <Link className="button button-secondary button-small" href="/account?next=/teacher">Teacher dashboard</Link>
             </div>
           </div>
         </div>

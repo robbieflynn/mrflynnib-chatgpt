@@ -17,7 +17,7 @@ export default async function IgcseQuestionBankPage({ searchParams }: { searchPa
           <Breadcrumbs items={[{ label: "IGCSE Mathematics", href: "/igcse" }, { label: "Question bank" }]} />
           <div className="qb-account-actions">
             <Link className="button button-small" href="/account?qualification=igcse">Student dashboard</Link>
-            <Link className="button button-secondary button-small" href="/account?next=/igcse/teacher">Teacher sign in</Link>
+            <Link className="button button-secondary button-small" href="/account?next=/igcse/teacher">Teacher dashboard</Link>
           </div>
         </Container>
       </section>
