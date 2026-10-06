@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-type Mode = "sign-in" | "sign-up" | "reset";
+type Mode = "sign-in" | "sign-up" | "reset" | "resend";
 
 export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: Mode }) {
   const router = useRouter();
@@ -44,6 +44,24 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       return;
     }
 
+    if (mode === "resend") {
+      const { error: resendError } = await supabase.auth.resend({
+        type: "signup",
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+        },
+      });
+      setPending(false);
+      if (resendError) {
+        return setError(resendError.message.toLowerCase().includes("rate limit")
+          ? "Please wait a minute before requesting another confirmation email."
+          : "We could not send a new confirmation email. Please check the address and try again.");
+      }
+      setMessage("A new confirmation email has been sent. Please check your inbox and spam folder.");
+      return;
+    }
+
     if (mode === "sign-up") {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
@@ -59,6 +77,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         router.push(nextPath);
         router.refresh();
       } else {
+        setMode("resend");
         setMessage("Check your email to confirm your account, then return here to sign in.");
       }
       return;
@@ -66,7 +85,12 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
 
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     setPending(false);
-    if (signInError) return setError("That email address and password did not match.");
+    if (signInError) {
+      if (signInError.code === "email_not_confirmed") {
+        return setError("Your email address has not been confirmed yet. Request a new confirmation email below.");
+      }
+      return setError("That email address and password did not match.");
+    }
     router.push(nextPath);
     router.refresh();
   }
@@ -88,7 +112,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
           <label htmlFor="student-email">Email address</label>
           <input id="student-email" name="email" type="email" autoComplete="email" maxLength={254} required value={email} onChange={(event) => setEmail(event.target.value)} />
         </div>
-        {mode !== "reset" ? (
+        {mode !== "reset" && mode !== "resend" ? (
           <div className="field">
             <label htmlFor="student-password">Password</label>
             <input id="student-password" name="password" type="password" autoComplete={mode === "sign-up" ? "new-password" : "current-password"} minLength={8} required value={password} onChange={(event) => setPassword(event.target.value)} />
@@ -98,11 +122,11 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         {error ? <p className="form-message form-error" role="alert">{error}</p> : null}
         {message ? <p className="form-message form-success" role="status">{message}</p> : null}
         <button className="button" type="submit" disabled={pending}>
-          {pending ? "Please wait…" : mode === "sign-up" ? "Create my account" : mode === "reset" ? "Send reset link" : "Sign in"}
+          {pending ? "Please wait…" : mode === "sign-up" ? "Create my account" : mode === "reset" ? "Send reset link" : mode === "resend" ? "Resend confirmation email" : "Sign in"}
         </button>
       </form>
-      {mode === "sign-in" ? <button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button> : null}
-      {mode === "reset" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
+      {mode === "sign-in" ? <><button className="account-text-button" type="button" onClick={() => { setMode("resend"); setError(null); setMessage(null); }}>Didn&apos;t receive a confirmation email?</button><button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button></> : null}
+      {mode === "reset" || mode === "resend" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
       <p className="small muted">Creating an account saves question-bank progress and whiteboard working. It does not subscribe you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href="/terms">Terms of Use</Link> and acknowledge the <Link className="text-link" href="/privacy">Privacy Policy</Link>.</p>
     </div>
