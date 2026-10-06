@@ -15,10 +15,10 @@ export function SiteHeader() {
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.filter((item) => item.href !== "/book").map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
           <Link className="header-contact-button" href="/contact">Contact</Link>
+          <ButtonLink href="/courses" small>Explore courses</ButtonLink>
         </nav>
         <div className="tuition-partner-group">
           <Link href="/go/ib-tutors" className="header-tuition-link">One-to-One tuition</Link>
-          <ButtonLink href="/courses" small>Explore courses</ButtonLink>
           <Link className="tuition-partner-logo" href="/go/ib-tutors" aria-label="Visit IB Tutors at The Tuition Centre">
             <Image src="/images/ib-tutors-logo.jpeg" alt="IB Tutors, from The Tuition Centre" width={1448} height={1086} priority />
           </Link>
