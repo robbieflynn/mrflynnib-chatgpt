@@ -100,9 +100,28 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     return classRecord?.bank === bank;
   });
   const classIds = activeMemberships.map((membership) => membership.class_id);
-  const { data: assignments } = classIds.length
-    ? await supabase.from("assignments").select("id,title,due_at,class_id,assignment_questions(count),assignment_question_progress(count),assignment_submissions(status)").in("class_id", classIds).eq("status", "published").order("created_at", { ascending: false })
-    : { data: [] };
+  const assignmentResult = classIds.length
+    ? await supabase.from("assignments").select("id,title,due_at,class_id").in("class_id", classIds).eq("status", "published").order("created_at", { ascending: false })
+    : { data: [], error: null };
+  const assignments = assignmentResult.data ?? [];
+  const assignmentIds = assignments.map((assignment) => assignment.id);
+  const [questionRows, progressRows, submissionRows] = assignmentIds.length
+    ? await Promise.all([
+      supabase.from("assignment_questions").select("assignment_id").in("assignment_id", assignmentIds),
+      supabase.from("assignment_question_progress").select("assignment_id").in("assignment_id", assignmentIds).eq("student_id", user.id).eq("completed", true),
+      supabase.from("assignment_submissions").select("assignment_id,status").in("assignment_id", assignmentIds).eq("student_id", user.id),
+    ])
+    : [
+      { data: [], error: null },
+      { data: [], error: null },
+      { data: [], error: null },
+    ];
+  const questionCountByAssignment = new Map<string, number>();
+  (questionRows.data ?? []).forEach((row) => questionCountByAssignment.set(row.assignment_id, (questionCountByAssignment.get(row.assignment_id) || 0) + 1));
+  const progressCountByAssignment = new Map<string, number>();
+  (progressRows.data ?? []).forEach((row) => progressCountByAssignment.set(row.assignment_id, (progressCountByAssignment.get(row.assignment_id) || 0) + 1));
+  const submissionByAssignment = new Map((submissionRows.data ?? []).map((row) => [row.assignment_id, row.status]));
+  const assignmentLoadError = assignmentResult.error || questionRows.error || progressRows.error || submissionRows.error;
   const classNames = new Map(activeMemberships.map((membership) => {
     const classRecord = Array.isArray(membership.classes) ? membership.classes[0] : membership.classes;
     return [membership.class_id, classRecord?.name || "Class"];
@@ -125,7 +144,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           </div>
           <div className="dashboard-hero-stats" aria-label="Student account summary">
             <div><strong>{activeMemberships.length}</strong><span>{activeMemberships.length === 1 ? "class" : "classes"}</span></div>
-            <div><strong>{assignments?.length ?? 0}</strong><span>assignments</span></div>
+            <div><strong>{assignments.length}</strong><span>assignments</span></div>
             <div><strong>{coursePercentage}%</strong><span>{progressLabel} progress</span></div>
           </div>
         </Container>
@@ -160,21 +179,22 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
           <section className="student-assignments dashboard-panel stack-lg">
             <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>Your classwork</h2></div><p className="muted">Open an assignment to answer questions, save whiteboard working and submit it to your teacher.</p></div>
+            {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
             <div className="student-assignment-list">
-              {(assignments ?? []).map((assignment) => {
-                const questionCount = Array.isArray(assignment.assignment_questions) ? assignment.assignment_questions[0]?.count ?? 0 : 0;
-                const progressCount = Array.isArray(assignment.assignment_question_progress) ? assignment.assignment_question_progress[0]?.count ?? 0 : 0;
-                const submission = Array.isArray(assignment.assignment_submissions) ? assignment.assignment_submissions[0] : null;
+              {assignments.map((assignment) => {
+                const questionCount = questionCountByAssignment.get(assignment.id) || 0;
+                const progressCount = progressCountByAssignment.get(assignment.id) || 0;
+                const submissionStatus = submissionByAssignment.get(assignment.id);
                 const assignmentPercentage = percentage(progressCount, questionCount);
                 return <Link className="student-assignment-card" href={`/assignments/${assignment.id}`} key={assignment.id}>
                   <span className="student-assignment-status"><i style={{ width: `${assignmentPercentage}%` }} /></span>
                   <div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{assignment.due_at ? `Due ${new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : "No due date"}</span></div>
                   <div className="student-assignment-progress"><strong>{progressCount}/{questionCount}</strong><span>questions</span></div>
-                  <span className={`status-pill ${submission?.status === "submitted" ? "is-submitted" : ""}`}>{submission?.status === "submitted" ? "Submitted" : progressCount ? "Continue" : "Start"}</span>
+                  <span className={`status-pill ${submissionStatus === "submitted" ? "is-submitted" : ""}`}>{submissionStatus === "submitted" ? "Submitted" : progressCount ? "Continue" : "Start"}</span>
                   <span aria-hidden="true">→</span>
                 </Link>;
               })}
-              {!assignments?.length ? <div className="dashboard-empty-state compact"><span aria-hidden="true">✓</span><div><strong>No assignments yet</strong><p>Your teacher&apos;s assignments will appear here.</p></div></div> : null}
+              {!assignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><span aria-hidden="true">✓</span><div><strong>No assignments yet</strong><p>Your teacher&apos;s assignments will appear here.</p></div></div> : null}
             </div>
           </section>
           {isIgcse ? (
