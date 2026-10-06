@@ -329,6 +329,20 @@ a.teacher-list-row:hover { background: var(--sky); }
 .teacher-progress-row > span:nth-child(3) small { color: var(--muted); }
 .teacher-progress-row i { height: 6px; overflow: hidden; border-radius: 99px; background: #e4eaec; }
 .teacher-progress-row i b { display: block; height: 100%; border-radius: inherit; background: var(--teal); }
+.teacher-student-cell { display: grid; gap: .35rem; align-content: center; }
+.teacher-student-cell .text-link { width: max-content; display: inline-flex; align-items: center; gap: .35rem; }
+.teacher-question-list { overflow: hidden; border: 1px solid var(--line); border-radius: 1.2rem; background: #fff; box-shadow: 0 18px 45px rgba(11, 29, 54, .06); }
+.teacher-question-row { min-height: 88px; padding: 1rem 1.15rem; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 1rem; border-bottom: 1px solid #e7ebed; }
+.teacher-question-row:last-child { border-bottom: 0; }
+.teacher-question-number { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: #eaf4fb; color: var(--blue); font-weight: 900; }
+.teacher-question-copy { display: grid; gap: .2rem; }
+.teacher-question-copy small { color: var(--muted); }
+.teacher-question-results { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .45rem; }
+.question-result { padding: .42rem .65rem; border-radius: 999px; font-size: .74rem; font-weight: 850; white-space: nowrap; }
+.question-result.is-correct { background: #e3f6ed; color: #176846; }
+.question-result.is-incorrect { background: #feeceb; color: #9c302c; }
+.question-result.is-review { background: #fff2d9; color: #805514; }
+.question-result.is-empty { background: #edf1f3; color: #61717c; }
 .status-pill { display: inline-flex; width: fit-content; padding: .3rem .55rem; border-radius: 999px; background: #eef1f2; color: var(--muted); font-size: .75rem; font-weight: 850; }
 .status-pill.is-submitted { background: #e5f6ef; color: var(--success); }
 .teacher-pending-note { padding: 1rem 1.2rem; display: grid; gap: .1rem; border: 1px solid #dfc27d; border-radius: .9rem; background: #fff8e7; color: var(--ink-2); }
@@ -457,6 +471,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .assignment-status-bar { grid-template-columns: 1fr; }
   .teacher-progress-heading { display: none; }
   .teacher-progress-row { grid-template-columns: 1fr; }
+  .teacher-question-row { grid-template-columns: 38px minmax(0, 1fr); }
+  .teacher-question-results { grid-column: 2; justify-content: flex-start; }
   .account-type-options { grid-template-columns: 1fr; }
   .teacher-approval-row { align-items: stretch; flex-direction: column; }
   .teacher-list-row { grid-template-columns: 1fr auto; }

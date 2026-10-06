@@ -21,11 +21,12 @@ export default async function StudentWorkingPage({ params }: { params: Promise<{
   const classRecord = Array.isArray(assignment.classes) ? assignment.classes[0] : assignment.classes;
   const dashboardHref = classRecord?.bank === "igcse" ? "/igcse/teacher" : "/teacher";
   const questionIds = (questions ?? []).map((question) => question.question_id);
+  const attemptedQuestionIds = new Set([...(progress ?? []).map((row) => row.question_id), ...(responses ?? []).map((row) => row.question_id)]);
   const course = getQuestionBankCourseByCode(classRecord?.course || "");
   const studentName = profile?.display_name || "Student";
   return <>
     <section className="page-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: assignment.title, href: `/teacher/assignments/${id}` }, { label: studentName }]} /><div className="stack"><p className="eyebrow">Read-only student work</p><h1>{studentName}</h1><p className="lede">Open each whiteboard to review the working saved for {assignment.title}. This view cannot change the student&apos;s work.</p></div></Container></section>
-    <section className="section-tight teacher-dashboard"><Container><div className="assignment-status-bar"><div><span>Questions completed</span><strong>{progress?.length ?? 0} of {questions?.length ?? 0}</strong></div><div><span>Answers saved</span><strong>{responses?.length ?? 0} of {questions?.length ?? 0}</strong></div><div><span>Automatically correct</span><strong>{responses?.filter((response) => response.is_correct === true).length ?? 0}</strong></div><div><span>Review mode</span><strong>Read only</strong></div></div></Container></section>
+    <section className="section-tight teacher-dashboard"><Container><div className="assignment-status-bar"><div><span>Questions attempted</span><strong>{attemptedQuestionIds.size} of {questions?.length ?? 0}</strong></div><div><span>Answers saved</span><strong>{responses?.length ?? 0} of {questions?.length ?? 0}</strong></div><div><span>Automatically correct</span><strong>{responses?.filter((response) => response.is_correct === true).length ?? 0}</strong></div><div><span>Review mode</span><strong>Read only</strong></div></div></Container></section>
     <section className="question-bank-embed-section"><Container>{classRecord?.bank === "igcse" ? <IgcseQuestionBankEmbed assignmentId={id} questionIds={questionIds} viewedStudentId={studentId} /> : course ? <QuestionBankEmbed assignmentId={id} course={course.code} questionIds={questionIds} viewedStudentId={studentId} /> : <p>These questions are not available.</p>}</Container></section>
   </>;
 }
