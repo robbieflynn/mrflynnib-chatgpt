@@ -286,3 +286,4 @@
 @media (prefers-reduced-motion: reduce) {
   .qb-whiteboard-open-button, .qb-whiteboard-tool { scroll-behavior: auto; }
 }
+.qb-whiteboard.is-read-only .qb-whiteboard-canvas { pointer-events: none; }

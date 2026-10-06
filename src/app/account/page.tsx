@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
 import progressManifest from "@/data/question-bank-progress.json";
+import { joinClass } from "./actions";
 
 export const metadata: Metadata = {
   title: "Student account",
@@ -23,6 +24,9 @@ type AccountSearchParams = {
   course?: string | string[];
   qualification?: string | string[];
   next?: string | string[];
+  error?: string | string[];
+  success?: string | string[];
+  teacher?: string | string[];
 };
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<AccountSearchParams> }) {
@@ -80,12 +84,47 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const courseCompleted = courseProgress.questionIds.filter((id) => completedQuestionIds.has(id)).length;
   const coursePercentage = percentage(courseCompleted, courseProgress.questionIds.length);
   const displayName = typeof user.user_metadata.display_name === "string" ? user.user_metadata.display_name : "";
+  const [{ data: profile }, { data: memberships }] = await Promise.all([
+    supabase.from("profiles").select("role").eq("user_id", user.id).maybeSingle(),
+    supabase.from("class_memberships").select("class_id,classes(id,name,course)").eq("student_id", user.id),
+  ]);
+  const classIds = (memberships ?? []).map((membership) => membership.class_id);
+  const { data: assignments } = classIds.length
+    ? await supabase.from("assignments").select("id,title,due_at,class_id,assignment_questions(count),assignment_question_progress(count),assignment_submissions(status)").in("class_id", classIds).eq("status", "published").order("created_at", { ascending: false })
+    : { data: [] };
+  const classNames = new Map((memberships ?? []).map((membership) => {
+    const classRecord = Array.isArray(membership.classes) ? membership.classes[0] : membership.classes;
+    return [membership.class_id, classRecord?.name || "Class"];
+  }));
+  const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
+  const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
+  const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
 
   return (
     <>
       <PageHero eyebrow="Student dashboard" title={displayName ? `Welcome back, ${displayName}` : "Your question-bank progress"} />
       <section className={`student-dashboard section-tight ${isIgcse ? "student-dashboard-igcse" : ""}`}>
         <Container className="stack-xl">
+          {accountError ? <p className="form-message form-error">{accountError}</p> : null}
+          {accountSuccess ? <p className="form-message form-success">{accountSuccess}</p> : null}
+          {teacherApprovalRequired ? <p className="form-message form-error">Teacher access must be approved before this account can create classes and assignments.</p> : null}
+          {profile?.role === "teacher" ? <div className="teacher-access-card"><div><span>Teacher account</span><strong>Manage classes and assignments</strong></div><Link className="button button-small" href="/teacher">Open teacher dashboard</Link></div> : (
+            <div className="student-classes-panel">
+              <div className="student-assignments stack">
+                <div><p className="eyebrow">Assignments</p><h2>Your classwork</h2></div>
+                <div className="teacher-list">
+                  {(assignments ?? []).map((assignment) => {
+                    const questionCount = Array.isArray(assignment.assignment_questions) ? assignment.assignment_questions[0]?.count ?? 0 : 0;
+                    const progressCount = Array.isArray(assignment.assignment_question_progress) ? assignment.assignment_question_progress[0]?.count ?? 0 : 0;
+                    const submission = Array.isArray(assignment.assignment_submissions) ? assignment.assignment_submissions[0] : null;
+                    return <Link className="teacher-list-row" href={`/assignments/${assignment.id}`} key={assignment.id}><span><strong>{assignment.title}</strong><small>{classNames.get(assignment.class_id)} · {assignment.due_at ? `Due ${new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : "No due date"}</small></span><span>{progressCount} of {questionCount}</span><span className={`status-pill ${submission?.status === "submitted" ? "is-submitted" : ""}`}>{submission?.status === "submitted" ? "Submitted" : progressCount ? "In progress" : "Start"}</span></Link>;
+                  })}
+                  {!assignments?.length ? <div className="account-card"><p className="muted">No assignments have been set for you yet.</p></div> : null}
+                </div>
+              </div>
+              <form action={joinClass} className="account-card stack"><div><p className="eyebrow">Join a class</p><h3>Enter your teacher&apos;s code</h3></div><label className="field"><span>Class code</span><input name="code" placeholder="ABC1234" maxLength={10} required /></label><button className="button button-small" type="submit">Join class</button></form>
+            </div>
+          )}
           {isIgcse ? (
             <div className="dashboard-course-bar dashboard-course-bar-single">
               <div><span>Your question bank</span><strong>Edexcel IGCSE Mathematics</strong></div>

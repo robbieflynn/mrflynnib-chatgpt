@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 4 October 2026
+Last updated: 6 October 2026
 
 ## Purpose of this file
 
@@ -283,6 +283,14 @@ The local repository also contains untracked generated dependency/build items fr
 3. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
 4. Complete Preview testing and Supabase configuration for student sign-in, saved completion ticks and whiteboard syncing before publishing the account feature.
 5. Verify the supplied Edexcel IGCSE Mathematics question bank in production after the restored IGCSE area is approved and published.
+
+## Teacher assignments, 6 October 2026
+
+Rob approved the first teacher-account and assignment workflow. Teacher status must be approved rather than self-selected. An approved teacher can create a class for one IB Mathematics course or Edexcel IGCSE Mathematics, share a joining code, select real questions from that course's question bank, add an optional due date and instructions, and publish the assignment. Students use their existing Mr Flynn IB account to join the class, see assignments on their dashboard, complete the exact assigned questions with the existing saved whiteboards, and submit their work. Teachers can see each joined student's question completion and submission state. Teacher access to student information is restricted to students who joined that teacher's class, and saved whiteboards are visible to the teacher only when the question belongs to an assignment for that class.
+
+Assignment completion is stored separately from each student's personal question-bank completion so teacher reporting remains tied to the particular assignment. Completing an assigned question should also update the student's own lasting question-bank progress. Assignments store a snapshot of each selected question's title and topic as well as its stable question ID, so ordinary question-bank refreshes do not erase the assignment record. If a question is later removed or replaced, preserve the old assignment record and handle that case explicitly rather than silently pointing it at a different question.
+
+The first version is for assignments, not formal tests. Keep the data model extensible so timed tests and test-building can be added later without replacing classes, memberships or the teacher identity model. Build and review this feature in a Vercel Preview before production publication.
 
 ## Tuition partner preview, 26 September 2026
 

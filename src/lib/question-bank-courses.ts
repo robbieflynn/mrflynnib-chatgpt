@@ -17,3 +17,7 @@ export const questionBankCourses: QuestionBankCourse[] = [
 export function getQuestionBankCourse(slug: string) {
   return questionBankCourses.find((course) => course.slug === slug);
 }
+
+export function getQuestionBankCourseByCode(code: string) {
+  return questionBankCourses.find((course) => course.code === code);
+}

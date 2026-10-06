@@ -51,7 +51,20 @@ function buildCourseProgress(questions, topicStructure, course, topicOrder) {
       return { name: topic, questionIds: [...topicQuestionIds].sort(), subtopics };
     });
 
-  return { questionIds: [...courseQuestionIds].sort(), topics };
+  const questionSummaries = activeQuestions.map((question) => {
+    const questionTopics = question.topicsFor?.[course] ?? question.topics ?? [];
+    return {
+      id: question.id,
+      title: question.title || `Question ${question.qnum ?? ""}`.trim(),
+      paper: question.paper || "",
+      paperNumber: question.paperNumber || "",
+      marks: Number.isFinite(question.marks) ? question.marks : null,
+      difficulty: typeof question.difficulty === "object" ? (question.difficulty?.[course] || "") : (question.difficulty || ""),
+      topics: questionTopics.filter((topic) => topic?.main && topic?.sub).map((topic) => ({ main: topic.main, sub: topic.sub })),
+    };
+  }).sort((a, b) => a.id.localeCompare(b.id));
+
+  return { questionIds: [...courseQuestionIds].sort(), topics, questions: questionSummaries };
 }
 
 const ibSource = await readFile(resolve(root, "public/question-bank/ib-bank.html"), "utf8");
