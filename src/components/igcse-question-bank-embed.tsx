@@ -8,6 +8,7 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
   if (questionIds?.length) query.set("ids", questionIds.join(","));
+  if (assignmentId) query.set("assignmentWork", "1");
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(760);
   const loadingMoreRef = useRef(false);

@@ -7,6 +7,37 @@ import progressManifest from "@/data/question-bank-progress.json";
 import { requireAdmin, requireTeacher } from "@/lib/account-access";
 
 const validCourses = new Set(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
+const validResponseTypes = new Set(["teacher_review", "exact", "numeric", "multiple_choice"]);
+
+type ResponseConfig = {
+  id: string;
+  type: "teacher_review" | "exact" | "numeric" | "multiple_choice";
+  acceptedAnswers: string[];
+  numericAnswer: number | null;
+  tolerance: number | null;
+  options: string[];
+  correctOption: number | null;
+};
+
+function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
+  try {
+    const raw = JSON.parse(String(value)) as Record<string, unknown>;
+    const id = String(raw.id || "").slice(0, 160);
+    const type = validResponseTypes.has(String(raw.type)) ? String(raw.type) as ResponseConfig["type"] : "teacher_review";
+    const acceptedAnswers = String(raw.acceptedAnswers || "").split("|").map((item) => item.trim()).filter(Boolean).slice(0, 12);
+    const numericAnswer = String(raw.numericAnswer ?? "").trim() === "" ? null : Number(raw.numericAnswer);
+    const tolerance = String(raw.tolerance ?? "").trim() === "" ? null : Number(raw.tolerance);
+    const options = Array.isArray(raw.options) ? raw.options.slice(0, 4).map((item) => String(item).trim().slice(0, 180)) : [];
+    const correctOption = Number.isInteger(Number(raw.correctOption)) ? Number(raw.correctOption) : null;
+    if (!id) return null;
+    if (type === "exact" && acceptedAnswers.length === 0) return null;
+    if (type === "numeric" && (!Number.isFinite(numericAnswer) || !Number.isFinite(tolerance) || Number(tolerance) < 0)) return null;
+    if (type === "multiple_choice" && (options.length !== 4 || options.some((option) => !option) || correctOption === null || correctOption < 0 || correctOption >= options.length)) return null;
+    return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption };
+  } catch {
+    return null;
+  }
+}
 
 function messagePath(path: string, key: "error" | "success", message: string) {
   return `${path}?${key}=${encodeURIComponent(message)}`;
@@ -44,10 +75,13 @@ export async function createAssignment(formData: FormData) {
   const instructions = String(formData.get("instructions") || "").trim().slice(0, 1500);
   const dueDate = String(formData.get("dueDate") || "");
   const questionIds = formData.getAll("questionIds").map(String).filter(Boolean).slice(0, 40);
+  const parsedConfigs = formData.getAll("responseConfigs").map(parseResponseConfig);
+  const responseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
 
   const { data: classRecord } = await supabase.from("classes").select("id,bank,course").eq("id", classId).eq("teacher_id", user.id).maybeSingle();
   if (!classRecord) redirect("/teacher?error=Class%20not%20found.");
   if (!title || questionIds.length === 0) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Add a title and select at least one question."));
+  if (questionIds.some((id) => !responseConfigs.has(id))) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Finish the answer-checking setup for every selected question."));
 
   const source = classRecord.bank === "igcse"
     ? progressManifest.igcse
@@ -68,17 +102,41 @@ export async function createAssignment(formData: FormData) {
   }).select("id").single();
   if (error || !assignment) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The assignment could not be published."));
 
-  const { error: questionsError } = await supabase.from("assignment_questions").insert(selected.map((question, position) => ({
-    assignment_id: assignment.id,
-    question_id: question.id,
-    bank: classRecord.bank,
-    position,
-    title_snapshot: question.title,
-    topic_snapshot: question.topics[0]?.sub || question.topics[0]?.main || "",
-  })));
+  const { error: questionsError } = await supabase.from("assignment_questions").insert(selected.map((question, position) => {
+    const config = responseConfigs.get(question.id)!;
+    return {
+      assignment_id: assignment.id,
+      question_id: question.id,
+      bank: classRecord.bank,
+      position,
+      title_snapshot: question.title,
+      topic_snapshot: question.topics[0]?.sub || question.topics[0]?.main || "",
+      response_type: config.type,
+      response_options: config.type === "multiple_choice" ? config.options : [],
+    };
+  }));
   if (questionsError) {
     await supabase.from("assignments").delete().eq("id", assignment.id);
     redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The selected questions could not be added."));
+  }
+  const answerKeys = selected.flatMap((question) => {
+    const config = responseConfigs.get(question.id)!;
+    if (config.type === "teacher_review") return [];
+    return [{
+      assignment_id: assignment.id,
+      question_id: question.id,
+      accepted_answers: config.type === "exact" ? config.acceptedAnswers : [],
+      numeric_answer: config.type === "numeric" ? config.numericAnswer : null,
+      numeric_tolerance: config.type === "numeric" ? config.tolerance : null,
+      correct_option: config.type === "multiple_choice" ? config.correctOption : null,
+    }];
+  });
+  if (answerKeys.length) {
+    const { error: answerKeyError } = await supabase.from("assignment_answer_keys").insert(answerKeys);
+    if (answerKeyError) {
+      await supabase.from("assignments").delete().eq("id", assignment.id);
+      redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The answer-checking setup could not be saved."));
+    }
   }
   revalidatePath("/teacher");
   revalidatePath("/account");

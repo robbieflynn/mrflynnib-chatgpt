@@ -15,6 +15,7 @@ export function AssignmentQuestionPicker({ bank, course }: AssignmentQuestionPic
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(initialFrameHeight);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [responseConfigs, setResponseConfigs] = useState<Record<string, unknown>[]>([]);
   const source = useMemo(() => {
     const query = new URLSearchParams({ course, embedded: "1", assignment: "1" });
     return `/question-bank/${bank === "igcse" ? "igcse-bank.html" : "ib-bank.html"}?${query.toString()}`;
@@ -47,6 +48,7 @@ export function AssignmentQuestionPicker({ bank, course }: AssignmentQuestionPic
       }
       if (event.data?.type === "mrflynnib-assignment-selection" && Array.isArray(event.data.ids)) {
         setSelectedIds(event.data.ids.map(String).slice(0, 40));
+        setResponseConfigs(Array.isArray(event.data.configs) ? event.data.configs.slice(0, 40) : []);
       }
     };
 
@@ -73,9 +75,10 @@ export function AssignmentQuestionPicker({ bank, course }: AssignmentQuestionPic
   return (
     <div className="assignment-picker stack">
       {selectedIds.map((id) => <input key={id} name="questionIds" type="hidden" value={id} />)}
+      {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ id, ...(responseConfigs[index] || {}) })} />)}
       <div className="assignment-picker-summary" aria-live="polite">
         <strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected</strong>
-        <span>Use the bank filters, read each question, then tick up to 40 questions.</span>
+        <span>Select up to 40 questions and choose how each answer should be checked.</span>
       </div>
       <iframe className="assignment-bank-frame" loading="eager" ref={frameRef} scrolling="no" src={source} style={{ height: `${frameHeight}px` }} title={`${course} assignment question selector`} />
     </div>

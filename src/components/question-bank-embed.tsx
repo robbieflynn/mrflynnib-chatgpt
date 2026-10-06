@@ -17,6 +17,7 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
   if (questionIds?.length) query.set("ids", questionIds.join(","));
+  if (assignmentId) query.set("assignmentWork", "1");
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);
