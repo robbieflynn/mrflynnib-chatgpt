@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container, PageHero } from "@/components/ui";
 import { requireTeacher } from "@/lib/account-access";
-import { createClass } from "./actions";
+import { createClass, reviewTeacherApplication } from "./actions";
 
 export const metadata: Metadata = { title: "Teacher dashboard", robots: { index: false, follow: false } };
 
@@ -10,12 +10,18 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
   const { supabase, profile } = await requireTeacher();
   const message = await searchParams;
   const { data: classes } = await supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("archived", false).order("created_at", { ascending: false });
+  const { data: teacherApplications } = profile.role === "admin"
+    ? await supabase.from("profiles").select("user_id,display_name,email,teacher_requested_at").eq("teacher_status", "pending").order("teacher_requested_at")
+    : { data: [] };
 
   return <>
     <PageHero eyebrow="Teacher dashboard" title={profile.display_name ? `Welcome, ${profile.display_name}` : "Your classes"} intro="Create classes, set work from the question bank and follow student progress." />
     <section className="section-tight teacher-dashboard"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}
       {message.success ? <p className="form-message form-success">{message.success}</p> : null}
+      {profile.role === "admin" ? <section className="stack-lg"><div className="dashboard-section-heading"><div><p className="eyebrow">Teacher approvals</p><h2>{teacherApplications?.length ? `${teacherApplications.length} awaiting approval` : "No pending requests"}</h2></div><p className="muted">You will also receive an email after a teacher confirms their address.</p></div>
+        {teacherApplications?.length ? <div className="teacher-approval-list">{teacherApplications.map((application) => <div className="teacher-approval-row" key={application.user_id}><span><strong>{application.display_name || "Teacher applicant"}</strong><small>{application.email}{application.teacher_requested_at ? ` · Requested ${new Date(application.teacher_requested_at).toLocaleDateString("en-GB")}` : ""}</small></span><form action={reviewTeacherApplication} className="cluster"><input name="applicantId" type="hidden" value={application.user_id} /><button className="button button-small" name="decision" type="submit" value="approve">Approve</button><button className="button button-secondary button-small" name="decision" type="submit" value="decline">Decline</button></form></div>)}</div> : null}
+      </section> : null}
       <div className="teacher-layout">
         <div className="stack-lg">
           <div className="dashboard-section-heading"><div><p className="eyebrow">Your classes</p><h2>Classes and assignments</h2></div></div>

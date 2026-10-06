@@ -27,14 +27,25 @@ create index if not exists enquiries_status_idx on public.enquiries (status);
 create table if not exists public.profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   display_name text not null default '' check (char_length(display_name) <= 80),
-  role text not null default 'student' check (role in ('student', 'teacher')),
+  email text not null default '' check (char_length(email) <= 254),
+  role text not null default 'student' check (role in ('student', 'teacher', 'admin')),
+  teacher_status text not null default 'none' check (teacher_status in ('none', 'pending', 'approved', 'rejected')),
+  teacher_requested_at timestamptz,
+  teacher_notification_sent_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 alter table public.profiles add column if not exists role text not null default 'student';
+alter table public.profiles add column if not exists email text not null default '';
+alter table public.profiles add column if not exists teacher_status text not null default 'none';
+alter table public.profiles add column if not exists teacher_requested_at timestamptz;
+alter table public.profiles add column if not exists teacher_notification_sent_at timestamptz;
 alter table public.profiles drop constraint if exists profiles_role_check;
-alter table public.profiles add constraint profiles_role_check check (role in ('student', 'teacher'));
+alter table public.profiles add constraint profiles_role_check check (role in ('student', 'teacher', 'admin'));
+alter table public.profiles drop constraint if exists profiles_teacher_status_check;
+alter table public.profiles add constraint profiles_teacher_status_check check (teacher_status in ('none', 'pending', 'approved', 'rejected'));
+update public.profiles p set email = coalesce(u.email, '') from auth.users u where p.user_id = u.id and p.email = '';
 
 create table if not exists public.question_progress (
   user_id uuid not null references auth.users(id) on delete cascade,
@@ -131,7 +142,11 @@ alter table public.assignment_submissions enable row level security;
 
 create or replace function public.is_teacher(account_id uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = ''
-as $$ select exists (select 1 from public.profiles where user_id = account_id and role = 'teacher') $$;
+as $$ select exists (select 1 from public.profiles where user_id = account_id and role in ('teacher', 'admin')) $$;
+
+create or replace function public.is_admin(account_id uuid default auth.uid())
+returns boolean language sql stable security definer set search_path = ''
+as $$ select exists (select 1 from public.profiles where user_id = account_id and role = 'admin') $$;
 
 create or replace function public.teaches_class(class_uuid uuid, account_id uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = ''
@@ -167,6 +182,14 @@ $$;
 
 grant execute on function public.join_class_by_code(text) to authenticated;
 
+create or replace function public.mark_teacher_notification_sent()
+returns void language sql security definer set search_path = ''
+as $$
+  update public.profiles set teacher_notification_sent_at = now(), updated_at = now()
+  where user_id = auth.uid() and teacher_status = 'pending' and teacher_notification_sent_at is null
+$$;
+grant execute on function public.mark_teacher_notification_sent() to authenticated;
+
 drop policy if exists "Students read own profile" on public.profiles;
 create policy "Students read own profile" on public.profiles for select using ((select auth.uid()) = user_id);
 drop policy if exists "Students update own profile" on public.profiles;
@@ -175,6 +198,10 @@ drop policy if exists "Teachers read class student profiles" on public.profiles;
 create policy "Teachers read class student profiles" on public.profiles for select using (
   exists (select 1 from public.class_memberships cm where cm.student_id = profiles.user_id and public.teaches_class(cm.class_id))
 );
+drop policy if exists "Admins read teacher applications" on public.profiles;
+create policy "Admins read teacher applications" on public.profiles for select using (public.is_admin());
+drop policy if exists "Admins update teacher applications" on public.profiles;
+create policy "Admins update teacher applications" on public.profiles for update using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Students read own progress" on public.question_progress;
 create policy "Students read own progress" on public.question_progress for select using ((select auth.uid()) = user_id);
@@ -248,8 +275,14 @@ language plpgsql
 security definer set search_path = ''
 as $$
 begin
-  insert into public.profiles (user_id, display_name)
-  values (new.id, left(coalesce(new.raw_user_meta_data ->> 'display_name', ''), 80))
+  insert into public.profiles (user_id, display_name, email, teacher_status, teacher_requested_at)
+  values (
+    new.id,
+    left(coalesce(new.raw_user_meta_data ->> 'display_name', ''), 80),
+    left(coalesce(new.email, ''), 254),
+    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then 'pending' else 'none' end,
+    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then now() else null end
+  )
   on conflict (user_id) do nothing;
   return new;
 end;

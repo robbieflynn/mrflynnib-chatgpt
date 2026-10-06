@@ -85,7 +85,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const coursePercentage = percentage(courseCompleted, courseProgress.questionIds.length);
   const displayName = typeof user.user_metadata.display_name === "string" ? user.user_metadata.display_name : "";
   const [{ data: profile }, { data: memberships }] = await Promise.all([
-    supabase.from("profiles").select("role").eq("user_id", user.id).maybeSingle(),
+    supabase.from("profiles").select("role,teacher_status").eq("user_id", user.id).maybeSingle(),
     supabase.from("class_memberships").select("class_id,classes(id,name,course)").eq("student_id", user.id),
   ]);
   const classIds = (memberships ?? []).map((membership) => membership.class_id);
@@ -99,6 +99,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
   const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
   const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
+  const teacherRequested = pageSearchParams.teacher === "requested";
 
   return (
     <>
@@ -107,8 +108,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <Container className="stack-xl">
           {accountError ? <p className="form-message form-error">{accountError}</p> : null}
           {accountSuccess ? <p className="form-message form-success">{accountSuccess}</p> : null}
-          {teacherApprovalRequired ? <p className="form-message form-error">Teacher access must be approved before this account can create classes and assignments.</p> : null}
-          {profile?.role === "teacher" ? <div className="teacher-access-card"><div><span>Teacher account</span><strong>Manage classes and assignments</strong></div><Link className="button button-small" href="/teacher">Open teacher dashboard</Link></div> : (
+          {teacherRequested ? <p className="form-message form-success">Your teacher account request has been sent for approval. You can use the student question bank while you wait.</p> : null}
+          {teacherApprovalRequired ? <p className="form-message form-error">{profile?.teacher_status === "pending" ? "Your teacher account is waiting for approval." : "Teacher access must be approved before this account can create classes and assignments."}</p> : null}
+          {profile?.teacher_status === "pending" && !teacherRequested ? <p className="teacher-pending-note"><strong>Teacher approval pending</strong><span>You will be able to create classes and assignments once your request is approved.</span></p> : null}
+          {profile?.role === "teacher" || profile?.role === "admin" ? <div className="teacher-access-card"><div><span>{profile.role === "admin" ? "Teacher administrator" : "Teacher account"}</span><strong>Manage classes and assignments</strong></div><Link className="button button-small" href="/teacher">Open teacher dashboard</Link></div> : (
             <div className="student-classes-panel">
               <div className="student-assignments stack">
                 <div><p className="eyebrow">Assignments</p><h2>Your classwork</h2></div>

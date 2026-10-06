@@ -4,7 +4,7 @@ import { randomBytes } from "node:crypto";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import progressManifest from "@/data/question-bank-progress.json";
-import { requireTeacher } from "@/lib/account-access";
+import { requireAdmin, requireTeacher } from "@/lib/account-access";
 
 const validCourses = new Set(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
 
@@ -80,4 +80,18 @@ export async function createAssignment(formData: FormData) {
   revalidatePath("/teacher");
   revalidatePath("/account");
   redirect(`/teacher/assignments/${assignment.id}?success=${encodeURIComponent("Assignment published.")}`);
+}
+
+export async function reviewTeacherApplication(formData: FormData) {
+  const { supabase, user } = await requireAdmin();
+  const applicantId = String(formData.get("applicantId") || "");
+  const decision = String(formData.get("decision") || "");
+  if (!applicantId || applicantId === user.id || !new Set(["approve", "decline"]).has(decision)) redirect("/teacher?error=That%20request%20could%20not%20be%20reviewed.");
+  const values = decision === "approve"
+    ? { role: "teacher", teacher_status: "approved", updated_at: new Date().toISOString() }
+    : { role: "student", teacher_status: "rejected", updated_at: new Date().toISOString() };
+  const { error } = await supabase.from("profiles").update(values).eq("user_id", applicantId).eq("teacher_status", "pending");
+  if (error) redirect(`/teacher?error=${encodeURIComponent("The teacher request could not be updated.")}`);
+  revalidatePath("/teacher");
+  redirect(`/teacher?success=${encodeURIComponent(decision === "approve" ? "Teacher access approved." : "Teacher request declined.")}`);
 }

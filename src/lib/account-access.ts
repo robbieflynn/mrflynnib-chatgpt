@@ -11,6 +11,12 @@ export async function requireSignedIn() {
 export async function requireTeacher() {
   const { supabase, user } = await requireSignedIn();
   const { data: profile } = await supabase.from("profiles").select("role,display_name").eq("user_id", user.id).maybeSingle();
-  if (profile?.role !== "teacher") redirect("/account?teacher=approval-required");
+  if (profile?.role !== "teacher" && profile?.role !== "admin") redirect("/account?teacher=approval-required");
   return { supabase, user, profile };
+}
+
+export async function requireAdmin() {
+  const access = await requireTeacher();
+  if (access.profile.role !== "admin") redirect("/teacher");
+  return access;
 }
