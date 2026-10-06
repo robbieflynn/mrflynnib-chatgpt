@@ -13,6 +13,7 @@ type QuestionBankMessage = {
   questionId?: string;
   completed?: boolean;
   document?: unknown;
+  response?: unknown;
 };
 
 export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | null>, bank: Bank, assignmentId?: string, viewedStudentId?: string) {
@@ -27,6 +28,35 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
 
     function send(data: Record<string, unknown>) {
       frameRef.current?.contentWindow?.postMessage(data, window.location.origin);
+    }
+
+    async function publishAssignmentState() {
+      if (!assignmentId || !clientRef.current || !userRef.current) {
+        send({ type: "mrflynnib-assignment-response-state", questions: [] });
+        return;
+      }
+      const studentId = viewedStudentId || userRef.current.id;
+      const [{ data: questions, error: questionError }, { data: responses, error: responseError }] = await Promise.all([
+        clientRef.current.from("assignment_questions").select("question_id,response_type,response_options").eq("assignment_id", assignmentId),
+        clientRef.current.from("assignment_responses").select("question_id,response,is_correct,updated_at").eq("assignment_id", assignmentId).eq("student_id", studentId),
+      ]);
+      if (cancelled) return;
+      const responseByQuestion = new Map((responses ?? []).map((row) => [String(row.question_id), row]));
+      send({
+        type: "mrflynnib-assignment-response-state",
+        questions: questionError || responseError ? [] : (questions ?? []).map((question) => {
+          const saved = responseByQuestion.get(String(question.question_id));
+          return {
+            questionId: String(question.question_id),
+            responseType: String(question.response_type || "teacher_review"),
+            responseOptions: Array.isArray(question.response_options) ? question.response_options.map(String) : [],
+            response: saved?.response ?? null,
+            isCorrect: saved?.is_correct ?? null,
+            updatedAt: saved?.updated_at ?? null,
+            readOnly: Boolean(viewedStudentId),
+          };
+        }),
+      });
     }
 
     async function publishAccountState(user: User | null) {
@@ -56,6 +86,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         readOnly: Boolean(viewedStudentId),
         completedQuestionIds: Array.from(completedRef.current),
       });
+      if (assignmentId) await publishAssignmentState();
     }
 
     async function handleMessage(event: MessageEvent<QuestionBankMessage>) {
@@ -68,6 +99,11 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         return;
       }
 
+      if (message.type === "mrflynnib-assignment-responses-ready") {
+        await publishAssignmentState();
+        return;
+      }
+
       if (message.type === "mrflynnib-account-required") {
         const next = `${window.location.pathname}${window.location.search}`;
         router.push(`/account?next=${encodeURIComponent(next)}`);
@@ -75,6 +111,31 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
 
       if (!questionId || !clientRef.current || !userRef.current) return;
+
+      if (message.type === "mrflynnib-assignment-response-save") {
+        if (!assignmentId || viewedStudentId) return;
+        const encoded = JSON.stringify(message.response ?? null);
+        if (encoded.length > 2_000) {
+          send({ type: "mrflynnib-assignment-response-result", questionId, response: message.response ?? null, ok: false });
+          return;
+        }
+        const { data, error } = await clientRef.current.rpc("submit_assignment_response", {
+          assignment_uuid: assignmentId,
+          question_key: questionId,
+          response_payload: message.response,
+        });
+        const result = Array.isArray(data) ? data[0] : null;
+        send({
+          type: "mrflynnib-assignment-response-result",
+          questionId,
+          response: message.response ?? null,
+          isCorrect: result?.is_correct ?? null,
+          result: result?.result ?? null,
+          ok: !error,
+        });
+        if (!error) router.refresh();
+        return;
+      }
 
       if (message.type === "mrflynnib-progress-set") {
         if (viewedStudentId) return;

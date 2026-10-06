@@ -316,16 +316,17 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-builder-actions { position: sticky; bottom: 1rem; z-index: 3; padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--line); border-radius: 1rem; background: rgba(255,255,255,.95); box-shadow: var(--shadow); backdrop-filter: blur(10px); }
 .student-classes-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .35fr); gap: 1.5rem; align-items: start; }
 .teacher-access-card strong { font-size: 1.05rem; }
-.assignment-status-bar { padding: 1rem 1.15rem; display: grid; grid-template-columns: auto minmax(140px, 1fr) auto auto; align-items: center; gap: 1.2rem; border-radius: 1.1rem; background: linear-gradient(135deg, #102652, var(--ink)); color: white; }
+.assignment-status-bar { padding: 1rem 1.15rem; display: grid; grid-template-columns: auto minmax(140px, 1fr) auto auto auto; align-items: center; gap: 1.2rem; border-radius: 1.1rem; background: linear-gradient(135deg, #102652, var(--ink)); color: white; }
 .assignment-status-bar > div { display: grid; gap: .05rem; }
 .assignment-status-bar > div > span { color: rgba(255,255,255,.62); font-size: .7rem; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
 .assignment-status-bar .dashboard-progress { min-width: 120px; }
 .assignment-note { padding: 1rem 1.2rem; display: flex; gap: .6rem; border: 1px solid #b7d6e9; border-radius: .9rem; background: var(--sky); color: var(--ink-2); }
 .teacher-progress-table { overflow: hidden; border: 1px solid var(--line); border-radius: 1.1rem; background: white; }
-.teacher-progress-row { min-height: 70px; padding: .85rem 1rem; display: grid; grid-template-columns: 1fr 1fr 130px; align-items: center; gap: 1rem; border-bottom: 1px solid #e7ebed; }
+.teacher-progress-row { min-height: 70px; padding: .85rem 1rem; display: grid; grid-template-columns: 1fr .8fr .65fr 130px; align-items: center; gap: 1rem; border-bottom: 1px solid #e7ebed; }
 .teacher-progress-row:last-child { border-bottom: 0; }
 .teacher-progress-heading { min-height: auto; background: #f3f6f7; color: var(--muted); font-size: .76rem; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
-.teacher-progress-row > span:nth-child(2) { display: grid; gap: .35rem; }
+.teacher-progress-row > span:nth-child(2), .teacher-progress-row > span:nth-child(3) { display: grid; gap: .35rem; }
+.teacher-progress-row > span:nth-child(3) small { color: var(--muted); }
 .teacher-progress-row i { height: 6px; overflow: hidden; border-radius: 99px; background: #e4eaec; }
 .teacher-progress-row i b { display: block; height: 100%; border-radius: inherit; background: var(--teal); }
 .status-pill { display: inline-flex; width: fit-content; padding: .3rem .55rem; border-radius: 999px; background: #eef1f2; color: var(--muted); font-size: .75rem; font-weight: 850; }
@@ -336,6 +337,71 @@ a.teacher-list-row:hover { background: var(--sky); }
 .teacher-approval-row:last-child { border-bottom: 0; }
 .teacher-approval-row > span { display: grid; gap: .08rem; }
 .teacher-approval-row small { color: var(--muted); }
+.dashboard-hero { position: relative; padding: clamp(3rem, 6vw, 5rem) 0; overflow: hidden; background: #071733; color: white; }
+.dashboard-hero::before { content: ""; position: absolute; inset: 0; opacity: .28; background-image: linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(90deg, #000, transparent 80%); }
+.dashboard-hero::after { content: ""; position: absolute; width: 480px; height: 480px; right: -130px; top: -260px; border-radius: 50%; background: radial-gradient(circle, rgba(72,167,239,.3), rgba(72,167,239,0) 68%); }
+.dashboard-hero > .container { position: relative; z-index: 1; }
+.dashboard-hero-layout { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(2rem, 6vw, 6rem); align-items: end; }
+.dashboard-hero h1 { max-width: 15ch; color: white; font-size: clamp(2.7rem, 5vw, 4.8rem); }
+.dashboard-hero p { max-width: 58ch; color: rgba(255,255,255,.72); font-size: 1.02rem; }
+.dashboard-role-label { width: fit-content; padding: .42rem .7rem; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(255,255,255,.08); color: #8fd0ff; font-size: .7rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.dashboard-hero-stats { display: grid; grid-template-columns: repeat(3, minmax(105px, 1fr)); overflow: hidden; border: 1px solid rgba(255,255,255,.16); border-radius: 1.2rem; background: rgba(255,255,255,.08); box-shadow: 0 24px 70px rgba(0,0,0,.18); backdrop-filter: blur(10px); }
+.dashboard-hero-stats > div { min-height: 105px; padding: 1.1rem; display: grid; align-content: center; gap: .18rem; border-left: 1px solid rgba(255,255,255,.13); }
+.dashboard-hero-stats > div:first-child { border-left: 0; }
+.dashboard-hero-stats strong { color: white; font-size: 2rem; line-height: 1; }
+.dashboard-hero-stats span { color: rgba(255,255,255,.63); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+.student-dashboard-hero { background: radial-gradient(circle at 75% 10%, rgba(35,127,202,.35), transparent 28%), #071733; }
+.student-dashboard-hero-igcse, .teacher-dashboard-hero-igcse { background: radial-gradient(circle at 75% 10%, rgba(179,38,54,.4), transparent 30%), #2b0d16; }
+.student-dashboard-hero-igcse .dashboard-role-label, .teacher-dashboard-hero-igcse .dashboard-role-label { color: #ffbdc6; }
+.teacher-dashboard-hero { border-bottom: 5px solid var(--gold); background: radial-gradient(circle at 78% 12%, rgba(31,151,139,.32), transparent 30%), #071733; }
+.teacher-dashboard-hero-igcse { border-bottom-color: var(--igcse-red); }
+.student-class-section, .dashboard-panel { padding: clamp(1.35rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: 1.4rem; background: rgba(255,255,255,.88); box-shadow: 0 18px 55px rgba(11,21,48,.065); }
+.student-section-heading { padding-bottom: .35rem; }
+.student-class-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.student-class-card { min-height: 205px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; border: 1px solid #cbd8de; border-radius: 1.1rem; background: linear-gradient(145deg, #fff, #f5fafc); box-shadow: 0 10px 28px rgba(11,21,48,.04); }
+.student-class-card-top, .teacher-class-card-top { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.dashboard-icon { width: 2.6rem; height: 2.6rem; flex: 0 0 auto; display: grid; place-items: center; border-radius: .8rem; background: var(--ink); color: white; font-size: .85rem; font-weight: 950; box-shadow: 0 10px 25px rgba(11,21,48,.13); }
+.student-dashboard-igcse .dashboard-icon, .igcse-teacher-dashboard .dashboard-icon { background: var(--igcse-red-dark); }
+.student-class-card > div:nth-child(2) { display: grid; gap: .18rem; }
+.student-class-card > div:nth-child(2) small { color: var(--muted); font-size: .7rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.student-class-card h3 { font-size: 1.35rem; }
+.student-class-card-meta { margin-top: auto; padding-top: .8rem; display: flex; align-items: center; justify-content: space-between; gap: .75rem; border-top: 1px solid #e1e7e9; color: var(--muted); font-size: .74rem; }
+.student-class-card-meta strong { color: var(--ink); }
+.join-class-panel { overflow: hidden; border: 1px solid #c7d4da; border-radius: 1rem; background: #f7fafb; }
+.join-class-panel summary { min-height: 54px; padding: .85rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--dashboard-accent-dark); font-size: .85rem; font-weight: 900; cursor: pointer; list-style: none; }
+.join-class-panel summary::-webkit-details-marker { display: none; }
+.join-class-panel summary span { font-size: 1.2rem; transition: transform .2s ease; }
+.join-class-panel[open] summary span { transform: rotate(45deg); }
+.join-class-form { padding: 1rem; display: grid; grid-template-columns: minmax(180px, 320px) auto; align-items: end; gap: .75rem; border-top: 1px solid #dce4e7; background: white; }
+.join-class-form .button { min-height: 3rem; }
+.student-assignment-list { display: grid; gap: .7rem; }
+.student-assignment-card { position: relative; min-height: 92px; padding: 1rem 1.05rem 1rem 1.25rem; display: grid; grid-template-columns: minmax(0, 1fr) auto auto 1rem; align-items: center; gap: 1rem; overflow: hidden; border: 1px solid #d4dde1; border-radius: 1rem; background: white; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.student-assignment-card:hover { transform: translateY(-2px); border-color: var(--dashboard-accent); box-shadow: 0 14px 32px rgba(11,21,48,.08); }
+.student-assignment-status { position: absolute; inset: auto 0 0; height: 5px; background: #e6ecef; }
+.student-assignment-status i { position: absolute; inset: 0 auto 0 0; height: 100%; display: block; background: var(--dashboard-accent); }
+.student-assignment-card > div:nth-child(2) { display: grid; gap: .08rem; }
+.student-assignment-card > div:nth-child(2) small { color: var(--dashboard-accent-dark); font-size: .69rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+.student-assignment-card > div:nth-child(2) strong { font-size: 1rem; }
+.student-assignment-card > div:nth-child(2) span { color: var(--muted); font-size: .76rem; }
+.student-assignment-progress { min-width: 70px; display: grid; text-align: right; }
+.student-assignment-progress strong { font-size: 1.2rem; }
+.student-assignment-progress span { color: var(--muted); font-size: .68rem; }
+.dashboard-empty-state { min-height: 110px; padding: 1.1rem; display: flex; align-items: center; gap: 1rem; border: 1px dashed #aebfc8; border-radius: 1rem; background: #f8fafb; }
+.dashboard-empty-state > span { width: 2.5rem; height: 2.5rem; flex: 0 0 auto; display: grid; place-items: center; border-radius: .8rem; background: var(--dashboard-accent-soft); color: var(--dashboard-accent-dark); font-weight: 950; }
+.dashboard-empty-state div { display: grid; gap: .15rem; }
+.dashboard-empty-state p { color: var(--muted); font-size: .82rem; }
+.dashboard-empty-state.compact { min-height: 90px; }
+.teacher-class-card { position: relative; min-height: 270px; overflow: hidden; border-color: #cbd7dc; background: linear-gradient(145deg, #fff, #f6fafb); }
+.teacher-class-card::after { content: ""; position: absolute; width: 130px; height: 130px; right: -70px; top: -70px; border-radius: 50%; background: rgba(35,127,202,.08); }
+.igcse-teacher-dashboard .teacher-class-card::after { background: rgba(179,38,54,.08); }
+.teacher-class-card h3 { font-size: 1.45rem; }
+.teacher-class-code { width: 100%; padding-top: .8rem; border-top: 1px solid #dfe6e8; }
+.teacher-class-code strong { color: var(--ink); letter-spacing: .08em; }
+.teacher-create-panel { position: sticky; top: 1rem; overflow: hidden; border-color: #bfd0d8; background: linear-gradient(145deg, #fff, #eef7fb); }
+.teacher-create-panel::after { content: ""; position: absolute; width: 160px; height: 160px; right: -95px; top: -95px; border-radius: 50%; background: rgba(35,127,202,.1); }
+.teacher-create-panel > * { position: relative; z-index: 1; }
+.igcse-teacher-dashboard .teacher-create-panel { background: linear-gradient(145deg, #fff, #fff3f5); }
+.igcse-teacher-dashboard .teacher-create-panel::after { background: rgba(179,38,54,.1); }
 .button:disabled { cursor: wait; opacity: .65; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -375,6 +441,9 @@ a.teacher-list-row:hover { background: var(--sky); }
   .footer-grid { grid-template-columns: repeat(2,1fr); }
   .teacher-layout, .teacher-two-column, .student-classes-panel { grid-template-columns: 1fr; }
   .assignment-status-bar { grid-template-columns: 1fr 1fr; }
+  .dashboard-hero-layout { grid-template-columns: 1fr; align-items: start; }
+  .dashboard-hero-stats { width: min(100%, 520px); }
+  .student-class-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 650px) {
   .section { padding: 4.2rem 0; }
@@ -392,6 +461,15 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-approval-row { align-items: stretch; flex-direction: column; }
   .teacher-list-row { grid-template-columns: 1fr auto; }
   .teacher-list-row .status-pill { grid-column: 1 / -1; }
+  .dashboard-hero-stats { width: 100%; grid-template-columns: 1fr; }
+  .dashboard-hero-stats > div { min-height: 78px; grid-template-columns: auto 1fr; align-items: center; gap: .7rem; border-left: 0; border-top: 1px solid rgba(255,255,255,.13); }
+  .dashboard-hero-stats > div:first-child { border-top: 0; }
+  .student-class-grid { grid-template-columns: 1fr; }
+  .join-class-form { grid-template-columns: 1fr; }
+  .student-assignment-card { grid-template-columns: minmax(0, 1fr) auto; }
+  .student-assignment-progress { text-align: left; }
+  .student-assignment-card .status-pill { justify-self: start; }
+  .student-assignment-card > span:last-child { display: none; }
   .hero-photo-wrap { inset: 0 0 1.4rem 0; border-radius: 1.4rem; }
   .hero-credential-card { left: .7rem; top: .7rem; width: min(75%, 250px); }
   .lesson-card { right: .5rem; }

@@ -8,10 +8,15 @@ export async function joinClass(formData: FormData) {
   const { supabase } = await requireSignedIn();
   const code = String(formData.get("code") || "").trim().toUpperCase();
   if (!code) redirect("/account?error=Enter%20your%20class%20code.");
-  const { error } = await supabase.rpc("join_class_by_code", { raw_code: code });
+  const { data: classId, error } = await supabase.rpc("join_class_by_code", { raw_code: code });
   if (error) redirect(`/account?error=${encodeURIComponent(error.message || "That class code could not be used.")}`);
+  const { data: classRecord } = classId
+    ? await supabase.from("classes").select("name,bank").eq("id", classId).maybeSingle()
+    : { data: null };
   revalidatePath("/account");
-  redirect("/account?success=You%20have%20joined%20the%20class.");
+  const dashboardQuery = classRecord?.bank === "igcse" ? "qualification=igcse&" : "";
+  const className = classRecord?.name || "the class";
+  redirect(`/account?${dashboardQuery}success=${encodeURIComponent(`You have joined ${className}.`)}`);
 }
 
 export async function submitAssignment(formData: FormData) {

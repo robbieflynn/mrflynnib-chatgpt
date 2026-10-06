@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Container, PageHero } from "@/components/ui";
+import { Container } from "@/components/ui";
 import { requireTeacher } from "@/lib/account-access";
 import { createClass, reviewTeacherApplication } from "./actions";
 
@@ -13,9 +13,11 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
   const { data: teacherApplications } = profile.role === "admin"
     ? await supabase.from("profiles").select("user_id,display_name,email,teacher_requested_at").eq("teacher_status", "pending").order("teacher_requested_at")
     : { data: [] };
+  const totalStudents = (classes ?? []).reduce((total, item) => total + (Array.isArray(item.class_memberships) ? item.class_memberships[0]?.count ?? 0 : 0), 0);
+  const totalAssignments = (classes ?? []).reduce((total, item) => total + (Array.isArray(item.assignments) ? item.assignments[0]?.count ?? 0 : 0), 0);
 
   return <>
-    <PageHero eyebrow="Teacher dashboard" title={profile.display_name ? `Welcome, ${profile.display_name}` : "Your classes"} intro="Create classes, set work from the question bank and follow student progress." />
+    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-layout"><div className="stack"><span className="dashboard-role-label">IB teacher dashboard</span><h1>{profile.display_name ? `Welcome, ${profile.display_name}` : "Your teaching dashboard"}</h1><p>Create classes, set work from the question bank and review every student&apos;s answers and working.</p></div><div className="dashboard-hero-stats" aria-label="Teacher account summary"><div><strong>{classes?.length ?? 0}</strong><span>classes</span></div><div><strong>{totalStudents}</strong><span>students</span></div><div><strong>{totalAssignments}</strong><span>assignments</span></div></div></Container></section>
     <section className="section-tight teacher-dashboard"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}
       {message.success ? <p className="form-message form-success">{message.success}</p> : null}
@@ -24,21 +26,21 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
       </section> : null}
       <div className="teacher-layout">
         <div className="stack-lg">
-          <div className="dashboard-section-heading"><div><p className="eyebrow">Your classes</p><h2>Classes and assignments</h2></div></div>
+          <div className="dashboard-section-heading"><div><p className="eyebrow">Your classes</p><h2>Classes and assignments</h2></div><p className="muted">Open a class to set work, share its joining code and review student progress.</p></div>
           <div className="teacher-class-grid">
             {(classes ?? []).map((item) => {
               const students = Array.isArray(item.class_memberships) ? item.class_memberships[0]?.count ?? 0 : 0;
               const assignments = Array.isArray(item.assignments) ? item.assignments[0]?.count ?? 0 : 0;
               return <Link className="teacher-class-card" href={`/teacher/classes/${item.id}`} key={item.id}>
-                <span className="badge">{item.course}</span><h3>{item.name}</h3>
+                <div className="teacher-class-card-top"><span className="dashboard-icon" aria-hidden="true">T</span><span className="badge">{item.course}</span></div><h3>{item.name}</h3>
                 <div className="teacher-card-stats"><span><strong>{students}</strong> students</span><span><strong>{assignments}</strong> assignments</span></div>
-                <small>Class code {item.join_code}</small><span className="text-link">Open class</span>
+                <small className="teacher-class-code">Class code <strong>{item.join_code}</strong></small><span className="text-link">Open class <span aria-hidden="true">→</span></span>
               </Link>;
             })}
             {!classes?.length ? <div className="account-card stack"><h3>Create your first class</h3><p className="muted">Your class will receive a code that students can use to join.</p></div> : null}
           </div>
         </div>
-        <aside className="account-card stack"><div><p className="eyebrow">New class</p><h3>Create a class</h3></div>
+        <aside className="account-card teacher-create-panel stack"><span className="dashboard-icon" aria-hidden="true">+</span><div><p className="eyebrow">New class</p><h3>Create a class</h3><p className="muted small">Choose the course now. Questions and assignments will stay inside this curriculum.</p></div>
           <form action={createClass} className="stack">
             <input name="area" type="hidden" value="ib" />
             <label className="field"><span>Class name</span><input name="name" placeholder="Year 12 AA HL" maxLength={100} required /></label>
