@@ -716,6 +716,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .qb-index-intro h1 { max-width: none; font-size: clamp(2.9rem, 5.8vw, 5.4rem); }
 .qb-index-intro .lede { max-width: 55ch; }
 .qb-account-route { display: flex; align-items: center; justify-content: center; gap: .8rem; color: var(--muted); font-size: .9rem; }
+.qb-account-actions { display: flex; align-items: center; gap: .55rem; }
 .qb-course-link-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .qb-course-link {
   position: relative;
@@ -1077,6 +1078,7 @@ a.teacher-list-row:hover { background: var(--sky); }
   .igcse-section-links { width: 100%; gap: .45rem; overflow-x: auto; flex-wrap: nowrap; padding-bottom: .15rem; }
   .igcse-section-links a { padding: .45rem .65rem; border: 1px solid #eadcdf; border-radius: 999px; background: white; white-space: nowrap; }
   .igcse-qb-route-bar-inner { align-items: stretch; flex-direction: column; }
+  .igcse-qb-route-bar-inner .qb-account-actions { align-items: stretch; flex-direction: column; width: 100%; }
   .igcse-qb-route-bar-inner .button { width: 100%; }
   .igcse-hero { min-height: auto; padding: 3.5rem 0; }
   .igcse-hero h1, .igcse-page-hero h1, .igcse-coming-card h1 { font-size: clamp(2.75rem, 13vw, 4.2rem); }
@@ -1104,6 +1106,7 @@ a.teacher-list-row:hover { background: var(--sky); }
   .qb-index-intro h1 { font-size: clamp(2.25rem, 10.5vw, 3.2rem); }
   .qb-index-intro .lede { font-size: .95rem; line-height: 1.45; }
   .qb-account-route { align-items: stretch; flex-direction: column; gap: .55rem; }
+  .qb-account-route .qb-account-actions { align-items: stretch; flex-direction: column; }
   .qb-course-link-grid { gap: .65rem; }
   .qb-course-link { min-height: 128px; padding: .85rem; gap: .45rem; border-radius: 1rem; }
   .qb-course-link-code { font-size: 2rem; }

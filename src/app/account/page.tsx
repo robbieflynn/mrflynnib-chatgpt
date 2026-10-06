@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Container, PageHero } from "@/components/ui";
 import { StudentAccountForm } from "@/components/student-account-form";
@@ -11,8 +12,8 @@ import progressManifest from "@/data/question-bank-progress.json";
 import { joinClass } from "./actions";
 
 export const metadata: Metadata = {
-  title: "Student account",
-  description: "Sign in to save question-bank progress and whiteboard working.",
+  title: "Mr Flynn IB account",
+  description: "Sign in to your student or teacher account.",
   robots: { index: false, follow: false },
 };
 
@@ -31,10 +32,12 @@ type AccountSearchParams = {
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<AccountSearchParams> }) {
   const pageSearchParams = await searchParams;
+  const requestedNext = typeof pageSearchParams.next === "string" ? pageSearchParams.next : "";
+  const isTeacherJourney = requestedNext === "/teacher" || requestedNext === "/igcse/teacher";
   if (!hasSupabaseBrowserConfig()) {
     return (
       <>
-        <PageHero eyebrow="Student account" title="Student accounts are being prepared" intro="The account service still needs its secure connection before students can sign in." />
+        <PageHero eyebrow={isTeacherJourney ? "Teacher account" : "Student account"} title="Accounts are being prepared" intro="The account service still needs its secure connection before you can sign in." />
         <section className="section-tight"><Container className="narrow"><div className="account-card"><p>No student information is being collected yet.</p></div></Container></section>
       </>
     );
@@ -46,15 +49,20 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (!user) {
     return (
       <>
-        <PageHero eyebrow="Student account" title="Save your question-bank progress" intro="Sign in to tick off completed questions and continue your whiteboard working on another device." />
-        <section className="section-tight"><Container className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm /></Suspense><aside className="account-benefits stack"><h2>Save your progress</h2><ul><li>Tick off questions as you complete them.</li><li>Return to editable whiteboard working later.</li></ul></aside></Container></section>
+        <PageHero
+          eyebrow={isTeacherJourney ? "Teacher account" : "Student account"}
+          title={isTeacherJourney ? "Teacher sign in" : "Save your question-bank progress"}
+          intro={isTeacherJourney ? "Sign in to manage classes and assignments, or create a teacher account to request approval." : "Sign in to tick off completed questions and continue your whiteboard working on another device."}
+        />
+        <section className="section-tight"><Container className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li></ul></aside> : <aside className="account-benefits stack"><h2>Save your progress</h2><ul><li>Tick off questions as you complete them.</li><li>Return to editable whiteboard working later.</li></ul></aside>}</Container></section>
       </>
     );
   }
 
+  if (isTeacherJourney) redirect(requestedNext);
+
   const requestedCourse = pageSearchParams.course;
   const requestedQualification = typeof pageSearchParams.qualification === "string" ? pageSearchParams.qualification : "";
-  const requestedNext = typeof pageSearchParams.next === "string" ? pageSearchParams.next : "";
   const isIgcse = requestedQualification === "igcse" || requestedNext.startsWith("/igcse/");
   const selectedCourse = getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "") ?? questionBankCourses[0];
   const courseProgress = isIgcse ? progressManifest.igcse : progressManifest.courses[selectedCourse.code];

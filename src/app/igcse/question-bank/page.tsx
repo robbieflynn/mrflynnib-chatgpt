@@ -15,7 +15,10 @@ export default async function IgcseQuestionBankPage({ searchParams }: { searchPa
       <section className="igcse-qb-route-bar">
         <Container className="igcse-qb-route-bar-inner">
           <Breadcrumbs items={[{ label: "IGCSE Mathematics", href: "/igcse" }, { label: "Question bank" }]} />
-          <Link className="button button-small" href="/account?qualification=igcse">Student dashboard</Link>
+          <div className="qb-account-actions">
+            <Link className="button button-small" href="/account?qualification=igcse">Student dashboard</Link>
+            <Link className="button button-secondary button-small" href="/account?next=/igcse/teacher">Teacher sign in</Link>
+          </div>
         </Container>
       </section>
       <section className="igcse-qb-content" aria-label="Edexcel IGCSE Mathematics question bank">
