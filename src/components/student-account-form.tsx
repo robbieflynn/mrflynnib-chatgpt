@@ -10,10 +10,12 @@ type Mode = "sign-in" | "sign-up" | "reset" | "resend";
 export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: Mode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const teacherJourney = searchParams.get("next")?.includes("teacher") ?? false;
   const [mode, setMode] = useState<Mode>(initialMode);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [accountType, setAccountType] = useState<"student" | "teacher">(teacherJourney ? "teacher" : "student");
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +69,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         email,
         password,
         options: {
-          data: { display_name: name.trim() },
+          data: { display_name: name.trim(), account_type: accountType },
           emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
         },
       });
@@ -78,7 +80,9 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         router.refresh();
       } else {
         setMode("resend");
-        setMessage("Check your email to confirm your account, then return here to sign in.");
+        setMessage(accountType === "teacher"
+          ? "Check your email to confirm your account. Your teacher access request will then be sent for approval."
+          : "Check your email to confirm your account, then return here to sign in.");
       }
       return;
     }
@@ -97,16 +101,22 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
 
   return (
     <div className="account-card stack-lg">
-      <div className="account-tabs" role="tablist" aria-label="Student account">
+      <div className="account-tabs" role="tablist" aria-label="Mr Flynn IB account">
         <button type="button" role="tab" aria-selected={mode === "sign-in"} onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Sign in</button>
         <button type="button" role="tab" aria-selected={mode === "sign-up"} onClick={() => { setMode("sign-up"); setError(null); setMessage(null); }}>Create account</button>
       </div>
       <form className="stack" onSubmit={submit}>
         {mode === "sign-up" ? (
-          <div className="field">
-            <label htmlFor="student-name">First name</label>
-            <input id="student-name" name="name" autoComplete="given-name" maxLength={80} required value={name} onChange={(event) => setName(event.target.value)} />
-          </div>
+          <>
+            <fieldset className="account-type-field"><legend>Create an account as</legend><div className="account-type-options">
+              <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => setAccountType("student")} type="radio" value="student" /><span><strong>Student</strong><small>Save question progress and whiteboard working.</small></span></label>
+              <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => setAccountType("teacher")} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Teacher sign-up requires approval.</small></span></label>
+            </div></fieldset>
+            <div className="field">
+              <label htmlFor="student-name">First name</label>
+              <input id="student-name" name="name" autoComplete="given-name" maxLength={80} required value={name} onChange={(event) => setName(event.target.value)} />
+            </div>
+          </>
         ) : null}
         <div className="field">
           <label htmlFor="student-email">Email address</label>
@@ -127,7 +137,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       </form>
       {mode === "sign-in" ? <><button className="account-text-button" type="button" onClick={() => { setMode("resend"); setError(null); setMessage(null); }}>Didn&apos;t receive a confirmation email?</button><button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button></> : null}
       {mode === "reset" || mode === "resend" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
-      <p className="small muted">Creating an account saves question-bank progress and whiteboard working. It does not subscribe you to marketing emails.</p>
+      <p className="small muted">Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. Neither subscribes you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href="/terms">Terms of Use</Link> and acknowledge the <Link className="text-link" href="/privacy">Privacy Policy</Link>.</p>
     </div>
   );

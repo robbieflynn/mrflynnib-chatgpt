@@ -20,7 +20,10 @@ export default function QuestionBankPage() {
           <p className="lede">Select your IB Mathematics course to see the questions that belong to your syllabus.</p>
           <div className="qb-account-route">
             <span>Save completed questions and whiteboard working.</span>
-            <Link className="button button-secondary button-small" href="/account?next=/question-bank">Student sign in</Link>
+            <div className="qb-account-actions">
+              <Link className="button button-small" href="/account">Student dashboard</Link>
+              <Link className="button button-secondary button-small" href="/account?next=/teacher">Teacher dashboard</Link>
+            </div>
           </div>
         </div>
 

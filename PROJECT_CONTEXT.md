@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 5 October 2026
+Last updated: 6 October 2026
 
 ## Purpose of this file
 
@@ -139,6 +139,8 @@ Later on 5 October 2026, Rob approved the same progress-dashboard journey for Ed
 The student-data Supabase project is hosted specifically in **West EU (Ireland)** (`eu-west-1`). Rob chose Ireland after considering the platform's international audience, EU data residency and the fact that background progress and whiteboard syncing do not require the database to be physically closest to Dubai. The project uses Supabase's Free-plan Nano compute while the product is being tested. Its student tables, ownership policies and account-profile trigger were installed successfully on 4 October 2026. The public project URL and publishable browser key are configured in Vercel for Preview and Production. After successful account creation, saved-progress and dashboard testing in Preview, Rob approved publication on 5 October 2026. Student sign-in, saved completion ticks, editable whiteboards, and the separate IB and IGCSE progress dashboards are now live in production. A first empty Mumbai project was created during setup but was not given the student schema and is not the selected production project; remove it only with Rob's explicit approval.
 
 On 6 October 2026, production authentication email for the Ireland Supabase student platform was moved from Supabase's testing-only shared mailer to Resend custom SMTP. Authentication messages use the sender name **Mr Flynn IB** and `accounts@mrflynnib.com`, with a dedicated sending-only Resend credential restricted to `mrflynnib.com`. The Supabase authentication email rate limit is configured for 100 messages per hour, while the Resend free-plan daily allowance remains the practical overall limit. The website account form provides a self-service option to resend a signup confirmation email. Student accounts, passwords and platform data remain in Supabase; Resend is used only to deliver transactional authentication email.
+
+The IB and IGCSE question-bank journeys must both present **Student dashboard** and **Teacher dashboard** as separate, explicit choices. They use the same Supabase identity, but the teacher route must introduce the shared account page as a teacher journey and preselect Teacher when a new account is created. Approved teacher accounts must open the clearly labelled teacher dashboard rather than the student progress dashboard; student dashboards focus on completed questions and whiteboards, while teacher dashboards focus on classes and assignments. IB and IGCSE classes, questions and assignments remain separated after sign-in.
 
 Rob has confirmed that he previously worked with the IB and received direct guidance that questions may be used when they have been changed sufficiently. He confirms that the questions intended for this bank have been changed accordingly and does not want their original sources displayed publicly. Treat this as Rob's product-owner confirmation rather than an independently verified legal opinion. Preserve any private provenance or working notes included in supplied files, but do not add public source labels unless Rob requests them or a particular third-party licence expressly requires attribution.
 
@@ -285,6 +287,20 @@ The local repository also contains untracked generated dependency/build items fr
 3. Confirm the remaining school licence operational details and have the concise legal copy reviewed if Rob wants formal legal assurance.
 4. Monitor student sign-in, saved completion ticks, whiteboard syncing, and IB/IGCSE dashboard use now that the account feature is live.
 5. Verify the supplied Edexcel IGCSE Mathematics question bank in production after the restored IGCSE area is approved and published.
+
+## Teacher assignments, 6 October 2026
+
+Rob approved the first teacher-account and assignment workflow. Teacher status must be approved rather than self-selected. An approved teacher can create a class for one IB Mathematics course or Edexcel IGCSE Mathematics, share a joining code, select real questions from that course's question bank, add an optional due date and instructions, and publish the assignment. Students use their existing Mr Flynn IB account to join the class, see assignments on their dashboard, complete the exact assigned questions with the existing saved whiteboards, and submit their work. Teachers can see each joined student's question completion and submission state. Teacher access to student information is restricted to students who joined that teacher's class, and saved whiteboards are visible to the teacher only when the question belongs to an assignment for that class.
+
+The assignment builder must use the actual course question-bank experience rather than a separate summary list. Preserve the question bank's canonical topic and subtopic order, filters, full question text, mathematics, diagrams, marks and difficulty labels, and add a clear selection control to each question. A teacher's selections must remain selected while they move between filters, up to the current limit of 40 questions per assignment.
+
+Account creation clearly asks whether the person is a student or teacher. Teacher sign-up states that approval is required. After the applicant confirms their email, their account remains a student-level account with a pending teacher request, `contact@mrflynnib.com` receives a notification, and the administrator sees the request in the teacher dashboard. Only an administrator can approve or decline the request. Approval changes the account to an approved teacher; applicants must never be able to grant themselves teacher access.
+
+Keep teacher journeys separated by curriculum in the same way as student dashboards. The main IB teacher dashboard may create and display only AA HL, AA SL, AI HL and AI SL classes. Edexcel IGCSE Mathematics classes belong only in the IGCSE section and its separate IGCSE teacher dashboard. The same approved account may use both areas, but neither dashboard should mix or advertise the other curriculum.
+
+Assignment completion is stored separately from each student's personal question-bank completion so teacher reporting remains tied to the particular assignment. Completing an assigned question should also update the student's own lasting question-bank progress. Assignments store a snapshot of each selected question's title and topic as well as its stable question ID, so ordinary question-bank refreshes do not erase the assignment record. If a question is later removed or replaced, preserve the old assignment record and handle that case explicitly rather than silently pointing it at a different question.
+
+The first version is for assignments, not formal tests. Keep the data model extensible so timed tests and test-building can be added later without replacing classes, memberships or the teacher identity model. Build and review this feature in a Vercel Preview before production publication.
 
 ## Tuition partner preview, 26 September 2026
 

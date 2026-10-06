@@ -3,16 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
 
-export function IgcseQuestionBankEmbed({ topic, subtopic }: { topic?: string; subtopic?: string }) {
+export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmentId, viewedStudentId }: { topic?: string; subtopic?: string; questionIds?: string[]; assignmentId?: string; viewedStudentId?: string }) {
   const query = new URLSearchParams({ course: "IGCSE Higher", embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
+  if (questionIds?.length) query.set("ids", questionIds.join(","));
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(760);
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(760);
-  useQuestionBankAccount(frameRef, "igcse");
+  useQuestionBankAccount(frameRef, "igcse", assignmentId, viewedStudentId);
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;

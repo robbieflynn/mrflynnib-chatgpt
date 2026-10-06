@@ -4,7 +4,7 @@
   var list = document.getElementById('qb-list');
   if (!list || window.parent === window) return;
 
-  var account = { configured: false, signedIn: false };
+  var account = { configured: false, signedIn: false, readOnly: false };
   var completed = new Set();
 
   function post(message) {
@@ -24,7 +24,7 @@
     var done = completed.has(questionId);
     button.classList.toggle('is-complete', done);
     button.setAttribute('aria-pressed', String(done));
-    button.disabled = !account.configured || button.getAttribute('data-pending') === '1';
+    button.disabled = account.readOnly || !account.configured || button.getAttribute('data-pending') === '1';
     button.querySelector('.qb-progress-label').textContent = labelFor(done);
     button.querySelector('.qb-progress-check').textContent = done ? '✓' : '';
   }
@@ -67,6 +67,7 @@
     if (event.data.type === 'mrflynnib-account-state') {
       account.configured = Boolean(event.data.configured);
       account.signedIn = Boolean(event.data.signedIn);
+      account.readOnly = Boolean(event.data.readOnly);
       completed = new Set(Array.isArray(event.data.completedQuestionIds) ? event.data.completedQuestionIds.map(String) : []);
       window.__mrflynnibAccountState = account;
       scan();

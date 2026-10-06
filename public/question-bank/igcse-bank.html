@@ -176367,6 +176367,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
   var REQUESTED_COURSE = EMBED_PARAMS.get('course') || '';
   var REQUESTED_TOPIC = EMBED_PARAMS.get('topic') || '';
   var REQUESTED_SUBTOPIC = EMBED_PARAMS.get('subtopic') || '';
+  var REQUESTED_IDS = new Set((EMBED_PARAMS.get('ids') || '').split(',').filter(Boolean));
   var requestedFiltersApplied = false;
   function reportEmbeddedHeight(){
     if(!IS_EMBEDDED || window.parent === window) return;
@@ -177085,6 +177086,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     var showOff = false, showProv = false, showHeld = false;
 
     var out = state.all.filter(function(item){
+      if(REQUESTED_IDS.size && !REQUESTED_IDS.has(String(item.id))) return false;
       var itemTopics = topicsOf(item);
       // A question banked for a course Rob isn't drawing from is its own
       // category: "show held" reveals it on its own, without also needing the
@@ -177308,5 +177310,6 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 
 <script src="/question-bank/progress.js?v=1"></script>
 <script src="/question-bank/whiteboard.js?v=16"></script>
+<script src="/question-bank/assignment-selector.js?v=1"></script>
 </body>
 </html>

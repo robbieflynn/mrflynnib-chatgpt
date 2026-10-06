@@ -136,7 +136,11 @@
 
     function updateAccountStatus() {
       var account = accountState();
-      if (!account.configured) setSaveStatus('Saving coming soon', 'idle');
+      var readOnly = Boolean(account.readOnly);
+      board.classList.toggle('is-read-only', readOnly);
+      Array.prototype.forEach.call(board.querySelectorAll('button:not(.qb-whiteboard-close):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
+      if (readOnly) setSaveStatus('Teacher view', 'saved');
+      else if (!account.configured) setSaveStatus('Saving coming soon', 'idle');
       else if (!account.signedIn) setSaveStatus('Sign in to save', 'idle');
       else if (!localDirty) setSaveStatus(documentLoaded ? 'Saved' : 'Ready to save', 'saved');
     }
@@ -163,6 +167,7 @@
     }
 
     function scheduleSave() {
+      if (accountState().readOnly) return;
       localDirty = true;
       window.clearTimeout(saveTimer);
       if (!accountState().signedIn) {

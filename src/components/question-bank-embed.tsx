@@ -7,18 +7,22 @@ type QuestionBankEmbedProps = {
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL";
   topic?: string;
   subtopic?: string;
+  questionIds?: string[];
+  assignmentId?: string;
+  viewedStudentId?: string;
 };
 
-export function QuestionBankEmbed({ course, topic, subtopic }: QuestionBankEmbedProps) {
+export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId }: QuestionBankEmbedProps) {
   const query = new URLSearchParams({ course, embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
+  if (questionIds?.length) query.set("ids", questionIds.join(","));
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(620);
-  useQuestionBankAccount(frameRef, "ib");
+  useQuestionBankAccount(frameRef, "ib", assignmentId, viewedStudentId);
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
