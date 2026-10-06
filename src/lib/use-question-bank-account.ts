@@ -38,7 +38,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       const studentId = viewedStudentId || userRef.current.id;
       const [{ data: questions, error: questionError }, { data: responses, error: responseError }] = await Promise.all([
         clientRef.current.from("assignment_questions").select("question_id,response_type,response_options").eq("assignment_id", assignmentId),
-        clientRef.current.from("assignment_responses").select("question_id,response,is_correct,updated_at").eq("assignment_id", assignmentId).eq("student_id", studentId),
+        clientRef.current.from("assignment_responses").select("question_id,response,is_correct,attempt_count,updated_at").eq("assignment_id", assignmentId).eq("student_id", studentId),
       ]);
       if (cancelled) return;
       const responseByQuestion = new Map((responses ?? []).map((row) => [String(row.question_id), row]));
@@ -52,6 +52,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
             responseOptions: Array.isArray(question.response_options) ? question.response_options.map(String) : [],
             response: saved?.response ?? null,
             isCorrect: saved?.is_correct ?? null,
+            attemptCount: saved?.attempt_count ?? 0,
             updatedAt: saved?.updated_at ?? null,
             readOnly: Boolean(viewedStudentId),
           };
