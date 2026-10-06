@@ -309,17 +309,10 @@ a.teacher-list-row:hover { background: var(--sky); }
 .teacher-list-row > span:first-child { display: grid; gap: .05rem; }
 .teacher-list-row small { color: var(--muted); }
 .assignment-builder { max-width: 1050px; margin-inline: auto; }
-.assignment-picker { padding: 1rem; border: 1px solid var(--line); border-radius: 1.2rem; background: white; box-shadow: 0 12px 34px rgba(11,21,48,.05); }
-.assignment-picker-toolbar { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: .8rem; }
-.assignment-picker-summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .85rem; }
+.assignment-picker { padding: 1rem; border: 1px solid var(--line); border-radius: 1.2rem; background: white; box-shadow: 0 12px 34px rgba(11,21,48,.05); overflow: clip; }
+.assignment-picker-summary { position: sticky; top: .75rem; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; border: 1px solid #b9d5ef; border-radius: .8rem; background: #f3f9ff; color: var(--muted); font-size: .85rem; box-shadow: 0 8px 24px rgba(11,21,48,.08); }
 .assignment-picker-summary strong { color: var(--teal-dark); }
-.assignment-question-list { max-height: 620px; overflow: auto; display: grid; border: 1px solid var(--line); border-radius: .9rem; }
-.assignment-question { padding: .85rem; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .8rem; border-bottom: 1px solid #e7ebed; cursor: pointer; }
-.assignment-question:last-child { border-bottom: 0; }
-.assignment-question:hover, .assignment-question.is-selected { background: var(--sky); }
-.assignment-question input { width: 1.1rem; height: 1.1rem; }
-.assignment-question-copy { display: grid; gap: .1rem; }
-.assignment-question-copy small { color: var(--muted); }
+.assignment-bank-frame { display: block; width: 100%; min-height: 620px; border: 0; border-radius: .9rem; background: white; }
 .assignment-builder-actions { position: sticky; bottom: 1rem; z-index: 3; padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--line); border-radius: 1rem; background: rgba(255,255,255,.95); box-shadow: var(--shadow); backdrop-filter: blur(10px); }
 .student-classes-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .35fr); gap: 1.5rem; align-items: start; }
 .teacher-access-card strong { font-size: 1.05rem; }

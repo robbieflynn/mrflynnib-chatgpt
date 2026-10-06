@@ -1,61 +1,83 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-export type AssignmentQuestionSummary = {
-  id: string;
-  title: string;
-  paper: string;
-  paperNumber: string;
-  marks: number | null;
-  difficulty: string;
-  topics: { main: string; sub: string }[];
+type AssignmentQuestionPickerProps = {
+  bank: "ib" | "igcse";
+  course: "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher";
 };
 
-export function AssignmentQuestionPicker({ questions }: { questions: AssignmentQuestionSummary[] }) {
-  const [topic, setTopic] = useState("");
-  const [subtopic, setSubtopic] = useState("");
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-  const topics = useMemo(() => [...new Set(questions.flatMap((question) => question.topics.map((item) => item.main)))], [questions]);
-  const subtopics = useMemo(() => [...new Set(questions.flatMap((question) => question.topics.filter((item) => !topic || item.main === topic).map((item) => item.sub)))], [questions, topic]);
-  const visible = useMemo(() => questions.filter((question) => {
-    const matchesTopic = !topic || question.topics.some((item) => item.main === topic);
-    const matchesSubtopic = !subtopic || question.topics.some((item) => item.sub === subtopic);
-    const needle = search.trim().toLowerCase();
-    return matchesTopic && matchesSubtopic && (!needle || `${question.title} ${question.paper} ${question.id}`.toLowerCase().includes(needle));
-  }).slice(0, 100), [questions, search, subtopic, topic]);
+export function AssignmentQuestionPicker({ bank, course }: AssignmentQuestionPickerProps) {
+  const initialFrameHeight = bank === "igcse" ? 760 : 620;
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  const frameHeightRef = useRef(initialFrameHeight);
+  const loadingMoreRef = useRef(false);
+  const hasMoreRef = useRef(true);
+  const [frameHeight, setFrameHeight] = useState(initialFrameHeight);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const source = useMemo(() => {
+    const query = new URLSearchParams({ course, embedded: "1", assignment: "1" });
+    return `/question-bank/${bank === "igcse" ? "igcse-bank.html" : "ib-bank.html"}?${query.toString()}`;
+  }, [bank, course]);
 
-  function toggle(id: string) {
-    setSelected((current) => {
-      const next = new Set(current);
-      if (next.has(id)) next.delete(id);
-      else if (next.size < 40) next.add(id);
-      return next;
-    });
-  }
+  const loadMoreIfNeeded = useCallback(() => {
+    const frame = frameRef.current;
+    if (!frame || loadingMoreRef.current || !hasMoreRef.current) return;
+    const distanceFromViewport = frame.getBoundingClientRect().top + frameHeightRef.current - window.innerHeight;
+    if (distanceFromViewport > 1400) return;
+    loadingMoreRef.current = true;
+    frame.contentWindow?.postMessage({ type: "mrflynnib-question-bank-load-more" }, window.location.origin);
+  }, []);
+
+  useEffect(() => {
+    let animationFrame = 0;
+    const handleFrameMessage = (event: MessageEvent) => {
+      const frame = frameRef.current;
+      if (event.origin !== window.location.origin || event.source !== frame?.contentWindow) return;
+      if (event.data?.type === "mrflynnib-question-bank-height") {
+        const nextHeight = Number(event.data.height);
+        if (Number.isFinite(nextHeight)) {
+          frameHeightRef.current = Math.max(bank === "igcse" ? 760 : 620, Math.ceil(nextHeight));
+          setFrameHeight(frameHeightRef.current);
+        }
+        hasMoreRef.current = Number(event.data.rendered) < Number(event.data.total);
+        loadingMoreRef.current = false;
+        cancelAnimationFrame(animationFrame);
+        animationFrame = requestAnimationFrame(loadMoreIfNeeded);
+      }
+      if (event.data?.type === "mrflynnib-assignment-selection" && Array.isArray(event.data.ids)) {
+        setSelectedIds(event.data.ids.map(String).slice(0, 40));
+      }
+    };
+
+    let scrollTicking = false;
+    const handleViewportChange = () => {
+      if (scrollTicking) return;
+      scrollTicking = true;
+      requestAnimationFrame(() => {
+        loadMoreIfNeeded();
+        scrollTicking = false;
+      });
+    };
+    window.addEventListener("message", handleFrameMessage);
+    window.addEventListener("scroll", handleViewportChange, { passive: true });
+    window.addEventListener("resize", handleViewportChange);
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener("message", handleFrameMessage);
+      window.removeEventListener("scroll", handleViewportChange);
+      window.removeEventListener("resize", handleViewportChange);
+    };
+  }, [bank, loadMoreIfNeeded]);
 
   return (
     <div className="assignment-picker stack">
-      {[...selected].map((id) => <input key={id} name="questionIds" type="hidden" value={id} />)}
-      <div className="assignment-picker-toolbar">
-        <label className="field"><span>Topic</span><select value={topic} onChange={(event) => { setTopic(event.target.value); setSubtopic(""); }}><option value="">All topics</option>{topics.map((item) => <option key={item}>{item}</option>)}</select></label>
-        <label className="field"><span>Subtopic</span><select value={subtopic} onChange={(event) => setSubtopic(event.target.value)}><option value="">All subtopics</option>{subtopics.map((item) => <option key={item}>{item}</option>)}</select></label>
-        <label className="field"><span>Search</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Question, paper or ID" /></label>
+      {selectedIds.map((id) => <input key={id} name="questionIds" type="hidden" value={id} />)}
+      <div className="assignment-picker-summary" aria-live="polite">
+        <strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected</strong>
+        <span>Use the bank filters, read each question, then tick up to 40 questions.</span>
       </div>
-      <div className="assignment-picker-summary"><strong>{selected.size} selected</strong><span>Choose up to 40 questions. Showing the first {visible.length} matches.</span></div>
-      <div className="assignment-question-list">
-        {visible.map((question) => {
-          const checked = selected.has(question.id);
-          return (
-            <label className={`assignment-question ${checked ? "is-selected" : ""}`} key={question.id}>
-              <input checked={checked} onChange={() => toggle(question.id)} type="checkbox" />
-              <span className="assignment-question-copy"><strong>{question.title}</strong><small>{question.topics[0]?.sub || question.topics[0]?.main || "Question bank"} · {question.paper || question.id}{question.marks ? ` · ${question.marks} marks` : ""}</small></span>
-              {question.difficulty ? <span className="badge">{question.difficulty}</span> : null}
-            </label>
-          );
-        })}
-      </div>
+      <iframe className="assignment-bank-frame" loading="eager" ref={frameRef} scrolling="no" src={source} style={{ height: `${frameHeight}px` }} title={`${course} assignment question selector`} />
     </div>
   );
 }
