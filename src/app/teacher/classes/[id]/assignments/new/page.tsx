@@ -11,9 +11,10 @@ export default async function NewAssignmentPage({ params, searchParams }: { para
   const { supabase, user } = await requireTeacher();
   const { data: classRecord } = await supabase.from("classes").select("id,name,bank,course").eq("id", id).eq("teacher_id", user.id).maybeSingle();
   if (!classRecord) notFound();
+  const dashboardHref = classRecord.bank === "igcse" ? "/igcse/teacher" : "/teacher";
   const source = classRecord.bank === "igcse" ? progressManifest.igcse : progressManifest.courses[classRecord.course as keyof typeof progressManifest.courses];
   return <>
-    <section className="page-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: "/teacher" }, { label: classRecord.name, href: `/teacher/classes/${id}` }, { label: "New assignment" }]} /><div className="stack"><p className="eyebrow">{classRecord.course}</p><h1>Set an assignment</h1><p className="lede">Choose real questions from the bank, then publish them directly to this class.</p></div></Container></section>
+    <section className="page-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name, href: `/teacher/classes/${id}` }, { label: "New assignment" }]} /><div className="stack"><p className="eyebrow">{classRecord.course}</p><h1>Set an assignment</h1><p className="lede">Choose real questions from the bank, then publish them directly to this class.</p></div></Container></section>
     <section className="section-tight teacher-dashboard"><Container>
       <form action={createAssignment} className="assignment-builder stack-xl"><input name="classId" type="hidden" value={id} />
         {message.error ? <p className="form-message form-error">{message.error}</p> : null}

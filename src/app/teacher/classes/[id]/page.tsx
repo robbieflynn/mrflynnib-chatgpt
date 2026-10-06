@@ -8,6 +8,7 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
   const { supabase, user } = await requireTeacher();
   const { data: classRecord } = await supabase.from("classes").select("id,name,course,join_code").eq("id", id).eq("teacher_id", user.id).maybeSingle();
   if (!classRecord) notFound();
+  const dashboardHref = classRecord.course === "IGCSE Higher" ? "/igcse/teacher" : "/teacher";
   const [{ data: memberships }, { data: assignments }] = await Promise.all([
     supabase.from("class_memberships").select("student_id,joined_at").eq("class_id", id).order("joined_at"),
     supabase.from("assignments").select("id,title,due_at,status,created_at,assignment_questions(count),assignment_submissions(count)").eq("class_id", id).order("created_at", { ascending: false }),
@@ -16,7 +17,7 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
   const { data: profiles } = studentIds.length ? await supabase.from("profiles").select("user_id,display_name").in("user_id", studentIds) : { data: [] };
   const studentNames = new Map((profiles ?? []).map((profile) => [profile.user_id, profile.display_name || "Student"]));
   return <>
-    <section className="page-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: "/teacher" }, { label: classRecord.name }]} /><div className="stack"><p className="eyebrow">{classRecord.course}</p><h1>{classRecord.name}</h1></div></Container></section>
+    <section className="page-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name }]} /><div className="stack"><p className="eyebrow">{classRecord.course}</p><h1>{classRecord.name}</h1></div></Container></section>
     <section className="section-tight teacher-dashboard"><Container className="stack-xl">
       <div className="class-code-card"><div><span>Student joining code</span><strong>{classRecord.join_code}</strong><small>Students enter this code on their dashboard.</small></div><Link className="button" href={`/teacher/classes/${id}/assignments/new`}>Set an assignment</Link></div>
       <div className="teacher-two-column">

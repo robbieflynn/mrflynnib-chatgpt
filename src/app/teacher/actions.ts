@@ -16,7 +16,10 @@ export async function createClass(formData: FormData) {
   const { supabase, user } = await requireTeacher();
   const name = String(formData.get("name") || "").trim().slice(0, 100);
   const course = String(formData.get("course") || "");
-  if (!name || !validCourses.has(course)) redirect(messagePath("/teacher", "error", "Add a class name and choose a course."));
+  const area = formData.get("area") === "igcse" ? "igcse" : "ib";
+  const dashboardPath = area === "igcse" ? "/igcse/teacher" : "/teacher";
+  const courseMatchesArea = area === "igcse" ? course === "IGCSE Higher" : course !== "IGCSE Higher";
+  if (!name || !validCourses.has(course) || !courseMatchesArea) redirect(messagePath(dashboardPath, "error", "Add a class name and choose a course."));
 
   let createdId = "";
   for (let attempt = 0; attempt < 5 && !createdId; attempt += 1) {
@@ -30,7 +33,7 @@ export async function createClass(formData: FormData) {
     }).select("id").single();
     if (!error && data) createdId = data.id;
   }
-  if (!createdId) redirect(messagePath("/teacher", "error", "The class could not be created. Please try again."));
+  if (!createdId) redirect(messagePath(dashboardPath, "error", "The class could not be created. Please try again."));
   redirect(`/teacher/classes/${createdId}`);
 }
 

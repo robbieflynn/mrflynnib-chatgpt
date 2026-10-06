@@ -10,6 +10,7 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
   const { data: assignment } = await supabase.from("assignments").select("id,title,instructions,due_at,status,class_id,classes(id,name,course)").eq("id", id).eq("teacher_id", user.id).maybeSingle();
   if (!assignment) notFound();
   const classRecord = Array.isArray(assignment.classes) ? assignment.classes[0] : assignment.classes;
+  const dashboardHref = classRecord?.course === "IGCSE Higher" ? "/igcse/teacher" : "/teacher";
   const [{ data: questions }, { data: memberships }, { data: progress }, { data: submissions }] = await Promise.all([
     supabase.from("assignment_questions").select("question_id,title_snapshot,topic_snapshot,position").eq("assignment_id", id).order("position"),
     supabase.from("class_memberships").select("student_id,joined_at").eq("class_id", assignment.class_id),
@@ -24,7 +25,7 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
   (progress ?? []).forEach((row) => completedByStudent.set(row.student_id, (completedByStudent.get(row.student_id) || 0) + 1));
   const total = questions?.length ?? 0;
   return <>
-    <section className="page-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: "/teacher" }, { label: classRecord?.name || "Class", href: `/teacher/classes/${assignment.class_id}` }, { label: assignment.title }]} /><div className="stack"><p className="eyebrow">{classRecord?.course}</p><h1>{assignment.title}</h1>{assignment.instructions ? <p className="lede">{assignment.instructions}</p> : null}</div></Container></section>
+    <section className="page-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord?.name || "Class", href: `/teacher/classes/${assignment.class_id}` }, { label: assignment.title }]} /><div className="stack"><p className="eyebrow">{classRecord?.course}</p><h1>{assignment.title}</h1>{assignment.instructions ? <p className="lede">{assignment.instructions}</p> : null}</div></Container></section>
     <section className="section-tight teacher-dashboard"><Container className="stack-xl">
       {message.success ? <p className="form-message form-success">{message.success}</p> : null}
       <div className="assignment-status-bar"><div><span>Questions</span><strong>{total}</strong></div><div><span>Students</span><strong>{memberships?.length ?? 0}</strong></div><div><span>Submitted</span><strong>{submissions?.filter((item) => item.status === "submitted").length ?? 0}</strong></div><div><span>Due</span><strong>{assignment.due_at ? new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "No due date"}</strong></div></div>

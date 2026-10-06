@@ -282,6 +282,11 @@ textarea { min-height: 130px; resize: vertical; }
 .dashboard-subtopic > span:last-child { color: var(--dashboard-accent-dark); font-weight: 900; }
 .dashboard-footer-row { padding-top: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); }
 .teacher-dashboard { background: linear-gradient(180deg, var(--paper), #f3f7f9); }
+.igcse-teacher-dashboard { --dashboard-accent: var(--igcse-red); --dashboard-accent-dark: var(--igcse-red-dark); --dashboard-accent-soft: var(--igcse-red-soft); }
+.igcse-teacher-dashboard .button { background: var(--igcse-red); box-shadow: 0 10px 30px rgba(179,38,54,.16); }
+.igcse-teacher-dashboard .button:hover { background: var(--igcse-red-dark); }
+.igcse-teacher-dashboard .badge { background: var(--igcse-red-soft); color: var(--igcse-red-dark); }
+.igcse-teacher-dashboard .text-link, .igcse-teacher-dashboard .eyebrow { color: var(--igcse-red-dark); }
 .teacher-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .38fr); gap: 2rem; align-items: start; }
 .teacher-class-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .teacher-class-card { min-height: 245px; padding: 1.5rem; display: flex; flex-direction: column; align-items: flex-start; gap: .9rem; border: 1px solid var(--line); border-radius: 1.2rem; background: white; box-shadow: 0 12px 34px rgba(11,21,48,.05); transition: .2s ease; }

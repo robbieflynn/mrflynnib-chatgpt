@@ -111,7 +111,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           {teacherRequested ? <p className="form-message form-success">Your teacher account request has been sent for approval. You can use the student question bank while you wait.</p> : null}
           {teacherApprovalRequired ? <p className="form-message form-error">{profile?.teacher_status === "pending" ? "Your teacher account is waiting for approval." : "Teacher access must be approved before this account can create classes and assignments."}</p> : null}
           {profile?.teacher_status === "pending" && !teacherRequested ? <p className="teacher-pending-note"><strong>Teacher approval pending</strong><span>You will be able to create classes and assignments once your request is approved.</span></p> : null}
-          {profile?.role === "teacher" || profile?.role === "admin" ? <div className="teacher-access-card"><div><span>{profile.role === "admin" ? "Teacher administrator" : "Teacher account"}</span><strong>Manage classes and assignments</strong></div><Link className="button button-small" href="/teacher">Open teacher dashboard</Link></div> : (
+          {profile?.role === "teacher" || profile?.role === "admin" ? <div className="teacher-access-card"><div><span>{profile.role === "admin" ? "Teacher administrator" : "Teacher account"}</span><strong>Manage classes and assignments</strong></div><Link className="button button-small" href={isIgcse ? "/igcse/teacher" : "/teacher"}>Open teacher dashboard</Link></div> : (
             <div className="student-classes-panel">
               <div className="student-assignments stack">
                 <div><p className="eyebrow">Assignments</p><h2>Your classwork</h2></div>
