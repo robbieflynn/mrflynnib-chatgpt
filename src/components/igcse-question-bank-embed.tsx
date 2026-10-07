@@ -3,12 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
 
-export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmentId, viewedStudentId }: { topic?: string; subtopic?: string; questionIds?: string[]; assignmentId?: string; viewedStudentId?: string }) {
+export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmentId, viewedStudentId, showMarkScheme = true }: { topic?: string; subtopic?: string; questionIds?: string[]; assignmentId?: string; viewedStudentId?: string; showMarkScheme?: boolean }) {
   const query = new URLSearchParams({ course: "IGCSE Higher", embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
   if (questionIds?.length) query.set("ids", questionIds.join(","));
   if (assignmentId) query.set("assignmentWork", "1");
+  if (assignmentId && !showMarkScheme) query.set("solutions", "0");
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(760);
   const loadingMoreRef = useRef(false);

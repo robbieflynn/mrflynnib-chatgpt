@@ -74,6 +74,7 @@ export async function createAssignment(formData: FormData) {
   const title = String(formData.get("title") || "").trim().slice(0, 120);
   const instructions = String(formData.get("instructions") || "").trim().slice(0, 1500);
   const dueDate = String(formData.get("dueDate") || "");
+  const showMarkScheme = formData.get("showMarkScheme") === "on";
   const questionIds = formData.getAll("questionIds").map(String).filter(Boolean).slice(0, 40);
   const parsedConfigs = formData.getAll("responseConfigs").map(parseResponseConfig);
   const responseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
@@ -98,6 +99,7 @@ export async function createAssignment(formData: FormData) {
     instructions,
     due_at: dueAt,
     status: "published",
+    show_mark_scheme: showMarkScheme,
     published_at: new Date().toISOString(),
   }).select("id").single();
   if (error || !assignment) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The assignment could not be published."));
@@ -141,6 +143,28 @@ export async function createAssignment(formData: FormData) {
   revalidatePath("/teacher");
   revalidatePath("/account");
   redirect(`/teacher/assignments/${assignment.id}?success=${encodeURIComponent("Assignment published.")}`);
+}
+
+export async function updateAssignmentMarkScheme(formData: FormData) {
+  const { supabase, user } = await requireTeacher();
+  const assignmentId = String(formData.get("assignmentId") || "");
+  const showMarkScheme = formData.get("showMarkScheme") === "true";
+  if (!assignmentId) redirect("/teacher?error=Assignment%20not%20found.");
+
+  const { data: assignment, error } = await supabase
+    .from("assignments")
+    .update({ show_mark_scheme: showMarkScheme, updated_at: new Date().toISOString() })
+    .eq("id", assignmentId)
+    .eq("teacher_id", user.id)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !assignment) {
+    redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "The mark-scheme setting could not be updated."));
+  }
+  revalidatePath(`/teacher/assignments/${assignmentId}`);
+  revalidatePath(`/assignments/${assignmentId}`);
+  redirect(messagePath(`/teacher/assignments/${assignmentId}`, "success", showMarkScheme ? "Mark schemes are now visible to students." : "Mark schemes are now hidden from students."));
 }
 
 export async function reviewTeacherApplication(formData: FormData) {

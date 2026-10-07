@@ -176368,6 +176368,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
   var REQUESTED_TOPIC = EMBED_PARAMS.get('topic') || '';
   var REQUESTED_SUBTOPIC = EMBED_PARAMS.get('subtopic') || '';
   var REQUESTED_IDS = new Set((EMBED_PARAMS.get('ids') || '').split(',').filter(Boolean));
+  var SHOW_SOLUTIONS = EMBED_PARAMS.get('solutions') !== '0';
   var requestedFiltersApplied = false;
   function reportEmbeddedHeight(){
     if(!IS_EMBEDDED || window.parent === window) return;
@@ -176787,19 +176788,19 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     // majority are never opened - building them up front was the single
     // biggest cost in rendering a card.
     var msHtml = '';
-    if(q.markscheme){
+    if(SHOW_SOLUTIONS && q.markscheme){
       msHtml =
         '<button type="button" class="qb-ms-toggle" data-id="'+q.id+'">Show mark scheme</button>';
     }
     // Worked solution behind its own button, built on first press like the mark
     // scheme: solutions are longer, and most cards are scrolled past unopened.
-    if(solutionFor(q)){
+    if(SHOW_SOLUTIONS && solutionFor(q)){
       msHtml += '<button type="button" class="qb-sol-toggle" data-id="'+q.id+'">Full worked solution</button>';
     }
-    if(q.markscheme){
+    if(SHOW_SOLUTIONS && q.markscheme){
       msHtml += '<div class="qb-markscheme" id="ms-'+q.id+'" hidden></div>';
     }
-    if(solutionFor(q)){
+    if(SHOW_SOLUTIONS && solutionFor(q)){
       msHtml += '<div class="qb-solution" id="sol-'+q.id+'" hidden></div>';
     }
     // Full Main > Subtopic path, shown once, on the right with the other badges.

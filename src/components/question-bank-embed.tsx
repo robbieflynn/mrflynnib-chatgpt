@@ -10,14 +10,16 @@ type QuestionBankEmbedProps = {
   questionIds?: string[];
   assignmentId?: string;
   viewedStudentId?: string;
+  showMarkScheme?: boolean;
 };
 
-export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId }: QuestionBankEmbedProps) {
+export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId, showMarkScheme = true }: QuestionBankEmbedProps) {
   const query = new URLSearchParams({ course, embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
   if (questionIds?.length) query.set("ids", questionIds.join(","));
   if (assignmentId) query.set("assignmentWork", "1");
+  if (assignmentId && !showMarkScheme) query.set("solutions", "0");
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);

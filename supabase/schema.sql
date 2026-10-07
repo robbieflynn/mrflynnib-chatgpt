@@ -95,10 +95,13 @@ create table if not exists public.assignments (
   instructions text not null default '' check (char_length(instructions) <= 1500),
   due_at timestamptz,
   status text not null default 'published' check (status in ('draft', 'published', 'closed')),
+  show_mark_scheme boolean not null default true,
   published_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.assignments add column if not exists show_mark_scheme boolean not null default true;
 
 create table if not exists public.assignment_questions (
   assignment_id uuid not null references public.assignments(id) on delete cascade,
