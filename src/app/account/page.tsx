@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Container, PageHero } from "@/components/ui";
+import { DashboardIcon } from "@/components/dashboard-icon";
 import { StudentAccountForm } from "@/components/student-account-form";
 import { SignOutButton } from "@/components/sign-out-button";
 import { createClient } from "@/lib/supabase/server";
@@ -137,7 +138,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     <>
       <section className={`dashboard-hero student-dashboard-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
         <Container className="dashboard-hero-layout">
-          <div className="stack">
+          <div className="dashboard-hero-copy">
             <span className="dashboard-role-label">Student dashboard</span>
             <h1>{displayName ? `Welcome back, ${displayName}` : "Your learning dashboard"}</h1>
             <p>Keep up with your classes, assignments and question-bank progress.</p>
@@ -158,19 +159,19 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           {profile?.teacher_status === "pending" && !teacherRequested ? <p className="teacher-pending-note"><strong>Teacher approval pending</strong><span>You will be able to create classes and assignments once your request is approved.</span></p> : null}
           <section className="student-class-section stack-lg">
             <div className="dashboard-section-heading student-section-heading">
-              <div><p className="eyebrow">Your classes</p><h2>{activeMemberships.length ? "You are connected" : "Join your first class"}</h2></div>
+              <div><p className="eyebrow">Classes</p><h2>{activeMemberships.length ? "Your classes" : "Join your first class"}</h2></div>
               <p className="muted">Classes keep your teacher&apos;s assignments and feedback together.</p>
             </div>
             {activeMemberships.length ? <div className="student-class-grid">
               {activeMemberships.map((membership) => {
                 const classRecord = Array.isArray(membership.classes) ? membership.classes[0] : membership.classes;
                 return <article className="student-class-card" key={membership.class_id}>
-                  <div className="student-class-card-top"><span className="dashboard-icon" aria-hidden="true">C</span><span className="badge">{classRecord?.course}</span></div>
+                  <div className="student-class-card-top"><DashboardIcon name="class" /><span className="badge">{classRecord?.course}</span></div>
                   <div><small>Class</small><h3>{classRecord?.name || "Your class"}</h3></div>
                   <div className="student-class-card-meta"><span><strong>{assignmentCountByClass.get(membership.class_id) || 0}</strong> assignments</span><span>Joined {new Date(membership.joined_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span></div>
                 </article>;
               })}
-            </div> : <div className="dashboard-empty-state"><span aria-hidden="true">+</span><div><strong>No classes joined yet</strong><p>Enter the code shared by your teacher to connect this dashboard to your class.</p></div></div>}
+            </div> : <div className="dashboard-empty-state"><DashboardIcon name="add" /><div><strong>No classes joined yet</strong><p>Enter the code shared by your teacher to connect this dashboard to your class.</p></div></div>}
             <details className="join-class-panel" open={!activeMemberships.length}>
               <summary>{activeMemberships.length ? "Join another class" : "Enter a class code"}<span aria-hidden="true">+</span></summary>
               <form action={joinClass} className="join-class-form"><label className="field"><span>Class code</span><input name="code" placeholder="ABC1234" maxLength={10} required /></label><button className="button button-small" type="submit">Join class</button></form>
@@ -178,7 +179,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           </section>
 
           <section className="student-assignments dashboard-panel stack-lg">
-            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>Your classwork</h2></div><p className="muted">Open an assignment to answer questions, save whiteboard working and submit it to your teacher.</p></div>
+            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Classwork</p><h2>Your assignments</h2></div><p className="muted">Open an assignment to answer questions, save whiteboard working and submit it to your teacher.</p></div>
             {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
             <div className="student-assignment-list">
               {assignments.map((assignment) => {
@@ -194,7 +195,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                   <span aria-hidden="true">→</span>
                 </Link>;
               })}
-              {!assignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><span aria-hidden="true">✓</span><div><strong>No assignments yet</strong><p>Your teacher&apos;s assignments will appear here.</p></div></div> : null}
+              {!assignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>No assignments yet</strong><p>Your teacher&apos;s assignments will appear here.</p></div></div> : null}
             </div>
           </section>
           {isIgcse ? (
@@ -229,7 +230,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
           <div className="dashboard-topics stack-lg">
             <div className="dashboard-section-heading">
-              <p className="eyebrow">Topics and subtopics</p>
+              <div><p className="eyebrow">Topics and subtopics</p><h2>Question-bank progress</h2></div>
               <p className="muted">Open a topic to view every subtopic. Select a subtopic to go straight to those questions.</p>
             </div>
             <div className="dashboard-topic-list">
