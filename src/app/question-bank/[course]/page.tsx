@@ -41,16 +41,19 @@ export default async function CourseQuestionBankPage({ params, searchParams }: {
                 {course.questionCount?.toLocaleString("en-GB")} questions, organised by topic, paper and difficulty, with complete mark schemes.
               </p>
             </div>
-            <nav className="qb-course-switcher" aria-label="Change question bank course">
-              <span>Change course</span>
-              <div>
-                {questionBankCourses.map((item) => (
-                  item.available
-                    ? <Link aria-current={item.slug === course.slug ? "page" : undefined} href={`/question-bank/${item.slug}`} key={item.slug}>{item.code}</Link>
-                    : <span className="is-coming-soon" key={item.slug}>{item.code}<small>Soon</small></span>
-                ))}
-              </div>
-            </nav>
+            <div className="qb-course-page-actions">
+              <Link className="button button-secondary button-small qb-dashboard-return" href={`/account?course=${course.slug}`}>← Back to dashboard</Link>
+              <nav className="qb-course-switcher" aria-label="Change question bank course">
+                <span>Change course</span>
+                <div>
+                  {questionBankCourses.map((item) => (
+                    item.available
+                      ? <Link aria-current={item.slug === course.slug ? "page" : undefined} href={`/question-bank/${item.slug}`} key={item.slug}>{item.code}</Link>
+                      : <span className="is-coming-soon" key={item.slug}>{item.code}<small>Soon</small></span>
+                  ))}
+                </div>
+              </nav>
+            </div>
           </div>
         </Container>
       </section>
