@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 6 October 2026
+Last updated: 7 October 2026
 
 ## Purpose of this file
 
@@ -307,6 +307,8 @@ After joining a class, the student dashboard must visibly show the class name, c
 Every assigned question supports a saved student answer as well as completion and whiteboard working. When setting an assignment, the teacher chooses the checking method for each selected question: teacher review for complex or multi-part work, an exact answer with accepted alternatives, a numerical answer with an explicit tolerance so sensible rounding is accepted, or multiple choice. Correct answer keys must never be exposed to student clients. Automatically checked responses report whether the answer is correct without revealing the stored key; teacher-review responses are saved without being falsely marked wrong. The teacher&apos;s read-only review must show each student&apos;s saved final answer, automatic result where applicable, and the complete saved whiteboard working for every assigned question.
 
 Teacher assignment reporting treats a saved answer as an attempted question even if the student did not separately use the question bank&apos;s completion tick. The class overview and question review must show attempted, correct, needs-attention, awaiting-review and not-attempted states clearly, and must not expose source paper, session or time-zone codes to teachers or students. Where the question bank identifies multiple top-level parts, teacher-review assignments provide a separate saved answer field for each part. Automatically checked exact, numerical and multiple-choice questions allow two attempts, give immediate encouraging feedback after each check and use a short success or retry sound initiated by the student&apos;s interaction. After a correct answer or the second attempt, that answer is locked; open-ended and multi-part answers remain teacher-reviewed unless an explicit markable answer has been configured.
+
+On 7 October 2026, Rob requested a compact, polished class and assignment experience across both IB and IGCSE. Each teacher assignment view should include an accessible student-by-question overview that distinguishes correct first attempts, correct answers after a retry, answers needing attention, answers awaiting teacher review, attempts without a saved answer, and questions not attempted. Teachers can decide when creating an assignment whether students may open its mark schemes and full worked solutions, and can change that setting after publication; existing assignments keep them visible by default. This setting controls what is shown within the assignment experience. It does not turn the separate, publicly available question-bank route into restricted content.
 
 The first version is for assignments, not formal tests. Keep the data model extensible so timed tests and test-building can be added later without replacing classes, memberships or the teacher identity model. Build and review this feature in a Vercel Preview before production publication.
 

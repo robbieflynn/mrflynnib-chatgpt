@@ -35,23 +35,26 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
   const studentIds = (memberships ?? []).map((membership) => membership.student_id);
   const { data: profiles } = studentIds.length ? await supabase.from("profiles").select("user_id,display_name").in("user_id", studentIds) : { data: [] };
   const studentNames = new Map((profiles ?? []).map((profile) => [profile.user_id, profile.display_name || "Student"]));
+  const isIgcse = classRecord.course === "IGCSE Higher";
+  const workspaceClass = isIgcse ? "teacher-workspace teacher-workspace-igcse" : "teacher-workspace";
   return <>
-    <section className="page-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name }]} /><div className="stack"><p className="eyebrow">{classRecord.course}</p><h1>{classRecord.name}</h1></div></Container></section>
-    <section className="section-tight teacher-dashboard"><Container className="stack-xl">
-      <div className="class-code-card"><div><span>Student joining code</span><strong>{classRecord.join_code}</strong><small>Students enter this code on their dashboard.</small></div><Link className="button" href={`/teacher/classes/${id}/assignments/new`}>Set an assignment</Link></div>
+    <main className={workspaceClass}>
+    <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord.course}</p><h1>{classRecord.name}</h1><p>Set work, monitor progress and review every student&apos;s answers and working.</p></div><div className="teacher-workspace-stats" aria-label="Class summary"><span><strong>{memberships.length}</strong> students</span><span><strong>{assignments.length}</strong> assignments</span></div></div></Container></section>
+    <section className="section-tight"><Container className="stack-xl">
+      <div className="class-toolbar"><div className="class-code"><span>Student joining code</span><strong>{classRecord.join_code}</strong><small>Students enter this code on their dashboard.</small></div><Link className="button" href={`/teacher/classes/${id}/assignments/new`}>Set an assignment</Link></div>
       <div className="teacher-two-column">
-        <div className="stack"><div className="dashboard-section-heading"><div><p className="eyebrow">Assignments</p><h2>Set work</h2></div></div>
+        <div className="stack"><div className="teacher-section-heading"><div><p className="eyebrow">Assignments</p><h2>Class work</h2></div><p>Open an assignment to see progress by student and by question.</p></div>
           {assignmentLoadError ? <p className="form-message form-error">The assignments could not be refreshed just now. Please reload the page.</p> : null}
           <div className="teacher-list">
-            {assignments.map((assignment) => <Link className="teacher-list-row" href={`/teacher/assignments/${assignment.id}`} key={assignment.id}><span><strong>{assignment.title}</strong><small>{assignment.due_at ? `Due ${new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "No due date"}</small></span><span>{questionCountByAssignment.get(assignment.id) || 0} questions · {submittedCountByAssignment.get(assignment.id) || 0} submitted</span><span aria-hidden="true">→</span></Link>)}
-            {!assignments.length && !assignmentLoadError ? <div className="account-card"><p className="muted">No assignments yet.</p></div> : null}
+            {assignments.map((assignment) => <Link className="teacher-list-row teacher-assignment-row" href={`/teacher/assignments/${assignment.id}`} key={assignment.id}><span><strong>{assignment.title}</strong><small>{assignment.due_at ? `Due ${new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "No due date"}</small></span><span className="teacher-list-meta"><strong>{questionCountByAssignment.get(assignment.id) || 0}</strong> questions</span><span className="teacher-list-meta"><strong>{submittedCountByAssignment.get(assignment.id) || 0}/{memberships.length}</strong> submitted</span><span className="teacher-row-arrow" aria-hidden="true">→</span></Link>)}
+            {!assignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><span aria-hidden="true">＋</span><div><strong>No assignments yet</strong><p>Set the first piece of work for this class.</p></div></div> : null}
           </div>
         </div>
-        <aside className="stack"><div><p className="eyebrow">Students</p><h2>{memberships?.length ?? 0} joined</h2></div><div className="teacher-list">
-          {(memberships ?? []).map((membership) => <div className="teacher-list-row" key={membership.student_id}><span><strong>{studentNames.get(membership.student_id) || "Student"}</strong><small>Joined {new Date(membership.joined_at).toLocaleDateString("en-GB")}</small></span></div>)}
-          {!memberships?.length ? <div className="account-card"><p className="muted">Share the joining code with your students.</p></div> : null}
+        <aside className="teacher-students-panel stack"><div className="teacher-section-heading"><div><p className="eyebrow">Students</p><h2>{memberships.length} joined</h2></div></div><div className="teacher-list">
+          {(memberships ?? []).map((membership) => <div className="teacher-list-row teacher-student-row" key={membership.student_id}><span className="student-avatar" aria-hidden="true">{(studentNames.get(membership.student_id) || "S").slice(0, 1).toUpperCase()}</span><span><strong>{studentNames.get(membership.student_id) || "Student"}</strong><small>Joined {new Date(membership.joined_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</small></span></div>)}
+          {!memberships?.length ? <div className="dashboard-empty-state compact"><span aria-hidden="true">#</span><div><strong>No students yet</strong><p>Share the joining code above.</p></div></div> : null}
         </div></aside>
       </div>
-    </Container></section>
+    </Container></section></main>
   </>;
 }
