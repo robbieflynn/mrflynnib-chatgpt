@@ -176876,7 +176876,9 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     // Show the current Paper 1 / Paper 2 classification without exposing the
     // source session or time-zone provenance stored with the question.
     var qPaperNum = paperNumberOf(q);
-    var showPaperNum = HAS_PAPERS && (qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2');
+    // IGCSE does not need a paper filter, but students and teachers still need
+    // the Paper 1 / Paper 2 classification on each individual question.
+    var showPaperNum = qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2';
     var courseTag = showPaperNum ? '<span class="qb-badge course">'+qPaperNum+'</span>' : '';
     // Provenance notes ("on an AA SL paper but the content is AA HL only",
     // "extract: part (a) of a longer question") were removed on Rob's
