@@ -176769,13 +176769,10 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     var bankLabel = (qBanks.indexOf('AA SL') >= 0 && qBanks.indexOf('AA HL') >= 0)
       ? 'AA SL &amp; HL'
       : (qBanks.length ? qBanks.join(' &middot; ') : 'not in either bank');
-    // Paper 3 was the old option paper. Its content is examined inside Papers 1
-    // and 2 of the current course, so the questions stay in the bank but the
-    // label is never shown - a student has no "Paper 3" to sit.
+    // Show the current Paper 1 / Paper 2 classification without exposing the
+    // source session or time-zone provenance stored with the question.
     var qPaperNum = paperNumberOf(q);
-    var showPaperNum = HAS_PAPERS && qPaperNum && qPaperNum !== 'Paper 3';
-    // The student chose their course at the front door, so repeating it on every
-    // card is noise. Just the paper number.
+    var showPaperNum = HAS_PAPERS && (qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2');
     var courseTag = showPaperNum ? '<span class="qb-badge course">'+qPaperNum+'</span>' : '';
     // Provenance notes ("on an AA SL paper but the content is AA HL only",
     // "extract: part (a) of a longer question") were removed on Rob's
