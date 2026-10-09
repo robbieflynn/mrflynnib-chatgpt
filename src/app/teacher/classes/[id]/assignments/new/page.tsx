@@ -3,6 +3,7 @@ import { AssignmentQuestionPicker } from "@/components/assignment-question-picke
 import { Breadcrumbs, Container } from "@/components/ui";
 import { requireTeacher } from "@/lib/account-access";
 import { createAssignment } from "@/app/teacher/actions";
+import { assignmentFeedbackOptions } from "@/lib/assignment-feedback";
 
 export default async function NewAssignmentPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string }> }) {
   const { id } = await params;
@@ -23,7 +24,7 @@ export default async function NewAssignmentPage({ params, searchParams }: { para
           <label className="field"><span>Assignment title</span><input name="title" placeholder="Functions practice" maxLength={120} required /></label>
           <label className="field"><span>Due date <small className="muted">(optional)</small></span><input name="dueDate" type="date" /></label>
           <label className="field field-full"><span>Instructions <small className="muted">(optional)</small></span><textarea name="instructions" maxLength={1500} placeholder="Complete the questions and show your working on the whiteboards." /></label>
-          <label className="assignment-setting field-full"><input name="showMarkScheme" type="checkbox" defaultChecked /><span><strong>Show mark schemes and worked solutions</strong><small>Students can open them while completing this assignment. You can change this after publishing.</small></span></label>
+          <fieldset className="assignment-feedback-settings field-full"><legend>Mark schemes and worked solutions</legend><p>Choose when students can open the complete feedback for each question. You can change this after publishing.</p><div className="assignment-feedback-options">{assignmentFeedbackOptions.map((option) => <label className="assignment-feedback-option" key={option.value}><input name="feedbackMode" type="radio" value={option.value} defaultChecked={option.value === "after_question"} /><span><strong>{option.label}</strong><small>{option.description}</small></span></label>)}</div></fieldset>
         </div>
         <div className="stack"><div className="teacher-section-heading"><div><p className="eyebrow">Question bank</p><h2>Choose questions</h2></div><p>Select up to 40 questions. Each one can be automatically checked or left for teacher review.</p></div><AssignmentQuestionPicker bank={classRecord.bank} course={course} /></div>
         <div className="assignment-builder-actions"><p className="muted small">Publishing makes the assignment visible to every student currently in the class and anyone who joins later.</p><button className="button" type="submit">Publish assignment</button></div>

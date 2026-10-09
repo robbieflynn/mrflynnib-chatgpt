@@ -465,10 +465,16 @@ a.teacher-list-row:hover { background: var(--sky); }
 .teacher-list-row.teacher-student-row { grid-template-columns: auto minmax(0, 1fr); }
 .student-avatar { width: 2.25rem; height: 2.25rem; display: grid; place-items: center; border-radius: .7rem; background: var(--workspace-accent-soft); color: var(--workspace-accent-dark); font-weight: 900; }
 .assignment-setup-card { padding: clamp(1.2rem, 3vw, 1.8rem); border: 1px solid #cad7dc; border-radius: 1.2rem; background: white; box-shadow: 0 14px 38px rgba(11,21,48,.055); }
-.assignment-setting { min-height: 74px; padding: .9rem 1rem; display: flex; align-items: flex-start; gap: .8rem; border: 1px solid #c4d4da; border-radius: .9rem; background: #f7fafb; cursor: pointer; }
-.assignment-setting input { width: 1.1rem; height: 1.1rem; margin-top: .15rem; accent-color: var(--workspace-accent); }
-.assignment-setting > span { display: grid; gap: .15rem; }
-.assignment-setting small { color: var(--muted); font-weight: 500; }
+.assignment-feedback-settings { margin: 0; padding: 1rem; border: 1px solid #c4d4da; border-radius: 1rem; background: #f7fafb; }
+.assignment-feedback-settings legend { padding: 0 .35rem; color: var(--ink); font-weight: 850; }
+.assignment-feedback-settings > p { margin-bottom: .8rem; color: var(--muted); font-size: .78rem; }
+.assignment-feedback-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.assignment-feedback-option { min-height: 82px; padding: .85rem; display: flex; align-items: flex-start; gap: .7rem; border: 1px solid #d1dcdf; border-radius: .8rem; background: white; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease; }
+.assignment-feedback-option:hover { border-color: var(--workspace-accent); }
+.assignment-feedback-option:has(input:checked) { border-color: var(--workspace-accent); box-shadow: 0 0 0 2px var(--workspace-accent-soft); }
+.assignment-feedback-option input { width: 1.05rem; height: 1.05rem; margin-top: .15rem; accent-color: var(--workspace-accent); }
+.assignment-feedback-option > span { display: grid; gap: .16rem; }
+.assignment-feedback-option small { color: var(--muted); font-weight: 500; line-height: 1.35; }
 .assignment-summary-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: hidden; border: 1px solid #cbd7dc; border-radius: 1.15rem; background: white; box-shadow: 0 14px 38px rgba(11,21,48,.05); }
 .assignment-summary-grid > div { min-height: 105px; padding: 1rem 1.15rem; display: grid; align-content: center; gap: .12rem; border-left: 1px solid #e2e8ea; }
 .assignment-summary-grid > div:first-child { border-left: 0; }
@@ -480,6 +486,16 @@ a.teacher-list-row:hover { background: var(--sky); }
 .mark-scheme-setting > div { display: flex; align-items: center; gap: .75rem; }
 .mark-scheme-setting > div > span:last-child { display: grid; gap: .05rem; }
 .mark-scheme-setting small { color: var(--muted); }
+.mark-scheme-policy { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(230px, .55fr) auto; }
+.mark-scheme-policy label { display: grid; gap: .2rem; color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+.mark-scheme-policy select { min-height: 42px; padding: .55rem .7rem; border: 1px solid #b9c9cf; border-radius: .7rem; background: white; color: var(--ink); font: 700 .78rem/1.2 inherit; letter-spacing: 0; text-transform: none; }
+.assignment-feedback-notice { width: fit-content; padding: .7rem .9rem; display: flex; align-items: center; gap: .6rem; border: 1px solid #d3dfe3; border-radius: .8rem; background: white; color: var(--muted); font-size: .75rem; }
+.assignment-feedback-notice strong { color: var(--workspace-accent-dark); }
+.student-work-overview-note, .student-work-detail-bar { padding: .9rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid #cedadd; border-radius: 1rem; background: white; }
+.student-work-overview-note { justify-content: flex-start; }
+.student-work-overview-note strong, .student-work-detail-bar > div { display: grid; gap: .08rem; }
+.student-work-overview-note span, .student-work-detail-bar span { color: var(--muted); font-size: .76rem; }
+.student-work-detail-bar strong { color: var(--ink); }
 .visibility-dot { width: .75rem; height: .75rem; flex: 0 0 auto; border-radius: 50%; background: #8b9aa3; box-shadow: 0 0 0 5px #edf1f3; }
 .visibility-dot.is-visible { background: #269367; box-shadow: 0 0 0 5px #e4f5ed; }
 .assignment-matrix-legend { display: flex; flex-wrap: wrap; gap: .55rem; }
@@ -613,6 +629,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-workspace-stats span { min-width: 0; border-left: 1px solid rgba(255,255,255,.14); }
   .class-toolbar, .mark-scheme-setting { align-items: stretch; flex-direction: column; }
   .class-toolbar .button, .mark-scheme-setting .button { width: 100%; }
+  .assignment-feedback-options, .mark-scheme-policy { grid-template-columns: 1fr; }
+  .student-work-overview-note, .student-work-detail-bar { align-items: stretch; flex-direction: column; }
   .class-code { grid-template-columns: 1fr; }
   .class-code span, .class-code strong, .class-code small { grid-column: auto; }
   .teacher-section-heading { grid-template-columns: 1fr; gap: .55rem; }
