@@ -12,7 +12,8 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
   const searchParams = useSearchParams();
   const teacherJourney = searchParams.get("next")?.includes("teacher") ?? false;
   const [mode, setMode] = useState<Mode>(initialMode);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState<"student" | "teacher">(teacherJourney ? "teacher" : "student");
@@ -65,11 +66,17 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
     }
 
     if (mode === "sign-up") {
+      const displayName = `${firstName.trim()} ${lastName.trim()}`.trim().slice(0, 80);
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: { display_name: name.trim(), account_type: accountType },
+          data: {
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
+            display_name: displayName,
+            account_type: accountType,
+          },
           emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
         },
       });
@@ -112,9 +119,15 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
               <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => setAccountType("student")} type="radio" value="student" /><span><strong>Student</strong><small>Save question progress and whiteboard working.</small></span></label>
               <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => setAccountType("teacher")} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Teacher sign-up requires approval.</small></span></label>
             </div></fieldset>
-            <div className="field">
-              <label htmlFor="student-name">First name</label>
-              <input id="student-name" name="name" autoComplete="given-name" maxLength={80} required value={name} onChange={(event) => setName(event.target.value)} />
+            <div className="account-name-fields">
+              <div className="field">
+                <label htmlFor="student-first-name">First name</label>
+                <input id="student-first-name" name="firstName" autoComplete="given-name" maxLength={50} required value={firstName} onChange={(event) => setFirstName(event.target.value)} />
+              </div>
+              <div className="field">
+                <label htmlFor="student-last-name">Last name</label>
+                <input id="student-last-name" name="lastName" autoComplete="family-name" maxLength={50} required value={lastName} onChange={(event) => setLastName(event.target.value)} />
+              </div>
             </div>
           </>
         ) : null}

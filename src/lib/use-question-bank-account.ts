@@ -59,7 +59,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           return {
             questionId: String(question.question_id),
             responseType: String(question.response_type || "teacher_review"),
-            responseOptions: Array.isArray(question.response_options) ? question.response_options.map(String) : [],
+            responseOptions: Array.isArray(question.response_options) ? question.response_options : [],
             response: saved?.response ?? null,
             isCorrect: saved?.is_correct ?? null,
             attemptCount: saved?.attempt_count ?? 0,
@@ -154,6 +154,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           isCorrect: result?.is_correct ?? null,
           result: result?.result ?? null,
           ok: !error,
+          error: error?.message ?? null,
         });
         if (!error) router.refresh();
         return;

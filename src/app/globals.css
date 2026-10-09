@@ -221,6 +221,7 @@ textarea { min-height: 130px; resize: vertical; }
 .account-type-options input { width: 1rem; height: 1rem; margin-top: .2rem; }
 .account-type-options span { display: grid; gap: .1rem; }
 .account-type-options small { color: var(--muted); font-size: .75rem; font-weight: 500; line-height: 1.35; }
+.account-name-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
 .account-text-button { width: fit-content; padding: 0; border: 0; background: transparent; color: var(--teal-dark); font-weight: 800; cursor: pointer; }
 .account-text-button:hover { text-decoration: underline; }
 .account-benefits { padding: clamp(1.2rem, 2vw, 2rem) 0; }
@@ -456,6 +457,14 @@ a.teacher-list-row:hover { background: var(--sky); }
 .class-code span { grid-column: 1 / -1; color: var(--muted); font-size: .67rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
 .class-code strong { color: var(--ink); font-size: 1.45rem; letter-spacing: .14em; }
 .class-code small { color: var(--muted); }
+.class-toolbar-actions { display: flex; align-items: center; gap: .7rem; }
+.class-invite-copy { display: contents; }
+.join-invitation-page { min-height: 68vh; background: linear-gradient(180deg, #f8fafb, #eef4f7); }
+.join-invitation-card { padding: clamp(1.4rem, 4vw, 2.4rem); border: 1px solid #cbd8de; border-radius: 1.35rem; background: white; box-shadow: 0 20px 55px rgba(11,21,48,.08); }
+.join-invitation-card h1 { font-size: clamp(2.1rem, 5vw, 3.6rem); }
+.join-invitation-code { padding: 1rem 1.15rem; display: grid; gap: .15rem; border-radius: .9rem; background: #0c1d3e; color: white; }
+.join-invitation-code span { color: rgba(255,255,255,.66); font-size: .68rem; font-weight: 850; letter-spacing: .09em; text-transform: uppercase; }
+.join-invitation-code strong { font-size: clamp(1.65rem, 5vw, 2.35rem); letter-spacing: .14em; }
 .teacher-section-heading { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .7fr); align-items: end; gap: 1.5rem; }
 .teacher-section-heading .eyebrow { margin-bottom: .45rem; color: var(--workspace-accent-dark); }
 .teacher-section-heading h2 { max-width: none; font-size: clamp(1.45rem, 2.3vw, 1.8rem); letter-spacing: -.025em; }
@@ -605,6 +614,7 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-question-row { grid-template-columns: 38px minmax(0, 1fr); }
   .teacher-question-results { grid-column: 2; justify-content: flex-start; }
   .account-type-options { grid-template-columns: 1fr; }
+  .account-name-fields { grid-template-columns: 1fr; }
   .teacher-approval-row { align-items: stretch; flex-direction: column; }
   .teacher-list-row { grid-template-columns: 1fr auto; }
   .teacher-list-row .status-pill { grid-column: 1 / -1; }
@@ -636,7 +646,7 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-workspace-title h1 { font-size: clamp(2rem, 10vw, 2.75rem); }
   .teacher-workspace-stats { width: 100%; grid-auto-flow: row; grid-template-columns: 1fr 1fr; }
   .teacher-workspace-stats span { min-width: 0; border-left: 1px solid rgba(255,255,255,.14); }
-  .class-toolbar, .mark-scheme-setting { align-items: stretch; flex-direction: column; }
+  .class-toolbar, .class-toolbar-actions, .mark-scheme-setting { align-items: stretch; flex-direction: column; }
   .class-toolbar .button, .mark-scheme-setting .button { width: 100%; }
   .assignment-feedback-options, .mark-scheme-policy { grid-template-columns: 1fr; }
   .student-work-overview-note, .student-work-detail-bar { align-items: stretch; flex-direction: column; }

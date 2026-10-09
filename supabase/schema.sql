@@ -114,7 +114,7 @@ create table if not exists public.assignment_questions (
   position integer not null check (position >= 0),
   title_snapshot text not null default '',
   topic_snapshot text not null default '',
-  response_type text not null default 'teacher_review' check (response_type in ('teacher_review', 'exact', 'numeric', 'multiple_choice')),
+  response_type text not null default 'teacher_review' check (response_type in ('teacher_review', 'exact', 'numeric', 'multiple_choice', 'multipart')),
   response_options jsonb not null default '[]'::jsonb,
   primary key (assignment_id, question_id)
 );
@@ -122,7 +122,7 @@ create table if not exists public.assignment_questions (
 alter table public.assignment_questions add column if not exists response_type text not null default 'teacher_review';
 alter table public.assignment_questions add column if not exists response_options jsonb not null default '[]'::jsonb;
 alter table public.assignment_questions drop constraint if exists assignment_questions_response_type_check;
-alter table public.assignment_questions add constraint assignment_questions_response_type_check check (response_type in ('teacher_review', 'exact', 'numeric', 'multiple_choice'));
+alter table public.assignment_questions add constraint assignment_questions_response_type_check check (response_type in ('teacher_review', 'exact', 'numeric', 'multiple_choice', 'multipart'));
 
 create table if not exists public.assignment_answer_keys (
   assignment_id uuid not null,
@@ -340,6 +340,13 @@ declare
   existing_attempts integer := 0;
   attempts_after integer := 0;
   has_part_answers boolean := false;
+  submitted_parts jsonb;
+  part_key text;
+  part_config jsonb;
+  part_answer text;
+  part_matches boolean;
+  has_review_parts boolean := false;
+  has_incorrect_parts boolean := false;
 begin
   if auth.uid() is null then raise exception 'You must sign in first.'; end if;
   if public.is_teacher(auth.uid()) then raise exception 'Student answers can only be submitted from a student account.'; end if;
@@ -370,11 +377,30 @@ begin
     if submitted_text = '' then raise exception 'Enter an answer.'; end if;
     if accepted is null or jsonb_array_length(accepted) = 0 then grade_result := null;
     else select exists (select 1 from jsonb_array_elements_text(accepted) item where lower(regexp_replace(trim(item), '\s+', '', 'g')) = lower(regexp_replace(submitted_text, '\s+', '', 'g'))) into grade_result; end if;
+  elsif response_kind = 'multipart' then
+    submitted_parts := response_payload -> 'parts';
+    if jsonb_typeof(submitted_parts) <> 'object' or jsonb_typeof(accepted) <> 'object' then raise exception 'Complete every part.'; end if;
+    for part_key, part_config in select key, value from jsonb_each(accepted)
+    loop
+      part_answer := left(trim(coalesce(submitted_parts ->> part_key, '')), 500);
+      if part_config ->> 'mode' = 'whiteboard' then
+        if part_answer <> '__whiteboard__' then raise exception 'Confirm every part shown on the whiteboard.'; end if;
+        has_review_parts := true;
+      else
+        if part_answer = '' then raise exception 'Complete every part.'; end if;
+        select exists (
+          select 1 from jsonb_array_elements_text(part_config -> 'answers') item
+          where lower(regexp_replace(trim(item), '\s+', '', 'g')) = lower(regexp_replace(part_answer, '\s+', '', 'g'))
+        ) into part_matches;
+        if not part_matches then has_incorrect_parts := true; end if;
+      end if;
+    end loop;
+    grade_result := case when has_incorrect_parts then false when has_review_parts then null else true end;
   else
     if submitted_text = '' and not has_part_answers then raise exception 'Enter an answer.'; end if;
     grade_result := null;
   end if;
-  attempts_after := case when response_kind = 'teacher_review' then existing_attempts else least(existing_attempts + 1, 2) end;
+  attempts_after := case when response_kind = 'teacher_review' or grade_result is null then existing_attempts else least(existing_attempts + 1, 2) end;
   insert into public.assignment_responses (assignment_id, student_id, question_id, response, is_correct, attempt_count, checked_at, updated_at)
   values (assignment_uuid, auth.uid(), left(question_key, 160), response_payload, grade_result, attempts_after, case when grade_result is null then null else now() end, now())
   on conflict (assignment_id, student_id, question_id) do update set response = excluded.response, is_correct = excluded.is_correct, attempt_count = excluded.attempt_count, checked_at = excluded.checked_at, updated_at = now();
@@ -399,7 +425,11 @@ begin
   insert into public.profiles (user_id, display_name, email, teacher_status, teacher_requested_at)
   values (
     new.id,
-    left(coalesce(new.raw_user_meta_data ->> 'display_name', ''), 80),
+    left(coalesce(
+      nullif(trim(new.raw_user_meta_data ->> 'display_name'), ''),
+      trim(concat_ws(' ', new.raw_user_meta_data ->> 'first_name', new.raw_user_meta_data ->> 'last_name')),
+      ''
+    ), 80),
     left(coalesce(new.email, ''), 254),
     case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then 'pending' else 'none' end,
     case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then now() else null end

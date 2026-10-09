@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 2;
+  var DRAFT_VERSION = 3;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
   var restoredSelection = [];
@@ -38,6 +38,10 @@
     ".qb-accepted-answer{padding:7px 10px;border:1px solid #b9d5ef;border-radius:999px;background:#fff;color:#173b5c;font:700 13px/1.2 var(--ui)}",
     ".qb-answer-source{padding:10px 12px;border-radius:8px;background:#edf7f1;color:#276247;font-weight:650}",
     ".qb-answer-review-note{padding:10px 12px;border-radius:8px;background:#fff7e7;color:#715317;font-weight:650}",
+    ".qb-answer-part-list{display:grid;gap:8px}",
+    ".qb-answer-part-row{padding:10px;display:grid;grid-template-columns:minmax(54px,auto) 1fr;align-items:start;gap:10px;border:1px solid #d5e1e7;border-radius:9px;background:#fff}",
+    ".qb-answer-part-row>strong{padding-top:6px;color:var(--flynn-blue-dark)}",
+    ".qb-answer-part-row .qb-answer-review-note{display:block;padding:7px 9px}",
     ".qb-answer-options{display:grid;gap:7px}",
     ".qb-answer-option{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}",
     ".qb-answer-option input[type=radio]{width:18px;height:18px;accent-color:var(--flynn-blue)}",
@@ -97,9 +101,16 @@
   }
 
   function addAnswer(list, value) {
-    var answer = latexToPlain(value).replace(/[.;,]+$/, "").trim();
+    var answer = latexToPlain(value).replace(/\\(?=\s|\(|\)|$)/g, "").replace(/[.;,]+$/, "").trim();
     if (!answer || answer.length > 140) return;
     if (/\b(method|attempt|award|working|substitution|curve|diagram|sketch|proof|explanation)\b/i.test(answer)) return;
+    if (/^(?:[a-df-hj-z]|theta|alpha|beta|gamma|dx|dy\/dx|dm\/dt|cos\s*theta|sin\s*theta)$/i.test(answer)) return;
+    var approximate = answer.match(/^(.+?)\s*\(\s*=\s*(.+?)\s*\)$/);
+    if (approximate) {
+      addAnswer(list, approximate[1]);
+      addAnswer(list, approximate[2]);
+      return;
+    }
     var choices = answer.split(/\s+or\s+/i).filter(Boolean);
     if (choices.length > 1) {
       choices.forEach(function (choice) { addAnswer(list, choice); });
@@ -113,14 +124,6 @@
     if (!list.some(function (item) { return item.toLowerCase().replace(/\s+/g, "") === key; })) list.push(answer);
     var keyboardForm = answer.replace(/≤/g, "<=").replace(/≥/g, ">=").replace(/π/g, "pi").replace(/×/g, "*").replace(/·/g, "*");
     if (keyboardForm !== answer && !list.some(function (item) { return item.toLowerCase().replace(/\s+/g, "") === keyboardForm.toLowerCase().replace(/\s+/g, ""); })) list.push(keyboardForm);
-    var fraction = answer.match(/^(-?\d+)\s*\/\s*(-?\d+)$/);
-    if (fraction && Number(fraction[2]) !== 0) {
-      var decimal = Number(fraction[1]) / Number(fraction[2]);
-      if (Number.isFinite(decimal)) {
-        var decimalText = String(Number(decimal.toFixed(10)));
-        if (!list.some(function (item) { return item === decimalText; })) list.push(decimalText);
-      }
-    }
   }
 
   function mathFragments(value) {
@@ -132,36 +135,99 @@
     return fragments;
   }
 
-  function automaticAnswers(question) {
-    if (!question || !Array.isArray(question.markscheme) || question.markscheme.length !== 1) return [];
-    if (Array.isArray(question.parts) && question.parts.length > 1) return [];
-    if (question.answerDiagram || question.answerDiagram2) return [];
-    var prompt = plainText((question.title || "") + " " + (question.body || "") + " " + (Array.isArray(question.parts) ? question.parts.map(function (part) { return part[1] || ""; }).join(" ") : ""));
-    if (/\b(show that|prove|sketch|draw|explain|justify|give a reason|write down the steps)\b/i.test(prompt)) return [];
-    var rows = Array.isArray(question.markscheme[0][1]) ? question.markscheme[0][1] : [];
+  function requiresWhiteboard(prompt) {
+    return /\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|giving a reason|state a reason|write down the steps|show your working|describe|discuss|interpret|comment on)\b/i.test(plainText(prompt));
+  }
+
+  function automaticAnswersFromRows(rows, prompt) {
+    if (!Array.isArray(rows) || requiresWhiteboard(prompt)) return [];
     var answerRows = rows.filter(function (row) {
-      return Array.isArray(row) && /(?:^|[()])(?:A|B|M)\d/.test(String(row[1] || "")) && mathFragments(row[0]).length;
+      return Array.isArray(row)
+        && /(?:A\d|B\d|M\d|R\d|G\d|N\d|E\d|AG)/.test(String(row[1] || ""))
+        && (mathFragments(row[0]).length || /(?:^|\s)[-+]?\d+(?:\.\d+)?(?:\s|$|[),])/i.test(plainText(row[0])));
     });
     if (!answerRows.length) return [];
     var answers = [];
     var finalContent = String(answerRows[answerRows.length - 1][0] || "");
-    var alternatives = finalContent.split(/<br\s*\/?>\s*<b>\s*(?:OR|or)\s*<\/b>\s*<br\s*\/?>/i);
+    var alternatives = finalContent.split(/(?:<br\s*\/?>\s*<b>\s*OR\s*<\/b>\s*<br\s*\/?>|\s+or\s+)/i);
     var unsafeAlternative = alternatives.some(function (alternative) {
       var maths = mathFragments(alternative);
-      return maths.length !== 1 || (maths[0].match(/=/g) || []).length > 1;
+      return maths.length > 1 || (maths.length === 1 && (maths[0].match(/=/g) || []).length > 3);
     });
     if (unsafeAlternative) return [];
     alternatives.forEach(function (alternative) {
       var maths = mathFragments(alternative);
-      addAnswer(answers, maths[0]);
-    });
-    rows.forEach(function (row) {
-      var content = String(Array.isArray(row) ? row[0] || "" : "");
-      var noteText = plainText(content);
-      if (!/\b(?:accept|allow)\b/i.test(noteText) && !/^Note:\s*for\b/i.test(noteText)) return;
-      mathFragments(content).forEach(function (fragment) { addAnswer(answers, fragment); });
+      if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) addAnswer(answers, maths[0]);
+      else if (maths.length === 0 || (maths.length === 1 && /^[a-z]$/i.test(latexToPlain(maths[0])))) {
+        var numbers = plainText(alternative).match(/-?\d+(?:\.\d+)?(?:\s*\/\s*-?\d+(?:\.\d+)?)?/g) || [];
+        if (numbers.length && numbers.length <= 3) numbers.forEach(function (number) { addAnswer(answers, number); });
+        else addAnswer(answers, plainText(alternative));
+      }
     });
     return answers.slice(0, 12);
+  }
+
+  function romanSubparts(prompt) {
+    var labels = [];
+    var pattern = /\(([ivxlcdm]+)\)/gi;
+    var match;
+    while ((match = pattern.exec(plainText(prompt)))) {
+      var label = match[1].toLowerCase();
+      if (labels.indexOf(label) === -1) labels.push(label);
+    }
+    return labels.indexOf("i") !== -1 && labels.indexOf("ii") !== -1 ? labels : [];
+  }
+
+  function rowsForSubpart(rows, label) {
+    var start = -1;
+    var end = rows.length;
+    rows.forEach(function (row, index) {
+      var match = plainText(Array.isArray(row) ? row[0] : "").match(/^\s*\(([ivxlcdm]+)\)/i);
+      if (!match) return;
+      if (match[1].toLowerCase() === label && start === -1) start = index;
+      else if (start !== -1 && index > start && end === rows.length) end = index;
+    });
+    return start === -1 ? [] : rows.slice(start, end);
+  }
+
+  function promptForSubpart(prompt, label) {
+    var source = plainText(prompt);
+    var marker = new RegExp("\\(" + label + "\\)", "i");
+    var start = source.search(marker);
+    if (start === -1) return source;
+    var remainder = source.slice(start + label.length + 2);
+    var next = remainder.search(/\(([ivxlcdm]+)\)/i);
+    return next === -1 ? remainder : remainder.slice(0, next);
+  }
+
+  function automaticPartConfigs(question) {
+    if (!question || !Array.isArray(question.markscheme)) return [];
+    var markschemeByPart = {};
+    question.markscheme.forEach(function (group) {
+      if (!Array.isArray(group)) return;
+      markschemeByPart[String(group[0] || "").toLowerCase()] = Array.isArray(group[1]) ? group[1] : [];
+    });
+    var questionParts = Array.isArray(question.parts) && question.parts.length
+      ? question.parts
+      : [["", (question.body || question.title || ""), question.marks]];
+    var results = [];
+    questionParts.forEach(function (part) {
+      var topLabel = String(part[0] || "").toLowerCase();
+      var prompt = String(part[1] || "");
+      var rows = markschemeByPart[topLabel] || [];
+      var nested = romanSubparts(prompt);
+      if (nested.length) {
+        nested.forEach(function (nestedLabel) {
+          var nestedPrompt = promptForSubpart(prompt, nestedLabel);
+          var answers = automaticAnswersFromRows(rowsForSubpart(rows, nestedLabel), nestedPrompt);
+          results.push({ label: topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel, mode: answers.length ? "exact" : "whiteboard", acceptedAnswers: answers });
+        });
+      } else {
+        var answers = automaticAnswersFromRows(rows, prompt);
+        results.push({ label: topLabel || "answer", mode: answers.length ? "exact" : "whiteboard", acceptedAnswers: answers });
+      }
+    });
+    return results;
   }
 
   function numericValue(answers) {
@@ -176,14 +242,16 @@
 
   function defaultConfig(id) {
     var question = questionFor(id);
-    var acceptedAnswers = automaticAnswers(question);
+    var parts = automaticPartConfigs(question);
+    var acceptedAnswers = parts.length === 1 && parts[0].mode === "exact" ? parts[0].acceptedAnswers : [];
     return {
-      type: acceptedAnswers.length ? "exact" : "teacher_review",
+      type: parts.length > 1 ? "multipart" : acceptedAnswers.length ? "exact" : "teacher_review",
       acceptedAnswers: acceptedAnswers,
       numericAnswer: numericValue(acceptedAnswers),
       tolerance: "0.01",
       options: ["", "", "", ""],
       correctOption: 0,
+      parts: parts,
       provisional: !question
     };
   }
@@ -211,10 +279,27 @@
         config.acceptedAnswers.forEach(function (answer) { var chip = document.createElement("span"); chip.className = "qb-accepted-answer"; chip.textContent = answer; accepted.appendChild(chip); });
         fields.appendChild(accepted);
         var exactHint = document.createElement("small"); exactHint.textContent = "Equivalent alternatives shown in the mark scheme are included. The teacher does not need to type an answer."; fields.appendChild(exactHint);
+      } else if (config.type === "multipart") {
+        methodCopy.textContent = "Each part gets its own answer space. Exact answers are checked only against the matching mark-scheme part.";
+        var partList = document.createElement("div"); partList.className = "qb-answer-part-list";
+        config.parts.forEach(function (part) {
+          var partRow = document.createElement("div"); partRow.className = "qb-answer-part-row";
+          var partLabel = document.createElement("strong"); partLabel.textContent = part.label === "answer" ? "Answer" : "(" + part.label.replace("(", ")(");
+          var partDetail = document.createElement("div");
+          if (part.mode === "exact") {
+            var accepted = document.createElement("div"); accepted.className = "qb-accepted-answer-list";
+            part.acceptedAnswers.forEach(function (answer) { var chip = document.createElement("span"); chip.className = "qb-accepted-answer"; chip.textContent = answer; accepted.appendChild(chip); });
+            partDetail.appendChild(accepted);
+          } else {
+            var whiteboard = document.createElement("span"); whiteboard.className = "qb-answer-review-note"; whiteboard.textContent = "Student confirms this part is shown on the whiteboard."; partDetail.appendChild(whiteboard);
+          }
+          partRow.appendChild(partLabel); partRow.appendChild(partDetail); partList.appendChild(partRow);
+        });
+        fields.appendChild(partList);
+        var multipartHint = document.createElement("small"); multipartHint.textContent = "Every accepted answer shown here comes directly from the corresponding mark-scheme row or its stated accepted alternatives."; fields.appendChild(multipartHint);
       } else {
-        methodCopy.textContent = "Nothing to choose or enter — the student’s response and whiteboard will be saved automatically.";
-        var note = document.createElement("div"); note.className = "qb-answer-review-note"; note.textContent = "This is a proof, diagram, multi-part question, or has no single safe exact answer. It will be saved for teacher review automatically."; fields.appendChild(note);
-        var reviewHint = document.createElement("small"); reviewHint.textContent = "Students can still enter their answers and use the whiteboard. Their work will be saved for you to review."; fields.appendChild(reviewHint);
+        methodCopy.textContent = "The student will confirm that the proof, sketch or written response is shown on the whiteboard.";
+        var note = document.createElement("div"); note.className = "qb-answer-review-note"; note.textContent = "No answer is guessed. This response will be saved for the teacher to review on the whiteboard."; fields.appendChild(note);
       }
     }
     renderFields();

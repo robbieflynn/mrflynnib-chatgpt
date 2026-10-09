@@ -8,16 +8,23 @@ import { requireAdmin, requireTeacher } from "@/lib/account-access";
 import { isAssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
 const validCourses = new Set(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
-const validResponseTypes = new Set(["teacher_review", "exact", "numeric", "multiple_choice"]);
+const validResponseTypes = new Set(["teacher_review", "exact", "numeric", "multiple_choice", "multipart"]);
+
+type ResponsePart = {
+  label: string;
+  mode: "exact" | "whiteboard";
+  acceptedAnswers: string[];
+};
 
 type ResponseConfig = {
   id: string;
-  type: "teacher_review" | "exact" | "numeric" | "multiple_choice";
+  type: "teacher_review" | "exact" | "numeric" | "multiple_choice" | "multipart";
   acceptedAnswers: string[];
   numericAnswer: number | null;
   tolerance: number | null;
   options: string[];
   correctOption: number | null;
+  parts: ResponsePart[];
 };
 
 function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
@@ -35,11 +42,23 @@ function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
     const tolerance = String(raw.tolerance ?? "").trim() === "" ? null : Number(raw.tolerance);
     const options = Array.isArray(raw.options) ? raw.options.slice(0, 4).map((item) => String(item).trim().slice(0, 180)) : [];
     const correctOption = Number.isInteger(Number(raw.correctOption)) ? Number(raw.correctOption) : null;
+    const parts = (Array.isArray(raw.parts) ? raw.parts : []).map((part) => {
+      const value = part && typeof part === "object" ? part as Record<string, unknown> : {};
+      const label = String(value.label || "").trim().slice(0, 30);
+      const mode: ResponsePart["mode"] = value.mode === "whiteboard" ? "whiteboard" : "exact";
+      const partAnswers = (Array.isArray(value.acceptedAnswers) ? value.acceptedAnswers : [])
+        .map(String)
+        .map((item) => item.trim().slice(0, 180))
+        .filter(Boolean)
+        .slice(0, 12);
+      return { label, mode, acceptedAnswers: partAnswers };
+    }).filter((part) => part.label && (part.mode === "whiteboard" || part.acceptedAnswers.length)).slice(0, 30);
     if (!id) return null;
     if (type === "exact" && acceptedAnswers.length === 0) return null;
     if (type === "numeric" && (!Number.isFinite(numericAnswer) || !Number.isFinite(tolerance) || Number(tolerance) < 0)) return null;
     if (type === "multiple_choice" && (options.length !== 4 || options.some((option) => !option) || correctOption === null || correctOption < 0 || correctOption >= options.length)) return null;
-    return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption };
+    if (type === "multipart" && parts.length < 2) return null;
+    return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption, parts };
   } catch {
     return null;
   }
@@ -122,7 +141,11 @@ export async function createAssignment(formData: FormData) {
       title_snapshot: question.title,
       topic_snapshot: question.topics[0]?.sub || question.topics[0]?.main || "",
       response_type: config.type,
-      response_options: config.type === "multiple_choice" ? config.options : [],
+      response_options: config.type === "multiple_choice"
+        ? config.options
+        : config.type === "multipart"
+          ? config.parts.map((part) => ({ label: part.label, mode: part.mode }))
+          : [],
     };
   }));
   if (questionsError) {
@@ -132,10 +155,13 @@ export async function createAssignment(formData: FormData) {
   const answerKeys = selected.flatMap((question) => {
     const config = responseConfigs.get(question.id)!;
     if (config.type === "teacher_review") return [];
+    const multipartAnswers = config.type === "multipart"
+      ? Object.fromEntries(config.parts.map((part) => [part.label, { mode: part.mode, answers: part.acceptedAnswers }]))
+      : [];
     return [{
       assignment_id: assignment.id,
       question_id: question.id,
-      accepted_answers: config.type === "exact" ? config.acceptedAnswers : [],
+      accepted_answers: config.type === "exact" ? config.acceptedAnswers : multipartAnswers,
       numeric_answer: config.type === "numeric" ? config.numericAnswer : null,
       numeric_tolerance: config.type === "numeric" ? config.tolerance : null,
       correct_option: config.type === "multiple_choice" ? config.correctOption : null,
