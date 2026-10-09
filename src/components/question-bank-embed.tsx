@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
+import type { AssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
 type QuestionBankEmbedProps = {
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL";
@@ -10,22 +11,25 @@ type QuestionBankEmbedProps = {
   questionIds?: string[];
   assignmentId?: string;
   viewedStudentId?: string;
-  showMarkScheme?: boolean;
+  feedbackMode?: AssignmentFeedbackMode;
+  assignmentSubmitted?: boolean;
+  assignmentView?: "step" | "overview" | "detail";
 };
 
-export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId, showMarkScheme = true }: QuestionBankEmbedProps) {
+export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView }: QuestionBankEmbedProps) {
   const query = new URLSearchParams({ course, embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
   if (questionIds?.length) query.set("ids", questionIds.join(","));
   if (assignmentId) query.set("assignmentWork", "1");
-  if (assignmentId && !showMarkScheme) query.set("solutions", "0");
+  if (assignmentId && feedbackMode === "hidden" && !viewedStudentId) query.set("solutions", "0");
+  if (assignmentView) query.set("assignmentView", assignmentView);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(620);
-  useQuestionBankAccount(frameRef, "ib", assignmentId, viewedStudentId);
+  useQuestionBankAccount(frameRef, "ib", assignmentId, { feedbackMode, assignmentSubmitted, viewedStudentId });
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;

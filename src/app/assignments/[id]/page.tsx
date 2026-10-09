@@ -6,38 +6,47 @@ import { IgcseQuestionBankEmbed } from "@/components/igcse-question-bank-embed";
 import { requireSignedIn } from "@/lib/account-access";
 import { getQuestionBankCourseByCode } from "@/lib/question-bank-courses";
 import { submitAssignment } from "@/app/account/actions";
+import { assignmentFeedbackLabel, assignmentFeedbackModeFromRecord } from "@/lib/assignment-feedback";
 
 export default async function StudentAssignmentPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; success?: string }> }) {
   const { id } = await params;
   const message = await searchParams;
   const { supabase, user } = await requireSignedIn();
-  const { data: assignment } = await supabase.from("assignments").select("id,title,instructions,due_at,status,show_mark_scheme,class_id,classes(name,bank,course)").eq("id", id).maybeSingle();
+  const { data: assignment } = await supabase.from("assignments").select("id,title,instructions,due_at,status,show_mark_scheme,feedback_mode,class_id,classes(name,bank,course)").eq("id", id).maybeSingle();
   if (!assignment) notFound();
   const classRecord = Array.isArray(assignment.classes) ? assignment.classes[0] : assignment.classes;
   const [{ data: questions }, { data: progress }, { data: submission }, { data: responses }] = await Promise.all([
     supabase.from("assignment_questions").select("question_id,title_snapshot,topic_snapshot,position,response_type,response_options").eq("assignment_id", id).order("position"),
     supabase.from("assignment_question_progress").select("question_id,completed").eq("assignment_id", id).eq("student_id", user.id).eq("completed", true),
     supabase.from("assignment_submissions").select("status,submitted_at").eq("assignment_id", id).eq("student_id", user.id).maybeSingle(),
-    supabase.from("assignment_responses").select("question_id,is_correct").eq("assignment_id", id).eq("student_id", user.id),
+    supabase.from("assignment_responses").select("question_id,is_correct,attempt_count").eq("assignment_id", id).eq("student_id", user.id),
   ]);
-  const completed = progress?.length ?? 0;
+  const progressIds = new Set((progress ?? []).map((item) => item.question_id));
+  const responseByQuestion = new Map((responses ?? []).map((response) => [response.question_id, response]));
+  const completed = (questions ?? []).filter((question) => {
+    const response = responseByQuestion.get(question.question_id);
+    if (!response) return progressIds.has(question.question_id);
+    return question.response_type === "teacher_review" || response.is_correct === true || Number(response.attempt_count || 0) >= 2;
+  }).length;
   const total = questions?.length ?? 0;
   const course = getQuestionBankCourseByCode(classRecord?.course || "");
   const questionIds = (questions ?? []).map((question) => question.question_id);
   const answered = responses?.length ?? 0;
   const correct = responses?.filter((response) => response.is_correct === true).length ?? 0;
   const workspaceClass = classRecord?.bank === "igcse" ? "student-assignment-workspace student-assignment-workspace-igcse" : "student-assignment-workspace";
+  const feedbackMode = assignmentFeedbackModeFromRecord(assignment);
+  const isSubmitted = submission?.status === "submitted";
   return <>
     <main className={workspaceClass}>
     <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Student dashboard", href: "/account" }, { label: assignment.title }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord?.name || "Assignment"}</p><h1>{assignment.title}</h1>{assignment.instructions ? <p>{assignment.instructions}</p> : <p>Complete the questions below and show your working on the whiteboards.</p>}</div><div className="teacher-workspace-stats"><span><strong>{completed}/{total}</strong> completed</span><span><strong>{answered}</strong> answers</span></div></div></Container></section>
     <section className="section-tight student-dashboard"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}{message.success ? <p className="form-message form-success">{message.success}</p> : null}
       <div className="assignment-status-bar"><div><span>Your progress</span><strong>{completed} of {total} questions completed</strong></div><div className="dashboard-progress"><span style={{ width: `${total ? Math.round(completed / total * 100) : 0}%` }} /></div><div><span>Answers saved</span><strong>{answered} of {total}{correct ? ` · ${correct} correct` : ""}</strong></div><div><span>Due</span><strong>{assignment.due_at ? new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "No due date"}</strong></div><form action={submitAssignment}><input name="assignmentId" type="hidden" value={id} /><button className="button button-small" type="submit">{submission?.status === "submitted" ? "Submit again" : "Submit assignment"}</button></form></div>
-      <div className="assignment-note"><strong>Your work saves automatically.</strong><span>Enter an answer for each question and use the whiteboard to show your method. Your teacher can see every saved answer and all whiteboard working for this assignment.</span></div>
-      {!assignment.show_mark_scheme ? <div className="assignment-note assignment-note-neutral"><strong>Mark schemes are hidden.</strong><span>Your teacher has turned off mark schemes and worked solutions for this assignment.</span></div> : null}
+      <div className="assignment-note"><strong>Your work saves automatically.</strong><span>Work through one question at a time. You will get a second chance after an incorrect first answer, and your teacher can see every saved answer and whiteboard.</span></div>
+      <div className="assignment-feedback-notice"><span>Mark schemes &amp; solutions</span><strong>{assignmentFeedbackLabel(feedbackMode)}</strong></div>
     </Container></section>
     <section className="question-bank-embed-section"><Container>
-      {classRecord?.bank === "igcse" ? <IgcseQuestionBankEmbed assignmentId={id} questionIds={questionIds} showMarkScheme={assignment.show_mark_scheme} /> : course ? <QuestionBankEmbed assignmentId={id} course={course.code} questionIds={questionIds} showMarkScheme={assignment.show_mark_scheme} /> : <p>These questions are not available.</p>}
+      {classRecord?.bank === "igcse" ? <IgcseQuestionBankEmbed assignmentId={id} questionIds={questionIds} feedbackMode={feedbackMode} assignmentSubmitted={isSubmitted} assignmentView="step" /> : course ? <QuestionBankEmbed assignmentId={id} course={course.code} questionIds={questionIds} feedbackMode={feedbackMode} assignmentSubmitted={isSubmitted} assignmentView="step" /> : <p>These questions are not available.</p>}
     </Container></section>
     <section className="section-tight"><Container><Link className="text-link" href="/account">Back to student dashboard</Link></Container></section>
     </main>

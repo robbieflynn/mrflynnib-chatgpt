@@ -96,12 +96,16 @@ create table if not exists public.assignments (
   due_at timestamptz,
   status text not null default 'published' check (status in ('draft', 'published', 'closed')),
   show_mark_scheme boolean not null default true,
+  feedback_mode text not null default 'after_question' check (feedback_mode in ('immediate', 'after_question', 'after_assignment', 'hidden')),
   published_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 alter table public.assignments add column if not exists show_mark_scheme boolean not null default true;
+alter table public.assignments add column if not exists feedback_mode text not null default 'after_question';
+alter table public.assignments drop constraint if exists assignments_feedback_mode_check;
+alter table public.assignments add constraint assignments_feedback_mode_check check (feedback_mode in ('immediate', 'after_question', 'after_assignment', 'hidden'));
 
 create table if not exists public.assignment_questions (
   assignment_id uuid not null references public.assignments(id) on delete cascade,

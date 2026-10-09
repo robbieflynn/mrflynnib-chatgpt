@@ -5,6 +5,7 @@ import type { SupabaseClient, User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
+import type { AssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
 type Bank = "ib" | "igcse";
 
@@ -16,8 +17,15 @@ type QuestionBankMessage = {
   response?: unknown;
 };
 
-export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | null>, bank: Bank, assignmentId?: string, viewedStudentId?: string) {
+type AssignmentEmbedOptions = {
+  feedbackMode?: AssignmentFeedbackMode;
+  assignmentSubmitted?: boolean;
+  viewedStudentId?: string;
+};
+
+export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | null>, bank: Bank, assignmentId?: string, options: AssignmentEmbedOptions = {}) {
   const router = useRouter();
+  const { feedbackMode = "immediate", assignmentSubmitted = false, viewedStudentId } = options;
   const clientRef = useRef<SupabaseClient | null>(null);
   const userRef = useRef<User | null>(null);
   const completedRef = useRef<Set<string>>(new Set());
@@ -37,13 +45,15 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
       const studentId = viewedStudentId || userRef.current.id;
       const [{ data: questions, error: questionError }, { data: responses, error: responseError }] = await Promise.all([
-        clientRef.current.from("assignment_questions").select("question_id,response_type,response_options").eq("assignment_id", assignmentId),
+        clientRef.current.from("assignment_questions").select("question_id,response_type,response_options,position").eq("assignment_id", assignmentId).order("position"),
         clientRef.current.from("assignment_responses").select("question_id,response,is_correct,attempt_count,updated_at").eq("assignment_id", assignmentId).eq("student_id", studentId),
       ]);
       if (cancelled) return;
       const responseByQuestion = new Map((responses ?? []).map((row) => [String(row.question_id), row]));
       send({
         type: "mrflynnib-assignment-response-state",
+        feedbackMode,
+        assignmentSubmitted,
         questions: questionError || responseError ? [] : (questions ?? []).map((question) => {
           const saved = responseByQuestion.get(String(question.question_id));
           return {
@@ -55,6 +65,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
             attemptCount: saved?.attempt_count ?? 0,
             updatedAt: saved?.updated_at ?? null,
             readOnly: Boolean(viewedStudentId),
+            position: Number(question.position || 0),
           };
         }),
       });
@@ -108,6 +119,16 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       if (message.type === "mrflynnib-account-required") {
         const next = `${window.location.pathname}${window.location.search}`;
         router.push(`/account?next=${encodeURIComponent(next)}`);
+        return;
+      }
+
+      if (message.type === "mrflynnib-assignment-scroll-top") {
+        frameRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      if (message.type === "mrflynnib-assignment-question-detail" && assignmentId && viewedStudentId && questionId) {
+        router.push(`/teacher/assignments/${assignmentId}/students/${viewedStudentId}?question=${encodeURIComponent(questionId)}`);
         return;
       }
 
@@ -237,5 +258,5 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       window.removeEventListener("message", handleMessage);
       authListener.subscription.unsubscribe();
     };
-  }, [assignmentId, bank, frameRef, router, viewedStudentId]);
+  }, [assignmentId, assignmentSubmitted, bank, feedbackMode, frameRef, router, viewedStudentId]);
 }

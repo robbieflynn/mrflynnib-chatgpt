@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { updateAssignmentMarkScheme } from "@/app/teacher/actions";
+import { updateAssignmentFeedbackMode } from "@/app/teacher/actions";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { requireTeacher } from "@/lib/account-access";
+import { assignmentFeedbackModeFromRecord, assignmentFeedbackOptions } from "@/lib/assignment-feedback";
+import { AssignmentDraftClearer } from "@/components/assignment-draft-clearer";
 
 type MatrixState = "correct" | "retry" | "incorrect" | "review" | "attempted" | "empty";
 
@@ -28,7 +30,7 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
   const { id } = await params;
   const message = await searchParams;
   const { supabase, user } = await requireTeacher();
-  const { data: assignment } = await supabase.from("assignments").select("id,title,instructions,due_at,status,show_mark_scheme,class_id,classes(id,name,course,bank)").eq("id", id).eq("teacher_id", user.id).maybeSingle();
+  const { data: assignment } = await supabase.from("assignments").select("id,title,instructions,due_at,status,show_mark_scheme,feedback_mode,class_id,classes(id,name,course,bank)").eq("id", id).eq("teacher_id", user.id).maybeSingle();
   if (!assignment) notFound();
   const classRecord = Array.isArray(assignment.classes) ? assignment.classes[0] : assignment.classes;
   const dashboardHref = classRecord?.bank === "igcse" ? "/igcse/teacher" : "/teacher";
@@ -64,8 +66,10 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
   const needsAttention = allStates.filter((state) => state === "incorrect").length;
   const awaitingReview = allStates.filter((state) => state === "review").length;
   const workspaceClass = classRecord?.bank === "igcse" ? "teacher-workspace teacher-workspace-igcse" : "teacher-workspace";
+  const feedbackMode = assignmentFeedbackModeFromRecord(assignment);
 
   return <main className={workspaceClass}>
+    <AssignmentDraftClearer classId={assignment.class_id} enabled={message.success === "Assignment published."} />
     <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord?.name || "Class", href: `/teacher/classes/${assignment.class_id}` }, { label: assignment.title }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord?.course}</p><h1>{assignment.title}</h1>{assignment.instructions ? <p>{assignment.instructions}</p> : <p>Review class progress and open any student&apos;s saved answers and working.</p>}</div><div className="teacher-workspace-stats"><span><strong>{total}</strong> questions</span><span><strong>{memberships?.length ?? 0}</strong> students</span></div></div></Container></section>
     <section className="section-tight"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}
@@ -79,7 +83,7 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
         <div><span>Due date</span><strong>{assignment.due_at ? new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : "None"}</strong><small>{assignment.due_at ? new Date(assignment.due_at).toLocaleDateString("en-GB", { year: "numeric" }) : "No deadline"}</small></div>
       </div>
 
-      <div className="mark-scheme-setting"><div><span className={`visibility-dot ${assignment.show_mark_scheme ? "is-visible" : ""}`} aria-hidden="true" /><span><strong>Mark schemes and worked solutions</strong><small>{assignment.show_mark_scheme ? "Visible to students in this assignment" : "Hidden from students in this assignment"}</small></span></div><form action={updateAssignmentMarkScheme}><input name="assignmentId" type="hidden" value={id} /><input name="showMarkScheme" type="hidden" value={assignment.show_mark_scheme ? "false" : "true"} /><button className="button button-secondary button-small" type="submit">{assignment.show_mark_scheme ? "Hide from students" : "Make visible"}</button></form></div>
+      <form action={updateAssignmentFeedbackMode} className="mark-scheme-setting mark-scheme-policy"><div><span className={`visibility-dot ${feedbackMode !== "hidden" ? "is-visible" : ""}`} aria-hidden="true" /><span><strong>Mark schemes and worked solutions</strong><small>Control exactly when students can open the complete feedback.</small></span></div><input name="assignmentId" type="hidden" value={id} /><label><span>Student access</span><select name="feedbackMode" defaultValue={feedbackMode}>{assignmentFeedbackOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label><button className="button button-secondary button-small" type="submit">Save setting</button></form>
 
       <section className="stack"><div className="teacher-section-heading"><div><p className="eyebrow">Full breakdown</p><h2>Student-by-question overview</h2></div><p>Each square shows the latest result. Select one to review that student&apos;s answer and working.</p></div>
         <div className="assignment-matrix-legend" aria-label="Results key"><span className="is-correct">✓ Correct first time</span><span className="is-retry">✓ Correct after retry</span><span className="is-incorrect">× Needs attention</span><span className="is-review">… Awaiting review</span><span className="is-empty">Not attempted</span></div>
@@ -88,7 +92,7 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
             const states = (questions ?? []).map((question) => stateFor(membership.student_id, question.question_id));
             const attempted = states.filter((state) => state !== "empty").length;
             const record = submitted.get(membership.student_id);
-            return <tr key={membership.student_id}><th className="assignment-matrix-student"><Link href={`/teacher/assignments/${id}/students/${membership.student_id}`}><strong>{names.get(membership.student_id) || "Student"}</strong><small>{record?.status === "submitted" ? "Submitted" : attempted ? "In progress" : "Not started"}</small></Link></th>{(questions ?? []).map((question, index) => { const state = states[index]; const label = matrixLabels[state]; return <td key={question.question_id}><Link className={`matrix-cell is-${state}`} href={`/teacher/assignments/${id}/students/${membership.student_id}`} title={`Question ${index + 1}: ${label}`} aria-label={`${names.get(membership.student_id) || "Student"}, question ${index + 1}: ${label}`}>{matrixSymbols[state]}</Link></td>; })}<td className="assignment-matrix-total"><strong>{attempted}/{total}</strong><small>{total ? `${Math.round(attempted / total * 100)}%` : "0%"}</small></td></tr>;
+            return <tr key={membership.student_id}><th className="assignment-matrix-student"><Link href={`/teacher/assignments/${id}/students/${membership.student_id}`}><strong>{names.get(membership.student_id) || "Student"}</strong><small>{record?.status === "submitted" ? "Submitted" : attempted ? "In progress" : "Not started"}</small></Link></th>{(questions ?? []).map((question, index) => { const state = states[index]; const label = matrixLabels[state]; return <td key={question.question_id}><Link className={`matrix-cell is-${state}`} href={`/teacher/assignments/${id}/students/${membership.student_id}?question=${encodeURIComponent(question.question_id)}`} title={`Question ${index + 1}: ${label}`} aria-label={`${names.get(membership.student_id) || "Student"}, question ${index + 1}: ${label}`}>{matrixSymbols[state]}</Link></td>; })}<td className="assignment-matrix-total"><strong>{attempted}/{total}</strong><small>{total ? `${Math.round(attempted / total * 100)}%` : "0%"}</small></td></tr>;
           })}
         </tbody></table></div> : <div className="dashboard-empty-state"><span aria-hidden="true">#</span><div><strong>{!memberships?.length ? "No students have joined yet" : "This assignment has no questions"}</strong><p>{!memberships?.length ? "Share the class joining code to begin tracking progress." : "Return to the class and set a new assignment."}</p></div></div>}
       </section>

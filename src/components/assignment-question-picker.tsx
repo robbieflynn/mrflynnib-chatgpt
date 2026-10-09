@@ -5,9 +5,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 type AssignmentQuestionPickerProps = {
   bank: "ib" | "igcse";
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher";
+  draftId: string;
 };
 
-export function AssignmentQuestionPicker({ bank, course }: AssignmentQuestionPickerProps) {
+export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQuestionPickerProps) {
   const initialFrameHeight = bank === "igcse" ? 760 : 620;
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(initialFrameHeight);
@@ -17,9 +18,9 @@ export function AssignmentQuestionPicker({ bank, course }: AssignmentQuestionPic
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [responseConfigs, setResponseConfigs] = useState<Record<string, unknown>[]>([]);
   const source = useMemo(() => {
-    const query = new URLSearchParams({ course, embedded: "1", assignment: "1" });
+    const query = new URLSearchParams({ course, embedded: "1", assignment: "1", draft: draftId });
     return `/question-bank/${bank === "igcse" ? "igcse-bank.html" : "ib-bank.html"}?${query.toString()}`;
-  }, [bank, course]);
+  }, [bank, course, draftId]);
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
@@ -47,8 +48,8 @@ export function AssignmentQuestionPicker({ bank, course }: AssignmentQuestionPic
         animationFrame = requestAnimationFrame(loadMoreIfNeeded);
       }
       if (event.data?.type === "mrflynnib-assignment-selection" && Array.isArray(event.data.ids)) {
-        setSelectedIds(event.data.ids.map(String).slice(0, 40));
-        setResponseConfigs(Array.isArray(event.data.configs) ? event.data.configs.slice(0, 40) : []);
+        setSelectedIds(event.data.ids.map(String).slice(0, 100));
+        setResponseConfigs(Array.isArray(event.data.configs) ? event.data.configs.slice(0, 100) : []);
       }
     };
 
@@ -78,7 +79,7 @@ export function AssignmentQuestionPicker({ bank, course }: AssignmentQuestionPic
       {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ id, ...(responseConfigs[index] || {}) })} />)}
       <div className="assignment-picker-summary" aria-live="polite">
         <strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected</strong>
-        <span>Select up to 40 questions and choose how each answer should be checked.</span>
+        <span>Select up to 100 questions. Answer checking and accepted alternatives are set automatically from the mark scheme.</span>
       </div>
       <iframe className="assignment-bank-frame" loading="eager" ref={frameRef} scrolling="no" src={source} style={{ height: `${frameHeight}px` }} title={`${course} assignment question selector`} />
     </div>

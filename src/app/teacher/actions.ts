@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import progressManifest from "@/data/question-bank-progress.json";
 import { requireAdmin, requireTeacher } from "@/lib/account-access";
+import { isAssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
 const validCourses = new Set(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
 const validResponseTypes = new Set(["teacher_review", "exact", "numeric", "multiple_choice"]);
@@ -24,7 +25,12 @@ function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
     const raw = JSON.parse(String(value)) as Record<string, unknown>;
     const id = String(raw.id || "").slice(0, 160);
     const type = validResponseTypes.has(String(raw.type)) ? String(raw.type) as ResponseConfig["type"] : "teacher_review";
-    const acceptedAnswers = String(raw.acceptedAnswers || "").split("|").map((item) => item.trim()).filter(Boolean).slice(0, 12);
+    const acceptedAnswers = (Array.isArray(raw.acceptedAnswers)
+      ? raw.acceptedAnswers.map(String)
+      : String(raw.acceptedAnswers || "").split("|"))
+      .map((item) => item.trim().slice(0, 180))
+      .filter(Boolean)
+      .slice(0, 12);
     const numericAnswer = String(raw.numericAnswer ?? "").trim() === "" ? null : Number(raw.numericAnswer);
     const tolerance = String(raw.tolerance ?? "").trim() === "" ? null : Number(raw.tolerance);
     const options = Array.isArray(raw.options) ? raw.options.slice(0, 4).map((item) => String(item).trim().slice(0, 180)) : [];
@@ -74,8 +80,9 @@ export async function createAssignment(formData: FormData) {
   const title = String(formData.get("title") || "").trim().slice(0, 120);
   const instructions = String(formData.get("instructions") || "").trim().slice(0, 1500);
   const dueDate = String(formData.get("dueDate") || "");
-  const showMarkScheme = formData.get("showMarkScheme") === "on";
-  const questionIds = formData.getAll("questionIds").map(String).filter(Boolean).slice(0, 40);
+  const requestedFeedbackMode = String(formData.get("feedbackMode") || "after_question");
+  const feedbackMode = isAssignmentFeedbackMode(requestedFeedbackMode) ? requestedFeedbackMode : "after_question";
+  const questionIds = formData.getAll("questionIds").map(String).filter(Boolean).slice(0, 100);
   const parsedConfigs = formData.getAll("responseConfigs").map(parseResponseConfig);
   const responseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
 
@@ -99,7 +106,8 @@ export async function createAssignment(formData: FormData) {
     instructions,
     due_at: dueAt,
     status: "published",
-    show_mark_scheme: showMarkScheme,
+    show_mark_scheme: feedbackMode !== "hidden",
+    feedback_mode: feedbackMode,
     published_at: new Date().toISOString(),
   }).select("id").single();
   if (error || !assignment) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The assignment could not be published."));
@@ -145,26 +153,31 @@ export async function createAssignment(formData: FormData) {
   redirect(`/teacher/assignments/${assignment.id}?success=${encodeURIComponent("Assignment published.")}`);
 }
 
-export async function updateAssignmentMarkScheme(formData: FormData) {
+export async function updateAssignmentFeedbackMode(formData: FormData) {
   const { supabase, user } = await requireTeacher();
   const assignmentId = String(formData.get("assignmentId") || "");
-  const showMarkScheme = formData.get("showMarkScheme") === "true";
+  const requestedFeedbackMode = String(formData.get("feedbackMode") || "");
   if (!assignmentId) redirect("/teacher?error=Assignment%20not%20found.");
+  if (!isAssignmentFeedbackMode(requestedFeedbackMode)) redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "Choose when students can see feedback."));
 
   const { data: assignment, error } = await supabase
     .from("assignments")
-    .update({ show_mark_scheme: showMarkScheme, updated_at: new Date().toISOString() })
+    .update({
+      feedback_mode: requestedFeedbackMode,
+      show_mark_scheme: requestedFeedbackMode !== "hidden",
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", assignmentId)
     .eq("teacher_id", user.id)
     .select("id")
     .maybeSingle();
 
   if (error || !assignment) {
-    redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "The mark-scheme setting could not be updated."));
+    redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "The feedback setting could not be updated."));
   }
   revalidatePath(`/teacher/assignments/${assignmentId}`);
   revalidatePath(`/assignments/${assignmentId}`);
-  redirect(messagePath(`/teacher/assignments/${assignmentId}`, "success", showMarkScheme ? "Mark schemes are now visible to students." : "Mark schemes are now hidden from students."));
+  redirect(messagePath(`/teacher/assignments/${assignmentId}`, "success", "The student feedback setting has been updated."));
 }
 
 export async function reviewTeacherApplication(formData: FormData) {

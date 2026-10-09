@@ -177309,6 +177309,9 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       // change, which is the point.
       return cardHTML(q, state.rendered + i + 1);
     }).join('');
+    Array.prototype.forEach.call(frag.children, function(card, index){
+      card.mrflynnibQuestion = slice[index];
+    });
     // Typeset the batch before it is in the document: KaTeX then works on a
     // detached subtree, so the browser lays the page out once instead of once
     // per card.
@@ -177418,7 +177421,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 
 <script src="/question-bank/progress.js?v=1"></script>
 <script src="/question-bank/whiteboard.js?v=16"></script>
-<script src="/question-bank/assignment-selector.js?v=2"></script>
-<script src="/question-bank/assignment-response.js?v=2"></script>
+<script src="/question-bank/assignment-selector.js?v=10"></script>
+<script src="/question-bank/assignment-response.js?v=3"></script>
 </body>
 </html>
