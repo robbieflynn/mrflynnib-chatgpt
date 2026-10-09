@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 4;
+  var DRAFT_VERSION = 5;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
@@ -90,9 +90,12 @@
       .replace(/\\(?:d?frac)\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, "$1/$2")
       .replace(/\\(?:d?frac)\s*(\d)\s*(\d)/g, "$1/$2")
       .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
+      .replace(/\\sqrt\s*([A-Za-z0-9.]+)/g, "sqrt($1)")
       .replace(/\\text\s*\{([^{}]*)\}/g, "$1")
+      .replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\operatorname\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\(?:leq|le)/g, "≤").replace(/\\(?:geq|ge)/g, "≥")
+      .replace(/\^\s*\\circ/g, "°").replace(/\\circ/g, "°")
       .replace(/\\neq/g, "≠").replace(/\\pm/g, "±").replace(/\\infty/g, "∞")
       .replace(/\\pi/g, "π").replace(/\\times/g, "×").replace(/\\cdot/g, "·")
       .replace(/\\therefore/g, "").replace(/\\,/g, " ").replace(/\\;/g, " ").replace(/\\!/g, "")
@@ -103,7 +106,8 @@
   }
 
   function addAnswer(list, value) {
-    var answer = latexToPlain(value).replace(/\\(?=\s|\(|\)|$)/g, "").replace(/[.;,]+$/, "").trim();
+    var plainAnswer = latexToPlain(value).replace(/\\(?=\s|\(|\)|$)/g, "").replace(/[.;,]+$/, "").trim();
+    var answer = choiceUtils && choiceUtils.clean ? choiceUtils.clean(plainAnswer) : plainAnswer;
     if (!answer || answer.length > 140) return;
     if (/\b(method|attempt|award|working|substitution|curve|diagram|sketch|proof|explanation)\b/i.test(answer)) return;
     if (/^(?:[a-df-hj-z]|theta|alpha|beta|gamma|dx|dy\/dx|dm\/dt|cos\s*theta|sin\s*theta)$/i.test(answer)) return;
@@ -280,7 +284,7 @@
         var partList = document.createElement("div"); partList.className = "qb-answer-part-list";
         config.parts.forEach(function (part) {
           var partRow = document.createElement("div"); partRow.className = "qb-answer-part-row";
-          var partLabel = document.createElement("strong"); partLabel.textContent = part.label === "answer" ? "Answer" : "(" + part.label.replace("(", ")(");
+          var partLabel = document.createElement("strong"); partLabel.textContent = part.label === "answer" ? "Answer" : "(" + part.label.replace("(", ")(") + ")";
           var partDetail = document.createElement("div");
           if (part.mode === "multiple_choice") {
             partDetail.appendChild(choicePreview(part.options, part.correctOption));
@@ -301,7 +305,10 @@
       var list = document.createElement("div"); list.className = "qb-answer-choice-list";
       (Array.isArray(options) ? options : []).forEach(function (option, index) {
         var row = document.createElement("div"); row.className = "qb-answer-choice" + (index === correctOption ? " is-correct" : "");
-        var text = document.createElement("span"); text.textContent = option; row.appendChild(text);
+        var text = document.createElement("span");
+        if (choiceUtils && choiceUtils.renderAnswer) choiceUtils.renderAnswer(text, option);
+        else text.textContent = option;
+        row.appendChild(text);
         if (index === correctOption) { var badge = document.createElement("small"); badge.textContent = "Correct"; row.appendChild(badge); }
         list.appendChild(row);
       });

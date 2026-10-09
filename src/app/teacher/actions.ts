@@ -29,11 +29,27 @@ type ResponseConfig = {
   parts: ResponsePart[];
 };
 
-function canonicalAnswer(value: string) {
+function cleanChoiceAnswer(value: string) {
   return value
     .replace(/[\u2212\u2013\u2014]/g, "-")
+    .replace(/\\text\s*\{([^{}]*)\}/g, "$1")
+    .replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1")
+    .replace(/\bmathrm(?=[a-z])/gi, "")
+    .replace(/\^\s*\\?circ\b/gi, "°")
+    .replace(/\\?circ\b/gi, "°")
+    .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
+    .replace(/\\sqrt\s*([A-Za-z0-9.]+)/g, "sqrt($1)")
     .replace(/\bpi\b/gi, "π")
     .replace(/degrees?/gi, "°")
+    .replace(/²/g, "^2")
+    .replace(/³/g, "^3")
+    .replace(/\s*\(\s*((?:cm|mm|km|m)\s*\^[23])\s*\)\s*$/i, " $1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function canonicalAnswer(value: string) {
+  return cleanChoiceAnswer(value)
     .toLowerCase()
     .replace(/[\s{}]/g, "")
     .replace(/\*|×|·/g, "×")
@@ -46,10 +62,12 @@ function numericAnswerValue(value: string) {
   const compact = canonicalAnswer(value)
     .replace(/^[a-zα-ω](?:\([^)]*\))?=/i, "")
     .replace(/,/g, "")
-    .replace(/(?:°|%|rad|cm|mm|km|kg|minutes?|hours?|mins?|hrs?|m|g|s)$/i, "");
+    .replace(/(?:°|%|rad|cm(?:\^[23])?|mm(?:\^[23])?|km(?:\^[23])?|m(?:\^[23])?|kg|minutes?|hours?|mins?|hrs?|g|s)$/i, "");
   if (/^-?\d+(?:\.\d+)?$/.test(compact)) return Number(compact);
   const fraction = compact.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
   if (fraction && Number(fraction[2]) !== 0) return Number(fraction[1]) / Number(fraction[2]);
+  const radical = compact.match(/^sqrt\((-?\d+(?:\.\d+)?)\)$/);
+  if (radical && Number(radical[1]) >= 0) return Math.sqrt(Number(radical[1]));
   return null;
 }
 
@@ -60,9 +78,23 @@ function answersEquivalent(left: string, right: string) {
   return leftNumber !== null && rightNumber !== null && Math.abs(leftNumber - rightNumber) < 1e-10;
 }
 
+function choiceLooksSafe(value: string) {
+  const answer = cleanChoiceAnswer(value);
+  if (!answer || answer.length > 180) return false;
+  if (/\\|\b(?:mathrm|circ)\b|\^\s*$|\/\s*\/|sqrt\s*(?!\()/i.test(answer)) return false;
+  if ((answer.match(/\//g) || []).length > 1 || /sqrt\(\s*-/.test(answer)) return false;
+  let depth = 0;
+  for (const character of answer) {
+    if (character === "(") depth += 1;
+    if (character === ")") depth -= 1;
+    if (depth < 0) return false;
+  }
+  return depth === 0;
+}
+
 function validChoiceSet(acceptedAnswers: string[], options: string[], correctOption: number | null) {
   if (!acceptedAnswers.length || options.length !== 5 || correctOption === null || correctOption < 0 || correctOption >= options.length) return false;
-  if (options.some((option) => !option)) return false;
+  if (options.some((option) => !choiceLooksSafe(option))) return false;
   for (let left = 0; left < options.length; left += 1) {
     for (let right = left + 1; right < options.length; right += 1) {
       if (answersEquivalent(options[left], options[right])) return false;

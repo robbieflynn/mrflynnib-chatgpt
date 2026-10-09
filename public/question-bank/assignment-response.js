@@ -53,6 +53,9 @@
     ".qb-response-status.is-incorrect{color:#9f2f2f}",
     ".qb-assignment-response.is-readonly{background:#f7f8f9}",
     ".qb-response-readonly{padding:10px 12px;border-radius:8px;background:#fff;border:1px solid #d6dee2;white-space:pre-wrap}",
+    ".qb-response-readonly-parts{display:grid;gap:8px}",
+    ".qb-response-readonly-part{display:grid;grid-template-columns:minmax(48px,auto) 1fr;align-items:center;gap:10px}",
+    ".qb-response-readonly-part>strong{color:var(--flynn-blue-dark)}",
     ".qb-math-entry{display:grid;gap:7px}",
     ".qb-math-keyboard{padding:8px;display:flex;flex-wrap:wrap;gap:6px;border:1px solid #cfdae0;border-radius:9px;background:#f4f7f8}",
     ".qb-assignment-response .qb-math-key{min-width:38px;min-height:34px;padding:6px 9px;border:1px solid #bacbd4;border-radius:7px;background:#fff;color:#173b5c;font:750 14px/1 var(--ui);box-shadow:0 2px 5px rgba(11,21,48,.04)}",
@@ -131,20 +134,36 @@
     return item.readOnly ? "Saved for teacher review" : "Saved. Your teacher can review your whiteboard or paper working.";
   }
 
-  function responseText(item) {
-    if (!item.response) return "No answer saved yet.";
+  function renderAnswer(element, value) {
+    if (choiceUtils && choiceUtils.renderAnswer) choiceUtils.renderAnswer(element, value);
+    else element.textContent = String(value || "");
+  }
+
+  function appendReadOnlyAnswer(container, item) {
+    if (!item.response) { container.textContent = "No answer saved yet."; return; }
     if (item.response.parts && typeof item.response.parts === "object") {
-      return Object.keys(item.response.parts).map(function (label) {
-        var answer = item.response.parts[label] === "__whiteboard__" ? "Completed on the whiteboard or paper" : String(item.response.parts[label] || "");
-        return partLabel(label) + " " + answer;
-      }).join("\n");
+      container.classList.add("qb-response-readonly-parts");
+      Object.keys(item.response.parts).forEach(function (label) {
+        var row = document.createElement("div"); row.className = "qb-response-readonly-part";
+        var badge = document.createElement("strong"); badge.textContent = partLabel(label);
+        var answer = document.createElement("span");
+        var value = item.response.parts[label];
+        if (value === "__whiteboard__") answer.textContent = "Completed on the whiteboard or paper";
+        else renderAnswer(answer, String(value || ""));
+        row.appendChild(badge); row.appendChild(answer); container.appendChild(row);
+      });
+      return;
     }
-    if (item.response.whiteboard || item.response.completedOffline) return "Completed on the whiteboard or paper";
+    if (item.response.whiteboard || item.response.completedOffline) {
+      container.textContent = "Completed on the whiteboard or paper";
+      return;
+    }
     if (item.responseType === "multiple_choice") {
       var option = Number(item.response.option);
-      return item.responseOptions[option] || "No answer saved yet.";
+      renderAnswer(container, item.responseOptions[option] || "No answer saved yet.");
+      return;
     }
-    return String(item.response.text || "No answer saved yet.");
+    renderAnswer(container, String(item.response.text || "No answer saved yet."));
   }
 
   function isQuestionFinished(item) {
@@ -156,7 +175,7 @@
 
   function partLabel(label) {
     if (!label || label === "answer") return "Answer";
-    return "(" + String(label).replace("(", ")(");
+    return "(" + String(label).replace("(", ")(") + ")";
   }
 
   function multipartDefinitions(item) {
@@ -314,7 +333,7 @@
     head.appendChild(heading); head.appendChild(kind); panel.appendChild(head);
 
     if (item.readOnly) {
-      var saved = document.createElement("div"); saved.className = "qb-response-readonly"; saved.textContent = responseText(item); panel.appendChild(saved);
+      var saved = document.createElement("div"); saved.className = "qb-response-readonly"; appendReadOnlyAnswer(saved, item); panel.appendChild(saved);
       var teacherStatus = document.createElement("div"); teacherStatus.className = "qb-response-status" + (item.isCorrect === true ? " is-correct" : item.isCorrect === false ? " is-incorrect" : ""); teacherStatus.textContent = statusCopy(item); panel.appendChild(teacherStatus);
       card.appendChild(panel); return;
     }
@@ -345,7 +364,7 @@
             var choiceLabel = document.createElement("label"); choiceLabel.className = "qb-response-option";
             var choice = document.createElement("input"); choice.type = "radio"; choice.name = "answer-" + id + "-" + definition.label; choice.checked = choiceState.value === optionText;
             choice.addEventListener("change", function () { choiceState.value = optionText; });
-            var choiceCopy = document.createElement("span"); choiceCopy.textContent = optionText;
+            var choiceCopy = document.createElement("span"); renderAnswer(choiceCopy, optionText);
             choiceLabel.appendChild(choice); choiceLabel.appendChild(choiceCopy); options.appendChild(choiceLabel);
           });
           partInputs[definition.label] = choiceState; row.appendChild(labelBadge); row.appendChild(options);
@@ -363,7 +382,7 @@
         var label = document.createElement("label"); label.className = "qb-response-option";
         var radio = document.createElement("input"); radio.type = "radio"; radio.name = "answer-" + id; radio.checked = selectedOption === choiceItem.originalIndex;
         radio.addEventListener("change", function () { selectedOption = choiceItem.originalIndex; });
-        var copy = document.createElement("span"); copy.textContent = choiceItem.optionText;
+        var copy = document.createElement("span"); renderAnswer(copy, choiceItem.optionText);
         label.appendChild(radio); label.appendChild(copy); options.appendChild(label);
       });
       panel.appendChild(options);
