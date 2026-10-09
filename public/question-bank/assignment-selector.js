@@ -3,7 +3,8 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 3;
+  var DRAFT_VERSION = 4;
+  var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
   var restoredSelection = [];
@@ -42,9 +43,10 @@
     ".qb-answer-part-row{padding:10px;display:grid;grid-template-columns:minmax(54px,auto) 1fr;align-items:start;gap:10px;border:1px solid #d5e1e7;border-radius:9px;background:#fff}",
     ".qb-answer-part-row>strong{padding-top:6px;color:var(--flynn-blue-dark)}",
     ".qb-answer-part-row .qb-answer-review-note{display:block;padding:7px 9px}",
-    ".qb-answer-options{display:grid;gap:7px}",
-    ".qb-answer-option{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}",
-    ".qb-answer-option input[type=radio]{width:18px;height:18px;accent-color:var(--flynn-blue)}",
+    ".qb-answer-choice-list{display:grid;gap:6px}",
+    ".qb-answer-choice{padding:7px 9px;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #d5e1e7;border-radius:8px;background:#f8fafb;color:#29445a;font-weight:650}",
+    ".qb-answer-choice.is-correct{border-color:#8fc9b2;background:#eaf7f1;color:#176b50}",
+    ".qb-answer-choice small{padding:3px 6px;border-radius:999px;background:#fff;color:#176b50;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}",
     ".qb-assignment-limit{position:fixed;left:50%;bottom:18px;z-index:100;transform:translateX(-50%);padding:10px 16px;border-radius:999px;background:#9f2f2f;color:#fff;font:700 13px/1.2 var(--ui);box-shadow:0 8px 24px rgba(11,21,48,.22)}",
     "@media(max-width:480px){.qb-assignment-select{margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px}}"
   ].join("");
@@ -159,9 +161,11 @@
       var maths = mathFragments(alternative);
       if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) addAnswer(answers, maths[0]);
       else if (maths.length === 0 || (maths.length === 1 && /^[a-z]$/i.test(latexToPlain(maths[0])))) {
-        var numbers = plainText(alternative).match(/-?\d+(?:\.\d+)?(?:\s*\/\s*-?\d+(?:\.\d+)?)?/g) || [];
-        if (numbers.length && numbers.length <= 3) numbers.forEach(function (number) { addAnswer(answers, number); });
-        else addAnswer(answers, plainText(alternative));
+        var textAnswer = plainText(alternative);
+        var numbers = textAnswer.match(/-?\d+(?:\.\d+)?(?:\s*\/\s*-?\d+(?:\.\d+)?)?/g) || [];
+        if (numbers.length === 1) addAnswer(answers, numbers[0]);
+        else if (numbers.length > 1 && textAnswer.length <= 100) addAnswer(answers, textAnswer);
+        else addAnswer(answers, textAnswer);
       }
     });
     return answers.slice(0, 12);
@@ -220,37 +224,31 @@
         nested.forEach(function (nestedLabel) {
           var nestedPrompt = promptForSubpart(prompt, nestedLabel);
           var answers = automaticAnswersFromRows(rowsForSubpart(rows, nestedLabel), nestedPrompt);
-          results.push({ label: topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel, mode: answers.length ? "exact" : "whiteboard", acceptedAnswers: answers });
+          var label = topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel;
+          var choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
+          results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
         });
       } else {
         var answers = automaticAnswersFromRows(rows, prompt);
-        results.push({ label: topLabel || "answer", mode: answers.length ? "exact" : "whiteboard", acceptedAnswers: answers });
+        var label = topLabel || "answer";
+        var choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
+        results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
       }
     });
     return results;
   }
 
-  function numericValue(answers) {
-    for (var i = 0; i < answers.length; i += 1) {
-      var compact = String(answers[i]).replace(/,/g, "").trim();
-      if (/^-?\d+(?:\.\d+)?$/.test(compact)) return compact;
-      var fraction = compact.match(/^(-?\d+)\s*\/\s*(-?\d+)$/);
-      if (fraction && Number(fraction[2]) !== 0) return String(Number(fraction[1]) / Number(fraction[2]));
-    }
-    return "";
-  }
-
   function defaultConfig(id) {
     var question = questionFor(id);
     var parts = automaticPartConfigs(question);
-    var acceptedAnswers = parts.length === 1 && parts[0].mode === "exact" ? parts[0].acceptedAnswers : [];
+    var singleChoice = parts.length === 1 && parts[0].mode === "multiple_choice" ? parts[0] : null;
     return {
-      type: parts.length > 1 ? "multipart" : acceptedAnswers.length ? "exact" : "teacher_review",
-      acceptedAnswers: acceptedAnswers,
-      numericAnswer: numericValue(acceptedAnswers),
+      type: parts.length > 1 ? "multipart" : singleChoice ? "multiple_choice" : "teacher_review",
+      acceptedAnswers: singleChoice ? singleChoice.acceptedAnswers : [],
+      numericAnswer: "",
       tolerance: "0.01",
-      options: ["", "", "", ""],
-      correctOption: 0,
+      options: singleChoice ? singleChoice.options : [],
+      correctOption: singleChoice ? singleChoice.correctOption : null,
       parts: parts,
       provisional: !question
     };
@@ -263,7 +261,7 @@
     panel.className = "qb-assignment-answer";
     panel.hidden = !selected.has(id);
     var heading = document.createElement("strong");
-    heading.textContent = "Automatic answer checking";
+    heading.textContent = "Student answer format";
     var methodCopy = document.createElement("small");
     methodCopy.className = "qb-answer-method-copy";
     var fields = document.createElement("div");
@@ -272,35 +270,42 @@
 
     function renderFields() {
       fields.innerHTML = "";
-      if (config.type === "exact") {
-        methodCopy.textContent = "Recommended. Checks the final answer against every accepted form supplied by the mark scheme.";
-        var source = document.createElement("div"); source.className = "qb-answer-source"; source.textContent = "Accepted automatically from the official mark scheme"; fields.appendChild(source);
-        var accepted = document.createElement("div"); accepted.className = "qb-accepted-answer-list";
-        config.acceptedAnswers.forEach(function (answer) { var chip = document.createElement("span"); chip.className = "qb-accepted-answer"; chip.textContent = answer; accepted.appendChild(chip); });
-        fields.appendChild(accepted);
-        var exactHint = document.createElement("small"); exactHint.textContent = "Equivalent alternatives shown in the mark scheme are included. The teacher does not need to type an answer."; fields.appendChild(exactHint);
+      if (config.type === "multiple_choice") {
+        methodCopy.textContent = "Students choose from one correct answer and four plausible alternatives. Choices are shuffled for each student.";
+        var source = document.createElement("div"); source.className = "qb-answer-source"; source.textContent = "Correct answer checked against every accepted mark-scheme form"; fields.appendChild(source);
+        fields.appendChild(choicePreview(config.options, config.correctOption));
+        var choiceHint = document.createElement("small"); choiceHint.textContent = "The assignment will not publish if a distractor duplicates an accepted correct answer."; fields.appendChild(choiceHint);
       } else if (config.type === "multipart") {
-        methodCopy.textContent = "Each part gets its own answer space. Exact answers are checked only against the matching mark-scheme part.";
+        methodCopy.textContent = "Each part is answered separately. Suitable parts use five choices; written, proof and diagram parts use working on whiteboard or paper.";
         var partList = document.createElement("div"); partList.className = "qb-answer-part-list";
         config.parts.forEach(function (part) {
           var partRow = document.createElement("div"); partRow.className = "qb-answer-part-row";
           var partLabel = document.createElement("strong"); partLabel.textContent = part.label === "answer" ? "Answer" : "(" + part.label.replace("(", ")(");
           var partDetail = document.createElement("div");
-          if (part.mode === "exact") {
-            var accepted = document.createElement("div"); accepted.className = "qb-accepted-answer-list";
-            part.acceptedAnswers.forEach(function (answer) { var chip = document.createElement("span"); chip.className = "qb-accepted-answer"; chip.textContent = answer; accepted.appendChild(chip); });
-            partDetail.appendChild(accepted);
+          if (part.mode === "multiple_choice") {
+            partDetail.appendChild(choicePreview(part.options, part.correctOption));
           } else {
-            var whiteboard = document.createElement("span"); whiteboard.className = "qb-answer-review-note"; whiteboard.textContent = "Student confirms this part is shown on the whiteboard."; partDetail.appendChild(whiteboard);
+            var whiteboard = document.createElement("span"); whiteboard.className = "qb-answer-review-note"; whiteboard.textContent = "Student confirms this part is completed on the whiteboard or paper."; partDetail.appendChild(whiteboard);
           }
           partRow.appendChild(partLabel); partRow.appendChild(partDetail); partList.appendChild(partRow);
         });
         fields.appendChild(partList);
-        var multipartHint = document.createElement("small"); multipartHint.textContent = "Every accepted answer shown here comes directly from the corresponding mark-scheme row or its stated accepted alternatives."; fields.appendChild(multipartHint);
+        var multipartHint = document.createElement("small"); multipartHint.textContent = "Correct choices come only from the matching mark-scheme part. All distractors are checked against its accepted alternatives."; fields.appendChild(multipartHint);
       } else {
-        methodCopy.textContent = "The student will confirm that the proof, sketch or written response is shown on the whiteboard.";
-        var note = document.createElement("div"); note.className = "qb-answer-review-note"; note.textContent = "No answer is guessed. This response will be saved for the teacher to review on the whiteboard."; fields.appendChild(note);
+        methodCopy.textContent = "The student confirms that the proof, sketch, explanation or other written work is completed on the whiteboard or paper.";
+        var note = document.createElement("div"); note.className = "qb-answer-review-note"; note.textContent = "No answer is guessed. The teacher can review saved whiteboard work or check the student’s paper."; fields.appendChild(note);
       }
+    }
+
+    function choicePreview(options, correctOption) {
+      var list = document.createElement("div"); list.className = "qb-answer-choice-list";
+      (Array.isArray(options) ? options : []).forEach(function (option, index) {
+        var row = document.createElement("div"); row.className = "qb-answer-choice" + (index === correctOption ? " is-correct" : "");
+        var text = document.createElement("span"); text.textContent = option; row.appendChild(text);
+        if (index === correctOption) { var badge = document.createElement("small"); badge.textContent = "Correct"; row.appendChild(badge); }
+        list.appendChild(row);
+      });
+      return list;
     }
     renderFields();
     return panel;
