@@ -4,6 +4,7 @@ import { updateAssignmentFeedbackMode } from "@/app/teacher/actions";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { requireTeacher } from "@/lib/account-access";
 import { assignmentFeedbackModeFromRecord, assignmentFeedbackOptions } from "@/lib/assignment-feedback";
+import { AssignmentDraftClearer } from "@/components/assignment-draft-clearer";
 
 type MatrixState = "correct" | "retry" | "incorrect" | "review" | "attempted" | "empty";
 
@@ -68,6 +69,7 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
   const feedbackMode = assignmentFeedbackModeFromRecord(assignment);
 
   return <main className={workspaceClass}>
+    <AssignmentDraftClearer classId={assignment.class_id} enabled={message.success === "Assignment published."} />
     <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord?.name || "Class", href: `/teacher/classes/${assignment.class_id}` }, { label: assignment.title }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord?.course}</p><h1>{assignment.title}</h1>{assignment.instructions ? <p>{assignment.instructions}</p> : <p>Review class progress and open any student&apos;s saved answers and working.</p>}</div><div className="teacher-workspace-stats"><span><strong>{total}</strong> questions</span><span><strong>{memberships?.length ?? 0}</strong> students</span></div></div></Container></section>
     <section className="section-tight"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}

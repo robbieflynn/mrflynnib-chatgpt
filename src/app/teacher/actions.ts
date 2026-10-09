@@ -25,7 +25,12 @@ function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
     const raw = JSON.parse(String(value)) as Record<string, unknown>;
     const id = String(raw.id || "").slice(0, 160);
     const type = validResponseTypes.has(String(raw.type)) ? String(raw.type) as ResponseConfig["type"] : "teacher_review";
-    const acceptedAnswers = String(raw.acceptedAnswers || "").split("|").map((item) => item.trim()).filter(Boolean).slice(0, 12);
+    const acceptedAnswers = (Array.isArray(raw.acceptedAnswers)
+      ? raw.acceptedAnswers.map(String)
+      : String(raw.acceptedAnswers || "").split("|"))
+      .map((item) => item.trim().slice(0, 180))
+      .filter(Boolean)
+      .slice(0, 12);
     const numericAnswer = String(raw.numericAnswer ?? "").trim() === "" ? null : Number(raw.numericAnswer);
     const tolerance = String(raw.tolerance ?? "").trim() === "" ? null : Number(raw.tolerance);
     const options = Array.isArray(raw.options) ? raw.options.slice(0, 4).map((item) => String(item).trim().slice(0, 180)) : [];
@@ -77,7 +82,7 @@ export async function createAssignment(formData: FormData) {
   const dueDate = String(formData.get("dueDate") || "");
   const requestedFeedbackMode = String(formData.get("feedbackMode") || "after_question");
   const feedbackMode = isAssignmentFeedbackMode(requestedFeedbackMode) ? requestedFeedbackMode : "after_question";
-  const questionIds = formData.getAll("questionIds").map(String).filter(Boolean).slice(0, 40);
+  const questionIds = formData.getAll("questionIds").map(String).filter(Boolean).slice(0, 100);
   const parsedConfigs = formData.getAll("responseConfigs").map(parseResponseConfig);
   const responseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
 
