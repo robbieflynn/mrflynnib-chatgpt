@@ -79,7 +79,7 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
       {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ id, ...(responseConfigs[index] || {}) })} />)}
       <div className="assignment-picker-summary" aria-live="polite">
         <strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected</strong>
-        <span>Select up to 100 questions. Answer checking and accepted alternatives are set automatically from the mark scheme.</span>
+        <span>Select up to 100 questions. Correct choices come from the mark scheme, with checked distractors generated automatically.</span>
       </div>
       <iframe className="assignment-bank-frame" loading="eager" ref={frameRef} scrolling="no" src={source} style={{ height: `${frameHeight}px` }} title={`${course} assignment question selector`} />
     </div>

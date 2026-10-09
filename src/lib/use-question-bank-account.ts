@@ -66,6 +66,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
             updatedAt: saved?.updated_at ?? null,
             readOnly: Boolean(viewedStudentId),
             position: Number(question.position || 0),
+            optionSeed: studentId,
           };
         }),
       });

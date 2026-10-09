@@ -12,8 +12,10 @@ const validResponseTypes = new Set(["teacher_review", "exact", "numeric", "multi
 
 type ResponsePart = {
   label: string;
-  mode: "exact" | "whiteboard";
+  mode: "multiple_choice" | "whiteboard";
   acceptedAnswers: string[];
+  options: string[];
+  correctOption: number | null;
 };
 
 type ResponseConfig = {
@@ -26,6 +28,49 @@ type ResponseConfig = {
   correctOption: number | null;
   parts: ResponsePart[];
 };
+
+function canonicalAnswer(value: string) {
+  return value
+    .replace(/[\u2212\u2013\u2014]/g, "-")
+    .replace(/\bpi\b/gi, "π")
+    .replace(/degrees?/gi, "°")
+    .toLowerCase()
+    .replace(/[\s{}]/g, "")
+    .replace(/\*|×|·/g, "×")
+    .replace(/<=/g, "≤")
+    .replace(/>=/g, "≥")
+    .replace(/[.;]+$/, "");
+}
+
+function numericAnswerValue(value: string) {
+  const compact = canonicalAnswer(value)
+    .replace(/^[a-zα-ω](?:\([^)]*\))?=/i, "")
+    .replace(/,/g, "")
+    .replace(/(?:°|%|rad|cm|mm|km|kg|minutes?|hours?|mins?|hrs?|m|g|s)$/i, "");
+  if (/^-?\d+(?:\.\d+)?$/.test(compact)) return Number(compact);
+  const fraction = compact.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
+  if (fraction && Number(fraction[2]) !== 0) return Number(fraction[1]) / Number(fraction[2]);
+  return null;
+}
+
+function answersEquivalent(left: string, right: string) {
+  if (canonicalAnswer(left) === canonicalAnswer(right)) return true;
+  const leftNumber = numericAnswerValue(left);
+  const rightNumber = numericAnswerValue(right);
+  return leftNumber !== null && rightNumber !== null && Math.abs(leftNumber - rightNumber) < 1e-10;
+}
+
+function validChoiceSet(acceptedAnswers: string[], options: string[], correctOption: number | null) {
+  if (!acceptedAnswers.length || options.length !== 5 || correctOption === null || correctOption < 0 || correctOption >= options.length) return false;
+  if (options.some((option) => !option)) return false;
+  for (let left = 0; left < options.length; left += 1) {
+    for (let right = left + 1; right < options.length; right += 1) {
+      if (answersEquivalent(options[left], options[right])) return false;
+    }
+  }
+  if (!acceptedAnswers.some((answer) => answersEquivalent(options[correctOption], answer))) return false;
+  return options.every((option, index) => index === correctOption || !acceptedAnswers.some((answer) => answersEquivalent(option, answer)));
+}
 
 function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
   try {
@@ -40,24 +85,26 @@ function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
       .slice(0, 12);
     const numericAnswer = String(raw.numericAnswer ?? "").trim() === "" ? null : Number(raw.numericAnswer);
     const tolerance = String(raw.tolerance ?? "").trim() === "" ? null : Number(raw.tolerance);
-    const options = Array.isArray(raw.options) ? raw.options.slice(0, 4).map((item) => String(item).trim().slice(0, 180)) : [];
+    const options = Array.isArray(raw.options) ? raw.options.slice(0, 5).map((item) => String(item).trim().slice(0, 180)) : [];
     const correctOption = Number.isInteger(Number(raw.correctOption)) ? Number(raw.correctOption) : null;
     const parts = (Array.isArray(raw.parts) ? raw.parts : []).map((part) => {
       const value = part && typeof part === "object" ? part as Record<string, unknown> : {};
       const label = String(value.label || "").trim().slice(0, 30);
-      const mode: ResponsePart["mode"] = value.mode === "whiteboard" ? "whiteboard" : "exact";
+      const mode: ResponsePart["mode"] = value.mode === "multiple_choice" ? "multiple_choice" : "whiteboard";
       const partAnswers = (Array.isArray(value.acceptedAnswers) ? value.acceptedAnswers : [])
         .map(String)
         .map((item) => item.trim().slice(0, 180))
         .filter(Boolean)
         .slice(0, 12);
-      return { label, mode, acceptedAnswers: partAnswers };
-    }).filter((part) => part.label && (part.mode === "whiteboard" || part.acceptedAnswers.length)).slice(0, 30);
+      const partOptions = Array.isArray(value.options) ? value.options.slice(0, 5).map((item) => String(item).trim().slice(0, 180)) : [];
+      const partCorrectOption = Number.isInteger(Number(value.correctOption)) ? Number(value.correctOption) : null;
+      return { label, mode, acceptedAnswers: partAnswers, options: partOptions, correctOption: partCorrectOption };
+    }).slice(0, 30);
     if (!id) return null;
     if (type === "exact" && acceptedAnswers.length === 0) return null;
     if (type === "numeric" && (!Number.isFinite(numericAnswer) || !Number.isFinite(tolerance) || Number(tolerance) < 0)) return null;
-    if (type === "multiple_choice" && (options.length !== 4 || options.some((option) => !option) || correctOption === null || correctOption < 0 || correctOption >= options.length)) return null;
-    if (type === "multipart" && parts.length < 2) return null;
+    if (type === "multiple_choice" && !validChoiceSet(acceptedAnswers, options, correctOption)) return null;
+    if (type === "multipart" && (parts.length < 2 || parts.some((part) => !part.label || (part.mode === "multiple_choice" && !validChoiceSet(part.acceptedAnswers, part.options, part.correctOption))))) return null;
     return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption, parts };
   } catch {
     return null;
@@ -144,7 +191,7 @@ export async function createAssignment(formData: FormData) {
       response_options: config.type === "multiple_choice"
         ? config.options
         : config.type === "multipart"
-          ? config.parts.map((part) => ({ label: part.label, mode: part.mode }))
+          ? config.parts.map((part) => ({ label: part.label, mode: part.mode, options: part.options }))
           : [],
     };
   }));
@@ -161,7 +208,7 @@ export async function createAssignment(formData: FormData) {
     return [{
       assignment_id: assignment.id,
       question_id: question.id,
-      accepted_answers: config.type === "exact" ? config.acceptedAnswers : multipartAnswers,
+      accepted_answers: config.type === "exact" || config.type === "multiple_choice" ? config.acceptedAnswers : multipartAnswers,
       numeric_answer: config.type === "numeric" ? config.numericAnswer : null,
       numeric_tolerance: config.type === "numeric" ? config.tolerance : null,
       correct_option: config.type === "multiple_choice" ? config.correctOption : null,

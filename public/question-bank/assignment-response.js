@@ -10,6 +10,7 @@
   var renderVersion = 0;
   var feedbackMode = "immediate";
   var assignmentSubmitted = false;
+  var choiceUtils = window.MrFlynnAssignmentChoices;
   var activeId = null;
   var list = document.getElementById("qb-list");
   if (!list) return;
@@ -42,10 +43,11 @@
     ".qb-assignment-response button:disabled{opacity:.6;cursor:not-allowed}",
     ".qb-response-options{display:grid;gap:8px}",
     ".qb-response-parts{display:grid;gap:10px}",
-    ".qb-response-part{display:grid;grid-template-columns:minmax(52px,auto) 1fr;gap:8px;align-items:center}",
+    ".qb-response-part{display:grid;grid-template-columns:minmax(52px,auto) 1fr;gap:8px;align-items:start}",
     ".qb-response-part strong{min-width:48px;height:34px;padding:0 8px;display:grid;place-items:center;border-radius:999px;background:#e8f2f8;color:var(--flynn-blue-dark);white-space:nowrap}",
     ".qb-response-option{padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:center;border:1px solid #c8d5dc;border-radius:8px;background:#fff;cursor:pointer}",
     ".qb-response-option input{width:18px;height:18px;accent-color:var(--flynn-blue)}",
+    ".qb-response-part-options{width:100%}",
     ".qb-response-status{min-height:20px;color:#5f7180;font-size:13px}",
     ".qb-response-status.is-correct{color:#18704f}",
     ".qb-response-status.is-incorrect{color:#9f2f2f}",
@@ -118,7 +120,7 @@
     if (type === "numeric") return "Numerical answer";
     if (type === "exact") return "Exact answer";
     if (type === "multipart") return "Multi-part answer";
-    return "Whiteboard response";
+    return "Whiteboard or paper";
   }
 
   function statusCopy(item) {
@@ -126,18 +128,18 @@
     if (item.isCorrect === true) return "Correct. Well done!";
     if (item.isCorrect === false && Number(item.attemptCount || 0) >= 2) return "That was your second try. Your answer has been saved for your teacher.";
     if (item.isCorrect === false) return "Oops, that’s not right. Try again. You have one attempt left.";
-    return item.readOnly ? "Saved for teacher review" : "Saved. Your teacher will review this answer.";
+    return item.readOnly ? "Saved for teacher review" : "Saved. Your teacher can review your whiteboard or paper working.";
   }
 
   function responseText(item) {
     if (!item.response) return "No answer saved yet.";
     if (item.response.parts && typeof item.response.parts === "object") {
       return Object.keys(item.response.parts).map(function (label) {
-        var answer = item.response.parts[label] === "__whiteboard__" ? "Shown on the whiteboard" : String(item.response.parts[label] || "");
+        var answer = item.response.parts[label] === "__whiteboard__" ? "Completed on the whiteboard or paper" : String(item.response.parts[label] || "");
         return partLabel(label) + " " + answer;
       }).join("\n");
     }
-    if (item.response.whiteboard) return item.response.text && item.response.text !== "Shown on my whiteboard" ? String(item.response.text) + "\nShown on the whiteboard" : "Shown on the whiteboard";
+    if (item.response.whiteboard || item.response.completedOffline) return "Completed on the whiteboard or paper";
     if (item.responseType === "multiple_choice") {
       var option = Number(item.response.option);
       return item.responseOptions[option] || "No answer saved yet.";
@@ -160,8 +162,16 @@
   function multipartDefinitions(item) {
     if (item.responseType !== "multipart" || !Array.isArray(item.responseOptions)) return [];
     return item.responseOptions.map(function (part) {
-      return part && typeof part === "object" ? { label: String(part.label || ""), mode: part.mode === "whiteboard" ? "whiteboard" : "exact" } : null;
+      return part && typeof part === "object" ? {
+        label: String(part.label || ""),
+        mode: part.mode === "whiteboard" ? "whiteboard" : part.mode === "multiple_choice" ? "multiple_choice" : "exact",
+        options: Array.isArray(part.options) ? part.options.map(String) : []
+      } : null;
     }).filter(function (part) { return part && part.label; });
+  }
+
+  function orderedChoices(options, seed) {
+    return choiceUtils && choiceUtils.shuffled ? choiceUtils.shuffled(options, seed) : options.slice();
   }
 
   function appendMathKeyboard(panel, inputs) {
@@ -326,8 +336,19 @@
         if (definition.mode === "whiteboard") {
           var confirmation = document.createElement("span"); confirmation.className = "qb-whiteboard-confirm";
           var checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = Boolean(item.response && item.response.parts && item.response.parts[definition.label] === "__whiteboard__");
-          var confirmationCopy = document.createElement("span"); confirmationCopy.textContent = "I have shown this part on the whiteboard";
+          var confirmationCopy = document.createElement("span"); confirmationCopy.textContent = "I completed this part on the whiteboard or paper";
           confirmation.appendChild(checkbox); confirmation.appendChild(confirmationCopy); partInputs[definition.label] = checkbox; row.appendChild(labelBadge); row.appendChild(confirmation);
+        } else if (definition.mode === "multiple_choice") {
+          var choiceState = { value: item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : "" };
+          var options = document.createElement("div"); options.className = "qb-response-options qb-response-part-options";
+          orderedChoices(definition.options, String(item.optionSeed || "") + ":" + id + ":" + definition.label).forEach(function (optionText) {
+            var choiceLabel = document.createElement("label"); choiceLabel.className = "qb-response-option";
+            var choice = document.createElement("input"); choice.type = "radio"; choice.name = "answer-" + id + "-" + definition.label; choice.checked = choiceState.value === optionText;
+            choice.addEventListener("change", function () { choiceState.value = optionText; });
+            var choiceCopy = document.createElement("span"); choiceCopy.textContent = optionText;
+            choiceLabel.appendChild(choice); choiceLabel.appendChild(choiceCopy); options.appendChild(choiceLabel);
+          });
+          partInputs[definition.label] = choiceState; row.appendChild(labelBadge); row.appendChild(options);
         } else {
           var input = document.createElement("input"); input.type = "text"; input.maxLength = 500; input.inputMode = "text"; input.placeholder = "Enter your answer for " + partLabel(definition.label).toLowerCase();
           input.value = item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : (partIndex === 0 && item.response ? String(item.response.text || "") : "");
@@ -338,30 +359,29 @@
       panel.appendChild(parts);
     } else if (item.responseType === "multiple_choice") {
       var options = document.createElement("div"); options.className = "qb-response-options";
-      item.responseOptions.forEach(function (optionText, index) {
+      orderedChoices(item.responseOptions.map(function (optionText, index) { return { optionText: optionText, originalIndex: index }; }), String(item.optionSeed || "") + ":" + id).forEach(function (choiceItem) {
         var label = document.createElement("label"); label.className = "qb-response-option";
-        var radio = document.createElement("input"); radio.type = "radio"; radio.name = "answer-" + id; radio.checked = selectedOption === index;
-        radio.addEventListener("change", function () { selectedOption = index; });
-        var copy = document.createElement("span"); copy.textContent = optionText;
+        var radio = document.createElement("input"); radio.type = "radio"; radio.name = "answer-" + id; radio.checked = selectedOption === choiceItem.originalIndex;
+        radio.addEventListener("change", function () { selectedOption = choiceItem.originalIndex; });
+        var copy = document.createElement("span"); copy.textContent = choiceItem.optionText;
         label.appendChild(radio); label.appendChild(copy); options.appendChild(label);
       });
       panel.appendChild(options);
+    } else if (item.responseType === "teacher_review") {
+      var whiteboardLabel = document.createElement("label"); whiteboardLabel.className = "qb-whiteboard-confirm";
+      whiteboardConfirmation = document.createElement("input"); whiteboardConfirmation.type = "checkbox"; whiteboardConfirmation.checked = Boolean(item.response);
+      var whiteboardCopy = document.createElement("span"); whiteboardCopy.textContent = "I completed this question on the whiteboard or paper";
+      whiteboardLabel.appendChild(whiteboardConfirmation); whiteboardLabel.appendChild(whiteboardCopy); panel.appendChild(whiteboardLabel);
     } else {
       textInput = document.createElement("input"); textInput.type = "text"; textInput.maxLength = 500;
       textInput.placeholder = item.responseType === "numeric" ? "Enter a number" : "Enter your final answer";
       textInput.value = item.response ? String(item.response.text || "") : "";
       textInput.inputMode = "text"; mathInputs.push(textInput); panel.appendChild(textInput);
-      if (item.responseType === "teacher_review") {
-        var whiteboardLabel = document.createElement("label"); whiteboardLabel.className = "qb-whiteboard-confirm";
-        whiteboardConfirmation = document.createElement("input"); whiteboardConfirmation.type = "checkbox"; whiteboardConfirmation.checked = Boolean(item.response && item.response.whiteboard);
-        var whiteboardCopy = document.createElement("span"); whiteboardCopy.textContent = "I have shown my answer on the whiteboard";
-        whiteboardLabel.appendChild(whiteboardConfirmation); whiteboardLabel.appendChild(whiteboardCopy); panel.appendChild(whiteboardLabel);
-      }
     }
 
     appendMathKeyboard(panel, mathInputs);
-    var button = document.createElement("button"); button.type = "button"; button.textContent = item.responseType === "teacher_review" ? (isMultipart ? "Save answers" : "Save response") : "Check answers";
-    if (!isMultipart && item.responseType !== "multipart") button.textContent = item.responseType === "teacher_review" ? "Save response" : "Check answer";
+    var button = document.createElement("button"); button.type = "button"; button.textContent = item.responseType === "teacher_review" ? (isMultipart ? "Save answers" : "Save completion") : "Check answers";
+    if (!isMultipart && item.responseType !== "multipart") button.textContent = item.responseType === "teacher_review" ? "Save completion" : "Check answer";
     var status = document.createElement("div"); status.className = "qb-response-status" + (item.isCorrect === true ? " is-correct" : item.isCorrect === false ? " is-incorrect" : ""); status.textContent = statusCopy(item);
     var locked = item.responseType !== "teacher_review" && isQuestionFinished(item);
     if (locked) { button.disabled = true; panel.querySelectorAll("input").forEach(function (input) { input.disabled = true; }); }
@@ -376,17 +396,23 @@
           if (definition.mode === "whiteboard") {
             if (!control.checked) missingPart = true;
             response.parts[definition.label] = control.checked ? "__whiteboard__" : "";
+          } else if (definition.mode === "multiple_choice") {
+            if (!control.value) missingPart = true;
+            response.parts[definition.label] = control.value;
           } else {
             var value = control.value.trim(); if (!value) missingPart = true; response.parts[definition.label] = value;
           }
         });
-        if (missingPart) { status.className = "qb-response-status is-incorrect"; status.textContent = "Complete every part, or confirm the parts shown on your whiteboard."; return; }
-      } else if (item.responseType === "multiple_choice") response = { option: selectedOption };
+        if (missingPart) { status.className = "qb-response-status is-incorrect"; status.textContent = "Answer every part, or confirm the parts completed on your whiteboard or paper."; return; }
+      } else if (item.responseType === "multiple_choice") {
+        if (selectedOption === null) { status.className = "qb-response-status is-incorrect"; status.textContent = "Choose an answer before checking."; return; }
+        response = { option: selectedOption };
+      }
       else {
-        var answerText = textInput ? textInput.value.trim() : "";
         var shownOnWhiteboard = Boolean(whiteboardConfirmation && whiteboardConfirmation.checked);
-        if (!answerText && !shownOnWhiteboard) { status.className = "qb-response-status is-incorrect"; status.textContent = "Enter an answer or confirm that it is shown on your whiteboard."; return; }
-        response = { text: answerText || "Shown on my whiteboard", whiteboard: shownOnWhiteboard };
+        var answerText = textInput ? textInput.value.trim() : "";
+        if (!answerText && !shownOnWhiteboard) { status.className = "qb-response-status is-incorrect"; status.textContent = "Enter an answer or confirm that you completed it on the whiteboard or paper."; return; }
+        response = shownOnWhiteboard ? { text: "Completed on the whiteboard or paper", completedOffline: true } : { text: answerText };
       }
       button.disabled = true; status.className = "qb-response-status"; status.textContent = "Saving…";
       window.parent.postMessage({ type: "mrflynnib-assignment-response-save", questionId: id, response: response }, window.location.origin);
