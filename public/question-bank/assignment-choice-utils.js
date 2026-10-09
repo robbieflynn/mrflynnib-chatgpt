@@ -59,6 +59,15 @@
     if (!list.some(function (item) { return equivalent(item, value); })) list.push(value);
   }
 
+  function formatFraction(numerator, denominator) {
+    if (!denominator) return "";
+    if (denominator < 0) {
+      numerator = -numerator;
+      denominator = -denominator;
+    }
+    return denominator === 1 ? String(numerator) : numerator + "/" + denominator;
+  }
+
   function fractionCandidates(correct, list) {
     var match = correct.match(/^(.*?)(-?\d+)\s*\/\s*(-?\d+)(.*)$/);
     if (!match) return;
@@ -75,7 +84,8 @@
       [numerator - (numerator >= 0 ? 1 : -1), denominator],
       [numerator, denominator - (denominator > 1 ? 1 : -1)],
     ].forEach(function (pair) {
-      if (pair[1]) addCandidate(list, prefix + pair[0] + "/" + pair[1] + suffix);
+      var fraction = formatFraction(pair[0], pair[1]);
+      if (fraction) addCandidate(list, prefix + fraction + suffix);
     });
   }
 
