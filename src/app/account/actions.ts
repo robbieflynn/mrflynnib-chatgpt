@@ -7,9 +7,12 @@ import { requireSignedIn } from "@/lib/account-access";
 export async function joinClass(formData: FormData) {
   const { supabase } = await requireSignedIn();
   const code = String(formData.get("code") || "").trim().toUpperCase();
-  if (!code) redirect("/account?error=Enter%20your%20class%20code.");
+  const requestedReturnPath = String(formData.get("returnPath") || "");
+  const returnPath = /^\/join\/[A-Z0-9]{6,10}$/.test(requestedReturnPath) ? requestedReturnPath : "/account";
+  const errorPath = (message: string) => `${returnPath}?error=${encodeURIComponent(message)}`;
+  if (!code) redirect(errorPath("Enter your class code."));
   const { data: classId, error } = await supabase.rpc("join_class_by_code", { raw_code: code });
-  if (error) redirect(`/account?error=${encodeURIComponent(error.message || "That class code could not be used.")}`);
+  if (error) redirect(errorPath(error.message || "That class code could not be used."));
   const { data: classRecord } = classId
     ? await supabase.from("classes").select("name,bank").eq("id", classId).maybeSingle()
     : { data: null };

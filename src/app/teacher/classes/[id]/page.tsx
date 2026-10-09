@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs, Container } from "@/components/ui";
+import { ClassInviteLink } from "@/components/class-invite-link";
 import { requireTeacher } from "@/lib/account-access";
 
 export default async function TeacherClassPage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,7 +42,7 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
     <main className={workspaceClass}>
     <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord.course}</p><h1>{classRecord.name}</h1><p>Set work, monitor progress and review every student&apos;s answers and working.</p></div><div className="teacher-workspace-stats" aria-label="Class summary"><span><strong>{memberships.length}</strong> students</span><span><strong>{assignments.length}</strong> assignments</span></div></div></Container></section>
     <section className="section-tight"><Container className="stack-xl">
-      <div className="class-toolbar"><div className="class-code"><span>Student joining code</span><strong>{classRecord.join_code}</strong><small>Students enter this code on their dashboard.</small></div><Link className="button" href={`/teacher/classes/${id}/assignments/new`}>Set an assignment</Link></div>
+      <div className="class-toolbar"><div className="class-code"><span>Invite students</span><strong>{classRecord.join_code}</strong><small>Share the invitation link or ask students to enter this code on their dashboard.</small></div><div className="class-toolbar-actions"><ClassInviteLink joinCode={classRecord.join_code} /><Link className="button" href={`/teacher/classes/${id}/assignments/new`}>Set an assignment</Link></div></div>
       <div className="teacher-two-column">
         <div className="stack"><div className="teacher-section-heading"><div><p className="eyebrow">Classwork</p><h2>Assignments</h2></div><p>Open an assignment to see progress by student and by question.</p></div>
           {assignmentLoadError ? <p className="form-message form-error">The assignments could not be refreshed just now. Please reload the page.</p> : null}
@@ -52,7 +53,7 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
         </div>
         <aside className="teacher-students-panel stack"><div className="teacher-section-heading teacher-roster-heading"><div><p className="eyebrow">Students</p><h2>Student roster</h2></div><span className="teacher-panel-count">{memberships.length} joined</span></div><div className="teacher-list">
           {(memberships ?? []).map((membership) => <div className="teacher-list-row teacher-student-row" key={membership.student_id}><span className="student-avatar" aria-hidden="true">{(studentNames.get(membership.student_id) || "S").slice(0, 1).toUpperCase()}</span><span><strong>{studentNames.get(membership.student_id) || "Student"}</strong><small>Joined {new Date(membership.joined_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</small></span></div>)}
-          {!memberships?.length ? <div className="dashboard-empty-state compact"><span aria-hidden="true">#</span><div><strong>No students yet</strong><p>Share the joining code above.</p></div></div> : null}
+          {!memberships?.length ? <div className="dashboard-empty-state compact"><span aria-hidden="true">#</span><div><strong>No students yet</strong><p>Share the invitation link or joining code above.</p></div></div> : null}
         </div></aside>
       </div>
     </Container></section></main>
