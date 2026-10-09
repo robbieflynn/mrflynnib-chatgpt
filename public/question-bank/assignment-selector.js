@@ -3,6 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
+  var DRAFT_VERSION = 2;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
   var restoredSelection = [];
@@ -12,7 +13,7 @@
       var storedDraft = JSON.parse(window.sessionStorage.getItem(draftKey) || "[]");
       var storedSelection = Array.isArray(storedDraft) ? storedDraft : storedDraft.ids;
       if (Array.isArray(storedSelection)) restoredSelection = storedSelection.map(String).filter(Boolean).slice(0, MAX_SELECTED);
-      if (!Array.isArray(storedDraft) && storedDraft.configs && typeof storedDraft.configs === "object") configs = storedDraft.configs;
+      if (!Array.isArray(storedDraft) && storedDraft.version === DRAFT_VERSION && storedDraft.configs && typeof storedDraft.configs === "object") configs = storedDraft.configs;
     } catch { restoredSelection = []; }
   }
   var selected = new Set(restoredSelection);
@@ -54,7 +55,7 @@
     if (draftKey) {
       var savedConfigs = {};
       ids.forEach(function (id, index) { savedConfigs[id] = publishedConfigs[index]; });
-      try { window.sessionStorage.setItem(draftKey, JSON.stringify({ ids: ids, configs: savedConfigs })); } catch { /* session storage is optional */ }
+      try { window.sessionStorage.setItem(draftKey, JSON.stringify({ version: DRAFT_VERSION, ids: ids, configs: savedConfigs })); } catch { /* session storage is optional */ }
     }
     window.parent.postMessage({
       type: "mrflynnib-assignment-selection",
@@ -145,10 +146,14 @@
     var answers = [];
     var finalContent = String(answerRows[answerRows.length - 1][0] || "");
     var alternatives = finalContent.split(/<br\s*\/?>\s*<b>\s*(?:OR|or)\s*<\/b>\s*<br\s*\/?>/i);
+    var unsafeAlternative = alternatives.some(function (alternative) {
+      var maths = mathFragments(alternative);
+      return maths.length !== 1 || (maths[0].match(/=/g) || []).length > 1;
+    });
+    if (unsafeAlternative) return [];
     alternatives.forEach(function (alternative) {
       var maths = mathFragments(alternative);
-      if (maths.length) addAnswer(answers, maths[maths.length - 1]);
-      else addAnswer(answers, plainText(alternative));
+      addAnswer(answers, maths[0]);
     });
     rows.forEach(function (row) {
       var content = String(Array.isArray(row) ? row[0] || "" : "");
