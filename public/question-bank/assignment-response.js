@@ -144,6 +144,7 @@
   }
 
   function statusCopy(item) {
+    if (item && item.submitted) return "Submitted. This answer is final.";
     if (!item.response) return "";
     if (item.isCorrect === true) return "Correct. Well done!";
     if (item.isCorrect === false && Number(item.attemptCount || 0) >= 2) return "That was your second try. Your answer has been saved for your teacher.";
@@ -434,7 +435,7 @@
 
     var panel = document.createElement("div"); panel.className = "qb-assignment-response" + (item.readOnly ? " is-readonly" : "");
     var head = document.createElement("div"); head.className = "qb-assignment-response-head";
-    var heading = document.createElement("strong"); heading.textContent = item.readOnly ? "Student answer" : "Your answer";
+    var heading = document.createElement("strong"); heading.textContent = item.submitted ? "Your submitted answer" : item.readOnly ? "Student answer" : "Your answer";
     var kind = document.createElement("span"); kind.textContent = typeLabel(item.responseType);
     head.appendChild(heading); head.appendChild(kind); panel.appendChild(head);
 

@@ -64,7 +64,8 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
             isCorrect: saved?.is_correct ?? null,
             attemptCount: saved?.attempt_count ?? 0,
             updatedAt: saved?.updated_at ?? null,
-            readOnly: Boolean(viewedStudentId),
+            readOnly: Boolean(viewedStudentId) || assignmentSubmitted,
+            submitted: assignmentSubmitted && !viewedStudentId,
             position: Number(question.position || 0),
             optionSeed: studentId,
           };
@@ -96,7 +97,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         type: "mrflynnib-account-state",
         configured: Boolean(clientRef.current),
         signedIn: Boolean(user),
-        readOnly: Boolean(viewedStudentId),
+        readOnly: Boolean(viewedStudentId) || Boolean(assignmentId && assignmentSubmitted),
         completedQuestionIds: Array.from(completedRef.current),
       });
       if (assignmentId) await publishAssignmentState();
@@ -137,6 +138,10 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
 
       if (message.type === "mrflynnib-assignment-response-save") {
         if (!assignmentId || viewedStudentId) return;
+        if (assignmentSubmitted) {
+          send({ type: "mrflynnib-assignment-response-result", questionId, response: message.response ?? null, ok: false, error: "This assignment has already been submitted." });
+          return;
+        }
         const encoded = JSON.stringify(message.response ?? null);
         if (encoded.length > 2_000) {
           send({ type: "mrflynnib-assignment-response-result", questionId, response: message.response ?? null, ok: false });

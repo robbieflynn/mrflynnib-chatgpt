@@ -25,6 +25,15 @@ export async function joinClass(formData: FormData) {
 export async function submitAssignment(formData: FormData) {
   const { supabase, user } = await requireSignedIn();
   const assignmentId = String(formData.get("assignmentId") || "");
+  const assignmentPath = `/assignments/${assignmentId}`;
+  const { data: existingSubmission, error: submissionLookupError } = await supabase
+    .from("assignment_submissions")
+    .select("status")
+    .eq("assignment_id", assignmentId)
+    .eq("student_id", user.id)
+    .maybeSingle();
+  if (submissionLookupError) redirect(`${assignmentPath}?error=${encodeURIComponent("Your assignment could not be submitted.")}`);
+  if (existingSubmission?.status === "submitted") redirect(assignmentPath);
   const { error } = await supabase.from("assignment_submissions").upsert({
     assignment_id: assignmentId,
     student_id: user.id,
@@ -32,8 +41,8 @@ export async function submitAssignment(formData: FormData) {
     submitted_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   }, { onConflict: "assignment_id,student_id" });
-  if (error) redirect(`/assignments/${assignmentId}?error=${encodeURIComponent("Your assignment could not be submitted.")}`);
-  revalidatePath(`/assignments/${assignmentId}`);
+  if (error) redirect(`${assignmentPath}?error=${encodeURIComponent("Your assignment could not be submitted.")}`);
+  revalidatePath(assignmentPath);
   revalidatePath("/account");
-  redirect(`/assignments/${assignmentId}?success=${encodeURIComponent("Assignment submitted.")}`);
+  redirect(`${assignmentPath}?success=${encodeURIComponent("Assignment submitted.")}`);
 }
