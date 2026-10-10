@@ -5,7 +5,6 @@ import { Suspense } from "react";
 import { Container, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
 import { StudentAccountForm } from "@/components/student-account-form";
-import { SignOutButton } from "@/components/sign-out-button";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
@@ -269,7 +268,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </div>
           </div>
 
-          <div className="dashboard-footer-row"><p className="small muted">Signed in as {user.email}</p><SignOutButton /></div>
         </Container>
       </section>
     </>

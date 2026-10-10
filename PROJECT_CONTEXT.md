@@ -332,6 +332,8 @@ On 10 October 2026, Rob chose **Below** as the default whiteboard position insid
 
 On 10 October 2026, Rob confirmed that every automatically markable part of a multi-part assignment question must be submitted and checked independently. Each part has its own immediate feedback and two-attempt allowance; the whole question becomes complete only when every part is either correct, has reached its second attempt, or has been explicitly saved for teacher review on whiteboard or paper. Existing response rows are extended in place rather than replaced, so earlier answers and whiteboards remain attached. Objective answers with multiple values, such as a pair of intercepts represented by \(x=\pm\sqrt5\), should remain eligible for multiple choice when the complete accepted form is unambiguous in the matching mark-scheme part.
 
+Authenticated pages must always make the active account clear. When a student, teacher or administrator is signed in, show a compact account control in the site header with their name and role. Its menu shows the account email, links back to the appropriate dashboard and provides an obvious sign-out action. Teachers can move between their IB and IGCSE dashboards from this menu. Keep the compact avatar visible on narrow screens rather than hiding account access inside a long page or at the bottom of a dashboard.
+
 The first version is for assignments, not formal tests. Keep the data model extensible so timed tests and test-building can be added later without replacing classes, memberships or the teacher identity model. Build and review this feature in a Vercel Preview before production publication.
 
 ## Tuition partner preview, 26 September 2026
