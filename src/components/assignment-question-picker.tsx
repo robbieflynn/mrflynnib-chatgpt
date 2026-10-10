@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import katex from "katex";
 
 type AssignmentQuestionPickerProps = {
   bank: "ib" | "igcse";
@@ -17,6 +18,30 @@ type SelectedQuestionSummary = {
   difficulty: string;
   marks: number | null;
 };
+
+function mathematicalSummaryTitle(value: string) {
+  return value
+    .replace(/\b(cos|sin|tan)\s+([A-Z]{3})\s*=\s*(-?\d+)\s*\/\s*(-?\d+)/g, String.raw`\($1 $2 = \frac{$3}{$4}\)`)
+    .replace(/\b(cos|sin|tan)\s+([A-Z]{3})\b/g, String.raw`\($1 $2\)`)
+    .replace(/\bangle\s+([A-Z]{3})\b/gi, String.raw`\(\angle $1\)`)
+    .replace(/(-?\d*)√(\d+)/g, (_match, coefficient, radicand) => String.raw`\(${coefficient}\sqrt{${radicand}}\)`)
+    .replace(/\b(-?\d+)\s*\/\s*(-?\d+)\b/g, String.raw`\(\frac{$1}{$2}\)`);
+}
+
+function SummaryMath({ children }: { children: string }) {
+  const text = mathematicalSummaryTitle(children);
+  const pieces: React.ReactNode[] = [];
+  const pattern = /\\\(([\s\S]*?)\\\)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) pieces.push(text.slice(lastIndex, match.index));
+    pieces.push(<span dangerouslySetInnerHTML={{ __html: katex.renderToString(match[1], { throwOnError: false, strict: false }) }} key={`${match.index}-${match[1]}`} />);
+    lastIndex = pattern.lastIndex;
+  }
+  if (lastIndex < text.length) pieces.push(text.slice(lastIndex));
+  return <>{pieces}</>;
+}
 
 function cleanSummary(value: unknown): SelectedQuestionSummary | null {
   if (!value || typeof value !== "object") return null;
@@ -152,9 +177,9 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
                 <li key={id}>
                   <span className="assignment-selection-number">{index + 1}</span>
                   <span className="assignment-selection-copy">
-                    <strong>{summary?.title || "Selected question"}</strong>
+                    <strong><SummaryMath>{summary?.title || "Selected question"}</SummaryMath></strong>
                     {details.length ? <span>{details.join(" · ")}</span> : null}
-                    <small>{summary?.marks ? `${summary.marks} ${summary.marks === 1 ? "mark" : "marks"} · ` : ""}{id}</small>
+                    {summary?.marks ? <small>{summary.marks} {summary.marks === 1 ? "mark" : "marks"}</small> : null}
                   </span>
                   <button aria-label={`Remove ${summary?.title || `question ${index + 1}`} from the assignment`} onClick={() => removeQuestion(id)} type="button">Remove</button>
                 </li>

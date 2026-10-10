@@ -87,6 +87,12 @@ function choiceSetForRows(rows, prompt, seed) {
     || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed);
 }
 
+function looksObjective(prompt) {
+  const text = plainText(prompt);
+  return /\b(find|calculate|write down|state|determine|solve|evaluate|express|give)\b/i.test(text)
+    && !/\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|describe|discuss|interpret|comment on)\b/i.test(text);
+}
+
 const banks = [
   ["IB", "public/question-bank/ib-bank.html"],
   ["IGCSE", "public/question-bank/igcse-bank.html"],
@@ -179,6 +185,44 @@ for (const symbolicAnswer of [
 }
 assert(choices.toLatex("2sinthetacostheta").includes(String.raw`\sin \theta \cos \theta`));
 
+const vectorRows = [[String.raw`\(\overrightarrow{\mathrm{AB}} = \begin{pmatrix}2\\-4\\-2\end{pmatrix}\)`, "A1"]];
+const vectorAnswers = choices.extractAcceptedAnswers(vectorRows, String.raw`Find \(\overrightarrow{\mathrm{AB}}\).`);
+assert.deepEqual(vectorAnswers, ["matrix(2;-4;-2)"]);
+const vectorChoices = choices.generateChoiceSet(vectorAnswers, "audit-column-vector");
+assert(vectorChoices);
+assert(vectorChoices.options.every((option) => choices.toLatex(option).includes(String.raw`\begin{pmatrix}`)));
+
+const vectorLineRows = [[String.raw`\(L_1:\ \mathbf{r} = \mathbf{i}-\mathbf{j}+4\mathbf{k}+s(\mathbf{i}-\mathbf{j}+\mathbf{k})\) or equivalent`, "A1"]];
+const vectorLineAnswers = choices.extractAcceptedAnswers(vectorLineRows, String.raw`Find a vector equation of \(L_1\).`);
+assert(vectorLineAnswers[0].includes("bold(r)"));
+assert(!vectorLineAnswers.some((answer) => /math(?:bf|rm)|mathbf/i.test(answer)));
+const vectorLineChoices = choices.generateChoiceSet(vectorLineAnswers, "audit-vector-line");
+assert(vectorLineChoices);
+assert(vectorLineChoices.options.every((option) => choices.toLatex(option).includes(String.raw`\mathbf`)));
+
+const inverseFunctionRows = [[String.raw`\(f^{-1}(x) = \dfrac{-3x-1}{x-2}\ \left(= \dfrac{3x+1}{2-x},\ \dfrac{7}{2-x} - 3\right)\) (accept \(y =\))`, "A1"]];
+const inverseFunctionAnswers = choices.extractAcceptedAnswers(inverseFunctionRows, String.raw`Find \(f^{-1}(x)\).`);
+assert.equal(inverseFunctionAnswers[0], "f^-1(x) = (-3x-1)/(x-2)");
+assert(choices.generateChoiceSet(inverseFunctionAnswers, "audit-inverse-function"));
+
+const argumentRows = [[String.raw`\(\arg z = 0.9707\) (radians) \((=55.6197^\circ)\)`, "A1"]];
+const argumentAnswers = choices.extractAcceptedAnswers(argumentRows, "Find the argument of z, giving your answer to 4 decimal places.");
+assert.deepEqual(argumentAnswers, ["0.9707 rad"]);
+assert(choices.generateChoiceSet(argumentAnswers, "audit-complex-argument"));
+
+const extremumAnswers = choices.extractAcceptedAnswers(
+  [["The graph has a minimum", "A1"]],
+  "State whether the graph has a maximum or minimum.",
+);
+assert.deepEqual(extremumAnswers, ["Minimum"]);
+assert(choices.generateChoiceSet(extremumAnswers, "audit-extremum-classification"));
+
+assert.equal(choices.toLatex("0<x≤1/4"), String.raw`0<x\le \frac{1}{4}`);
+assert.equal(
+  choices.toLatex("h(x)=1/(e^(x^2)+3)"),
+  String.raw`h(x)=\frac{1}{\left(e^{x^{2}}+3\right)}`,
+);
+
 const constantAnswers = choices.extractAcceptedAnswers([[String.raw`\(k=\dfrac14\)`, "A1"]], "Find k.");
 assert.equal(constantAnswers[0], "k=1/4");
 assert.equal(choices.toLatex(constantAnswers[0]), String.raw`k=\frac{1}{4}`);
@@ -214,6 +258,11 @@ let verifiedLineQuestion = false;
 let verifiedPairedInterceptQuestion = false;
 let verifiedContinuousRandomVariableQuestion = false;
 let verifiedDerivativeAtPointQuestion = false;
+let verifiedColumnVectorQuestion = false;
+let verifiedVectorLineQuestion = false;
+let verifiedComplexArgumentQuestion = false;
+let verifiedInverseFunctionQuestion = false;
+const objectiveFallbacks = [];
 for (const [label, path] of banks) {
   const questions = extractSeed(path);
   let bankChecked = 0;
@@ -232,6 +281,7 @@ for (const [label, path] of banks) {
         const nestedAccepted = choices.extractAcceptedAnswers(nestedRows, nestedPrompt);
         if (nestedAccepted.length) bankNestedChecked += 1;
         const nestedSet = choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${part}(${nestedLabel})`);
+        if (!nestedSet && looksObjective(nestedPrompt)) objectiveFallbacks.push(`${label} ${question.id} ${part}(${nestedLabel}): ${plainText(nestedPrompt)}`);
         if (nestedSet) {
           if (!choices.validateChoiceSet(nestedSet.acceptedAnswers, nestedSet.options, nestedSet.correctOption)) {
             throw new Error(`Unsafe nested choices for ${question.id} ${part}(${nestedLabel})`);
@@ -259,6 +309,11 @@ for (const [label, path] of banks) {
           assert(nestedSet);
           verifiedContinuousRandomVariableQuestion = true;
         }
+        if ((question.id === "M08TZ2SL_P1_Q8" || question.id === "M09TZ1SL_P1_Q9") && part === "a") {
+          assert(nestedSet, `Column-vector answer was not generated for ${question.id} ${part}(${nestedLabel})`);
+          assert(nestedSet.options.every((option) => choices.toLatex(option).includes(String.raw`\begin{pmatrix}`)));
+          verifiedColumnVectorQuestion = true;
+        }
       }
       const accepted = choices.extractAcceptedAnswers(rows, prompt);
       if (question.id === "M15TZ2HL_P2_Q11" && part === "b") {
@@ -280,9 +335,29 @@ for (const [label, path] of banks) {
         assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
         verifiedPairedInterceptQuestion = true;
       }
-      if (!accepted.length) continue;
+      if (question.id === "M08TZ2HL_P1_Q11" && part === "b") {
+        assert(accepted[0].includes("bold(r)"));
+        assert(!accepted.some((answer) => /math(?:bf|rm)|mathbf/i.test(answer)));
+        assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
+        verifiedVectorLineQuestion = true;
+      }
+      if (question.id === "M18TZ2HL_P2_Q1" && part === "c") {
+        assert.deepEqual(accepted, ["0.9707 rad"]);
+        assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
+        verifiedComplexArgumentQuestion = true;
+      }
+      if (question.id === "M19TZ1SL_P1_Q4" && part === "b") {
+        assert.equal(accepted[0], "f^-1(x) = (-3x-1)/(x-2)");
+        assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
+        verifiedInverseFunctionQuestion = true;
+      }
+      if (!accepted.length) {
+        if (looksObjective(prompt) && !nested.length) objectiveFallbacks.push(`${label} ${question.id} ${part}: ${plainText(prompt)}`);
+        continue;
+      }
       bankChecked += 1;
       const set = choices.generateChoiceSet(accepted, `${question.id}:${part}`);
+      if (!set && looksObjective(prompt)) objectiveFallbacks.push(`${label} ${question.id} ${part}: ${plainText(prompt)}`);
       if (!set) continue;
       if (!choices.validateChoiceSet(accepted, set.options, set.correctOption)) throw new Error(`Unsafe choices for ${question.id} ${part}`);
       if (set.options.some((option) => choices.toLatex(option).includes("/"))) throw new Error(`Unrendered fraction for ${question.id} ${part}`);
@@ -301,5 +376,13 @@ assert(verifiedLineQuestion, "The real equation-of-a-normal regression question 
 assert(verifiedPairedInterceptQuestion, "The real paired-intercepts regression question was not audited.");
 assert(verifiedContinuousRandomVariableQuestion, "The continuous-random-variable nested-part regression question was not audited.");
 assert(verifiedDerivativeAtPointQuestion, "The real derivative-at-a-point regression question was not audited.");
+assert(verifiedColumnVectorQuestion, "The real column-vector regression questions were not audited.");
+assert(verifiedVectorLineQuestion, "The real vector-line regression question was not audited.");
+assert(verifiedComplexArgumentQuestion, "The real complex-argument regression question was not audited.");
+assert(verifiedInverseFunctionQuestion, "The real inverse-function regression question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);
 console.log(`Nested parts: ${nestedGenerated}/${nestedChecked} objective parts produced five safe choices; proof and show-that parts remained whiteboard tasks.`);
+if (process.env.ASSIGNMENT_AUDIT_DETAILS === "1") {
+  console.log(`Objective-looking whiteboard fallbacks: ${objectiveFallbacks.length}`);
+  objectiveFallbacks.slice(0, 120).forEach((item) => console.log(`- ${item}`));
+}
