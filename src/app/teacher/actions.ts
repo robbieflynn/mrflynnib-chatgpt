@@ -78,18 +78,74 @@ function answersEquivalent(left: string, right: string) {
   return leftNumber !== null && rightNumber !== null && Math.abs(leftNumber - rightNumber) < 1e-10;
 }
 
+function wrapsWholeExpression(value: string) {
+  if (value[0] !== "(" || value[value.length - 1] !== ")") return false;
+  let depth = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    if (value[index] === "(") depth += 1;
+    if (value[index] === ")") depth -= 1;
+    if (depth === 0 && index < value.length - 1) return false;
+  }
+  return depth === 0;
+}
+
+function topLevelPositions(value: string, matcher: (character: string, index: number) => boolean) {
+  const positions: number[] = [];
+  let depth = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    if (value[index] === "(") depth += 1;
+    else if (value[index] === ")") depth -= 1;
+    else if (depth === 0 && matcher(value[index], index)) positions.push(index);
+  }
+  return positions;
+}
+
+function expressionStructureLooksSafe(value: string): boolean {
+  const expression = value.trim();
+  if (!expression) return false;
+  if (wrapsWholeExpression(expression)) return expressionStructureLooksSafe(expression.slice(1, -1));
+
+  const relations = topLevelPositions(expression, (character) => /[=≤≥≠<>]/.test(character));
+  if (relations.length) {
+    if (relations.length > 1) return false;
+    return expressionStructureLooksSafe(expression.slice(0, relations[0]))
+      && expressionStructureLooksSafe(expression.slice(relations[0] + 1));
+  }
+
+  const additions = topLevelPositions(expression, (character, index) =>
+    index > 0
+      && (character === "+" || character === "-")
+      && !/[=+\-*/^(,]/.test(expression[index - 1] || ""));
+  if (additions.length) {
+    let start = 0;
+    for (const position of additions) {
+      if (!expressionStructureLooksSafe(expression.slice(start, position))) return false;
+      start = position + 1;
+    }
+    return expressionStructureLooksSafe(expression.slice(start));
+  }
+
+  const divisions = topLevelPositions(expression, (character) => character === "/");
+  if (divisions.length) {
+    if (divisions.length > 1) return false;
+    return expressionStructureLooksSafe(expression.slice(0, divisions[0]))
+      && expressionStructureLooksSafe(expression.slice(divisions[0] + 1));
+  }
+  return !expression.includes("/");
+}
+
 function choiceLooksSafe(value: string) {
   const answer = cleanChoiceAnswer(value);
   if (!answer || answer.length > 180) return false;
   if (/\\|\b(?:mathrm|circ)\b|\^\s*$|\/\s*\/|sqrt\s*(?!\()/i.test(answer)) return false;
-  if ((answer.match(/\//g) || []).length > 1 || /sqrt\(\s*-/.test(answer)) return false;
+  if (/sqrt\(\s*-/.test(answer)) return false;
   let depth = 0;
   for (const character of answer) {
     if (character === "(") depth += 1;
     if (character === ")") depth -= 1;
     if (depth < 0) return false;
   }
-  return depth === 0;
+  return depth === 0 && expressionStructureLooksSafe(answer);
 }
 
 function validChoiceSet(acceptedAnswers: string[], options: string[], correctOption: number | null) {

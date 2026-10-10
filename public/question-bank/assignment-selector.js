@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 5;
+  var DRAFT_VERSION = 7;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
@@ -82,6 +82,7 @@
   }
 
   function latexToPlain(value) {
+    if (choiceUtils && choiceUtils.latexToPlain) return choiceUtils.latexToPlain(value);
     var text = String(value || "")
       .replace(/\\\(|\\\)|\\\[|\\\]/g, "")
       .replace(/\\left|\\right/g, "")
@@ -146,6 +147,7 @@
   }
 
   function automaticAnswersFromRows(rows, prompt) {
+    if (choiceUtils && choiceUtils.extractAcceptedAnswers) return choiceUtils.extractAcceptedAnswers(rows, prompt);
     if (!Array.isArray(rows) || requiresWhiteboard(prompt)) return [];
     var answerRows = rows.filter(function (row) {
       return Array.isArray(row)

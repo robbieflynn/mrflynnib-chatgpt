@@ -32,70 +32,13 @@ function extractSeed(path) {
   throw new Error(`Question data did not close in ${path}`);
 }
 
-function plain(value) {
-  return String(value || "")
-    .replace(/<br\s*\/?>/gi, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/&amp;/gi, "&")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function latexToPlain(value) {
-  return plain(String(value || "")
-    .replace(/\\\(|\\\)|\\\[|\\\]/g, "")
-    .replace(/\\left|\\right/g, "")
-    .replace(/(\d+)\s*\\(?:d?frac)\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, "$1 $2/$3")
-    .replace(/(\d+)\s*\\(?:d?frac)\s*(\d)\s*(\d)/g, "$1 $2/$3")
-    .replace(/\\(?:d?frac)\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, "$1/$2")
-    .replace(/\\(?:d?frac)\s*(\d)\s*(\d)/g, "$1/$2")
-    .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
-    .replace(/\\sqrt\s*([A-Za-z0-9.]+)/g, "sqrt($1)")
-    .replace(/\\text\s*\{([^{}]*)\}/g, "$1")
-    .replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1")
-    .replace(/\\(?:leq|le)/g, "≤").replace(/\\(?:geq|ge)/g, "≥")
-    .replace(/\^\s*\\circ/g, "°").replace(/\\circ/g, "°")
-    .replace(/\\neq/g, "≠").replace(/\\pm/g, "±").replace(/\\infty/g, "∞")
-    .replace(/\\pi/g, "π").replace(/\\times/g, "×").replace(/\\cdot/g, "·")
-    .replace(/\\therefore/g, "")
-    .replace(/\\,/g, " ").replace(/\\;/g, " ").replace(/\\!/g, "")
-    .replace(/\\([A-Za-z]+)/g, "$1")
-    .replace(/[{}]/g, ""))
-    .replace(/^=\s*/, "")
-    .trim();
-}
-
-function addAnswer(list, value) {
-  const answer = choices.clean(latexToPlain(value)).replace(/[.;,]+$/, "").trim();
-  if (!answer || answer.length > 140) return;
-  if (/\b(method|attempt|award|working|substitution|curve|diagram|sketch|proof|explanation)\b/i.test(answer)) return;
-  const alternatives = answer.split(/\s+or\s+/i).filter(Boolean);
-  if (alternatives.length > 1) {
-    alternatives.forEach((alternative) => addAnswer(list, alternative));
-    return;
-  }
-  if (answer.includes("=") && !/[<>&≤≥]/.test(answer)) {
-    const rightSide = answer.slice(answer.lastIndexOf("=") + 1).trim();
-    if (rightSide && rightSide.length < answer.length) addAnswer(list, rightSide);
-  }
-  if (!list.some((item) => choices.equivalent(item, answer))) list.push(answer);
-}
-
-function acceptedFromRows(rows) {
-  const answerRows = (Array.isArray(rows) ? rows : []).filter((row) => Array.isArray(row) && /(?:A\d|B\d|M\d|R\d|G\d|N\d|E\d|AG)/.test(String(row[1] || "")));
-  if (!answerRows.length) return [];
-  const final = String(answerRows.at(-1)[0] || "");
-  const alternatives = final.split(/(?:<br\s*\/?>\s*<b>\s*OR\s*<\/b>\s*<br\s*\/?>|\s+or\s+)/i);
-  const answers = [];
-  for (const alternative of alternatives) {
-    const fragments = Array.from(alternative.matchAll(/\\\(([\s\S]*?)\\\)/g), (match) => match[1]);
-    if (fragments.length === 1) addAnswer(answers, fragments[0]);
-    else addAnswer(answers, plain(alternative));
-  }
-  return answers;
+function promptByPart(question) {
+  const prompts = new Map();
+  const parts = Array.isArray(question.parts) && question.parts.length
+    ? question.parts
+    : [["", question.body || question.title || ""]];
+  for (const part of parts) prompts.set(String(part[0] || "").toLowerCase(), String(part[1] || ""));
+  return prompts;
 }
 
 const banks = [
@@ -115,20 +58,52 @@ const radicalExample = choices.generateChoiceSet(["sqrt(8)"], "audit-radical");
 assert(radicalExample && radicalExample.options.every(choices.isDisplaySafe));
 assert.equal(choices.generateChoiceSet(["1/4/2"], "audit-malformed"), null);
 
+const lineAnswers = choices.extractAcceptedAnswers([[String.raw`\(y=-4x+25\)`, "A1"]], "Find the equation of the normal.");
+assert.equal(lineAnswers[0], "y=-4x+25");
+assert(choices.generateChoiceSet(lineAnswers, "audit-line-equation"));
+
+const derivativeAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(\dfrac{dy}{dx}=\dfrac{2-k}{4k-1}\)`, "A1"]],
+  "Find the derivative."
+);
+assert.equal(derivativeAnswers[0], "dy/dx=(2-k)/(4k-1)");
+const derivativeLatex = choices.toLatex(derivativeAnswers[0]);
+assert.equal(derivativeLatex, String.raw`\frac{dy}{dx}=\frac{\left(2-k\right)}{\left(4k-1\right)}`);
+assert(!derivativeLatex.includes("/"));
+assert(choices.generateChoiceSet(derivativeAnswers, "audit-implicit-differentiation"));
+
+const constantAnswers = choices.extractAcceptedAnswers([[String.raw`\(k=\dfrac14\)`, "A1"]], "Find k.");
+assert.equal(constantAnswers[0], "k=1/4");
+assert.equal(choices.toLatex(constantAnswers[0]), String.raw`k=\frac{1}{4}`);
+assert.equal(choices.toLatex("1/4 cm"), String.raw`\frac{1}{4}\,\mathrm{cm}`);
+assert.deepEqual(choices.extractAcceptedAnswers([[String.raw`\(x=3\)`, "A1"]], "Show that x is 3."), []);
+
 let checked = 0;
 let generated = 0;
+let verifiedLineQuestion = false;
 for (const [label, path] of banks) {
   const questions = extractSeed(path);
   let bankChecked = 0;
   let bankGenerated = 0;
   for (const question of questions) {
+    const prompts = promptByPart(question);
     for (const [part, rows] of Array.isArray(question.markscheme) ? question.markscheme : []) {
-      const accepted = acceptedFromRows(rows);
+      const prompt = prompts.get(String(part || "").toLowerCase()) || question.body || question.title || "";
+      const accepted = choices.extractAcceptedAnswers(rows, prompt);
+      if (question.id === "M15TZ2HL_P2_Q11" && part === "b") {
+        assert.equal(accepted[0], "y = -4x+25");
+        assert(choices.toLatex(accepted[0]).startsWith("y="));
+        verifiedLineQuestion = true;
+      }
+      if (question.id === "M15TZ2HL_P2_Q11" && part === "c") {
+        assert.equal(accepted[0], "2sqrt(2)");
+      }
       if (!accepted.length) continue;
       bankChecked += 1;
       const set = choices.generateChoiceSet(accepted, `${question.id}:${part}`);
       if (!set) continue;
       if (!choices.validateChoiceSet(accepted, set.options, set.correctOption)) throw new Error(`Unsafe choices for ${question.id} ${part}`);
+      if (set.options.some((option) => choices.toLatex(option).includes("/"))) throw new Error(`Unrendered fraction for ${question.id} ${part}`);
       bankGenerated += 1;
     }
   }
@@ -137,4 +112,5 @@ for (const [label, path] of banks) {
   console.log(`${label}: ${bankGenerated}/${bankChecked} mark-scheme answer groups produced five safe choices.`);
 }
 
+assert(verifiedLineQuestion, "The real equation-of-a-normal regression question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);
