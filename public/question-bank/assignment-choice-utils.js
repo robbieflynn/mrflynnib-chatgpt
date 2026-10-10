@@ -70,6 +70,7 @@
       .replace(/\\text\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\operatorname\s*\{([^{}]*)\}/g, "$1")
+      .replace(/\\(?:ldots|cdots|dots)\b/g, "…")
       .replace(/\\(?:leq|le)/g, "≤").replace(/\\(?:geq|ge)/g, "≥")
       .replace(/\^\s*\\circ/g, "°").replace(/\\circ/g, "°")
       .replace(/\\neq/g, "≠").replace(/\\pm/g, "±").replace(/\\infty/g, "∞")
@@ -132,6 +133,10 @@
     if (!answer || answer.length > 140) return;
     if (/\b(method|attempt|award|working|substitution|curve|diagram|sketch|proof|explanation)\b/i.test(answer)) return;
     if (/^(?:[a-df-hj-z]|theta|alpha|beta|gamma|dx|dy\/dx|dm\/dt|cos\s*theta|sin\s*theta)$/i.test(answer)) return;
+    var workingPrecision = answer.match(/^(.+?)\s*\(\s*[-+]?\d+\.\d{3,}(?:…)?(?:\s*°)?\s*\)\s*(rad|°)?$/i);
+    if (workingPrecision && /\d/.test(workingPrecision[1])) {
+      answer = clean(workingPrecision[1] + (workingPrecision[2] && workingPrecision[1].indexOf(workingPrecision[2]) === -1 ? " " + workingPrecision[2] : ""));
+    }
     var approximate = answer.match(/^(.+?)\s*\(\s*=\s*(.+?)\s*\)$/);
     if (approximate) {
       addAcceptedAnswer(list, approximate[1], prompt);
@@ -182,6 +187,18 @@
     });
     if (!answerRows.length) return [];
     var answers = [];
+    var promptText = plainText(prompt);
+    var wantsCollection = /\b(coordinates?|roots?|solutions?|values?|intercepts?|turning points?|local max(?:imum)?|local min(?:imum)?)\b/i.test(promptText);
+    var wantsCoordinateCollection = /\bcoordinates?\b|\blocal max(?:imum)?\b|\blocal min(?:imum)?\b/i.test(promptText);
+    var coordinateCollection = [];
+    if (wantsCoordinateCollection) {
+      answerRows.forEach(function (row) {
+        mathFragments(row[0]).forEach(function (fragment) {
+          var coordinate = clean(latexToPlain(fragment));
+          if (/^\(\s*[^,;]+\s*,\s*[^,;]+\s*\)$/.test(coordinate)) coordinateCollection.push(coordinate);
+        });
+      });
+    }
     var finalContent = String(answerRows[answerRows.length - 1][0] || "");
     var alternatives = finalContent.split(/(?:<br\s*\/?>\s*<b>\s*OR\s*<\/b>\s*<br\s*\/?>|\s+or\s+)/i);
     function isSignedExactAndDecimalPair(alternative) {
@@ -192,16 +209,19 @@
       return Boolean(matches[0] && matches[1] && matches[0][1].toLowerCase() === matches[1][1].toLowerCase()
         && /sqrt\(/i.test(matches[0][2]) && /^\d+(?:\.\d+)?$/.test(matches[1][2]));
     }
-    var unsafeAlternative = alternatives.some(function (alternative) {
+    var unsafeAlternative = coordinateCollection.length < 2 && alternatives.some(function (alternative) {
       var maths = mathFragments(alternative);
-      return (maths.length > 1 && !isSignedExactAndDecimalPair(alternative))
+      return (maths.length > 1 && !wantsCollection && !isSignedExactAndDecimalPair(alternative))
         || (maths.length === 1 && (maths[0].match(/=/g) || []).length > 3);
     });
     if (unsafeAlternative) return [];
-    alternatives.forEach(function (alternative) {
+    if (coordinateCollection.length >= 2) addAcceptedAnswer(answers, coordinateCollection.join("; "), prompt);
+    else alternatives.forEach(function (alternative) {
       var maths = mathFragments(alternative);
       if (isSignedExactAndDecimalPair(alternative)) {
         maths.forEach(function (fragment) { addAcceptedAnswer(answers, fragment, prompt); });
+      } else if (wantsCollection && maths.length > 1) {
+        addAcceptedAnswer(answers, maths.map(function (fragment) { return clean(latexToPlain(fragment)); }).join("; "), prompt);
       } else if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) addAcceptedAnswer(answers, maths[0], prompt);
       else if (maths.length === 0 || (maths.length === 1 && /^[a-z]$/i.test(latexToPlain(maths[0])))) {
         var textAnswer = plainText(alternative);
@@ -210,6 +230,14 @@
         else addAcceptedAnswer(answers, textAnswer, prompt);
       }
     });
+    var question = plainText(prompt);
+    var requestsRadians = /\bradians?\b|\brad\b/i.test(question);
+    var requestsDegrees = /\bdegrees?\b|°|\\circ/i.test(String(prompt || ""));
+    if (requestsRadians && !requestsDegrees) {
+      answers = answers.filter(function (answer) { return !/°/.test(answer); });
+    } else if (requestsDegrees && !requestsRadians) {
+      answers = answers.filter(function (answer) { return !/\brad\b/i.test(answer); });
+    }
     return answers.slice(0, 12);
   }
 
@@ -299,6 +327,7 @@
       .replace(/∫/g, "\\int ")
       .replace(/∑/g, "\\sum ")
       .replace(/∏/g, "\\prod ")
+      .replace(/\*/g, "\\times ")
       .replace(/°/g, "^{\\circ}")
       .replace(/\^([+-]?\d+)/g, "^{$1}")
       .replace(/\b(sin|cos|tan|ln|log|exp)\b/g, "\\$1")
@@ -354,8 +383,10 @@
   function isDisplaySafe(value) {
     var answer = clean(value);
     if (!answer || answer.length > 180) return false;
-    if (/\\|\b(?:mathrm|circ)\b|\^\s*$|\/\s*\/|sqrt\s*(?!\()|root\s*(?!\()/i.test(answer)) return false;
+    if (/\\|\b(?:mathrm|circ|ldots|cdots)\b|…|\^\s*$|\/\s*\/|sqrt\s*(?!\()|root\s*(?!\()/i.test(answer)) return false;
     if (/sqrt\(\s*-/.test(answer) || !parenthesesAreBalanced(answer)) return false;
+    if (/^(?:Odd|Even), because f\(-x\) = -?f\(x\)$/i.test(answer)
+      || /^Neither, because f\(-x\) ≠ f\(x\) and f\(-x\) ≠ -f\(x\)$/i.test(answer)) return true;
     var rendered = expressionToLatex(answer);
     return Boolean(rendered && rendered.indexOf("/") === -1);
   }
@@ -546,6 +577,36 @@
       : null;
   }
 
+  function parityClassification(rows) {
+    var text = (Array.isArray(rows) ? rows : []).map(function (row) {
+      return plainText(Array.isArray(row) ? row[0] : row);
+    }).join(" ");
+    var direct = text.match(/\b(?:is|so|therefore|hence)\s+(odd|even|neither)\b/i);
+    if (direct) return direct[1].toLowerCase();
+    if (/f\s*\(\s*-x\s*\)\s*=\s*-\s*f\s*\(\s*x\s*\)/i.test(text)) return "odd";
+    if (/f\s*\(\s*-x\s*\)\s*=\s*f\s*\(\s*x\s*\)/i.test(text)) return "even";
+    return "";
+  }
+
+  function generateParityChoiceSet(rows, prompt, seed) {
+    if (!/\bodd\b[\s\S]*\beven\b|\beven\b[\s\S]*\bodd\b/i.test(plainText(prompt))) return null;
+    var classification = parityClassification(rows);
+    if (!classification) return null;
+    var options = [
+      "Odd, because f(-x) = -f(x)",
+      "Odd, because f(-x) = f(x)",
+      "Even, because f(-x) = f(x)",
+      "Even, because f(-x) = -f(x)",
+      "Neither, because f(-x) ≠ f(x) and f(-x) ≠ -f(x)",
+    ];
+    var correct = classification === "odd" ? options[0] : classification === "even" ? options[2] : options[4];
+    var shuffledOptions = shuffled(options, seed);
+    var correctOption = shuffledOptions.indexOf(correct);
+    return validateChoiceSet([correct], shuffledOptions, correctOption)
+      ? { acceptedAnswers: [correct], options: shuffledOptions, correctOption: correctOption }
+      : null;
+  }
+
   function unitToLatex(unit) {
     if (!unit) return "";
     if (unit === "°") return "^{\\circ}";
@@ -556,6 +617,13 @@
 
   function toLatex(value) {
     var answer = clean(value);
+    var parity = answer.match(/^(Odd|Even|Neither), because (.+)$/i);
+    if (parity) {
+      var reason = parity[2].split(/\s+and\s+/i).map(function (part) {
+        return expressionToLatex(part) || atomToLatex(part);
+      }).join("\\text{ and }");
+      return "\\text{" + parity[1] + ", because }" + reason;
+    }
     var quantity = quantityParts(answer);
     if (quantity) return quantity.prefix.replace(/\s/g, "") + quantity.rawNumber + unitToLatex(quantity.unit);
     var fraction = fractionParts(answer);
@@ -589,6 +657,7 @@
     equivalent: equivalent,
     extractAcceptedAnswers: extractAcceptedAnswers,
     generateChoiceSet: generateChoiceSet,
+    generateParityChoiceSet: generateParityChoiceSet,
     isDisplaySafe: isDisplaySafe,
     latexToPlain: latexToPlain,
     renderAnswer: renderAnswer,

@@ -57,6 +57,46 @@ assert(areaExample && areaExample.options.every((option) => !/(?:mathrm|\\|\^cir
 const radicalExample = choices.generateChoiceSet(["sqrt(8)"], "audit-radical");
 assert(radicalExample && radicalExample.options.every(choices.isDisplaySafe));
 assert.equal(choices.generateChoiceSet(["1/4/2"], "audit-malformed"), null);
+assert.equal(choices.isDisplaySafe("(a)(x))"), false);
+assert.equal(choices.toLatex("2*x"), String.raw`2\times x`);
+
+const angleMarkscheme = String.raw`\((\theta =)\ 28.1^\circ\ (28.0724\ldots^\circ)\) OR \(0.490\ (0.489957\ldots)\ rad\)`;
+const angleAnswers = choices.extractAcceptedAnswers([[angleMarkscheme, "A1"]], "Find the angle.");
+assert.deepEqual(angleAnswers, ["28.1°", "0.490 rad"]);
+const angleChoices = choices.generateChoiceSet(angleAnswers, "audit-angle");
+assert(angleChoices && angleChoices.options.every((option) => /°$/.test(option) && !/(?:ldots|…|\d\s*\(\s*\d)/.test(option)));
+assert.deepEqual(choices.extractAcceptedAnswers([[angleMarkscheme, "A1"]], "Give the answer in radians."), ["0.490 rad"]);
+assert.deepEqual(choices.extractAcceptedAnswers([[angleMarkscheme, "A1"]], "Give the answer in degrees."), ["28.1°"]);
+
+const parityRows = [
+  [String.raw`\(f(-x)=-f(x)\)`, "A1"],
+  ["so f is odd", "A1"],
+];
+const parityChoices = choices.generateParityChoiceSet(
+  parityRows,
+  "State whether f is odd, even or neither. Justify your answer.",
+  "audit-parity",
+);
+assert(parityChoices);
+assert.equal(parityChoices.options[parityChoices.correctOption], "Odd, because f(-x) = -f(x)");
+assert.equal(parityChoices.options.length, 5);
+
+const coordinateRows = [[String.raw`\((0,0)\), \((2\sqrt2,0)\) and \((-2\sqrt2,0)\)`, "A1"]];
+const coordinateAnswers = choices.extractAcceptedAnswers(
+  coordinateRows,
+  "State the coordinates of the points where the curve crosses the x-axis.",
+);
+assert.equal(coordinateAnswers[0], "(0,0); (2sqrt(2),0); (-2sqrt(2),0)");
+assert(choices.generateChoiceSet(coordinateAnswers, "audit-coordinate-set"));
+const turningPointAnswers = choices.extractAcceptedAnswers(
+  [
+    [String.raw`local maximum \((-1.22,\ 0.724)\)`, "A1"],
+    [String.raw`local minimum \((1.22,\ -0.724)\)`, "A1"],
+  ],
+  "Write down the coordinates of the local maximum point and the local minimum point.",
+);
+assert.equal(turningPointAnswers[0], "(-1.22, 0.724); (1.22, -0.724)");
+assert(choices.generateChoiceSet(turningPointAnswers, "audit-turning-points"));
 
 const lineAnswers = choices.extractAcceptedAnswers([[String.raw`\(y=-4x+25\)`, "A1"]], "Find the equation of the normal.");
 assert.equal(lineAnswers[0], "y=-4x+25");

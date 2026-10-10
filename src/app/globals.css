@@ -343,6 +343,22 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-picker-summary strong { color: var(--teal-dark); }
 .assignment-picker-summary-copy { min-width: 0; display: grid; gap: .15rem; }
 .assignment-picker-summary .button { flex: none; }
+.assignment-selection-review { overflow: hidden; border: 1px solid #cbd9df; border-radius: 1rem; background: #fff; }
+.assignment-selection-heading { padding: 1rem 1.05rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #e1e8eb; background: #f8fafb; }
+.assignment-selection-heading h3 { margin-top: .15rem; font-size: 1.15rem; }
+.assignment-selection-heading > span { min-width: 64px; padding: .4rem .65rem; border-radius: 999px; background: var(--sky); color: var(--teal-dark); font-size: .75rem; font-weight: 850; text-align: center; }
+.assignment-selection-list { max-height: 390px; margin: 0; padding: 0; overflow: auto; list-style: none; }
+.assignment-selection-list li { min-height: 76px; padding: .75rem 1rem; display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; align-items: center; gap: .8rem; border-bottom: 1px solid #e8edef; }
+.assignment-selection-list li:last-child { border-bottom: 0; }
+.assignment-selection-number { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: var(--workspace-accent-soft, var(--sky)); color: var(--workspace-accent-dark, var(--teal-dark)); font-size: .78rem; font-weight: 900; }
+.assignment-selection-copy { min-width: 0; display: grid; gap: .12rem; }
+.assignment-selection-copy strong { overflow: hidden; color: var(--ink); font-size: .88rem; text-overflow: ellipsis; white-space: nowrap; }
+.assignment-selection-copy > span { overflow: hidden; color: var(--muted); font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+.assignment-selection-copy small { color: #7a8995; font-size: .64rem; }
+.assignment-selection-list button { padding: .42rem .65rem; border: 1px solid #ccd8dd; border-radius: .6rem; background: white; color: var(--muted); font: 750 .72rem/1 var(--font-sans); cursor: pointer; }
+.assignment-selection-list button:hover { border-color: #c87a7a; background: #fff6f6; color: #922f2f; }
+.assignment-selection-empty { min-height: 108px; padding: 1.2rem; display: grid; place-content: center; gap: .25rem; color: var(--muted); text-align: center; }
+.assignment-selection-empty strong { color: var(--ink); }
 .assignment-bank-frame { display: block; width: 100%; min-height: 620px; border: 0; border-radius: .9rem; background: white; }
 .assignment-builder-actions { position: sticky; bottom: 1rem; z-index: 3; padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--line); border-radius: 1rem; background: rgba(255,255,255,.95); box-shadow: var(--shadow); backdrop-filter: blur(10px); }
 .student-classes-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .35fr); gap: 1.5rem; align-items: start; }
@@ -682,6 +698,10 @@ a.teacher-list-row:hover { background: var(--sky); }
   .class-toolbar, .class-toolbar-actions, .mark-scheme-setting { align-items: stretch; flex-direction: column; }
   .class-toolbar .button, .mark-scheme-setting .button { width: 100%; }
   .assignment-feedback-options, .mark-scheme-policy { grid-template-columns: 1fr; }
+  .assignment-picker-summary { position: static; align-items: stretch; flex-direction: column; }
+  .assignment-picker-summary .button { width: 100%; }
+  .assignment-selection-list li { grid-template-columns: 32px minmax(0, 1fr); }
+  .assignment-selection-list button { grid-column: 2; width: fit-content; }
   .student-work-overview-note, .student-work-detail-bar { align-items: stretch; flex-direction: column; }
   .class-code { grid-template-columns: 1fr; }
   .class-code span, .class-code strong, .class-code small { grid-column: auto; }

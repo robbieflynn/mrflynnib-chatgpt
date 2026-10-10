@@ -8,6 +8,34 @@ type AssignmentQuestionPickerProps = {
   draftId: string;
 };
 
+type SelectedQuestionSummary = {
+  id: string;
+  title: string;
+  topic: string;
+  subtopic: string;
+  paper: string;
+  difficulty: string;
+  marks: number | null;
+};
+
+function cleanSummary(value: unknown): SelectedQuestionSummary | null {
+  if (!value || typeof value !== "object") return null;
+  const summary = value as Record<string, unknown>;
+  const id = String(summary.id || "").slice(0, 100);
+  if (!id) return null;
+  const text = (field: string) => String(summary[field] || "").replace(/\s+/g, " ").trim().slice(0, 180);
+  const marks = Number(summary.marks);
+  return {
+    id,
+    title: text("title") || "Selected question",
+    topic: text("topic"),
+    subtopic: text("subtopic"),
+    paper: text("paper"),
+    difficulty: text("difficulty"),
+    marks: Number.isFinite(marks) && marks > 0 ? marks : null,
+  };
+}
+
 export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQuestionPickerProps) {
   const initialFrameHeight = bank === "igcse" ? 760 : 620;
   const frameRef = useRef<HTMLIFrameElement>(null);
@@ -17,6 +45,7 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
   const [frameHeight, setFrameHeight] = useState(initialFrameHeight);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [responseConfigs, setResponseConfigs] = useState<Record<string, unknown>[]>([]);
+  const [questionSummaries, setQuestionSummaries] = useState<Record<string, SelectedQuestionSummary>>({});
   const source = useMemo(() => {
     const query = new URLSearchParams({ course, embedded: "1", assignment: "1", draft: draftId });
     return `/question-bank/${bank === "igcse" ? "igcse-bank.html" : "ib-bank.html"}?${query.toString()}`;
@@ -39,8 +68,13 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
     }
     setSelectedIds([]);
     setResponseConfigs([]);
+    setQuestionSummaries({});
     frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-assignment-clear" }, window.location.origin);
   }, [draftId]);
+
+  const removeQuestion = useCallback((id: string) => {
+    frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-assignment-remove", id }, window.location.origin);
+  }, []);
 
   useEffect(() => {
     let animationFrame = 0;
@@ -59,8 +93,20 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
         animationFrame = requestAnimationFrame(loadMoreIfNeeded);
       }
       if (event.data?.type === "mrflynnib-assignment-selection" && Array.isArray(event.data.ids)) {
-        setSelectedIds(event.data.ids.map(String).slice(0, 100));
+        const ids = event.data.ids.map(String).slice(0, 100);
+        setSelectedIds(ids);
         setResponseConfigs(Array.isArray(event.data.configs) ? event.data.configs.slice(0, 100) : []);
+        setQuestionSummaries((current) => {
+          const next = { ...current };
+          if (Array.isArray(event.data.summaries)) {
+            event.data.summaries.forEach((value: unknown) => {
+              const summary = cleanSummary(value);
+              if (summary && ids.includes(summary.id)) next[summary.id] = summary;
+            });
+          }
+          Object.keys(next).forEach((id) => { if (!ids.includes(id)) delete next[id]; });
+          return next;
+        });
       }
     };
 
@@ -89,9 +135,34 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
       {selectedIds.map((id) => <input key={id} name="questionIds" type="hidden" value={id} />)}
       {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ id, ...(responseConfigs[index] || {}) })} />)}
       <div className="assignment-picker-summary" aria-live="polite">
-        <span className="assignment-picker-summary-copy"><strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected</strong><span>Select up to 100 questions. Correct choices come from the mark scheme, with checked distractors generated automatically.</span></span>
-        {selectedIds.length ? <button className="button button-secondary button-small" onClick={clearSelection} type="button">Clear selection</button> : null}
+        <span className="assignment-picker-summary-copy"><strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected for this assignment</strong><span>Select up to 100 questions. Your assignment contents are listed below.</span></span>
+        {selectedIds.length ? <button className="button button-secondary button-small" onClick={clearSelection} type="button">Remove all questions</button> : null}
       </div>
+      <section className="assignment-selection-review" aria-labelledby="assignment-selection-heading">
+        <div className="assignment-selection-heading">
+          <div><p className="eyebrow">Assignment contents</p><h3 id="assignment-selection-heading">Selected questions</h3></div>
+          <span>{selectedIds.length} of 100</span>
+        </div>
+        {selectedIds.length ? (
+          <ol className="assignment-selection-list">
+            {selectedIds.map((id, index) => {
+              const summary = questionSummaries[id];
+              const details = [summary?.paper, summary?.topic, summary?.subtopic, summary?.difficulty].filter(Boolean);
+              return (
+                <li key={id}>
+                  <span className="assignment-selection-number">{index + 1}</span>
+                  <span className="assignment-selection-copy">
+                    <strong>{summary?.title || "Selected question"}</strong>
+                    {details.length ? <span>{details.join(" · ")}</span> : null}
+                    <small>{summary?.marks ? `${summary.marks} ${summary.marks === 1 ? "mark" : "marks"} · ` : ""}{id}</small>
+                  </span>
+                  <button aria-label={`Remove ${summary?.title || `question ${index + 1}`} from the assignment`} onClick={() => removeQuestion(id)} type="button">Remove</button>
+                </li>
+              );
+            })}
+          </ol>
+        ) : <div className="assignment-selection-empty"><strong>No questions selected yet</strong><span>Choose questions from the bank below. They will appear here in the order students will receive them.</span></div>}
+      </section>
       <iframe className="assignment-bank-frame" loading="eager" ref={frameRef} scrolling="no" src={source} style={{ height: `${frameHeight}px` }} title={`${course} assignment question selector`} />
     </div>
   );
