@@ -91,9 +91,6 @@ function QuestionCard({ question }: { question: Question }) {
     <article className={`qb-card qb-card-${difficultyClass}`}>
       <div className="qb-card-header">
         <div className="qb-card-heading">
-          <div className="qb-source">
-            {question.paper} · Question {question.qnum} · Section {question.section}
-          </div>
           <h2>{question.title}</h2>
           <div className="qb-topic-line">
             {question.topics.map((topic) => `${topic.main} › ${topic.sub}`).join(" · ")}
@@ -160,11 +157,9 @@ export function QuestionBank() {
   const [topic, setTopic] = useState("");
   const [subtopic, setSubtopic] = useState("");
   const [difficulty, setDifficulty] = useState("");
-  const [paper, setPaper] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const paperNumbers = unique(questions.map((question) => question.paperNumber), ["Paper 1", "Paper 2", "Paper 3"]);
-  const papers = unique(questions.map((question) => question.paper));
   const topics = unique(questions.flatMap((question) => question.topics.map((item) => item.main)), TOPIC_ORDER);
   const subtopics = topic
     ? unique(questions.flatMap((question) => question.topics.filter((item) => item.main === topic).map((item) => item.sub)))
@@ -173,7 +168,6 @@ export function QuestionBank() {
   const query = search.trim().toLowerCase();
   const filtered = questions.filter((question) => {
     if (paperNumber && question.paperNumber !== paperNumber) return false;
-    if (paper && question.paper !== paper) return false;
     if (topic && !question.topics.some((item) => item.main === topic)) return false;
     if (subtopic && !question.topics.some((item) => item.main === topic && item.sub === subtopic)) return false;
     if (difficulty && !question.difficulty.includes(difficulty)) return false;
@@ -199,7 +193,6 @@ export function QuestionBank() {
     setTopic("");
     setSubtopic("");
     setDifficulty("");
-    setPaper("");
     setVisibleCount(PAGE_SIZE);
   }
 
@@ -247,19 +240,12 @@ export function QuestionBank() {
               <option value="Hard">Hard</option>
             </select>
           </label>
-          <label>
-            <span>Exam session</span>
-            <select value={paper} onChange={(event) => updateFilter(setPaper, event.target.value)}>
-              <option value="">All sessions</option>
-              {papers.map((value) => <option key={value}>{value}</option>)}
-            </select>
-          </label>
         </div>
       </div>
 
       <div className="qb-results-bar" aria-live="polite">
         <div><strong>{filtered.length}</strong> {filtered.length === 1 ? "question" : "questions"} found</div>
-        {(search || paperNumber || topic || subtopic || difficulty || paper) && (
+        {(search || paperNumber || topic || subtopic || difficulty) && (
           <button type="button" onClick={resetFilters}>Clear all filters</button>
         )}
       </div>

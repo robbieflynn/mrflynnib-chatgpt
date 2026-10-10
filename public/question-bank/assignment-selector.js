@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 10;
+  var DRAFT_VERSION = 11;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
@@ -210,8 +210,8 @@
     var fragments = [];
     var source = String(value || "");
     var match;
-    var pattern = /\\\(([\s\S]*?)\\\)/g;
-    while ((match = pattern.exec(source))) fragments.push(match[1]);
+    var pattern = /\\\(([\s\S]*?)\\\)|\\\[([\s\S]*?)\\\]/g;
+    while ((match = pattern.exec(source))) fragments.push(match[1] !== undefined ? match[1] : match[2]);
     return fragments;
   }
 
@@ -357,7 +357,7 @@
         methodCopy.textContent = "Students choose from one correct answer and four plausible alternatives. Choices are shuffled for each student.";
         var source = document.createElement("div"); source.className = "qb-answer-source"; source.textContent = "Correct answer checked against every accepted mark-scheme form"; fields.appendChild(source);
         fields.appendChild(choicePreview(config.options, config.correctOption));
-        var choiceHint = document.createElement("small"); choiceHint.textContent = "The assignment will not publish if a distractor duplicates an accepted correct answer."; fields.appendChild(choiceHint);
+        var choiceHint = document.createElement("small"); choiceHint.textContent = "Every answer option is checked automatically before you publish."; fields.appendChild(choiceHint);
       } else if (config.type === "multipart") {
         methodCopy.textContent = "Each part is answered separately. Suitable parts use five choices; written, proof and diagram parts use working on whiteboard or paper.";
         var partList = document.createElement("div"); partList.className = "qb-answer-part-list";
@@ -373,7 +373,7 @@
           partRow.appendChild(partLabel); partRow.appendChild(partDetail); partList.appendChild(partRow);
         });
         fields.appendChild(partList);
-        var multipartHint = document.createElement("small"); multipartHint.textContent = "Correct choices come only from the matching mark-scheme part. All distractors are checked against its accepted alternatives."; fields.appendChild(multipartHint);
+        var multipartHint = document.createElement("small"); multipartHint.textContent = "Answers come from the matching mark-scheme part, and every option is checked automatically."; fields.appendChild(multipartHint);
       } else {
         methodCopy.textContent = "The student confirms that the proof, sketch, explanation or other written work is completed on the whiteboard or paper.";
         var note = document.createElement("div"); note.className = "qb-answer-review-note"; note.textContent = "No answer is guessed. The teacher can review saved whiteboard work or check the student’s paper."; fields.appendChild(note);
