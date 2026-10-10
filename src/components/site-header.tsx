@@ -4,7 +4,6 @@ import { navItems, siteConfig } from "@/lib/site";
 import { ButtonLink, Container } from "@/components/ui";
 import { LogoLockup } from "@/components/logo";
 import { MobileNavigation } from "@/components/mobile-navigation";
-import { AccountMenu } from "@/components/account-menu";
 
 export function SiteHeader() {
   return (
@@ -24,7 +23,6 @@ export function SiteHeader() {
             <Image src="/images/ib-tutors-logo.jpeg" alt="IB Tutors, from The Tuition Centre" width={1448} height={1086} priority />
           </Link>
         </div>
-        <AccountMenu />
         <MobileNavigation />
       </Container>
     </header>

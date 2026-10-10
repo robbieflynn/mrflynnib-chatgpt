@@ -113,7 +113,6 @@ p { margin: 0; }
 .mobile-panel { position: absolute; left: 1rem; right: 1rem; top: 4.3rem; z-index: 2; padding: 1rem; background: white; border: 1px solid var(--line); border-radius: 1rem; box-shadow: var(--shadow); }
 .mobile-panel a { display: block; padding: .75rem; font-weight: 750; }
 .account-menu { position: relative; z-index: 4; flex: 0 0 auto; }
-.header-inner:has(.account-menu) .tuition-partner-group { display: none; }
 .account-menu-trigger {
   min-height: 2.75rem; max-width: 170px; padding: .3rem .55rem .3rem .35rem; display: flex; align-items: center; gap: .5rem;
   border: 1px solid #cbd4d8; border-radius: 999px; background: rgba(255,255,255,.86); color: var(--ink); cursor: pointer;
@@ -391,6 +390,11 @@ a.teacher-list-row:hover { background: var(--sky); }
 .dashboard-hero::before { content: ""; position: absolute; inset: 0; opacity: .18; background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(90deg, #000, transparent 75%); }
 .dashboard-hero::after { content: ""; position: absolute; width: 360px; height: 360px; right: -80px; top: -210px; border-radius: 50%; background: radial-gradient(circle, rgba(72,167,239,.2), rgba(72,167,239,0) 68%); }
 .dashboard-hero > .container { position: relative; z-index: 1; }
+.dashboard-hero-shell { display: grid; gap: 1rem; }
+.dashboard-account-row { min-height: 2.75rem; display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
+.dashboard-account-row-with-breadcrumbs { justify-content: space-between; }
+.dashboard-account-row .breadcrumbs { margin: 0; color: rgba(255,255,255,.68); }
+.dashboard-account-row .breadcrumbs a:hover { color: white; }
 .dashboard-hero-layout { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(1.75rem, 4vw, 4rem); align-items: center; }
 .dashboard-hero-copy { display: grid; gap: .65rem; }
 .dashboard-hero h1 { max-width: 22ch; color: white; font-size: clamp(2rem, 3.2vw, 2.85rem); letter-spacing: -.04em; }
@@ -646,6 +650,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-list-row { grid-template-columns: 1fr auto; }
   .teacher-list-row .status-pill { grid-column: 1 / -1; }
   .dashboard-hero { padding: 1.8rem 0 2rem; }
+  .dashboard-account-row { align-items: flex-start; }
+  .dashboard-account-row-with-breadcrumbs { flex-direction: column-reverse; }
   .dashboard-hero h1 { font-size: clamp(2rem, 9vw, 2.65rem); }
   .dashboard-hero-stats { width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .dashboard-hero-stats > div { min-height: 68px; padding: .72rem; border-left: 1px solid rgba(255,255,255,.1); }
@@ -1724,10 +1730,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .header-inner .brand-lockup { width: 132px; }
   .tuition-partner-logo { width: 95px; height: 29px; }
   .mobile-menu-toggle { font-size: .82rem; }
-  .account-menu-trigger { min-height: 2.45rem; padding: .2rem; }
-  .account-menu-trigger-copy, .account-menu-trigger > svg { display: none; }
+  .account-menu-trigger { min-height: 2.45rem; }
   .account-menu-avatar { width: 2rem; height: 2rem; }
-  .account-menu-panel { position: fixed; top: 4.6rem; right: 1rem; }
 }
 
 @media (max-width: 900px) {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
+import { AccountMenu } from "@/components/account-menu";
 import { PendingSubmitButton } from "@/components/pending-submit-button";
 import { requireTeacher } from "@/lib/account-access";
 import { createClass, reviewTeacherApplication } from "./actions";
@@ -19,7 +20,7 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
   const totalAssignments = (classes ?? []).reduce((total, item) => total + (Array.isArray(item.assignments) ? item.assignments[0]?.count ?? 0 : 0), 0);
 
   return <>
-    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">IB teacher dashboard</span><h1>{profile.display_name ? `Welcome, ${profile.display_name}` : "Your teaching dashboard"}</h1><p>Create classes, set work from the question bank and review every student&apos;s answers and working.</p></div><div className="dashboard-hero-stats" aria-label="Teacher account summary"><div><strong>{classes?.length ?? 0}</strong><span>classes</span></div><div><strong>{totalStudents}</strong><span>students</span></div><div><strong>{totalAssignments}</strong><span>assignments</span></div></div></Container></section>
+    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row"><AccountMenu signOutHref="/account?next=/teacher" /></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">IB teacher dashboard</span><h1>{profile.display_name ? `Welcome, ${profile.display_name}` : "Your teaching dashboard"}</h1><p>Create classes, set work from the question bank and review every student&apos;s answers and working.</p></div><div className="dashboard-hero-stats" aria-label="Teacher account summary"><div><strong>{classes?.length ?? 0}</strong><span>classes</span></div><div><strong>{totalStudents}</strong><span>students</span></div><div><strong>{totalAssignments}</strong><span>assignments</span></div></div></div></Container></section>
     <section className="section-tight teacher-dashboard"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}
       {message.success ? <p className="form-message form-success">{message.success}</p> : null}
