@@ -38,11 +38,12 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
   const studentNames = new Map((profiles ?? []).map((profile) => [profile.user_id, profile.display_name || "Student"]));
   const isIgcse = classRecord.course === "IGCSE Higher";
   const workspaceClass = isIgcse ? "teacher-workspace teacher-workspace-igcse" : "teacher-workspace";
+  const invitationUrl = `https://www.mrflynnib.com/join/${encodeURIComponent(classRecord.join_code.trim().toUpperCase())}`;
   return <>
     <main className={workspaceClass}>
     <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord.course}</p><h1>{classRecord.name}</h1><p>Set work, monitor progress and review every student&apos;s answers and working.</p></div><div className="teacher-workspace-stats" aria-label="Class summary"><span><strong>{memberships.length}</strong> students</span><span><strong>{assignments.length}</strong> assignments</span></div></div></Container></section>
     <section className="section-tight"><Container className="stack-xl">
-      <div className="class-toolbar"><div className="class-code"><span>Invite students</span><strong>{classRecord.join_code}</strong><small>Share the invitation link or ask students to enter this code on their dashboard.</small></div><div className="class-toolbar-actions"><ClassInviteLink joinCode={classRecord.join_code} /><Link className="button" href={`/teacher/classes/${id}/assignments/new`}>Set an assignment</Link></div></div>
+      <div className="class-toolbar"><div className="class-code"><span>Invite students</span><strong>{classRecord.join_code}</strong><small>Share the invitation link or ask students to enter this code on their dashboard.</small></div><div className="class-toolbar-actions"><ClassInviteLink invitationUrl={invitationUrl} /><Link className="button" href={`/teacher/classes/${id}/assignments/new`}>Set an assignment</Link></div></div>
       <div className="teacher-two-column">
         <div className="stack"><div className="teacher-section-heading"><div><p className="eyebrow">Classwork</p><h2>Assignments</h2></div><p>Open an assignment to see progress by student and by question.</p></div>
           {assignmentLoadError ? <p className="form-message form-error">The assignments could not be refreshed just now. Please reload the page.</p> : null}
