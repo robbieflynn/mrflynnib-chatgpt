@@ -133,11 +133,8 @@ p { margin: 0; }
 .account-menu-identity small { color: var(--teal-dark); font-size: .65rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
 .account-menu-identity strong { overflow: hidden; font-size: .92rem; text-overflow: ellipsis; white-space: nowrap; }
 .account-menu-identity span span { overflow-wrap: anywhere; color: var(--muted); font-size: .75rem; }
-.account-menu-links { padding: .45rem; display: grid; }
-.account-menu-links a, .account-menu-signout { min-height: 2.7rem; padding: .65rem .7rem; display: flex; align-items: center; gap: .65rem; border: 0; border-radius: .65rem; background: transparent; color: var(--ink-2); font-size: .8rem; font-weight: 800; text-align: left; cursor: pointer; }
-.account-menu-links a:hover, .account-menu-signout:hover { background: #edf5fb; color: var(--teal-dark); }
-.account-menu-links svg, .account-menu-signout svg { width: 1.05rem; height: 1.05rem; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.6; }
-.account-menu-signout { width: calc(100% - .9rem); margin: 0 .45rem .45rem; border-top: 1px solid #e5e9eb; border-radius: 0 0 .65rem .65rem; color: #8d3030; }
+.account-menu-signout { width: calc(100% - .9rem); min-height: 2.7rem; margin: .45rem; padding: .65rem .7rem; display: flex; align-items: center; gap: .65rem; border: 0; border-radius: .65rem; background: transparent; color: #8d3030; font-size: .8rem; font-weight: 800; text-align: left; cursor: pointer; }
+.account-menu-signout svg { width: 1.05rem; height: 1.05rem; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.6; }
 .account-menu-signout:hover { background: #fff1f1; color: var(--danger); }
 .account-menu-signout:disabled { opacity: .6; cursor: wait; }
 

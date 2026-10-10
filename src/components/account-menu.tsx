@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/client";
@@ -19,7 +18,6 @@ function initials(name: string, email: string) {
 }
 
 export function AccountMenu() {
-  const pathname = usePathname();
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -95,10 +93,7 @@ export function AccountMenu() {
 
   if (!account) return null;
 
-  const isTeacher = account.role === "teacher" || account.role === "admin";
-  const isIgcse = pathname.startsWith("/igcse");
-  const roleLabel = account.role === "admin" ? "Administrator" : isTeacher ? "Teacher" : "Student";
-  const dashboardHref = isTeacher ? (isIgcse ? "/igcse/teacher" : "/teacher") : (isIgcse ? "/account?qualification=igcse" : "/account");
+  const roleLabel = account.role === "admin" ? "Administrator" : account.role === "teacher" ? "Teacher" : "Student";
 
   async function signOut() {
     setSigningOut(true);
@@ -109,7 +104,7 @@ export function AccountMenu() {
     }
     setOpen(false);
     setAccount(null);
-    router.push("/account");
+    router.push("/");
     router.refresh();
   }
 
@@ -135,18 +130,6 @@ export function AccountMenu() {
           <div className="account-menu-identity">
             <span className="account-menu-avatar account-menu-avatar-large" aria-hidden="true">{initials(account.displayName, account.email)}</span>
             <span><small>Signed in as {roleLabel.toLowerCase()}</small><strong>{account.displayName}</strong><span>{account.email}</span></span>
-          </div>
-          <div className="account-menu-links">
-            <Link href={dashboardHref} role="menuitem" onClick={() => setOpen(false)}>
-              <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M3 9.2 10 3l7 6.2V17h-5v-5H8v5H3V9.2Z" /></svg>
-              {isTeacher ? `${isIgcse ? "IGCSE" : "IB"} teacher dashboard` : "Student dashboard"}
-            </Link>
-            {isTeacher ? (
-              <Link href={isIgcse ? "/teacher" : "/igcse/teacher"} role="menuitem" onClick={() => setOpen(false)}>
-                <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4 5h12v10H4zM7 8h6M7 11h6" /></svg>
-                {isIgcse ? "IB teacher dashboard" : "IGCSE teacher dashboard"}
-              </Link>
-            ) : null}
           </div>
           <button className="account-menu-signout" type="button" role="menuitem" disabled={signingOut} onClick={signOut}>
             <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8 4H4v12h4M12 6l4 4-4 4M16 10H8" /></svg>
