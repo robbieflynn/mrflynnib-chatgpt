@@ -95,6 +95,7 @@
       .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
       .replace(/\\sqrt\s*([A-Za-z0-9.]+)/g, "sqrt($1)")
       .replace(/\bpi\b/gi, "π")
+      .replace(/±\s+/g, "±")
       .replace(/²/g, "^2")
       .replace(/³/g, "^3")
       .replace(/\s*\(\s*((?:cm|mm|km|m)\s*\^[23])\s*\)\s*$/i, " $1")
@@ -183,14 +184,25 @@
     var answers = [];
     var finalContent = String(answerRows[answerRows.length - 1][0] || "");
     var alternatives = finalContent.split(/(?:<br\s*\/?>\s*<b>\s*OR\s*<\/b>\s*<br\s*\/?>|\s+or\s+)/i);
+    function isSignedExactAndDecimalPair(alternative) {
+      var maths = mathFragments(alternative);
+      if (maths.length !== 2 || !/\bexact\b/i.test(plainText(alternative))) return false;
+      var forms = maths.map(function (fragment) { return clean(latexToPlain(fragment)); });
+      var matches = forms.map(function (form) { return form.match(/^([a-z])\s*=\s*±\s*(.+)$/i); });
+      return Boolean(matches[0] && matches[1] && matches[0][1].toLowerCase() === matches[1][1].toLowerCase()
+        && /sqrt\(/i.test(matches[0][2]) && /^\d+(?:\.\d+)?$/.test(matches[1][2]));
+    }
     var unsafeAlternative = alternatives.some(function (alternative) {
       var maths = mathFragments(alternative);
-      return maths.length > 1 || (maths.length === 1 && (maths[0].match(/=/g) || []).length > 3);
+      return (maths.length > 1 && !isSignedExactAndDecimalPair(alternative))
+        || (maths.length === 1 && (maths[0].match(/=/g) || []).length > 3);
     });
     if (unsafeAlternative) return [];
     alternatives.forEach(function (alternative) {
       var maths = mathFragments(alternative);
-      if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) addAcceptedAnswer(answers, maths[0], prompt);
+      if (isSignedExactAndDecimalPair(alternative)) {
+        maths.forEach(function (fragment) { addAcceptedAnswer(answers, fragment, prompt); });
+      } else if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) addAcceptedAnswer(answers, maths[0], prompt);
       else if (maths.length === 0 || (maths.length === 1 && /^[a-z]$/i.test(latexToPlain(maths[0])))) {
         var textAnswer = plainText(alternative);
         var numbers = textAnswer.match(/-?\d+(?:\.\d+)?(?:\s*\/\s*-?\d+(?:\.\d+)?)?/g) || [];
@@ -437,6 +449,16 @@
     addCandidate(list, formatNumber(Math.sqrt(radicand) + 2, 2));
   }
 
+  function signedRadicalEquationCandidates(correct, list) {
+    var match = clean(correct).match(/^([a-z])\s*=\s*±sqrt\((\d+(?:\.\d+)?)\)$/i);
+    if (!match) return;
+    var radicand = Number(match[2]);
+    var places = decimalPlaces(match[2]);
+    [radicand + 2, Math.max(1, radicand - 2), radicand * 2 + 1, Math.max(1, Math.round(radicand / 2) - 1)].forEach(function (value) {
+      addCandidate(list, match[1] + "=±sqrt(" + formatNumber(value, places) + ")");
+    });
+  }
+
   function mutateNumberTokens(correct, list) {
     if (quantityParts(correct) || fractionParts(correct) || /^sqrt\(/i.test(clean(correct))) return;
     var matches = [];
@@ -510,6 +532,7 @@
     fractionCandidates(correct, candidates);
     simpleNumberCandidates(correct, candidates);
     radicalCandidates(correct, candidates);
+    signedRadicalEquationCandidates(correct, candidates);
     mutateNumberTokens(correct, candidates);
     symbolicCandidates(correct, candidates);
     var distractors = candidates.filter(function (candidate) {

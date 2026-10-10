@@ -330,6 +330,8 @@ On 9 October 2026, Rob expanded the assignment experience for both IB and IGCSE.
 
 On 10 October 2026, Rob chose **Below** as the default whiteboard position inside student assignments. On desktop, students can switch the whiteboard between **Side** and **Below** from the whiteboard toolbar; the assignment choice is remembered separately from the ordinary question bank. Narrow screens continue to place the whiteboard below the question automatically. The layout preference changes presentation only and must not alter or replace saved whiteboard documents.
 
+On 10 October 2026, Rob confirmed that every automatically markable part of a multi-part assignment question must be submitted and checked independently. Each part has its own immediate feedback and two-attempt allowance; the whole question becomes complete only when every part is either correct, has reached its second attempt, or has been explicitly saved for teacher review on whiteboard or paper. Existing response rows are extended in place rather than replaced, so earlier answers and whiteboards remain attached. Objective answers with multiple values, such as a pair of intercepts represented by \(x=\pm\sqrt5\), should remain eligible for multiple choice when the complete accepted form is unambiguous in the matching mark-scheme part.
+
 The first version is for assignments, not formal tests. Keep the data model extensible so timed tests and test-building can be added later without replacing classes, memberships or the teacher identity model. Build and review this feature in a Vercel Preview before production publication.
 
 ## Tuition partner preview, 26 September 2026

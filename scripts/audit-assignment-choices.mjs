@@ -86,9 +86,23 @@ assert.equal(integralAnswers[0], "31/5");
 assert(!integralAnswers.some((answer) => /(?:displaystyle|\bint\b)/i.test(answer)));
 assert(choices.generateChoiceSet(integralAnswers, "audit-definite-integral"));
 
+const pairedInterceptAnswers = choices.extractAcceptedAnswers(
+  [
+    [String.raw`recognizing \(f(x)=0\)`, "M1"],
+    [String.raw`\(x=\pm\sqrt5\) (exact), \(x=\pm 2.24\)`, "A1A1"],
+  ],
+  String.raw`Find the \(x\)-coordinate of \(\mathrm{A}\) and of \(\mathrm{B}\).`,
+);
+assert(pairedInterceptAnswers.includes("x=±sqrt(5)"));
+assert(pairedInterceptAnswers.includes("x=±2.24"));
+const pairedInterceptChoices = choices.generateChoiceSet(pairedInterceptAnswers, "M14TZ2SL_P2_Q2:a");
+assert(pairedInterceptChoices);
+assert(pairedInterceptChoices.options.every((option) => !/^-?\([^)]*=/.test(option)));
+
 let checked = 0;
 let generated = 0;
 let verifiedLineQuestion = false;
+let verifiedPairedInterceptQuestion = false;
 for (const [label, path] of banks) {
   const questions = extractSeed(path);
   let bankChecked = 0;
@@ -106,6 +120,12 @@ for (const [label, path] of banks) {
       if (question.id === "M15TZ2HL_P2_Q11" && part === "c") {
         assert.equal(accepted[0], "2sqrt(2)");
       }
+      if (question.id === "M14TZ2SL_P2_Q2" && part === "a") {
+        assert(accepted.includes("x = ±sqrt(5)"));
+        assert(accepted.includes("x = ±2.24"));
+        assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
+        verifiedPairedInterceptQuestion = true;
+      }
       if (!accepted.length) continue;
       bankChecked += 1;
       const set = choices.generateChoiceSet(accepted, `${question.id}:${part}`);
@@ -121,4 +141,5 @@ for (const [label, path] of banks) {
 }
 
 assert(verifiedLineQuestion, "The real equation-of-a-normal regression question was not audited.");
+assert(verifiedPairedInterceptQuestion, "The real paired-intercepts regression question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);

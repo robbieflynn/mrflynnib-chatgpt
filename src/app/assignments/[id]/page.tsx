@@ -26,6 +26,7 @@ export default async function StudentAssignmentPage({ params, searchParams }: { 
   const completed = (questions ?? []).filter((question) => {
     const response = responseByQuestion.get(question.question_id);
     if (!response) return progressIds.has(question.question_id);
+    if (question.response_type === "multipart") return progressIds.has(question.question_id);
     return question.response_type === "teacher_review" || response.is_correct === true || Number(response.attempt_count || 0) >= 2;
   }).length;
   const total = questions?.length ?? 0;

@@ -43,8 +43,11 @@
     ".qb-assignment-response button:disabled{opacity:.6;cursor:not-allowed}",
     ".qb-response-options{display:grid;gap:8px}",
     ".qb-response-parts{display:grid;gap:10px}",
-    ".qb-response-part{display:grid;grid-template-columns:minmax(52px,auto) 1fr;gap:8px;align-items:start}",
+    ".qb-response-part{padding:12px;display:grid;grid-template-columns:minmax(52px,auto) 1fr;gap:10px;align-items:start;border:1px solid #d3e0e7;border-radius:10px;background:#fff}",
     ".qb-response-part strong{min-width:48px;height:34px;padding:0 8px;display:grid;place-items:center;border-radius:999px;background:#e8f2f8;color:var(--flynn-blue-dark);white-space:nowrap}",
+    ".qb-response-part-content{min-width:0;display:grid;gap:9px}",
+    ".qb-response-part-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}",
+    ".qb-response-part-actions .qb-response-status{flex:1;min-width:190px}",
     ".qb-response-option{padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:center;border:1px solid #c8d5dc;border-radius:8px;background:#fff;cursor:pointer}",
     ".qb-response-option input{width:18px;height:18px;accent-color:var(--flynn-blue)}",
     ".qb-response-part-options{width:100%}",
@@ -54,8 +57,9 @@
     ".qb-assignment-response.is-readonly{background:#f7f8f9}",
     ".qb-response-readonly{padding:10px 12px;border-radius:8px;background:#fff;border:1px solid #d6dee2;white-space:pre-wrap}",
     ".qb-response-readonly-parts{display:grid;gap:8px}",
-    ".qb-response-readonly-part{display:grid;grid-template-columns:minmax(48px,auto) 1fr;align-items:center;gap:10px}",
+    ".qb-response-readonly-part{display:grid;grid-template-columns:minmax(48px,auto) minmax(0,1fr) auto;align-items:center;gap:10px}",
     ".qb-response-readonly-part>strong{color:var(--flynn-blue-dark)}",
+    ".qb-response-readonly-part>small{color:#60717d;font-size:11px}",
     ".qb-math-entry{display:grid;gap:7px}",
     ".qb-math-keyboard{padding:8px;display:flex;flex-wrap:wrap;gap:6px;border:1px solid #cfdae0;border-radius:9px;background:#f4f7f8}",
     ".qb-assignment-response .qb-math-key{min-width:38px;min-height:34px;padding:6px 9px;border:1px solid #bacbd4;border-radius:7px;background:#fff;color:#173b5c;font:750 14px/1 var(--ui);box-shadow:0 2px 5px rgba(11,21,48,.04)}",
@@ -150,7 +154,9 @@
         var value = item.response.parts[label];
         if (value === "__whiteboard__") answer.textContent = "Completed on the whiteboard or paper";
         else renderAnswer(answer, String(value || ""));
-        row.appendChild(badge); row.appendChild(answer); container.appendChild(row);
+        var savedPartState = multipartPartState(item, label);
+        var result = document.createElement("small"); result.textContent = partStatusCopy(savedPartState, true);
+        row.appendChild(badge); row.appendChild(answer); row.appendChild(result); container.appendChild(row);
       });
       return;
     }
@@ -169,8 +175,29 @@
   function isQuestionFinished(item) {
     if (!item) return false;
     if (item.responseType === "teacher_review") return Boolean(item.response);
-    if (item.responseType === "multipart" && item.response && item.isCorrect !== false) return true;
+    if (item.responseType === "multipart") {
+      var definitions = multipartDefinitions(item);
+      var states = item.response && item.response._partStates && typeof item.response._partStates === "object" ? item.response._partStates : {};
+      if (definitions.length && Object.keys(states).length) return definitions.every(function (definition) {
+        var result = states[definition.label] && states[definition.label].result;
+        return result === "correct" || result === "incorrect_final" || result === "saved";
+      });
+      return Boolean(item.response && (item.isCorrect === true || Number(item.attemptCount || 0) >= 2));
+    }
     return item.isCorrect === true || Number(item.attemptCount || 0) >= 2;
+  }
+
+  function multipartPartState(item, label) {
+    var states = item && item.response && item.response._partStates;
+    return states && typeof states === "object" && states[label] && typeof states[label] === "object" ? states[label] : {};
+  }
+
+  function partStatusCopy(partState, readOnly) {
+    if (partState.result === "correct") return "Correct. Well done!";
+    if (partState.result === "retry") return "Not quite. Try this part once more.";
+    if (partState.result === "incorrect_final") return "Second try saved for your teacher.";
+    if (partState.result === "saved") return readOnly ? "Saved for teacher review." : "Saved. Your teacher can review this part.";
+    return "";
   }
 
   function partLabel(label) {
@@ -350,13 +377,14 @@
     if (isMultipart) {
       var parts = document.createElement("div"); parts.className = "qb-response-parts";
       partDefinitions.forEach(function (definition, partIndex) {
-        var row = document.createElement("label"); row.className = "qb-response-part" + (definition.mode === "whiteboard" ? " qb-response-part-whiteboard" : "");
+        var row = document.createElement("div"); row.className = "qb-response-part" + (definition.mode === "whiteboard" ? " qb-response-part-whiteboard" : ""); row.dataset.partKey = definition.label;
         var labelBadge = document.createElement("strong"); labelBadge.textContent = partLabel(definition.label);
+        var content = document.createElement("div"); content.className = "qb-response-part-content";
         if (definition.mode === "whiteboard") {
           var confirmation = document.createElement("span"); confirmation.className = "qb-whiteboard-confirm";
           var checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = Boolean(item.response && item.response.parts && item.response.parts[definition.label] === "__whiteboard__");
           var confirmationCopy = document.createElement("span"); confirmationCopy.textContent = "I completed this part on the whiteboard or paper";
-          confirmation.appendChild(checkbox); confirmation.appendChild(confirmationCopy); partInputs[definition.label] = checkbox; row.appendChild(labelBadge); row.appendChild(confirmation);
+          confirmation.appendChild(checkbox); confirmation.appendChild(confirmationCopy); partInputs[definition.label] = checkbox; content.appendChild(confirmation);
         } else if (definition.mode === "multiple_choice") {
           var choiceState = { value: item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : "" };
           var options = document.createElement("div"); options.className = "qb-response-options qb-response-part-options";
@@ -367,13 +395,32 @@
             var choiceCopy = document.createElement("span"); renderAnswer(choiceCopy, optionText);
             choiceLabel.appendChild(choice); choiceLabel.appendChild(choiceCopy); options.appendChild(choiceLabel);
           });
-          partInputs[definition.label] = choiceState; row.appendChild(labelBadge); row.appendChild(options);
+          partInputs[definition.label] = choiceState; content.appendChild(options);
         } else {
           var input = document.createElement("input"); input.type = "text"; input.maxLength = 500; input.inputMode = "text"; input.placeholder = "Enter your answer for " + partLabel(definition.label).toLowerCase();
           input.value = item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : (partIndex === 0 && item.response ? String(item.response.text || "") : "");
-          partInputs[definition.label] = input; mathInputs.push(input); row.appendChild(labelBadge); row.appendChild(input);
+          partInputs[definition.label] = input; mathInputs.push(input); content.appendChild(input);
         }
-        parts.appendChild(row);
+        var savedPartState = multipartPartState(item, definition.label);
+        var actions = document.createElement("div"); actions.className = "qb-response-part-actions";
+        var partButton = document.createElement("button"); partButton.type = "button"; partButton.textContent = (definition.mode === "whiteboard" ? "Save " : "Check ") + partLabel(definition.label);
+        var partStatus = document.createElement("div"); partStatus.className = "qb-response-status" + (savedPartState.isCorrect === true ? " is-correct" : savedPartState.isCorrect === false ? " is-incorrect" : ""); partStatus.textContent = partStatusCopy(savedPartState, false);
+        var partLocked = savedPartState.result === "correct" || savedPartState.result === "incorrect_final" || savedPartState.result === "saved";
+        if (partLocked) { partButton.disabled = true; content.querySelectorAll("input").forEach(function (partInput) { partInput.disabled = true; }); }
+        partButton.addEventListener("click", function () {
+          prepareAudio();
+          var control = partInputs[definition.label];
+          var answer = definition.mode === "whiteboard" ? (control.checked ? "__whiteboard__" : "") : definition.mode === "multiple_choice" ? control.value : control.value.trim();
+          if (!answer) {
+            partStatus.className = "qb-response-status is-incorrect";
+            partStatus.textContent = definition.mode === "whiteboard" ? "Confirm that this part is on your whiteboard or paper." : "Choose or enter an answer for this part.";
+            return;
+          }
+          partButton.disabled = true; partStatus.className = "qb-response-status"; partStatus.textContent = "Saving…";
+          window.parent.postMessage({ type: "mrflynnib-assignment-response-save", questionId: id, response: { partKey: definition.label, partAnswer: answer } }, window.location.origin);
+        });
+        actions.appendChild(partButton); actions.appendChild(partStatus); content.appendChild(actions);
+        row.appendChild(labelBadge); row.appendChild(content); parts.appendChild(row);
       });
       panel.appendChild(parts);
     } else if (item.responseType === "multiple_choice") {
@@ -399,44 +446,29 @@
     }
 
     appendMathKeyboard(panel, mathInputs);
-    var button = document.createElement("button"); button.type = "button"; button.textContent = item.responseType === "teacher_review" ? (isMultipart ? "Save answers" : "Save completion") : "Check answers";
-    if (!isMultipart && item.responseType !== "multipart") button.textContent = item.responseType === "teacher_review" ? "Save completion" : "Check answer";
-    var status = document.createElement("div"); status.className = "qb-response-status" + (item.isCorrect === true ? " is-correct" : item.isCorrect === false ? " is-incorrect" : ""); status.textContent = statusCopy(item);
-    var locked = item.responseType !== "teacher_review" && isQuestionFinished(item);
-    if (locked) { button.disabled = true; panel.querySelectorAll("input").forEach(function (input) { input.disabled = true; }); }
-    button.addEventListener("click", function () {
-      prepareAudio();
-      var response;
-      if (isMultipart) {
-        response = { parts: {} };
-        var missingPart = false;
-        partDefinitions.forEach(function (definition) {
-          var control = partInputs[definition.label];
-          if (definition.mode === "whiteboard") {
-            if (!control.checked) missingPart = true;
-            response.parts[definition.label] = control.checked ? "__whiteboard__" : "";
-          } else if (definition.mode === "multiple_choice") {
-            if (!control.value) missingPart = true;
-            response.parts[definition.label] = control.value;
-          } else {
-            var value = control.value.trim(); if (!value) missingPart = true; response.parts[definition.label] = value;
-          }
-        });
-        if (missingPart) { status.className = "qb-response-status is-incorrect"; status.textContent = "Answer every part, or confirm the parts completed on your whiteboard or paper."; return; }
-      } else if (item.responseType === "multiple_choice") {
-        if (selectedOption === null) { status.className = "qb-response-status is-incorrect"; status.textContent = "Choose an answer before checking."; return; }
-        response = { option: selectedOption };
-      }
-      else {
-        var shownOnWhiteboard = Boolean(whiteboardConfirmation && whiteboardConfirmation.checked);
-        var answerText = textInput ? textInput.value.trim() : "";
-        if (!answerText && !shownOnWhiteboard) { status.className = "qb-response-status is-incorrect"; status.textContent = "Enter an answer or confirm that you completed it on the whiteboard or paper."; return; }
-        response = shownOnWhiteboard ? { text: "Completed on the whiteboard or paper", completedOffline: true } : { text: answerText };
-      }
-      button.disabled = true; status.className = "qb-response-status"; status.textContent = "Saving…";
-      window.parent.postMessage({ type: "mrflynnib-assignment-response-save", questionId: id, response: response }, window.location.origin);
-    });
-    panel.appendChild(button); panel.appendChild(status); appendStepControls(panel, id); card.appendChild(panel);
+    if (!isMultipart) {
+      var button = document.createElement("button"); button.type = "button"; button.textContent = item.responseType === "teacher_review" ? "Save completion" : "Check answer";
+      var status = document.createElement("div"); status.className = "qb-response-status" + (item.isCorrect === true ? " is-correct" : item.isCorrect === false ? " is-incorrect" : ""); status.textContent = statusCopy(item);
+      var locked = item.responseType !== "teacher_review" && isQuestionFinished(item);
+      if (locked) { button.disabled = true; panel.querySelectorAll("input").forEach(function (input) { input.disabled = true; }); }
+      button.addEventListener("click", function () {
+        prepareAudio();
+        var response;
+        if (item.responseType === "multiple_choice") {
+          if (selectedOption === null) { status.className = "qb-response-status is-incorrect"; status.textContent = "Choose an answer before checking."; return; }
+          response = { option: selectedOption };
+        } else {
+          var shownOnWhiteboard = Boolean(whiteboardConfirmation && whiteboardConfirmation.checked);
+          var answerText = textInput ? textInput.value.trim() : "";
+          if (!answerText && !shownOnWhiteboard) { status.className = "qb-response-status is-incorrect"; status.textContent = "Enter an answer or confirm that you completed it on the whiteboard or paper."; return; }
+          response = shownOnWhiteboard ? { text: "Completed on the whiteboard or paper", completedOffline: true } : { text: answerText };
+        }
+        button.disabled = true; status.className = "qb-response-status"; status.textContent = "Saving…";
+        window.parent.postMessage({ type: "mrflynnib-assignment-response-save", questionId: id, response: response }, window.location.origin);
+      });
+      panel.appendChild(button); panel.appendChild(status);
+    }
+    appendStepControls(panel, id); card.appendChild(panel);
   }
 
   function reorderCards() {
@@ -472,15 +504,31 @@
       var item = state[event.data.questionId];
       if (!item) return;
       if (event.data.ok) {
-        item.response = event.data.response; item.isCorrect = event.data.isCorrect;
-        if (event.data.result === "retry" || event.data.result === "incorrect_final" || event.data.result === "correct") item.attemptCount = Number(item.attemptCount || 0) + 1;
+        var submittedPart = event.data.response && String(event.data.response.partKey || "");
+        if (submittedPart) {
+          item.response = item.response && typeof item.response === "object" ? item.response : {};
+          item.response.parts = item.response.parts && typeof item.response.parts === "object" ? item.response.parts : {};
+          item.response._partStates = item.response._partStates && typeof item.response._partStates === "object" ? item.response._partStates : {};
+          item.response.parts[submittedPart] = String(event.data.response.partAnswer || "");
+          var previousPartState = item.response._partStates[submittedPart] || {};
+          item.response._partStates[submittedPart] = {
+            result: event.data.result,
+            isCorrect: event.data.isCorrect,
+            attemptCount: event.data.result === "correct" || event.data.result === "retry" || event.data.result === "incorrect_final" ? Number(previousPartState.attemptCount || 0) + 1 : 0
+          };
+        } else {
+          item.response = event.data.response; item.isCorrect = event.data.isCorrect;
+          if (event.data.result === "retry" || event.data.result === "incorrect_final" || event.data.result === "correct") item.attemptCount = Number(item.attemptCount || 0) + 1;
+        }
         if (event.data.result === "correct") playFeedback(true);
         if (event.data.result === "retry" || event.data.result === "incorrect_final") playFeedback(false);
       }
       renderVersion += 1;
       decorateAll();
       if (!event.data.ok) {
-        var failed = document.querySelector('.qb-card[data-id="' + CSS.escape(event.data.questionId) + '"] .qb-response-status');
+        var failedPart = event.data.response && String(event.data.response.partKey || "");
+        var failedSelector = '.qb-card[data-id="' + CSS.escape(event.data.questionId) + '"] ' + (failedPart ? '.qb-response-part[data-part-key="' + CSS.escape(failedPart) + '"] ' : '') + '.qb-response-status';
+        var failed = document.querySelector(failedSelector);
         if (failed) {
           var reason = String(event.data.error || "").replace(/^Error:\s*/i, "").trim();
           failed.className = "qb-response-status is-incorrect";

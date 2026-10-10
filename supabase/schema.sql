@@ -347,6 +347,14 @@ declare
   part_matches boolean;
   has_review_parts boolean := false;
   has_incorrect_parts boolean := false;
+  requested_part text;
+  existing_response jsonb := '{}'::jsonb;
+  saved_parts jsonb := '{}'::jsonb;
+  part_states jsonb := '{}'::jsonb;
+  prior_part_result text;
+  part_attempts integer := 0;
+  part_result text;
+  all_parts_complete boolean := false;
 begin
   if auth.uid() is null then raise exception 'You must sign in first.'; end if;
   if public.is_teacher(auth.uid()) then raise exception 'Student answers can only be submitted from a student account.'; end if;
@@ -358,9 +366,13 @@ begin
   left join public.assignment_answer_keys ak on ak.assignment_id = aq.assignment_id and ak.question_id = aq.question_id
   where aq.assignment_id = assignment_uuid and aq.question_id = left(question_key, 160);
   if response_kind is null then raise exception 'Question not found.'; end if;
-  select coalesce(ar.attempt_count, 0) into existing_attempts from public.assignment_responses ar where ar.assignment_id = assignment_uuid and ar.student_id = auth.uid() and ar.question_id = left(question_key, 160);
+  select coalesce(ar.attempt_count, 0), coalesce(ar.response, '{}'::jsonb)
+    into existing_attempts, existing_response
+  from public.assignment_responses ar where ar.assignment_id = assignment_uuid and ar.student_id = auth.uid() and ar.question_id = left(question_key, 160);
   existing_attempts := coalesce(existing_attempts, 0);
-  if response_kind <> 'teacher_review' and existing_attempts >= 2 then return query select false, 'locked'::text; return; end if;
+  existing_response := coalesce(existing_response, '{}'::jsonb);
+  requested_part := left(trim(coalesce(response_payload ->> 'partKey', '')), 30);
+  if response_kind <> 'teacher_review' and not (response_kind = 'multipart' and requested_part <> '') and existing_attempts >= 2 then return query select false, 'locked'::text; return; end if;
   submitted_text := left(trim(coalesce(response_payload ->> 'text', '')), 500);
   has_part_answers := coalesce(
     jsonb_typeof(response_payload -> 'parts') = 'object'
@@ -381,6 +393,61 @@ begin
     if submitted_text = '' then raise exception 'Enter an answer.'; end if;
     if accepted is null or jsonb_array_length(accepted) = 0 then grade_result := null;
     else select exists (select 1 from jsonb_array_elements_text(accepted) item where lower(regexp_replace(trim(item), '\s+', '', 'g')) = lower(regexp_replace(submitted_text, '\s+', '', 'g'))) into grade_result; end if;
+  elsif response_kind = 'multipart' and requested_part <> '' then
+    if jsonb_typeof(accepted) <> 'object' or not (accepted ? requested_part) then raise exception 'That question part was not found.'; end if;
+    part_config := accepted -> requested_part;
+    saved_parts := case when jsonb_typeof(existing_response -> 'parts') = 'object' then existing_response -> 'parts' else '{}'::jsonb end;
+    part_states := case when jsonb_typeof(existing_response -> '_partStates') = 'object' then existing_response -> '_partStates' else '{}'::jsonb end;
+    prior_part_result := part_states -> requested_part ->> 'result';
+    if prior_part_result in ('correct', 'incorrect_final', 'saved') then
+      return query select case when prior_part_result = 'correct' then true when prior_part_result = 'incorrect_final' then false else null end, 'locked'::text;
+      return;
+    end if;
+    part_answer := left(trim(coalesce(response_payload ->> 'partAnswer', '')), 500);
+    if part_config ->> 'mode' = 'whiteboard' then
+      if part_answer <> '__whiteboard__' then raise exception 'Confirm that this part is on the whiteboard or paper.'; end if;
+      part_matches := null;
+      part_result := 'saved';
+      part_attempts := 0;
+    else
+      if part_answer = '' then raise exception 'Choose or enter an answer for this part.'; end if;
+      select exists (
+        select 1 from jsonb_array_elements_text(part_config -> 'answers') item
+        where lower(regexp_replace(trim(item), '\s+', '', 'g')) = lower(regexp_replace(part_answer, '\s+', '', 'g'))
+      ) into part_matches;
+      part_attempts := least(coalesce((part_states -> requested_part ->> 'attemptCount')::integer, 0) + 1, 2);
+      part_result := case when part_matches then 'correct' when part_attempts < 2 then 'retry' else 'incorrect_final' end;
+    end if;
+    saved_parts := jsonb_set(saved_parts, array[requested_part], to_jsonb(part_answer), true);
+    part_states := jsonb_set(part_states, array[requested_part], jsonb_build_object(
+      'result', part_result,
+      'isCorrect', part_matches,
+      'attemptCount', part_attempts
+    ), true);
+    existing_response := existing_response || jsonb_build_object('parts', saved_parts, '_partStates', part_states);
+    all_parts_complete := true;
+    has_review_parts := false;
+    has_incorrect_parts := false;
+    for part_key, part_config in select key, value from jsonb_each(accepted)
+    loop
+      part_result := part_states -> part_key ->> 'result';
+      if coalesce(part_result, '') not in ('correct', 'incorrect_final', 'saved') then all_parts_complete := false; end if;
+      if part_result = 'saved' then has_review_parts := true; end if;
+      if part_result = 'incorrect_final' then has_incorrect_parts := true; end if;
+    end loop;
+    select coalesce(max(coalesce((value ->> 'attemptCount')::integer, 0)), 0) into attempts_after from jsonb_each(part_states);
+    grade_result := case when not all_parts_complete then null when has_incorrect_parts then false when has_review_parts then null else true end;
+    insert into public.assignment_responses (assignment_id, student_id, question_id, response, is_correct, attempt_count, checked_at, updated_at)
+    values (assignment_uuid, auth.uid(), left(question_key, 160), existing_response, grade_result, attempts_after, case when all_parts_complete then now() else null end, now())
+    on conflict (assignment_id, student_id, question_id) do update set response = excluded.response, is_correct = excluded.is_correct, attempt_count = excluded.attempt_count, checked_at = excluded.checked_at, updated_at = now();
+    insert into public.assignment_question_progress (assignment_id, student_id, question_id, completed, completed_at, updated_at)
+    values (assignment_uuid, auth.uid(), left(question_key, 160), all_parts_complete, case when all_parts_complete then now() else null end, now())
+    on conflict (assignment_id, student_id, question_id) do update set completed = excluded.completed, completed_at = case when excluded.completed then coalesce(public.assignment_question_progress.completed_at, now()) else null end, updated_at = now();
+    insert into public.assignment_submissions (assignment_id, student_id, status, submitted_at, updated_at)
+    values (assignment_uuid, auth.uid(), 'in_progress', null, now())
+    on conflict (assignment_id, student_id) do update set status = 'in_progress', submitted_at = null, updated_at = now();
+    return query select part_matches, case when prior_part_result in ('correct', 'incorrect_final', 'saved') then 'locked' else part_states -> requested_part ->> 'result' end;
+    return;
   elsif response_kind = 'multipart' then
     submitted_parts := response_payload -> 'parts';
     if jsonb_typeof(submitted_parts) <> 'object' or jsonb_typeof(accepted) <> 'object' then raise exception 'Complete every part.'; end if;
@@ -419,6 +486,18 @@ begin
 end;
 $$;
 grant execute on function public.submit_assignment_response(uuid, text, jsonb) to authenticated;
+
+create or replace function public.submit_assignment_part_response(assignment_uuid uuid, question_key text, part_key text, part_answer text)
+returns table (is_correct boolean, result text)
+language sql security definer set search_path = ''
+as $$
+  select * from public.submit_assignment_response(
+    assignment_uuid,
+    question_key,
+    jsonb_build_object('partKey', part_key, 'partAnswer', part_answer)
+  )
+$$;
+grant execute on function public.submit_assignment_part_response(uuid, text, text, text) to authenticated;
 
 create or replace function public.handle_new_user()
 returns trigger

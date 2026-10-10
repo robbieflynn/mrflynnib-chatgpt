@@ -142,11 +142,21 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           send({ type: "mrflynnib-assignment-response-result", questionId, response: message.response ?? null, ok: false });
           return;
         }
-        const { data, error } = await clientRef.current.rpc("submit_assignment_response", {
-          assignment_uuid: assignmentId,
-          question_key: questionId,
-          response_payload: message.response,
-        });
+        const partResponse = message.response && typeof message.response === "object" && "partKey" in message.response
+          ? message.response as { partKey?: unknown; partAnswer?: unknown }
+          : null;
+        const { data, error } = partResponse
+          ? await clientRef.current.rpc("submit_assignment_part_response", {
+              assignment_uuid: assignmentId,
+              question_key: questionId,
+              part_key: String(partResponse.partKey || ""),
+              part_answer: String(partResponse.partAnswer || ""),
+            })
+          : await clientRef.current.rpc("submit_assignment_response", {
+              assignment_uuid: assignmentId,
+              question_key: questionId,
+              response_payload: message.response,
+            });
         const result = Array.isArray(data) ? data[0] : null;
         send({
           type: "mrflynnib-assignment-response-result",
@@ -157,7 +167,10 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           ok: !error,
           error: error?.message ?? null,
         });
-        if (!error) router.refresh();
+        if (!error) {
+          await publishAssignmentState();
+          router.refresh();
+        }
         return;
       }
 
