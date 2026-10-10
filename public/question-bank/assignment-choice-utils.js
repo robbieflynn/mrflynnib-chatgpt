@@ -5,7 +5,7 @@
 }(typeof globalThis !== "undefined" ? globalThis : this, function (root) {
   "use strict";
 
-  var UNIT_PATTERN = "(?:°|%|rad|cm(?:\\^[23])?|mm(?:\\^[23])?|km(?:\\^[23])?|m(?:\\^[23])?|kg|g|s|minutes?|hours?|mins?|hrs?)";
+  var UNIT_PATTERN = "(?:°|%|rad|cm(?:\\^[23])?|mm(?:\\^[23])?|km(?:\\^[23])?|m(?:\\^[23])?|ml|litres?|liters?|kg|g|s|minutes?|hours?|mins?|hrs?)";
   var RAW_LATEX_COMMAND_PATTERN = /\b(?:math(?:bf|rm|it|sf|tt|bb|cal|normal)|text(?:bf|it|tt|sf|rm)?|boldsymbol|mathbf|operatorname|overrightarrow|displaystyle|textstyle|scriptstyle|scriptscriptstyle)[A-Za-z]*\b/i;
 
   function plainText(value) {
@@ -79,11 +79,35 @@
 
   function replaceLatexMatrices(value) {
     return String(value || "").replace(/\\begin\{(?:p|b|B|v|V)?matrix\}([\s\S]*?)\\end\{(?:p|b|B|v|V)?matrix\}/g, function (_match, body) {
+      body = body.replace(/\[\s*\d+(?:\.\d+)?pt\s*\]/gi, "");
       var rows = body.split(/\\\\/).map(function (row) {
         return row.split("&").map(function (cell) { return cell.trim(); }).join(",");
       });
       return "matrix(" + rows.join(";") + ")";
     });
+  }
+
+  function replaceLatexRoots(value) {
+    var source = String(value || "");
+    var result = "";
+    for (var index = 0; index < source.length;) {
+      if (source.slice(index, index + 5) !== "\\sqrt") { result += source[index]; index += 1; continue; }
+      var cursor = index + 5;
+      while (/\s/.test(source[cursor] || "")) cursor += 1;
+      var rootIndex = "";
+      if (source[cursor] === "[") {
+        var close = source.indexOf("]", cursor + 1);
+        if (close === -1) { result += source[index]; index += 1; continue; }
+        rootIndex = source.slice(cursor + 1, close);
+        cursor = close + 1;
+      }
+      var argument = readLatexArgument(source, cursor);
+      if (!argument) { result += source[index]; index += 1; continue; }
+      var inner = replaceLatexRoots(replaceLatexFractions(argument.value));
+      result += rootIndex ? "root(" + rootIndex + "," + inner + ")" : "sqrt(" + inner + ")";
+      index = argument.end;
+    }
+    return result;
   }
 
   function replaceLatexSuperscripts(value) {
@@ -94,7 +118,7 @@
       if (source[index + 1] !== "{") { result += source[index]; index += 1; continue; }
       var argument = readLatexArgument(source, index + 1);
       if (!argument) { result += source[index]; index += 1; continue; }
-      var exponent = argument.value.trim();
+      var exponent = replaceLatexFractions(replaceLatexDecorators(argument.value)).trim();
       result += /^[-+]?\d+$/.test(exponent) ? "^" + exponent : "^(" + exponent + ")";
       index = argument.end;
     }
@@ -102,27 +126,34 @@
   }
 
   function latexToPlain(value) {
-    return plainText(replaceLatexSuperscripts(replaceLatexDecorators(replaceLatexFractions(replaceLatexMatrices(String(value || "")))))
+    return plainText(replaceLatexRoots(replaceLatexSuperscripts(replaceLatexDecorators(replaceLatexFractions(replaceLatexMatrices(String(value || ""))))))
       .replace(/\\\(|\\\)|\\\[|\\\]/g, "")
       .replace(/\\left|\\right/g, "")
       .replace(/\\(?:displaystyle|textstyle|scriptstyle|scriptscriptstyle|limits|nolimits)\b/g, "")
+      .replace(/\\(?:quad|qquad|enspace|hspace|kern)\b(?:\s*\{[^{}]*\}|\s*-?\d+(?:\.\d+)?(?:em|pt))?/g, " ")
       .replace(/\\int\b/g, "∫")
       .replace(/\\sum\b/g, "∑")
       .replace(/\\prod\b/g, "∏")
       .replace(/\\sqrt\s*\[([^\]]+)\]\s*\{([^{}]+)\}/g, "root($1,$2)")
       .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
-      .replace(/\\sqrt\s*([A-Za-z0-9.]+)/g, "sqrt($1)")
+      .replace(/\\sqrt\s*([A-Za-z]|[0-9]+(?:\.[0-9]+)?)/g, "sqrt($1)")
+      .replace(/\\(arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)\s*(sqrt\([^)]*\)|root\([^)]*\))/gi, "$1($2)")
+      .replace(/\\(arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)\s*((?:\([^)]*\))|(?:[A-Za-z0-9.π]+\s*\/\s*[A-Za-z0-9.π]+)|[A-Za-z0-9.π]+)/gi, "$1($2)")
       .replace(/\\text\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\operatorname\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\(?:ldots|cdots|dots)\b/g, "…")
+      .replace(/\\%/g, "%")
       .replace(/\\(?:leq|le)/g, "≤").replace(/\\(?:geq|ge)/g, "≥")
       .replace(/\^\s*\\circ/g, "°").replace(/\\circ/g, "∘")
       .replace(/\\approx/g, "≈").replace(/\\(?:neq|ne)(?=[^A-Za-z]|$)/g, "≠")
       .replace(/\\notin\b/g, "∉").replace(/\\in\b/g, "∈")
+      .replace(/\\cup\b/g, "∪").replace(/\\cap\b/g, "∩")
       .replace(/\\pm/g, "±").replace(/\\infty/g, "∞").replace(/\\pounds\b/g, "£")
       .replace(/\\pi/g, "π").replace(/\\times/g, "×").replace(/\\cdot/g, "·")
+      .replace(/([A-Za-z0-9)])(?=sqrt\()/g, "$1*")
       .replace(/\\therefore|\\Rightarrow|\\implies/g, "")
+      .replace(/\\\{|\\\}/g, "")
       .replace(/\\,/g, " ").replace(/\\;/g, " ").replace(/\\!/g, "").replace(/\\(?=\s)/g, " ")
       .replace(/\\([A-Za-z]+)/g, "$1")
       .replace(/[{}]/g, ""))
@@ -142,7 +173,7 @@
       .replace(/\\circ\b/gi, "∘")
       .replace(/√\s*\{([^{}]+)\}/g, "sqrt($1)")
       .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
-      .replace(/\\sqrt\s*([A-Za-z0-9.]+)/g, "sqrt($1)")
+      .replace(/\\sqrt\s*([A-Za-z]|[0-9]+(?:\.[0-9]+)?)/g, "sqrt($1)")
       .replace(/\bpi\b/gi, "π")
       .replace(/±\s+/g, "±")
       .replace(/\+\s*-/g, "-")
@@ -150,10 +181,15 @@
       .replace(/(^|[=+(\-])(-?)1(?=[A-Za-z])/g, "$1$2")
       .replace(/²/g, "^2")
       .replace(/³/g, "^3")
+      .replace(/(sin|cos|tan)\^-1(?=\()/gi, "arc$1")
+      .replace(/\b(ln|log|exp|sin|cos|tan|sec|csc|cot)\s+([A-Za-z0-9.π]+)/gi, "$1($2)")
+      .replace(/\b(ln|log|exp|sin|cos|tan|sec|csc|cot)(sqrt\([^)]*\)|root\([^)]*\))/gi, "$1($2)")
+      .replace(/((?:\([^()]+\)|[A-Za-z0-9.π]+)\s*\/\s*(?:\([^()]+\)|[A-Za-z0-9.π]+))(?=(?:sqrt|root|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)\s*\()/gi, "($1)*")
       .replace(/(^|[=+\-])(\d+)\/(\d+)(x\^\d+)/g, function (_match, sign, numerator, denominator, power) {
         return sign + (numerator === "1" ? "" : numerator + "*") + power + "/" + denominator;
       })
       .replace(/\s*\(\s*((?:cm|mm|km|m)\s*\^[23])\s*\)\s*$/i, " $1")
+      .replace(/\s*\(\s*(ml|litres?|liters?|kg|g|cm|mm|km|m|rad|minutes?|hours?|mins?|hrs?)\s*\)/gi, " $1")
       .replace(/\s*\+\s*(?:…|\.\.\.)\s*$/, "")
       .replace(/\s+/g, " ")
       .replace(/\s+(?=[°%])/g, "")
@@ -191,6 +227,7 @@
     if (/\b(method|attempt|award|working|substitution|curve|diagram|sketch|proof|explanation)\b/i.test(answer)) return;
     if (/^(?:or\s+)?equivalent$|^oe$/i.test(answer)) return;
     if (/^(?:[a-df-hj-z]|theta|alpha|beta|gamma|dx|dy\/dx|dm\/dt|cos\s*theta|sin\s*theta)$/i.test(answer)) return;
+    if (/^\^[+-]?\d+$/.test(answer) || /^(?:cm|mm|km|m|s|kg|rad)(?:\^[+-]?\d+)?$/i.test(answer)) return;
     var workingPrecision = answer.match(/^(.+?)\s*\(\s*[-+]?\d+\.\d{3,}(?:…)?(?:\s*°)?\s*\)\s*(rad|°)?$/i);
     if (workingPrecision && /\d/.test(workingPrecision[1])) {
       answer = clean(workingPrecision[1] + (workingPrecision[2] && workingPrecision[1].indexOf(workingPrecision[2]) === -1 ? " " + workingPrecision[2] : ""));
@@ -207,6 +244,18 @@
       return;
     }
 
+    var commaPositions = topLevelPositions(answer, function (character) { return character === ","; });
+    if (commaPositions.length) {
+      var commaParts = [];
+      var commaStart = 0;
+      commaPositions.forEach(function (position) {
+        commaParts.push(answer.slice(commaStart, position).trim());
+        commaStart = position + 1;
+      });
+      commaParts.push(answer.slice(commaStart).trim());
+      if (commaParts.every(Boolean)) answer = commaParts.join("; ");
+    }
+
     function addUnique(candidate) {
       var cleaned = clean(candidate);
       if (!cleaned || !isDisplaySafe(cleaned)) return;
@@ -216,11 +265,19 @@
     }
 
     var equalityCount = (answer.match(/=/g) || []).length;
-    if ((equalityCount > 1 || (startsWithEquality && equalityCount > 0)) && !/[<>&≤≥]/.test(answer)) {
+    if (topLevelPositions(answer, function (character) { return character === ";"; }).length) {
+      addUnique(answer);
+      return;
+    }
+    if (equalityCount > 1 || (startsWithEquality && equalityCount > 0)) {
       var finalRightSide = answer.slice(answer.lastIndexOf("=") + 1).trim();
       var firstLeftSide = answer.slice(0, answer.indexOf("=")).trim();
-      if (firstLeftSide && shouldKeepWholeEquality(prompt, firstLeftSide + "=" + finalRightSide)) addUnique(firstLeftSide + "=" + finalRightSide);
+      var wholeEquality = firstLeftSide && shouldKeepWholeEquality(prompt, firstLeftSide + "=" + finalRightSide)
+        ? firstLeftSide + "=" + finalRightSide
+        : "";
+      if (!/…|[≤≥]/.test(answer) && wholeEquality) addUnique(wholeEquality);
       addUnique(finalRightSide);
+      if (/…|[≤≥]/.test(answer) && wholeEquality) addUnique(wholeEquality);
       addUnique(answer);
       return;
     }
@@ -248,8 +305,6 @@
     if (/\bmean\b|expected value|\be\s*\(/.test(question) && /\be\s*\(|\bmean\b|\bmu\s*=/.test(answer)) score += 30;
     if (/\bmedian\b/.test(question) && /\bmedian\b|\bm\s*=/.test(answer)) score += 30;
     if (/\bmode\b/.test(question) && /\bmode\b/.test(answer)) score += 30;
-    if (/\bprobability\b|\bp\s*\(/.test(question) && /\bp\s*\(/.test(answer)) score += 25;
-    if (/∫|\bintegral\b/.test(question) && /∫/.test(answer)) score += 25;
     var target = question.match(/\b(?:value|expression)\s+(?:of|for)\s+([a-z]+)\b/);
     if (target && new RegExp("(?:^|[^a-z])" + target[1] + "\\s*=", "i").test(answer)) score += 50;
     return score;
@@ -263,14 +318,22 @@
       if (classification) return [classification[1][0].toUpperCase() + classification[1].slice(1).toLowerCase()];
     }
     var answerRows = rows.filter(function (row) {
+      var rowText = plainText(Array.isArray(row) ? row[0] : row);
       return Array.isArray(row)
-        && /(?:A\d|B\d|G\d|N\d|E\d|AG)/.test(String(row[1] || ""))
-        && (mathFragments(row[0]).length || /(?:^|\s)[-+]?\d+(?:\.\d+)?(?:\s|$|[),])/i.test(plainText(row[0])));
+        && /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""))
+        && (mathFragments(row[0]).length
+          || /(?:^|\s)[-+]?\d+(?:\.\d+)?(?:\s|$|[),])/i.test(rowText)
+          || (rowText.length > 0 && rowText.length <= 120
+            && !/\b(?:attempt|award|method|note)\b/i.test(rowText)
+            && (/^(?:zero|one|two|three|four|five|six|seven|eight|nine|ten)$/i.test(rowText)
+              || /\b(?:is|are)\s+(?:odd|even|neither|a minimum|a maximum|concave up|concave down|one-to-one|many-to-one|more likely|closer)\b/i.test(rowText)
+              || /^concave\s+(?:up|down)\b/i.test(rowText))));
     });
     if (!answerRows.length) return [];
     var answers = [];
     var promptText = plainText(prompt);
-    var wantsCollection = /\b(coordinates?|roots?|solutions?|values?|intercepts?|turning points?|local max(?:imum)?|local min(?:imum)?)\b/i.test(promptText);
+    var wantsCollection = /\b(coordinates?|roots?|solutions?|values|intercepts?|asymptotes?|position vectors?|turning points?|local max(?:imum)?|local min(?:imum)?)\b/i.test(promptText)
+      || /\b(?:maximum[\s\S]*minimum|minimum[\s\S]*maximum|mean[\s\S]*standard deviation|standard deviation[\s\S]*mean|modulus[\s\S]*argument|argument[\s\S]*modulus|first term[\s\S]*common difference|common difference[\s\S]*first term|inverse[\s\S]*domain|domain[\s\S]*inverse|range[\s\S]*of)\b/i.test(promptText);
     var wantsCoordinateCollection = /\bcoordinates?\b|\blocal max(?:imum)?\b|\blocal min(?:imum)?\b/i.test(promptText);
     var coordinateCollection = [];
     if (wantsCoordinateCollection) {
@@ -305,22 +368,72 @@
     function meaningfulMaths(alternative) {
       return mathFragments(alternative).filter(function (fragment) {
         var plain = clean(latexToPlain(fragment));
-        return plain && !/^[a-z]\s*=$/i.test(plain);
+        return plain
+          && !/^[a-z]\s*=$/i.test(plain)
+          && !/^\^[+-]?\d+$/.test(plain)
+          && !/^(?:cm|mm|km|m|s|kg|rad)(?:\^[+-]?\d+)?$/i.test(plain)
+          && !/^(?:triangle|ln|log|sin|cos|tan|sec|csc|cot|cd)$/i.test(plain);
       });
     }
     function isPrimaryWithParentheticalEquivalent(alternative) {
       var maths = meaningfulMaths(alternative);
-      return maths.length === 2 && (/^\s*\(?\s*=/.test(maths[1]) || /\baccept\s*\\\(/i.test(alternative));
+      return maths.length === 2 && (/^\s*(?:\\left\s*)?\(?\s*=/.test(maths[1]) || /\baccept\s*\\\(/i.test(alternative));
     }
     var unsafeAlternative = coordinateCollection.length < 2 && alternatives.some(function (alternative) {
       var maths = meaningfulMaths(alternative);
-      return (maths.length > 1 && !wantsCollection && !isSignedExactAndDecimalPair(alternative) && !isPrimaryWithParentheticalEquivalent(alternative))
-        || (maths.length === 1 && (maths[0].match(/=/g) || []).length > 3);
+      return maths.length === 1 && (maths[0].match(/=/g) || []).length > 5;
     });
     if (unsafeAlternative) return [];
+    var pairedValuePrompt = clean(latexToPlain(prompt)).match(/\bvalues?\s+of\s+([a-z])\s+and\s+([a-z])\b/i);
     if (coordinateCollection.length >= 2) addAcceptedAnswer(answers, coordinateCollection.join("; "), prompt);
+    else if (wantsCollection && pairedValuePrompt) {
+      var pairedValues = [];
+      [pairedValuePrompt[1], pairedValuePrompt[2]].forEach(function (target) {
+        for (var rowIndex = answerRows.length - 1; rowIndex >= 0; rowIndex -= 1) {
+          var targetFragments = meaningfulMaths(String(answerRows[rowIndex][0] || ""));
+          var targetAnswer = targetFragments.map(function (fragment) { return clean(latexToPlain(fragment)); }).find(function (candidate) {
+            return new RegExp("^" + target + "\\s*=", "i").test(candidate);
+          });
+          if (targetAnswer) { pairedValues.push(targetAnswer); break; }
+        }
+      });
+      if (pairedValues.length === 2) addAcceptedAnswer(answers, pairedValues.join("; "), prompt);
+    }
+    else if (wantsCollection && /\binverse\b[\s\S]*\bdomain\b|\bdomain\b[\s\S]*\binverse\b|\bdomain\b[\s\S]*\brange\b|\brange\b[\s\S]*\bdomain\b|\branges?\s+of\b[\s\S]*\band\b/i.test(promptText)) {
+      var definitionPieces = [];
+      answerRows.slice(-6).forEach(function (row) {
+        var rowText = clean(latexToPlain(String(row[0] || "")));
+        if (!/(?:\bf\^-1\s*\(|\bdom\s*\(|\brange\b|^[fg]\s*\(|^[fg]\s*[∈≤≥<>=])/i.test(rowText)) return;
+        var rowAnswers = [];
+        meaningfulMaths(String(row[0] || "")).forEach(function (fragment) { addAcceptedAnswer(rowAnswers, fragment, prompt); });
+        if (rowAnswers[0] && !definitionPieces.some(function (piece) { return equivalent(piece, rowAnswers[0]); })) definitionPieces.push(rowAnswers[0]);
+      });
+      if (definitionPieces.length >= 2) addAcceptedAnswer(answers, definitionPieces.join("; "), prompt);
+    }
+    else if (wantsCollection && /\bmodulus\b[\s\S]*\bargument\b|\bargument\b[\s\S]*\bmodulus\b/i.test(promptText)) {
+      var polarPieces = [];
+      answerRows.slice(-8).forEach(function (row) {
+        meaningfulMaths(String(row[0] || "")).forEach(function (fragment) {
+          var piece = clean(latexToPlain(fragment));
+          if ((/\barg\s*\(|\|[^|]+\|\s*=/.test(piece)) && piece.indexOf("=") > 0 && isDisplaySafe(piece)) polarPieces.push(piece);
+        });
+      });
+      if (polarPieces.length >= 2) addAcceptedAnswer(answers, polarPieces.join("; "), prompt);
+    }
     else alternatives.forEach(function (alternative) {
       var maths = meaningfulMaths(alternative);
+      var completeAlternative = clean(latexToPlain(alternative));
+      var conclusionNumber = /\b(?:minimum|maximum|value|answer|probability|area|volume|length|width|rate)[^.;]{0,180}\b(?:is|=)\s*([-+]?\d+(?:\.\d+)?(?:\s*\/\s*[-+]?\d+(?:\.\d+)?)?)(?:\s*(%|°|rad))?(?:\s|$)/i.exec(completeAlternative);
+      var exactWithApproximation = completeAlternative.match(/(?:^|=)\s*(-?\d+(?:\.\d+)?\s*\/\s*-?\d+(?:\.\d+)?)\s*\(\s*=\s*(-?\d+(?:\.\d+)?)/);
+      if (conclusionNumber) {
+        addAcceptedAnswer(answers, conclusionNumber[1] + (conclusionNumber[2] ? " " + conclusionNumber[2] : ""), prompt);
+        return;
+      }
+      if (exactWithApproximation) {
+        addAcceptedAnswer(answers, exactWithApproximation[1], prompt);
+        addAcceptedAnswer(answers, exactWithApproximation[2], prompt);
+        return;
+      }
       if (isSignedExactAndDecimalPair(alternative)) {
         maths.forEach(function (fragment) { addAcceptedAnswer(answers, fragment, prompt); });
       } else if (isPrimaryWithParentheticalEquivalent(alternative)) {
@@ -329,9 +442,31 @@
         addAcceptedAnswer(answers, maths[1], prompt);
       } else if (wantsCollection && maths.length > 1) {
         addAcceptedAnswer(answers, maths.map(function (fragment) { return clean(latexToPlain(fragment)); }).join("; "), prompt);
-      } else if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) addAcceptedAnswer(answers, maths[0], prompt);
+      } else if (maths.length > 1) {
+        var findSection = String(prompt || "");
+        var findIndex = findSection.toLowerCase().lastIndexOf("find");
+        if (findIndex >= 0) findSection = findSection.slice(findIndex);
+        var requestedMaths = mathFragments(findSection).map(function (fragment) { return canonical(latexToPlain(fragment)); });
+        var selectedMath = maths[maths.length - 1];
+        for (var mathIndex = 0; mathIndex < maths.length; mathIndex += 1) {
+          var candidate = clean(latexToPlain(maths[mathIndex]));
+          var candidateLeft = candidate.indexOf("=") > 0 ? canonical(candidate.slice(0, candidate.indexOf("="))) : "";
+          if (candidateLeft && requestedMaths.some(function (requested) { return requested === candidateLeft; })) {
+            selectedMath = maths[mathIndex];
+            break;
+          }
+        }
+        addAcceptedAnswer(answers, selectedMath, prompt);
+      } else if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) {
+        addAcceptedAnswer(answers, maths[0], prompt);
+      }
       else if (maths.length === 0 || (maths.length === 1 && /^[a-z]$/i.test(latexToPlain(maths[0])))) {
         var textAnswer = plainText(alternative);
+        var numberWords = { zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7", eight: "8", nine: "9", ten: "10" };
+        if (numberWords[textAnswer.toLowerCase()]) {
+          addAcceptedAnswer(answers, numberWords[textAnswer.toLowerCase()], prompt);
+          return;
+        }
         var numbers = textAnswer.match(/-?\d+(?:\.\d+)?(?:\s*\/\s*-?\d+(?:\.\d+)?)?/g) || [];
         if (numbers.length === 1) addAcceptedAnswer(answers, numbers[0], prompt);
         else addAcceptedAnswer(answers, textAnswer, prompt);
@@ -429,8 +564,8 @@
     var positions = [];
     var depth = 0;
     for (var index = 0; index < value.length; index += 1) {
-      if (value[index] === "(") depth += 1;
-      else if (value[index] === ")") depth -= 1;
+      if (/[([{]/.test(value[index])) depth += 1;
+      else if (/[)\]}]/.test(value[index])) depth -= 1;
       else if (depth === 0 && matcher(value[index], index)) positions.push(index);
     }
     return positions;
@@ -439,12 +574,15 @@
   function atomToLatex(value) {
     return value
       .replace(/matrix\(([^()]*)\)/gi, function (_match, body) {
-        return "\\begin{pmatrix}" + body.split(";").map(function (row) { return row.split(",").join("&"); }).join("\\\\") + "\\end{pmatrix}";
+        return "\\begin{pmatrix}" + body.split(";").map(function (row) {
+          return row.split(",").map(function (cell) { return expressionToLatex(cell.trim()) || cell.trim(); }).join("&");
+        }).join("\\\\") + "\\end{pmatrix}";
       })
       .replace(/bold\(([^()]+)\)/gi, "\\mathbf{$1}")
       .replace(/vec\(([^()]+)\)/gi, "\\overrightarrow{$1}")
       .replace(/blackboard\(([^()]+)\)/gi, "\\mathbb{$1}")
       .replace(/cal\(([^()]+)\)/gi, "\\mathcal{$1}")
+      .replace(/\^\(\s*([^/()]+)\s*\/\s*([^/()]+)\s*\)/g, "^{\\frac{$1}{$2}}")
       .replace(/\^\(([^()]*)\)/g, "^{$1}")
       .replace(/root\(([^,()]+),([^()]+)\)/gi, "\\sqrt[$1]{$2}")
       .replace(/sqrt\(([^()]+)\)/gi, "\\sqrt{$1}")
@@ -453,17 +591,31 @@
       .replace(/≤/g, "\\le ")
       .replace(/≥/g, "\\ge ")
       .replace(/≠/g, "\\ne ")
+      .replace(/∈/g, "\\in ")
+      .replace(/∉/g, "\\notin ")
+      .replace(/∪/g, "\\cup ")
+      .replace(/∩/g, "\\cap ")
       .replace(/±/g, "\\pm ")
       .replace(/∫/g, "\\int ")
       .replace(/∑/g, "\\sum ")
       .replace(/∏/g, "\\prod ")
       .replace(/\*/g, "\\times ")
-      .replace(/(^|[^\\])(sin|cos|tan|ln|log|exp)(?=[A-Za-z]|\b)/gi, "$1\\$2 ")
+      .replace(/(^|[^\\])(cis)(?=[A-Za-z]|\b)/gi, "$1\\operatorname{cis}")
+      .replace(/(^|[^\\])(arg|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)(?=[A-Za-z]|\b)/gi, "$1\\$2 ")
       .replace(/(^|[^A-Za-z\\])(mu|sigma|theta|alpha|beta|gamma)\b/gi, "$1\\$2 ")
+      .replace(/(^|[^A-Za-z\\])(lambda)\b/gi, "$1\\lambda ")
       .replace(/°/g, "^{\\circ}")
       .replace(/\^([+-]?\d+)/g, "^{$1}")
       .replace(/\b(cm|mm|km|m)\^\{?([23])\}?\b/gi, "\\mathrm{$1}^{$2}")
-      .replace(/\b(cm|mm|km|kg|rad|mins?|hrs?)\b/gi, "\\mathrm{$1}");
+      .replace(/\b(cm|mm|km|ml|litres?|liters?|kg|rad|mins?|hrs?)\b/gi, "\\mathrm{$1}")
+      .replace(/\(([^()]+)\)/g, function (match, inner) {
+        var rendered = expressionToLatex(inner);
+        return rendered ? "\\left(" + rendered + "\\right)" : match;
+      })
+      .replace(/\[([^\[\]]+)\]/g, function (match, inner) {
+        var rendered = expressionToLatex(inner);
+        return rendered ? "[" + rendered + "]" : match;
+      });
   }
 
   function expressionToLatex(value) {
@@ -474,13 +626,27 @@
       return inner ? "\\left(" + inner + "\\right)" : null;
     }
 
-    var functionMatch = expression.match(/^(sqrt|sin|cos|tan|ln|log|exp)\((.*)\)$/i);
+    var listPositions = topLevelPositions(expression, function (character) { return character === ";" || character === ","; });
+    if (listPositions.length) {
+      var renderedItems = [];
+      var itemStart = 0;
+      listPositions.forEach(function (position) {
+        renderedItems.push(expressionToLatex(expression.slice(itemStart, position)));
+        itemStart = position + 1;
+      });
+      renderedItems.push(expressionToLatex(expression.slice(itemStart)));
+      return renderedItems.every(Boolean) ? renderedItems.join(",\\ ") : null;
+    }
+
+    var functionMatch = expression.match(/^(sqrt|arg|cis|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)\((.*)\)$/i);
     if (functionMatch && parenthesesAreBalanced(functionMatch[2])) {
       var functionArgument = expressionToLatex(functionMatch[2]);
       if (!functionArgument) return null;
       return functionMatch[1].toLowerCase() === "sqrt"
         ? "\\sqrt{" + functionArgument + "}"
-        : "\\" + functionMatch[1].toLowerCase() + "\\left(" + functionArgument + "\\right)";
+        : functionMatch[1].toLowerCase() === "cis"
+          ? "\\operatorname{cis}\\left(" + functionArgument + "\\right)"
+          : "\\" + functionMatch[1].toLowerCase() + "\\left(" + functionArgument + "\\right)";
     }
 
     var relationPositions = topLevelPositions(expression, function (character) { return /[=≤≥≠<>]/.test(character); });
@@ -504,7 +670,7 @@
     }
 
     var additivePositions = topLevelPositions(expression, function (character, index) {
-      if (index === 0 || (character !== "+" && character !== "-")) return false;
+      if (index === 0 || (character !== "+" && character !== "-" && character !== "±")) return false;
       return !/[=+\-*/^(,]/.test(expression[index - 1] || "");
     });
     if (additivePositions.length) {
@@ -512,11 +678,23 @@
       var termStart = 0;
       additivePositions.forEach(function (position) {
         renderedTerms.push(expressionToLatex(expression.slice(termStart, position)));
-        renderedTerms.push(expression[position]);
+        renderedTerms.push(atomToLatex(expression[position]));
         termStart = position + 1;
       });
       renderedTerms.push(expressionToLatex(expression.slice(termStart)));
       return renderedTerms.every(Boolean) ? renderedTerms.join("") : null;
+    }
+
+    var multiplicationPositions = topLevelPositions(expression, function (character) { return character === "*" || character === "×" || character === "·"; });
+    if (multiplicationPositions.length) {
+      var renderedFactors = [];
+      var factorStart = 0;
+      multiplicationPositions.forEach(function (position) {
+        renderedFactors.push(expressionToLatex(expression.slice(factorStart, position)));
+        factorStart = position + 1;
+      });
+      renderedFactors.push(expressionToLatex(expression.slice(factorStart)));
+      return renderedFactors.every(Boolean) ? renderedFactors.join("\\times ") : null;
     }
 
     var divisionPositions = topLevelPositions(expression, function (character) { return character === "/"; });
@@ -697,10 +875,24 @@
   }
 
   function categoricalCandidates(correct, list) {
+    var normalized = clean(correct).toLowerCase();
     var alternatives = {
       minimum: ["Maximum", "Neither", "Point of inflexion", "Cannot be determined"],
       maximum: ["Minimum", "Neither", "Point of inflexion", "Cannot be determined"],
-    }[clean(correct).toLowerCase()];
+      "concave up for all values of x": ["Concave down for all values of x", "Linear for all values of x", "Changes concavity once", "Cannot be determined"],
+      "concave down for all values of x": ["Concave up for all values of x", "Linear for all values of x", "Changes concavity once", "Cannot be determined"],
+      "one-to-one": ["Many-to-one", "Constant", "Periodic", "Cannot be determined"],
+      "many-to-one": ["One-to-one", "Constant", "Strictly increasing", "Cannot be determined"],
+    }[normalized];
+    var likely = clean(correct).match(/^([A-Za-z]+) is more likely(?: to .+)?$/i);
+    if (likely) {
+      alternatives = [
+        likely[1] === "Jan" ? "Sia is more likely" : "Jan is more likely",
+        "They are equally likely",
+        "Neither is more likely",
+        "Cannot be determined",
+      ];
+    }
     if (alternatives) alternatives.forEach(function (alternative) { addCandidate(list, alternative); });
   }
 
@@ -724,6 +916,35 @@
     addCandidate(list, "(" + expression + ")+2");
     addCandidate(list, "(" + expression + ")-3");
     addCandidate(list, "2*(" + expression + ")");
+    addCandidate(list, "3*(" + expression + ")");
+  }
+
+  function relationMutationCandidates(correct, list) {
+    var expression = clean(correct);
+    var relationPattern = /[<≤>≥≠=]/g;
+    var match;
+    while ((match = relationPattern.exec(expression)) && list.length < 8) {
+      var alternatives = {
+        "<": ["≤", ">"],
+        "≤": ["<", "≥"],
+        ">": ["≥", "<"],
+        "≥": [">", "≤"],
+        "≠": ["=", "<"],
+        "=": ["≠", "≤"],
+      }[match[0]] || [];
+      alternatives.forEach(function (relation) {
+        addCandidate(list, expression.slice(0, match.index) + relation + expression.slice(match.index + match[0].length));
+      });
+    }
+  }
+
+  function intervalCandidates(correct, list) {
+    var expression = clean(correct);
+    if (!/[\[\]]/.test(expression) || !/,/.test(expression)) return;
+    addCandidate(list, expression.replace(/^\[/, "]"));
+    addCandidate(list, expression.replace(/\[$/, "]"));
+    addCandidate(list, expression.replace(/∞/g, "0"));
+    addCandidate(list, expression.replace(/∞/g, "1"));
   }
 
   function symbolicCandidates(correct, list) {
@@ -846,6 +1067,8 @@
     implicitProductCandidates(correct, candidates);
     seriesCandidates(correct, candidates);
     mutateNumberTokens(correct, candidates);
+    relationMutationCandidates(correct, candidates);
+    intervalCandidates(correct, candidates);
     symbolicCandidates(correct, candidates);
     var distractors = candidates.filter(function (candidate) {
       return !accepted.some(function (answer) { return equivalent(candidate, answer); });
@@ -939,6 +1162,9 @@
 
   function toLatex(value) {
     var answer = clean(value);
+    if (/^[A-Za-z][A-Za-z0-9 ,.'-]+$/.test(answer) && /\s/.test(answer) && !/[=<>≤≥≠]/.test(answer)) {
+      return "\\text{" + answer.replace(/\\/g, "") + "}";
+    }
     var comparisonReason = answer.match(/^(Less than|Greater than|Equal to) the actual value, because (the gradient (?:is (?:increasing|decreasing)|stays constant))$/i);
     if (comparisonReason) return "\\text{" + comparisonReason[1] + " the actual value, because " + comparisonReason[2] + ".}";
     var parity = answer.match(/^(Odd|Even|Neither), because (.+)$/i);

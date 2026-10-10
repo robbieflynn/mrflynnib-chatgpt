@@ -51,11 +51,12 @@ function plainText(value) {
 
 function romanSubparts(prompt) {
   const labels = [];
+  const sequence = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
   const pattern = /\(([ivxlcdm]+)\)/gi;
   let match;
   while ((match = pattern.exec(plainText(prompt)))) {
     const label = match[1].toLowerCase();
-    if (!labels.includes(label)) labels.push(label);
+    if (label === sequence[labels.length]) labels.push(label);
   }
   return labels.includes("i") && labels.includes("ii") ? labels : [];
 }
@@ -78,7 +79,9 @@ function promptForSubpart(prompt, label) {
   const start = source.search(marker);
   if (start === -1) return source;
   const remainder = source.slice(start + label.length + 2);
-  const next = remainder.search(/\(([ivxlcdm]+)\)/i);
+  const labels = romanSubparts(prompt);
+  const nextLabel = labels[labels.indexOf(label) + 1];
+  const next = nextLabel ? remainder.search(new RegExp(`\\(${nextLabel}\\)`, "i")) : -1;
   return next === -1 ? remainder : remainder.slice(0, next);
 }
 
@@ -125,11 +128,13 @@ function assignmentPartConfigs(question) {
         const labelledRows = rowsForSubpart(rows, nestedLabel);
         const nestedRows = labelledRows.length ? labelledRows : rows;
         const label = topLabel ? `${topLabel}(${nestedLabel})` : nestedLabel;
-        configs.push({ label, prompt: nestedPrompt, choices: choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`) });
+        const accepted = choices.extractAcceptedAnswers(nestedRows, nestedPrompt);
+        configs.push({ label, prompt: nestedPrompt, accepted, rows: nestedRows, choices: choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`) });
       }
     } else {
       const label = topLabel || "answer";
-      configs.push({ label, prompt, choices: choiceSetForRows(rows, prompt, `${question.id}:${label}`) });
+      const accepted = choices.extractAcceptedAnswers(rows, prompt);
+      configs.push({ label, prompt, accepted, rows, choices: choiceSetForRows(rows, prompt, `${question.id}:${label}`) });
     }
   }
   return configs;
@@ -185,7 +190,7 @@ const coordinateAnswers = choices.extractAcceptedAnswers(
   coordinateRows,
   "State the coordinates of the points where the curve crosses the x-axis.",
 );
-assert.equal(coordinateAnswers[0], "(0,0); (2sqrt(2),0); (-2sqrt(2),0)");
+assert.equal(coordinateAnswers[0], "(0,0); (2*sqrt(2),0); (-2*sqrt(2),0)");
 assert(choices.generateChoiceSet(coordinateAnswers, "audit-coordinate-set"));
 const turningPointAnswers = choices.extractAcceptedAnswers(
   [
@@ -267,7 +272,7 @@ assert(choices.generateChoiceSet(extremumAnswers, "audit-extremum-classification
 assert.equal(choices.toLatex("0<x≤1/4"), String.raw`0<x\le \frac{1}{4}`);
 assert.equal(
   choices.toLatex("h(x)=1/(e^(x^2)+3)"),
-  String.raw`h(x)=\frac{1}{\left(e^{x^{2}}+3\right)}`,
+  String.raw`h\left(x\right)=\frac{1}{\left(e^{x^{2}}+3\right)}`,
 );
 
 const constantAnswers = choices.extractAcceptedAnswers([[String.raw`\(k=\dfrac14\)`, "A1"]], "Find k.");
@@ -296,6 +301,30 @@ assert(pairedInterceptAnswers.includes("x=±2.24"));
 const pairedInterceptChoices = choices.generateChoiceSet(pairedInterceptAnswers, "M14TZ2SL_P2_Q2:a");
 assert(pairedInterceptChoices);
 assert(pairedInterceptChoices.options.every((option) => !/^-?\([^)]*=/.test(option)));
+
+const malformedProbabilityAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(P(T = 6) = \dfrac19\ (= 0.111\) 3 sf\()\)`, "A1"]],
+  "Calculate the probability that Tim obtains a score of 6.",
+);
+assert.deepEqual(malformedProbabilityAnswers, ["1/9", "0.111"]);
+assert(choices.generateChoiceSet(malformedProbabilityAnswers, "audit-malformed-probability"));
+
+const intervalAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`range is \(\left[-3,\ \dfrac32\right]\)`, "A2"]],
+  "State the range of f.",
+);
+assert.deepEqual(intervalAnswers, ["[-3, 3/2]"]);
+assert(choices.generateChoiceSet(intervalAnswers, "audit-interval"));
+
+const nestedRadicalAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(r=x\sqrt{\dfrac{3\sqrt3}{\pi}}\)`, "A1"]],
+  "Find the radius in terms of x.",
+);
+assert(nestedRadicalAnswers[0].includes("sqrt"));
+assert(choices.generateChoiceSet(nestedRadicalAnswers, "audit-nested-radical"));
+
+assert.deepEqual(choices.extractAcceptedAnswers([["one", "A1"]], "Write down the number of points of inflexion."), ["1"]);
+assert.deepEqual(choices.extractAcceptedAnswers([[String.raw`\(=5.63\) cm\(^2\)`, "A1"]], "Find the area."), ["5.63"]);
 
 let checked = 0;
 let generated = 0;
@@ -377,7 +406,7 @@ for (const [label, path] of banks) {
         verifiedLineQuestion = true;
       }
       if (question.id === "M15TZ2HL_P2_Q11" && part === "c") {
-        assert.equal(accepted[0], "2sqrt(2)");
+        assert.equal(accepted[0], "2*sqrt(2)");
       }
       if (question.id === "M15TZ2SL_P2_Q8" && part === "b") {
         assert.deepEqual(accepted, ["-1"]);
@@ -450,6 +479,11 @@ let allActiveQuestions = 0;
 let allAnswerParts = 0;
 let allWhiteboardParts = 0;
 let allQuestionsWithWhiteboard = 0;
+const objectiveFailureKinds = new Map();
+const objectiveFailureVerbs = new Map();
+const activeObjectiveFallbacks = [];
+let objectiveWhiteboardParts = 0;
+const objectiveWhiteboardQuestions = new Set();
 for (const [label, path] of banks) {
   const questions = extractSeed(path).filter((question) => activeQuestionIds[label].has(String(question.id || "")));
   let bankAnswerParts = 0;
@@ -461,6 +495,16 @@ for (const [label, path] of banks) {
     bankAnswerParts += configs.length;
     bankWhiteboardParts += whiteboardParts.length;
     if (whiteboardParts.length) bankQuestionsWithWhiteboard += 1;
+    for (const config of whiteboardParts.filter((part) => looksObjective(part.prompt))) {
+      objectiveWhiteboardParts += 1;
+      objectiveWhiteboardQuestions.add(`${label}:${question.id}`);
+      const kind = config.accepted.length ? "accepted answer found, but four safe alternatives were not generated" : "mark-scheme answer was not extracted";
+      objectiveFailureKinds.set(kind, (objectiveFailureKinds.get(kind) || 0) + 1);
+      const verb = plainText(config.prompt).match(/\b(find|calculate|write down|state|determine|solve|evaluate|express|give)\b/i);
+      const key = verb ? verb[1].toLowerCase() : "other";
+      objectiveFailureVerbs.set(key, (objectiveFailureVerbs.get(key) || 0) + 1);
+      activeObjectiveFallbacks.push({ bank: label, id: question.id, part: config.label, prompt: plainText(config.prompt), accepted: config.accepted, rows: config.rows });
+    }
   }
   allActiveQuestions += questions.length;
   allAnswerParts += bankAnswerParts;
@@ -469,7 +513,16 @@ for (const [label, path] of banks) {
   console.log(`${label} assignment inventory: ${bankWhiteboardParts}/${bankAnswerParts} answer parts use whiteboard or paper, across ${bankQuestionsWithWhiteboard}/${questions.length} active questions.`);
 }
 console.log(`Combined assignment inventory: ${allWhiteboardParts}/${allAnswerParts} answer parts use whiteboard or paper, across ${allQuestionsWithWhiteboard}/${allActiveQuestions} active questions.`);
+console.log(`Objective-looking whiteboard inventory: ${objectiveWhiteboardParts} parts across ${objectiveWhiteboardQuestions.size} active questions.`);
+console.log(`Objective fallback causes: ${Array.from(objectiveFailureKinds, ([kind, count]) => `${count} ${kind}`).join("; ")}.`);
+console.log(`Objective fallback prompt verbs: ${Array.from(objectiveFailureVerbs.entries()).sort((left, right) => right[1] - left[1]).map(([verb, count]) => `${verb} ${count}`).join(", ")}.`);
 if (process.env.ASSIGNMENT_AUDIT_DETAILS === "1") {
   console.log(`Objective-looking whiteboard fallbacks: ${objectiveFallbacks.length}`);
   objectiveFallbacks.slice(0, 120).forEach((item) => console.log(`- ${item}`));
+}
+if (process.env.ASSIGNMENT_AUDIT_DETAILS === "2") {
+  activeObjectiveFallbacks.slice(0, 100).forEach((item) => {
+    console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
+    console.log(`accepted=${JSON.stringify(item.accepted)} rows=${JSON.stringify(item.rows.slice(-4))}`);
+  });
 }
