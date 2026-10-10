@@ -216,7 +216,7 @@
   }
 
   function requiresWhiteboard(prompt) {
-    return /\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|giving a reason|state a reason|write down the steps|show your working|describe|discuss|interpret|comment on)\b/i.test(plainText(prompt));
+    return /\b(show that|prove|verify that|sketch|draw|construct|plot|show your working)\b/i.test(plainText(prompt));
   }
 
   function automaticAnswersFromRows(rows, prompt) {
@@ -310,6 +310,7 @@
           var answers = automaticAnswersFromRows(nestedRows, nestedPrompt);
           var label = topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel;
           var choices = choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
           if (!choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
           if (!choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
           if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
@@ -319,6 +320,7 @@
         var answers = automaticAnswersFromRows(rows, prompt);
         var label = topLabel || "answer";
         var choices = choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
         if (!choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
         if (!choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
         if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
@@ -366,7 +368,7 @@
         fields.appendChild(choicePreview(config.options, config.correctOption));
         var choiceHint = document.createElement("small"); choiceHint.textContent = "Every answer option is checked automatically before you publish."; fields.appendChild(choiceHint);
       } else if (config.type === "multipart") {
-        methodCopy.textContent = "Each part is answered separately. Suitable parts use five choices; written, proof and diagram parts use working on whiteboard or paper.";
+        methodCopy.textContent = "Each part is answered separately. Explanations use full-statement choices. Only drawing, diagram and show-or-prove parts use working on whiteboard or paper.";
         var partList = document.createElement("div"); partList.className = "qb-answer-part-list";
         config.parts.forEach(function (part) {
           var partRow = document.createElement("div"); partRow.className = "qb-answer-part-row";
@@ -382,7 +384,7 @@
         fields.appendChild(partList);
         var multipartHint = document.createElement("small"); multipartHint.textContent = "Answers come from the matching mark-scheme part, and every option is checked automatically."; fields.appendChild(multipartHint);
       } else {
-        methodCopy.textContent = "The student confirms that the proof, sketch, explanation or other written work is completed on the whiteboard or paper.";
+        methodCopy.textContent = "The student confirms that the proof, show-that, sketch or diagram work is completed on the whiteboard or paper.";
         var note = document.createElement("div"); note.className = "qb-answer-review-note"; note.textContent = "No answer is guessed. The teacher can review saved whiteboard work or check the student’s paper."; fields.appendChild(note);
       }
     }

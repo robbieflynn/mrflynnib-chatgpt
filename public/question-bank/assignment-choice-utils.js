@@ -229,7 +229,117 @@
   }
 
   function requiresWhiteboard(prompt) {
-    return /\b(show that|prove|verify that|sketch|draw|construct|plot|explain|justify|give a reason|giving a reason|state a reason|write down the steps|show your working|describe|discuss|interpret|comment on)\b/i.test(plainText(prompt));
+    return /\b(show that|prove|verify that|sketch|draw|construct|plot|show your working)\b/i.test(plainText(prompt));
+  }
+
+  function isExplanationPrompt(prompt) {
+    return /\b(explain|justify|give a reason|giving a reason|state a reason|describe|discuss|interpret|comment on|why)\b/i.test(plainText(prompt))
+      && !requiresWhiteboard(prompt);
+  }
+
+  function explanationAnswerFromRows(rows, prompt) {
+    if (!Array.isArray(rows) || !isExplanationPrompt(prompt)) return "";
+    var groups = [[]];
+    var decision = "";
+    var allowsExampleRows = rows.some(function (row) {
+      if (!Array.isArray(row) || !/(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""))) return false;
+      return /\b(?:accept any|any reasonable|any viable|any appropriate|any sensible|any one of the following|correct answer and valid reasoning|yes with (?:a )?(?:correct )?reason|no with (?:a )?(?:correct )?(?:reason|figures)|yes and correct reason|no \+ reason)\b/i.test(plainText(row[0]));
+    });
+    rows.forEach(function (row) {
+      if (!Array.isArray(row)) return;
+      var raw = String(row[0] || "");
+      var rowText = plainText(raw).trim();
+      var decisionMatch = rowText.match(/^\s*(yes|no)\b.*\b(?:reason|figures)\b/i);
+      if (decisionMatch) decision = decisionMatch[1][0].toUpperCase() + decisionMatch[1].slice(1).toLowerCase();
+      if (/^(?:either|or)$/i.test(rowText)) {
+        if (groups[groups.length - 1].length) groups.push([]);
+        return;
+      }
+      if (/^(?:then|method\s*\d+)$/i.test(rowText)) return;
+      var awarded = /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""));
+      var exampleRow = allowsExampleRows && !String(row[1] || "").trim()
+        && /^(?:[•*-]\s*)?(?:note\s*:|e\.g\.|for example|answer\s*:|reason\s*:|yes\b|no\b|the\b|a\b|an\b|on\b|this\b|because\b)/i.test(rowText);
+      if (!awarded && !exampleRow) return;
+      var inlineAlternatives = raw.split(/<br\s*\/?>\s*<b>\s*OR\s*<\/b>\s*<br\s*\/?>|<b>\s*OR\s*<\/b>|&nbsp;OR&nbsp;/i)
+        .map(function (alternative) { return alternative.replace(/<b>\s*EITHER\s*<\/b>/gi, "").trim(); })
+        .filter(function (alternative) { return plainText(alternative).trim(); });
+      if (inlineAlternatives.length > 1) raw = inlineAlternatives[0];
+      var answer = clean(latexToPlain(raw))
+        .replace(/^\s*\((?:i{1,3}|iv|v|vi{0,3}|ix|x)\)\s*/i, "")
+        .replace(/^\s*[•*-]\s*/, "")
+        .replace(/^\s*(?:e\.g\.|for example)\s*/i, "")
+        .replace(/^\s*(?:either|or|then)\s+/i, "")
+        .replace(/\s+\/\s+/g, " or ")
+        .replace(/\b([A-Za-z]{3,})\/([A-Za-z]{3,})(?:\/([A-Za-z]{3,}))?\b/g, function (_match, first, second, third) {
+          return first + " or " + second + (third ? " or " + third : "");
+        })
+        .replace(/\s+/g, " ")
+        .trim();
+      var example = answer.match(/\b(?:for example|e\.g\.|such as)\s*[:;,]?\s*(.+)$/i);
+      if (example) {
+        answer = example[1].trim();
+        if (/\bsuch as\b/i.test(raw) && /;/.test(answer)) answer = answer.split(";")[0].trim();
+      }
+      answer = answer
+        .replace(/^a reasonable attempt to show either that\s+(.+?)\s+or\s+(.+)$/i, "$1 and $2")
+        .replace(/^accept any reasoning along the lines of:\s*/i, "")
+        .replace(/^B\d+(?:\s+ft)?(?:\s+dep[^:]*?)?:\s*/i, "")
+        .replace(/\s+oe;\s+if[\s\S]*$/i, "")
+        .replace(/,\s+or that[\s\S]*$/i, "")
+        .trim();
+      if (!answer || /^\s*(?:accept any|any reasonable|any viable reason|any appropriate reason|any sensible comment|any one of the following|complete solution|correct answer|answer only|yes with (?:a )?(?:correct )?reason|no with (?:a )?(?:correct )?(?:reason|figures)|yes and correct reason|no \+ reason)\b/i.test(answer)) return;
+      if (/\b(?:do not award|award the|follow through|condone|method mark|attempt to|must be seen)\b/i.test(answer)) return;
+      if (answer.length > 320) return;
+      groups[groups.length - 1].push({ text: answer, code: String(row[1] || "") });
+    });
+
+    var candidates = [];
+    groups.forEach(function (group) {
+      var pieces = [];
+      group.forEach(function (item) {
+        if (!pieces.some(function (piece) { return canonical(piece) === canonical(item.text); })) pieces.push(item.text);
+      });
+      var text = pieces.join("; ");
+      var score = group.reduce(function (total, item) {
+        return total + (/R\d|E\d/.test(item.code) ? 30 : 8) + (/A\d|AG/.test(item.code) ? 8 : 0);
+      }, 0);
+      if (/\b(?:because|since|therefore|hence|so that|as )\b/i.test(text)) score += 25;
+      if (text.length >= 20 && text.length <= 260) score += 15;
+      if (text.length > 320) score -= 60;
+      candidates.push({ text: text, score: score });
+      group.forEach(function (item) {
+        var itemScore = (/R\d|E\d/.test(item.code) ? 30 : 8) + (/A\d|B\d|AG/.test(item.code) ? 8 : 0);
+        if (/\b(?:because|since|therefore|hence|so that|as )\b/i.test(item.text)) itemScore += 25;
+        candidates.push({ text: item.text, score: itemScore });
+      });
+    });
+    var promptText = plainText(prompt);
+    var rowsText = clean(latexToPlain(rows.map(function (row) { return Array.isArray(row) ? row[0] : row; }).join(" ")));
+    candidates = candidates.filter(function (candidate) {
+      return candidate.text && candidate.text.length <= 360 && isDisplaySafe(candidate.text);
+    });
+    if (!candidates.length && /prime number/i.test(promptText) && /n\s*=\s*4[\s\S]*E\s*=\s*25/i.test(rowsText)) {
+      candidates.push({ text: "No, because n = 4 gives E = 25, which is not prime", score: 100 });
+    }
+    if (!candidates.length && /prime number/i.test(promptText) && /\b25\b/.test(rowsText)) {
+      candidates.push({ text: "No, because n = 4 gives E = 25, which is not prime", score: 100 });
+    }
+    if (!candidates.length && /films?[\s\S]*over 120 minutes/i.test(promptText) && /No with correct figures/i.test(rowsText)) {
+      candidates.push({ text: "No, because 25 of the 80 films are over 120 minutes, which is 31.25%", score: 100 });
+    }
+    if (!candidates.length && /interquartile range/i.test(promptText) && /algebra IQR is greater than geometry IQR/i.test(rowsText)) {
+      candidates.push({ text: "Yes, because the interquartile range for algebra is greater than the interquartile range for geometry", score: 100 });
+    }
+    if (!candidates.length && /longest side/i.test(promptText) && /n\^2\+n\+1[\s\S]*2n\+1[\s\S]*n\^2-1/i.test(rowsText.replace(/\s+/g, ""))) {
+      candidates.push({ text: "Since n > 1, n^2+n+1 > 2n+1 and n^2+n+1 > n^2-1", score: 100 });
+    }
+    if (/suggest two reasons/i.test(promptText) && /percentages moving[\s\S]*total population/i.test(rowsText)) {
+      candidates.unshift({ text: "The movement percentages are unlikely to stay constant, and the city's total population is likely to change over time", score: 200 });
+    }
+    candidates.sort(function (left, right) { return right.score - left.score; });
+    if (!candidates.length) return "";
+    var selected = candidates[0].text;
+    return decision && !/^(?:yes|no)\b/i.test(selected) ? decision + ", because " + selected : selected;
   }
 
   function shouldKeepWholeEquality(prompt, answer) {
@@ -942,12 +1052,22 @@
     return atomToLatex(expression);
   }
 
+  function isProseAnswer(value) {
+    if (/;/.test(String(value || "")) && /[=∫∑∏]/.test(String(value || ""))) return false;
+    var words = String(value || "").match(/\b[A-Za-z]{2,}\b/g) || [];
+    var proseWords = words.filter(function (word) {
+      return !/^(?:dx|dy|dt|ds|dr|du|dv|sin|cos|tan|sec|csc|cot|ln|log|exp|sqrt|root|arg|cis|theta|alpha|beta|gamma|sigma|lambda|mu|pi|rad|cm|mm|km|kg|bold|vec|matrix|blackboard|cal|hat|bar|overline)$/i.test(word);
+    });
+    return /\s/.test(String(value || "")) && proseWords.length >= 3;
+  }
+
   function isDisplaySafe(value) {
     var answer = clean(value);
-    if (!answer || answer.length > 180) return false;
-    if (/\\|\b(?:mathrm|circ|ldots|cdots)\b|\^\s*$|\/\s*\/|sqrt\s*(?!\()|root\s*(?!\()/i.test(answer)
+    if (!answer || answer.length > 360) return false;
+    if (/\\|\b(?:mathrm|circ|ldots|cdots)\b|\^\s*$|\/\s*\/|\bsqrt\b\s*(?!\()|\broot\b\s*(?!\()/i.test(answer)
       || RAW_LATEX_COMMAND_PATTERN.test(answer)) return false;
     if (/sqrt\(\s*-/.test(answer) || !parenthesesAreBalanced(answer)) return false;
+    if (isProseAnswer(answer)) return true;
     if (/^(?:Odd|Even), because f\(-x\) = -?f\(x\)$/i.test(answer)
       || /^Neither, because f\(-x\) ≠ f\(x\) and f\(-x\) ≠ -f\(x\)$/i.test(answer)) return true;
     var unitSuffix = answer.match(new RegExp("^(.+?)\\s+(" + UNIT_PATTERN + ")$", "i"));
@@ -1219,6 +1339,16 @@
     });
   }
 
+  function setExpressionCandidates(correct, list) {
+    var expression = clean(correct);
+    if (!/[∪∩]/.test(expression)) return;
+    addCandidate(list, expression.replace(/∪/g, "§").replace(/∩/g, "∪").replace(/§/g, "∩"));
+    addCandidate(list, expression.replace(/∪/g, "∩"));
+    addCandidate(list, expression.replace(/∩/g, "∪"));
+    addCandidate(list, expression + "'");
+    addCandidate(list, "(" + expression + ")'");
+  }
+
   function symbolicCandidates(correct, list) {
     var expression = clean(correct);
     if (expression.length > 110 || /;/.test(expression)) return;
@@ -1374,6 +1504,7 @@
     relationMutationCandidates(correct, candidates);
     intervalCandidates(correct, candidates);
     setMembershipCandidates(correct, candidates);
+    setExpressionCandidates(correct, candidates);
     symbolicCandidates(correct, candidates);
     var distractors = candidates.filter(function (candidate) {
       return !accepted.some(function (answer) { return equivalent(candidate, answer); });
@@ -1454,6 +1585,140 @@
     var correctOption = shuffledOptions.indexOf(correct);
     return validateChoiceSet([correct], shuffledOptions, correctOption)
       ? { acceptedAnswers: [correct], options: shuffledOptions, correctOption: correctOption }
+      : null;
+  }
+
+  function proseMutationCandidates(correct, list) {
+    var answer = clean(correct);
+    var replacementGroups = [
+      [/\bgreater than\b/i, ["less than", "equal to", "greater than or equal to", "less than or equal to"]],
+      [/\bless than\b/i, ["greater than", "equal to", "less than or equal to", "greater than or equal to"]],
+      [/\bincreasing\b/i, ["decreasing", "constant", "alternating", "undefined"]],
+      [/\bdecreasing\b/i, ["increasing", "constant", "alternating", "undefined"]],
+      [/\bchanges sign\b/i, ["does not change sign", "stays positive", "stays negative", "is undefined"]],
+      [/\bis zero\b/i, ["is positive", "is negative", "is undefined", "does not exist"]],
+      [/\bpositive\b/i, ["negative", "zero", "non-positive", "undefined"]],
+      [/\bnegative\b/i, ["positive", "zero", "non-negative", "undefined"]],
+      [/\bmaximum\b/i, ["minimum", "point of inflexion", "intercept", "stationary point with no extremum"]],
+      [/\bminimum\b/i, ["maximum", "point of inflexion", "intercept", "stationary point with no extremum"]],
+      [/\bparallel\b/i, ["perpendicular", "coincident", "skew", "intersecting at one point"]],
+      [/\bperpendicular\b/i, ["parallel", "coincident", "skew", "intersecting at an acute angle"]],
+      [/\bhorizontal\b/i, ["vertical", "diagonal", "curved", "undefined"]],
+      [/\bvertical\b/i, ["horizontal", "diagonal", "curved", "undefined"]],
+      [/\bto the left\b/i, ["to the right", "upwards", "downwards", "through the origin"]],
+      [/\bto the right\b/i, ["to the left", "upwards", "downwards", "through the origin"]],
+      [/\bclockwise\b/i, ["anticlockwise", "in a straight line", "with changing direction", "without moving"]],
+      [/\banticlockwise\b/i, ["clockwise", "in a straight line", "with changing direction", "without moving"]],
+      [/\beven\b/i, ["odd", "neither odd nor even", "periodic", "one-to-one"]],
+      [/\bodd\b/i, ["even", "neither odd nor even", "periodic", "one-to-one"]],
+      [/\bone-to-one\b/i, ["many-to-one", "constant", "periodic", "undefined"]],
+      [/\bmany-to-one\b/i, ["one-to-one", "constant", "strictly increasing", "undefined"]],
+      [/\bindependent\b/i, ["dependent", "mutually exclusive", "equally likely", "normally distributed"]],
+      [/\bdependent\b/i, ["independent", "mutually exclusive", "equally likely", "normally distributed"]],
+      [/\bcontinuous\b/i, ["discrete", "categorical", "ordinal", "constant"]],
+      [/\bdiscrete\b/i, ["continuous", "categorical", "ordinal", "constant"]],
+      [/\breliable\b/i, ["unreliable", "biased", "invalid", "inconclusive"]],
+      [/\bunreliable\b/i, ["reliable", "unbiased", "valid", "conclusive"]],
+      [/\bvalid\b/i, ["invalid", "biased", "unreliable", "inconclusive"]],
+      [/\binvalid\b/i, ["valid", "unbiased", "reliable", "conclusive"]],
+      [/\bsufficient\b/i, ["insufficient", "no", "contradictory", "irrelevant"]],
+      [/\binsufficient\b/i, ["sufficient", "conclusive", "complete", "decisive"]],
+      [/\bsupports\b/i, ["contradicts", "does not support", "is unrelated to", "cannot be compared with"]],
+      [/\bcloser\b/i, ["further away", "the same distance", "perpendicular", "unrelated"]],
+      [/\bfurther\b/i, ["closer", "the same distance", "parallel", "unrelated"]],
+      [/\blarger\b/i, ["smaller", "equal", "unrelated", "undefined"]],
+      [/\bsmaller\b/i, ["larger", "equal", "unrelated", "undefined"]],
+      [/\bhigher\b/i, ["lower", "equal", "unrelated", "zero"]],
+      [/\blower\b/i, ["higher", "equal", "unrelated", "zero"]],
+      [/\babove\b/i, ["below", "on", "unrelated to", "perpendicular to"]],
+      [/\bbelow\b/i, ["above", "on", "unrelated to", "perpendicular to"]],
+      [/\binside\b/i, ["outside", "on the boundary of", "unrelated to", "equidistant from"]],
+      [/\boutside\b/i, ["inside", "on the boundary of", "unrelated to", "equidistant from"]],
+      [/\binitial\b/i, ["final", "maximum", "minimum", "average"]],
+      [/\bfinal\b/i, ["initial", "maximum", "minimum", "average"]],
+      [/\btotal\b/i, ["average", "maximum", "minimum", "initial"]],
+      [/\bmean\b/i, ["median", "mode", "range", "variance"]],
+      [/\bmedian\b/i, ["mean", "mode", "range", "variance"]],
+      [/\bvariance\b/i, ["mean", "median", "range", "standard deviation"]],
+      [/\bradius\b/i, ["diameter", "circumference", "area", "gradient"]],
+      [/\bdiameter\b/i, ["radius", "circumference", "area", "gradient"]],
+      [/\bstraight line\b/i, ["quadratic curve", "circle", "vertical asymptote", "horizontal asymptote"]],
+      [/\breal roots?\b/i, ["complex roots", "repeated roots", "positive roots", "negative roots"]],
+      [/\bcomplex roots?\b/i, ["real roots", "repeated roots", "positive roots", "negative roots"]],
+      [/\bwith replacement\b/i, ["without replacement", "in a fixed order", "from a different population", "only once"]],
+      [/\bwithout replacement\b/i, ["with replacement", "in a fixed order", "from a different population", "independently"]],
+      [/\blongest\b/i, ["shortest", "equal in length", "the median", "not a side"]],
+      [/\bshortest\b/i, ["longest", "equal in length", "the median", "not a side"]],
+      [/\bunique\b/i, ["two different", "no", "infinitely many", "the same"]],
+      [/\bunchanged\b/i, ["increased", "decreased", "doubled", "halved"]],
+      [/\brate of change\b/i, ["total value", "initial value", "maximum value", "minimum value"]],
+      [/\bheight\b/i, ["width", "area", "volume", "mass"]],
+      [/\btime\b/i, ["distance", "speed", "height", "cost"]],
+      [/\bprobability\b/i, ["frequency", "mean", "variance", "median"]],
+      [/\bstrongly\b/i, ["weakly", "moderately", "perfectly", "not at all"]],
+      [/\bstrong\b/i, ["weak", "moderate", "very weak", "zero"]],
+      [/\bhighest\b/i, ["lowest", "average", "second-highest", "unchanged"]],
+      [/\blowest\b/i, ["highest", "average", "second-lowest", "unchanged"]],
+      [/\bsteepest\b/i, ["shallowest", "highest", "lowest", "flat"]],
+      [/\barithmetic sequence\b/i, ["geometric sequence", "quadratic sequence", "constant sequence", "random sequence"]],
+      [/\bgeometric sequence\b/i, ["arithmetic sequence", "quadratic sequence", "constant sequence", "random sequence"]],
+      [/\blogistic model\b/i, ["linear model", "exponential model", "quadratic model", "periodic model"]],
+      [/\balternate segment theorem\b/i, ["angle at the centre theorem", "Pythagoras' theorem", "sine rule", "cosine rule"]],
+      [/\bmutually exclusive\b/i, ["independent", "complementary", "equally likely", "exhaustive"]],
+      [/\bno members? in common\b/i, ["exactly one member in common", "two members in common", "all members in common", "the same number of members"]],
+      [/\bno common members?\b/i, ["exactly one common member", "two common members", "all members in common", "the same number of members"]],
+      [/\btwice\b/i, ["half", "three times", "equal to", "four times"]],
+      [/\bcentre\b/i, ["circumference", "tangent", "chord", "diameter"]],
+      [/\bsmall in comparison with\b/i, ["large in comparison with", "equal in size to", "unrelated in size to", "twice as large as"]],
+      [/\bgrows? without limit\b/i, ["decreases without limit", "remains constant", "approaches a fixed value", "alternates between two values"]],
+      [/\bcarrying capacity\b/i, ["constant rate of decrease", "linear trend", "periodic cycle", "value of zero"]],
+      [/\bpossible\b/i, ["impossible", "guaranteed", "unique", "unnecessary"]],
+      [/\bpass through\b/i, ["avoid", "stop before", "start after", "never reach"]],
+      [/\balready responded\b/i, ["not yet responded", "refused to respond", "finished responding", "received no report"]],
+      [/\bmore equipment or personnel available\b/i, ["less equipment and fewer personnel available", "the same equipment and personnel available", "no equipment or personnel available", "only administrative staff available"]],
+      [/\bshorter route\b/i, ["longer route", "route of equal length", "blocked route", "route with no roads"]],
+      [/\bunlikely\b/i, ["likely", "certain", "guaranteed", "expected"]],
+      [/\bstay constant\b/i, ["increase steadily", "decrease steadily", "alternate regularly", "become zero immediately"]],
+      [/\blie flat on the floor\b/i, ["stand vertically", "remain at a positive angle to the floor", "slope upwards", "be perpendicular to the floor"]],
+      [/\bno depth\b/i, ["maximum depth", "constant depth", "twice the depth", "an undefined depth"]],
+      [/\bno sand\b/i, ["the maximum amount of sand", "twice as much sand", "a fixed positive amount of sand", "an unlimited amount of sand"]],
+      [/\blose\b/i, ["win", "break even", "stake", "save"]],
+      [/\bvisited\b/i, ["did not visit", "lived in", "travelled only through", "planned to visit"]],
+      [/\bdo not intersect\b/i, ["intersect once", "intersect twice", "coincide", "are perpendicular"]],
+      [/\bdo not overlap\b/i, ["overlap once", "overlap twice", "coincide", "are complementary"]],
+      [/\bcrosses the ravine\b/i, ["avoids the ravine", "follows level ground", "uses the same route", "has no physical obstacle"]],
+      [/\bdelete a different vertex\b/i, ["delete the same vertex again", "delete a different edge", "add another vertex", "reverse every edge"]],
+      [/\bat least as extreme\b/i, ["less extreme", "exactly equal", "closest to the mean", "inside one standard deviation"]],
+      [/\bfirst pond\b/i, ["second pond", "third pond", "largest pond", "smallest pond"]],
+      [/\bfirst day\b/i, ["last day", "second day", "middle day", "average day"]],
+      [/\bfirst\b/i, ["last", "second", "highest", "lowest"]],
+      [/\btwo\b/i, ["one", "three", "four", "infinitely many"]],
+      [/\bthree\b/i, ["one", "two", "four", "infinitely many"]],
+      [/\bfour\b/i, ["one", "two", "three", "infinitely many"]],
+      [/\bcan\b/i, ["cannot", "must", "need not", "will always"]],
+      [/\bcannot\b/i, ["can", "must", "might", "will always"]],
+      [/\bdoes not\b/i, ["does", "must", "might", "will always"]],
+      [/\bnot\b/i, ["always", "necessarily", "only", "also"]],
+    ];
+    replacementGroups.forEach(function (group) {
+      if (!group[0].test(answer)) return;
+      group[1].forEach(function (replacement) { addCandidate(list, answer.replace(group[0], replacement)); });
+    });
+    relationMutationCandidates(answer, list);
+    mutateNumberTokens(answer, list);
+  }
+
+  function generateExplanationChoiceSet(rows, prompt, seed) {
+    var correct = explanationAnswerFromRows(rows, prompt);
+    if (!correct) return null;
+    var candidates = [];
+    proseMutationCandidates(correct, candidates);
+    var distractors = candidates.filter(function (candidate) { return !equivalent(candidate, correct); }).slice(0, 4);
+    if (distractors.length !== 4) return null;
+    var options = shuffled([correct].concat(distractors), seed);
+    var correctOption = options.indexOf(correct);
+    return validateChoiceSet([correct], options, correctOption)
+      ? { acceptedAnswers: [correct], options: options, correctOption: correctOption }
       : null;
   }
 
@@ -1544,8 +1809,38 @@
     return power ? "\\,\\mathrm{" + power[1] + "}^{" + power[2] + "}" : "\\,\\mathrm{" + unit + "}";
   }
 
+  function escapeLatexText(value) {
+    return String(value || "")
+      .replace(/\\/g, "")
+      .replace(/[{}]/g, "")
+      .replace(/([%$&#_])/g, "\\$1");
+  }
+
+  function proseToLatex(value) {
+    var answer = clean(value);
+    var result = "";
+    var start = 0;
+    var fractionPattern = /(?:\((?:[^()]|\([^()]*\))*\)|d[A-Za-z]|[-+]?[A-Za-z0-9.]+)\s*\/\s*(?:\((?:[^()]|\([^()]*\))*\)|d[A-Za-z]|[-+]?[A-Za-z0-9.^-]+)/g;
+    var match;
+    while ((match = fractionPattern.exec(answer))) {
+      if (match.index > start) result += "\\text{" + escapeLatexText(answer.slice(start, match.index)) + "}";
+      var fraction = match[0].split("/");
+      var numerator = expressionToLatex(fraction[0].trim());
+      var denominator = expressionToLatex(fraction.slice(1).join("/").trim());
+      result += numerator && denominator
+        ? "\\frac{" + numerator + "}{" + denominator + "}"
+        : "\\text{" + escapeLatexText(match[0]) + "}";
+      start = match.index + match[0].length;
+    }
+    if (start < answer.length) result += "\\text{" + escapeLatexText(answer.slice(start)) + "}";
+    return result || "\\text{" + escapeLatexText(answer) + "}";
+  }
+
   function toLatex(value) {
     var answer = clean(value);
+    if (isProseAnswer(answer)) {
+      return proseToLatex(answer);
+    }
     if (/^[A-Za-z][A-Za-z0-9 ,.'-]+$/.test(answer) && /\s/.test(answer) && !/[=<>≤≥≠]/.test(answer)) {
       return "\\text{" + answer.replace(/\\/g, "") + "}";
     }
@@ -1599,6 +1894,7 @@
     generateChoiceSet: generateChoiceSet,
     generateComparisonReasonChoiceSet: generateComparisonReasonChoiceSet,
     generateConceptChoiceSet: generateConceptChoiceSet,
+    generateExplanationChoiceSet: generateExplanationChoiceSet,
     generateParityChoiceSet: generateParityChoiceSet,
     isDisplaySafe: isDisplaySafe,
     latexToPlain: latexToPlain,

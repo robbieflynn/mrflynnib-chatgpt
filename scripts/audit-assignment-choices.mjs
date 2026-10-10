@@ -87,6 +87,7 @@ function promptForSubpart(prompt, label) {
 
 function choiceSetForRows(rows, prompt, seed) {
   return choices.generateComparisonReasonChoiceSet(rows, prompt, seed)
+    || choices.generateExplanationChoiceSet(rows, prompt, seed)
     || choices.generateConceptChoiceSet(rows, prompt, seed)
     || choices.generateParityChoiceSet(rows, prompt, seed)
     || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed);
@@ -96,6 +97,12 @@ function looksObjective(prompt) {
   const text = plainText(prompt);
   return /\b(find|calculate|write down|state|determine|solve|evaluate|express|give)\b/i.test(text)
     && !/\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|describe|discuss|interpret|comment on)\b/i.test(text);
+}
+
+function looksExplanation(prompt) {
+  const text = plainText(prompt);
+  return /\b(explain|justify|give a reason|giving a reason|state a reason|describe|discuss|interpret|comment on|why)\b/i.test(text)
+    && !/\b(show that|prove|verify that|sketch|draw|construct|plot|show your working)\b/i.test(text);
 }
 
 const banks = [
@@ -164,6 +171,39 @@ assert(comparisonReasonChoices);
 assert.equal(comparisonReasonChoices.acceptedAnswers[0], "Less than the actual value, because the gradient is increasing");
 assert.equal(comparisonReasonChoices.options.length, 5);
 assert(comparisonReasonChoices.options.every((option) => choices.toLatex(option).startsWith(String.raw`\text{`)));
+
+const explanationChoices = choices.generateExplanationChoiceSet(
+  [["Two planes meet in a line and the third plane is parallel to that line.", "A1"]],
+  "Describe the geometrical relationship of the three planes.",
+  "audit-explanation",
+);
+assert(explanationChoices);
+assert.equal(explanationChoices.acceptedAnswers[0], "Two planes meet in a line and the third plane is parallel to that line");
+assert.equal(explanationChoices.options.length, 5);
+assert(explanationChoices.options.every((option) => choices.isDisplaySafe(option)));
+assert.equal(
+  choices.generateExplanationChoiceSet(
+    [["The derivative changes from positive to negative, so the function has a maximum.", "R1"]],
+    "Show that the function has a maximum.",
+    "audit-show-that",
+  ),
+  null,
+);
+assert.equal(
+  choices.generateExplanationChoiceSet(
+    [["The curve crosses the axis twice.", "R1"]],
+    "Draw a diagram to explain the result.",
+    "audit-diagram",
+  ),
+  null,
+);
+const derivativeExplanationChoices = choices.generateExplanationChoiceSet(
+  [[String.raw`\(\dfrac{\mathrm{d}V}{\mathrm{d}x}\) changes from positive to negative, so \(V\) has a maximum.`, "R1"]],
+  "Explain why V has a maximum.",
+  "audit-derivative-explanation",
+);
+assert(derivativeExplanationChoices);
+assert(derivativeExplanationChoices.options.every((option) => !choices.toLatex(option).includes("/")));
 
 const angleMarkscheme = String.raw`\((\theta =)\ 28.1^\circ\ (28.0724\ldots^\circ)\) OR \(0.490\ (0.489957\ldots)\ rad\)`;
 const angleAnswers = choices.extractAcceptedAnswers([[angleMarkscheme, "A1"]], "Find the angle.");
@@ -384,15 +424,16 @@ for (const [label, path] of banks) {
         const labelledRows = rowsForSubpart(rows, nestedLabel);
         const nestedRows = labelledRows.length ? labelledRows : rows;
         const nestedAccepted = choices.extractAcceptedAnswers(nestedRows, nestedPrompt);
-        if (nestedAccepted.length) bankNestedChecked += 1;
         const nestedSet = choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${part}(${nestedLabel})`);
+        if (nestedAccepted.length || nestedSet) bankNestedChecked += 1;
         if (!nestedSet && looksObjective(nestedPrompt)) objectiveFallbacks.push(`${label} ${question.id} ${part}(${nestedLabel}): ${plainText(nestedPrompt)}`);
         if (nestedSet) {
           if (!choices.validateChoiceSet(nestedSet.acceptedAnswers, nestedSet.options, nestedSet.correctOption)) {
             throw new Error(`Unsafe nested choices for ${question.id} ${part}(${nestedLabel})`);
           }
-          if (nestedSet.options.some((option) => choices.toLatex(option).includes("/"))) {
-            throw new Error(`Unrendered nested fraction for ${question.id} ${part}(${nestedLabel})`);
+          const unrenderedNestedOption = nestedSet.options.find((option) => choices.toLatex(option).includes("/"));
+          if (unrenderedNestedOption) {
+            throw new Error(`Unrendered nested fraction for ${question.id} ${part}(${nestedLabel}): ${JSON.stringify(unrenderedNestedOption)} -> ${JSON.stringify(choices.toLatex(unrenderedNestedOption))}`);
           }
           bankNestedGenerated += 1;
         }
@@ -469,16 +510,17 @@ for (const [label, path] of banks) {
         assert(seriesSet.options.every((option) => choices.toLatex(option).includes("x")));
         verifiedMaclaurinSeriesQuestion = true;
       }
-      if (!accepted.length) {
+      const set = choiceSetForRows(rows, prompt, `${question.id}:${part}`);
+      if (!accepted.length && !set) {
         if (looksObjective(prompt) && !nested.length) objectiveFallbacks.push(`${label} ${question.id} ${part}: ${plainText(prompt)}`);
         continue;
       }
       bankChecked += 1;
-      const set = choices.generateChoiceSet(accepted, `${question.id}:${part}`);
       if (!set && looksObjective(prompt)) objectiveFallbacks.push(`${label} ${question.id} ${part}: ${plainText(prompt)}`);
       if (!set) continue;
-      if (!choices.validateChoiceSet(accepted, set.options, set.correctOption)) throw new Error(`Unsafe choices for ${question.id} ${part}`);
-      if (set.options.some((option) => choices.toLatex(option).includes("/"))) throw new Error(`Unrendered fraction for ${question.id} ${part}`);
+      if (!choices.validateChoiceSet(set.acceptedAnswers, set.options, set.correctOption)) throw new Error(`Unsafe choices for ${question.id} ${part}`);
+      const unrenderedOption = set.options.find((option) => choices.toLatex(option).includes("/"));
+      if (unrenderedOption) throw new Error(`Unrendered fraction for ${question.id} ${part}: ${JSON.stringify(unrenderedOption)} -> ${JSON.stringify(choices.toLatex(unrenderedOption))}`);
       bankGenerated += 1;
     }
   }
@@ -501,7 +543,7 @@ assert(verifiedInverseFunctionQuestion, "The real inverse-function regression qu
 assert(verifiedComparisonReasonQuestion, "The real Euler comparison-and-reason question was not audited.");
 assert(verifiedMaclaurinSeriesQuestion, "The real Maclaurin-series regression question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);
-console.log(`Nested parts: ${nestedGenerated}/${nestedChecked} objective parts produced five safe choices; proof and show-that parts remained whiteboard tasks.`);
+console.log(`Nested parts: ${nestedGenerated}/${nestedChecked} answerable parts produced five safe choices; drawing, proof and show-that parts remained whiteboard tasks.`);
 let allActiveQuestions = 0;
 let allAnswerParts = 0;
 let allWhiteboardParts = 0;
@@ -510,6 +552,7 @@ const objectiveFailureKinds = new Map();
 const objectiveFailureVerbs = new Map();
 const objectiveFailureShapes = new Map();
 const activeObjectiveFallbacks = [];
+const explanationFallbacks = [];
 let objectiveWhiteboardParts = 0;
 const objectiveWhiteboardQuestions = new Set();
 for (const [label, path] of banks) {
@@ -542,6 +585,9 @@ for (const [label, path] of banks) {
       objectiveFailureVerbs.set(key, (objectiveFailureVerbs.get(key) || 0) + 1);
       activeObjectiveFallbacks.push({ bank: label, id: question.id, part: config.label, prompt: plainText(config.prompt), accepted: config.accepted, rows: config.rows });
     }
+    for (const config of whiteboardParts.filter((part) => looksExplanation(part.prompt))) {
+      explanationFallbacks.push({ bank: label, id: question.id, part: config.label, prompt: plainText(config.prompt), accepted: config.accepted, rows: config.rows });
+    }
   }
   allActiveQuestions += questions.length;
   allAnswerParts += bankAnswerParts;
@@ -554,6 +600,7 @@ console.log(`Objective-looking whiteboard inventory: ${objectiveWhiteboardParts}
 console.log(`Objective fallback causes: ${Array.from(objectiveFailureKinds, ([kind, count]) => `${count} ${kind}`).join("; ")}.`);
 console.log(`Objective fallback shapes: ${Array.from(objectiveFailureShapes, ([shape, count]) => `${count} ${shape}`).join("; ")}.`);
 console.log(`Objective fallback prompt verbs: ${Array.from(objectiveFailureVerbs.entries()).sort((left, right) => right[1] - left[1]).map(([verb, count]) => `${verb} ${count}`).join(", ")}.`);
+console.log(`Explanation-style whiteboard inventory: ${explanationFallbacks.length} parts.`);
 if (process.env.ASSIGNMENT_AUDIT_DETAILS === "1") {
   console.log(`Objective-looking whiteboard fallbacks: ${objectiveFallbacks.length}`);
   objectiveFallbacks.slice(0, 120).forEach((item) => console.log(`- ${item}`));
@@ -562,5 +609,11 @@ if (process.env.ASSIGNMENT_AUDIT_DETAILS === "2") {
   activeObjectiveFallbacks.slice(0, 100).forEach((item) => {
     console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
     console.log(`accepted=${JSON.stringify(item.accepted)} rows=${JSON.stringify(item.rows.slice(-4))}`);
+  });
+}
+if (process.env.ASSIGNMENT_AUDIT_DETAILS === "3") {
+  explanationFallbacks.slice(0, 200).forEach((item) => {
+    console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
+    console.log(`accepted=${JSON.stringify(item.accepted)} rows=${JSON.stringify(item.rows.slice(-6))}`);
   });
 }
