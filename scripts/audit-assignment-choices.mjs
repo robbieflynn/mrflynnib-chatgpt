@@ -64,12 +64,15 @@ function romanSubparts(prompt) {
 function rowsForSubpart(rows, label) {
   let start = -1;
   let end = rows.length;
+  let firstLaterPart = -1;
   rows.forEach((row, index) => {
-    const match = plainText(Array.isArray(row) ? row[0] : "").match(/^\s*\(([ivxlcdm]+)\)/i);
+    const match = plainText(Array.isArray(row) ? row[0] : "").match(/^\s*(?:METHOD\s*\d+\s*)?\(([ivxlcdm]+)\)/i);
     if (!match) return;
+    if (firstLaterPart === -1 && match[1].toLowerCase() !== "i") firstLaterPart = index;
     if (match[1].toLowerCase() === label && start === -1) start = index;
     else if (start !== -1 && index > start && end === rows.length) end = index;
   });
+  if (start === -1 && label === "i" && firstLaterPart > 0) return rows.slice(0, firstLaterPart);
   return start === -1 ? [] : rows.slice(start, end);
 }
 
@@ -87,21 +90,135 @@ function promptForSubpart(prompt, label) {
 
 function choiceSetForRows(rows, prompt, seed) {
   return choices.generateComparisonReasonChoiceSet(rows, prompt, seed)
-    || choices.generateExplanationChoiceSet(rows, prompt, seed)
+    || choices.generateHypothesisChoiceSet(rows, prompt, seed)
     || choices.generateConceptChoiceSet(rows, prompt, seed)
+    || choices.generateExplanationChoiceSet(rows, prompt, seed)
     || choices.generateParityChoiceSet(rows, prompt, seed)
-    || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed);
+    || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed, prompt);
+}
+
+const choiceQualityIssues = [];
+const liveChoiceSamples = [];
+
+function qualityIssue(kind, meta, prompt, option, rendered) {
+  choiceQualityIssues.push({ kind, meta, prompt: plainText(prompt), option, rendered });
+}
+
+function inspectChoiceQuality(set, meta, prompt, rows = []) {
+  if (!set) return;
+  const correct = set.options[set.correctOption];
+  const promptText = plainText(prompt);
+  set.options.forEach((option, index) => {
+    const rendered = choices.toLatex(option);
+    const role = index === set.correctOption ? "correct" : "wrong";
+    if (rendered.includes("/") || /\\text\{[^}]*\b(?:sqrt|root|matrix|blackboard|math(?:bf|rm|cal|bb|frak)|mathrm|ldots|cdots|circ)\b/i.test(rendered)) {
+      qualityIssue(`${role}: rendered notation`, meta, prompt, option, rendered);
+    }
+    if (/\b(?:award|follow through|method mark|answer only|correct answer|reasonable attempt|complete solution|cao|oe)\b|\([MABRGEN]\d+\)|\bft\b/i.test(option)) {
+      qualityIssue(`${role}: marking language`, meta, prompt, option, rendered);
+    }
+    if (option.length > 260) qualityIssue(`${role}: too long`, meta, prompt, option, rendered);
+    if (/\b(\w{3,})\s+\1\b/i.test(option)
+      || /\bon the floor on the floor\b|\bbecause because\b|\bmight have (?:received no report|refused to respond|finished responding) to\b/i.test(option)
+      || /\bexpression is not (?:biased|inconclusive|unreliable|invalid)\b|\b(?:minimum|maximum|initial|total) value \([^)]*\)|\b(?:complete|decisive|conclusive) evidence\b/i.test(option)) {
+      qualityIssue(`${role}: awkward wording`, meta, prompt, option, rendered);
+    }
+    if (index !== set.correctOption && /\bfind\s+(?:the\s+)?value\s+of\s+[A-Za-zα-ω]\b/i.test(promptText)
+      && /^[A-Za-zα-ω]\s*=/.test(correct) && /^[A-Za-zα-ω]\s*(?:≠|≤|≥|<|>)/.test(option)) {
+      qualityIssue("wrong: implausible relation change", meta, prompt, option, rendered);
+    }
+  });
+  const finalInstruction = promptText.slice(Math.max(
+    promptText.toLowerCase().lastIndexOf("find"),
+    promptText.toLowerCase().lastIndexOf("calculate"),
+    promptText.toLowerCase().lastIndexOf("determine"),
+    promptText.toLowerCase().lastIndexOf("write down"),
+    promptText.toLowerCase().lastIndexOf("state"),
+    0,
+  ));
+  if (/\b(?:find|determine|state|write down|give)\s+(?:an?\s+|the\s+)?equation\s+(?:of|for)\b/i.test(finalInstruction)
+    && !/[=<>≤≥]/.test(correct)) {
+    qualityIssue("correct: equation context missing", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\b(?:degrees?|°)\b/i.test(promptText) && /\brad\b/i.test(correct)) {
+    qualityIssue("correct: radians used for degree request", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\bradians?\b/i.test(promptText) && /°/.test(correct)) {
+    qualityIssue("correct: degrees used for radian request", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\b(?:find|write down|give|determine)\b[^.]*\bvector equation\b/i.test(finalInstruction)
+    && !(correct.includes("=") && /(?:matrix\(|bold\(r\)|\br\s*=)/i.test(correct))) {
+    qualityIssue("correct: incomplete vector equation", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\b(?:find|calculate|determine)\b[\s\S]*\bmean\b[\s\S]*\b(?:variance|standard deviation)\b/i.test(finalInstruction)
+    && !(/mean|mu|bar\(/i.test(correct) && /variance|sigma|sd/i.test(correct))) {
+    qualityIssue("correct: missing paired statistics", meta, prompt, correct, choices.toLatex(correct));
+  }
+  const justificationWords = correct.match(/\b[A-Za-z]{2,}\b/g) || [];
+  const equalityCount = (correct.match(/=/g) || []).length;
+  if (/\b(?:justify|giving a reason|give a reason)\b/i.test(finalInstruction)
+    && equalityCount < 2
+    && !/[<>≤≥≠]|\b(?:because|since|as|therefore|so|reason|theorem|gradient|derivative|concav|interpol|extrapol|evidence|reject|reliable|valid|increasing|decreasing|minimum|maximum|correct|possible|impossible|greater|less|equal|odd|even|independent|complies|supported|guaranteed|closer|further)\b|;/.test(correct)
+    && justificationWords.length < 4) {
+    qualityIssue("correct: missing justification", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\b(?:find|calculate|determine|write down)\s+(?:the\s+)?probability\b/i.test(finalInstruction)) {
+    const directProbability = correct.match(/(?:^|=)\s*(-?\d+(?:\.\d+)?)\s*$/);
+    if (directProbability && (Number(directProbability[1]) < 0 || Number(directProbability[1]) > 1)) {
+      qualityIssue("correct: probability outside 0 to 1", meta, prompt, correct, choices.toLatex(correct));
+    }
+  }
+  if (/\b(?:find|calculate|determine|write down)\b[\s\S]*\bmodulus\s+and\s+(?:the\s+)?argument\b/i.test(finalInstruction)
+    && !(/\bmodulus\s*=.*;\s*argument\s*=/i.test(correct) || /\|[^|]+\|=.*;\s*arg\(/i.test(correct))) {
+    qualityIssue("correct: incomplete modulus and argument", meta, prompt, correct, choices.toLatex(correct));
+  }
+  const requestedVectorCount = (finalInstruction.match(/overrightarrow/g) || []).length;
+  if (requestedVectorCount >= 2 && /\b(?:find|express|write down)\b[\s\S]*\b(?:vectors?|expressions?)\b/i.test(finalInstruction) && !/;/.test(correct)) {
+    qualityIssue("correct: incomplete vector pair", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\bvector equation\b[\s\S]*\b(?:shortest )?distance\b/i.test(finalInstruction) && !/;/.test(correct)) {
+    qualityIssue("correct: missing equation or distance", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\bcomplex numbers? represented by (?:the )?points?\b/i.test(finalInstruction) && /\band\b/i.test(finalInstruction) && !/;/.test(correct)) {
+    qualityIssue("correct: incomplete complex-number pair", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\bgreatest volume\b[\s\S]*\bvalue of\b[\s\S]*\b(?:theta|θ)\b/i.test(finalInstruction) && !/;/.test(correct)) {
+    qualityIssue("correct: missing volume or angle", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\bdimensions?\b/i.test(finalInstruction) && !/\bby\b/i.test(correct)) {
+    qualityIssue("correct: incomplete dimensions", meta, prompt, correct, choices.toLatex(correct));
+  }
+  const markschemeText = rows.map((row) => plainText(choices.latexToPlain(Array.isArray(row) ? row[0] : row))).join(" ");
+  const markschemeAssignments = markschemeText.match(/\b[A-Za-zα-ω](?:_?\d+)?\s*=/g) || [];
+  if (/\b(?:all|every)\s+(?:the\s+)?(?:values?|roots?|solutions?)\b/i.test(finalInstruction)
+    && markschemeAssignments.length >= 2
+    && !/[;±∈<>≤≥]/.test(correct)
+    && !/\bonly\s+(?:admissible|valid)?\s*(?:angle|root|solution|value)\b/i.test(markschemeText)) {
+    qualityIssue("correct: incomplete solution set", meta, prompt, correct, choices.toLatex(correct));
+  }
+  const normalizedInstruction = finalInstruction.replace(/\\[()[\]]/g, "");
+  if (/\b(?:find|calculate|determine|write down)\b[\s\S]*\bcoordinates\s+of\b/i.test(normalizedInstruction)
+    && !/\b[xy]-coordinates?\b/i.test(normalizedInstruction)
+    && !/\b(?:justify|giving a reason|give a reason)\b/i.test(normalizedInstruction)) {
+    const coordinatePieces = correct.split(/\s*;\s*/);
+    const allTuples = coordinatePieces.every((piece) => /^(?:[A-Z]\s*)?\([^,]+,[^,]+(?:,[^,]+)?\)$/.test(piece));
+    const renderedTuple = /^\\left\(.+,\\ .+\\right\)$/.test(choices.toLatex(correct));
+    const labelledCoordinates = /(?:^|;)\s*x\s*=/.test(correct) && /(?:^|;)\s*y\s*=/.test(correct);
+    if (!allTuples && !renderedTuple && !labelledCoordinates) {
+      qualityIssue("correct: coordinate answer contains extra material", meta, prompt, correct, choices.toLatex(correct));
+    }
+  }
 }
 
 function looksObjective(prompt) {
   const text = plainText(prompt);
   return /\b(find|calculate|write down|state|determine|solve|evaluate|express|give)\b/i.test(text)
-    && !/\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|describe|discuss|interpret|comment on)\b/i.test(text);
+    && !/\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|stat(?:e|ing) (?:your )?reasons?|describe|discuss|interpret|comment on)\b/i.test(text);
 }
 
 function looksExplanation(prompt) {
   const text = plainText(prompt);
-  return /\b(explain|justify|give a reason|giving a reason|state a reason|describe|discuss|interpret|comment on|why)\b/i.test(text)
+  return /\b(explain|justify|give a reason|giving a reason|stat(?:e|ing) (?:your )?reasons?|describe|discuss|interpret|comment on|why)\b/i.test(text)
     && !/\b(show that|prove|verify that|sketch|draw|construct|plot|show your working)\b/i.test(text);
 }
 
@@ -151,6 +268,31 @@ function assignmentPartConfigs(question) {
 const wholeNumberExample = choices.generateChoiceSet(["25"], "audit-integer");
 assert(wholeNumberExample);
 assert.deepEqual(new Set(wholeNumberExample.options), new Set(["25", "28", "18", "53", "7"]));
+const positiveDecimalExample = choices.generateChoiceSet(["1.18"], "audit-positive-area", "Find the area of the region.");
+assert(positiveDecimalExample);
+assert.equal(positiveDecimalExample.options.length, 5);
+const classificationExample = choices.generateChoiceSet(["Minimum"], "audit-classification", "Determine whether P is a maximum or minimum point.");
+assert(classificationExample);
+assert.equal(classificationExample.options.length, 5);
+assert.deepEqual(
+  choices.extractAcceptedAnswers([[String.raw`\(= -4\)`, "A1"]], String.raw`Evaluate \(u^n\) for this value of \(n\).`),
+  ["u^n=-4"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [["C represents the complex number \\(1-2i\\)", "A2"], ["D represents the complex number \\(3+2i\\)", "A2"]],
+    "Determine the complex numbers represented by the points C and D.",
+  ),
+  ["C=1-2i; D=3+2i"],
+);
+assert.deepEqual(choices.extractAcceptedAnswers([[String.raw`\(2/7\)`, "A1"]], "Complete the tree diagram."), []);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`\({}^{12}\mathrm C_{10}p^{10}(1-p)^2\)`, "A1"], ["0.298565<br>0.299", "A1"]],
+    "Given that at least 7 flights are on time, find the probability that exactly 10 flights are on time.",
+  ),
+  ["0.298565", "0.299"],
+);
 const degreeExample = choices.generateChoiceSet(["42.5^circ"], "audit-degrees");
 assert(degreeExample && degreeExample.options.every(choices.isDisplaySafe));
 assert.equal(degreeExample.acceptedAnswers[0], "42.5°");
@@ -292,6 +434,34 @@ assert(!vectorLineAnswers.some((answer) => /math(?:bf|rm)|mathbf/i.test(answer))
 const vectorLineChoices = choices.generateChoiceSet(vectorLineAnswers, "audit-vector-line");
 assert(vectorLineChoices);
 assert(vectorLineChoices.options.every((option) => choices.toLatex(option).includes(String.raw`\mathbf`)));
+
+const exampleVectorEquationAnswers = choices.extractAcceptedAnswers(
+  [
+    [String.raw`any correct equation in the form \(\boldsymbol{r}=\boldsymbol{a}+t\boldsymbol{b}\), where \(\boldsymbol{b}\) is a scalar multiple of \(\begin{pmatrix}1\\-1\\1\end{pmatrix}\)`, "A2"],
+    [String.raw`e.g. \(\boldsymbol{r}=\begin{pmatrix}1\\-1\\4\end{pmatrix}+t\begin{pmatrix}1\\-1\\1\end{pmatrix}\)`, ""],
+  ],
+  String.raw`Find an equation for \(L_1\) in the form \(\boldsymbol{r}=\boldsymbol{a}+t\boldsymbol{b}\).`,
+);
+assert(exampleVectorEquationAnswers[0].includes("bold(r)="));
+assert(choices.generateChoiceSet(exampleVectorEquationAnswers, "audit-example-vector-equation"));
+
+const notedEquationAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(g(x)=-4+6(x-3)-(x-3)^2\) <b>Note:</b> accept any equivalent form; award M1A0 for \((x+3)\).`, "M1A1"]],
+  "Determine the equation of the new graph.",
+);
+assert.equal(notedEquationAnswers[0], "g(x)=-4+6(x-3)-(x-3)^2");
+assert(!notedEquationAnswers.some((answer) => /award|equivalent/i.test(answer)));
+
+assert.equal(
+  choices.validateChoiceSet(
+    ["The value is higher"],
+    ["The value is higher", "The value is lower", "The value is equal", "The value is zero", "The value is unrelated than the other value"],
+    0,
+  ),
+  false,
+);
+assert(!choices.toLatex("Since n > 1, sqrt(3) is positive").includes(String.raw`\Sin`));
+assert(choices.toLatex("Since n > 1, sqrt(3) is positive").includes(String.raw`\sqrt{3}`));
 
 const inverseFunctionRows = [[String.raw`\(f^{-1}(x) = \dfrac{-3x-1}{x-2}\ \left(= \dfrac{3x+1}{2-x},\ \dfrac{7}{2-x} - 3\right)\) (accept \(y =\))`, "A1"]];
 const inverseFunctionAnswers = choices.extractAcceptedAnswers(inverseFunctionRows, String.raw`Find \(f^{-1}(x)\).`);
@@ -455,6 +625,10 @@ for (const [label, path] of banks) {
           assert(nestedSet);
           verifiedContinuousRandomVariableQuestion = true;
         }
+        if (question.id === "N14TZ0HL_P1_Q13" && part === "a" && nestedLabel === "iii") {
+          assert(nestedAccepted.some((answer) => /i\*tan\(π\/8\)/.test(answer)), `Malformed trigonometric root: ${JSON.stringify(nestedAccepted)}`);
+          assert(nestedSet);
+        }
         if ((question.id === "M08TZ2SL_P1_Q8" || question.id === "M09TZ1SL_P1_Q9") && part === "a") {
           assert(nestedSet, `Column-vector answer was not generated for ${question.id} ${part}(${nestedLabel})`);
           assert(nestedSet.options.every((option) => choices.toLatex(option).includes(String.raw`\begin{pmatrix}`)));
@@ -482,8 +656,8 @@ for (const [label, path] of banks) {
         verifiedDerivativeAtPointQuestion = true;
       }
       if (question.id === "M14TZ2SL_P2_Q2" && part === "a") {
-        assert(accepted.includes("x = ±sqrt(5)"));
-        assert(accepted.includes("x = ±2.24"));
+        assert(accepted.some((answer) => answer.replace(/\s/g, "") === "x=±sqrt(5)"), JSON.stringify(accepted));
+        assert(accepted.some((answer) => answer.replace(/\s/g, "") === "x=±2.24"), JSON.stringify(accepted));
         assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
         verifiedPairedInterceptQuestion = true;
       }
@@ -502,6 +676,24 @@ for (const [label, path] of banks) {
         assert.equal(accepted[0], "f^-1(x) = (-3x-1)/(x-2)");
         assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
         verifiedInverseFunctionQuestion = true;
+      }
+      if ((question.id === "M11TZ2SL_P2_Q8" || question.id === "H_M11TZ2SL_P2_Q8") && part === "b") {
+        assert(accepted[0] && accepted[0].replace(/\s/g, "").includes("bold(r)="), `Vector-line equation was reduced to a direction vector: ${JSON.stringify(accepted)}`);
+      }
+      if (question.id === "N15TZ0HL_P1_Q11" && part === "a") {
+        assert(accepted[0] && accepted[0].includes("-2i") && accepted[0].includes("sqrt(3)"), `Not all requested cube roots were retained: ${JSON.stringify(accepted)}`);
+      }
+      if (question.id === "M12TZ1HL_P1_Q9" && part === "") {
+        assert(!accepted.some((answer) => /^\(a,\s*b\)/i.test(answer)), `Generic coordinate leaked into the answer: ${JSON.stringify(accepted)}`);
+      }
+      if (question.id === "N12TZ0HL_P2_Q4" && part === "") {
+        assert.deepEqual(accepted, ["mean=10.7; variance=1.37"]);
+        assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`, prompt));
+      }
+      if (question.id === "M19TZ1AISL_P1_Q11" && part === "a") {
+        const tableSet = choices.generateConceptChoiceSet(rows, prompt, `${question.id}:${part}`);
+        assert(tableSet);
+        assert.equal(tableSet.options[tableSet.correctOption], "C; D");
       }
       if (question.id === "N15TZ0HL_P3_Q2" && part === "b") {
         assert.equal(accepted[0], "f(x)=x+x^2+x^3/3-x^5/30");
@@ -562,6 +754,10 @@ for (const [label, path] of banks) {
   let bankQuestionsWithWhiteboard = 0;
   for (const question of questions) {
     const configs = assignmentPartConfigs(question);
+    for (const config of configs.filter((part) => part.choices)) {
+      inspectChoiceQuality(config.choices, `${label} ${question.id} ${config.label}`, config.prompt, config.rows);
+      liveChoiceSamples.push({ bank: label, id: question.id, part: config.label, prompt: plainText(config.prompt), choices: config.choices, rows: config.rows });
+    }
     const whiteboardParts = configs.filter((config) => !config.choices);
     bankAnswerParts += configs.length;
     bankWhiteboardParts += whiteboardParts.length;
@@ -596,6 +792,12 @@ for (const [label, path] of banks) {
   console.log(`${label} assignment inventory: ${bankWhiteboardParts}/${bankAnswerParts} answer parts use whiteboard or paper, across ${bankQuestionsWithWhiteboard}/${questions.length} active questions.`);
 }
 console.log(`Combined assignment inventory: ${allWhiteboardParts}/${allAnswerParts} answer parts use whiteboard or paper, across ${allQuestionsWithWhiteboard}/${allActiveQuestions} active questions.`);
+const qualityIssueCounts = new Map();
+choiceQualityIssues.forEach((issue) => qualityIssueCounts.set(issue.kind, (qualityIssueCounts.get(issue.kind) || 0) + 1));
+console.log(`Live assignment-choice quality review: ${choiceQualityIssues.length} flagged options or answer-format mismatches.`);
+if (choiceQualityIssues.length) {
+  console.log(`Live choice-quality flags: ${Array.from(qualityIssueCounts.entries()).sort((left, right) => right[1] - left[1]).map(([kind, count]) => `${kind} ${count}`).join(", ")}.`);
+}
 console.log(`Objective-looking whiteboard inventory: ${objectiveWhiteboardParts} parts across ${objectiveWhiteboardQuestions.size} active questions.`);
 console.log(`Objective fallback causes: ${Array.from(objectiveFailureKinds, ([kind, count]) => `${count} ${kind}`).join("; ")}.`);
 console.log(`Objective fallback shapes: ${Array.from(objectiveFailureShapes, ([shape, count]) => `${count} ${shape}`).join("; ")}.`);
@@ -616,4 +818,30 @@ if (process.env.ASSIGNMENT_AUDIT_DETAILS === "3") {
     console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
     console.log(`accepted=${JSON.stringify(item.accepted)} rows=${JSON.stringify(item.rows.slice(-6))}`);
   });
+}
+if (process.env.ASSIGNMENT_AUDIT_DETAILS === "4") {
+  choiceQualityIssues.slice(0, 300).forEach((item) => {
+    console.log(`\n${item.kind} | ${item.meta}: ${item.prompt}`);
+    console.log(`option=${JSON.stringify(item.option)} rendered=${JSON.stringify(item.rendered)}`);
+  });
+}
+if (process.env.ASSIGNMENT_AUDIT_DETAILS === "5") {
+  var stride = Math.max(1, Math.floor(liveChoiceSamples.length / 80));
+  liveChoiceSamples.filter((_item, index) => index % stride === 0).slice(0, 80).forEach((item) => {
+    console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
+    console.log(`correct=${JSON.stringify(item.choices.options[item.choices.correctOption])}`);
+    console.log(`wrong=${JSON.stringify(item.choices.options.filter((_option, index) => index !== item.choices.correctOption))}`);
+  });
+}
+if (process.env.ASSIGNMENT_AUDIT_DETAILS === "6") {
+  const filter = String(process.env.ASSIGNMENT_AUDIT_FILTER || "").trim();
+  const filters = filter.split(",").map((value) => value.trim()).filter(Boolean);
+  activeObjectiveFallbacks
+    .concat(liveChoiceSamples.map((item) => ({ ...item, accepted: item.choices.acceptedAnswers })))
+    .filter((item) => !filters.length || filters.some((value) => item.id.includes(value)))
+    .slice(0, 80)
+    .forEach((item) => {
+      console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
+      console.log(`accepted=${JSON.stringify(item.accepted || [])} rows=${JSON.stringify((item.rows || []).slice(-10))}`);
+    });
 }

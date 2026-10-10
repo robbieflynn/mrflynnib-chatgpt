@@ -265,12 +265,18 @@
   function rowsForSubpart(rows, label) {
     var start = -1;
     var end = rows.length;
+    var firstLaterPart = -1;
     rows.forEach(function (row, index) {
-      var match = plainText(Array.isArray(row) ? row[0] : "").match(/^\s*\(([ivxlcdm]+)\)/i);
+      var match = plainText(Array.isArray(row) ? row[0] : "").match(/^\s*(?:METHOD\s*\d+\s*)?\(([ivxlcdm]+)\)/i);
       if (!match) return;
+      if (firstLaterPart === -1 && match[1].toLowerCase() !== "i") firstLaterPart = index;
       if (match[1].toLowerCase() === label && start === -1) start = index;
       else if (start !== -1 && index > start && end === rows.length) end = index;
     });
+    // Older mark schemes often label (ii) onwards but leave the opening (i)
+    // rows unlabelled. Keep those rows with (i), rather than giving both
+    // student sub-parts the entire mark scheme.
+    if (start === -1 && label === "i" && firstLaterPart > 0) return rows.slice(0, firstLaterPart);
     return start === -1 ? [] : rows.slice(start, end);
   }
 
@@ -310,20 +316,22 @@
           var answers = automaticAnswersFromRows(nestedRows, nestedPrompt);
           var label = topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel;
           var choices = choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
-          if (!choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!choices) choices = choiceUtils && choiceUtils.generateHypothesisChoiceSet && choiceUtils.generateHypothesisChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
           if (!choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
           if (!choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
-          if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
+          if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label, nestedPrompt);
           results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
         });
       } else {
         var answers = automaticAnswersFromRows(rows, prompt);
         var label = topLabel || "answer";
         var choices = choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
-        if (!choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!choices) choices = choiceUtils && choiceUtils.generateHypothesisChoiceSet && choiceUtils.generateHypothesisChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
         if (!choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
         if (!choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
-        if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
+        if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label, prompt);
         results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
       }
     });
