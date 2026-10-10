@@ -73,7 +73,9 @@
       .replace(/\\(?:ldots|cdots|dots)\b/g, "…")
       .replace(/\\(?:leq|le)/g, "≤").replace(/\\(?:geq|ge)/g, "≥")
       .replace(/\^\s*\\circ/g, "°").replace(/\\circ/g, "°")
-      .replace(/\\neq/g, "≠").replace(/\\pm/g, "±").replace(/\\infty/g, "∞")
+      .replace(/\\approx/g, "≈").replace(/\\(?:neq|ne)(?=[^A-Za-z]|$)/g, "≠")
+      .replace(/\\notin\b/g, "∉").replace(/\\in\b/g, "∈")
+      .replace(/\\pm/g, "±").replace(/\\infty/g, "∞").replace(/\\pounds\b/g, "£")
       .replace(/\\pi/g, "π").replace(/\\times/g, "×").replace(/\\cdot/g, "·")
       .replace(/\\therefore|\\Rightarrow|\\implies/g, "")
       .replace(/\\,/g, " ").replace(/\\;/g, " ").replace(/\\!/g, "")
@@ -87,6 +89,7 @@
   function clean(value) {
     return String(value == null ? "" : value)
       .replace(/[\u2212\u2013\u2014]/g, "-")
+      .replace(/≈/g, "=")
       .replace(/\\text\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1")
       .replace(/\bmathrm(?=[a-z])/gi, "")
@@ -359,10 +362,10 @@
       .replace(/∑/g, "\\sum ")
       .replace(/∏/g, "\\prod ")
       .replace(/\*/g, "\\times ")
+      .replace(/(^|[^\\])(sin|cos|tan|ln|log|exp)(?=[A-Za-z]|\b)/gi, "$1\\$2 ")
       .replace(/(^|[^A-Za-z\\])(mu|sigma|theta|alpha|beta|gamma)\b/gi, "$1\\$2 ")
       .replace(/°/g, "^{\\circ}")
       .replace(/\^([+-]?\d+)/g, "^{$1}")
-      .replace(/\b(sin|cos|tan|ln|log|exp)\b/g, "\\$1")
       .replace(/\b(cm|mm|km|m)\^\{?([23])\}?\b/gi, "\\mathrm{$1}^{$2}")
       .replace(/\b(cm|mm|km|kg|rad|mins?|hrs?)\b/gi, "\\mathrm{$1}");
   }
@@ -541,12 +544,110 @@
     });
   }
 
+  function implicitProductCandidates(correct, list) {
+    var match = clean(correct).match(/^(-?\d+(?:\.\d+)?)([A-Za-zα-ω](?:[A-Za-zα-ω0-9]*)(?:\^[A-Za-z0-9.+-]+)?)$/i);
+    if (!match) return;
+    var coefficient = Number(match[1]);
+    var places = decimalPlaces(match[1]);
+    var direction = coefficient < 0 ? -1 : 1;
+    var spread = Math.max(2, Math.round(Math.abs(coefficient) * .4));
+    var lower = coefficient - direction * (spread + 1);
+    if (Math.abs(lower) < 1e-10) lower -= direction;
+    [
+      coefficient + direction * spread,
+      lower,
+      -coefficient,
+      coefficient * 2 + direction,
+    ].forEach(function (candidate) {
+      var formatted = formatNumber(candidate, places);
+      if (formatted) addCandidate(list, (formatted === "1" ? "" : formatted === "-1" ? "-" : formatted) + match[2]);
+    });
+  }
+
+  function functionValueCandidates(correct, list) {
+    var match = clean(correct).match(/^(sin|cos|tan|ln|log|exp)\s+(-?\d+(?:\.\d+)?)$/i);
+    if (!match) return;
+    var value = Number(match[2]);
+    if (!Number.isFinite(value) || ((/^ln$|^log$/i.test(match[1])) && value <= 0)) return;
+    var places = decimalPlaces(match[2]);
+    var alternatives = [value + 1, value * 2, value / 2];
+    alternatives.forEach(function (alternative) {
+      if ((/^ln$|^log$/i.test(match[1])) && alternative <= 0) return;
+      addCandidate(list, match[1] + " " + formatNumber(alternative, places || (alternative % 1 ? 2 : 0)));
+    });
+    addCandidate(list, "2*(" + match[1] + " " + match[2] + ")");
+  }
+
+  function symbolicExpressionCandidates(expression, list) {
+    var divisionPositions = topLevelPositions(expression, function (character) { return character === "/"; });
+    if (divisionPositions.length === 1) {
+      var divisionIndex = divisionPositions[0];
+      var numerator = expression.slice(0, divisionIndex).trim();
+      var denominator = expression.slice(divisionIndex + 1).trim();
+      if (!numerator || !denominator) return;
+      var unsignedNumerator = numerator.replace(/^-/, "");
+      var oppositeNumerator = numerator[0] === "-" ? unsignedNumerator : "-" + numerator;
+      var reciprocalSign = numerator[0] === "-" ? "-" : "";
+      addCandidate(list, wrapFractionPart(oppositeNumerator) + "/" + wrapFractionPart(denominator));
+      addCandidate(list, reciprocalSign + wrapFractionPart(denominator) + "/" + wrapFractionPart(unsignedNumerator));
+      addCandidate(list, wrapFractionPart(numerator + "+1") + "/" + wrapFractionPart(denominator));
+      addCandidate(list, wrapFractionPart(numerator) + "/" + wrapFractionPart(denominator + "+1"));
+      return;
+    }
+    addCandidate(list, "-(" + expression + ")");
+    addCandidate(list, "(" + expression + ")+2");
+    addCandidate(list, "(" + expression + ")-3");
+    addCandidate(list, "2*(" + expression + ")");
+  }
+
   function symbolicCandidates(correct, list) {
-    if (!/[=+\-*/^π√]|(?:sqrt|sin|cos|tan|ln|log|exp)\s*\(|\b[xyznt]\b/i.test(correct) || correct.length > 110) return;
-    addCandidate(list, "-(" + correct + ")");
-    addCandidate(list, "(" + correct + ") + 2");
-    addCandidate(list, "(" + correct + ") - 3");
-    addCandidate(list, "(" + correct + ")^2");
+    var expression = clean(correct);
+    if (expression.length > 110 || /;/.test(expression)) return;
+    var simpleSymbol = /^(?:[a-zα-ω]|mu|sigma|theta|alpha|beta|gamma)$/.test(expression);
+    var algebraicShape = /[A-Za-zα-ωπ]/.test(expression)
+      && (/[=+\-*/^<>≤≥≠]/.test(expression)
+        || /\d[A-Za-zα-ω]|[A-Za-zα-ω]\d/.test(expression)
+        || /^-?\d*(?:sin|cos|tan)(?:mu|sigma|theta|alpha|beta|gamma|[a-z])/i.test(expression)
+        || /^(?:π|[A-Za-zα-ω])(?:\s+(?:π|[A-Za-zα-ω]))+$/.test(expression)
+        || /(?:sqrt|sin|cos|tan|ln|log|exp)\s*(?:\(|[A-Za-z0-9])/i.test(expression));
+    if (!simpleSymbol && !algebraicShape) return;
+
+    if (simpleSymbol) {
+      addCandidate(list, "-" + expression);
+      addCandidate(list, "2" + expression);
+      addCandidate(list, expression + "+2");
+      addCandidate(list, expression + "-3");
+      return;
+    }
+
+    var comparisonPositions = topLevelPositions(expression, function (character) { return /[<>≤≥≠]/.test(character); });
+    if (comparisonPositions.length === 1) {
+      var comparisonIndex = comparisonPositions[0];
+      var relationAlternatives = {
+        "<": ["≤", ">"],
+        ">": ["≥", "<"],
+        "≤": ["<", "≥"],
+        "≥": [">", "≤"],
+        "≠": ["=", "<", ">"],
+      }[expression[comparisonIndex]] || [];
+      relationAlternatives.forEach(function (relation) {
+        addCandidate(list, expression.slice(0, comparisonIndex) + relation + expression.slice(comparisonIndex + 1));
+      });
+      return;
+    }
+    if (comparisonPositions.length || /[<>≤≥≠]/.test(expression)) return;
+
+    var relationPositions = topLevelPositions(expression, function (character) { return character === "="; });
+    if (relationPositions.length === 1) {
+      var relationIndex = relationPositions[0];
+      var leftSide = expression.slice(0, relationIndex).trim();
+      var rightSide = expression.slice(relationIndex + 1).trim();
+      var rightCandidates = [];
+      symbolicExpressionCandidates(rightSide, rightCandidates);
+      rightCandidates.forEach(function (candidate) { addCandidate(list, leftSide + "=" + candidate); });
+      return;
+    }
+    symbolicExpressionCandidates(expression, list);
   }
 
   function hash(value) {
@@ -596,6 +697,8 @@
     simpleNumberCandidates(correct, candidates);
     radicalCandidates(correct, candidates);
     signedRadicalEquationCandidates(correct, candidates);
+    functionValueCandidates(correct, candidates);
+    implicitProductCandidates(correct, candidates);
     mutateNumberTokens(correct, candidates);
     symbolicCandidates(correct, candidates);
     var distractors = candidates.filter(function (candidate) {
