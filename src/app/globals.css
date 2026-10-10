@@ -367,6 +367,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-status-bar > div { display: grid; gap: .05rem; }
 .assignment-status-bar > div > span { color: rgba(255,255,255,.62); font-size: .7rem; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
 .assignment-status-bar .dashboard-progress { min-width: 120px; }
+.assignment-submitted-status { min-height: 2.6rem; padding: .55rem .82rem; display: flex !important; grid-auto-flow: column; align-items: center; justify-content: center; gap: .45rem !important; border: 1px solid rgba(143, 226, 188, .52); border-radius: .72rem; background: #dff6e9; color: #105f42; white-space: nowrap; }
+.assignment-status-bar .assignment-submitted-status > span { width: 1.22rem; height: 1.22rem; display: grid; place-items: center; border-radius: 50%; background: #197451; color: white; font-size: .72rem; font-weight: 950; }
+.assignment-submitted-status > strong { font-size: .87rem; }
 .assignment-note { padding: 1rem 1.2rem; display: flex; gap: .6rem; border: 1px solid #b7d6e9; border-radius: .9rem; background: var(--sky); color: var(--ink-2); }
 .teacher-progress-table { overflow: hidden; border: 1px solid var(--line); border-radius: 1.1rem; background: white; }
 .teacher-progress-row { min-height: 70px; padding: .85rem 1rem; display: grid; grid-template-columns: 1fr .8fr .65fr 130px; align-items: center; gap: 1rem; border-bottom: 1px solid #e7ebed; }
