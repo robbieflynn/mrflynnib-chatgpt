@@ -105,8 +105,8 @@ $$;
 
 grant execute on function public.submit_assignment_part_response(uuid, text, text, text) to authenticated;
 
--- Correct the already-published configuration for the reported intercept question,
--- but only where no student has saved a response to that question yet.
+-- Correct the already-published configuration for the reported intercept question.
+-- This changes only the question configuration; saved response and whiteboard rows remain untouched.
 update public.assignment_questions aq
 set response_options = (
   select jsonb_agg(
@@ -120,11 +120,7 @@ set response_options = (
   from jsonb_array_elements(aq.response_options) with ordinality as item(value, ordinality)
 )
 where aq.question_id = 'M14TZ2SL_P2_Q2'
-  and aq.response_type = 'multipart'
-  and not exists (
-    select 1 from public.assignment_responses ar
-    where ar.assignment_id = aq.assignment_id and ar.question_id = aq.question_id
-  );
+  and aq.response_type = 'multipart';
 
 update public.assignment_answer_keys ak
 set accepted_answers = jsonb_set(
@@ -134,10 +130,6 @@ set accepted_answers = jsonb_set(
   true
 ), updated_at = now()
 where ak.question_id = 'M14TZ2SL_P2_Q2'
-  and jsonb_typeof(ak.accepted_answers) = 'object'
-  and not exists (
-    select 1 from public.assignment_responses ar
-    where ar.assignment_id = ak.assignment_id and ar.question_id = ak.question_id
-  );
+  and jsonb_typeof(ak.accepted_answers) = 'object';
 
 notify pgrst, 'reload schema';
