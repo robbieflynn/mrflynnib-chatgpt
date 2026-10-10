@@ -83,7 +83,8 @@ function promptForSubpart(prompt, label) {
 }
 
 function choiceSetForRows(rows, prompt, seed) {
-  return choices.generateParityChoiceSet(rows, prompt, seed)
+  return choices.generateComparisonReasonChoiceSet(rows, prompt, seed)
+    || choices.generateParityChoiceSet(rows, prompt, seed)
     || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed);
 }
 
@@ -111,6 +112,16 @@ assert(radicalExample && radicalExample.options.every(choices.isDisplaySafe));
 assert.equal(choices.generateChoiceSet(["1/4/2"], "audit-malformed"), null);
 assert.equal(choices.isDisplaySafe("(a)(x))"), false);
 assert.equal(choices.toLatex("2*x"), String.raw`2\times x`);
+
+const comparisonReasonChoices = choices.generateComparisonReasonChoiceSet(
+  [["The approximate value is less than the actual value because dy/dx is actually an increasing function.", "R1"]],
+  "Write down, giving a reason, whether the approximate value is greater than or less than the actual value.",
+  "M11TZ0HL_P3_Q2:b",
+);
+assert(comparisonReasonChoices);
+assert.equal(comparisonReasonChoices.acceptedAnswers[0], "Less than the actual value, because the gradient is increasing");
+assert.equal(comparisonReasonChoices.options.length, 5);
+assert(comparisonReasonChoices.options.every((option) => choices.toLatex(option).startsWith(String.raw`\text{`)));
 
 const angleMarkscheme = String.raw`\((\theta =)\ 28.1^\circ\ (28.0724\ldots^\circ)\) OR \(0.490\ (0.489957\ldots)\ rad\)`;
 const angleAnswers = choices.extractAcceptedAnswers([[angleMarkscheme, "A1"]], "Find the angle.");
@@ -262,6 +273,7 @@ let verifiedColumnVectorQuestion = false;
 let verifiedVectorLineQuestion = false;
 let verifiedComplexArgumentQuestion = false;
 let verifiedInverseFunctionQuestion = false;
+let verifiedComparisonReasonQuestion = false;
 const objectiveFallbacks = [];
 for (const [label, path] of banks) {
   const questions = extractSeed(path);
@@ -316,6 +328,12 @@ for (const [label, path] of banks) {
         }
       }
       const accepted = choices.extractAcceptedAnswers(rows, prompt);
+      const comparisonReasonSet = choices.generateComparisonReasonChoiceSet(rows, prompt, `${question.id}:${part}`);
+      if ((question.id === "M11TZ0HL_P3_Q2" || question.id === "H_M11TZ0HL_P3_Q2") && part === "b") {
+        assert(comparisonReasonSet, `Reason-based comparison choices were not generated for ${question.id}`);
+        assert.equal(comparisonReasonSet.acceptedAnswers[0], "Less than the actual value, because the gradient is increasing");
+        verifiedComparisonReasonQuestion = true;
+      }
       if (question.id === "M15TZ2HL_P2_Q11" && part === "b") {
         assert.equal(accepted[0], "y = -4x+25");
         assert(choices.toLatex(accepted[0]).startsWith("y="));
@@ -380,6 +398,7 @@ assert(verifiedColumnVectorQuestion, "The real column-vector regression question
 assert(verifiedVectorLineQuestion, "The real vector-line regression question was not audited.");
 assert(verifiedComplexArgumentQuestion, "The real complex-argument regression question was not audited.");
 assert(verifiedInverseFunctionQuestion, "The real inverse-function regression question was not audited.");
+assert(verifiedComparisonReasonQuestion, "The real Euler comparison-and-reason question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);
 console.log(`Nested parts: ${nestedGenerated}/${nestedChecked} objective parts produced five safe choices; proof and show-that parts remained whiteboard tasks.`);
 if (process.env.ASSIGNMENT_AUDIT_DETAILS === "1") {
