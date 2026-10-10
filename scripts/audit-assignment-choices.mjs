@@ -99,6 +99,42 @@ const banks = [
   ["IGCSE", "public/question-bank/igcse-bank.html"],
 ];
 
+const progressManifest = JSON.parse(readFileSync("src/data/question-bank-progress.json", "utf8"));
+const activeQuestionIds = {
+  IB: new Set(Object.values(progressManifest.courses || {}).flatMap((course) => course.questionIds || [])),
+  IGCSE: new Set(progressManifest.igcse && progressManifest.igcse.questionIds || []),
+};
+
+function assignmentPartConfigs(question) {
+  if (!question || !Array.isArray(question.markscheme)) return [];
+  const markschemeByPart = new Map(question.markscheme
+    .filter(Array.isArray)
+    .map((group) => [String(group[0] || "").toLowerCase(), Array.isArray(group[1]) ? group[1] : []]));
+  const parts = Array.isArray(question.parts) && question.parts.length
+    ? question.parts
+    : [["", question.body || question.title || "", question.marks]];
+  const configs = [];
+  for (const part of parts) {
+    const topLabel = String(part[0] || "").toLowerCase();
+    const prompt = String(part[1] || "");
+    const rows = markschemeByPart.get(topLabel) || [];
+    const nested = romanSubparts(prompt);
+    if (nested.length) {
+      for (const nestedLabel of nested) {
+        const nestedPrompt = promptForSubpart(prompt, nestedLabel);
+        const labelledRows = rowsForSubpart(rows, nestedLabel);
+        const nestedRows = labelledRows.length ? labelledRows : rows;
+        const label = topLabel ? `${topLabel}(${nestedLabel})` : nestedLabel;
+        configs.push({ label, prompt: nestedPrompt, choices: choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`) });
+      }
+    } else {
+      const label = topLabel || "answer";
+      configs.push({ label, prompt, choices: choiceSetForRows(rows, prompt, `${question.id}:${label}`) });
+    }
+  }
+  return configs;
+}
+
 const wholeNumberExample = choices.generateChoiceSet(["25"], "audit-integer");
 assert(wholeNumberExample);
 assert.deepEqual(new Set(wholeNumberExample.options), new Set(["25", "28", "18", "53", "7"]));
@@ -274,6 +310,7 @@ let verifiedVectorLineQuestion = false;
 let verifiedComplexArgumentQuestion = false;
 let verifiedInverseFunctionQuestion = false;
 let verifiedComparisonReasonQuestion = false;
+let verifiedMaclaurinSeriesQuestion = false;
 const objectiveFallbacks = [];
 for (const [label, path] of banks) {
   const questions = extractSeed(path);
@@ -369,6 +406,13 @@ for (const [label, path] of banks) {
         assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
         verifiedInverseFunctionQuestion = true;
       }
+      if (question.id === "N15TZ0HL_P3_Q2" && part === "b") {
+        assert.equal(accepted[0], "f(x)=x+x^2+x^3/3-x^5/30");
+        const seriesSet = choices.generateChoiceSet(accepted, `${question.id}:${part}`);
+        assert(seriesSet);
+        assert(seriesSet.options.every((option) => choices.toLatex(option).includes("x")));
+        verifiedMaclaurinSeriesQuestion = true;
+      }
       if (!accepted.length) {
         if (looksObjective(prompt) && !nested.length) objectiveFallbacks.push(`${label} ${question.id} ${part}: ${plainText(prompt)}`);
         continue;
@@ -399,8 +443,32 @@ assert(verifiedVectorLineQuestion, "The real vector-line regression question was
 assert(verifiedComplexArgumentQuestion, "The real complex-argument regression question was not audited.");
 assert(verifiedInverseFunctionQuestion, "The real inverse-function regression question was not audited.");
 assert(verifiedComparisonReasonQuestion, "The real Euler comparison-and-reason question was not audited.");
+assert(verifiedMaclaurinSeriesQuestion, "The real Maclaurin-series regression question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);
 console.log(`Nested parts: ${nestedGenerated}/${nestedChecked} objective parts produced five safe choices; proof and show-that parts remained whiteboard tasks.`);
+let allActiveQuestions = 0;
+let allAnswerParts = 0;
+let allWhiteboardParts = 0;
+let allQuestionsWithWhiteboard = 0;
+for (const [label, path] of banks) {
+  const questions = extractSeed(path).filter((question) => activeQuestionIds[label].has(String(question.id || "")));
+  let bankAnswerParts = 0;
+  let bankWhiteboardParts = 0;
+  let bankQuestionsWithWhiteboard = 0;
+  for (const question of questions) {
+    const configs = assignmentPartConfigs(question);
+    const whiteboardParts = configs.filter((config) => !config.choices);
+    bankAnswerParts += configs.length;
+    bankWhiteboardParts += whiteboardParts.length;
+    if (whiteboardParts.length) bankQuestionsWithWhiteboard += 1;
+  }
+  allActiveQuestions += questions.length;
+  allAnswerParts += bankAnswerParts;
+  allWhiteboardParts += bankWhiteboardParts;
+  allQuestionsWithWhiteboard += bankQuestionsWithWhiteboard;
+  console.log(`${label} assignment inventory: ${bankWhiteboardParts}/${bankAnswerParts} answer parts use whiteboard or paper, across ${bankQuestionsWithWhiteboard}/${questions.length} active questions.`);
+}
+console.log(`Combined assignment inventory: ${allWhiteboardParts}/${allAnswerParts} answer parts use whiteboard or paper, across ${allQuestionsWithWhiteboard}/${allActiveQuestions} active questions.`);
 if (process.env.ASSIGNMENT_AUDIT_DETAILS === "1") {
   console.log(`Objective-looking whiteboard fallbacks: ${objectiveFallbacks.length}`);
   objectiveFallbacks.slice(0, 120).forEach((item) => console.log(`- ${item}`));
