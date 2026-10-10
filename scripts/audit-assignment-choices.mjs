@@ -87,6 +87,7 @@ function promptForSubpart(prompt, label) {
 
 function choiceSetForRows(rows, prompt, seed) {
   return choices.generateComparisonReasonChoiceSet(rows, prompt, seed)
+    || choices.generateConceptChoiceSet(rows, prompt, seed)
     || choices.generateParityChoiceSet(rows, prompt, seed)
     || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed);
 }
@@ -280,6 +281,32 @@ assert.equal(constantAnswers[0], "k=1/4");
 assert.equal(choices.toLatex(constantAnswers[0]), String.raw`k=\frac{1}{4}`);
 assert.equal(choices.toLatex("1/4 cm"), String.raw`\frac{1}{4}\,\mathrm{cm}`);
 assert.deepEqual(choices.extractAcceptedAnswers([[String.raw`\(x=3\)`, "A1"]], "Show that x is 3."), []);
+
+const labelledRoundedAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\((\text{TM} =)\ 7.81\text{ m}\ (\sqrt{61}\text{ m},\ 7.81024\ldots\text{ m})\)`, "A1"]],
+  "Find TM.",
+);
+assert.deepEqual(labelledRoundedAnswers, ["7.81 m"]);
+assert(choices.generateChoiceSet(labelledRoundedAnswers, "audit-labelled-rounded"));
+
+const distributionAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(\overline{X}\sim N\left(\mu,\dfrac{\sigma^2}{100}\right)\)`, "A1"]],
+  "State the distribution of the sample mean.",
+);
+assert.equal(distributionAnswers[0], "overline(X)~ N(mu,(sigma^2)/100)");
+assert(choices.generateChoiceSet(distributionAnswers, "audit-distribution"));
+
+const currencyAnswers = choices.extractAcceptedAnswers([["($)37.40", "A1"]], "Find the amount charged.");
+assert.deepEqual(currencyAnswers, ["37.40"]);
+assert(choices.generateChoiceSet(currencyAnswers, "audit-currency"));
+
+const centralLimitChoices = choices.generateConceptChoiceSet(
+  [["For n sufficiently large, the sample mean is approximately normally distributed.", "A1"]],
+  "State the central limit theorem.",
+  "audit-central-limit-theorem",
+);
+assert(centralLimitChoices);
+assert.equal(centralLimitChoices.options.length, 5);
 
 const integralAnswers = choices.extractAcceptedAnswers(
   [[String.raw`\(\displaystyle\int_1^2\left(f(x)\right)^2\,dx = \dfrac{31}{5}\ (= 6.2)\)`, "A1"]],
@@ -481,6 +508,7 @@ let allWhiteboardParts = 0;
 let allQuestionsWithWhiteboard = 0;
 const objectiveFailureKinds = new Map();
 const objectiveFailureVerbs = new Map();
+const objectiveFailureShapes = new Map();
 const activeObjectiveFallbacks = [];
 let objectiveWhiteboardParts = 0;
 const objectiveWhiteboardQuestions = new Set();
@@ -500,6 +528,15 @@ for (const [label, path] of banks) {
       objectiveWhiteboardQuestions.add(`${label}:${question.id}`);
       const kind = config.accepted.length ? "accepted answer found, but four safe alternatives were not generated" : "mark-scheme answer was not extracted";
       objectiveFailureKinds.set(kind, (objectiveFailureKinds.get(kind) || 0) + 1);
+      let shape = "accepted answer needs distractors";
+      if (!config.accepted.length) {
+        const awardedRows = config.rows.filter((row) => Array.isArray(row) && /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || "")));
+        if (!config.rows.length) shape = "no mark-scheme rows";
+        else if (!awardedRows.length) shape = "no credited answer row";
+        else if (!awardedRows.some((row) => /\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]/.test(String(row[0] || "")))) shape = "credited prose answer";
+        else shape = "credited mathematical answer not parsed";
+      }
+      objectiveFailureShapes.set(shape, (objectiveFailureShapes.get(shape) || 0) + 1);
       const verb = plainText(config.prompt).match(/\b(find|calculate|write down|state|determine|solve|evaluate|express|give)\b/i);
       const key = verb ? verb[1].toLowerCase() : "other";
       objectiveFailureVerbs.set(key, (objectiveFailureVerbs.get(key) || 0) + 1);
@@ -515,6 +552,7 @@ for (const [label, path] of banks) {
 console.log(`Combined assignment inventory: ${allWhiteboardParts}/${allAnswerParts} answer parts use whiteboard or paper, across ${allQuestionsWithWhiteboard}/${allActiveQuestions} active questions.`);
 console.log(`Objective-looking whiteboard inventory: ${objectiveWhiteboardParts} parts across ${objectiveWhiteboardQuestions.size} active questions.`);
 console.log(`Objective fallback causes: ${Array.from(objectiveFailureKinds, ([kind, count]) => `${count} ${kind}`).join("; ")}.`);
+console.log(`Objective fallback shapes: ${Array.from(objectiveFailureShapes, ([shape, count]) => `${count} ${shape}`).join("; ")}.`);
 console.log(`Objective fallback prompt verbs: ${Array.from(objectiveFailureVerbs.entries()).sort((left, right) => right[1] - left[1]).map(([verb, count]) => `${verb} ${count}`).join(", ")}.`);
 if (process.env.ASSIGNMENT_AUDIT_DETAILS === "1") {
   console.log(`Objective-looking whiteboard fallbacks: ${objectiveFallbacks.length}`);
