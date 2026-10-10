@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 11;
+  var DRAFT_VERSION = 12;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
@@ -306,14 +306,16 @@
           if (!nestedRows.length) nestedRows = rows;
           var answers = automaticAnswersFromRows(nestedRows, nestedPrompt);
           var label = topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel;
-          var choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          var choices = choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
           if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
           results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
         });
       } else {
         var answers = automaticAnswersFromRows(rows, prompt);
         var label = topLabel || "answer";
-        var choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        var choices = choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
         if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
         results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
       }

@@ -856,6 +856,47 @@
       : null;
   }
 
+  function comparisonReasonDetails(rows, prompt) {
+    var question = plainText(prompt);
+    if (!/\b(?:greater than|less than)\b/i.test(question) || !/\b(?:reason|why)\b/i.test(question)) return null;
+    var answer = (Array.isArray(rows) ? rows : []).map(function (row) {
+      return plainText(latexToPlain(Array.isArray(row) ? row[0] : row));
+    }).join(" ");
+    var directionMatch = answer.match(/\b(less than|greater than)\b/i);
+    var trendMatch = answer.match(/\b(?:gradient|derivative|dy\s*\/\s*dx)\b[\s\S]{0,100}\b(increasing|decreasing|constant)\b/i)
+      || answer.match(/\b(increasing|decreasing|constant)\b[\s\S]{0,100}\b(?:gradient|derivative|dy\s*\/\s*dx)\b/i);
+    if (!directionMatch || !trendMatch) return null;
+    return {
+      direction: directionMatch[1].toLowerCase(),
+      trend: trendMatch[1].toLowerCase(),
+    };
+  }
+
+  function comparisonReasonLabel(direction, trend) {
+    var directionLabel = direction === "greater than" ? "Greater than" : direction === "less than" ? "Less than" : "Equal to";
+    var reason = trend === "constant" ? "the gradient stays constant" : "the gradient is " + trend;
+    return directionLabel + " the actual value, because " + reason;
+  }
+
+  function generateComparisonReasonChoiceSet(rows, prompt, seed) {
+    var details = comparisonReasonDetails(rows, prompt);
+    if (!details) return null;
+    var correct = comparisonReasonLabel(details.direction, details.trend);
+    var options = [
+      comparisonReasonLabel("less than", "increasing"),
+      comparisonReasonLabel("greater than", "increasing"),
+      comparisonReasonLabel("less than", "decreasing"),
+      comparisonReasonLabel("greater than", "decreasing"),
+      comparisonReasonLabel("equal to", "constant"),
+    ];
+    if (options.indexOf(correct) === -1) return null;
+    var shuffledOptions = shuffled(options, seed);
+    var correctOption = shuffledOptions.indexOf(correct);
+    return validateChoiceSet([correct], shuffledOptions, correctOption)
+      ? { acceptedAnswers: [correct], options: shuffledOptions, correctOption: correctOption }
+      : null;
+  }
+
   function unitToLatex(unit) {
     if (!unit) return "";
     if (unit === "°") return "^{\\circ}";
@@ -866,6 +907,8 @@
 
   function toLatex(value) {
     var answer = clean(value);
+    var comparisonReason = answer.match(/^(Less than|Greater than|Equal to) the actual value, because (the gradient (?:is (?:increasing|decreasing)|stays constant))$/i);
+    if (comparisonReason) return "\\text{" + comparisonReason[1] + " the actual value, because " + comparisonReason[2] + ".}";
     var parity = answer.match(/^(Odd|Even|Neither), because (.+)$/i);
     if (parity) {
       var reason = parity[2].split(/\s+and\s+/i).map(function (part) {
@@ -910,6 +953,7 @@
     equivalent: equivalent,
     extractAcceptedAnswers: extractAcceptedAnswers,
     generateChoiceSet: generateChoiceSet,
+    generateComparisonReasonChoiceSet: generateComparisonReasonChoiceSet,
     generateParityChoiceSet: generateParityChoiceSet,
     isDisplaySafe: isDisplaySafe,
     latexToPlain: latexToPlain,
