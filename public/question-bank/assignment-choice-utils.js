@@ -150,7 +150,11 @@
       .replace(/(^|[=+(\-])(-?)1(?=[A-Za-z])/g, "$1$2")
       .replace(/²/g, "^2")
       .replace(/³/g, "^3")
+      .replace(/(^|[=+\-])(\d+)\/(\d+)(x\^\d+)/g, function (_match, sign, numerator, denominator, power) {
+        return sign + (numerator === "1" ? "" : numerator + "*") + power + "/" + denominator;
+      })
       .replace(/\s*\(\s*((?:cm|mm|km|m)\s*\^[23])\s*\)\s*$/i, " $1")
+      .replace(/\s*\+\s*(?:…|\.\.\.)\s*$/, "")
       .replace(/\s+/g, " ")
       .replace(/\s+(?=[°%])/g, "")
       .replace(/,\s*\([A-Za-z]\s*(?:[<>≤≥≠].*)\)$/g, "")
@@ -346,6 +350,15 @@
         return /^-?\d+(?:\.\d+)?$/.test(answer) ? answer + " rad" : answer;
       });
       if (radianAnswers.length) answers = radianAnswers;
+    }
+    if (/\b(?:maclaurin|taylor)\b[\s\S]*\b(?:expansion|series)\b/i.test(question)) {
+      var seriesPrompt = clean(latexToPlain(prompt));
+      var seriesTarget = seriesPrompt.match(/\b(?:expansion|series)\s+(?:of|for)\s+([A-Za-z](?:\([^)]*\))?)/i);
+      if (seriesTarget) {
+        answers = answers.map(function (answer) {
+          return answer.indexOf("=") === -1 ? seriesTarget[1] + "=" + answer : answer;
+        });
+      }
     }
     return answers.slice(0, 12);
   }
@@ -763,6 +776,24 @@
     symbolicExpressionCandidates(expression, list);
   }
 
+  function seriesCandidates(correct, list) {
+    var expression = clean(correct);
+    var relationIndex = expression.indexOf("=");
+    var prefix = relationIndex > 0 ? expression.slice(0, relationIndex + 1) : "";
+    var series = relationIndex > 0 ? expression.slice(relationIndex + 1) : expression;
+    if (/\^-/.test(series) || !/x\^\d/.test(series)) return;
+    var terms = series.match(/[+-]?[^+-]+/g) || [];
+    if (terms.length < 3) return;
+    for (var index = 1; index < terms.length && list.length < 4; index += 1) {
+      var changed = terms.slice();
+      changed[index] = changed[index][0] === "+" ? "-" + changed[index].slice(1)
+        : changed[index][0] === "-" ? "+" + changed[index].slice(1)
+          : "-" + changed[index];
+      addCandidate(list, prefix + changed.join(""));
+    }
+    if (list.length < 4) addCandidate(list, prefix + terms.slice(0, -1).join(""));
+  }
+
   function hash(value) {
     var result = 2166136261;
     for (var index = 0; index < value.length; index += 1) {
@@ -813,6 +844,7 @@
     functionValueCandidates(correct, candidates);
     categoricalCandidates(correct, candidates);
     implicitProductCandidates(correct, candidates);
+    seriesCandidates(correct, candidates);
     mutateNumberTokens(correct, candidates);
     symbolicCandidates(correct, candidates);
     var distractors = candidates.filter(function (candidate) {
