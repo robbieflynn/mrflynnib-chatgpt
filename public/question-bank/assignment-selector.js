@@ -252,11 +252,12 @@
 
   function romanSubparts(prompt) {
     var labels = [];
+    var sequence = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
     var pattern = /\(([ivxlcdm]+)\)/gi;
     var match;
     while ((match = pattern.exec(plainText(prompt)))) {
       var label = match[1].toLowerCase();
-      if (labels.indexOf(label) === -1) labels.push(label);
+      if (label === sequence[labels.length]) labels.push(label);
     }
     return labels.indexOf("i") !== -1 && labels.indexOf("ii") !== -1 ? labels : [];
   }
@@ -279,7 +280,9 @@
     var start = source.search(marker);
     if (start === -1) return source;
     var remainder = source.slice(start + label.length + 2);
-    var next = remainder.search(/\(([ivxlcdm]+)\)/i);
+    var labels = romanSubparts(prompt);
+    var nextLabel = labels[labels.indexOf(label) + 1];
+    var next = nextLabel ? remainder.search(new RegExp("\\(" + nextLabel + "\\)", "i")) : -1;
     return next === -1 ? remainder : remainder.slice(0, next);
   }
 
