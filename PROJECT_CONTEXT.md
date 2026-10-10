@@ -266,9 +266,11 @@ The workflow must remain simple:
 2. Codex reads this context and inspects the real repository.
 3. Codex makes a focused change on a branch and runs checks.
 4. Codex creates a pull request when GitHub authentication allows it.
-5. Vercel creates a preview that Rob can inspect without changing production.
-6. Codex and Rob revise the preview as needed.
-7. The change is merged and published only after Rob approves it.
+5. Vercel creates a preview for internal QA when useful.
+6. Codex publishes the checked change to production without stopping for separate preview approval, unless Rob explicitly requests preview-only or local-only work.
+7. Codex verifies the public production result and reports it accurately.
+
+On 10 October 2026, Rob confirmed that a request to make a website change also authorises publishing that completed, checked change to the live site. Do not routinely stop and ask him to approve a preview. A preview can still be used for internal QA, and explicit preview-only instructions or genuinely high-risk, irreversible actions still take precedence.
 
 Do not return to full-site ZIP transfers for ordinary development. Keep one repository and evolve it incrementally.
 

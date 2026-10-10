@@ -8,7 +8,7 @@ Read `PROJECT_CONTEXT.md` completely before planning or changing this project. T
 - Take ownership of design, copy, implementation, testing, and technical decisions while explaining important trade-offs plainly.
 - Make sensible, reversible assumptions instead of asking unnecessary technical questions. Clearly label assumptions that affect the business or customer experience.
 - Never claim to have inspected a live page unless it was genuinely opened and rendered. Distinguish clearly between reviewing source code, a local render, a screenshot, a Vercel preview, and the public website.
-- For major visual changes, create or use a preview and obtain Rob's approval before publishing to production.
+- For major visual changes, create or use a preview for internal QA when useful, then publish after checks without waiting for separate approval unless Rob explicitly requests preview-only work.
 - Keep changes incremental. Preserve unrelated content and functionality.
 - Do not invent testimonials, results, prices, availability, credentials, partnerships, course details, or links. Use clearly labelled placeholders when verified information is missing.
 - Prefer one evolving product and repository over regenerated ZIP files or replacement websites.
@@ -43,4 +43,3 @@ npm run build
 ```
 
 If the environment provides a different package runner or dependencies are unavailable, use an equivalent safe command and report the variation.
-
