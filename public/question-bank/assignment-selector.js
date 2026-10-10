@@ -302,15 +302,18 @@
       if (nested.length) {
         nested.forEach(function (nestedLabel) {
           var nestedPrompt = promptForSubpart(prompt, nestedLabel);
-          var answers = automaticAnswersFromRows(rowsForSubpart(rows, nestedLabel), nestedPrompt);
+          var nestedRows = rowsForSubpart(rows, nestedLabel);
+          var answers = automaticAnswersFromRows(nestedRows, nestedPrompt);
           var label = topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel;
-          var choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
+          var choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
           results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
         });
       } else {
         var answers = automaticAnswersFromRows(rows, prompt);
         var label = topLabel || "answer";
-        var choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
+        var choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label);
         results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
       }
     });
