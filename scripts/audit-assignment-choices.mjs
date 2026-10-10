@@ -158,6 +158,27 @@ assert.equal(derivativeLatex, String.raw`\frac{dy}{dx}=\frac{\left(2-k\right)}{\
 assert(!derivativeLatex.includes("/"));
 assert(choices.generateChoiceSet(derivativeAnswers, "audit-implicit-differentiation"));
 
+const derivativeAtPointAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(f'(p)=-1\)`, "A2"]],
+  String.raw`Write down \(f'(p)\).`,
+);
+assert.deepEqual(derivativeAtPointAnswers, ["-1"]);
+assert(choices.generateChoiceSet(derivativeAtPointAnswers, "audit-derivative-at-point"));
+for (const symbolicAnswer of [
+  "2k",
+  "12p",
+  "theta",
+  "-x/y",
+  "dy/dx=e^x(sin x+cos x)",
+  "2sinthetacostheta",
+]) {
+  const symbolicSet = choices.generateChoiceSet([symbolicAnswer], `audit-symbolic:${symbolicAnswer}`);
+  assert(symbolicSet, `No safe symbolic choices were generated for ${symbolicAnswer}`);
+  assert(symbolicSet.options.every(choices.isDisplaySafe));
+  assert(symbolicSet.options.every((option) => !choices.toLatex(option).includes("/")));
+}
+assert(choices.toLatex("2sinthetacostheta").includes(String.raw`\sin \theta \cos \theta`));
+
 const constantAnswers = choices.extractAcceptedAnswers([[String.raw`\(k=\dfrac14\)`, "A1"]], "Find k.");
 assert.equal(constantAnswers[0], "k=1/4");
 assert.equal(choices.toLatex(constantAnswers[0]), String.raw`k=\frac{1}{4}`);
@@ -192,6 +213,7 @@ let nestedGenerated = 0;
 let verifiedLineQuestion = false;
 let verifiedPairedInterceptQuestion = false;
 let verifiedContinuousRandomVariableQuestion = false;
+let verifiedDerivativeAtPointQuestion = false;
 for (const [label, path] of banks) {
   const questions = extractSeed(path);
   let bankChecked = 0;
@@ -247,6 +269,11 @@ for (const [label, path] of banks) {
       if (question.id === "M15TZ2HL_P2_Q11" && part === "c") {
         assert.equal(accepted[0], "2sqrt(2)");
       }
+      if (question.id === "M15TZ2SL_P2_Q8" && part === "b") {
+        assert.deepEqual(accepted, ["-1"]);
+        assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
+        verifiedDerivativeAtPointQuestion = true;
+      }
       if (question.id === "M14TZ2SL_P2_Q2" && part === "a") {
         assert(accepted.includes("x = ±sqrt(5)"));
         assert(accepted.includes("x = ±2.24"));
@@ -273,5 +300,6 @@ for (const [label, path] of banks) {
 assert(verifiedLineQuestion, "The real equation-of-a-normal regression question was not audited.");
 assert(verifiedPairedInterceptQuestion, "The real paired-intercepts regression question was not audited.");
 assert(verifiedContinuousRandomVariableQuestion, "The continuous-random-variable nested-part regression question was not audited.");
+assert(verifiedDerivativeAtPointQuestion, "The real derivative-at-a-point regression question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);
 console.log(`Nested parts: ${nestedGenerated}/${nestedChecked} objective parts produced five safe choices; proof and show-that parts remained whiteboard tasks.`);

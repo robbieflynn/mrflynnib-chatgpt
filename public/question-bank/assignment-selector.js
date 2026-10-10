@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 9;
+  var DRAFT_VERSION = 10;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
