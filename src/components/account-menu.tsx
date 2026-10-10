@@ -17,7 +17,7 @@ function initials(name: string, email: string) {
   return (words[0]?.slice(0, 2) || email.slice(0, 2) || "ME").toUpperCase();
 }
 
-export function AccountMenu() {
+export function AccountMenu({ signOutHref = "/account" }: { signOutHref?: string }) {
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -104,7 +104,7 @@ export function AccountMenu() {
     }
     setOpen(false);
     setAccount(null);
-    router.push("/");
+    router.push(signOutHref);
     router.refresh();
   }
 

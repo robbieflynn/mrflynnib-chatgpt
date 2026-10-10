@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Container, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
+import { AccountMenu } from "@/components/account-menu";
 import { StudentAccountForm } from "@/components/student-account-form";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
@@ -136,16 +137,21 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   return (
     <>
       <section className={`dashboard-hero student-dashboard-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
-        <Container className="dashboard-hero-layout">
-          <div className="dashboard-hero-copy">
-            <span className="dashboard-role-label">Student dashboard</span>
-            <h1>{displayName ? `Welcome back, ${displayName}` : "Your learning dashboard"}</h1>
-            <p>Keep up with your classes, assignments and question-bank progress.</p>
+        <Container className="dashboard-hero-shell">
+          <div className="dashboard-account-row">
+            <AccountMenu signOutHref={isIgcse ? "/account?qualification=igcse" : "/account"} />
           </div>
-          <div className="dashboard-hero-stats" aria-label="Student account summary">
-            <div><strong>{activeMemberships.length}</strong><span>{activeMemberships.length === 1 ? "class" : "classes"}</span></div>
-            <div><strong>{assignments.length}</strong><span>assignments</span></div>
-            <div><strong>{coursePercentage}%</strong><span>{progressLabel} progress</span></div>
+          <div className="dashboard-hero-layout">
+            <div className="dashboard-hero-copy">
+              <span className="dashboard-role-label">Student dashboard</span>
+              <h1>{displayName ? `Welcome back, ${displayName}` : "Your learning dashboard"}</h1>
+              <p>Keep up with your classes, assignments and question-bank progress.</p>
+            </div>
+            <div className="dashboard-hero-stats" aria-label="Student account summary">
+              <div><strong>{activeMemberships.length}</strong><span>{activeMemberships.length === 1 ? "class" : "classes"}</span></div>
+              <div><strong>{assignments.length}</strong><span>assignments</span></div>
+              <div><strong>{coursePercentage}%</strong><span>{progressLabel} progress</span></div>
+            </div>
           </div>
         </Container>
       </section>
