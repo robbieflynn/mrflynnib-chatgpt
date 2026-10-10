@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 7 October 2026
+Last updated: 10 October 2026
 
 ## Purpose of this file
 
@@ -323,6 +323,8 @@ On 9 October 2026, Rob chose multiple choice as the default student response for
 Later on 9 October 2026, Rob clarified that numerical distractors should be meaningfully spread rather than clustered immediately above and below the correct value. For example, an answer of 25 can use values such as 18, 7, 53 and 28 rather than 24, 26 and near-duplicates. All assignment answers must use properly rendered mathematical notation in the teacher setup, student assignment and teacher review views. Never show raw conversion strings such as `sqrt(8)`, `^circ` or `mathrmcm^2`; malformed compound fractions such as `1/4/2` must be rejected rather than offered as choices.
 
 Complete final answers must retain essential mathematical context from the matching final awarded mark-scheme row. For example, an equation-of-a-line answer must remain `y = -4x + 25` rather than being reduced to its right-hand side. Fractions must preserve their numerator and denominator grouping and render as stacked fractions everywhere, including expressions such as `dy/dx = (2-k)/(4k-1)`. Apply the same extraction and notation rules to both IB and IGCSE. If the final answer cannot be identified unambiguously, use the whiteboard-or-paper response instead of presenting a guessed answer.
+
+When a multi-part question contains internal parts such as (i) and (ii) but the mark scheme does not repeat those labels on its working rows, do not default every internal part to whiteboard. Match the wording of the requested result—such as a named variable, mean, median, variance or standard deviation—to the corresponding final awarded mark-scheme line, and create safe multiple-choice answers for the objective parts. Keep only genuine show-that, proof, diagram, explanation and open-working parts on whiteboard. Recalculate previously cached assignment-builder answer configurations when these extraction rules improve, while retaining the teacher's selected question IDs and assignment contents.
 
 Teacher assignment reporting treats a saved answer as an attempted question even if the student did not separately use the question bank&apos;s completion tick. The class overview and question review must show attempted, correct, needs-attention, awaiting-review and not-attempted states clearly, and must not expose source session or time-zone codes to teachers or students. Where the question bank identifies multiple top-level parts, teacher-review assignments provide a separate saved answer field for each part. Automatically checked exact, numerical and multiple-choice questions allow two attempts, give immediate encouraging feedback after each check and use a short success or retry sound initiated by the student&apos;s interaction. After a correct answer or the second attempt, that answer is locked; open-ended and multi-part answers remain teacher-reviewed unless an explicit markable answer has been configured.
 
