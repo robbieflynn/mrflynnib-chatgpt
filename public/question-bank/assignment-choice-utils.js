@@ -60,6 +60,10 @@
     return plainText(replaceLatexFractions(String(value || ""))
       .replace(/\\\(|\\\)|\\\[|\\\]/g, "")
       .replace(/\\left|\\right/g, "")
+      .replace(/\\(?:displaystyle|textstyle|scriptstyle|scriptscriptstyle|limits|nolimits)\b/g, "")
+      .replace(/\\int\b/g, "∫")
+      .replace(/\\sum\b/g, "∑")
+      .replace(/\\prod\b/g, "∏")
       .replace(/\\sqrt\s*\[([^\]]+)\]\s*\{([^{}]+)\}/g, "root($1,$2)")
       .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
       .replace(/\\sqrt\s*([A-Za-z0-9.]+)/g, "sqrt($1)")
@@ -113,7 +117,15 @@
     return /\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|giving a reason|state a reason|write down the steps|show your working|describe|discuss|interpret|comment on)\b/i.test(plainText(prompt));
   }
 
-  function addAcceptedAnswer(list, value) {
+  function shouldKeepWholeEquality(prompt, answer) {
+    var question = plainText(prompt).toLowerCase();
+    var leftSide = answer.slice(0, answer.indexOf("=")).trim();
+    if (!leftSide || leftSide.length > 50 || /[∫∑∏]/.test(leftSide)) return false;
+    if (/\bequation\b/.test(question) || /\b(?:write|express|give)\b.*\bin the form\b/.test(question)) return true;
+    return /^(?:[A-Za-zα-ω](?:\([^)]*\))?|d[A-Za-z]\/d[A-Za-z])$/i.test(leftSide.replace(/\s+/g, ""));
+  }
+
+  function addAcceptedAnswer(list, value, prompt) {
     var startsWithEquality = /^\s*=/.test(String(value || "").replace(/\\left|\\right/g, ""));
     var answer = clean(latexToPlain(value)).replace(/\\(?=\s|\(|\)|$)/g, "").replace(/[.;,]+$/, "").trim();
     if (!answer || answer.length > 140) return;
@@ -121,13 +133,13 @@
     if (/^(?:[a-df-hj-z]|theta|alpha|beta|gamma|dx|dy\/dx|dm\/dt|cos\s*theta|sin\s*theta)$/i.test(answer)) return;
     var approximate = answer.match(/^(.+?)\s*\(\s*=\s*(.+?)\s*\)$/);
     if (approximate) {
-      addAcceptedAnswer(list, approximate[1]);
-      addAcceptedAnswer(list, approximate[2]);
+      addAcceptedAnswer(list, approximate[1], prompt);
+      addAcceptedAnswer(list, approximate[2], prompt);
       return;
     }
     var alternatives = answer.split(/\s+or\s+/i).filter(Boolean);
     if (alternatives.length > 1) {
-      alternatives.forEach(function (alternative) { addAcceptedAnswer(list, alternative); });
+      alternatives.forEach(function (alternative) { addAcceptedAnswer(list, alternative, prompt); });
       return;
     }
 
@@ -145,8 +157,19 @@
       addUnique(answer);
       return;
     }
+    if (equalityCount === 1 && !/[<>&≤≥]/.test(answer)) {
+      var rightSide = answer.slice(answer.indexOf("=") + 1).trim();
+      if (shouldKeepWholeEquality(prompt, answer)) {
+        addUnique(answer);
+        addUnique(rightSide);
+      } else {
+        var answerCount = list.length;
+        addUnique(rightSide);
+        if (list.length === answerCount) addUnique(answer);
+      }
+      return;
+    }
     addUnique(answer);
-    if (equalityCount === 1 && !/[<>&≤≥]/.test(answer)) addUnique(answer.slice(answer.indexOf("=") + 1).trim());
   }
 
   function extractAcceptedAnswers(rows, prompt) {
@@ -167,12 +190,12 @@
     if (unsafeAlternative) return [];
     alternatives.forEach(function (alternative) {
       var maths = mathFragments(alternative);
-      if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) addAcceptedAnswer(answers, maths[0]);
+      if (maths.length === 1 && !/^[a-z]$/i.test(latexToPlain(maths[0]))) addAcceptedAnswer(answers, maths[0], prompt);
       else if (maths.length === 0 || (maths.length === 1 && /^[a-z]$/i.test(latexToPlain(maths[0])))) {
         var textAnswer = plainText(alternative);
         var numbers = textAnswer.match(/-?\d+(?:\.\d+)?(?:\s*\/\s*-?\d+(?:\.\d+)?)?/g) || [];
-        if (numbers.length === 1) addAcceptedAnswer(answers, numbers[0]);
-        else addAcceptedAnswer(answers, textAnswer);
+        if (numbers.length === 1) addAcceptedAnswer(answers, numbers[0], prompt);
+        else addAcceptedAnswer(answers, textAnswer, prompt);
       }
     });
     return answers.slice(0, 12);
@@ -261,6 +284,9 @@
       .replace(/≥/g, "\\ge ")
       .replace(/≠/g, "\\ne ")
       .replace(/±/g, "\\pm ")
+      .replace(/∫/g, "\\int ")
+      .replace(/∑/g, "\\sum ")
+      .replace(/∏/g, "\\prod ")
       .replace(/°/g, "^{\\circ}")
       .replace(/\^([+-]?\d+)/g, "^{$1}")
       .replace(/\b(sin|cos|tan|ln|log|exp)\b/g, "\\$1")

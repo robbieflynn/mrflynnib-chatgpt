@@ -78,6 +78,14 @@ assert.equal(choices.toLatex(constantAnswers[0]), String.raw`k=\frac{1}{4}`);
 assert.equal(choices.toLatex("1/4 cm"), String.raw`\frac{1}{4}\,\mathrm{cm}`);
 assert.deepEqual(choices.extractAcceptedAnswers([[String.raw`\(x=3\)`, "A1"]], "Show that x is 3."), []);
 
+const integralAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(\displaystyle\int_1^2\left(f(x)\right)^2\,dx = \dfrac{31}{5}\ (= 6.2)\)`, "A1"]],
+  String.raw`Find \(\displaystyle\int_1^2\left(f(x)\right)^2\,dx\).`
+);
+assert.equal(integralAnswers[0], "31/5");
+assert(!integralAnswers.some((answer) => /(?:displaystyle|\bint\b)/i.test(answer)));
+assert(choices.generateChoiceSet(integralAnswers, "audit-definite-integral"));
+
 let checked = 0;
 let generated = 0;
 let verifiedLineQuestion = false;

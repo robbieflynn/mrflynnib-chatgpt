@@ -31,6 +31,17 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
     frame.contentWindow?.postMessage({ type: "mrflynnib-question-bank-load-more" }, window.location.origin);
   }, []);
 
+  const clearSelection = useCallback(() => {
+    try {
+      window.sessionStorage.removeItem(`mrflynnib-assignment-draft:${draftId}`);
+    } catch {
+      // The selector still clears even when browser storage is restricted.
+    }
+    setSelectedIds([]);
+    setResponseConfigs([]);
+    frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-assignment-clear" }, window.location.origin);
+  }, [draftId]);
+
   useEffect(() => {
     let animationFrame = 0;
     const handleFrameMessage = (event: MessageEvent) => {
@@ -78,8 +89,8 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
       {selectedIds.map((id) => <input key={id} name="questionIds" type="hidden" value={id} />)}
       {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ id, ...(responseConfigs[index] || {}) })} />)}
       <div className="assignment-picker-summary" aria-live="polite">
-        <strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected</strong>
-        <span>Select up to 100 questions. Correct choices come from the mark scheme, with checked distractors generated automatically.</span>
+        <span className="assignment-picker-summary-copy"><strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected</strong><span>Select up to 100 questions. Correct choices come from the mark scheme, with checked distractors generated automatically.</span></span>
+        {selectedIds.length ? <button className="button button-secondary button-small" onClick={clearSelection} type="button">Clear selection</button> : null}
       </div>
       <iframe className="assignment-bank-frame" loading="eager" ref={frameRef} scrolling="no" src={source} style={{ height: `${frameHeight}px` }} title={`${course} assignment question selector`} />
     </div>

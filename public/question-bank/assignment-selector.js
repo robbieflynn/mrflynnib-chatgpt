@@ -70,6 +70,29 @@
     }, window.location.origin);
   }
 
+  function clearSelection() {
+    selected.clear();
+    configs = {};
+    if (draftKey) {
+      try { window.sessionStorage.removeItem(draftKey); } catch { /* session storage is optional */ }
+    }
+    document.querySelectorAll(".qb-card").forEach(function (card) {
+      var checkbox = card.querySelector(".qb-assignment-select input[type=checkbox]");
+      var copy = card.querySelector(".qb-assignment-select span");
+      var editor = card.querySelector(".qb-assignment-answer");
+      if (checkbox) checkbox.checked = false;
+      if (copy) copy.textContent = "Add to assignment";
+      if (editor) editor.hidden = true;
+      card.classList.remove("qb-assignment-selected");
+    });
+    publish();
+  }
+
+  window.addEventListener("message", function (event) {
+    if (event.origin !== window.location.origin || event.source !== window.parent) return;
+    if (event.data && event.data.type === "mrflynnib-assignment-clear") clearSelection();
+  });
+
   function questionFor(id) {
     var card = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
     return card && card.mrflynnibQuestion ? card.mrflynnibQuestion : null;

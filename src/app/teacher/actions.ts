@@ -209,8 +209,22 @@ export async function createClass(formData: FormData) {
   const course = String(formData.get("course") || "");
   const area = formData.get("area") === "igcse" ? "igcse" : "ib";
   const dashboardPath = area === "igcse" ? "/igcse/teacher" : "/teacher";
+  const bank = course === "IGCSE Higher" ? "igcse" : "ib";
   const courseMatchesArea = area === "igcse" ? course === "IGCSE Higher" : course !== "IGCSE Higher";
   if (!name || !validCourses.has(course) || !courseMatchesArea) redirect(messagePath(dashboardPath, "error", "Add a class name and choose a course."));
+
+  const { data: recentMatch } = await supabase.from("classes")
+    .select("id")
+    .eq("teacher_id", user.id)
+    .eq("name", name)
+    .eq("bank", bank)
+    .eq("course", course)
+    .eq("archived", false)
+    .gte("created_at", new Date(Date.now() - 60_000).toISOString())
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (recentMatch) redirect(`/teacher/classes/${recentMatch.id}`);
 
   let createdId = "";
   for (let attempt = 0; attempt < 5 && !createdId; attempt += 1) {
@@ -218,7 +232,7 @@ export async function createClass(formData: FormData) {
     const { data, error } = await supabase.from("classes").insert({
       teacher_id: user.id,
       name,
-      bank: course === "IGCSE Higher" ? "igcse" : "ib",
+      bank,
       course,
       join_code: joinCode,
     }).select("id").single();

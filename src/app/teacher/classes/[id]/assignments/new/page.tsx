@@ -4,6 +4,7 @@ import { Breadcrumbs, Container } from "@/components/ui";
 import { requireTeacher } from "@/lib/account-access";
 import { createAssignment } from "@/app/teacher/actions";
 import { assignmentFeedbackOptions } from "@/lib/assignment-feedback";
+import { PendingSubmitButton } from "@/components/pending-submit-button";
 
 export default async function NewAssignmentPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string }> }) {
   const { id } = await params;
@@ -27,7 +28,7 @@ export default async function NewAssignmentPage({ params, searchParams }: { para
           <fieldset className="assignment-feedback-settings field-full"><legend>Mark schemes and worked solutions</legend><p>Choose when students can open the complete feedback for each question. You can change this after publishing.</p><div className="assignment-feedback-options">{assignmentFeedbackOptions.map((option) => <label className="assignment-feedback-option" key={option.value}><input name="feedbackMode" type="radio" value={option.value} defaultChecked={option.value === "after_question"} /><span><strong>{option.label}</strong><small>{option.description}</small></span></label>)}</div></fieldset>
         </div>
         <div className="stack"><div className="teacher-section-heading"><div><p className="eyebrow">Question bank</p><h2>Choose questions</h2></div><p>Select up to 100 questions. Suitable parts become five-choice questions automatically. Proofs, diagrams and written explanations use whiteboard or paper completion.</p></div><AssignmentQuestionPicker bank={classRecord.bank} course={course} draftId={id} /></div>
-        <div className="assignment-builder-actions"><p className="muted small">Publishing makes the assignment visible to every student currently in the class and anyone who joins later.</p><button className="button" type="submit">Publish assignment</button></div>
+        <div className="assignment-builder-actions"><p className="muted small">Publishing makes the assignment visible to every student currently in the class and anyone who joins later.</p><PendingSubmitButton idleLabel="Publish assignment" pendingLabel="Publishing…" /></div>
       </form>
     </Container></section></main>
   </>;

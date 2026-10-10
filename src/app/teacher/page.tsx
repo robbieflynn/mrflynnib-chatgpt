@@ -2,15 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
+import { PendingSubmitButton } from "@/components/pending-submit-button";
 import { requireTeacher } from "@/lib/account-access";
 import { createClass, reviewTeacherApplication } from "./actions";
 
 export const metadata: Metadata = { title: "Teacher dashboard", robots: { index: false, follow: false } };
 
 export default async function TeacherPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
-  const { supabase, profile } = await requireTeacher();
+  const { supabase, user, profile } = await requireTeacher();
   const message = await searchParams;
-  const { data: classes } = await supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("bank", "ib").eq("archived", false).order("created_at", { ascending: false });
+  const { data: classes } = await supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("teacher_id", user.id).eq("bank", "ib").eq("archived", false).order("created_at", { ascending: false });
   const { data: teacherApplications } = profile.role === "admin"
     ? await supabase.from("profiles").select("user_id,display_name,email,teacher_requested_at").eq("teacher_status", "pending").order("teacher_requested_at")
     : { data: [] };
@@ -46,7 +47,7 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
             <input name="area" type="hidden" value="ib" />
             <label className="field"><span>Class name</span><input name="name" placeholder="Year 12 AA HL" maxLength={100} required /></label>
             <label className="field"><span>Course</span><select name="course" required><option value="AA HL">IB Mathematics AA HL</option><option value="AA SL">IB Mathematics AA SL</option><option value="AI HL">IB Mathematics AI HL</option><option value="AI SL">IB Mathematics AI SL</option></select></label>
-            <button className="button" type="submit">Create class</button>
+            <PendingSubmitButton idleLabel="Create class" pendingLabel="Creating class…" />
           </form>
         </aside>
       </div>
