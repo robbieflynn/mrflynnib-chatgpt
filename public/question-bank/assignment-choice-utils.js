@@ -116,7 +116,7 @@
   }
 
   function requiresWhiteboard(prompt) {
-    return /\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|giving a reason|state a reason|write down the steps|show your working|describe|discuss|interpret|comment on)\b/i.test(plainText(prompt));
+    return /\b(show that|prove|verify that|sketch|draw|construct|plot|explain|justify|give a reason|giving a reason|state a reason|write down the steps|show your working|describe|discuss|interpret|comment on)\b/i.test(plainText(prompt));
   }
 
   function shouldKeepWholeEquality(prompt, answer) {
@@ -124,6 +124,7 @@
     var leftSide = answer.slice(0, answer.indexOf("=")).trim();
     if (!leftSide || leftSide.length > 50 || /[∫∑∏]/.test(leftSide)) return false;
     if (/\bequation\b/.test(question) || /\b(?:write|express|give)\b.*\bin the form\b/.test(question)) return true;
+    if (new RegExp("\\bexpression\\s+for\\s+" + leftSide.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "i").test(question)) return true;
     return /^(?:[A-Za-zα-ω](?:\([^)]*\))?|d[A-Za-z]\/d[A-Za-z])$/i.test(leftSide.replace(/\s+/g, ""));
   }
 
@@ -159,7 +160,10 @@
 
     var equalityCount = (answer.match(/=/g) || []).length;
     if ((equalityCount > 1 || (startsWithEquality && equalityCount > 0)) && !/[<>&≤≥]/.test(answer)) {
-      addUnique(answer.slice(answer.lastIndexOf("=") + 1).trim());
+      var finalRightSide = answer.slice(answer.lastIndexOf("=") + 1).trim();
+      var firstLeftSide = answer.slice(0, answer.indexOf("=")).trim();
+      if (firstLeftSide && shouldKeepWholeEquality(prompt, firstLeftSide + "=" + finalRightSide)) addUnique(firstLeftSide + "=" + finalRightSide);
+      addUnique(finalRightSide);
       addUnique(answer);
       return;
     }
@@ -176,6 +180,22 @@
       return;
     }
     addUnique(answer);
+  }
+
+  function answerRowScore(row, prompt) {
+    var question = clean(latexToPlain(prompt)).toLowerCase();
+    var answer = clean(latexToPlain(Array.isArray(row) ? row[0] : row)).toLowerCase();
+    var score = 0;
+    if (/standard deviation/.test(question) && /(?:\bsigma\s*=|standard deviation|\bsd\s*=)/.test(answer)) score += 40;
+    if (/\bvariance\b|\bvar\s*\(/.test(question) && /\bvar\s*\(|\bvariance\b/.test(answer)) score += 35;
+    if (/\bmean\b|expected value|\be\s*\(/.test(question) && /\be\s*\(|\bmean\b|\bmu\s*=/.test(answer)) score += 30;
+    if (/\bmedian\b/.test(question) && /\bmedian\b|\bm\s*=/.test(answer)) score += 30;
+    if (/\bmode\b/.test(question) && /\bmode\b/.test(answer)) score += 30;
+    if (/\bprobability\b|\bp\s*\(/.test(question) && /\bp\s*\(/.test(answer)) score += 25;
+    if (/∫|\bintegral\b/.test(question) && /∫/.test(answer)) score += 25;
+    var target = question.match(/\b(?:value|expression)\s+(?:of|for)\s+([a-z]+)\b/);
+    if (target && new RegExp("(?:^|[^a-z])" + target[1] + "\\s*=", "i").test(answer)) score += 50;
+    return score;
   }
 
   function extractAcceptedAnswers(rows, prompt) {
@@ -199,7 +219,18 @@
         });
       });
     }
-    var finalContent = String(answerRows[answerRows.length - 1][0] || "");
+    var selectedAnswerRow = answerRows[answerRows.length - 1];
+    var selectedScore = 0;
+    if (!/\([ivxlcdm]+\)/i.test(plainText(prompt))) {
+      answerRows.forEach(function (row) {
+        var score = answerRowScore(row, prompt);
+        if (score >= selectedScore && score > 0) {
+          selectedAnswerRow = row;
+          selectedScore = score;
+        }
+      });
+    }
+    var finalContent = String(selectedAnswerRow[0] || "");
     var alternatives = finalContent.split(/(?:<br\s*\/?>\s*<b>\s*OR\s*<\/b>\s*<br\s*\/?>|\s+or\s+)/i);
     function isSignedExactAndDecimalPair(alternative) {
       var maths = mathFragments(alternative);
@@ -328,6 +359,7 @@
       .replace(/∑/g, "\\sum ")
       .replace(/∏/g, "\\prod ")
       .replace(/\*/g, "\\times ")
+      .replace(/(^|[^A-Za-z\\])(mu|sigma|theta|alpha|beta|gamma)\b/gi, "$1\\$2 ")
       .replace(/°/g, "^{\\circ}")
       .replace(/\^([+-]?\d+)/g, "^{$1}")
       .replace(/\b(sin|cos|tan|ln|log|exp)\b/g, "\\$1")

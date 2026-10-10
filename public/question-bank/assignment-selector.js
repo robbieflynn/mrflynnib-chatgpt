@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 8;
+  var DRAFT_VERSION = 9;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
@@ -15,7 +15,7 @@
       var storedDraft = JSON.parse(window.sessionStorage.getItem(draftKey) || "[]");
       var storedSelection = Array.isArray(storedDraft) ? storedDraft : storedDraft.ids;
       if (Array.isArray(storedSelection)) restoredSelection = storedSelection.map(String).filter(Boolean).slice(0, MAX_SELECTED);
-      if (!Array.isArray(storedDraft) && storedDraft.version >= 7 && storedDraft.configs && typeof storedDraft.configs === "object") configs = storedDraft.configs;
+      if (!Array.isArray(storedDraft) && storedDraft.version >= DRAFT_VERSION && storedDraft.configs && typeof storedDraft.configs === "object") configs = storedDraft.configs;
       if (!Array.isArray(storedDraft) && storedDraft.summaries && typeof storedDraft.summaries === "object") summaries = storedDraft.summaries;
     } catch { restoredSelection = []; }
   }
@@ -303,6 +303,7 @@
         nested.forEach(function (nestedLabel) {
           var nestedPrompt = promptForSubpart(prompt, nestedLabel);
           var nestedRows = rowsForSubpart(rows, nestedLabel);
+          if (!nestedRows.length) nestedRows = rows;
           var answers = automaticAnswersFromRows(nestedRows, nestedPrompt);
           var label = topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel;
           var choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);

@@ -41,6 +41,52 @@ function promptByPart(question) {
   return prompts;
 }
 
+function plainText(value) {
+  return String(value || "")
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function romanSubparts(prompt) {
+  const labels = [];
+  const pattern = /\(([ivxlcdm]+)\)/gi;
+  let match;
+  while ((match = pattern.exec(plainText(prompt)))) {
+    const label = match[1].toLowerCase();
+    if (!labels.includes(label)) labels.push(label);
+  }
+  return labels.includes("i") && labels.includes("ii") ? labels : [];
+}
+
+function rowsForSubpart(rows, label) {
+  let start = -1;
+  let end = rows.length;
+  rows.forEach((row, index) => {
+    const match = plainText(Array.isArray(row) ? row[0] : "").match(/^\s*\(([ivxlcdm]+)\)/i);
+    if (!match) return;
+    if (match[1].toLowerCase() === label && start === -1) start = index;
+    else if (start !== -1 && index > start && end === rows.length) end = index;
+  });
+  return start === -1 ? [] : rows.slice(start, end);
+}
+
+function promptForSubpart(prompt, label) {
+  const source = plainText(prompt);
+  const marker = new RegExp(`\\(${label}\\)`, "i");
+  const start = source.search(marker);
+  if (start === -1) return source;
+  const remainder = source.slice(start + label.length + 2);
+  const next = remainder.search(/\(([ivxlcdm]+)\)/i);
+  return next === -1 ? remainder : remainder.slice(0, next);
+}
+
+function choiceSetForRows(rows, prompt, seed) {
+  return choices.generateParityChoiceSet(rows, prompt, seed)
+    || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed);
+}
+
 const banks = [
   ["IB", "public/question-bank/ib-bank.html"],
   ["IGCSE", "public/question-bank/igcse-bank.html"],
@@ -141,16 +187,57 @@ assert(pairedInterceptChoices.options.every((option) => !/^-?\([^)]*=/.test(opti
 
 let checked = 0;
 let generated = 0;
+let nestedChecked = 0;
+let nestedGenerated = 0;
 let verifiedLineQuestion = false;
 let verifiedPairedInterceptQuestion = false;
+let verifiedContinuousRandomVariableQuestion = false;
 for (const [label, path] of banks) {
   const questions = extractSeed(path);
   let bankChecked = 0;
   let bankGenerated = 0;
+  let bankNestedChecked = 0;
+  let bankNestedGenerated = 0;
   for (const question of questions) {
     const prompts = promptByPart(question);
     for (const [part, rows] of Array.isArray(question.markscheme) ? question.markscheme : []) {
       const prompt = prompts.get(String(part || "").toLowerCase()) || question.body || question.title || "";
+      const nested = romanSubparts(prompt);
+      for (const nestedLabel of nested) {
+        const nestedPrompt = promptForSubpart(prompt, nestedLabel);
+        const labelledRows = rowsForSubpart(rows, nestedLabel);
+        const nestedRows = labelledRows.length ? labelledRows : rows;
+        const nestedAccepted = choices.extractAcceptedAnswers(nestedRows, nestedPrompt);
+        if (nestedAccepted.length) bankNestedChecked += 1;
+        const nestedSet = choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${part}(${nestedLabel})`);
+        if (nestedSet) {
+          if (!choices.validateChoiceSet(nestedSet.acceptedAnswers, nestedSet.options, nestedSet.correctOption)) {
+            throw new Error(`Unsafe nested choices for ${question.id} ${part}(${nestedLabel})`);
+          }
+          if (nestedSet.options.some((option) => choices.toLatex(option).includes("/"))) {
+            throw new Error(`Unrendered nested fraction for ${question.id} ${part}(${nestedLabel})`);
+          }
+          bankNestedGenerated += 1;
+        }
+
+        if (question.id === "M14TZ1HL_P2_Q11" && part === "b" && nestedLabel === "i") {
+          assert.equal(nestedSet, null);
+        }
+        if (question.id === "M14TZ1HL_P2_Q11" && part === "b" && nestedLabel === "ii") {
+          assert.deepEqual(nestedAccepted.slice(0, 2), ["b=76-30mu", "76-30mu"]);
+          assert(nestedSet);
+          assert(choices.toLatex(nestedAccepted[0]).includes(String.raw`\mu`));
+        }
+        if (question.id === "M14TZ1HL_P2_Q11" && part === "c" && nestedLabel === "i") {
+          assert.deepEqual(nestedAccepted, ["2.34", "295/126"]);
+          assert(nestedSet);
+        }
+        if (question.id === "M14TZ1HL_P2_Q11" && part === "c" && nestedLabel === "ii") {
+          assert.deepEqual(nestedAccepted, ["0.241"]);
+          assert(nestedSet);
+          verifiedContinuousRandomVariableQuestion = true;
+        }
+      }
       const accepted = choices.extractAcceptedAnswers(rows, prompt);
       if (question.id === "M15TZ2HL_P2_Q11" && part === "b") {
         assert.equal(accepted[0], "y = -4x+25");
@@ -177,9 +264,14 @@ for (const [label, path] of banks) {
   }
   checked += bankChecked;
   generated += bankGenerated;
+  nestedChecked += bankNestedChecked;
+  nestedGenerated += bankNestedGenerated;
   console.log(`${label}: ${bankGenerated}/${bankChecked} mark-scheme answer groups produced five safe choices.`);
+  console.log(`${label}: ${bankNestedGenerated}/${bankNestedChecked} objective nested parts produced five safe choices.`);
 }
 
 assert(verifiedLineQuestion, "The real equation-of-a-normal regression question was not audited.");
 assert(verifiedPairedInterceptQuestion, "The real paired-intercepts regression question was not audited.");
+assert(verifiedContinuousRandomVariableQuestion, "The continuous-random-variable nested-part regression question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);
+console.log(`Nested parts: ${nestedGenerated}/${nestedChecked} objective parts produced five safe choices; proof and show-that parts remained whiteboard tasks.`);
