@@ -25,6 +25,10 @@
     while (/\s/.test(source[index] || "")) index += 1;
     if (source[index] !== "{") {
       if (index >= source.length) return null;
+      if (source[index] === "\\") {
+        var command = source.slice(index).match(/^\\[A-Za-z]+/);
+        if (command) return { value: command[0], end: index + command[0].length };
+      }
       return { value: source[index], end: index + 1 };
     }
     var depth = 1;
@@ -60,7 +64,7 @@
   function replaceLatexDecorators(value) {
     var source = String(value || "");
     var result = "";
-    var commandPattern = /^\\(mathbf|boldsymbol|bm|vec|overrightarrow|mathbb|mathcal|mathrm|mathit|mathsf|mathtt|mathnormal|operatorname|textbf|textit|text)/;
+    var commandPattern = /^\\(mathbf|boldsymbol|bm|vec|overrightarrow|hat|bar|overline|mathbb|mathcal|mathrm|mathit|mathsf|mathtt|mathnormal|operatorname|textbf|textit|text)/;
     for (var index = 0; index < source.length;) {
       var command = source.slice(index).match(commandPattern);
       if (!command) { result += source[index]; index += 1; continue; }
@@ -69,6 +73,7 @@
       var inner = replaceLatexDecorators(argument.value);
       if (/^(?:mathbf|boldsymbol|bm)$/.test(command[1])) result += "bold(" + inner + ")";
       else if (/^(?:vec|overrightarrow)$/.test(command[1])) result += "vec(" + inner + ")";
+      else if (/^(?:hat|bar|overline)$/.test(command[1])) result += command[1] + "(" + inner + ")";
       else if (command[1] === "mathbb") result += "blackboard(" + inner + ")";
       else if (command[1] === "mathcal") result += "cal(" + inner + ")";
       else result += inner;
@@ -143,11 +148,16 @@
       .replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\operatorname\s*\{([^{}]*)\}/g, "$1")
       .replace(/\\(?:ldots|cdots|dots)\b/g, "…")
+      .replace(/\\(?:lvert|rvert|vert)\b/g, "|")
+      .replace(/\\(?:big|Big|bigg|Bigg)l?\b/g, "")
+      .replace(/\\sim\b/g, "~")
+      .replace(/\\\$/g, "$")
       .replace(/\\%/g, "%")
       .replace(/\\(?:leq|le)/g, "≤").replace(/\\(?:geq|ge)/g, "≥")
       .replace(/\^\s*\\circ/g, "°").replace(/\\circ/g, "∘")
       .replace(/\\approx/g, "≈").replace(/\\(?:neq|ne)(?=[^A-Za-z]|$)/g, "≠")
-      .replace(/\\notin\b/g, "∉").replace(/\\in\b/g, "∈")
+      .replace(/\\mapsto\b/g, "↦").replace(/\\to\b/g, "→")
+      .replace(/\\notin(?=blackboard|cal|\s|$)/g, "∉").replace(/\\in(?=blackboard|cal|\s|$)/g, "∈")
       .replace(/\\cup\b/g, "∪").replace(/\\cap\b/g, "∩")
       .replace(/\\pm/g, "±").replace(/\\infty/g, "∞").replace(/\\pounds\b/g, "£")
       .replace(/\\pi/g, "π").replace(/\\times/g, "×").replace(/\\cdot/g, "·")
@@ -157,6 +167,7 @@
       .replace(/\\,/g, " ").replace(/\\;/g, " ").replace(/\\!/g, "").replace(/\\(?=\s)/g, " ")
       .replace(/\\([A-Za-z]+)/g, "$1")
       .replace(/[{}]/g, ""))
+      .replace(/\^\(∘\)/g, "°")
       .replace(/^=\s*/, "")
       .replace(/^\(\s*([A-Za-z][^()]*)\s*=\s*\)\s*/, "$1 = ")
       .trim();
@@ -189,8 +200,18 @@
         return sign + (numerator === "1" ? "" : numerator + "*") + power + "/" + denominator;
       })
       .replace(/\s*\(\s*((?:cm|mm|km|m)\s*\^[23])\s*\)\s*$/i, " $1")
-      .replace(/\s*\(\s*(ml|litres?|liters?|kg|g|cm|mm|km|m|rad|minutes?|hours?|mins?|hrs?)\s*\)/gi, " $1")
+      .replace(/\s*\(\s*(ml|litres?|liters?|kg|g|cm|mm|km|m|s|rad|minutes?|hours?|mins?|hrs?)\s*\)/gi, " $1")
+      .replace(/\s*\(\s*accept\b[\s\S]*\)\s*$/i, "")
+      .replace(/\]([^,\[\]]+),([^\[\]]+)\[/g, "($1,$2)")
+      .replace(/\]([^,\[\]]+),([^\[\]]+)\]/g, "($1,$2]")
+      .replace(/\[([^,\[\]]+),([^\[\]]+)\[/g, "[$1,$2)")
+      .replace(/^\]([^,]+),([^\[]+)\[$/, "($1,$2)")
+      .replace(/^\]([^,]+),([^\]]+)\]$/, "($1,$2]")
+      .replace(/^\[([^,]+),([^\[]+)\[$/, "[$1,$2)")
       .replace(/\s*\+\s*(?:…|\.\.\.)\s*$/, "")
+      .replace(/\s*(?:…|\.\.\.)\s*$/, "")
+      .replace(/([0-9])\s+(?=[0-9]{3}(?:\D|$))/g, "$1")
+      .replace(/([0-9]),(?=[0-9]{3}(?:\D|$))/g, "$1")
       .replace(/\s+/g, " ")
       .replace(/\s+(?=[°%])/g, "")
       .replace(/,\s*\([A-Za-z]\s*(?:[<>≤≥≠].*)\)$/g, "")
@@ -221,16 +242,54 @@
   }
 
   function addAcceptedAnswer(list, value, prompt) {
-    var startsWithEquality = /^\s*=/.test(String(value || "").replace(/\\left|\\right/g, ""));
+    var rawValue = String(value || "").replace(/\\left|\\right/g, "");
+    var startsWithEquality = /^\s*(?:=|\\to\b|→)/.test(rawValue);
     var answer = clean(latexToPlain(value)).replace(/\\(?=\s|\(|\)|$)/g, "").replace(/[.;,]+$/, "").trim();
+    answer = answer.replace(/^\(\s*\(\s*([A-Za-z][A-Za-z0-9]*)\s*=\s*\)\s*([\s\S]+)\)$/, "$1=$2");
+    answer = answer.replace(/^\(\s*([A-Za-z][A-Za-z0-9]*)\s*=\s*\)\s*/, "$1=");
+    answer = answer.replace(/^→\s*/, "");
+    answer = answer.replace(/^\s*(?:\(\s*)?[$£]\s*\)?\s*/, "");
+    if (!/\bdomain\b/i.test(plainText(prompt))) {
+      answer = answer.replace(/\s+\(\s*[A-Za-z][^()]*[≠<>≤≥][^()]*\)\s*$/, "");
+    }
     if (!answer || answer.length > 140) return;
     if (/\b(method|attempt|award|working|substitution|curve|diagram|sketch|proof|explanation)\b/i.test(answer)) return;
     if (/^(?:or\s+)?equivalent$|^oe$/i.test(answer)) return;
-    if (/^(?:[a-df-hj-z]|theta|alpha|beta|gamma|dx|dy\/dx|dm\/dt|cos\s*theta|sin\s*theta)$/i.test(answer)) return;
+    if (/^(?:dx|dy\/dx|dm\/dt|cos\s*theta|sin\s*theta)$/i.test(answer)) return;
+    if (/^(?:[A-Za-zα-ω](?:_[A-Za-z0-9]+)?|[A-Za-zα-ω]\([^)]*\))$/i.test(answer) && !startsWithEquality) return;
     if (/^\^[+-]?\d+$/.test(answer) || /^(?:cm|mm|km|m|s|kg|rad)(?:\^[+-]?\d+)?$/i.test(answer)) return;
+    var numericWorking = answer.indexOf(";") === -1 && answer.match(new RegExp("^(.+?[A-Za-z0-9°%)])\\s+\\(\\s*(?:=\\s*)?(?:[-+]?\\d|sqrt\\(|root\\()[\\s\\S]*(?:…|[-+]?\\d+\\.\\d{3,})[\\s\\S]*\\)\\s*(" + UNIT_PATTERN + ")?$", "i"));
+    if (numericWorking) {
+      var numericPrimary = clean(numericWorking[1]);
+      var numericUnit = numericWorking[2] || "";
+      if (numericPrimary && !/(?:…|\.\.\.)/.test(numericPrimary)) {
+        addAcceptedAnswer(list, numericPrimary + (numericUnit && !new RegExp(UNIT_PATTERN + "$", "i").test(numericPrimary) ? " " + numericUnit : ""), prompt);
+        return;
+      }
+    }
+    var roundedWithWorking = answer.indexOf(";") === -1 && answer.match(new RegExp("^(.+?[A-Za-z0-9°%)])\\s+\\(\\s*(?:=\\s*)?(?:[-+]?\\d|sqrt\\(|root\\()[\\s\\S]*(?:…|[-+]?\\d+\\.\\d{3,})[\\s\\S]*\\)\\s*(" + UNIT_PATTERN + ")?$", "i"));
+    if (roundedWithWorking) {
+      var roundedPrimary = clean(roundedWithWorking[1]);
+      var roundedUnit = roundedWithWorking[2] || "";
+      if (roundedPrimary && !/(?:…|\.\.\.)/.test(roundedPrimary)) {
+        addAcceptedAnswer(list, roundedPrimary + (roundedUnit && !new RegExp(UNIT_PATTERN + "$", "i").test(roundedPrimary) ? " " + roundedUnit : ""), prompt);
+        return;
+      }
+    }
     var workingPrecision = answer.match(/^(.+?)\s*\(\s*[-+]?\d+\.\d{3,}(?:…)?(?:\s*°)?\s*\)\s*(rad|°)?$/i);
     if (workingPrecision && /\d/.test(workingPrecision[1])) {
       answer = clean(workingPrecision[1] + (workingPrecision[2] && workingPrecision[1].indexOf(workingPrecision[2]) === -1 ? " " + workingPrecision[2] : ""));
+    }
+    var unitWorkingPrecision = answer.match(new RegExp("^(.+?\\s" + UNIT_PATTERN + ")\\s*\\(\\s*[-+]?\\d+(?:\\.\\d+)?(?:…)?\\s*" + UNIT_PATTERN + "\\s*\\)$", "i"));
+    if (unitWorkingPrecision) answer = clean(unitWorkingPrecision[1]);
+    var parentheticalEquivalent = answer.match(/^(.+?)\s+\(([^()]*(?:…|=|\baccept\b|\bexact\b|\brad(?:ians?)?\b|°)[^()]*)\)$/i);
+    if (parentheticalEquivalent && isDisplaySafe(clean(parentheticalEquivalent[1]))) {
+      addAcceptedAnswer(list, parentheticalEquivalent[1], prompt);
+      parentheticalEquivalent[2].split(/\s*(?:=|,|;|\bor\b)\s*/i).forEach(function (alternative) {
+        var cleanedAlternative = clean(alternative.replace(/\b(?:accept|exact|radians?)\b/gi, ""));
+        if (cleanedAlternative && /\d|[A-Za-z]/.test(cleanedAlternative)) addAcceptedAnswer(list, cleanedAlternative, prompt);
+      });
+      return;
     }
     var approximate = answer.match(/^(.+?)\s*\(\s*=\s*(.+?)\s*\)$/);
     if (approximate) {
@@ -310,6 +369,28 @@
     return score;
   }
 
+  function coordinateTuples(value) {
+    var source = clean(value);
+    var tuples = [];
+    for (var start = 0; start < source.length; start += 1) {
+      if (source[start] !== "(") continue;
+      var depth = 1;
+      for (var end = start + 1; end < source.length; end += 1) {
+        if (source[end] === "(") depth += 1;
+        else if (source[end] === ")") depth -= 1;
+        if (depth !== 0) continue;
+        var inner = source.slice(start + 1, end);
+        var commas = topLevelPositions(inner, function (character) { return character === ","; });
+        if ((commas.length === 1 || commas.length === 2) && !/[;=]/.test(inner)) {
+          var tuple = "(" + inner + ")";
+          if (isDisplaySafe(tuple) && !tuples.some(function (existing) { return equivalent(existing, tuple); })) tuples.push(tuple);
+        }
+        break;
+      }
+    }
+    return tuples;
+  }
+
   function extractAcceptedAnswers(rows, prompt) {
     if (!Array.isArray(rows) || requiresWhiteboard(prompt)) return [];
     if (/\bmaximum or minimum\b|\bminimum or maximum\b/i.test(plainText(prompt))) {
@@ -322,13 +403,25 @@
       return Array.isArray(row)
         && /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""))
         && (mathFragments(row[0]).length
-          || /(?:^|\s)[-+]?\d+(?:\.\d+)?(?:\s|$|[),])/i.test(rowText)
+          || /[-+]?\d+(?:\.\d+)?/i.test(rowText)
           || (rowText.length > 0 && rowText.length <= 120
             && !/\b(?:attempt|award|method|note)\b/i.test(rowText)
             && (/^(?:zero|one|two|three|four|five|six|seven|eight|nine|ten)$/i.test(rowText)
               || /\b(?:is|are)\s+(?:odd|even|neither|a minimum|a maximum|concave up|concave down|one-to-one|many-to-one|more likely|closer)\b/i.test(rowText)
+              || /\b(?:one-to-one|many-to-one|systematic|simple random|stratified|quota|convenience)\b(?:\s*\(sampling\)|\s+sampling)?\b/i.test(rowText)
+              || /\b(?:discrete|continuous|can see one another|cannot see one another|closer to its opposite face|probability mass function|reject|do not reject|insufficient evidence|sufficient evidence)\b/i.test(rowText)
               || /^concave\s+(?:up|down)\b/i.test(rowText))));
     });
+    if (!answerRows.length) {
+      answerRows = rows.filter(function (row) {
+        if (!Array.isArray(row) || String(row[1] || "").trim()) return false;
+        var rowText = plainText(row[0]);
+        var rowMaths = mathFragments(row[0]);
+        return rowMaths.length
+          && !/\b(?:attempt|award|method|note|substitut|using|recognition|recognising|accept any)\b/i.test(rowText)
+          && (rowMaths.length === 1 || /\b(?:answer|area|volume|length|distance|coordinates?|roots?|solutions?|domain|range|probability|value|is|are)\b|^\s*=/.test(rowText));
+      });
+    }
     if (!answerRows.length) return [];
     var answers = [];
     var promptText = plainText(prompt);
@@ -336,11 +429,14 @@
       || /\b(?:maximum[\s\S]*minimum|minimum[\s\S]*maximum|mean[\s\S]*standard deviation|standard deviation[\s\S]*mean|modulus[\s\S]*argument|argument[\s\S]*modulus|first term[\s\S]*common difference|common difference[\s\S]*first term|inverse[\s\S]*domain|domain[\s\S]*inverse|range[\s\S]*of)\b/i.test(promptText);
     var wantsCoordinateCollection = /\bcoordinates?\b|\blocal max(?:imum)?\b|\blocal min(?:imum)?\b/i.test(promptText);
     var coordinateCollection = [];
+    function addCoordinate(value) {
+      if (value && !coordinateCollection.some(function (existing) { return equivalent(existing, value); })) coordinateCollection.push(value);
+    }
     if (wantsCoordinateCollection) {
       answerRows.forEach(function (row) {
         mathFragments(row[0]).forEach(function (fragment) {
           var coordinate = clean(latexToPlain(fragment));
-          if (/^\(\s*[^,;]+\s*,\s*[^,;]+\s*\)$/.test(coordinate)) coordinateCollection.push(coordinate);
+          coordinateTuples(coordinate).forEach(addCoordinate);
         });
       });
     }
@@ -372,7 +468,8 @@
           && !/^[a-z]\s*=$/i.test(plain)
           && !/^\^[+-]?\d+$/.test(plain)
           && !/^(?:cm|mm|km|m|s|kg|rad)(?:\^[+-]?\d+)?$/i.test(plain)
-          && !/^(?:triangle|ln|log|sin|cos|tan|sec|csc|cot|cd)$/i.test(plain);
+          && !/^(?:triangle|ln|log|sin|cos|tan|sec|csc|cot|cd)$/i.test(plain)
+          && (!/(?:…|\.\.\.)/.test(plain) || /\d/.test(plain));
       });
     }
     function isPrimaryWithParentheticalEquivalent(alternative) {
@@ -386,20 +483,31 @@
     if (unsafeAlternative) return [];
     var pairedValuePrompt = clean(latexToPlain(prompt)).match(/\bvalues?\s+of\s+([a-z])\s+and\s+([a-z])\b/i);
     if (coordinateCollection.length >= 2) addAcceptedAnswer(answers, coordinateCollection.join("; "), prompt);
-    else if (wantsCollection && pairedValuePrompt) {
+    else if (coordinateCollection.length === 1 && /\bcoordinates?\s+of\s+(?:the\s+)?(?:point\s+)?[A-Z]\b/.test(promptText)) {
+      addAcceptedAnswer(answers, coordinateCollection[0], prompt);
+    }
+    if (!answers.length && wantsCollection && pairedValuePrompt) {
       var pairedValues = [];
       [pairedValuePrompt[1], pairedValuePrompt[2]].forEach(function (target) {
         for (var rowIndex = answerRows.length - 1; rowIndex >= 0; rowIndex -= 1) {
           var targetFragments = meaningfulMaths(String(answerRows[rowIndex][0] || ""));
-          var targetAnswer = targetFragments.map(function (fragment) { return clean(latexToPlain(fragment)); }).find(function (candidate) {
-            return new RegExp("^" + target + "\\s*=", "i").test(candidate);
-          });
+          var targetAnswer = targetFragments.map(function (fragment) {
+            var candidate = clean(latexToPlain(fragment));
+            if (new RegExp("^" + target + "\\s*=", "i").test(candidate)) return candidate;
+            var chain = candidate.replace(/\s+/g, "").split("=");
+            if (chain.length < 2) return "";
+            var targetIndex = chain.findIndex(function (piece) { return piece === target || piece === "-" + target; });
+            if (targetIndex === -1) return "";
+            var finalValue = chain[chain.length - 1];
+            if (!finalValue || /[A-Za-z]/.test(finalValue.replace(/(?:sqrt|root|sin|cos|tan|ln|log|exp|pi)/gi, ""))) return "";
+            return target + "=" + (chain[targetIndex][0] === "-" ? "-(" + finalValue + ")" : finalValue);
+          }).find(Boolean);
           if (targetAnswer) { pairedValues.push(targetAnswer); break; }
         }
       });
       if (pairedValues.length === 2) addAcceptedAnswer(answers, pairedValues.join("; "), prompt);
     }
-    else if (wantsCollection && /\binverse\b[\s\S]*\bdomain\b|\bdomain\b[\s\S]*\binverse\b|\bdomain\b[\s\S]*\brange\b|\brange\b[\s\S]*\bdomain\b|\branges?\s+of\b[\s\S]*\band\b/i.test(promptText)) {
+    if (!answers.length && wantsCollection && /\binverse\b[\s\S]*\bdomain\b|\bdomain\b[\s\S]*\binverse\b|\bdomain\b[\s\S]*\brange\b|\brange\b[\s\S]*\bdomain\b|\branges?\s+of\b[\s\S]*\band\b/i.test(promptText)) {
       var definitionPieces = [];
       answerRows.slice(-6).forEach(function (row) {
         var rowText = clean(latexToPlain(String(row[0] || "")));
@@ -410,23 +518,69 @@
       });
       if (definitionPieces.length >= 2) addAcceptedAnswer(answers, definitionPieces.join("; "), prompt);
     }
-    else if (wantsCollection && /\bmodulus\b[\s\S]*\bargument\b|\bargument\b[\s\S]*\bmodulus\b/i.test(promptText)) {
+    if (!answers.length && wantsCollection && /\bmodulus\b[\s\S]*\bargument\b|\bargument\b[\s\S]*\bmodulus\b/i.test(promptText)) {
       var polarPieces = [];
       answerRows.slice(-8).forEach(function (row) {
-        meaningfulMaths(String(row[0] || "")).forEach(function (fragment) {
+        var rowMaths = meaningfulMaths(String(row[0] || ""));
+        rowMaths.forEach(function (fragment) {
           var piece = clean(latexToPlain(fragment));
           if ((/\barg\s*\(|\|[^|]+\|\s*=/.test(piece)) && piece.indexOf("=") > 0 && isDisplaySafe(piece)) polarPieces.push(piece);
         });
+        if (/\bmodulus\b/i.test(plainText(row[0])) && /\bargument\b/i.test(plainText(row[0])) && rowMaths.length >= 3) {
+          var polarLabel = clean(latexToPlain(rowMaths[0]));
+          var modulusValue = clean(latexToPlain(rowMaths[1])).replace(/^=\s*/, "");
+          var argumentValue = clean(latexToPlain(rowMaths[2])).replace(/^=\s*/, "");
+          if (polarLabel && modulusValue && argumentValue) {
+            polarPieces.push("|" + polarLabel + "|=" + modulusValue);
+            polarPieces.push("arg(" + polarLabel + ")=" + argumentValue);
+          }
+        }
       });
       if (polarPieces.length >= 2) addAcceptedAnswer(answers, polarPieces.join("; "), prompt);
     }
-    else alternatives.forEach(function (alternative) {
+    if (!answers.length && wantsCollection && /\b(?:set of (?:all )?possible values|set of values|domain|range)\b/i.test(promptText)) {
+      var relationPieces = [];
+      answerRows.slice(-8).forEach(function (row) {
+        meaningfulMaths(String(row[0] || "")).forEach(function (fragment) {
+          var piece = clean(latexToPlain(fragment));
+          if ((/[<>≤≥∈∪]/.test(piece) || /^[[(].+,.+[)\]]$/.test(piece))
+            && isDisplaySafe(piece)
+            && !relationPieces.some(function (existing) { return equivalent(existing, piece); })) relationPieces.push(piece);
+        });
+      });
+      if (relationPieces.length) addAcceptedAnswer(answers, relationPieces.slice(-4).join("; "), prompt);
+    }
+    if (!answers.length && wantsCollection && /\b(?:roots?|solutions?|all values)\b/i.test(promptText)) {
+      var collectionPieces = [];
+      answerRows.forEach(function (row) {
+        var rowFragments = meaningfulMaths(String(row[0] || ""));
+        if (!rowFragments.length) return;
+        var rowText = plainText(row[0]);
+        var likelyConclusionList = /\b(?:roots?|solutions?|values?)\s+(?:are|is)\b|\bother\s+(?:two|three|four)\s+roots?\b/i.test(rowText);
+        var selectedFragments = likelyConclusionList && rowFragments.length > 1
+          ? rowFragments.slice(-Math.min(4, rowFragments.length))
+          : [rowFragments[rowFragments.length - 1]];
+        selectedFragments.forEach(function (fragment) {
+          var fragmentAnswers = [];
+          addAcceptedAnswer(fragmentAnswers, fragment, prompt);
+          if (fragmentAnswers[0] && !collectionPieces.some(function (piece) { return equivalent(piece, fragmentAnswers[0]); })) {
+            collectionPieces.push(fragmentAnswers[0]);
+          }
+        });
+      });
+      if (collectionPieces.length >= 2 && collectionPieces.length <= 8) addAcceptedAnswer(answers, collectionPieces.join("; "), prompt);
+    }
+    if (!answers.length) alternatives.forEach(function (alternative) {
       var maths = meaningfulMaths(alternative);
       var completeAlternative = clean(latexToPlain(alternative));
       var conclusionNumber = /\b(?:minimum|maximum|value|answer|probability|area|volume|length|width|rate)[^.;]{0,180}\b(?:is|=)\s*([-+]?\d+(?:\.\d+)?(?:\s*\/\s*[-+]?\d+(?:\.\d+)?)?)(?:\s*(%|°|rad))?(?:\s|$)/i.exec(completeAlternative);
       var exactWithApproximation = completeAlternative.match(/(?:^|=)\s*(-?\d+(?:\.\d+)?\s*\/\s*-?\d+(?:\.\d+)?)\s*\(\s*=\s*(-?\d+(?:\.\d+)?)/);
       if (conclusionNumber) {
         addAcceptedAnswer(answers, conclusionNumber[1] + (conclusionNumber[2] ? " " + conclusionNumber[2] : ""), prompt);
+        return;
+      }
+      if (maths.length === 1 && /\b(?:median|mode|mean|answer|value)\s+(?:is|equals?)\b/i.test(completeAlternative)) {
+        addAcceptedAnswer(answers, "=" + maths[0], prompt);
         return;
       }
       if (exactWithApproximation) {
@@ -448,6 +602,10 @@
         if (findIndex >= 0) findSection = findSection.slice(findIndex);
         var requestedMaths = mathFragments(findSection).map(function (fragment) { return canonical(latexToPlain(fragment)); });
         var selectedMath = maths[maths.length - 1];
+        if (/\blim(?:it)?\b/i.test(plainText(prompt))) {
+          var limitConclusion = maths.find(function (fragment) { return /^\s*(?:\\to|→|=)/.test(fragment); });
+          if (limitConclusion) selectedMath = limitConclusion;
+        }
         for (var mathIndex = 0; mathIndex < maths.length; mathIndex += 1) {
           var candidate = clean(latexToPlain(maths[mathIndex]));
           var candidateLeft = candidate.indexOf("=") > 0 ? canonical(candidate.slice(0, candidate.indexOf("="))) : "";
@@ -463,6 +621,42 @@
       else if (maths.length === 0 || (maths.length === 1 && /^[a-z]$/i.test(latexToPlain(maths[0])))) {
         var textAnswer = plainText(alternative);
         var numberWords = { zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7", eight: "8", nine: "9", ten: "10" };
+        var samplingMethod = textAnswer.match(/\b(convenience|quota|simple random|stratified|systematic)\b(?:\s*\(sampling\)|\s+sampling)?/i);
+        if (samplingMethod) {
+          addAcceptedAnswer(answers, samplingMethod[1][0].toUpperCase() + samplingMethod[1].slice(1).toLowerCase() + " sampling", prompt);
+          return;
+        }
+        var dataType = textAnswer.match(/\b(discrete|continuous)\b/i);
+        if (dataType && /\b(?:discrete|continuous)\b/i.test(promptText)) {
+          addAcceptedAnswer(answers, dataType[1][0].toUpperCase() + dataType[1].slice(1).toLowerCase(), prompt);
+          return;
+        }
+        var hypothesisDecision = textAnswer.match(/\b(do not reject|reject)\s+(?:the\s+)?(?:null hypothesis|h\s*_?\s*0)\b/i);
+        if (hypothesisDecision) {
+          var rejects = hypothesisDecision[1].toLowerCase() === "reject";
+          addAcceptedAnswer(answers, rejects
+            ? "Reject the null hypothesis, because there is sufficient evidence for the alternative hypothesis"
+            : "Do not reject the null hypothesis, because there is insufficient evidence for the alternative hypothesis", prompt);
+          return;
+        }
+        var mappingType = textAnswer.match(/\b(one-to-one|many-to-one)\b/i);
+        if (mappingType) {
+          addAcceptedAnswer(answers, mappingType[1][0].toUpperCase() + mappingType[1].slice(1).toLowerCase(), prompt);
+          return;
+        }
+        var closerVertex = textAnswer.match(/\b([A-Z])\s+is closer to its opposite face than\s+([A-Z])\b/);
+        if (closerVertex) {
+          addAcceptedAnswer(answers, closerVertex[1] + " is closer to its opposite face than " + closerVertex[2], prompt);
+          return;
+        }
+        if (/\bcaptains can see one another\b/i.test(textAnswer)) {
+          addAcceptedAnswer(answers, "The captains can see one another", prompt);
+          return;
+        }
+        if (/\bonly\s+f\(x\)[\s\S]*probability mass function\b/i.test(textAnswer)) {
+          addAcceptedAnswer(answers, "Only f can be used as a probability mass function", prompt);
+          return;
+        }
         if (numberWords[textAnswer.toLowerCase()]) {
           addAcceptedAnswer(answers, numberWords[textAnswer.toLowerCase()], prompt);
           return;
@@ -472,6 +666,14 @@
         else addAcceptedAnswer(answers, textAnswer, prompt);
       }
     });
+    if (!answers.length && !wantsCollection) {
+      for (var fallbackRowIndex = answerRows.length - 1; fallbackRowIndex >= 0 && !answers.length; fallbackRowIndex -= 1) {
+        var fallbackMaths = meaningfulMaths(String(answerRows[fallbackRowIndex][0] || ""));
+        for (var fallbackMathIndex = fallbackMaths.length - 1; fallbackMathIndex >= 0 && !answers.length; fallbackMathIndex -= 1) {
+          addAcceptedAnswer(answers, fallbackMaths[fallbackMathIndex], prompt);
+        }
+      }
+    }
     var question = plainText(prompt);
     var requestsRadians = /\bradians?\b|\brad\b/i.test(question);
     var requestsDegrees = /\bdegrees?\b|°|\\circ/i.test(String(prompt || ""));
@@ -582,6 +784,9 @@
       .replace(/vec\(([^()]+)\)/gi, "\\overrightarrow{$1}")
       .replace(/blackboard\(([^()]+)\)/gi, "\\mathbb{$1}")
       .replace(/cal\(([^()]+)\)/gi, "\\mathcal{$1}")
+      .replace(/hat\(([^()]+)\)/gi, "\\hat{$1}")
+      .replace(/bar\(([^()]+)\)/gi, "\\bar{$1}")
+      .replace(/overline\(([^()]+)\)/gi, "\\overline{$1}")
       .replace(/\^\(\s*([^/()]+)\s*\/\s*([^/()]+)\s*\)/g, "^{\\frac{$1}{$2}}")
       .replace(/\^\(([^()]*)\)/g, "^{$1}")
       .replace(/root\(([^,()]+),([^()]+)\)/gi, "\\sqrt[$1]{$2}")
@@ -599,6 +804,8 @@
       .replace(/∫/g, "\\int ")
       .replace(/∑/g, "\\sum ")
       .replace(/∏/g, "\\prod ")
+      .replace(/~/g, "\\sim ")
+      .replace(/…/g, "\\ldots ")
       .replace(/\*/g, "\\times ")
       .replace(/(^|[^\\])(cis)(?=[A-Za-z]|\b)/gi, "$1\\operatorname{cis}")
       .replace(/(^|[^\\])(arg|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)(?=[A-Za-z]|\b)/gi, "$1\\$2 ")
@@ -626,6 +833,31 @@
       return inner ? "\\left(" + inner + "\\right)" : null;
     }
 
+    var indexedRootMatch = expression.match(/^root\((.*)\)$/i);
+    if (indexedRootMatch) {
+      var rootComma = topLevelPositions(indexedRootMatch[1], function (character) { return character === ","; });
+      if (rootComma.length === 1) {
+        var rootIndex = expressionToLatex(indexedRootMatch[1].slice(0, rootComma[0]));
+        var rootArgument = expressionToLatex(indexedRootMatch[1].slice(rootComma[0] + 1));
+        if (rootIndex && rootArgument) return "\\sqrt[" + rootIndex + "]{" + rootArgument + "}";
+      }
+    }
+
+    var prefixedFunctionMatch = expression.match(/^(.+?)(sqrt|arg|cis|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)\((.*)\)$/i);
+    if (prefixedFunctionMatch && prefixedFunctionMatch[1] && parenthesesAreBalanced(prefixedFunctionMatch[3])) {
+      var functionPrefix = expressionToLatex(prefixedFunctionMatch[1]);
+      var prefixedArgument = expressionToLatex(prefixedFunctionMatch[3]);
+      if (functionPrefix && prefixedArgument) {
+        var prefixedName = prefixedFunctionMatch[2].toLowerCase();
+        var renderedFunction = prefixedName === "sqrt"
+          ? "\\sqrt{" + prefixedArgument + "}"
+          : prefixedName === "cis"
+            ? "\\operatorname{cis}\\left(" + prefixedArgument + "\\right)"
+            : "\\" + prefixedName + "\\left(" + prefixedArgument + "\\right)";
+        return functionPrefix + renderedFunction;
+      }
+    }
+
     var listPositions = topLevelPositions(expression, function (character) { return character === ";" || character === ","; });
     if (listPositions.length) {
       var renderedItems = [];
@@ -638,7 +870,7 @@
       return renderedItems.every(Boolean) ? renderedItems.join(",\\ ") : null;
     }
 
-    var functionMatch = expression.match(/^(sqrt|arg|cis|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)\((.*)\)$/i);
+    var functionMatch = expression.match(/^(sqrt|arg|cis|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp|N)\((.*)\)$/i);
     if (functionMatch && parenthesesAreBalanced(functionMatch[2])) {
       var functionArgument = expressionToLatex(functionMatch[2]);
       if (!functionArgument) return null;
@@ -646,10 +878,12 @@
         ? "\\sqrt{" + functionArgument + "}"
         : functionMatch[1].toLowerCase() === "cis"
           ? "\\operatorname{cis}\\left(" + functionArgument + "\\right)"
-          : "\\" + functionMatch[1].toLowerCase() + "\\left(" + functionArgument + "\\right)";
+          : functionMatch[1] === "N"
+            ? "N\\left(" + functionArgument + "\\right)"
+            : "\\" + functionMatch[1].toLowerCase() + "\\left(" + functionArgument + "\\right)";
     }
 
-    var relationPositions = topLevelPositions(expression, function (character) { return /[=≤≥≠<>]/.test(character); });
+    var relationPositions = topLevelPositions(expression, function (character) { return /[=≤≥≠<>∈∉~]/.test(character); });
     if (relationPositions.length) {
       if (relationPositions.length > 1) {
         var renderedRelations = [];
@@ -711,12 +945,13 @@
   function isDisplaySafe(value) {
     var answer = clean(value);
     if (!answer || answer.length > 180) return false;
-    if (/\\|\b(?:mathrm|circ|ldots|cdots)\b|…|\^\s*$|\/\s*\/|sqrt\s*(?!\()|root\s*(?!\()/i.test(answer)
+    if (/\\|\b(?:mathrm|circ|ldots|cdots)\b|\^\s*$|\/\s*\/|sqrt\s*(?!\()|root\s*(?!\()/i.test(answer)
       || RAW_LATEX_COMMAND_PATTERN.test(answer)) return false;
     if (/sqrt\(\s*-/.test(answer) || !parenthesesAreBalanced(answer)) return false;
     if (/^(?:Odd|Even), because f\(-x\) = -?f\(x\)$/i.test(answer)
       || /^Neither, because f\(-x\) ≠ f\(x\) and f\(-x\) ≠ -f\(x\)$/i.test(answer)) return true;
-    var rendered = expressionToLatex(answer);
+    var unitSuffix = answer.match(new RegExp("^(.+?)\\s+(" + UNIT_PATTERN + ")$", "i"));
+    var rendered = expressionToLatex(unitSuffix ? unitSuffix[1] : answer);
     return Boolean(rendered && rendered.indexOf("/") === -1);
   }
 
@@ -832,7 +1067,7 @@
       var places = decimalPlaces(token.value);
       var magnitude = Math.abs(number);
       var spread = Math.max(2, Math.round(magnitude * .4));
-      [number + spread, number - spread, number === 0 ? 3 : -number].forEach(function (replacement) {
+      [number + spread, number - spread, number === 0 ? 3 : -number, number * 2 + (number >= 0 ? 1 : -1)].forEach(function (replacement) {
         var formatted = formatNumber(replacement, places);
         if (!formatted) return;
         addCandidate(list, correct.slice(0, token.index) + formatted + correct.slice(token.index + token.value.length));
@@ -883,13 +1118,41 @@
       "concave down for all values of x": ["Concave up for all values of x", "Linear for all values of x", "Changes concavity once", "Cannot be determined"],
       "one-to-one": ["Many-to-one", "Constant", "Periodic", "Cannot be determined"],
       "many-to-one": ["One-to-one", "Constant", "Strictly increasing", "Cannot be determined"],
+      "systematic sampling": ["Convenience sampling", "Quota sampling", "Simple random sampling", "Stratified sampling"],
+      "simple random sampling": ["Convenience sampling", "Quota sampling", "Stratified sampling", "Systematic sampling"],
+      "stratified sampling": ["Convenience sampling", "Quota sampling", "Simple random sampling", "Systematic sampling"],
+      "quota sampling": ["Convenience sampling", "Simple random sampling", "Stratified sampling", "Systematic sampling"],
+      "convenience sampling": ["Quota sampling", "Simple random sampling", "Stratified sampling", "Systematic sampling"],
+      discrete: ["Continuous", "Categorical", "Ordinal", "Cannot be determined"],
+      continuous: ["Discrete", "Categorical", "Ordinal", "Cannot be determined"],
+      "the captains can see one another": ["The captains cannot see one another", "They can only see one another at the start", "They can only see one another at the end", "There is insufficient information"],
+      "only f can be used as a probability mass function": ["Only g can be used as a probability mass function", "Both f and g can be used as probability mass functions", "Neither f nor g can be used as a probability mass function", "There is insufficient information"],
     }[normalized];
+    if (/^(?:do not reject|reject) the null hypothesis, because there is (?:in)?sufficient evidence for the alternative hypothesis$/.test(normalized)) {
+      alternatives = [
+        "Reject the null hypothesis, because there is sufficient evidence for the alternative hypothesis",
+        "Reject the null hypothesis, because there is insufficient evidence for the alternative hypothesis",
+        "Do not reject the null hypothesis, because there is sufficient evidence for the alternative hypothesis",
+        "Do not reject the null hypothesis, because there is insufficient evidence for the alternative hypothesis",
+        "Accept the alternative hypothesis without using the significance level",
+      ];
+      alternatives = alternatives.filter(function (alternative) { return clean(alternative).toLowerCase() !== normalized; });
+    }
     var likely = clean(correct).match(/^([A-Za-z]+) is more likely(?: to .+)?$/i);
     if (likely) {
       alternatives = [
         likely[1] === "Jan" ? "Sia is more likely" : "Jan is more likely",
         "They are equally likely",
         "Neither is more likely",
+        "Cannot be determined",
+      ];
+    }
+    var closer = clean(correct).match(/^([A-Z]) is closer to its opposite face than ([A-Z])$/);
+    if (closer) {
+      alternatives = [
+        closer[2] + " is closer to its opposite face than " + closer[1],
+        "Both vertices are equally close to their opposite faces",
+        "Neither vertex has an opposite face",
         "Cannot be determined",
       ];
     }
@@ -945,6 +1208,15 @@
     addCandidate(list, expression.replace(/\[$/, "]"));
     addCandidate(list, expression.replace(/∞/g, "0"));
     addCandidate(list, expression.replace(/∞/g, "1"));
+  }
+
+  function setMembershipCandidates(correct, list) {
+    var expression = clean(correct);
+    var match = expression.match(/^(.+?)∈blackboard\(([RQCZN])\)$/i);
+    if (!match) return;
+    ["R", "Q", "Z", "N", "C"].filter(function (set) { return set !== match[2].toUpperCase(); }).forEach(function (set) {
+      addCandidate(list, match[1] + "∈blackboard(" + set + ")");
+    });
   }
 
   function symbolicCandidates(correct, list) {
@@ -1015,6 +1287,37 @@
     if (list.length < 4) addCandidate(list, prefix + terms.slice(0, -1).join(""));
   }
 
+  function compositeCandidates(correct, list) {
+    var expression = clean(correct);
+    var separators = topLevelPositions(expression, function (character) { return character === ";"; });
+    if (!separators.length) return;
+    var parts = [];
+    var start = 0;
+    separators.forEach(function (position) {
+      parts.push(expression.slice(start, position).trim());
+      start = position + 1;
+    });
+    parts.push(expression.slice(start).trim());
+    parts.forEach(function (part, partIndex) {
+      if (!part) return;
+      var local = [];
+      fractionCandidates(part, local);
+      simpleNumberCandidates(part, local);
+      radicalCandidates(part, local);
+      signedRadicalEquationCandidates(part, local);
+      implicitProductCandidates(part, local);
+      mutateNumberTokens(part, local);
+      relationMutationCandidates(part, local);
+      intervalCandidates(part, local);
+      symbolicCandidates(part, local);
+      local.slice(0, 4).forEach(function (replacement) {
+        var changed = parts.slice();
+        changed[partIndex] = replacement;
+        addCandidate(list, changed.join("; "));
+      });
+    });
+  }
+
   function hash(value) {
     var result = 2166136261;
     for (var index = 0; index < value.length; index += 1) {
@@ -1066,9 +1369,11 @@
     categoricalCandidates(correct, candidates);
     implicitProductCandidates(correct, candidates);
     seriesCandidates(correct, candidates);
+    compositeCandidates(correct, candidates);
     mutateNumberTokens(correct, candidates);
     relationMutationCandidates(correct, candidates);
     intervalCandidates(correct, candidates);
+    setMembershipCandidates(correct, candidates);
     symbolicCandidates(correct, candidates);
     var distractors = candidates.filter(function (candidate) {
       return !accepted.some(function (answer) { return equivalent(candidate, answer); });
@@ -1085,7 +1390,7 @@
     var text = (Array.isArray(rows) ? rows : []).map(function (row) {
       return plainText(Array.isArray(row) ? row[0] : row);
     }).join(" ");
-    var direct = text.match(/\b(?:is|so|therefore|hence)\s+(odd|even|neither)\b/i);
+    var direct = text.match(/(?:^|\b(?:is|so|therefore|hence)\s+)(odd|even|neither)(?:\s+function)?\b/i);
     if (direct) return direct[1].toLowerCase();
     if (/f\s*\(\s*-x\s*\)\s*=\s*-\s*f\s*\(\s*x\s*\)/i.test(text)) return "odd";
     if (/f\s*\(\s*-x\s*\)\s*=\s*f\s*\(\s*x\s*\)/i.test(text)) return "even";
@@ -1152,6 +1457,85 @@
       : null;
   }
 
+  function generateConceptChoiceSet(rows, prompt, seed) {
+    var question = plainText(prompt);
+    var answer = (Array.isArray(rows) ? rows : []).map(function (row) {
+      return plainText(latexToPlain(Array.isArray(row) ? row[0] : row));
+    }).join(" ");
+    var correct = "";
+    var options = [];
+    if (/\bstate the central limit theorem\b/i.test(question) && /\b(?:large|infinity|n\s*[≥>])\b[\s\S]*\bapproximately normally distributed\b/i.test(answer)) {
+      correct = "For a sufficiently large sample, the sample mean is approximately normally distributed";
+      options = [
+        correct,
+        "For a sufficiently large sample, the sample median is exactly normally distributed",
+        "The original population must be normally distributed",
+        "The sample mean is approximately uniformly distributed",
+        "The sample variance must equal the sample mean",
+      ];
+    } else if (/\bgeometrical meaning\b/i.test(question) && /\brate of change of the gradient\b/i.test(answer)) {
+      correct = "The rate of change of the gradient of the line OP";
+      options = [
+        correct,
+        "The gradient of the line OP",
+        "The rate of change of the length OP",
+        "The distance travelled by point P",
+        "The area swept out by the line OP",
+      ];
+    } else if (/\bpoisson distribution\b/i.test(question) && /\bmean is close to the variance\b/i.test(answer)) {
+      correct = "The mean is close to the variance";
+      options = [
+        correct,
+        "The mean is close to the standard deviation",
+        "The median is close to the variance",
+        "The variance is close to zero",
+        "The data are symmetric about the mean",
+      ];
+    } else if (/\bpoisson distribution\b/i.test(question) && /\bassumption\b/i.test(question) && /\bindependent|constant mean rate\b/i.test(answer)) {
+      correct = "Events occur independently at a constant mean rate";
+      options = [
+        correct,
+        "Exactly one event occurs in every interval",
+        "The number of events is fixed each day",
+        "The probability of an event increases after each event",
+        "The data must follow a normal distribution",
+      ];
+    } else if (/\bname of this type of test for reliability\b/i.test(question) && /\btest-retest\b/i.test(answer)) {
+      correct = "Test-retest";
+      options = [correct, "Chi-squared", "Paired t-test", "Spearman rank", "Goodness of fit"];
+    } else if (/\balternative test\b/i.test(question) && /\bspearman(?:'s)? rank\b/i.test(answer)) {
+      correct = "Spearman rank correlation";
+      options = [correct, "Pearson correlation", "Chi-squared test", "Paired t-test", "Sign test"];
+    } else if (/\bappropriate units? for the gradient\b/i.test(question) && /\bcm\s*(?:per|\/)\s*year\b/i.test(answer)) {
+      correct = "Centimetres per year";
+      options = [correct, "Years per centimetre", "Centimetres", "Square centimetres per year", "Centimetres per square year"];
+    } else if (/\bconcave up or concave down\b/i.test(question) && /\bgradient is increasing\b/i.test(answer)) {
+      correct = "Concave up, because the gradient is increasing";
+      options = [
+        correct,
+        "Concave up, because the gradient is decreasing",
+        "Concave down, because the gradient is increasing",
+        "Concave down, because the gradient is decreasing",
+        "Neither, because the gradient is constant",
+      ];
+    } else if (/\bconcave up or concave down\b/i.test(question) && /\bgradient is decreasing\b/i.test(answer)) {
+      correct = "Concave down, because the gradient is decreasing";
+      options = [
+        "Concave up, because the gradient is increasing",
+        "Concave up, because the gradient is decreasing",
+        "Concave down, because the gradient is increasing",
+        correct,
+        "Neither, because the gradient is constant",
+      ];
+    }
+    if (!correct || options.length !== 5 || options.some(function (option) { return !isDisplaySafe(option); })) return null;
+    var shuffledOptions = shuffled(options, seed);
+    var correctOption = shuffledOptions.indexOf(correct);
+    return validateChoiceSet([correct], shuffledOptions, correctOption)
+      ? { acceptedAnswers: [correct], options: shuffledOptions, correctOption: correctOption }
+      : null;
+  }
+
   function unitToLatex(unit) {
     if (!unit) return "";
     if (unit === "°") return "^{\\circ}";
@@ -1178,6 +1562,8 @@
     if (quantity) return quantity.prefix.replace(/\s/g, "") + quantity.rawNumber + unitToLatex(quantity.unit);
     var fraction = fractionParts(answer);
     if (fraction) return fraction.prefix.replace(/\s/g, "") + "\\frac{" + fraction.numerator + "}{" + fraction.denominator + "}" + unitToLatex(fraction.unit);
+    var unitSuffix = answer.match(new RegExp("^(.+?)\\s+(" + UNIT_PATTERN + ")$", "i"));
+    if (unitSuffix) return (expressionToLatex(unitSuffix[1]) || atomToLatex(unitSuffix[1])) + unitToLatex(unitSuffix[2]);
     return expressionToLatex(answer) || atomToLatex(answer);
   }
 
@@ -1212,6 +1598,7 @@
     extractAcceptedAnswers: extractAcceptedAnswers,
     generateChoiceSet: generateChoiceSet,
     generateComparisonReasonChoiceSet: generateComparisonReasonChoiceSet,
+    generateConceptChoiceSet: generateConceptChoiceSet,
     generateParityChoiceSet: generateParityChoiceSet,
     isDisplaySafe: isDisplaySafe,
     latexToPlain: latexToPlain,
