@@ -12,6 +12,7 @@
   var assignmentSubmitted = false;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var activeId = null;
+  var activePartKey = null;
   var list = document.getElementById("qb-list");
   if (!list) return;
 
@@ -24,13 +25,24 @@
     ".qb-assignment-nav{margin:0 0 18px;padding:14px 16px;display:grid;gap:11px;border:1px solid #c9d7df;border-radius:14px;background:#fff;box-shadow:0 10px 28px rgba(13,21,46,.06);font-family:var(--ui)}",
     ".qb-assignment-nav-head{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#526b7c;font-size:12px;font-weight:750}",
     ".qb-assignment-nav-head strong{color:var(--flynn-blue-dark);font-size:14px}",
-    ".qb-assignment-tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 5px;scrollbar-width:thin}",
+    ".qb-assignment-tabs{display:flex;align-items:stretch;gap:7px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}",
     ".qb-assignment-tab{min-width:44px;height:40px;padding:0 10px;border:1px solid #c8d5dc;border-radius:10px;background:#f7fafb;color:#526b7c;font:800 13px/1 var(--ui);cursor:pointer}",
     ".qb-assignment-tab:hover{border-color:var(--flynn-blue);color:var(--flynn-blue-dark)}",
     ".qb-assignment-tab.is-active{border-color:var(--flynn-blue);background:var(--flynn-blue);color:#fff;box-shadow:0 6px 14px rgba(35,127,202,.2)}",
     ".qb-assignment-tab.is-correct:not(.is-active){border-color:#8fc9b2;background:#e8f6f0;color:#176b50}",
     ".qb-assignment-tab.is-incorrect:not(.is-active){border-color:#e4aaa6;background:#fff0ef;color:#9f2f2f}",
     ".qb-assignment-tab.is-review:not(.is-active){border-color:#a7c9e3;background:#edf6fc;color:#235f91}",
+    ".qb-assignment-question-group{flex:0 0 auto;padding:4px;display:flex;align-items:center;gap:5px;border:1px solid #cfdae0;border-radius:12px;background:#f7fafb}",
+    ".qb-assignment-question-group.is-active{border-color:var(--flynn-blue);background:#f0f7fc;box-shadow:0 0 0 2px rgba(35,127,202,.1)}",
+    ".qb-assignment-question-group .qb-assignment-tab{min-width:39px;height:34px;padding:0 8px;border:0;background:transparent;box-shadow:none}",
+    ".qb-assignment-question-group .qb-assignment-tab.is-active{background:var(--flynn-blue);color:#fff}",
+    ".qb-assignment-part-tabs{padding-left:5px;display:flex;align-items:center;gap:3px;border-left:1px solid #cfdae0}",
+    ".qb-assignment-part-tab{min-width:29px;height:29px;padding:0 6px;border:1px solid transparent;border-radius:8px;background:#fff;color:#607481;font:850 11px/1 var(--ui);cursor:pointer}",
+    ".qb-assignment-part-tab:hover{border-color:var(--flynn-blue);color:var(--flynn-blue-dark)}",
+    ".qb-assignment-part-tab.is-active{outline:2px solid var(--flynn-blue);outline-offset:1px;color:var(--flynn-blue-dark)}",
+    ".qb-assignment-part-tab.is-correct{border-color:#8fc9b2;background:#e8f6f0;color:#176b50}",
+    ".qb-assignment-part-tab.is-incorrect{border-color:#e4aaa6;background:#fff0ef;color:#9f2f2f}",
+    ".qb-assignment-part-tab.is-review{border-color:#a7c9e3;background:#edf6fc;color:#235f91}",
     ".qb-assignment-step-mode #qb-list>.qb-card:not(.qb-assignment-current){display:none!important}",
     ".qb-assignment-mode .qb-progress-toggle{display:none!important}",
     ".qb-assignment-response{margin-top:18px;padding:16px;display:grid;gap:11px;border:1px solid #bfd3df;border-radius:11px;background:linear-gradient(135deg,#f6fbff,#fff);font:600 14px/1.45 var(--ui);color:#203449}",
@@ -44,6 +56,7 @@
     ".qb-response-options{display:grid;gap:8px}",
     ".qb-response-parts{display:grid;gap:10px}",
     ".qb-response-part{padding:12px;display:grid;grid-template-columns:minmax(52px,auto) 1fr;gap:10px;align-items:start;border:1px solid #d3e0e7;border-radius:10px;background:#fff}",
+    ".qb-response-part.is-nav-target{border-color:var(--flynn-blue);box-shadow:0 0 0 3px rgba(35,127,202,.12)}",
     ".qb-response-part strong{min-width:48px;height:34px;padding:0 8px;display:grid;place-items:center;border-radius:999px;background:#e8f2f8;color:var(--flynn-blue-dark);white-space:nowrap}",
     ".qb-response-part-content{min-width:0;display:grid;gap:9px}",
     ".qb-response-part-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}",
@@ -85,7 +98,7 @@
     ".qb-assignment-overview-mode .qb-assignment-response{margin-top:10px;padding:11px}",
     ".qb-assignment-overview-mode .qb-response-readonly{max-height:92px;overflow:auto}",
     ".qb-assignment-detail-mode .qb-whiteboard-open-button{display:none}",
-    "@media(max-width:720px){.qb-assignment-overview-mode #qb-list{grid-template-columns:1fr!important}.qb-assignment-response-head{align-items:flex-start;flex-direction:column}.qb-assignment-nav{padding:12px}}"
+    "@media(max-width:720px){.qb-assignment-overview-mode #qb-list{grid-template-columns:1fr!important}.qb-assignment-response-head{align-items:flex-start;flex-direction:column}.qb-assignment-nav{padding:12px}.qb-assignment-question-group{padding:3px}.qb-assignment-part-tab{min-width:28px;padding:0 5px}}"
   ].join("");
   document.head.appendChild(style);
 
@@ -205,6 +218,12 @@
     return "(" + String(label).replace("(", ")(") + ")";
   }
 
+  function partNavLabel(label) {
+    var value = String(label || "").trim();
+    if (/^[a-z]$/i.test(value)) return value.toUpperCase();
+    return value.replace(/^([a-z])/i, function (letter) { return letter.toUpperCase(); });
+  }
+
   function multipartDefinitions(item) {
     if (item.responseType !== "multipart" || !Array.isArray(item.responseOptions)) return [];
     return item.responseOptions.map(function (part) {
@@ -261,21 +280,55 @@
     return "The mark scheme and worked solution will unlock after this question is completed.";
   }
 
+  function partNavigationState(item, label) {
+    var saved = multipartPartState(item, label);
+    if (saved.result === "correct") return "correct";
+    if (saved.result === "retry" || saved.result === "incorrect_final") return "incorrect";
+    if (saved.result === "saved") return "review";
+    if (item && item.response && item.response.parts && Object.prototype.hasOwnProperty.call(item.response.parts, label)) return "review";
+    return "empty";
+  }
+
+  function partNavigationDescription(status) {
+    if (status === "correct") return "correct";
+    if (status === "incorrect") return "needs another look";
+    if (status === "review") return "saved for review";
+    return "not answered";
+  }
+
   function questionState(item) {
+    var definitions = multipartDefinitions(item);
+    if (definitions.length > 1) {
+      var partStates = definitions.map(function (definition) { return partNavigationState(item, definition.label); });
+      if (partStates.every(function (status) { return status === "correct"; })) return "correct";
+      if (isQuestionFinished(item) && partStates.some(function (status) { return status === "incorrect"; })) return "incorrect";
+      if (partStates.some(function (status) { return status !== "empty"; })) return "review";
+      return "empty";
+    }
     if (!item || !item.response) return "empty";
     if (item.isCorrect === true) return "correct";
     if (item.isCorrect === false) return "incorrect";
     return "review";
   }
 
-  function goToQuestion(id, shouldScroll) {
+  function goToQuestion(id, shouldScroll, partKey) {
     if (!state[id]) return;
     activeId = id;
+    activePartKey = partKey || null;
     renderNavigation();
     document.querySelectorAll("#qb-list>.qb-card").forEach(function (card) {
       card.classList.toggle("qb-assignment-current", card.getAttribute("data-id") === activeId);
+      card.querySelectorAll(".qb-response-part").forEach(function (row) {
+        row.classList.toggle("is-nav-target", card.getAttribute("data-id") === activeId && Boolean(activePartKey) && row.getAttribute("data-part-key") === activePartKey);
+      });
     });
-    if (shouldScroll) window.parent.postMessage({ type: "mrflynnib-assignment-scroll-top" }, window.location.origin);
+    if (!shouldScroll) return;
+    if (activePartKey) {
+      window.setTimeout(function () {
+        var target = document.querySelector('.qb-card[data-id="' + CSS.escape(activeId) + '"] .qb-response-part[data-part-key="' + CSS.escape(activePartKey) + '"]');
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 0);
+    } else window.parent.postMessage({ type: "mrflynnib-assignment-scroll-top" }, window.location.origin);
   }
 
   function renderNavigation() {
@@ -284,13 +337,28 @@
     if (!activeId || visibleIds.indexOf(activeId) === -1) activeId = visibleIds.find(function (id) { return !isQuestionFinished(state[id]); }) || visibleIds[0] || null;
     navigation.replaceChildren();
     var head = document.createElement("div"); head.className = "qb-assignment-nav-head";
-    var heading = document.createElement("strong"); heading.textContent = activeId ? "Question " + (orderedIds.indexOf(activeId) + 1) + " of " + orderedIds.length : "Assignment questions";
+    var heading = document.createElement("strong"); heading.textContent = activeId ? "Question " + (orderedIds.indexOf(activeId) + 1) + " of " + orderedIds.length + (activePartKey ? " · Part " + partLabel(activePartKey) : "") : "Assignment questions";
     var summary = document.createElement("span"); summary.textContent = orderedIds.filter(function (id) { return isQuestionFinished(state[id]); }).length + " completed";
     head.appendChild(heading); head.appendChild(summary); navigation.appendChild(head);
     var tabs = document.createElement("div"); tabs.className = "qb-assignment-tabs";
     orderedIds.forEach(function (id, index) {
-      var button = document.createElement("button"); button.type = "button"; button.className = "qb-assignment-tab is-" + questionState(state[id]) + (id === activeId ? " is-active" : ""); button.textContent = "Q" + (index + 1); button.setAttribute("aria-label", "Open question " + (index + 1)); button.setAttribute("aria-current", id === activeId ? "step" : "false"); button.disabled = !document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
-      button.addEventListener("click", function () { goToQuestion(id, true); }); tabs.appendChild(button);
+      var item = state[id];
+      var definitions = multipartDefinitions(item);
+      var isGrouped = definitions.length > 1;
+      var button = document.createElement("button"); button.type = "button"; button.className = "qb-assignment-tab is-" + questionState(item) + (id === activeId && !activePartKey ? " is-active" : ""); button.textContent = "Q" + (index + 1); button.setAttribute("aria-label", "Open question " + (index + 1)); button.setAttribute("aria-current", id === activeId && !activePartKey ? "step" : "false"); button.disabled = !document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
+      button.addEventListener("click", function () { goToQuestion(id, true); });
+      if (!isGrouped) { tabs.appendChild(button); return; }
+      var group = document.createElement("div"); group.className = "qb-assignment-question-group" + (id === activeId ? " is-active" : "");
+      group.setAttribute("role", "group"); group.setAttribute("aria-label", "Question " + (index + 1) + " parts"); group.appendChild(button);
+      var partTabs = document.createElement("div"); partTabs.className = "qb-assignment-part-tabs";
+      definitions.forEach(function (definition) {
+        var status = partNavigationState(item, definition.label);
+        var partButton = document.createElement("button"); partButton.type = "button"; partButton.className = "qb-assignment-part-tab is-" + status + (id === activeId && activePartKey === definition.label ? " is-active" : ""); partButton.textContent = partNavLabel(definition.label);
+        partButton.setAttribute("aria-label", "Open question " + (index + 1) + ", part " + partLabel(definition.label) + ", " + partNavigationDescription(status));
+        partButton.setAttribute("aria-current", id === activeId && activePartKey === definition.label ? "step" : "false"); partButton.disabled = button.disabled;
+        partButton.addEventListener("click", function () { goToQuestion(id, true, definition.label); }); partTabs.appendChild(partButton);
+      });
+      group.appendChild(partTabs); tabs.appendChild(group);
     });
     navigation.appendChild(tabs);
   }
@@ -346,6 +414,17 @@
     var item = state[id];
     var existing = card.querySelector(".qb-assignment-response");
     if (!item) { if (existing) existing.remove(); delete card.dataset.responseVersion; return; }
+    var sourceNumber = card.querySelector(".qb-card-num");
+    if (sourceNumber) {
+      var assignmentPosition = orderedIds.indexOf(id) + 1;
+      if (view === "step") {
+        if (!sourceNumber.hidden) sourceNumber.hidden = true;
+      } else {
+        if (sourceNumber.hidden) sourceNumber.hidden = false;
+        var assignmentLabel = "Assignment question " + assignmentPosition;
+        if (sourceNumber.textContent !== assignmentLabel) sourceNumber.textContent = assignmentLabel;
+      }
+    }
     applyFeedbackPolicy(card, item);
     addDetailButton(card, id);
     openWhiteboardPreview(card);
