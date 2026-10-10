@@ -3,18 +3,20 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 7;
+  var DRAFT_VERSION = 8;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
   var restoredSelection = [];
   var configs = {};
+  var summaries = {};
   if (draftKey) {
     try {
       var storedDraft = JSON.parse(window.sessionStorage.getItem(draftKey) || "[]");
       var storedSelection = Array.isArray(storedDraft) ? storedDraft : storedDraft.ids;
       if (Array.isArray(storedSelection)) restoredSelection = storedSelection.map(String).filter(Boolean).slice(0, MAX_SELECTED);
-      if (!Array.isArray(storedDraft) && storedDraft.version === DRAFT_VERSION && storedDraft.configs && typeof storedDraft.configs === "object") configs = storedDraft.configs;
+      if (!Array.isArray(storedDraft) && storedDraft.version >= 7 && storedDraft.configs && typeof storedDraft.configs === "object") configs = storedDraft.configs;
+      if (!Array.isArray(storedDraft) && storedDraft.summaries && typeof storedDraft.summaries === "object") summaries = storedDraft.summaries;
     } catch { restoredSelection = []; }
   }
   var selected = new Set(restoredSelection);
@@ -58,21 +60,31 @@
       if (!configs[id]) configs[id] = defaultConfig(id);
       return configs[id];
     });
+    var publishedSummaries = ids.map(function (id) {
+      summaries[id] = questionSummary(id);
+      return summaries[id];
+    });
     if (draftKey) {
       var savedConfigs = {};
-      ids.forEach(function (id, index) { savedConfigs[id] = publishedConfigs[index]; });
-      try { window.sessionStorage.setItem(draftKey, JSON.stringify({ version: DRAFT_VERSION, ids: ids, configs: savedConfigs })); } catch { /* session storage is optional */ }
+      var savedSummaries = {};
+      ids.forEach(function (id, index) {
+        savedConfigs[id] = publishedConfigs[index];
+        savedSummaries[id] = publishedSummaries[index];
+      });
+      try { window.sessionStorage.setItem(draftKey, JSON.stringify({ version: DRAFT_VERSION, ids: ids, configs: savedConfigs, summaries: savedSummaries })); } catch { /* session storage is optional */ }
     }
     window.parent.postMessage({
       type: "mrflynnib-assignment-selection",
       ids: ids,
-      configs: publishedConfigs
+      configs: publishedConfigs,
+      summaries: publishedSummaries
     }, window.location.origin);
   }
 
   function clearSelection() {
     selected.clear();
     configs = {};
+    summaries = {};
     if (draftKey) {
       try { window.sessionStorage.removeItem(draftKey); } catch { /* session storage is optional */ }
     }
@@ -88,14 +100,52 @@
     publish();
   }
 
+  function removeSelection(id) {
+    selected.delete(id);
+    delete configs[id];
+    delete summaries[id];
+    var card = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
+    if (card) {
+      var checkbox = card.querySelector(".qb-assignment-select input[type=checkbox]");
+      var copy = card.querySelector(".qb-assignment-select span");
+      var editor = card.querySelector(".qb-assignment-answer");
+      if (checkbox) checkbox.checked = false;
+      if (copy) copy.textContent = "Add to assignment";
+      if (editor) editor.hidden = true;
+      card.classList.remove("qb-assignment-selected");
+    }
+    publish();
+  }
+
   window.addEventListener("message", function (event) {
     if (event.origin !== window.location.origin || event.source !== window.parent) return;
     if (event.data && event.data.type === "mrflynnib-assignment-clear") clearSelection();
+    if (event.data && event.data.type === "mrflynnib-assignment-remove") removeSelection(String(event.data.id || ""));
   });
 
   function questionFor(id) {
     var card = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
     return card && card.mrflynnibQuestion ? card.mrflynnibQuestion : null;
+  }
+
+  function questionSummary(id) {
+    var existing = summaries[id];
+    var question = questionFor(id);
+    if (!question) return existing || { id: id, title: "Selected question" };
+    var card = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
+    var text = function (selector) {
+      var node = card && card.querySelector(selector);
+      return node ? String(node.textContent || "").replace(/\s+/g, " ").trim() : "";
+    };
+    return {
+      id: id,
+      title: plainText(question.title) || existing && existing.title || "Selected question",
+      topic: text(".qb-badge.topic .main") || existing && existing.topic || "",
+      subtopic: text(".qb-badge.topic .subs") || existing && existing.subtopic || "",
+      paper: text(".qb-badge.course") || existing && existing.paper || "",
+      difficulty: text(".qb-badge:not(.course):not(.topic):not(.marks)") || existing && existing.difficulty || "",
+      marks: Number(question.marks) || existing && existing.marks || null
+    };
   }
 
   function plainText(value) {
