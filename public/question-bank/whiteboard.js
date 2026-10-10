@@ -4,6 +4,30 @@
   var list = document.getElementById('qb-list');
   if (!list) return;
 
+  var whiteboardParams = new URLSearchParams(window.location.search);
+  var assignmentWhiteboard = whiteboardParams.get('assignmentWork') === '1';
+  var layoutStorageKey = assignmentWhiteboard ? 'mrflynnib-whiteboard-layout-assignment' : 'mrflynnib-whiteboard-layout-question-bank';
+  var whiteboardLayout = assignmentWhiteboard ? 'below' : 'side';
+
+  try {
+    var storedLayout = window.localStorage.getItem(layoutStorageKey);
+    if (storedLayout === 'side' || storedLayout === 'below') whiteboardLayout = storedLayout;
+  } catch { /* Storage can be unavailable in privacy-restricted browsers. */ }
+
+  function applyWhiteboardLayout(nextLayout, savePreference) {
+    whiteboardLayout = nextLayout === 'side' ? 'side' : 'below';
+    Array.prototype.forEach.call(list.querySelectorAll('.qb-card[data-whiteboard-ready]'), function (item) {
+      item.classList.toggle('qb-whiteboard-below', whiteboardLayout === 'below');
+      Array.prototype.forEach.call(item.querySelectorAll('[data-whiteboard-layout]'), function (button) {
+        button.setAttribute('aria-pressed', String(button.getAttribute('data-whiteboard-layout') === whiteboardLayout));
+      });
+    });
+    if (savePreference) {
+      try { window.localStorage.setItem(layoutStorageKey, whiteboardLayout); } catch { /* Keep the choice for this page. */ }
+    }
+    window.dispatchEvent(new Event('resize'));
+  }
+
   function toolButton(action, label, pressed) {
     return '<button type="button" class="qb-whiteboard-tool" data-whiteboard-action="' + action + '"' +
       (pressed !== undefined ? ' aria-pressed="' + pressed + '"' : '') + '>' + label + '</button>';
@@ -20,6 +44,7 @@
     var body = card.querySelector('.qb-body');
     if (!body) return;
     card.setAttribute('data-whiteboard-ready', '1');
+    card.classList.toggle('qb-whiteboard-below', whiteboardLayout === 'below');
 
     var workspace = document.createElement('div');
     workspace.className = 'qb-question-workspace';
@@ -40,7 +65,14 @@
     board.setAttribute('aria-label', 'Working whiteboard');
     board.innerHTML =
       '<div class="qb-whiteboard-header">' +
-        '<div class="qb-whiteboard-title">Working space <small class="qb-whiteboard-save-status">Not saved</small></div>' +
+        '<div class="qb-whiteboard-heading-row">' +
+          '<div class="qb-whiteboard-title">Working space <small class="qb-whiteboard-save-status">Not saved</small></div>' +
+          '<div class="qb-whiteboard-layout-tools" role="group" aria-label="Whiteboard position">' +
+            '<span>Position</span>' +
+            '<button type="button" class="qb-whiteboard-tool" data-whiteboard-layout="side" aria-pressed="' + (whiteboardLayout === 'side') + '">Side</button>' +
+            '<button type="button" class="qb-whiteboard-tool" data-whiteboard-layout="below" aria-pressed="' + (whiteboardLayout === 'below') + '">Below</button>' +
+          '</div>' +
+        '</div>' +
         '<div class="qb-whiteboard-tools" role="toolbar" aria-label="Whiteboard tools">' +
           '<div class="qb-whiteboard-paper-tools" role="group" aria-label="Paper style">' +
             '<span>Paper</span>' +
@@ -575,6 +607,11 @@
     });
 
     board.addEventListener('click', function (event) {
+      var layoutChoice = event.target.closest('[data-whiteboard-layout]');
+      if (layoutChoice) {
+        applyWhiteboardLayout(layoutChoice.getAttribute('data-whiteboard-layout'), true);
+        return;
+      }
       var colourChoice = event.target.closest('[data-whiteboard-colour]');
       if (colourChoice) {
         colour = colourChoice.getAttribute('data-whiteboard-colour');

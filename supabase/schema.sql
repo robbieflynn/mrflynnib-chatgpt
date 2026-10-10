@@ -362,7 +362,11 @@ begin
   existing_attempts := coalesce(existing_attempts, 0);
   if response_kind <> 'teacher_review' and existing_attempts >= 2 then return query select false, 'locked'::text; return; end if;
   submitted_text := left(trim(coalesce(response_payload ->> 'text', '')), 500);
-  has_part_answers := jsonb_typeof(response_payload -> 'parts') = 'object' and jsonb_object_length(response_payload -> 'parts') > 0;
+  has_part_answers := coalesce(
+    jsonb_typeof(response_payload -> 'parts') = 'object'
+      and response_payload -> 'parts' <> '{}'::jsonb,
+    false
+  );
   if response_kind = 'multiple_choice' then
     if not (response_payload ? 'option') then raise exception 'Choose an answer.'; end if;
     submitted_option := (response_payload ->> 'option')::integer;
