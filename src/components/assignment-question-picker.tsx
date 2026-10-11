@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
+import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
 
 type AssignmentQuestionPickerProps = {
   bank: "ib" | "igcse";
@@ -19,15 +20,6 @@ type SelectedQuestionSummary = {
   marks: number | null;
 };
 
-function mathematicalSummaryTitle(value: string) {
-  return value
-    .replace(/\b(cos|sin|tan)\s+([A-Z]{3})\s*=\s*(-?\d+)\s*\/\s*(-?\d+)/g, String.raw`\($1 $2 = \frac{$3}{$4}\)`)
-    .replace(/\b(cos|sin|tan)\s+([A-Z]{3})\b/g, String.raw`\($1 $2\)`)
-    .replace(/\bangle\s+([A-Z]{3})\b/gi, String.raw`\(\angle $1\)`)
-    .replace(/(-?\d*)√(\d+)/g, (_match, coefficient, radicand) => String.raw`\(${coefficient}\sqrt{${radicand}}\)`)
-    .replace(/\b(-?\d+)\s*\/\s*(-?\d+)\b/g, String.raw`\(\frac{$1}{$2}\)`);
-}
-
 function SummaryMath({ children }: { children: string }) {
   const text = mathematicalSummaryTitle(children);
   const pieces: React.ReactNode[] = [];
@@ -36,7 +28,7 @@ function SummaryMath({ children }: { children: string }) {
   let match: RegExpExecArray | null;
   while ((match = pattern.exec(text)) !== null) {
     if (match.index > lastIndex) pieces.push(text.slice(lastIndex, match.index));
-    pieces.push(<span dangerouslySetInnerHTML={{ __html: katex.renderToString(match[1], { throwOnError: false, strict: false }) }} key={`${match.index}-${match[1]}`} />);
+    pieces.push(<span className="assignment-summary-math" dangerouslySetInnerHTML={{ __html: katex.renderToString(match[1], { throwOnError: false, strict: false }) }} key={`${match.index}-${match[1]}`} />);
     lastIndex = pattern.lastIndex;
   }
   if (lastIndex < text.length) pieces.push(text.slice(lastIndex));
