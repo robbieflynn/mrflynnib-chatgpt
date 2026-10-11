@@ -39,7 +39,6 @@
     ".qb-answer-method-copy{display:block;margin-top:-5px;color:#647789;font-weight:500}",
     ".qb-accepted-answer-list{display:flex;flex-wrap:wrap;gap:7px}",
     ".qb-accepted-answer{padding:7px 10px;border:1px solid #b9d5ef;border-radius:999px;background:#fff;color:#173b5c;font:700 13px/1.2 var(--ui)}",
-    ".qb-answer-source{padding:10px 12px;border-radius:8px;background:#edf7f1;color:#276247;font-weight:650}",
     ".qb-answer-review-note{padding:10px 12px;border-radius:8px;background:#fff7e7;color:#715317;font-weight:650}",
     ".qb-answer-part-list{display:grid;gap:8px}",
     ".qb-answer-part-row{padding:10px;display:grid;grid-template-columns:minmax(54px,auto) 1fr;align-items:start;gap:10px;border:1px solid #d5e1e7;border-radius:9px;background:#fff}",
@@ -381,9 +380,7 @@
       fields.innerHTML = "";
       if (config.type === "multiple_choice") {
         methodCopy.textContent = "Students choose from one correct answer and four plausible alternatives. Choices are shuffled for each student.";
-        var source = document.createElement("div"); source.className = "qb-answer-source"; source.textContent = "Correct answer checked against every accepted mark-scheme form"; fields.appendChild(source);
         fields.appendChild(choicePreview(config.options, config.correctOption));
-        var choiceHint = document.createElement("small"); choiceHint.textContent = "Every answer option is checked automatically before you publish."; fields.appendChild(choiceHint);
       } else if (config.type === "multipart") {
         methodCopy.textContent = "Each part is answered separately. Explanations use full-statement choices. Only drawing, diagram and show-or-prove parts use working on whiteboard or paper.";
         var partList = document.createElement("div"); partList.className = "qb-answer-part-list";
@@ -399,10 +396,8 @@
           partRow.appendChild(partLabel); partRow.appendChild(partDetail); partList.appendChild(partRow);
         });
         fields.appendChild(partList);
-        var multipartHint = document.createElement("small"); multipartHint.textContent = "Answers come from the matching mark-scheme part, and every option is checked automatically."; fields.appendChild(multipartHint);
       } else {
-        methodCopy.textContent = "The student confirms that the proof, show-that, sketch or diagram work is completed on the whiteboard or paper.";
-        var note = document.createElement("div"); note.className = "qb-answer-review-note"; note.textContent = "No answer is guessed. The teacher can review saved whiteboard work or check the student’s paper."; fields.appendChild(note);
+        methodCopy.textContent = "Student confirms this question is completed on the whiteboard or paper.";
       }
     }
 
