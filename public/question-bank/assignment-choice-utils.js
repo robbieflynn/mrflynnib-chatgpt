@@ -2820,6 +2820,17 @@
     return /\s/.test(String(value || "")) && proseWords.length >= 3;
   }
 
+  function isBareAlgebraicExpression(value) {
+    var answer = String(value || "").trim();
+    var tokens = answer.match(/[A-Za-z]+/g) || [];
+    if (!tokens.length) return false;
+    var mathWord = /^(?:dx|dy|dt|ds|dr|du|dv|sin|cos|tan|sec|csc|cot|ln|log|exp|sqrt|root|arg|cis|theta|alpha|beta|gamma|sigma|lambda|mu|pi|rad)$/i;
+    if (!tokens.every(function (token) { return token.length === 1 || mathWord.test(token); })) return false;
+    return /[+\-−*/^=<>≤≥≠∈∉~()]/.test(answer)
+      || tokens.every(function (token) { return token.length === 1; })
+      || tokens.some(function (token) { return mathWord.test(token); });
+  }
+
   function normalizeExplanationText(value) {
     var blackboard = { R: "ℝ", C: "ℂ", Q: "ℚ", Z: "ℤ", N: "ℕ" };
     return clean(value)
@@ -4270,7 +4281,7 @@
     if (isProseAnswer(answer)) {
       return proseToLatex(answer);
     }
-    if (/^[A-Za-z][A-Za-z0-9 ,.'-]+$/.test(answer) && /\s/.test(answer) && !/[=<>≤≥≠]/.test(answer)) {
+    if (/^[A-Za-z][A-Za-z0-9 ,.'-]+$/.test(answer) && /\s/.test(answer) && !/[=<>≤≥≠]/.test(answer) && !isBareAlgebraicExpression(answer)) {
       return "\\text{" + answer.replace(/\\/g, "") + "}";
     }
     var comparisonReason = answer.match(/^(Less than|Greater than|Equal to) the actual value, because (the gradient (?:is (?:increasing|decreasing)|stays constant))$/i);
