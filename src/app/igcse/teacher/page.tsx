@@ -10,7 +10,7 @@ import { createClass } from "@/app/teacher/actions";
 export const metadata: Metadata = { title: "IGCSE teacher dashboard", robots: { index: false, follow: false } };
 
 export default async function IgcseTeacherPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
-  const { supabase, user, profile } = await requireTeacher("/igcse/teacher");
+  const { supabase, user, profile } = await requireTeacher("/igcse/teacher", "igcse");
   const message = await searchParams;
   const { data: classes } = await supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("teacher_id", user.id).eq("bank", "igcse").eq("archived", false).order("created_at", { ascending: false });
   const totalStudents = (classes ?? []).reduce((total, item) => total + (Array.isArray(item.class_memberships) ? item.class_memberships[0]?.count ?? 0 : 0), 0);

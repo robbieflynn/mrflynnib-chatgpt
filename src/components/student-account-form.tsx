@@ -10,6 +10,7 @@ type Mode = "sign-in" | "sign-up" | "reset" | "resend";
 export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: Mode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const curriculum = searchParams.get("qualification") === "igcse" ? "igcse" : "ib";
   const teacherJourney = searchParams.get("next")?.includes("teacher") ?? false;
   const [mode, setMode] = useState<Mode>(initialMode);
   const [firstName, setFirstName] = useState("");
@@ -76,6 +77,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
             last_name: lastName.trim(),
             display_name: displayName,
             account_type: accountType,
+            curriculum,
           },
           emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
         },
@@ -108,7 +110,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
 
   return (
     <div className="account-card stack-lg">
-      <div className="account-tabs" role="tablist" aria-label="Mr Flynn IB account">
+      <div className="account-tabs" role="tablist" aria-label={curriculum === "igcse" ? "IGCSE Mathematics account" : "Mr Flynn IB account"}>
         <button type="button" role="tab" aria-selected={mode === "sign-in"} onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Sign in</button>
         <button type="button" role="tab" aria-selected={mode === "sign-up"} onClick={() => { setMode("sign-up"); setError(null); setMessage(null); }}>Create account</button>
       </div>
@@ -150,7 +152,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       </form>
       {mode === "sign-in" ? <><button className="account-text-button" type="button" onClick={() => { setMode("resend"); setError(null); setMessage(null); }}>Didn&apos;t receive a confirmation email?</button><button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button></> : null}
       {mode === "reset" || mode === "resend" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
-      <p className="small muted">Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. Neither subscribes you to marketing emails.</p>
+      <p className="small muted">This is a separate {curriculum === "igcse" ? "IGCSE" : "IB"} account area. Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. Neither subscribes you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href="/terms">Terms of Use</Link> and acknowledge the <Link className="text-link" href="/privacy">Privacy Policy</Link>.</p>
     </div>
   );

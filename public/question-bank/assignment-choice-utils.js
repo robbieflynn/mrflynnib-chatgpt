@@ -2361,6 +2361,63 @@
     });
   }
 
+  // Last-resort distractors for otherwise valid symbolic answers. These keep the
+  // mathematical structure intact and alter one meaningful feature at a time,
+  // rather than producing near-identical decimal guesses.
+  function structuralDistractorCandidates(correct, list) {
+    var answer = clean(correct);
+    var numberPattern = /-?\d+(?:\.\d+)?/g;
+    var tokens = [];
+    var token;
+    while ((token = numberPattern.exec(answer)) && tokens.length < 8) {
+      tokens.push({ index: token.index, value: token[0] });
+    }
+    tokens.forEach(function (item, index) {
+      var value = Number(item.value);
+      if (!Number.isFinite(value)) return;
+      var places = decimalPlaces(item.value);
+      var magnitude = Math.max(1, Math.abs(value));
+      var replacements = [
+        -value,
+        value + Math.max(2, Math.round(magnitude * .65) + index),
+        value - Math.max(3, Math.round(magnitude * .45) + index),
+        value * 2 + (value >= 0 ? 1 : -1),
+      ];
+      replacements.forEach(function (replacement) {
+        if (Math.abs(replacement - value) < 1e-10) return;
+        var rendered = formatNumber(replacement, places);
+        if (!rendered) return;
+        addCandidate(list, answer.slice(0, item.index) + rendered + answer.slice(item.index + item.value.length));
+      });
+    });
+    [
+      [/\+/g, "-"],
+      [/(?<![<>=])-/, "+"],
+      [/\bsin\b/i, "cos"],
+      [/\bcos\b/i, "sin"],
+      [/\btan\b/i, "sin"],
+      [/\bln\b/i, "exp"],
+      [/[<>≤≥]/, function (operator) { return ({ "<": ">", ">": "<", "≤": "≥", "≥": "≤" })[operator] || operator; }],
+    ].forEach(function (mutation) {
+      if (mutation[0].test(answer)) addCandidate(list, answer.replace(mutation[0], mutation[1]));
+    });
+    if (!isProseAnswer(answer)
+      && !/[<>≤≥∈]/.test(answer)
+      && !new RegExp("\\b" + UNIT_PATTERN + "\\b", "i").test(answer)) {
+      var equality = answer.match(/^([^=]+)=([^=]+)$/);
+      var left = equality ? equality[1].trim() + "=" : "";
+      var right = equality ? equality[2].trim() : answer;
+      if (right && !/^[-+]?0(?:\.0+)?$/.test(right)) {
+        addCandidate(list, left + "-(" + right + ")");
+        addCandidate(list, left + "2*(" + right + ")");
+      }
+      addCandidate(list, left + "(" + right + ")+1");
+      addCandidate(list, left + "(" + right + ")-1");
+      addCandidate(list, left + "(" + right + ")+2");
+      addCandidate(list, left + "(" + right + ")-2");
+    }
+  }
+
   function implicitProductCandidates(correct, list) {
     var match = clean(correct).match(/^(-?\d+(?:\.\d+)?)([A-Za-zα-ω](?:[A-Za-zα-ω0-9]*)(?:\^[A-Za-z0-9.+-]+)?)$/i);
     if (!match) return;
@@ -2703,6 +2760,10 @@
     var accepted = (Array.isArray(acceptedAnswers) ? acceptedAnswers : []).map(clean).filter(isChoiceTextSafe);
     if (!accepted.length) return null;
     var correct = accepted[0];
+    if (/\b(?:find|calculate|determine|write down|state|estimate)\s+(?:the\s+)?probability\b|\bprobability\s+that\b/i.test(plainText(prompt))) {
+      var correctProbability = numericValue(correct);
+      if (Number.isFinite(correctProbability) && (correctProbability < 0 || correctProbability > 1)) return null;
+    }
     // A scalar or fragment is not a safe answer to a request for reasoning. Dedicated
     // explanation generators run before this fallback; if they cannot recover the
     // conclusion and its reason together, leave the part for teacher review instead.
@@ -2732,6 +2793,7 @@
     setMembershipCandidates(correct, candidates);
     setExpressionCandidates(correct, candidates);
     symbolicCandidates(correct, candidates);
+    structuralDistractorCandidates(correct, candidates);
     var probabilityPrompt = /\b(?:find|calculate|determine|write down|state|estimate)\s+(?:the\s+)?probability\b|\bprobability\s+that\b/i.test(plainText(prompt));
     var probabilityFraction = fractionParts(correct);
     if (probabilityPrompt && probabilityFraction && probabilityFraction.denominator > 1) {

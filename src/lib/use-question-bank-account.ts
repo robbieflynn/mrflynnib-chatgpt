@@ -120,7 +120,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
 
       if (message.type === "mrflynnib-account-required") {
         const next = `${window.location.pathname}${window.location.search}`;
-        router.push(`/account?next=${encodeURIComponent(next)}`);
+        router.push(`${bank === "igcse" ? "/igcse/account" : "/account"}?next=${encodeURIComponent(next)}`);
         return;
       }
 
@@ -181,6 +181,10 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
 
       if (message.type === "mrflynnib-progress-set") {
         if (viewedStudentId) return;
+        if (assignmentId && assignmentSubmitted) {
+          send({ type: "mrflynnib-progress-result", questionId, completed: Boolean(message.completed), ok: false, error: "This assignment has already been submitted." });
+          return;
+        }
         const completed = Boolean(message.completed);
         const { error } = await clientRef.current.from("question_progress").upsert({
           user_id: userRef.current.id,
@@ -220,6 +224,24 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
 
       if (message.type === "mrflynnib-whiteboard-load") {
+        if (assignmentId && (assignmentSubmitted || viewedStudentId)) {
+          const studentId = viewedStudentId || userRef.current.id;
+          const { data: snapshot, error: snapshotError } = await clientRef.current
+            .from("assignment_whiteboard_snapshots")
+            .select("document,saved_at")
+            .eq("assignment_id", assignmentId)
+            .eq("student_id", studentId)
+            .eq("question_id", questionId)
+            .maybeSingle();
+          if (snapshot) {
+            send({ type: "mrflynnib-whiteboard-data", questionId, document: snapshot.document, updatedAt: snapshot.saved_at, ok: true });
+            return;
+          }
+          if (snapshotError && snapshotError.code !== "PGRST116") {
+            send({ type: "mrflynnib-whiteboard-data", questionId, document: null, updatedAt: null, ok: false });
+            return;
+          }
+        }
         let whiteboardQuery = clientRef.current
           .from("whiteboard_documents")
           .select("document,updated_at")
@@ -238,7 +260,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
 
       if (message.type === "mrflynnib-whiteboard-save") {
-        if (viewedStudentId) {
+        if (viewedStudentId || (assignmentId && assignmentSubmitted)) {
           send({ type: "mrflynnib-whiteboard-save-result", questionId, ok: false, reason: "read-only" });
           return;
         }

@@ -18,13 +18,19 @@ export default async function JoinClassPage({ params, searchParams }: { params: 
   const { error } = await searchParams;
   const code = normaliseCode(rawCode);
   const returnPath = `/join/${code}`;
+  const validCode = /^[A-Z0-9]{6,10}$/.test(code);
   const supabase = await createClient();
+  const { data: invitationCurriculum } = validCode
+    ? await supabase.rpc("class_invitation_curriculum", { raw_code: code })
+    : { data: null };
+  const isIgcseInvitation = invitationCurriculum === "igcse";
+  const accountHref = isIgcseInvitation ? "/igcse/account" : "/account";
+  const dashboardHref = isIgcseInvitation ? "/igcse/account" : "/account";
   const { data: { user } } = await supabase.auth.getUser();
   const { data: profile } = user
     ? await supabase.from("profiles").select("role,display_name").eq("user_id", user.id).maybeSingle()
     : { data: null };
   const isTeacher = profile?.role === "teacher" || profile?.role === "admin";
-  const validCode = /^[A-Z0-9]{6,10}$/.test(code);
 
   return (
     <section className="section join-invitation-page">
@@ -38,7 +44,7 @@ export default async function JoinClassPage({ params, searchParams }: { params: 
           </div>
           <div className="join-invitation-code"><span>Class code</span><strong>{validCode ? code : "Invalid code"}</strong></div>
           {error ? <p className="form-message form-error" role="alert">{error}</p> : null}
-          {!validCode ? <><p>This invitation link is not valid. Ask your teacher to copy the link again.</p><Link className="button button-secondary" href="/account">Open student dashboard</Link></> : !user ? <><p>Sign in or create a student account, then you will return here to join the class.</p><Link className="button" href={`/account?next=${encodeURIComponent(returnPath)}`}>Sign in to join</Link></> : isTeacher ? <><p>This is a teacher account. Class invitations are for student accounts.</p><Link className="button button-secondary" href="/teacher">Open teacher dashboard</Link></> : <><p>{profile?.display_name ? `${profile.display_name}, you are` : "You are"} ready to join this class. You only need to confirm once.</p><form action={joinClass}><input name="code" type="hidden" value={code} /><input name="returnPath" type="hidden" value={returnPath} /><button className="button" type="submit">Join this class</button></form><Link className="text-link" href="/account">Back to student dashboard</Link></>}
+          {!validCode || !invitationCurriculum ? <><p>This invitation link is not valid. Ask your teacher to copy the link again.</p><Link className="button button-secondary" href="/account">Open student dashboard</Link></> : !user ? <><p>Sign in or create a {isIgcseInvitation ? "separate IGCSE" : "Mr Flynn IB"} student account, then you will return here to join the class.</p><Link className="button" href={`${accountHref}?next=${encodeURIComponent(returnPath)}`}>Sign in to join</Link></> : isTeacher ? <><p>This is a teacher account. Class invitations are for student accounts.</p><Link className="button button-secondary" href={isIgcseInvitation ? "/igcse/teacher" : "/teacher"}>Open teacher dashboard</Link></> : <><p>{profile?.display_name ? `${profile.display_name}, you are` : "You are"} ready to join this class. You only need to confirm once.</p><form action={joinClass}><input name="code" type="hidden" value={code} /><input name="returnPath" type="hidden" value={returnPath} /><button className="button" type="submit">Join this class</button></form><Link className="text-link" href={dashboardHref}>Back to student dashboard</Link></>}
         </div>
       </Container>
     </section>
