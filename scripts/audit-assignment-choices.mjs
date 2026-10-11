@@ -346,6 +346,8 @@ assert(radicalExample && radicalExample.options.every(choices.isDisplaySafe));
 assert.equal(choices.generateChoiceSet(["1/4/2"], "audit-malformed"), null);
 assert.equal(choices.isDisplaySafe("(a)(x))"), false);
 assert.equal(choices.toLatex("2*x"), String.raw`2\times x`);
+assert.equal(choices.toLatex("y - x"), "y-x");
+assert.equal(choices.toLatex("ln x"), String.raw`\ln\left(x\right)`);
 
 const comparisonReasonChoices = choices.generateComparisonReasonChoiceSet(
   [["The approximate value is less than the actual value because dy/dx is actually an increasing function.", "R1"]],
