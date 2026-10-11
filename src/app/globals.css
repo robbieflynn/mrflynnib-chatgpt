@@ -353,6 +353,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-selection-number { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: var(--workspace-accent-soft, var(--sky)); color: var(--workspace-accent-dark, var(--teal-dark)); font-size: .78rem; font-weight: 900; }
 .assignment-selection-copy { min-width: 0; display: grid; gap: .12rem; }
 .assignment-selection-copy strong { overflow: hidden; color: var(--ink); font-size: .88rem; text-overflow: ellipsis; white-space: nowrap; }
+.assignment-summary-math .katex { font-size: 1em; }
 .assignment-selection-copy > span { overflow: hidden; color: var(--muted); font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
 .assignment-selection-copy small { color: #7a8995; font-size: .64rem; }
 .assignment-selection-list button { padding: .42rem .65rem; border: 1px solid #ccd8dd; border-radius: .6rem; background: white; color: var(--muted); font: 750 .72rem/1 var(--font-sans); cursor: pointer; }
