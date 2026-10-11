@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { QuestionBankEmbed } from "@/components/question-bank-embed";
 import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
+import { getQuestionBankDashboardLink } from "@/lib/question-bank-dashboard-link";
 
 export function generateStaticParams() {
   return questionBankCourses.filter((course) => course.available).map((course) => ({ course: course.slug }));
@@ -27,12 +28,13 @@ export default async function CourseQuestionBankPage({ params, searchParams }: {
   if (!course || !course.available) notFound();
   const topic = typeof filters.topic === "string" ? filters.topic : undefined;
   const subtopic = typeof filters.subtopic === "string" ? filters.subtopic : undefined;
+  const dashboardLink = await getQuestionBankDashboardLink({ curriculum: "ib", course: course.slug });
 
   return (
     <>
       <section className="qb-course-page-hero">
         <Container className="stack-lg">
-          <Breadcrumbs items={[{ label: "Student dashboard", href: `/account?course=${course.slug}` }, { label: "Question bank", href: "/question-bank" }, { label: course.code }]} />
+          <Breadcrumbs items={[dashboardLink, { label: "Question bank", href: "/question-bank" }, { label: course.code }]} />
           <div className="qb-course-page-heading">
             <div className="stack">
               <Eyebrow>{course.code} question bank</Eyebrow>
@@ -42,7 +44,7 @@ export default async function CourseQuestionBankPage({ params, searchParams }: {
               </p>
             </div>
             <div className="qb-course-page-actions">
-              <Link className="button button-secondary button-small qb-dashboard-return" href={`/account?course=${course.slug}`}>← Back to dashboard</Link>
+              <Link className="button button-secondary button-small qb-dashboard-return" href={dashboardLink.href}>← Back to dashboard</Link>
               <nav className="qb-course-switcher" aria-label="Change question bank course">
                 <span>Change course</span>
                 <div>

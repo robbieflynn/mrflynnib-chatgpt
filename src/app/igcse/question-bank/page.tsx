@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { IgcseQuestionBankEmbed } from "@/components/igcse-question-bank-embed";
 import { Breadcrumbs, Container } from "@/components/ui";
+import { getQuestionBankDashboardLink } from "@/lib/question-bank-dashboard-link";
 
 export const metadata: Metadata = { title: "Free Edexcel IGCSE Mathematics question bank", description: "Practise Edexcel IGCSE Mathematics questions by topic and difficulty, with complete mark schemes." };
 
@@ -9,6 +10,7 @@ export default async function IgcseQuestionBankPage({ searchParams }: { searchPa
   const filters = await searchParams;
   const topic = typeof filters.topic === "string" ? filters.topic : undefined;
   const subtopic = typeof filters.subtopic === "string" ? filters.subtopic : undefined;
+  const dashboardLink = await getQuestionBankDashboardLink({ curriculum: "igcse" });
 
   return (
     <>
@@ -16,8 +18,8 @@ export default async function IgcseQuestionBankPage({ searchParams }: { searchPa
         <Container className="igcse-qb-route-bar-inner">
           <Breadcrumbs items={[{ label: "IGCSE Mathematics", href: "/igcse" }, { label: "Question bank" }]} />
           <div className="qb-account-actions">
-            <Link className="button button-small" href="/account?qualification=igcse">← Back to dashboard</Link>
-            <Link className="button button-secondary button-small" href="/account?next=/igcse/teacher">Teacher dashboard</Link>
+            <Link className="button button-small" href={dashboardLink.href}>← Back to dashboard</Link>
+            {dashboardLink.label !== "Teacher dashboard" ? <Link className="button button-secondary button-small" href="/account?qualification=igcse&next=/igcse/teacher">Teacher dashboard</Link> : null}
           </div>
         </Container>
       </section>
