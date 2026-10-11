@@ -65,7 +65,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const requestedCourse = pageSearchParams.course;
   const requestedQualification = typeof pageSearchParams.qualification === "string" ? pageSearchParams.qualification : "";
   const isIgcse = requestedQualification === "igcse" || requestedNext.startsWith("/igcse/");
-  const { data: profile } = await supabase.from("profiles").select("role,teacher_status").eq("user_id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("profiles").select("role,teacher_status,curriculum").eq("user_id", user.id).maybeSingle();
+  if (profile?.role !== "admin" && profile?.curriculum && profile.curriculum !== (isIgcse ? "igcse" : "ib")) {
+    const destination = profile.curriculum === "igcse" ? "/account?qualification=igcse&" : "/account?";
+    redirect(`${destination}error=${encodeURIComponent("IB and IGCSE use separate accounts. Sign out before entering the other account area.")}`);
+  }
   if (profile?.role === "teacher" || profile?.role === "admin") redirect(isIgcse ? "/igcse/teacher" : "/teacher");
   const selectedCourse = getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "") ?? questionBankCourses[0];
   const courseProgress = isIgcse ? progressManifest.igcse : progressManifest.courses[selectedCourse.code];

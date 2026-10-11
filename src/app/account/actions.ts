@@ -17,30 +17,16 @@ export async function joinClass(formData: FormData) {
     ? await supabase.from("classes").select("name,bank").eq("id", classId).maybeSingle()
     : { data: null };
   revalidatePath("/account");
-  const dashboardQuery = classRecord?.bank === "igcse" ? "qualification=igcse&" : "";
   const className = classRecord?.name || "the class";
-  redirect(`/account?${dashboardQuery}success=${encodeURIComponent(`You have joined ${className}.`)}`);
+  const dashboardPath = classRecord?.bank === "igcse" ? "/igcse/account" : "/account";
+  redirect(`${dashboardPath}?success=${encodeURIComponent(`You have joined ${className}.`)}`);
 }
 
 export async function submitAssignment(formData: FormData) {
-  const { supabase, user } = await requireSignedIn();
+  const { supabase } = await requireSignedIn();
   const assignmentId = String(formData.get("assignmentId") || "");
   const assignmentPath = `/assignments/${assignmentId}`;
-  const { data: existingSubmission, error: submissionLookupError } = await supabase
-    .from("assignment_submissions")
-    .select("status")
-    .eq("assignment_id", assignmentId)
-    .eq("student_id", user.id)
-    .maybeSingle();
-  if (submissionLookupError) redirect(`${assignmentPath}?error=${encodeURIComponent("Your assignment could not be submitted.")}`);
-  if (existingSubmission?.status === "submitted") redirect(assignmentPath);
-  const { error } = await supabase.from("assignment_submissions").upsert({
-    assignment_id: assignmentId,
-    student_id: user.id,
-    status: "submitted",
-    submitted_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  }, { onConflict: "assignment_id,student_id" });
+  const { error } = await supabase.rpc("finalize_assignment_submission", { assignment_uuid: assignmentId });
   if (error) redirect(`${assignmentPath}?error=${encodeURIComponent("Your assignment could not be submitted.")}`);
   revalidatePath(assignmentPath);
   revalidatePath("/account");

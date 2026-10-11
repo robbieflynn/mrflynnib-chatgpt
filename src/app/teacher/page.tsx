@@ -10,7 +10,7 @@ import { createClass, reviewTeacherApplication } from "./actions";
 export const metadata: Metadata = { title: "Teacher dashboard", robots: { index: false, follow: false } };
 
 export default async function TeacherPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
-  const { supabase, user, profile } = await requireTeacher();
+  const { supabase, user, profile } = await requireTeacher("/teacher", "ib");
   const message = await searchParams;
   const { data: classes } = await supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("teacher_id", user.id).eq("bank", "ib").eq("archived", false).order("created_at", { ascending: false });
   const { data: teacherApplications } = profile.role === "admin"

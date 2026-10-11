@@ -29,6 +29,7 @@ create table if not exists public.profiles (
   display_name text not null default '' check (char_length(display_name) <= 80),
   email text not null default '' check (char_length(email) <= 254),
   role text not null default 'student' check (role in ('student', 'teacher', 'admin')),
+  curriculum text not null default 'ib' check (curriculum in ('ib', 'igcse')),
   teacher_status text not null default 'none' check (teacher_status in ('none', 'pending', 'approved', 'rejected')),
   teacher_requested_at timestamptz,
   teacher_notification_sent_at timestamptz,
@@ -37,12 +38,15 @@ create table if not exists public.profiles (
 );
 
 alter table public.profiles add column if not exists role text not null default 'student';
+alter table public.profiles add column if not exists curriculum text not null default 'ib';
 alter table public.profiles add column if not exists email text not null default '';
 alter table public.profiles add column if not exists teacher_status text not null default 'none';
 alter table public.profiles add column if not exists teacher_requested_at timestamptz;
 alter table public.profiles add column if not exists teacher_notification_sent_at timestamptz;
 alter table public.profiles drop constraint if exists profiles_role_check;
 alter table public.profiles add constraint profiles_role_check check (role in ('student', 'teacher', 'admin'));
+alter table public.profiles drop constraint if exists profiles_curriculum_check;
+alter table public.profiles add constraint profiles_curriculum_check check (curriculum in ('ib', 'igcse'));
 alter table public.profiles drop constraint if exists profiles_teacher_status_check;
 alter table public.profiles add constraint profiles_teacher_status_check check (teacher_status in ('none', 'pending', 'approved', 'rejected'));
 update public.profiles p set email = coalesce(u.email, '') from auth.users u where p.user_id = u.id and p.email = '';
@@ -170,6 +174,18 @@ create table if not exists public.assignment_responses (
   foreign key (assignment_id, question_id) references public.assignment_questions(assignment_id, question_id) on delete cascade
 );
 
+create table if not exists public.assignment_whiteboard_snapshots (
+  assignment_id uuid not null references public.assignments(id) on delete cascade,
+  student_id uuid not null references auth.users(id) on delete cascade,
+  question_id text not null check (char_length(question_id) between 1 and 160),
+  bank text not null check (bank in ('ib', 'igcse')),
+  document jsonb not null,
+  document_version integer not null default 1,
+  saved_at timestamptz not null default now(),
+  primary key (assignment_id, student_id, question_id),
+  foreign key (assignment_id, question_id) references public.assignment_questions(assignment_id, question_id) on delete cascade
+);
+
 alter table public.profiles enable row level security;
 alter table public.question_progress enable row level security;
 alter table public.whiteboard_documents enable row level security;
@@ -181,6 +197,7 @@ alter table public.assignment_answer_keys enable row level security;
 alter table public.assignment_question_progress enable row level security;
 alter table public.assignment_submissions enable row level security;
 alter table public.assignment_responses enable row level security;
+alter table public.assignment_whiteboard_snapshots enable row level security;
 alter table public.assignment_responses add column if not exists attempt_count integer not null default 0 check (attempt_count between 0 and 2);
 
 create or replace function public.is_teacher(account_id uuid default auth.uid())
@@ -224,6 +241,15 @@ end;
 $$;
 
 grant execute on function public.join_class_by_code(text) to authenticated;
+
+create or replace function public.class_invitation_curriculum(raw_code text)
+returns text language sql stable security definer set search_path = ''
+as $$
+  select bank from public.classes
+  where join_code = upper(trim(raw_code)) and not archived
+  limit 1
+$$;
+grant execute on function public.class_invitation_curriculum(text) to anon, authenticated;
 
 create or replace function public.mark_teacher_notification_sent()
 returns void language sql security definer set search_path = ''
@@ -505,7 +531,7 @@ language plpgsql
 security definer set search_path = ''
 as $$
 begin
-  insert into public.profiles (user_id, display_name, email, teacher_status, teacher_requested_at)
+  insert into public.profiles (user_id, display_name, email, curriculum, teacher_status, teacher_requested_at)
   values (
     new.id,
     left(coalesce(
@@ -514,6 +540,7 @@ begin
       ''
     ), 80),
     left(coalesce(new.email, ''), 254),
+    case when new.raw_user_meta_data ->> 'curriculum' = 'igcse' then 'igcse' else 'ib' end,
     case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then 'pending' else 'none' end,
     case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then now() else null end
   )
