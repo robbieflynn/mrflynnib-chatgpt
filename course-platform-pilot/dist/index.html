@@ -11,53 +11,45 @@
   </head>
   <body>
     <div class="prototype-strip">
-      <span>Private prototype</span>
-      <span class="prototype-copy">Nothing here is connected to the live website or real student accounts.</span>
+      <strong>Private course-platform prototype</strong>
+      <span>Separate from the live Mr Flynn IB website. No real student accounts or payments are connected.</span>
     </div>
 
-    <div class="app-shell" id="appShell">
+    <div class="app-shell">
       <aside class="sidebar" id="sidebar" aria-label="Student navigation">
         <div class="sidebar-head">
           <button class="brand" type="button" data-view="dashboard" aria-label="Mr Flynn IB home">
             <img src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" />
           </button>
-          <button class="icon-button mobile-close" id="closeMenu" type="button" aria-label="Close navigation">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
-          </button>
+          <button class="icon-button mobile-close" id="closeMenu" type="button" aria-label="Close navigation">×</button>
         </div>
 
         <nav class="main-nav">
           <button class="nav-item is-active" type="button" data-view="dashboard">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5L12 5l8 6.5V20H4z" /><path d="M9 20v-6h6v6" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg>
             <span>Home</span>
           </button>
           <button class="nav-item" type="button" data-view="courses">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 016.5 3H20v16H6.5A2.5 2.5 0 014 16.5z" /><path d="M4 16.5A2.5 2.5 0 016.5 14H20M8 7h8" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 16.5A2.5 2.5 0 0 1 6.5 14H20M8 7h8"/></svg>
             <span>My courses</span>
           </button>
           <button class="nav-item" type="button" data-view="progress">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
             <span>Progress</span>
-          </button>
-          <button class="nav-item nav-disabled" type="button" aria-disabled="true" title="Planned for a later phase">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h5" /></svg>
-            <span>Question bank</span>
-            <span class="soon">Later</span>
           </button>
         </nav>
 
-        <div class="sidebar-course" id="sidebarCourse">
-          <p class="eyebrow">Currently learning</p>
-          <strong>Analysis &amp; Approaches</strong>
-          <span id="sidebarCourseLevel">SL</span>
-          <div class="mini-progress"><span id="sidebarProgress"></span></div>
-          <small id="sidebarProgressLabel">0 of 19 complete</small>
+        <div class="sidebar-summary">
+          <p class="eyebrow">Video library</p>
+          <div><strong id="sidebarVideoCount">453</strong><span>lessons</span></div>
+          <div><strong id="sidebarHours">82</strong><span>hours</span></div>
+          <small>AA and AI, SL and HL</small>
         </div>
 
         <button class="help-card" type="button" id="helpButton">
           <span class="help-icon">?</span>
           <span><strong>Need help?</strong><small>Contact Mr Flynn IB</small></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+          <span aria-hidden="true">→</span>
         </button>
       </aside>
 
@@ -66,16 +58,13 @@
       <main class="main-stage">
         <header class="topbar">
           <button class="icon-button menu-button" id="openMenu" type="button" aria-label="Open navigation">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
-          <div class="topbar-context">
-            <span class="status-dot"></span>
-            <span>Your learning space</span>
-          </div>
+          <div class="topbar-context"><span class="status-dot"></span><span>Your learning space</span></div>
           <button class="account-button" id="accountButton" type="button" aria-haspopup="menu" aria-expanded="false">
             <span class="avatar">RF</span>
-            <span class="account-copy"><strong>Prototype learner</strong><small>Student account</small></span>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9l5 5 5-5" /></svg>
+            <span><strong>Prototype learner</strong><small>Student account</small></span>
+            <span aria-hidden="true">⌄</span>
           </button>
           <div class="account-menu" id="accountMenu" role="menu" hidden>
             <button type="button" id="showLogin" role="menuitem">Preview sign-in screen</button>
@@ -83,111 +72,85 @@
           </div>
         </header>
 
-        <div id="dashboardView" class="view is-visible">
-          <section class="welcome-row">
+        <section id="dashboardView" class="view is-visible">
+          <div class="welcome-row">
             <div>
               <p class="eyebrow">Welcome back</p>
-              <h1>Continue learning</h1>
-              <p>Pick up where you left off or choose another course.</p>
+              <h1>Your IB Mathematics courses</h1>
+              <p>Every lesson in one calm, organised learning space.</p>
             </div>
-            <div class="date-card" aria-label="Pilot library status">
-              <span class="date-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v4M18 3v4M4 9h16M5 5h14a1 1 0 011 1v14H4V6a1 1 0 011-1z" /></svg></span>
-              <span><small>Pilot library</small><strong>Topic 1 · 19 lessons</strong></span>
+            <div class="library-status">
+              <span class="status-mark">✓</span>
+              <span><small>Course library</small><strong>All five topics available</strong></span>
             </div>
-          </section>
+          </div>
 
-          <section class="continue-card">
-            <div class="continue-visual">
-              <div class="math-orbit orbit-one"></div>
-              <div class="math-orbit orbit-two"></div>
-              <span class="math-symbol">Σ</span>
-              <span class="course-pill" id="continueCoursePill">AA SL</span>
+          <article class="continue-card" id="continueCard">
+            <div class="continue-art">
+              <span class="course-pill" id="continueCourseCode">AA SL</span>
+              <span class="art-symbol">∑</span>
+              <span class="art-equation">f(x) = ax² + bx + c</span>
             </div>
-            <div class="continue-content">
+            <div class="continue-body">
               <div>
-                <p class="eyebrow">Up next</p>
-                <h2 id="continueTitle">1.1 Scientific notation</h2>
-                <p>Number and algebra · Topic 1</p>
+                <p class="eyebrow">Continue learning</p>
+                <h2 id="continueLessonTitle">Choose a lesson to begin</h2>
+                <p id="continueLessonMeta">Your progress will stay on this browser.</p>
               </div>
-              <div class="continue-actions">
-                <div class="progress-copy"><span id="continueProgressLabel">0% complete</span><span id="continueLessonCount">0 / 19 lessons</span></div>
-                <div class="progress-track"><span id="continueProgress"></span></div>
-                <button class="primary-button" id="continueButton" type="button">
-                  <span>Continue lesson</span>
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
-                </button>
+              <div class="continue-progress">
+                <div><span id="continueProgressLabel">0% complete</span><span id="continueProgressCount">0 lessons</span></div>
+                <div class="progress-track"><span id="continueProgressBar"></span></div>
+                <button class="primary-button" id="continueButton" type="button">Continue course <span>→</span></button>
               </div>
             </div>
-          </section>
+          </article>
 
           <section class="section-block">
             <div class="section-heading">
               <div><p class="eyebrow">Your library</p><h2>My courses</h2></div>
-              <button class="text-button" type="button" data-view="courses">View all <span>→</span></button>
+              <button class="text-button" type="button" data-view="courses">View all courses →</button>
             </div>
-            <div class="course-grid">
-              <article class="course-card course-card-blue">
-                <div class="course-card-top"><span>AA SL</span><span class="access-chip">Full access</span></div>
-                <div class="course-art"><span>x²</span><i></i><b>∑</b></div>
-                <div class="course-card-body">
-                  <small>IB Mathematics</small>
-                  <h3>Analysis &amp; Approaches SL</h3>
-                  <p>Topic 1 is ready to explore in this pilot.</p>
-                  <button type="button" class="course-link" data-open-course="SL">Open course <span>→</span></button>
-                </div>
-              </article>
-              <article class="course-card course-card-navy">
-                <div class="course-card-top"><span>AA HL</span><span class="access-chip">Shared lessons</span></div>
-                <div class="course-art"><span>∫</span><i></i><b>π</b></div>
-                <div class="course-card-body">
-                  <small>IB Mathematics</small>
-                  <h3>Analysis &amp; Approaches HL</h3>
-                  <p>The same Topic 1 videos appear here once, without duplication.</p>
-                  <button type="button" class="course-link" data-open-course="HL">Open course <span>→</span></button>
-                </div>
-              </article>
-            </div>
+            <div class="course-grid" id="dashboardCourseGrid"></div>
           </section>
 
-          <section class="insight-grid">
-            <article class="insight-card">
-              <span class="insight-icon blue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7" /></svg></span>
-              <div><small>Your progress</small><strong id="dashboardCompleted">0 lessons completed</strong><p>Your progress stays on this browser for the prototype.</p></div>
-            </article>
-            <article class="insight-card">
-              <span class="insight-icon gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.3 4.7 5.2.8-3.8 3.7.9 5.3-4.6-2.5-4.6 2.5.9-5.3-3.8-3.7 5.2-.8z" /></svg></span>
-              <div><small>Built for your course</small><strong>One clear lesson sequence</strong><p>No duplicate uploads and no switching between platforms.</p></div>
-            </article>
+          <section class="platform-summary">
+            <article><strong id="summaryVideos">453</strong><span>video lessons</span></article>
+            <article><strong id="summaryHours">82 hrs</strong><span>of teaching</span></article>
+            <article><strong>5</strong><span>topics per course</span></article>
+            <article><strong>1</strong><span>student login</span></article>
           </section>
-        </div>
+        </section>
 
-        <div id="coursesView" class="view">
-          <section class="page-intro compact">
+        <section id="coursesView" class="view">
+          <div class="page-intro">
             <p class="eyebrow">Your library</p>
             <h1>My courses</h1>
-            <p>Choose a course to continue learning.</p>
-          </section>
-          <section class="course-grid large" aria-label="Enrolled courses">
-            <article class="library-card">
-              <div class="library-art blue"><span>AA</span><strong>SL</strong><i>x² + y²</i></div>
-              <div class="library-body"><span class="access-chip dark">Full access</span><small>IB Mathematics</small><h2>Analysis &amp; Approaches SL</h2><p>Number and algebra is available now.</p><button class="primary-button" type="button" data-open-course="SL">Open course</button></div>
-            </article>
-            <article class="library-card">
-              <div class="library-art navy"><span>AA</span><strong>HL</strong><i>∫ f(x) dx</i></div>
-              <div class="library-body"><span class="access-chip dark">Full access</span><small>IB Mathematics</small><h2>Analysis &amp; Approaches HL</h2><p>Includes the shared SL Topic 1 lessons.</p><button class="primary-button" type="button" data-open-course="HL">Open course</button></div>
-            </article>
-          </section>
-        </div>
+            <p>Choose your IB Mathematics pathway. HL courses include the complete shared SL foundation and the HL extensions.</p>
+          </div>
+          <div class="course-grid course-grid-large" id="allCourseGrid"></div>
+        </section>
 
-        <div id="courseView" class="view">
-          <section class="course-header">
+        <section id="courseView" class="view">
+          <header class="course-hero" id="courseHero">
             <button class="back-button" type="button" data-view="courses">← My courses</button>
-            <div class="course-heading-row">
-              <div><span class="course-code" id="courseCode">AA SL</span><p class="eyebrow">IB Mathematics</p><h1 id="courseName">Analysis &amp; Approaches SL</h1><p>Topic 1: Number and algebra</p></div>
-              <div class="course-total"><strong id="coursePercent">0%</strong><span>complete</span></div>
+            <div class="course-hero-row">
+              <div>
+                <span class="course-code" id="courseCode">AA SL</span>
+                <p class="eyebrow">IB Mathematics</p>
+                <h1 id="courseName">Analysis &amp; Approaches SL</h1>
+                <p id="courseSummary">A complete, structured course across all five syllabus topics.</p>
+              </div>
+              <div class="hero-stat"><strong id="coursePercent">0%</strong><span>complete</span></div>
             </div>
-            <div class="progress-track light"><span id="courseProgress"></span></div>
-          </section>
+            <div class="course-stats">
+              <span><strong id="courseLessonCount">0</strong> lessons</span>
+              <span><strong id="courseHours">0</strong> hours</span>
+              <span><strong>5</strong> topics</span>
+            </div>
+            <div class="progress-track light"><span id="courseProgressBar"></span></div>
+          </header>
+
+          <div class="topic-strip" id="topicStrip" aria-label="Course topics"></div>
 
           <div class="learning-layout">
             <section class="player-column">
@@ -196,70 +159,74 @@
                 <div class="video-loading" id="videoLoading"><span></span><p>Loading your lesson…</p></div>
               </div>
               <div class="lesson-toolbar">
-                <div><p class="eyebrow" id="lessonPosition">Lesson 1 of 19</p><h2 id="lessonTitle">1.1 Scientific notation</h2><p id="lessonDuration">10 min</p></div>
+                <div>
+                  <p class="eyebrow" id="lessonPosition">Lesson 1</p>
+                  <h2 id="lessonTitle">Select a lesson</h2>
+                  <p id="lessonMeta">Topic 1 · Number and algebra</p>
+                </div>
                 <button class="complete-button" id="completeButton" type="button"><span class="checkmark">✓</span><span>Mark complete</span></button>
               </div>
-              <div class="lesson-tabs" role="tablist" aria-label="Lesson information">
-                <button class="is-active" type="button" role="tab" data-tab="overview">Overview</button>
-                <button type="button" role="tab" data-tab="resources">Resources</button>
-              </div>
-              <div class="tab-panel" id="overviewPanel">
-                <h3>About this lesson</h3>
-                <p id="lessonDescription">Build a confident foundation before moving on to the rest of Topic 1.</p>
-                <div class="lesson-meta"><span><strong>Course</strong><em id="metaCourse">AA SL and AA HL</em></span><span><strong>Topic</strong><em>1 · Number and algebra</em></span></div>
-              </div>
-              <div class="tab-panel" id="resourcesPanel" hidden>
-                <h3>Lesson resources</h3>
-                <p>Worksheets, notes and practice questions can be attached here in the production platform.</p>
-                <div class="resource-placeholder"><span>PDF</span><div><strong>Lesson worksheet</strong><small>Placeholder for the pilot</small></div><button type="button" disabled>Not added yet</button></div>
+              <div class="lesson-details">
+                <div><small>COURSE</small><strong id="metaCourse">AA SL</strong></div>
+                <div><small>TOPIC</small><strong id="metaTopic">1 · Number and algebra</strong></div>
+                <div><small>DURATION</small><strong id="metaDuration">0 min</strong></div>
+                <div><small>ACCESS</small><strong id="metaAccess">SL + HL foundation</strong></div>
               </div>
               <div class="lesson-navigation">
-                <button id="previousLesson" type="button">← Previous</button>
+                <button id="previousLesson" type="button">← Previous lesson</button>
                 <button id="nextLesson" type="button">Next lesson →</button>
               </div>
             </section>
 
             <aside class="curriculum-panel" aria-label="Course lessons">
-              <div class="curriculum-head"><div><p class="eyebrow">Course content</p><h2>Topic 1</h2></div><span id="curriculumCount">19 lessons</span></div>
-              <label class="lesson-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6" /><path d="M16 16l4 4" /></svg><input id="lessonSearch" type="search" aria-label="Find a lesson" placeholder="Find a lesson" /></label>
+              <div class="curriculum-head">
+                <div><p class="eyebrow" id="curriculumEyebrow">Topic 1</p><h2 id="curriculumTitle">Number and algebra</h2></div>
+                <span id="curriculumCount">0 lessons</span>
+              </div>
+              <label class="lesson-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+                <input id="lessonSearch" type="search" placeholder="Search this course" aria-label="Search course lessons" />
+              </label>
               <div class="lesson-list" id="lessonList"></div>
             </aside>
           </div>
-        </div>
+        </section>
 
-        <div id="progressView" class="view">
-          <section class="page-intro compact"><p class="eyebrow">Learning activity</p><h1>Your progress</h1><p>A simple view of what you have completed in this prototype.</p></section>
-          <section class="progress-overview">
-            <article class="progress-donut-card"><div class="donut" id="progressDonut"><span id="donutPercent">0%</span></div><div><small>Topic 1</small><h2 id="progressHeadline">Ready to begin</h2><p id="progressSummary">You have 19 lessons ready to watch.</p></div></article>
-            <article class="stat-card"><small>Completed</small><strong id="completedStat">0</strong><span>lessons</span></article>
-            <article class="stat-card"><small>Remaining</small><strong id="remainingStat">19</strong><span>lessons</span></article>
-          </section>
-          <section class="completion-list-card"><div class="section-heading"><div><p class="eyebrow">Topic 1</p><h2>Lesson completion</h2></div><button type="button" class="text-button" data-open-course="SL">Return to course →</button></div><div id="completionList" class="completion-list"></div></section>
-        </div>
+        <section id="progressView" class="view">
+          <div class="page-intro">
+            <p class="eyebrow">Learning activity</p>
+            <h1>Your progress</h1>
+            <p>See your progress across every course in this prototype.</p>
+          </div>
+          <div class="progress-course-grid" id="progressCourseGrid"></div>
+        </section>
       </main>
     </div>
 
     <dialog class="prototype-dialog" id="loginDialog">
       <button class="dialog-close" id="closeLogin" type="button" aria-label="Close sign-in preview">×</button>
-      <div class="login-brand"><img src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" /><span>Student learning</span></div>
-      <p class="eyebrow">Sign in</p>
-      <h2>Welcome back</h2>
-      <p>This is how students could reach every Mr Flynn IB course with one account.</p>
+      <img src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" />
+      <p class="eyebrow">Student sign in</p>
+      <h2>One account for every course</h2>
+      <p>This previews the single login that would replace the separate Teachable experience.</p>
       <form id="prototypeLoginForm">
         <label>Email address<input type="email" placeholder="student@example.com" required /></label>
         <label>Password<input type="password" placeholder="••••••••" required /></label>
-        <div class="login-options"><label><input type="checkbox" /> Remember me</label><button type="button">Forgot password?</button></div>
         <button class="primary-button full" type="submit">Sign in to my courses</button>
       </form>
-      <div class="dialog-note"><strong>Prototype only</strong><span>No details are stored or submitted.</span></div>
+      <small class="dialog-note">Prototype only. Nothing is stored or submitted.</small>
     </dialog>
 
     <dialog class="prototype-dialog small" id="helpDialog">
       <button class="dialog-close" id="closeHelp" type="button" aria-label="Close help">×</button>
-      <span class="help-icon large">?</span><h2>How can we help?</h2><p>A production version would connect this area to account and course support.</p><a class="primary-button full" href="mailto:contact@mrflynnib.com">Email contact@mrflynnib.com</a>
+      <span class="help-icon large">?</span>
+      <h2>How can we help?</h2>
+      <p>A production version would connect this area to account and course support.</p>
+      <a class="primary-button full" href="mailto:contact@mrflynnib.com">Email contact@mrflynnib.com</a>
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="library-data.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
