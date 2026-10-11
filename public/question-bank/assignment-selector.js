@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 12;
+  var DRAFT_VERSION = 13;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
@@ -216,7 +216,13 @@
   }
 
   function requiresWhiteboard(prompt) {
-    return /\b(show that|prove|verify that|sketch|draw|construct|plot|show your working)\b/i.test(plainText(prompt));
+    return /\b(show that|prove|verify that|sketch|draw|construct|plot|shade)\b/i.test(plainText(prompt))
+      || /\bcomplete\b[\s\S]*\bdiagram\b/i.test(plainText(prompt));
+  }
+
+  function hasSharedWhiteboardInstruction(prompt) {
+    var prefix = plainText(prompt).split(/\(i\)/i)[0];
+    return requiresWhiteboard(prefix);
   }
 
   function automaticAnswersFromRows(rows, prompt) {
@@ -311,27 +317,30 @@
       if (nested.length) {
         nested.forEach(function (nestedLabel) {
           var nestedPrompt = promptForSubpart(prompt, nestedLabel);
-          var nestedRows = rowsForSubpart(rows, nestedLabel);
+          var directlyLabelledRows = markschemeByPart[topLabel + "(" + nestedLabel + ")"] || [];
+          var nestedRows = directlyLabelledRows.length ? directlyLabelledRows : rowsForSubpart(rows, nestedLabel);
           if (!nestedRows.length) nestedRows = rows;
           var answers = automaticAnswersFromRows(nestedRows, nestedPrompt);
           var label = topLabel ? topLabel + "(" + nestedLabel + ")" : nestedLabel;
-          var choices = choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
-          if (!choices) choices = choiceUtils && choiceUtils.generateHypothesisChoiceSet && choiceUtils.generateHypothesisChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
-          if (!choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
-          if (!choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
-          if (!choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
-          if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label, nestedPrompt);
+          var whiteboardOnly = hasSharedWhiteboardInstruction(prompt) || requiresWhiteboard(nestedPrompt);
+          var choices = whiteboardOnly ? null : choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateHypothesisChoiceSet && choiceUtils.generateHypothesisChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
+          if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label, nestedPrompt);
           results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
         });
       } else {
         var answers = automaticAnswersFromRows(rows, prompt);
         var label = topLabel || "answer";
-        var choices = choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
-        if (!choices) choices = choiceUtils && choiceUtils.generateHypothesisChoiceSet && choiceUtils.generateHypothesisChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
-        if (!choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
-        if (!choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
-        if (!choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
-        if (!choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label, prompt);
+        var whiteboardOnly = requiresWhiteboard(prompt);
+        var choices = whiteboardOnly ? null : choiceUtils && choiceUtils.generateComparisonReasonChoiceSet && choiceUtils.generateComparisonReasonChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateHypothesisChoiceSet && choiceUtils.generateHypothesisChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateExplanationChoiceSet && choiceUtils.generateExplanationChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
+        if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label, prompt);
         results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
       }
     });

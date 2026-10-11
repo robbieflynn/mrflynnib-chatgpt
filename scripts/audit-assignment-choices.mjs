@@ -89,10 +89,11 @@ function promptForSubpart(prompt, label) {
 }
 
 function choiceSetForRows(rows, prompt, seed) {
+  if (requiresWhiteboardTask(prompt)) return null;
   return choices.generateComparisonReasonChoiceSet(rows, prompt, seed)
     || choices.generateHypothesisChoiceSet(rows, prompt, seed)
-    || choices.generateConceptChoiceSet(rows, prompt, seed)
     || choices.generateExplanationChoiceSet(rows, prompt, seed)
+    || choices.generateConceptChoiceSet(rows, prompt, seed)
     || choices.generateParityChoiceSet(rows, prompt, seed)
     || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed, prompt);
 }
@@ -108,6 +109,17 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
   if (!set) return;
   const correct = set.options[set.correctOption];
   const promptText = plainText(prompt);
+  const finalInstruction = promptText.slice(Math.max(
+    promptText.toLowerCase().lastIndexOf("find"),
+    promptText.toLowerCase().lastIndexOf("calculate"),
+    promptText.toLowerCase().lastIndexOf("determine"),
+    promptText.toLowerCase().lastIndexOf("write down"),
+    promptText.toLowerCase().lastIndexOf("state"),
+    0,
+  ));
+  const asksForProbability = !/\b(?:explain|justify|give a reason|giving a reason|state why)\b/i.test(promptText)
+    && (/\b(?:find|calculate|work out|determine|write down|state|estimate|deduce|obtain)\s+(?:the\s+)?(?:conditional\s+|steady state\s+)?probability\b/i.test(promptText)
+      || /\b(?:find|calculate|determine|write down|state)\b[\s\S]*\bP\s*\([^)]*(?:[=<>|∩]|'\s*\))/i.test(promptText));
   set.options.forEach((option, index) => {
     const rendered = choices.toLatex(option);
     const role = index === set.correctOption ? "correct" : "wrong";
@@ -127,15 +139,12 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
       && /^[A-Za-zα-ω]\s*=/.test(correct) && /^[A-Za-zα-ω]\s*(?:≠|≤|≥|<|>)/.test(option)) {
       qualityIssue("wrong: implausible relation change", meta, prompt, option, rendered);
     }
+    if (index !== set.correctOption
+      && asksForProbability
+      && (/^\s*-|=\s*-|\+\s*1\s*$|^\s*2\s*\*/.test(option))) {
+      qualityIssue("wrong: probability outside 0 to 1", meta, prompt, option, rendered);
+    }
   });
-  const finalInstruction = promptText.slice(Math.max(
-    promptText.toLowerCase().lastIndexOf("find"),
-    promptText.toLowerCase().lastIndexOf("calculate"),
-    promptText.toLowerCase().lastIndexOf("determine"),
-    promptText.toLowerCase().lastIndexOf("write down"),
-    promptText.toLowerCase().lastIndexOf("state"),
-    0,
-  ));
   if (/\b(?:find|determine|state|write down|give)\s+(?:an?\s+|the\s+)?equation\s+(?:of|for)\b/i.test(finalInstruction)
     && !/[=<>≤≥]/.test(correct)) {
     qualityIssue("correct: equation context missing", meta, prompt, correct, choices.toLatex(correct));
@@ -168,6 +177,12 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
       qualityIssue("correct: probability outside 0 to 1", meta, prompt, correct, choices.toLatex(correct));
     }
   }
+  if (/\b(?:obtain|attempt|transformation with correct|any correct|accept any|correct use of)\b/i.test(correct)
+    || /^finding\b/i.test(correct)
+    || (!correct.startsWith("latex:") && /\b(?:displaystyle)?int[_^(]/i.test(correct) && !choices.toLatex(correct).includes(String.raw`\int`))
+    || /\broot\([^,=]+=/i.test(correct)) {
+    qualityIssue("correct: working or malformed notation", meta, prompt, correct, choices.toLatex(correct));
+  }
   if (/\b(?:find|calculate|determine|write down)\b[\s\S]*\bmodulus\s+and\s+(?:the\s+)?argument\b/i.test(finalInstruction)
     && !(/\bmodulus\s*=.*;\s*argument\s*=/i.test(correct) || /\|[^|]+\|=.*;\s*arg\(/i.test(correct))) {
     qualityIssue("correct: incomplete modulus and argument", meta, prompt, correct, choices.toLatex(correct));
@@ -187,6 +202,15 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
   }
   if (/\bdimensions?\b/i.test(finalInstruction) && !/\bby\b/i.test(correct)) {
     qualityIssue("correct: incomplete dimensions", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\bfind the vectors?\s+(?:overrightarrow\([^)]*\)|vec\([^)]*\)|[A-Z]{2})\s+and\s+(?:overrightarrow\([^)]*\)|vec\([^)]*\)|[A-Z]{2})\b/i.test(finalInstruction) && !/;/.test(correct)) {
+    qualityIssue("correct: incomplete vector pair", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\bnull and alternative hypotheses\b|\bhypotheses\b/i.test(finalInstruction) && !/;/.test(correct)) {
+    qualityIssue("correct: incomplete hypotheses", meta, prompt, correct, choices.toLatex(correct));
+  }
+  if (/\b(?:find|determine|write down|state|give)\b[\s\S]*\b(?:the\s+)?(?:two|both)\s+(?:possible\s+)?values\s+of\b/i.test(finalInstruction) && !/;|±|\band\b/.test(correct)) {
+    qualityIssue("correct: incomplete pair", meta, prompt, correct, choices.toLatex(correct));
   }
   const markschemeText = rows.map((row) => plainText(choices.latexToPlain(Array.isArray(row) ? row[0] : row))).join(" ");
   const markschemeAssignments = markschemeText.match(/\b[A-Za-zα-ω](?:_?\d+)?\s*=/g) || [];
@@ -212,14 +236,26 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
 
 function looksObjective(prompt) {
   const text = plainText(prompt);
-  return /\b(find|calculate|write down|state|determine|solve|evaluate|express|give)\b/i.test(text)
-    && !/\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|stat(?:e|ing) (?:your )?reasons?|describe|discuss|interpret|comment on)\b/i.test(text);
+  return /\b(find|calculate|work out|write down|state|determine|solve|evaluate|express|give|estimate|deduce|obtain)\b/i.test(text)
+    && !/\b(show that|prove|sketch|draw|construct|plot|explain|justify|give a reason|stat(?:e|ing) (?:your )?reasons?|describe|discuss|interpret|comment on|compar(?:e|ison)|conclusion|assumption|criticism|limitation|disadvantage|advantage)\b/i.test(text)
+    && !/\bstate\s+(?:one\s+)?(?:feature|effect|reason)\b|\bstate\s+why\b/i.test(text);
+}
+
+function requiresWhiteboardTask(prompt) {
+  const text = plainText(prompt);
+  return /\b(show that|prove|verify that|sketch|draw|construct|plot|shade)\b/i.test(text)
+    || /\bcomplete\b[\s\S]*\bdiagram\b/i.test(text);
+}
+
+function hasSharedWhiteboardInstruction(prompt) {
+  return requiresWhiteboardTask(plainText(prompt).split(/\(i\)/i)[0]);
 }
 
 function looksExplanation(prompt) {
   const text = plainText(prompt);
-  return /\b(explain|justify|give a reason|giving a reason|stat(?:e|ing) (?:your )?reasons?|describe|discuss|interpret|comment on|why)\b/i.test(text)
-    && !/\b(show that|prove|verify that|sketch|draw|construct|plot|show your working)\b/i.test(text);
+  return (/\b(explain|justify|give a reason|giving a reason|stat(?:e|ing) (?:your )?reasons?|describe|discuss|interpret|comment on|why|whether|compar(?:e|ison)|conclusion|assumption|criticism|limitation|disadvantage|advantage)\b/i.test(text)
+    || /\bstate\s+(?:one\s+)?(?:feature|effect|reason)\b|\b(?:state|give|write down)\b[\s\S]*\b(?:feature|effect)\b|\bstate\s+why\b/i.test(text))
+    && !/\b(show that|prove|verify that|sketch|draw|construct|plot|shade)\b/i.test(text);
 }
 
 const banks = [
@@ -250,11 +286,18 @@ function assignmentPartConfigs(question) {
     if (nested.length) {
       for (const nestedLabel of nested) {
         const nestedPrompt = promptForSubpart(prompt, nestedLabel);
-        const labelledRows = rowsForSubpart(rows, nestedLabel);
+        const directlyLabelledRows = markschemeByPart.get(`${topLabel}(${nestedLabel})`) || [];
+        const labelledRows = directlyLabelledRows.length ? directlyLabelledRows : rowsForSubpart(rows, nestedLabel);
         const nestedRows = labelledRows.length ? labelledRows : rows;
         const label = topLabel ? `${topLabel}(${nestedLabel})` : nestedLabel;
         const accepted = choices.extractAcceptedAnswers(nestedRows, nestedPrompt);
-        configs.push({ label, prompt: nestedPrompt, accepted, rows: nestedRows, choices: choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`) });
+        configs.push({
+          label,
+          prompt: nestedPrompt,
+          accepted,
+          rows: nestedRows,
+          choices: hasSharedWhiteboardInstruction(prompt) ? null : choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`),
+        });
       }
     } else {
       const label = topLabel || "answer";
@@ -323,6 +366,88 @@ assert(explanationChoices);
 assert.equal(explanationChoices.acceptedAnswers[0], "Two planes meet in a line and the third plane is parallel to that line");
 assert.equal(explanationChoices.options.length, 5);
 assert(explanationChoices.options.every((option) => choices.isDisplaySafe(option)));
+const regressionExtrapolationChoices = choices.generateExplanationChoiceSet(
+  [["18 is less than the lowest age in the survey OR extrapolation", "A1"]],
+  "Diogo is 18 years old. Give a reason why the regression line should not be used.",
+  "audit-regression-extrapolation",
+);
+assert(regressionExtrapolationChoices);
+assert.equal(regressionExtrapolationChoices.acceptedAnswers[0], "18 is below the surveyed range, so this would be extrapolation");
+const geometricReasonChoices = choices.generateExplanationChoiceSet(
+  [["the ratio of consecutive terms is constant", "R1"], [String.raw`\(r=1.04\)`, "A1"]],
+  "Explain why these terms form a geometric sequence, and state the common ratio.",
+  "audit-geometric-reason",
+);
+assert(geometricReasonChoices);
+assert.equal(geometricReasonChoices.acceptedAnswers[0], "The ratio of consecutive terms is constant; r = 1.04");
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [["stretch takes 3 to 1.5", "A1"], [String.raw`translation maps \((1.5,29)\) to \((4.5,19)\)`, "A1"]],
+    "Find the coordinates of M'.",
+  ),
+  ["(4.5,19)"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`forming the inequality \(0\le x\le\sqrt3\)`, "A1"]],
+    "Find the set of values of x.",
+  ),
+  ["0≤ x≤sqrt(3)"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`the sum is \(-\dfrac{41}{2}=-20.5\)`, "A1"]],
+    "Find the sum of the roots.",
+  ),
+  ["-20.5"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`\(\mathbf a=\begin{pmatrix}-1\\4\end{pmatrix}\)`, "A1"], [String.raw`\(\mathbf b=\begin{pmatrix}\dfrac53\\4\end{pmatrix}\)`, "A1"]],
+    "Find the vectors a and b.",
+  ),
+  ["bold(a)=matrix(-1;4); bold(b)=matrix(5/3;4)"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`\(H_0\): the spinner is fair, and \(H_1\): the spinner is not fair`, "A1"]],
+    "Write down the null and alternative hypotheses.",
+  ),
+  ["H₀: the spinner is fair; H₁: the spinner is not fair"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers([[String.raw`\(k=4\)`, "A1"]], "Find the value of k."),
+  ["k=4"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers([[String.raw`\(h=1\) and \(k=3\)`, "A2"]], "Write down the value of h and of k."),
+  ["h=1; k=3"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers([[String.raw`\(x=\sqrt{31}\) or \(\sqrt{51}\)`, "A1"]], "Find the two possible values for the length."),
+  ["sqrt(31); sqrt(51)"],
+);
+const arctangentAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(=\dfrac12\arctan\left(\dfrac{e^x+3}{2}\right)+c\)`, "A1"]],
+  String.raw`Find \(\displaystyle\int \dfrac{e^x}{e^{2x}+6e^x+13}\,dx\).`,
+);
+assert(arctangentAnswers[0].startsWith("latex:"));
+assert(choices.toLatex(arctangentAnswers[0]).includes(String.raw`\arctan`));
+const asymptoteReasonChoices = choices.generateExplanationChoiceSet(
+  [[String.raw`the curve has a vertical asymptote at \(x=\sqrt[4]{2}\ (=1.1892\ldots)\), just beyond \(x=1.15\)`, "R1"]],
+  "Give a reason why the estimate is so far from the value.",
+  "audit-asymptote-reason",
+);
+assert(asymptoteReasonChoices);
+const secondDerivativeReasonChoices = choices.generateExplanationChoiceSet(
+  [[String.raw`at \(\pi/4\), \(d^2A/d\theta^2<0\); maximum when \(f''(x)<0\)`, ""], [String.raw`finding second derivative \(d^2A/d\theta^2=-72\sin2\theta\)`, "A1"]],
+  "Use the second derivative to justify that this value of theta gives a maximum.",
+  "audit-second-derivative-reason",
+);
+assert(secondDerivativeReasonChoices);
+const boundedProbabilityChoices = choices.generateChoiceSet(["0.358"], "audit-bounded-probability", "Find the probability.");
+assert(boundedProbabilityChoices);
+assert(boundedProbabilityChoices.options.every((option) => !/^-|\+1|2\*/.test(option)));
 assert.equal(
   choices.generateExplanationChoiceSet(
     [["The derivative changes from positive to negative, so the function has a maximum.", "R1"]],
@@ -473,6 +598,34 @@ const argumentAnswers = choices.extractAcceptedAnswers(argumentRows, "Find the a
 assert.deepEqual(argumentAnswers, ["0.9707 rad"]);
 assert(choices.generateChoiceSet(argumentAnswers, "audit-complex-argument"));
 
+const finalProbabilityAnswers = choices.extractAcceptedAnswers(
+  [
+    ["correct use of the binomial distribution with their probability", "A1"],
+    [String.raw`\(0.490\) \((0.490317\ldots)\)`, "A1"],
+  ],
+  "Find the probability that no tickets are bought during the week.",
+);
+assert.deepEqual(finalProbabilityAnswers, ["0.490"]);
+
+const twoObservationChoices = choices.generateExplanationChoiceSet(
+  [
+    [String.raw`finding the median \((=3)\), the quartiles \((Q_1=2\) and \(Q_3=5)\), or the interquartile range \(\text{IQR}=3\)`, "(A1)"],
+    ["any two of the following statements: the median in both seasons is 3 ; in both seasons the lower quartile is 2 and the upper quartile is 5, so the interquartile range is 3 ; both distributions are skewed to the right", "R1R1"],
+  ],
+  "State two observations that support the conclusion.",
+  "audit-two-observations",
+);
+assert(twoObservationChoices);
+assert(twoObservationChoices.options[twoObservationChoices.correctOption].includes(";"));
+
+const isoscelesReasonChoices = choices.generateExplanationChoiceSet(
+  [[String.raw`Use isosceles triangle BOD to obtain \(38^\circ\).`, "A1"]],
+  "Work out angle OBD. Give a reason for each stage of your working.",
+  "audit-isosceles-reason",
+);
+assert(isoscelesReasonChoices);
+assert.equal(isoscelesReasonChoices.options[isoscelesReasonChoices.correctOption], "38°, because triangle BOD is isosceles");
+
 const extremumAnswers = choices.extractAcceptedAnswers(
   [["The graph has a minimum", "A1"]],
   "State whether the graph has a maximum or minimum.",
@@ -491,6 +644,33 @@ assert.equal(constantAnswers[0], "k=1/4");
 assert.equal(choices.toLatex(constantAnswers[0]), String.raw`k=\frac{1}{4}`);
 assert.equal(choices.toLatex("1/4 cm"), String.raw`\frac{1}{4}\,\mathrm{cm}`);
 assert.deepEqual(choices.extractAcceptedAnswers([[String.raw`\(x=3\)`, "A1"]], "Show that x is 3."), []);
+assert.deepEqual(choices.extractAcceptedAnswers([[String.raw`\(x=3\)`, "A1"]], "Shade the region where x is greater than 3."), []);
+
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [
+      [String.raw`\(i\) root \(\Rightarrow -i\) is a second root`, "A1"],
+      [String.raw`the other two roots are \(2\) and \(3\)`, "A1A1"],
+    ],
+    "Find the other roots of this equation.",
+  ),
+  ["-i; 2; 3"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`\(p=100,\ q=10,\ r=1\)`, "A1"]],
+    String.raw`Determine \(p\), \(q\) and \(r\).`,
+  ),
+  ["p=100; q=10; r=1"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [["3112.84<br>3110 [3110, 3120] (dollars)", "A1"]],
+    "Estimate the mean monthly income.",
+  ),
+  ["3112.84"],
+);
+assert(choices.toLatex(String.raw`P(left before 07:00|late) = 3/8`).includes("|"));
 
 const labelledRoundedAnswers = choices.extractAcceptedAnswers(
   [[String.raw`\((\text{TM} =)\ 7.81\text{ m}\ (\sqrt{61}\text{ m},\ 7.81024\ldots\text{ m})\)`, "A1"]],
@@ -525,6 +705,59 @@ const integralAnswers = choices.extractAcceptedAnswers(
 assert.equal(integralAnswers[0], "31/5");
 assert(!integralAnswers.some((answer) => /(?:displaystyle|\bint\b)/i.test(answer)));
 assert(choices.generateChoiceSet(integralAnswers, "audit-definite-integral"));
+const integralExpressionAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(A=\displaystyle\int_0^1 f(x)\,dx\)`, "A1"]],
+  "Write down an integral that represents the area.",
+);
+assert.equal(integralExpressionAnswers[0], String.raw`latex:A=\displaystyle\int_0^1 f(x)\,dx`);
+assert(choices.toLatex(integralExpressionAnswers[0]).includes(String.raw`\int`));
+assert(choices.generateChoiceSet(integralExpressionAnswers, "audit-integral-expression"));
+const labelledIntegralAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(d=\int_0^9 v\,dt\)`, "A1"]],
+  "Write down an expression for d.",
+);
+assert(choices.toLatex(labelledIntegralAnswers[0]).includes(String.raw`\int`));
+assert.deepEqual(
+  choices.extractAcceptedAnswers([[String.raw`\(=18\)`, "A1"]], String.raw`Evaluate \(\displaystyle\int_{0.1}^{1}|f(x)|\,dx\).`),
+  ["18"],
+);
+const showWorkingAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(=2738.4\text{ kg/m}^3\)`, "A1"]],
+  "Work out the upper bound for the density. Show your working clearly.",
+);
+assert.deepEqual(showWorkingAnswers, ["2738.4 kg/m^3"]);
+assert(choices.generateChoiceSet(showWorkingAnswers, "audit-show-working"));
+
+const limitationChoices = choices.generateExplanationChoiceSet(
+  [["The model ignores air resistance.", "R1"]],
+  "Write down one limitation of the model.",
+  "audit-limitation",
+);
+assert(limitationChoices);
+assert.equal(limitationChoices.acceptedAnswers[0], "The model ignores air resistance");
+const transformationChoices = choices.generateExplanationChoiceSet(
+  [
+    [String.raw`Translation through \(\begin{pmatrix}2\\0\end{pmatrix}\)`, "A1"],
+    [String.raw`EITHER a stretch scale factor \(\dfrac12\) parallel to the \(y\)-axis, then a translation through \(\begin{pmatrix}0\\-4\end{pmatrix}\)`, "A2"],
+  ],
+  "State each of the transformations in the order in which they are applied.",
+  "audit-transformations",
+);
+assert(transformationChoices);
+assert.equal(transformationChoices.options.length, 5);
+assert(transformationChoices.options.every((option) => !/skew|coincident|intersecting at one point/i.test(option)));
+const modelReasonChoices = choices.generateExplanationChoiceSet(
+  [[String.raw`a comparison of the coefficients of determination, \(0.922\ (0.921787\ldots)\) for the power model and \(0.999\ (0.998836\ldots)\) for the exponential model`, "R1"]],
+  "State a reason why Jonas's model is a better fit than Ines's model.",
+  "audit-model-comparison",
+);
+assert(modelReasonChoices);
+assert(modelReasonChoices.acceptedAnswers[0].includes("closer to 1"));
+assert(modelReasonChoices.options.every((option) => !/-0\.922|2\.922/.test(option)));
+assert.deepEqual(choices.extractAcceptedAnswers([["B.", "B1"]], "Write down the letter of the graph."), ["B"]);
+assert(choices.generateChoiceSet(["B"], "audit-letter-choice", "Write down the letter of the graph."));
+assert.deepEqual(choices.extractAcceptedAnswers([["any correct Hamiltonian cycle, e.g. ABCDEFA", "A1"]], "Write down a Hamiltonian cycle for this graph."), ["ABCDEFA"]);
+assert(choices.generateChoiceSet(["ABCDEFA"], "audit-cycle", "Write down a Hamiltonian cycle for this graph."));
 
 const pairedInterceptAnswers = choices.extractAcceptedAnswers(
   [
@@ -545,6 +778,33 @@ const malformedProbabilityAnswers = choices.extractAcceptedAnswers(
 );
 assert.deepEqual(malformedProbabilityAnswers, ["1/9", "0.111"]);
 assert(choices.generateChoiceSet(malformedProbabilityAnswers, "audit-malformed-probability"));
+assert.deepEqual(
+  choices.extractAcceptedAnswers([[String.raw`\(n=10\)`, "A1"]], "Find n, given that the probability that a student passes is 0.8."),
+  ["n=10"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`\(h(-x)=h(x)=-h(x)\Rightarrow 2h(x)=0\Rightarrow h(x)=0\)`, "M1A1"]],
+    String.raw`The function h is both odd and even. Find \(h(x)\).`,
+  ),
+  ["h(x)=0"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`\(z_1=3\sqrt3+i\), \(z_2=-3\sqrt3+i\), \(z_3=-8i\)`, "A1"]],
+    "Determine the roots of the equation.",
+  ),
+  ["z=3*sqrt(3)+i; z=-3*sqrt(3)+i; z=-8i"],
+);
+const pairedHypotheses = choices.extractAcceptedAnswers(
+  [[String.raw`\(H_0:p=0.4\)`, "A1"], [String.raw`\(H_1:p>0.4\)`, "A1"]],
+  "State the null and alternative hypotheses.",
+);
+assert.equal(pairedHypotheses[0], "H_0:p=0.4; H_1:p>0.4");
+assert(choices.generateChoiceSet(pairedHypotheses, "audit-hypotheses"));
+const rawLatexSet = choices.generateChoiceSet([String.raw`latex:f^{-1}(x)=\frac{3x+1}{2-x}`], "audit-raw-latex");
+assert(rawLatexSet);
+assert(rawLatexSet.options.every((option) => !choices.toLatex(option).includes("latex:")));
 
 const intervalAnswers = choices.extractAcceptedAnswers(
   [[String.raw`range is \(\left[-3,\ \dfrac32\right]\)`, "A2"]],
@@ -591,10 +851,16 @@ for (const [label, path] of banks) {
       const nested = romanSubparts(prompt);
       for (const nestedLabel of nested) {
         const nestedPrompt = promptForSubpart(prompt, nestedLabel);
-        const labelledRows = rowsForSubpart(rows, nestedLabel);
+        const directlyLabelledRows = new Map((Array.isArray(question.markscheme) ? question.markscheme : [])
+          .filter(Array.isArray)
+          .map((group) => [String(group[0] || "").toLowerCase(), Array.isArray(group[1]) ? group[1] : []]))
+          .get(`${String(part || "").toLowerCase()}(${nestedLabel})`) || [];
+        const labelledRows = directlyLabelledRows.length ? directlyLabelledRows : rowsForSubpart(rows, nestedLabel);
         const nestedRows = labelledRows.length ? labelledRows : rows;
         const nestedAccepted = choices.extractAcceptedAnswers(nestedRows, nestedPrompt);
-        const nestedSet = choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${part}(${nestedLabel})`);
+        const nestedSet = hasSharedWhiteboardInstruction(prompt)
+          ? null
+          : choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${part}(${nestedLabel})`);
         if (nestedAccepted.length || nestedSet) bankNestedChecked += 1;
         if (!nestedSet && looksObjective(nestedPrompt)) objectiveFallbacks.push(`${label} ${question.id} ${part}(${nestedLabel}): ${plainText(nestedPrompt)}`);
         if (nestedSet) {
@@ -745,8 +1011,10 @@ const objectiveFailureVerbs = new Map();
 const objectiveFailureShapes = new Map();
 const activeObjectiveFallbacks = [];
 const explanationFallbacks = [];
+const whiteboardReasonCounts = new Map();
 let objectiveWhiteboardParts = 0;
 const objectiveWhiteboardQuestions = new Set();
+let verifiedIgcseNestedMarkschemeLabels = false;
 for (const [label, path] of banks) {
   const questions = extractSeed(path).filter((question) => activeQuestionIds[label].has(String(question.id || "")));
   let bankAnswerParts = 0;
@@ -754,6 +1022,12 @@ for (const [label, path] of banks) {
   let bankQuestionsWithWhiteboard = 0;
   for (const question of questions) {
     const configs = assignmentPartConfigs(question);
+    if (label === "IGCSE" && question.id === "4MA1_2020N_1H_Q7") {
+      const nestedSolution = configs.find((config) => config.label === "c(ii)");
+      assert(nestedSolution?.choices, "The separately labelled IGCSE c(ii) mark scheme did not produce choices.");
+      assert(nestedSolution.choices.acceptedAnswers.some((answer) => /y=8/.test(answer) && /y=-6/.test(answer)), "The IGCSE c(ii) solution set was incomplete.");
+      verifiedIgcseNestedMarkschemeLabels = true;
+    }
     for (const config of configs.filter((part) => part.choices)) {
       inspectChoiceQuality(config.choices, `${label} ${question.id} ${config.label}`, config.prompt, config.rows);
       liveChoiceSamples.push({ bank: label, id: question.id, part: config.label, prompt: plainText(config.prompt), choices: config.choices, rows: config.rows });
@@ -762,6 +1036,16 @@ for (const [label, path] of banks) {
     bankAnswerParts += configs.length;
     bankWhiteboardParts += whiteboardParts.length;
     if (whiteboardParts.length) bankQuestionsWithWhiteboard += 1;
+    for (const config of whiteboardParts) {
+      const reason = requiresWhiteboardTask(config.prompt)
+        ? "proof, show-that or drawing task"
+        : looksExplanation(config.prompt)
+          ? "open explanation without a complete choice set"
+          : looksObjective(config.prompt)
+            ? "objective-looking part still needing an answer"
+            : "other open or source-incomplete response";
+      whiteboardReasonCounts.set(reason, (whiteboardReasonCounts.get(reason) || 0) + 1);
+    }
     for (const config of whiteboardParts.filter((part) => looksObjective(part.prompt))) {
       objectiveWhiteboardParts += 1;
       objectiveWhiteboardQuestions.add(`${label}:${question.id}`);
@@ -791,6 +1075,7 @@ for (const [label, path] of banks) {
   allQuestionsWithWhiteboard += bankQuestionsWithWhiteboard;
   console.log(`${label} assignment inventory: ${bankWhiteboardParts}/${bankAnswerParts} answer parts use whiteboard or paper, across ${bankQuestionsWithWhiteboard}/${questions.length} active questions.`);
 }
+assert(verifiedIgcseNestedMarkschemeLabels, "The IGCSE nested mark-scheme label regression question was not audited.");
 console.log(`Combined assignment inventory: ${allWhiteboardParts}/${allAnswerParts} answer parts use whiteboard or paper, across ${allQuestionsWithWhiteboard}/${allActiveQuestions} active questions.`);
 const qualityIssueCounts = new Map();
 choiceQualityIssues.forEach((issue) => qualityIssueCounts.set(issue.kind, (qualityIssueCounts.get(issue.kind) || 0) + 1));
@@ -803,29 +1088,31 @@ console.log(`Objective fallback causes: ${Array.from(objectiveFailureKinds, ([ki
 console.log(`Objective fallback shapes: ${Array.from(objectiveFailureShapes, ([shape, count]) => `${count} ${shape}`).join("; ")}.`);
 console.log(`Objective fallback prompt verbs: ${Array.from(objectiveFailureVerbs.entries()).sort((left, right) => right[1] - left[1]).map(([verb, count]) => `${verb} ${count}`).join(", ")}.`);
 console.log(`Explanation-style whiteboard inventory: ${explanationFallbacks.length} parts.`);
-if (process.env.ASSIGNMENT_AUDIT_DETAILS === "1") {
+console.log(`Whiteboard reason breakdown: ${Array.from(whiteboardReasonCounts.entries()).map(([reason, count]) => `${count} ${reason}`).join("; ")}.`);
+const auditDetailModes = String(process.env.ASSIGNMENT_AUDIT_DETAILS || "");
+if (auditDetailModes.includes("1")) {
   console.log(`Objective-looking whiteboard fallbacks: ${objectiveFallbacks.length}`);
   objectiveFallbacks.slice(0, 120).forEach((item) => console.log(`- ${item}`));
 }
-if (process.env.ASSIGNMENT_AUDIT_DETAILS === "2") {
+if (auditDetailModes.includes("2")) {
   activeObjectiveFallbacks.slice(0, 100).forEach((item) => {
     console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
     console.log(`accepted=${JSON.stringify(item.accepted)} rows=${JSON.stringify(item.rows.slice(-4))}`);
   });
 }
-if (process.env.ASSIGNMENT_AUDIT_DETAILS === "3") {
+if (auditDetailModes.includes("3")) {
   explanationFallbacks.slice(0, 200).forEach((item) => {
     console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
     console.log(`accepted=${JSON.stringify(item.accepted)} rows=${JSON.stringify(item.rows.slice(-6))}`);
   });
 }
-if (process.env.ASSIGNMENT_AUDIT_DETAILS === "4") {
+if (auditDetailModes.includes("4")) {
   choiceQualityIssues.slice(0, 300).forEach((item) => {
     console.log(`\n${item.kind} | ${item.meta}: ${item.prompt}`);
     console.log(`option=${JSON.stringify(item.option)} rendered=${JSON.stringify(item.rendered)}`);
   });
 }
-if (process.env.ASSIGNMENT_AUDIT_DETAILS === "5") {
+if (auditDetailModes.includes("5")) {
   var stride = Math.max(1, Math.floor(liveChoiceSamples.length / 80));
   liveChoiceSamples.filter((_item, index) => index % stride === 0).slice(0, 80).forEach((item) => {
     console.log(`\n${item.bank} ${item.id} ${item.part}: ${item.prompt}`);
@@ -833,7 +1120,7 @@ if (process.env.ASSIGNMENT_AUDIT_DETAILS === "5") {
     console.log(`wrong=${JSON.stringify(item.choices.options.filter((_option, index) => index !== item.choices.correctOption))}`);
   });
 }
-if (process.env.ASSIGNMENT_AUDIT_DETAILS === "6") {
+if (auditDetailModes.includes("6")) {
   const filter = String(process.env.ASSIGNMENT_AUDIT_FILTER || "").trim();
   const filters = filter.split(",").map((value) => value.trim()).filter(Boolean);
   activeObjectiveFallbacks
