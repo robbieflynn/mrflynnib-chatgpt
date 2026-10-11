@@ -5,7 +5,7 @@
 }(typeof globalThis !== "undefined" ? globalThis : this, function (root) {
   "use strict";
 
-  var UNIT_PATTERN = "(?:°|%|rad|cm(?:\\^[23])?|mm(?:\\^[23])?|km(?:\\^[23])?|m(?:\\^[23])?|ml|litres?|liters?|kg|g|s|minutes?|hours?|mins?|hrs?)";
+  var UNIT_PATTERN = "(?:°|%|rad|ppm|cm(?:\\^[23])?|mm(?:\\^[23])?|km(?:\\^[23])?|m(?:\\^[23])?|ml|litres?|liters?|kg|g|h|s|minutes?|hours?|mins?|hrs?)";
   var RAW_LATEX_COMMAND_PATTERN = /\b(?:math(?:bf|rm|it|sf|tt|bb|cal|normal)|text(?:bf|it|tt|sf|rm)?|boldsymbol|mathbf|operatorname|overrightarrow|displaystyle|textstyle|scriptstyle|scriptscriptstyle)[A-Za-z]*\b/i;
   var LATEX_ANSWER_PREFIX = "latex:";
 
@@ -401,6 +401,11 @@
     var normalizedRows = rows.map(function (row) {
       return normalizeExplanationText(latexToPlain(String(Array.isArray(row) ? row[0] : row)));
     });
+    var normalizedPromptText = clean(latexToPlain(prompt));
+    if (/set of values for p[\s\S]*two points[\s\S]*give a reason/i.test(normalizedPromptText)
+      && normalizedRows.some(function (row) { return /p\s*-\s*1\s+to be even/i.test(row); })) {
+      return "p must be an odd integer greater than 1, because p - 1 must be even for the equation to have two real roots";
+    }
     if (/(?:regression line[\s\S]*(?:reason why|should not be used)|reason why[\s\S]*equation[\s\S]*should not be used)/i.test(promptText)) {
       for (var regressionIndex = normalizedRows.length - 1; regressionIndex >= 0; regressionIndex -= 1) {
         var regressionReason = normalizedRows[regressionIndex];
@@ -634,6 +639,7 @@
     answer = answer.replace(/^\s*(?:\(\s*)?[$£]\s*\)?\s*/, "");
     answer = answer.replace(/^(.*±[^()]*)\s*\(\s*that is,[\s\S]*\)\s*$/i, "$1").trim();
     answer = answer.replace(/^\(\s*([-+]?\d+(?:\.\d+)?(?:\s*°|\s*%|\s+rad)?)\s*\)$/, "$1");
+    answer = answer.replace(/\s*\(\s*(ppm|h|hours?|hrs?|minutes?|mins?|s|cm|mm|km|m|kg|g)\s*\)\s*$/i, " $1");
     answer = answer.replace(/\s*\(\s*-?\d+(?:\.\d+)?…(?:\s*(?:°|rad|cm|mm|km|m|s|minutes?|hours?))?\s*\)\s*$/i, "").trim();
     answer = answer.replace(/^(.*\d[^()]*)\s+\(\s*-?\d+(?:\.\d+)?(?:\s*\([^()]*\))?\s*\)\s*$/, "$1").trim();
     var numericAlternatives = answer.match(/^(.+?)\s+\(\s*([-+]?\d[\d.\s,/%°-]*)\s*\)$/);
@@ -850,6 +856,31 @@
       return Array.isArray(row) && /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""));
     });
     var finalInstruction = finalInstructionText(completePrompt);
+    if (/\blargest possible domain\b|\b(?:find|state|write down|determine)\s+(?:the\s+)?domain\b/i.test(finalInstruction)) {
+      for (var domainRowIndex = creditedRows.length - 1; domainRowIndex >= 0; domainRowIndex -= 1) {
+        var domainRestrictions = [];
+        mathFragments(String(creditedRows[domainRowIndex][0] || "")).forEach(function (fragment) {
+          var restriction = clean(latexToPlain(fragment));
+          if (/^[A-Za-z]\s*(?:≠|<|>|≤|≥)/.test(restriction)
+            && isChoiceTextSafe(restriction)
+            && !domainRestrictions.some(function (existing) { return equivalent(existing, restriction); })) {
+            domainRestrictions.push(restriction);
+          }
+        });
+        if (domainRestrictions.length >= 2) return [domainRestrictions.join("; ")];
+      }
+    }
+    if (/\b(?:smallest|largest|minimum|maximum)(?:\s+possible)?\s+value\b/i.test(finalInstruction)
+      && !/\b(?:and|coordinates?|values)\b/i.test(finalInstruction.replace(/\b(?:smallest|largest|minimum|maximum)(?:\s+possible)?\s+value\b/i, ""))) {
+      for (var extremumRowIndex = creditedRows.length - 1; extremumRowIndex >= 0; extremumRowIndex -= 1) {
+        var extremumFragments = mathFragments(String(creditedRows[extremumRowIndex][0] || ""));
+        for (var extremumFragmentIndex = extremumFragments.length - 1; extremumFragmentIndex >= 0; extremumFragmentIndex -= 1) {
+          var extremumValue = clean(latexToPlain(extremumFragments[extremumFragmentIndex]));
+          if (/^-?(?:\d+(?:\.\d+)?|\d*\/?\d*sqrt\([^)]*\)|\d+\s*\/\s*\d+)(?:\s*(?:°|%|rad|ppm|cm|mm|km|m|h|s))?$/i.test(extremumValue)
+            && isChoiceTextSafe(extremumValue)) return [extremumValue];
+        }
+      }
+    }
     var directlyRequestedPair = finalInstruction.match(/\b(?:find|determine|calculate|write down|state)\s+(?:the\s+)?value\s+of\s+([A-Za-zα-ω])\s+and\s+(?:the\s+value\s+)?of\s+([A-Za-zα-ω])\b/i);
     var directlyRequestedValue = finalInstruction.match(/\b(?:find|determine|calculate|write down|state)\s+(?:the\s+)?value\s+of\s+([A-Za-zα-ω])\b/i);
     if (directlyRequestedValue && !directlyRequestedPair) {
@@ -859,7 +890,9 @@
           var requestedValueAnswer = clean(latexToPlain(requestedValueFragments[requestedValueIndex]));
           var requestedValueMatch = requestedValueAnswer.match(new RegExp("(?:^|[;,]\\s*)" + directlyRequestedValue[1] + "\\s*=\\s*([^=;,]+)$", "i"));
           if (requestedValueMatch) {
-            var requestedValue = directlyRequestedValue[1] + "=" + clean(requestedValueMatch[1]);
+            var requestedValueResult = clean(requestedValueMatch[1])
+              .replace(/\s*\(\s*(ppm|h|hours?|hrs?|minutes?|mins?|s|cm|mm|km|m|kg|g)\s*\)\s*$/i, " $1");
+            var requestedValue = directlyRequestedValue[1] + "=" + requestedValueResult;
             if (isChoiceTextSafe(requestedValue)) return [requestedValue];
           }
         }
@@ -1039,6 +1072,34 @@
       }
     }
     var finalDirectValue = finalDirectValueFromRows(creditedRows);
+    if (finalDirectValue && /\bevaluate\b[\s\S]*(?:\blimit\b|\blim(?:_|\s*\())|(?:\blimit\b|\blim(?:_|\s*\())[\s\S]*\bevaluate\b/i.test(completePrompt)) {
+      return [finalDirectValue];
+    }
+    if (/\bDoes your answer\b[\s\S]*\bactual value\b/i.test(completePrompt)) {
+      var approximationValue = "";
+      var approximationDecision = "";
+      creditedRows.forEach(function (row) {
+        var approximationText = plainText(row[0] || "");
+        mathFragments(String(row[0] || "")).forEach(function (fragment) {
+          var approximationPiece = clean(latexToPlain(fragment));
+          if (/^-?\d+\.\d{3,}$/.test(approximationPiece) && !approximationValue) approximationValue = approximationPiece;
+        });
+        if (/\bnot correct\b/i.test(approximationText)) approximationDecision = "No, the approximation is not correct to the requested number of decimal places";
+        else if (/\bcorrect\b/i.test(approximationText) && !approximationDecision) approximationDecision = "Yes, the approximation is correct to the requested number of decimal places";
+      });
+      if (approximationValue && approximationDecision) return [approximationValue + "; " + approximationDecision];
+    }
+    if (/\bfind the solution of\b/i.test(finalInstruction)
+      && !/\b(?:solutions|in the form|differential equation)\b/i.test(finalInstruction)) {
+      for (var singleSolutionRowIndex = creditedRows.length - 1; singleSolutionRowIndex >= 0; singleSolutionRowIndex -= 1) {
+        var singleSolutionFragments = mathFragments(String(creditedRows[singleSolutionRowIndex][0] || ""));
+        for (var singleSolutionFragmentIndex = singleSolutionFragments.length - 1; singleSolutionFragmentIndex >= 0; singleSolutionFragmentIndex -= 1) {
+          var singleSolutionText = clean(latexToPlain(singleSolutionFragments[singleSolutionFragmentIndex]));
+          var singleSolution = singleSolutionText.match(/^[A-Za-z]\s*=\s*([^=;]+)$/);
+          if (singleSolution && isChoiceTextSafe(clean(singleSolution[1]))) return [clean(singleSolution[1])];
+        }
+      }
+    }
     if (/(?:\bintegral\b|∫|\\int)/i.test(completePrompt)) {
       for (var antiderivativeRowIndex = creditedRows.length - 1; antiderivativeRowIndex >= 0; antiderivativeRowIndex -= 1) {
         var antiderivativeFragments = mathFragments(String(creditedRows[antiderivativeRowIndex][0] || ""));
@@ -2093,7 +2154,7 @@
         if (isChoiceTextSafe(combinedForms)) return [combinedForms];
       }
     }
-    var wantsCollection = /\b(coordinates?|positions?|bounds?|roots?|solutions?|values|intercepts?|asymptotes?|position vectors?|turning points?|local max(?:imum)?|local min(?:imum)?)\b/i.test(instructionText)
+    var wantsCollection = /\b(coordinates?|positions?|bounds?|roots|solutions|values|intercepts?|asymptotes?|position vectors?|turning points?|local max(?:imum)?|local min(?:imum)?)\b/i.test(instructionText)
       || /\b(?:maximum[\s\S]*minimum|minimum[\s\S]*maximum|mean[\s\S]*standard deviation|standard deviation[\s\S]*mean|modulus[\s\S]*argument|argument[\s\S]*modulus|first term[\s\S]*common (?:difference|ratio)|common (?:difference|ratio)[\s\S]*first term|inverse[\s\S]*domain|domain[\s\S]*inverse|range[\s\S]*of)\b/i.test(instructionText);
     wantsCollection = wantsCollection
       || /\bvectors?\b[\s\S]*\band\b/i.test(instructionText)
@@ -2692,6 +2753,7 @@
   function expressionToLatex(value) {
     var expression = String(value || "").trim();
     if (!expression || !parenthesesAreBalanced(expression)) return null;
+    expression = expression.replace(/(^|[=+\-;(])\s*(-?\d+(?:\.\d+)?\s*\/\s*-?\d+(?:\.\d+)?)\s+(?=[A-Za-z(])/g, "$1($2)*");
     if (wrapsWholeExpression(expression)) {
       var inner = expressionToLatex(expression.slice(1, -1));
       return inner ? "\\left(" + inner + "\\right)" : null;
@@ -2740,7 +2802,8 @@
       return renderedItems.every(Boolean) ? renderedItems.join(",\\ ") : null;
     }
 
-    var functionMatch = expression.match(/^(sqrt|arg|cis|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp|N)\((.*)\)$/i);
+    var functionMatch = expression.match(/^(sqrt|arg|cis|arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)\((.*)\)$/i)
+      || expression.match(/^(N)\((.*)\)$/);
     if (functionMatch && parenthesesAreBalanced(functionMatch[2])) {
       var functionArgument = expressionToLatex(functionMatch[2]);
       if (!functionArgument) return null;
