@@ -80,6 +80,10 @@
       if (!event.data.ok) {
         if (event.data.completed) completed.delete(String(event.data.questionId));
         else completed.add(String(event.data.questionId));
+        updateControl(card);
+        card.querySelector('.qb-progress-label').textContent = 'Could not save. Try again';
+        window.setTimeout(function () { updateControl(card); }, 2400);
+        return;
       }
       updateControl(card);
     }

@@ -374,6 +374,8 @@ IB and IGCSE accounts carry an explicit curriculum identity. New sign-ups record
 
 Authenticated dashboards must always make the active account clear. When a student, teacher or administrator is signed in, show a compact account control at the top right of the dashboard hero with their name and role. Its menu shows the account email and provides an obvious sign-out action. Do not place this control in the global site header: the normal navigation, One-to-One tuition link and IB Tutors logo must remain intact. Never use the account menu to link or switch between IB and IGCSE. Keep account access visible near the top of the dashboard on narrow screens rather than hiding it at the bottom.
 
+Administrators retain operational access to both curriculum areas even though their profile keeps the main IB curriculum identity. They may save their own completion ticks and whiteboard working in both IB and IGCSE for testing and review. This administrator exception must not weaken the curriculum boundary for ordinary student or teacher accounts.
+
 The first version is for assignments, not formal tests. Keep the data model extensible so timed tests and test-building can be added later without replacing classes, memberships or the teacher identity model. Build and review this feature in a Vercel Preview before production publication.
 
 ## Tuition partner preview, 26 September 2026
