@@ -2,6 +2,7 @@
 
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
+import renderMathInElement from "katex/contrib/auto-render";
 import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
 
 type Course = "AA HL" | "AA SL" | "AI HL" | "AI SL";
@@ -48,9 +49,25 @@ function SummaryMath({ children }: { children: string }) {
   return <>{pieces}</>;
 }
 
-function AnswerBox({ marks }: { marks: number }) {
-  const lines = Math.max(6, Math.min(12, marks + 3));
-  return <div className="test-answer-box" aria-hidden="true">{Array.from({ length: lines }, (_, index) => <span className="test-answer-line" key={index} />)}</div>;
+function AnswerBox({ marks, compact = false }: { marks: number; compact?: boolean }) {
+  const lines = compact ? 4 : Math.max(6, Math.min(12, marks + 3));
+  return <div className={`test-answer-box${compact ? " test-answer-box-compact" : ""}`} aria-hidden="true">{Array.from({ length: lines }, (_, index) => <span className="test-answer-line" key={index} />)}</div>;
+}
+
+function RenderedMarkScheme({ html }: { html: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    renderMathInElement(ref.current, {
+      delimiters: [
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true },
+      ],
+      throwOnError: false,
+      strict: false,
+    });
+  }, [html]);
+  return <div className="test-markscheme-content" dangerouslySetInnerHTML={{ __html: html }} ref={ref} />;
 }
 
 function needsContinuationPage(question: TestQuestion) {
@@ -94,7 +111,7 @@ function SectionAQuestionPages({ question, first, includeAnswerSpace, paperTitle
     <section className="test-page test-question-page">
       {first ? <SectionAIntro /> : null}
       <QuestionMarkup question={question} />
-      {includeAnswerSpace && !continuation ? <AnswerBox marks={question.marks} /> : null}
+      {includeAnswerSpace ? <AnswerBox compact={continuation} marks={question.marks} /> : null}
       {continuation ? <p className="test-continues">This question continues on the following page.</p> : null}
       <PageFooter label={paperTitle} />
     </section>
@@ -118,7 +135,7 @@ function MarkSchemePage({ question, first, paperTitle }: { question: NumberedQue
   return <section className="test-page test-markscheme-page">
     {first ? <div className="test-markscheme-title"><h2>Mark scheme</h2><p>For teacher use</p></div> : null}
     <div className="test-paper-question-heading"><strong>{question.number}.</strong><span>[Maximum mark: {question.marks}]</span></div>
-    {question.markSchemeHtml ? <div className="test-markscheme-content" dangerouslySetInnerHTML={{ __html: question.markSchemeHtml }} /> : <p className="test-markscheme-unavailable">No mark scheme is available for this question.</p>}
+    {question.markSchemeHtml ? <RenderedMarkScheme html={question.markSchemeHtml} /> : <p className="test-markscheme-unavailable">No mark scheme is available for this question.</p>}
     <PageFooter label={`${paperTitle} · Mark scheme`} />
   </section>;
 }
@@ -318,7 +335,11 @@ export function TestMaker() {
             <div className="test-print-root" aria-label="Printable test preview">
               <section className="test-page test-cover-page">
                 <div className="test-cover-title"><h2>{courseNames[course]}</h2><strong>{paper}</strong><h1>{title || "Mathematics practice test"}</h1>{school ? <span>{school}</span> : null}</div>
-                <div className="test-candidate-fields"><span>Name</span><i /><span>Class</span><i /><span>Date</span><i>{testDate ? new Date(`${testDate}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}</i></div>
+                <div className="test-candidate-details">
+                  <div className="test-candidate-name"><span>Name</span><i /></div>
+                  <div><span>Class</span><i /></div>
+                  <div><span>Date</span><i>{testDate ? new Date(`${testDate}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}</i></div>
+                </div>
                 <p className="test-time-allowed">{duration || "90"} minutes</p>
                 <section className="test-instructions"><h3>Instructions to candidates</h3><ul><li>Do not open this paper until instructed to do so.</li><li>{calculatorCopy}</li>{sections.A.length ? <li>Section A: answer all questions. Answers must be written within the answer boxes provided.</li> : null}{sections.B.length ? <li>Section B: answer all questions in the booklet provided.</li> : null}<li>Unless otherwise stated in the question, all numerical answers should be given exactly or correct to three significant figures.</li><li>A clean copy of the appropriate mathematics formula booklet is required for this paper.</li><li>The maximum mark for this paper is [{totalMarks} marks].</li></ul></section>
                 <PageFooter label="Teacher-created practice paper" />
