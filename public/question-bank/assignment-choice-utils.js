@@ -640,6 +640,13 @@
     answer = answer.replace(/^(.*±[^()]*)\s*\(\s*that is,[\s\S]*\)\s*$/i, "$1").trim();
     answer = answer.replace(/^\(\s*([-+]?\d+(?:\.\d+)?(?:\s*°|\s*%|\s+rad)?)\s*\)$/, "$1");
     answer = answer.replace(/\s*\(\s*(ppm|h|hours?|hrs?|minutes?|mins?|s|cm|mm|km|m|kg|g)\s*\)\s*$/i, " $1");
+    // Mark schemes often put an unrounded calculator value immediately before the
+    // reported answer, for example "4.71104<br>4.71 (minutes)". Once the line break
+    // and unit brackets are normalised this becomes "4.71104 4.71 minutes". Keep
+    // the final reported value rather than concatenating both numbers into one
+    // answer and then generating distractors from the intermediate working.
+    var reportedValueWithUnit = answer.match(new RegExp("^[-+]?\\d+(?:\\.\\d+)?\\s+([-+]?\\d+(?:\\.\\d+)?)\\s+(" + UNIT_PATTERN + ")$", "i"));
+    if (reportedValueWithUnit) answer = reportedValueWithUnit[1] + " " + reportedValueWithUnit[2];
     answer = answer.replace(/\s*\(\s*-?\d+(?:\.\d+)?…(?:\s*(?:°|rad|cm|mm|km|m|s|minutes?|hours?))?\s*\)\s*$/i, "").trim();
     answer = answer.replace(/^(.*\d[^()]*)\s+\(\s*-?\d+(?:\.\d+)?(?:\s*\([^()]*\))?\s*\)\s*$/, "$1").trim();
     var numericAlternatives = answer.match(/^(.+?)\s+\(\s*([-+]?\d[\d.\s,/%°-]*)\s*\)$/);
