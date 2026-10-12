@@ -550712,6 +550712,10 @@ function diagramN11TZ0P2Q1grid(){
       return '<div class="qb-ms-group">'+label+linesHtml+'</div>';
     }).join('') + '</div>';
   }
+  // The private teacher test maker reuses the bank's verified mark-scheme
+  // renderer so its printable answer booklet contains the same maths and
+  // diagrams as the source bank rather than a second, drifting implementation.
+  window.mrflynnibMarkschemeHTML = markschemeHTML;
 
   // A "<" that is not opening one of our own tags has to be escaped before the
   // string goes anywhere near innerHTML. Question text is full of them -
@@ -551391,7 +551395,7 @@ function diagramN11TZ0P2Q1grid(){
 <script src="/question-bank/whiteboard.js?v=19"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=17"></script>
 <script src="/question-bank/assignment-selector.js?v=25"></script>
-<script src="/question-bank/test-selector.js?v=3"></script>
+<script src="/question-bank/test-selector.js?v=4"></script>
 <script src="/question-bank/assignment-response.js?v=9"></script>
 </body>
 </html>

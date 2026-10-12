@@ -62,9 +62,10 @@
   }
 
   function printableMarkscheme(question) {
-    if (!question || !Array.isArray(question.markscheme) || typeof markschemeHTML !== "function") return "";
+    var renderMarkscheme = window.mrflynnibMarkschemeHTML;
+    if (!question || !Array.isArray(question.markscheme) || typeof renderMarkscheme !== "function") return "";
     var holder = document.createElement("div");
-    holder.innerHTML = markschemeHTML(question);
+    holder.innerHTML = renderMarkscheme(question);
     holder.querySelectorAll("button,.qb-diagram-copy-hint").forEach(function (node) { node.remove(); });
     holder.querySelectorAll(".qb-diagram").forEach(function (diagram) {
       diagram.classList.remove("qb-whiteboard-source");
