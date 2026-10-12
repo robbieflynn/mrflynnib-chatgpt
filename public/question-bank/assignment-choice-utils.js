@@ -659,7 +659,7 @@
     if (!/\bdomain\b/i.test(plainText(prompt))) {
       answer = answer.replace(/\s+\(\s*[A-Za-z][^()]*[≠<>≤≥][^()]*\)\s*$/, "");
     }
-    if (!answer || answer.length > 140) return;
+    if (!answer || answer.length > 140 || isGenericAnswerPlaceholder(answer)) return;
     if (/\b(method|attempt|award|working|substitution|curve|diagram|sketch|proof|explanation)\b/i.test(answer)) return;
     if (/^(?:any|all)\s+(?:correct|valid|possible|reasonable|sensible)\b|^accept any\b|^transformation with correct\b/i.test(answer)) return;
     if (/^(?:or\s+)?equivalent$|^oe$/i.test(answer)) return;
@@ -865,6 +865,28 @@
       return Array.isArray(row) && /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""));
     });
     var finalInstruction = finalInstructionText(completePrompt);
+    if (/\b(?:expression|formula|equation)\b/i.test(finalInstruction)) {
+      for (var placeholderRowIndex = 0; placeholderRowIndex < rows.length; placeholderRowIndex += 1) {
+        var placeholderRow = rows[placeholderRowIndex];
+        if (!Array.isArray(placeholderRow)
+          || !/(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(placeholderRow[1] || ""))
+          || !isGenericExpressionPlaceholder(plainText(placeholderRow[0] || ""))) continue;
+        for (var exampleRowIndex = placeholderRowIndex + 1; exampleRowIndex < rows.length; exampleRowIndex += 1) {
+          var exampleRow = rows[exampleRowIndex];
+          if (!Array.isArray(exampleRow)) continue;
+          if (String(exampleRow[1] || "").trim()) break;
+          if (/^\s*(?:note|notes)\s*:/i.test(plainText(exampleRow[0] || ""))) break;
+          var exampleFragments = mathFragments(String(exampleRow[0] || ""));
+          for (var exampleFragmentIndex = 0; exampleFragmentIndex < exampleFragments.length; exampleFragmentIndex += 1) {
+            var exampleAnswers = [];
+            addRawLatexAnswer(exampleAnswers, exampleFragments[exampleFragmentIndex]);
+            if (exampleAnswers.length) return exampleAnswers;
+            addAcceptedAnswer(exampleAnswers, exampleFragments[exampleFragmentIndex], prompt);
+            if (exampleAnswers.length) return exampleAnswers;
+          }
+        }
+      }
+    }
     if (/\blargest possible domain\b|\b(?:find|state|write down|determine)\s+(?:the\s+)?domain\b/i.test(finalInstruction)) {
       for (var domainRowIndex = creditedRows.length - 1; domainRowIndex >= 0; domainRowIndex -= 1) {
         var domainRestrictions = [];
@@ -2122,6 +2144,8 @@
               || /\b(?:one-to-one|many-to-one|systematic|simple random|stratified|quota|convenience)\b(?:\s*\(sampling\)|\s+sampling)?\b/i.test(rowText)
               || /\b(?:discrete|continuous|can see one another|cannot see one another|closer to its opposite face|probability mass function|reject|do not reject|insufficient evidence|sufficient evidence)\b/i.test(rowText)
               || /^concave\s+(?:up|down)\b/i.test(rowText))));
+    }).filter(function (row) {
+      return mathFragments(String(row[0] || "")).length || !isGenericAnswerPlaceholder(plainText(row[0] || ""));
     });
     if (!answerRows.length) {
       answerRows = rows.filter(function (row) {
@@ -2931,6 +2955,24 @@
       || /^correct answer and valid reasoning(?:\s+[\s\S]*)?$/i.test(answer);
   }
 
+  function isGenericAnswerPlaceholder(value) {
+    var answer = clean(value)
+      .replace(/^\s*\((?:i{1,3}|iv|v|vi{0,3}|ix|x)\)\s*/i, "")
+      .replace(/\s*\((?:seen anywhere|may be seen[^)]*)\)\s*$/i, "")
+      .trim();
+    if (isGenericReasonPlaceholder(answer)) return true;
+    return isGenericExpressionPlaceholder(answer)
+      || /\b(?:any\s+|one\s+|two\s+|a\s+|an\s+|the\s+|fully\s+)*(?:correct|valid|appropriate|acceptable|reasonable|consistent)\s+(?:calculation|method|working|result|response|answer|manipulation|integration|substitution|approach)(?:\s+(?:or|and)\s+(?:values?|calculations?|results?|answers?))?(?:\s+(?:for|in|using|involving|with|which|that|to)\b[^=<>≤≥]*)?$/i.test(answer);
+  }
+
+  function isGenericExpressionPlaceholder(value) {
+    var answer = clean(value)
+      .replace(/^\s*\((?:i{1,3}|iv|v|vi{0,3}|ix|x)\)\s*/i, "")
+      .replace(/\s*\((?:seen anywhere|may be seen[^)]*)\)\s*$/i, "")
+      .trim();
+    return /\b(?:any\s+|one\s+|two\s+|a\s+|an\s+|the\s+|fully\s+)*(?:correct|valid|appropriate|acceptable|reasonable|consistent)\s+(?:expression|equation|formula)(?:\s+(?:or|and)\s+(?:values?|expressions?|equations?|formulae?|answers?))?(?:\s+(?:for|in|using|involving|with|which|that|to)\b[^=<>≤≥]*)?$/i.test(answer);
+  }
+
   function hasMarkingLanguage(value) {
     return /\b(?:award(?:ed)?|follow through|method mark|answer only|correct answer|reasonable attempt|complete solution|transformation with correct|must be seen|do not condone|condone|cao|oe|or equivalent|their answer|their value|markscheme|mark scheme)\b|\([MABRGEN]\d+(?:ft)?\)|\b[MABRGEN]\d+(?:ft)?\b/i.test(String(value || ""));
   }
@@ -2952,7 +2994,7 @@
     var answer = clean(value);
     if (isRawLatexAnswer(answer)) return isSafeRawLatex(answer);
     if (!isDisplaySafe(answer) || hasMarkingLanguage(answer) || hasAwkwardWording(answer)
-      || isGenericReasonPlaceholder(answer) || /\d\.\d+(?:…|\.\.\.)/.test(answer)) return false;
+      || isGenericAnswerPlaceholder(answer) || /\d\.\d+(?:…|\.\.\.)/.test(answer)) return false;
     if (/\/\s*(?:-|0(?:\.0*)?\b)/.test(answer) || /±\s*-/.test(answer)) return false;
     var simpleCoordinates = answer.match(/\(\s*-?[^,();]+\s*,\s*-?[^,();]+\s*\)/g) || [];
     if (new Set(simpleCoordinates.map(canonical)).size !== simpleCoordinates.length) return false;

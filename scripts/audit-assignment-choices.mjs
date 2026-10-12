@@ -129,6 +129,9 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
     if (/\b(?:award|follow through|method mark|answer only|correct answer|reasonable attempt|complete solution|cao|oe)\b|\([MABRGEN]\d+\)|\bft\b/i.test(option)) {
       qualityIssue(`${role}: marking language`, meta, prompt, option, rendered);
     }
+    if (/^(?:\([ivxlcdm]+\)\s*)?(?:any\s+|one\s+|two\s+|a\s+|an\s+|the\s+|fully\s+)*(?:correct|valid|appropriate|acceptable|reasonable|consistent)\s+(?:expression|equation|formula|calculation|method|working|result|response|answer|manipulation|integration|substitution|approach)(?:\s+(?:or|and)\s+(?:values?|expressions?|equations?|formulae?|calculations?|results?|answers?))?(?:\s+(?:for|in|using|involving|with|which|that|to)\b[^=<>≤≥]*)?$/i.test(option.trim())) {
+      qualityIssue(`${role}: internal answer placeholder`, meta, prompt, option, rendered);
+    }
     if (new RegExp(`^[-+]?\\d+(?:\\.\\d+)?\\s+[-+]?\\d+(?:\\.\\d+)?\\s+(?:minutes?|hours?|mins?|hrs?|s|cm|mm|km|m|kg|g|rad|ppm)$`, "i").test(option)) {
       qualityIssue(`${role}: unrounded value joined to final answer`, meta, prompt, option, rendered);
     }
@@ -557,6 +560,29 @@ assert(monotonicityReasonChoices.options.every((option) => !/\b(?:valid|invalid|
 assert.equal(
   choices.toLatex(monotonicityReasonChoices.options[monotonicityReasonChoices.correctOption]),
   String.raw`f'(x) \lt 0\text{ for all }x\text{ in the domain, so }f\text{ is decreasing}`,
+);
+
+assert.equal(choices.generateChoiceSet(["correct expression"], "audit-expression-placeholder"), null);
+const recoveredExpressionAnswers = choices.extractAcceptedAnswers(
+  [
+    ["correct expression", "A1A1"],
+    [String.raw`e.g. \({}^{7}\mathrm{C}_{4}p^4(1-p)^3\), \(35p^4(1-p)^3\)`, ""],
+  ],
+  String.raw`Write down an expression, in terms of \(p\), for the probability that he wins exactly four games.`,
+);
+assert.equal(recoveredExpressionAnswers.length, 1);
+assert(choices.toLatex(recoveredExpressionAnswers[0]).includes("p^4"));
+assert(!recoveredExpressionAnswers.some((answer) => /correct expression/i.test(answer)));
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [
+      ["fully correct expression for the mean", "A1"],
+      [String.raw`\(\dfrac{30(7.5 + 20 + 30 + 42.5)}{120}\)`, ""],
+      [String.raw`\(25\) (minutes)`, "A1"],
+    ],
+    "Hence calculate an estimate of the mean waiting time of these patients.",
+  ),
+  ["25"],
 );
 
 const angleMarkscheme = String.raw`\((\theta =)\ 28.1^\circ\ (28.0724\ldots^\circ)\) OR \(0.490\ (0.489957\ldots)\ rad\)`;
