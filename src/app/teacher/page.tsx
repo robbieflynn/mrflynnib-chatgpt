@@ -27,6 +27,11 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
       {profile.role === "admin" ? <section className="teacher-approval-panel stack-lg"><div className="dashboard-section-heading"><div><p className="eyebrow">Teacher approvals</p><h2>{teacherApplications?.length ? `${teacherApplications.length} awaiting approval` : "Approvals are up to date"}</h2></div><p className="muted">We will also email you when a teacher confirms their address.</p></div>
         {teacherApplications?.length ? <div className="teacher-approval-list">{teacherApplications.map((application) => <div className="teacher-approval-row" key={application.user_id}><span><strong>{application.display_name || "Teacher applicant"}</strong><small>{application.email}{application.teacher_requested_at ? ` · Requested ${new Date(application.teacher_requested_at).toLocaleDateString("en-GB")}` : ""}</small></span><form action={reviewTeacherApplication} className="cluster"><input name="applicantId" type="hidden" value={application.user_id} /><button className="button button-small" name="decision" type="submit" value="approve">Approve</button><button className="button button-secondary button-small" name="decision" type="submit" value="decline">Decline</button></form></div>)}</div> : <div className="dashboard-approval-empty"><DashboardIcon name="check" /><span><strong>No requests need your attention</strong><small>New applications will appear here after email confirmation.</small></span></div>}
       </section> : null}
+      <section className="teacher-tool-banner">
+        <div className="teacher-tool-banner-icon" aria-hidden="true">T</div>
+        <div><p className="eyebrow">Teacher tools</p><h2>Build a printable IB-style test</h2><p>Select questions by course, topic, difficulty and section, then print a professionally formatted paper.</p></div>
+        <Link className="button" href="/teacher/test-maker">Open test maker</Link>
+      </section>
       <div className="teacher-layout">
         <div className="stack-lg">
           <div className="dashboard-section-heading"><div><p className="eyebrow">Classes and assignments</p><h2>Your classes</h2></div><p className="muted">Open a class to set work, share its joining code and review student progress.</p></div>
