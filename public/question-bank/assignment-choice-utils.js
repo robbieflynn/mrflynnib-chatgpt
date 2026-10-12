@@ -5,7 +5,7 @@
 }(typeof globalThis !== "undefined" ? globalThis : this, function (root) {
   "use strict";
 
-  var UNIT_PATTERN = "(?:°|%|rad|ppm|cm(?:\\^[23])?|mm(?:\\^[23])?|km(?:\\^[23])?|m(?:\\^[23])?|ml|litres?|liters?|kg|g|h|s|minutes?|hours?|mins?|hrs?)";
+  var UNIT_PATTERN = "(?:°|%|rad|ppm|(?:cm|mm|km|m)\\/(?:s|h)(?:\\^[23])?|cm(?:\\^[23])?|mm(?:\\^[23])?|km(?:\\^[23])?|m(?:\\^[23])?|ml|litres?|liters?|kg|g|h|s|minutes?|hours?|mins?|hrs?)";
   var RAW_LATEX_COMMAND_PATTERN = /\b(?:math(?:bf|rm|it|sf|tt|bb|cal|normal)|text(?:bf|it|tt|sf|rm)?|boldsymbol|mathbf|operatorname|overrightarrow|displaystyle|textstyle|scriptstyle|scriptscriptstyle)[A-Za-z]*\b/i;
   var LATEX_ANSWER_PREFIX = "latex:";
 
@@ -320,13 +320,20 @@
     var credited = (Array.isArray(rows) ? rows : []).filter(function (row) {
       return Array.isArray(row) && /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""));
     });
+    var fallbackAnswer = "";
     for (var rowIndex = credited.length - 1; rowIndex >= 0; rowIndex -= 1) {
       var fragments = mathFragments(String(credited[rowIndex][0] || ""));
       for (var fragmentIndex = fragments.length - 1; fragmentIndex >= 0; fragmentIndex -= 1) {
         var raw = String(fragments[fragmentIndex] || "").trim();
         if (!/^=\s*/.test(raw)) continue;
         var answer = clean(latexToPlain(raw));
-        if (answer && isChoiceTextSafe(answer) && !/[=<>≤≥]/.test(answer)) return answer;
+        var directFinalAnswer = answer
+          .replace(/^=\s*/, "")
+          .replace(/\s*\(\s*=\s*[-+]?\d+(?:\.\d+)?(?:…|\.\.\.)?\s*\)\s*$/, "")
+          .trim();
+        if (/^[-+]?(?:\d+(?:\.\d+)?|\d+\s*\/\s*\d+)(?:\s*(?:%|°|rad|ppm|cm|mm|km|m|h|s))?$/i.test(directFinalAnswer)
+          && isChoiceTextSafe(directFinalAnswer)) return directFinalAnswer;
+        if (!fallbackAnswer && answer && isChoiceTextSafe(answer) && !/[=<>≤≥]/.test(answer)) fallbackAnswer = answer;
       }
       var text = plainText(credited[rowIndex][0] || "").trim();
       var directText = text.match(/^=\s*(-?\d+(?:\.\d+)?(?:\s*(?:%|°|rad|cm|mm|km|m|s|kg))?)\s*$/i);
@@ -334,7 +341,7 @@
       var reportedRoundedValue = text.match(/^\s*(-?\d+\.\d{2,})\s+-?\d+(?:\.\d+)?\s+\[[^\]]+\](?:\s*\([^)]*\))?\s*$/);
       if (reportedRoundedValue && isChoiceTextSafe(reportedRoundedValue[1])) return clean(reportedRoundedValue[1]);
     }
-    return "";
+    return fallbackAnswer;
   }
 
   function rawIntegralAnswerFromRows(rows, prompt) {
@@ -623,6 +630,43 @@
     return /^(?:[A-Za-z](?:\^-?1)?\([^)]*\)|[A-Za-zα-ω](?:\([^)]*\))?|d[A-Za-z]\/d[A-Za-z])$/i.test(leftSide.replace(/\s+/g, ""));
   }
 
+  function stripParentheticalWorkingPrefix(value) {
+    var answer = clean(value);
+    if (answer[0] !== "(") return answer;
+    var depth = 0;
+    for (var index = 0; index < answer.length; index += 1) {
+      if (answer[index] === "(") depth += 1;
+      else if (answer[index] === ")") depth -= 1;
+      if (depth !== 0) continue;
+      var context = answer.slice(1, index).trim();
+      var result = answer.slice(index + 1).trim();
+      if (result && /=\s*$/.test(context)) return result;
+      return answer;
+    }
+    return answer;
+  }
+
+  function expandParentheticalAnswerPrefix(value) {
+    var answer = clean(value);
+    if (answer[0] !== "(") return answer;
+    var depth = 0;
+    for (var index = 0; index < answer.length; index += 1) {
+      if (answer[index] === "(") depth += 1;
+      else if (answer[index] === ")") depth -= 1;
+      if (depth !== 0) continue;
+      var context = answer.slice(1, index).trim();
+      var result = answer.slice(index + 1).trim();
+      if (!result || !/=\s*$/.test(context)) return answer;
+      var target = context.replace(/=\s*$/, "").trim();
+      if (/^E\s+[A-Za-z]$/.test(target)) target = "E(" + target.slice(-1) + ")";
+      if (/^(?:[A-Za-zα-ω](?:['′]{1,3})?(?:\([^()]+\))?|E\([A-Za-z]\))$/i.test(target)) {
+        return target + " = " + result;
+      }
+      return result;
+    }
+    return answer;
+  }
+
   function addAcceptedAnswer(list, value, prompt) {
     var rawValue = String(value || "")
       .replace(/\s*\(\s*accept\b[\s\S]*$/i, "")
@@ -633,14 +677,19 @@
     answer = answer.replace(/^\(\s*\(\s*([A-Za-z][A-Za-z0-9]*)\s*=\s*\)\s*([\s\S]+)\)$/, "$1=$2");
     answer = answer.replace(/^\(\s*([A-Za-z][A-Za-z0-9]*)\s*=\s*\)\s*/, "$1=");
     answer = answer.replace(/^\(\s*[^()]*=\s*\)\s*(?=[-+]?\d)/, "");
+    answer = stripParentheticalWorkingPrefix(answer);
     answer = answer.replace(/^→\s*/, "");
     answer = answer.replace(/^For\s+\([ivxlcdm]+\)\s*;?\s*/i, "");
     answer = answer.replace(/^\s*\([ivxlcdm]+\)\s*/i, "");
+    answer = stripParentheticalWorkingPrefix(answer);
     answer = answer.replace(/^\s*(?:e\.g\.|for example)\s*/i, "");
     answer = answer.replace(/^\(\s*[A-Za-z]+hat\([A-Za-z]+\)[A-Za-z]+\s*=\s*\)\s*/i, "");
     answer = answer.replace(/^\s*(?:\(\s*)?[$£]\s*\)?\s*/, "");
     answer = answer.replace(/^(.*±[^()]*)\s*\(\s*that is,[\s\S]*\)\s*$/i, "$1").trim();
     answer = answer.replace(/^\(\s*([-+]?\d+(?:\.\d+)?(?:\s*°|\s*%|\s+rad)?)\s*\)$/, "$1");
+    answer = answer.replace(/\s*\(\s*(cm|mm|km|m)\s+(s|h)\s*\^\s*-\s*([12])\s*\)\s*$/i, function (_match, distanceUnit, timeUnit, power) {
+      return " " + distanceUnit.toLowerCase() + "/" + timeUnit.toLowerCase() + (power === "1" ? "" : "^" + power);
+    });
     answer = answer.replace(/\s*\(\s*(ppm|h|hours?|hrs?|minutes?|mins?|s|cm|mm|km|m|kg|g)\s*\)\s*$/i, " $1");
     // Mark schemes often put an unrounded calculator value immediately before the
     // reported answer, for example "4.71104<br>4.71 (minutes)". Once the line break
@@ -2929,7 +2978,7 @@
 
   function normalizeExplanationText(value) {
     var blackboard = { R: "ℝ", C: "ℂ", Q: "ℚ", Z: "ℤ", N: "ℕ" };
-    return clean(value)
+    var answer = clean(value)
       .replace(/^Use isosceles triangle\s+([A-Z]+)\s+to obtain\s+([^.;]+)[.;]?$/i, "$2, because triangle $1 is isosceles")
       .replace(/^valid reasoning,?\s*(?:e\.?g\.?)?\s*/i, "")
       .replace(/\bblackboard\(([RCQZN])\)/gi, function (_match, set) { return blackboard[set.toUpperCase()] || set; })
@@ -2944,6 +2993,7 @@
       .replace(/[,;]?\s+(?:or equivalent|oe)\s*$/i, "")
       .replace(/\s+/g, " ")
       .trim();
+    return expandParentheticalAnswerPrefix(answer);
   }
 
   function isGenericReasonPlaceholder(value) {
@@ -4014,6 +4064,54 @@
         ? { acceptedAnswers: [correct], options: shuffledOptions, correctOption: correctOption }
         : null;
     }
+    if (/f\s*['′]\s*\(\s*100\s*\)[\s\S]*\binterpret\b/i.test(fullQuestion)
+      && /26\.7[\s\S]*(?:annual growth|people per year)/i.test(rowText)) {
+      return fixedExplanationSet(
+        "f′(100) = 26.7, so the model predicts that the population was increasing in 1990 at about 26.7 thousand people per year",
+        [
+          "f′(100) = 26.7, so the model predicts that the population was increasing in 1990 at about 26.7 people per year",
+          "f′(100) = 26.7, so the model predicts that the population was 26.7 thousand people in 1990",
+          "f′(100) = 26.7, so the model predicts that the population was increasing in 1990 by 26.7% per year",
+          "f′(100) = 26.7, so the model predicts that the population was increasing in 1890 at about 26.7 thousand people per year",
+        ],
+      );
+    }
+    if (/\bdescribe the correlation\b[\s\S]*\bvalue of r\b/i.test(fullQuestion)
+      && /-0\.986[\s\S]*strong negative linear correlation/i.test(rowText)) {
+      return fixedExplanationSet(
+        "r = -0.986, so there is a very strong negative linear correlation",
+        [
+          "r = -0.986, so there is a very strong positive linear correlation",
+          "r = -0.986, so there is a weak negative linear correlation",
+          "r = 0.986, so there is a very strong positive linear correlation",
+          "r = 0, so there is no linear correlation",
+        ],
+      );
+    }
+    if (/\bdetermine whether\b[\s\S]*\bchallenge is fair\b/i.test(fullQuestion)
+      && /E\s*\(?G\)?\s*=\s*0[\s\S]*challenge is fair/i.test(rowText)) {
+      return fixedExplanationSet(
+        "E(G) = 0, so the challenge is fair",
+        [
+          "E(G) > 0, so the challenge is unfair in favour of the student",
+          "E(G) < 0, so the challenge is unfair in favour of the organiser",
+          "E(X) = 3.06, so the challenge is fair",
+          "The largest possible gain is positive, so the challenge is fair",
+        ],
+      );
+    }
+    if (/\bdetermine whether\b[\s\S]*\bmass is an outlier\b/i.test(fullQuestion)
+      && /55\s*<\s*75[\s\S]*outlier/i.test(rowText)) {
+      return fixedExplanationSet(
+        "The lower outlier boundary is 75 g; since 55 g < 75 g, the mass is an outlier",
+        [
+          "The lower outlier boundary is 75 g; since 55 g < 75 g, the mass is not an outlier",
+          "The lower outlier boundary is 25 g; since 55 g > 25 g, the mass is an outlier",
+          "The upper outlier boundary is 75 g; since 55 g < 75 g, the mass is not an outlier",
+          "The lower quartile is 150 g; since 55 g < 150 g, every mass below 150 g is an outlier",
+        ],
+      );
+    }
     var monotonicityPrompt = fullQuestion.match(/\bexplain why\s+([A-Za-z])\s+is\s+(?:an?\s+)?(increasing|decreasing)\s+function\b/i);
     if (monotonicityPrompt) {
       var monotonicityFunction = monotonicityPrompt[1];
@@ -4376,6 +4474,8 @@
     if (!unit) return "";
     if (unit === "°") return "^{\\circ}";
     if (unit === "%") return "\\%";
+    var rate = unit.match(/^([a-z]+)\/([a-z]+)(?:\^([23]))?$/i);
+    if (rate) return "\\,\\mathrm{" + rate[1] + "}\\,\\mathrm{" + rate[2] + "}^{-" + (rate[3] || "1") + "}";
     var power = unit.match(/^([a-z]+)\^([23])$/i);
     return power ? "\\,\\mathrm{" + power[1] + "}^{" + power[2] + "}" : "\\,\\mathrm{" + unit + "}";
   }
