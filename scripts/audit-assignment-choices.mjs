@@ -1031,6 +1031,15 @@ assert(unrestrictedRange);
 assert(unrestrictedRange.options.every((option) => !/blackboard\([QZNC]\)/.test(option)));
 assert(unrestrictedRange.options.some((option) => option === "-1≤f(x)≤1"));
 
+const yInterceptAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(y\)-intercept is \(-\dfrac13\) (exact), \(-0.333\), \(\left(0,-\dfrac13\right)\)`, "A1"]],
+  String.raw`Find the \(y\)-intercept.`,
+);
+assert.deepEqual(yInterceptAnswers, ["(0,-1/3)"]);
+const yInterceptChoices = choices.generateChoiceSet(yInterceptAnswers, "audit-y-intercept", "Find the y-intercept.");
+assert(yInterceptChoices);
+assert(yInterceptChoices.options.every((option) => /^\(0,/.test(option)));
+
 const nestedRadicalAnswers = choices.extractAcceptedAnswers(
   [[String.raw`\(r=x\sqrt{\dfrac{3\sqrt3}{\pi}}\)`, "A1"]],
   "Find the radius in terms of x.",

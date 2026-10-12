@@ -1114,6 +1114,17 @@
         if (rowCoordinates.length) return [rowCoordinates[rowCoordinates.length - 1]];
       }
     }
+    if (/\b[xy]-intercept\b/i.test(finalInstruction)) {
+      for (var interceptRowIndex = creditedRows.length - 1; interceptRowIndex >= 0; interceptRowIndex -= 1) {
+        var interceptCoordinates = [];
+        mathFragments(String(creditedRows[interceptRowIndex][0] || "")).forEach(function (fragment) {
+          coordinateTuples(clean(latexToPlain(fragment))).forEach(function (tuple) {
+            if (!interceptCoordinates.some(function (existing) { return equivalent(existing, tuple); })) interceptCoordinates.push(tuple);
+          });
+        });
+        if (interceptCoordinates.length) return [interceptCoordinates[interceptCoordinates.length - 1]];
+      }
+    }
     if (/\b(?:set|range) of values\b|\bvalues?\s+of\s+[A-Za-z]\b/i.test(finalInstruction)) {
       for (var inequalityRowIndex = creditedRows.length - 1; inequalityRowIndex >= 0; inequalityRowIndex -= 1) {
         var inequalityFragments = mathFragments(String(creditedRows[inequalityRowIndex][0] || ""));
@@ -3553,6 +3564,31 @@
     alternatives.forEach(function (alternative) { addCandidate(list, alternative); });
   }
 
+  function interceptCoordinateCandidates(correct, prompt, list) {
+    var instruction = finalInstructionText(prompt);
+    var axis = instruction.match(/\b([xy])-intercept\b/i);
+    if (!axis) return;
+    var tuples = coordinateTuples(clean(correct));
+    if (tuples.length !== 1) return;
+    var inner = tuples[0].slice(1, -1);
+    var commas = topLevelPositions(inner, function (character) { return character === ","; });
+    if (commas.length !== 1) return;
+    var coordinates = [inner.slice(0, commas[0]).trim(), inner.slice(commas[0] + 1).trim()];
+    var varyingIndex = axis[1].toLowerCase() === "y" ? 1 : 0;
+    var fixedIndex = varyingIndex === 1 ? 0 : 1;
+    if (numericValue(coordinates[fixedIndex]) !== 0) return;
+    var valueCandidates = [];
+    fractionCandidates(coordinates[varyingIndex], valueCandidates);
+    simpleNumberCandidates(coordinates[varyingIndex], valueCandidates);
+    radicalCandidates(coordinates[varyingIndex], valueCandidates);
+    mutateNumberTokens(coordinates[varyingIndex], valueCandidates);
+    valueCandidates.forEach(function (candidate) {
+      var changed = coordinates.slice();
+      changed[varyingIndex] = candidate;
+      addCandidate(list, "(" + changed.join(",") + ")");
+    });
+  }
+
   function setMembershipCandidates(correct, list) {
     var expression = clean(correct);
     var match = expression.match(/^(.+?)∈blackboard\(([RQCZN])\)$/i);
@@ -3771,6 +3807,7 @@
     if (/\b(?:null\s+and\s+alternative\s+hypotheses|hypotheses)\b/i.test(finalInstruction)
       && !/;/.test(correct)) return null;
     var candidates = [];
+    interceptCoordinateCandidates(correct, prompt, candidates);
     fractionCandidates(correct, candidates);
     simpleNumberCandidates(correct, candidates);
     radicalCandidates(correct, candidates);
