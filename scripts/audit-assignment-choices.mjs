@@ -105,6 +105,19 @@ function qualityIssue(kind, meta, prompt, option, rendered) {
   choiceQualityIssues.push({ kind, meta, prompt: plainText(prompt), option, rendered });
 }
 
+function hasParentheticalWorkingPrefix(value) {
+  const answer = String(value || "").trim();
+  if (!answer.startsWith("(")) return false;
+  let depth = 0;
+  for (let index = 0; index < answer.length; index += 1) {
+    if (answer[index] === "(") depth += 1;
+    else if (answer[index] === ")") depth -= 1;
+    if (depth !== 0) continue;
+    return /=\s*$/.test(answer.slice(1, index).trim()) && Boolean(answer.slice(index + 1).trim());
+  }
+  return false;
+}
+
 function inspectChoiceQuality(set, meta, prompt, rows = []) {
   if (!set) return;
   const correct = set.options[set.correctOption];
@@ -131,6 +144,9 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
     }
     if (/^(?:\([ivxlcdm]+\)\s*)?(?:any\s+|one\s+|two\s+|a\s+|an\s+|the\s+|fully\s+)*(?:correct|valid|appropriate|acceptable|reasonable|consistent)\s+(?:expression|equation|formula|calculation|method|working|result|response|answer|manipulation|integration|substitution|approach)(?:\s+(?:or|and)\s+(?:values?|expressions?|equations?|formulae?|calculations?|results?|answers?))?(?:\s+(?:for|in|using|involving|with|which|that|to)\b[^=<>≤≥]*)?$/i.test(option.trim())) {
       qualityIssue(`${role}: internal answer placeholder`, meta, prompt, option, rendered);
+    }
+    if (hasParentheticalWorkingPrefix(option) || /\\lim[^=]*\\times|lim_\([^)]*\)\s*\*/i.test(`${option} ${rendered}`)) {
+      qualityIssue(`${role}: optional working shown as the answer`, meta, prompt, option, rendered);
     }
     if (new RegExp(`^[-+]?\\d+(?:\\.\\d+)?\\s+[-+]?\\d+(?:\\.\\d+)?\\s+(?:minutes?|hours?|mins?|hrs?|s|cm|mm|km|m|kg|g|rad|ppm)$`, "i").test(option)) {
       qualityIssue(`${role}: unrounded value joined to final answer`, meta, prompt, option, rendered);
@@ -416,6 +432,55 @@ assert.deepEqual(
   ),
   ["1/6"],
 );
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [
+      [String.raw`\(\displaystyle\lim_{x\to 0}\dfrac{2\mathrm{e}^{x}\cos 2x-2-2x+3x^{2}}{x^{3}}=\lim_{x\to 0}\left(-\dfrac{11}{3}-\dfrac{7}{12}x+\ldots\right)\)`, "(A1)"],
+      [String.raw`\(=-\dfrac{11}{3}\ \left(=-3.66666\ldots\right)\)`, "A1"],
+    ],
+    String.raw`Hence, or otherwise, evaluate \(\displaystyle\lim_{x\to 0}\dfrac{2\mathrm{e}^{x}\cos 2x-2-2x+3x^{2}}{x^{3}}\).`,
+  ),
+  ["-11/3"],
+);
+
+const derivativeInterpretationChoices = choices.generateExplanationChoiceSet(
+  [
+    [String.raw`(i) \(\left(f'(100)=\right)\ 26.7\ (26.7059\ldots)\)`, "A1"],
+    [String.raw`recognition that the value predicts the annual growth in 1990 as \(26.7\) thousands of people per year`, "A1"],
+  ],
+  String.raw`Find the value of \(f'(100)\) and interpret this value in context.`,
+  "audit-derivative-interpretation",
+);
+assert(derivativeInterpretationChoices);
+assert.equal(derivativeInterpretationChoices.acceptedAnswers[0], "f′(100) = 26.7, so the model predicts that the population was increasing in 1990 at about 26.7 thousand people per year");
+assert(derivativeInterpretationChoices.options.every((option) => !hasParentheticalWorkingPrefix(option)));
+
+const correlationExplanationChoices = choices.generateExplanationChoiceSet(
+  [
+    [String.raw`(ii) \((r =)\ -0.986\ (-0.985843\ldots)\)`, "A1"],
+    ["a (very) strong negative linear correlation", "R1"],
+  ],
+  String.raw`Describe the correlation between \(D\) and \(C\), referring to the value of \(r\).`,
+  "audit-correlation-explanation",
+);
+assert(correlationExplanationChoices);
+assert.equal(correlationExplanationChoices.acceptedAnswers[0], "r = -0.986, so there is a very strong negative linear correlation");
+
+const fairnessExplanationChoices = choices.generateExplanationChoiceSet(
+  [[String.raw`\((\text{E}(G) =)\ 0\)`, "A1"], [String.raw`\(\text{E}(G) = 0\), therefore the challenge is fair`, "R1"]],
+  "Determine whether this challenge is fair. Justify your answer.",
+  "audit-fairness-explanation",
+);
+assert(fairnessExplanationChoices);
+assert.equal(fairnessExplanationChoices.acceptedAnswers[0], "E(G) = 0, so the challenge is fair");
+
+const outlierExplanationChoices = choices.generateExplanationChoiceSet(
+  [[String.raw`\((150 - 1.5 \times 50 =)\ 75\ (\text{g})\)`, "A1"], [String.raw`\(55 < 75\), therefore it is an outlier`, "R1"]],
+  "One of the potatoes has a mass of 55 g. Determine whether this mass is an outlier.",
+  "audit-outlier-explanation",
+);
+assert(outlierExplanationChoices);
+assert.equal(outlierExplanationChoices.acceptedAnswers[0], "The lower outlier boundary is 75 g; since 55 g < 75 g, the mass is an outlier");
 
 const comparisonReasonChoices = choices.generateComparisonReasonChoiceSet(
   [["The approximate value is less than the actual value because dy/dx is actually an increasing function.", "R1"]],
@@ -584,6 +649,19 @@ assert.deepEqual(
   ),
   ["25"],
 );
+
+const cleanAsymptoticAnswers = choices.extractAcceptedAnswers(
+  [
+    ["(i) considering large values of \\(t\\)", "(M1)"],
+    [String.raw`(i) \(\left(\displaystyle\lim_{t\to\infty}\left(v(t)\right)=\right)6.25\ (\text{m s}^{-1})\)`, "A1"],
+  ],
+  "Write down the value that v(t) approaches as t becomes very large.",
+);
+assert.deepEqual(cleanAsymptoticAnswers, ["6.25 m/s"]);
+assert.equal(choices.toLatex(cleanAsymptoticAnswers[0]), String.raw`6.25\,\mathrm{m}\,\mathrm{s}^{-1}`);
+const cleanAsymptoticChoices = choices.generateChoiceSet(cleanAsymptoticAnswers, "audit-asymptotic-answer");
+assert(cleanAsymptoticChoices);
+assert(cleanAsymptoticChoices.options.every((option) => !/lim|=|\([^)]*m\/s[^)]*\)/i.test(option)));
 
 const angleMarkscheme = String.raw`\((\theta =)\ 28.1^\circ\ (28.0724\ldots^\circ)\) OR \(0.490\ (0.489957\ldots)\ rad\)`;
 const angleAnswers = choices.extractAcceptedAnswers([[angleMarkscheme, "A1"]], "Find the angle.");
