@@ -387,11 +387,14 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-order-buttons button:disabled { opacity: .35; cursor: default; }
 .test-order-buttons button:not(:disabled):hover { border-color: #8ab5cf; background: #eef7fc; color: var(--teal-dark); }
 .test-remove-question:hover { border-color: #c87a7a; background: #fff6f6; color: #922f2f; }
-.test-preview-section { padding-top: 1rem; border-top: 1px solid var(--line); }
-.test-preview-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; }
+.test-preview-overlay { position: fixed; inset: 0; z-index: 1000; padding: clamp(.75rem, 3vw, 2rem); overflow: auto; background: rgba(5, 14, 32, .76); backdrop-filter: blur(8px); }
+.test-preview-modal { width: min(1180px, 100%); margin: 0 auto; overflow: hidden; border-radius: 1.25rem; background: #eef2f4; box-shadow: 0 28px 90px rgba(0,0,0,.38); }
+.test-preview-toolbar { position: sticky; top: 0; z-index: 3; padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; border-bottom: 1px solid #cad5da; background: rgba(255,255,255,.96); backdrop-filter: blur(12px); }
 .test-preview-toolbar > div { display: grid; gap: .25rem; }
-.test-preview-empty { min-height: 220px; display: grid; place-content: center; gap: .25rem; border: 1px dashed #aebfc8; border-radius: 1.1rem; background: #f8fafb; color: var(--muted); text-align: center; }
-.test-preview-empty strong { color: var(--ink); font-size: 1.1rem; }
+.test-preview-toolbar h2 { font-size: 1.35rem; }
+.test-preview-toolbar p:last-child { color: var(--muted); font-size: .8rem; }
+.test-preview-pages { padding: clamp(1rem, 3vw, 2rem); overflow: auto; }
+.test-preview-pages .test-print-root { margin-top: 0; }
 
 .test-print-root { margin-top: 1.5rem; display: grid; gap: 1.5rem; justify-items: center; color: #111; font-family: Arial, Helvetica, sans-serif; }
 .test-page { position: relative; width: min(100%, 210mm); min-height: 297mm; padding: 17mm 17mm 18mm 20mm; overflow: hidden; background: white; box-shadow: 0 18px 55px rgba(11,21,48,.14); }
@@ -794,7 +797,11 @@ a.teacher-list-row:hover { background: var(--sky); }
   .test-selection-list .test-order-buttons { grid-column: 3; grid-row: 2; }
   .test-selection-list .test-remove-question { grid-column: 2; width: fit-content; }
   .test-preview-toolbar { align-items: stretch; flex-direction: column; }
+  .test-preview-toolbar .cluster { display: grid; grid-template-columns: 1fr 1fr; }
   .test-preview-toolbar .button { width: 100%; }
+  .test-preview-overlay { padding: 0; }
+  .test-preview-modal { min-height: 100%; border-radius: 0; }
+  .test-preview-pages { padding: .75rem; }
   .test-page { min-height: auto; padding: 1.5rem; }
   .test-paper-footer { position: static; margin-top: 2rem; }
   .test-cover-title { min-height: 0; padding: 3rem 0; }
@@ -817,8 +824,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 @media print {
   @page { size: A4 portrait; margin: 0; }
   body { margin: 0 !important; background: white !important; }
-  .site-header, .footer, .skip-link, .test-builder-ui, .teacher-workspace-hero { display: none !important; }
+  .site-header, .footer, .skip-link, .test-builder-ui, .teacher-workspace-hero, .test-preview-toolbar { display: none !important; }
   #main-content, .test-maker-workspace, .test-maker-workspace > .section-tight, .test-maker-workspace > .section-tight > .container { width: auto !important; max-width: none !important; margin: 0 !important; padding: 0 !important; background: white !important; }
+  .test-preview-overlay, .test-preview-modal, .test-preview-pages { position: static !important; width: auto !important; max-width: none !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; border-radius: 0 !important; background: white !important; box-shadow: none !important; backdrop-filter: none !important; }
   .test-print-root { margin: 0; display: block; }
   .test-page { width: 210mm; min-height: 297mm; margin: 0; padding: 17mm 17mm 18mm 20mm; overflow: visible; box-shadow: none; break-after: auto; page-break-after: auto; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .test-page + .test-page { break-before: page; page-break-before: always; }

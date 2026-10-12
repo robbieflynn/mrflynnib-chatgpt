@@ -72,7 +72,7 @@ export function TestMaker() {
   const [testDate, setTestDate] = useState("");
   const [includeAnswerSpace, setIncludeAnswerSpace] = useState(true);
   const [questions, setQuestions] = useState<TestQuestion[]>([]);
-  const previewRef = useRef<HTMLDivElement>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const source = useMemo(() => {
     const query = new URLSearchParams({
@@ -116,6 +116,7 @@ export function TestMaker() {
           .slice(0, 50)
           .map((item: TestQuestion) => ({ ...item, section: item.section === "B" ? "B" : "A" }));
         setQuestions(next);
+        if (!next.length) setPreviewOpen(false);
       }
     };
     let ticking = false;
@@ -135,7 +136,22 @@ export function TestMaker() {
     };
   }, [loadMoreIfNeeded, source]);
 
+  useEffect(() => {
+    if (!previewOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPreviewOpen(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [previewOpen]);
+
   const resetForPaper = (nextPaper: Paper) => {
+    setPreviewOpen(false);
     setQuestions([]);
     frameHeightRef.current = 640;
     setFrameHeight(640);
@@ -144,6 +160,7 @@ export function TestMaker() {
   };
 
   const resetForCourse = (nextCourse: Course) => {
+    setPreviewOpen(false);
     setQuestions([]);
     frameHeightRef.current = 640;
     setFrameHeight(640);
@@ -156,6 +173,7 @@ export function TestMaker() {
   };
 
   const clearQuestions = () => {
+    setPreviewOpen(false);
     frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-test-clear" }, window.location.origin);
   };
 
@@ -212,7 +230,7 @@ export function TestMaker() {
             <div className="assignment-picker-summary" aria-live="polite">
               <span className="assignment-picker-summary-copy"><strong>{questions.length} {questions.length === 1 ? "question" : "questions"} selected</strong><span>{totalMarks} {totalMarks === 1 ? "mark" : "marks"} in total</span></span>
               <span className="cluster">
-                {questions.length ? <button className="button button-secondary button-small" type="button" onClick={() => previewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}>Preview test</button> : null}
+                {questions.length ? <button className="button button-secondary button-small" type="button" onClick={() => setPreviewOpen(true)}>Preview test</button> : null}
                 {questions.length ? <button className="button button-secondary button-small" type="button" onClick={clearQuestions}>Remove all</button> : null}
               </span>
             </div>
@@ -232,16 +250,16 @@ export function TestMaker() {
           </div>
         </section>
 
-        <section className="test-preview-section stack-lg" ref={previewRef} aria-labelledby="test-preview-heading">
-          <div className="test-preview-toolbar">
-            <div><p className="eyebrow">Print preview</p><h2 id="test-preview-heading">Your test paper</h2><p className="muted">Review the paper below. Your browser&apos;s print window can save the same layout as a PDF.</p></div>
-            <button className="button" type="button" disabled={!questions.length} onClick={() => window.print()}>Print or save as PDF</button>
-          </div>
-          {!questions.length ? <div className="test-preview-empty"><strong>Your test preview will appear here</strong><span>Select at least one question from the bank.</span></div> : null}
-        </section>
       </div>
 
-      {questions.length ? <div className="test-print-root" aria-label="Printable test preview">
+      {questions.length && previewOpen ? <div className="test-preview-overlay" role="dialog" aria-modal="true" aria-labelledby="test-preview-heading" onMouseDown={(event) => { if (event.target === event.currentTarget) setPreviewOpen(false); }}>
+        <div className="test-preview-modal">
+          <div className="test-preview-toolbar">
+            <div><p className="eyebrow">Print preview</p><h2 id="test-preview-heading">Your test paper</h2><p>Review every page below, then print it or save it as a PDF.</p></div>
+            <span className="cluster"><button className="button button-secondary" type="button" onClick={() => setPreviewOpen(false)}>Close preview</button><button className="button" type="button" onClick={() => window.print()}>Print or save as PDF</button></span>
+          </div>
+          <div className="test-preview-pages">
+      <div className="test-print-root" aria-label="Printable test preview">
         <section className="test-page test-cover-page">
           <header className="test-paper-brand"><span>MR FLYNN IB</span><small>Teacher-created practice paper</small></header>
           <div className="test-cover-title"><p>Practice examination</p><h1>{title || "Mathematics practice test"}</h1><h2>{courseNames[course]}</h2><strong>{paper}</strong>{school ? <span>{school}</span> : null}</div>
@@ -259,6 +277,9 @@ export function TestMaker() {
           </div>
           <footer className="test-paper-footer"><span>{title || "Mathematics practice test"}</span><span>Section {section}</span></footer>
         </section> : null)}
+      </div>
+          </div>
+        </div>
       </div> : null}
     </>
   );
