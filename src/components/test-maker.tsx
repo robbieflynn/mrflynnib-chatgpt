@@ -26,8 +26,8 @@ const courseNames: Record<Course, string> = {
   "AI SL": "Mathematics: applications and interpretation, standard level",
 };
 
-function draftId(course: Course, paper: Paper) {
-  return `test-maker-${course}-${paper}`.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+function draftId(course: Course) {
+  return `test-maker-${course}`.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 }
 
 function SummaryMath({ children }: { children: string }) {
@@ -79,11 +79,10 @@ export function TestMaker() {
       course,
       embedded: "1",
       test: "1",
-      testPaper: paper,
-      draft: draftId(course, paper),
+      draft: draftId(course),
     });
     return `/question-bank/ib-bank.html?${query.toString()}`;
-  }, [course, paper]);
+  }, [course]);
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
@@ -150,15 +149,6 @@ export function TestMaker() {
     };
   }, [previewOpen]);
 
-  const resetForPaper = (nextPaper: Paper) => {
-    setPreviewOpen(false);
-    setQuestions([]);
-    frameHeightRef.current = 640;
-    setFrameHeight(640);
-    hasMoreRef.current = true;
-    setPaper(nextPaper);
-  };
-
   const resetForCourse = (nextCourse: Course) => {
     setPreviewOpen(false);
     setQuestions([]);
@@ -214,7 +204,7 @@ export function TestMaker() {
             <label className="field"><span>Test title</span><input value={title} maxLength={100} onChange={(event) => setTitle(event.target.value)} /></label>
             <label className="field"><span>School or class <small className="muted">(optional)</small></span><input value={school} maxLength={100} placeholder="Year 13 Mathematics" onChange={(event) => setSchool(event.target.value)} /></label>
             <label className="field"><span>Course</span><select value={course} onChange={(event) => resetForCourse(event.target.value as Course)}><option>AA HL</option><option>AA SL</option><option>AI HL</option><option>AI SL</option></select></label>
-            <label className="field"><span>Paper</span><select value={paper} onChange={(event) => resetForPaper(event.target.value as Paper)}><option>Paper 1</option><option>Paper 2</option></select></label>
+            <label className="field"><span>Test paper format</span><select value={paper} onChange={(event) => setPaper(event.target.value as Paper)}><option>Paper 1</option><option>Paper 2</option></select><small className="muted">Controls the cover and calculator instruction. It does not restrict which questions you can browse.</small></label>
             <label className="field"><span>Time allowed in minutes</span><input inputMode="numeric" value={duration} onChange={(event) => setDuration(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>
             <label className="field"><span>Test date <small className="muted">(optional)</small></span><input type="date" value={testDate} onChange={(event) => setTestDate(event.target.value)} /></label>
             <label className="test-maker-check field-full"><input type="checkbox" checked={includeAnswerSpace} onChange={(event) => setIncludeAnswerSpace(event.target.checked)} /><span><strong>Include lined answer space</strong><small>Turn this off if students will answer on separate paper.</small></span></label>
@@ -224,7 +214,7 @@ export function TestMaker() {
         <section className="stack-lg" aria-labelledby="test-questions-heading">
           <div className="teacher-section-heading">
             <div><p className="eyebrow">Question bank</p><h2 id="test-questions-heading">Choose questions</h2></div>
-            <p className="muted">Use the topic, subtopic, difficulty and section filters below. Questions are renumbered automatically and original source details never appear in the test.</p>
+            <p className="muted">Use the paper, topic, subtopic, difficulty and section filters below. The full course bank is available, questions are renumbered automatically, and original source details never appear in the test.</p>
           </div>
           <div className="assignment-picker test-question-picker stack">
             <div className="assignment-picker-summary" aria-live="polite">
