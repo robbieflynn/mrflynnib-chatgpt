@@ -1013,6 +1013,24 @@ const intervalAnswers = choices.extractAcceptedAnswers(
 assert.deepEqual(intervalAnswers, ["[-3, 3/2]"]);
 assert(choices.generateChoiceSet(intervalAnswers, "audit-interval"));
 
+const unrestrictedDomain = choices.generateChoiceSet(
+  ["x∈blackboard(R)"],
+  "audit-unrestricted-domain",
+  "State the domain of f.",
+);
+assert(unrestrictedDomain);
+assert(unrestrictedDomain.options.every((option) => !/blackboard\([QZNC]\)/.test(option)));
+assert(unrestrictedDomain.options.some((option) => option === "x≠0"));
+
+const unrestrictedRange = choices.generateChoiceSet(
+  ["f(x)∈blackboard(R)"],
+  "audit-unrestricted-range",
+  "State the range of f.",
+);
+assert(unrestrictedRange);
+assert(unrestrictedRange.options.every((option) => !/blackboard\([QZNC]\)/.test(option)));
+assert(unrestrictedRange.options.some((option) => option === "-1≤f(x)≤1"));
+
 const nestedRadicalAnswers = choices.extractAcceptedAnswers(
   [[String.raw`\(r=x\sqrt{\dfrac{3\sqrt3}{\pi}}\)`, "A1"]],
   "Find the radius in terms of x.",

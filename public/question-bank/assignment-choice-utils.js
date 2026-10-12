@@ -3540,6 +3540,19 @@
     addCandidate(list, expression.replace(/∞/g, "1"));
   }
 
+  function domainRangeMembershipCandidates(correct, prompt, list) {
+    var instruction = finalInstructionText(prompt);
+    if (!/\b(?:domain|range)\b/i.test(instruction)) return;
+    var expression = clean(correct);
+    var match = expression.match(/^(.+?)∈blackboard\(([RQCZN])\)$/i);
+    if (!match || match[2].toUpperCase() !== "R") return;
+    var subject = match[1].trim();
+    var alternatives = /\brange\b/i.test(instruction)
+      ? [subject + "≥0", subject + ">0", subject + "≤0", "-1≤" + subject + "≤1"]
+      : [subject + ">0", subject + "≥0", subject + "≠0", subject + "≤0"];
+    alternatives.forEach(function (alternative) { addCandidate(list, alternative); });
+  }
+
   function setMembershipCandidates(correct, list) {
     var expression = clean(correct);
     var match = expression.match(/^(.+?)∈blackboard\(([RQCZN])\)$/i);
@@ -3778,6 +3791,7 @@
     mutateNumberTokens(correct, candidates);
     relationMutationCandidates(correct, candidates);
     intervalCandidates(correct, candidates);
+    domainRangeMembershipCandidates(correct, prompt, candidates);
     setMembershipCandidates(correct, candidates);
     setExpressionCandidates(correct, candidates);
     symbolicCandidates(correct, candidates);
