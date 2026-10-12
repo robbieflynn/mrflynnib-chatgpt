@@ -302,6 +302,30 @@ function assignmentPartConfigs(question) {
     } else {
       const label = topLabel || "answer";
       const accepted = choices.extractAcceptedAnswers(rows, prompt);
+      if (question.id === "M17TZ1HL_P1_Q1" && part === "") {
+        assert.deepEqual(accepted, ["60"], `An intermediate logarithm step was selected: ${JSON.stringify(accepted)}`);
+      }
+      if (question.id === "M16TZ1HL_P2_Q8" && part === "") {
+        assert.deepEqual(accepted, ["-6"], `The completed-square working was selected instead of the minimum: ${JSON.stringify(accepted)}`);
+      }
+      if (question.id === "M11TZ1HL_P1_Q10" && part === "a") {
+        assert.deepEqual(accepted, ["x≠ 0; x≠ 2a"], `The domain lost one of its exclusions: ${JSON.stringify(accepted)}`);
+      }
+      if (question.id === "M10TZ0HL_P3_Q4" && part === "c") {
+        assert.deepEqual(accepted, ["1/6"], `The limit working was selected instead of its value: ${JSON.stringify(accepted)}`);
+      }
+      if (question.id === "M10TZ0HL_P3_Q4" && part === "d") {
+        assert.equal(accepted[0], "0.25326; No, the approximation is not correct to the requested number of decimal places");
+      }
+      if (question.id === "A_M23TZ2SL_P2_Q3" && part === "a") {
+        assert(choices.toLatex(accepted[0]).includes(String.raw`\mathrm{ppm}`), `ppm was not typeset as a unit: ${JSON.stringify(accepted)}`);
+      }
+      if (question.id === "A_M23TZ2SL_P2_Q3" && part === "c") {
+        assert.equal(choices.toLatex(accepted[0]), String.raw`T=13.9\,\mathrm{h}`);
+      }
+      if (question.id === "M10TZ2HL_P2_Q8" && part === "a") {
+        assert(!choices.toLatex(accepted[0]).includes(String.raw`\n`), `n was rendered as a LaTeX command: ${JSON.stringify(accepted)}`);
+      }
       configs.push({ label, prompt, accepted, rows, choices: choiceSetForRows(rows, prompt, `${question.id}:${label}`) });
     }
   }
@@ -348,6 +372,43 @@ assert.equal(choices.isDisplaySafe("(a)(x))"), false);
 assert.equal(choices.toLatex("2*x"), String.raw`2\times x`);
 assert.equal(choices.toLatex("y - x"), "y-x");
 assert.equal(choices.toLatex("ln x"), String.raw`\ln\left(x\right)`);
+assert.equal(choices.toLatex("(n(n^2-15n+8))/6"), String.raw`\frac{\left(n\left(n^{2}-15n+8\right)\right)}{6}`);
+assert.equal(choices.toLatex("C(0)=3.0 ppm"), String.raw`C(0)=3.0\,\mathrm{ppm}`);
+assert.equal(choices.toLatex("1+1/2 x^2+3/8 x^4"), String.raw`1+\left(\frac{1}{2}\right)\times x^{2}+\left(\frac{3}{8}\right)\times x^{4}`);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [
+      [String.raw`e.g. \(\dfrac{x}{5}=12\) OR \(\dfrac{x}{15}=2^2\)`, "(A1)"],
+      [String.raw`\(x=60\)`, "A1"],
+    ],
+    String.raw`Find the solution of \(\log_2x-\log_25=2+\log_23\).`,
+  ),
+  ["60"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [
+      [String.raw`OR \(b=a^2+4a-2=(a+2)^2-6\)`, "M1(A1)"],
+      [String.raw`THEN \(b\ge-6\), hence the smallest possible value for \(b\) is \(-6\)`, "A1"],
+    ],
+    String.raw`Find the smallest possible value for \(b\).`,
+  ),
+  ["-6"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`\(f(x-a)\ne b\)`, "(M1)"], [String.raw`\(x\ne0\) and \(x\ne2a\)`, "A1"]],
+    String.raw`Find the largest possible domain of \(g\).`,
+  ),
+  ["x\u22600; x\u22602a"],
+);
+assert.deepEqual(
+  choices.extractAcceptedAnswers(
+    [[String.raw`\(\displaystyle\lim_{x\to0}\frac{x^6/6}{x^6}\)`, "M1"], [String.raw`\(=\dfrac16\)`, "A1"]],
+    String.raw`Evaluate \(\displaystyle\lim_{x\to0}f(x)\).`,
+  ),
+  ["1/6"],
+);
 
 const comparisonReasonChoices = choices.generateComparisonReasonChoiceSet(
   [["The approximate value is less than the actual value because dy/dx is actually an increasing function.", "R1"]],
