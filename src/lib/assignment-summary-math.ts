@@ -40,8 +40,12 @@ export function mathematicalSummaryTitle(value: string) {
   let text = value.replace(/\\\(([\s\S]*?)\\\)/g, (_match, expression) => stash(expression, true));
   text = text.replace(/\b(cos|sin|tan)\s+([A-Z]{1,4})\s*=\s*(-?\d+)\s*\/\s*(-?\d+)/g, (_match, fn, points, numerator, denominator) => stash(`\\${fn} ${points} = \\frac{${numerator}}{${denominator}}`, true));
   text = text.replace(/\b(cos|sin|tan)\s+([A-Z]{1,4})\b/g, (_match, fn, points) => stash(`\\${fn} ${points}`, true));
-  text = text.replace(/\bangle\s+([A-Z]{2,4})\s*=\s*(-?\d+(?:\.\d+)?)°/gi, (_match, points, angle) => stash(String.raw`\angle ${points} = ${angle}^{\circ}`, true));
-  text = text.replace(/\bangle\s+([A-Z]{2,4})\b/gi, (_match, points) => stash(String.raw`\angle ${points}`, true));
+  // Keep the word "angle" case-insensitive while requiring point labels to be
+  // genuinely uppercase. Using the /i flag here caused ordinary title phrases
+  // such as "Angle in a semicircle" to be misread as the expression ∠in.
+  const angleWord = String.raw`[Aa][Nn][Gg][Ll][Ee]`;
+  text = text.replace(new RegExp(`\\b${angleWord}\\s+([A-Z]{2,4})\\s*=\\s*(-?\\d+(?:\\.\\d+)?)°`, "g"), (_match, points, angle) => stash(String.raw`\angle ${points} = ${angle}^{\circ}`, true));
+  text = text.replace(new RegExp(`\\b${angleWord}\\s+([A-Z]{2,4})\\b`, "g"), (_match, points) => stash(String.raw`\angle ${points}`, true));
   text = text.replace(/\b([A-Za-z]{1,3}\([^():;]*[+\-−×÷/][^():;]*\)(?:[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]+|\^(?:\([^()]+\)|-?\d+))?)/g, (maths) => stash(maths));
   const plainExponent = "(?:[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]+|\\^(?:\\([^()]+\\)|-?\\d+))?";
   text = text.replace(new RegExp(`\\b(\\d+\\s*\\/\\s*\\([^()]+\\)${plainExponent})`, "g"), (maths) => stash(maths));
