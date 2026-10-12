@@ -135,6 +135,7 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
     if (option.length > 260) qualityIssue(`${role}: too long`, meta, prompt, option, rendered);
     if (/\b(\w{3,})\s+\1\b/i.test(option)
       || /\bon the floor on the floor\b|\bbecause because\b|\bmight have (?:received no report|refused to respond|finished responding) to\b/i.test(option)
+      || /^(?:\([ivxlcdm]+\)\s*)?(?:(?:biased|invalid|inconclusive|unreliable|valid|correct|appropriate|reasonable|consistent)\s+)?reason(?:ing)?\s+with reference to\b/i.test(option)
       || /\bexpression is not (?:biased|inconclusive|unreliable|invalid)\b|\b(?:minimum|maximum|initial|total) value \([^)]*\)|\b(?:complete|decisive|conclusive) evidence\b/i.test(option)) {
       qualityIssue(`${role}: awkward wording`, meta, prompt, option, rendered);
     }
@@ -538,6 +539,26 @@ const derivativeExplanationChoices = choices.generateExplanationChoiceSet(
 assert(derivativeExplanationChoices);
 assert(derivativeExplanationChoices.options.every((option) => !choices.toLatex(option).includes("/")));
 
+const monotonicityReasonChoices = choices.generateExplanationChoiceSet(
+  [
+    ["(ii) valid reason with reference to derivative", "R1"],
+    [String.raw`e.g. \(f'(x) < 0\), derivative always negative`, ""],
+  ],
+  "Hence, explain why f is a decreasing function.",
+  "audit-monotonicity-reason",
+);
+assert(monotonicityReasonChoices);
+assert.equal(
+  monotonicityReasonChoices.options[monotonicityReasonChoices.correctOption],
+  String.raw`latex:f'(x) \lt 0\text{ for all }x\text{ in the domain, so }f\text{ is decreasing}`,
+);
+assert.equal(monotonicityReasonChoices.options.length, 5);
+assert(monotonicityReasonChoices.options.every((option) => !/\b(?:valid|invalid|biased|inconclusive|unreliable) reason\b/i.test(option)));
+assert.equal(
+  choices.toLatex(monotonicityReasonChoices.options[monotonicityReasonChoices.correctOption]),
+  String.raw`f'(x) \lt 0\text{ for all }x\text{ in the domain, so }f\text{ is decreasing}`,
+);
+
 const angleMarkscheme = String.raw`\((\theta =)\ 28.1^\circ\ (28.0724\ldots^\circ)\) OR \(0.490\ (0.489957\ldots)\ rad\)`;
 const angleAnswers = choices.extractAcceptedAnswers([[angleMarkscheme, "A1"]], "Find the angle.");
 assert.deepEqual(angleAnswers, ["28.1°", "0.490 rad"]);
@@ -912,6 +933,7 @@ let verifiedComplexArgumentQuestion = false;
 let verifiedInverseFunctionQuestion = false;
 let verifiedComparisonReasonQuestion = false;
 let verifiedMaclaurinSeriesQuestion = false;
+let verifiedMonotonicityReasonQuestion = false;
 const objectiveFallbacks = [];
 for (const [label, path] of banks) {
   const questions = extractSeed(path);
@@ -974,6 +996,15 @@ for (const [label, path] of banks) {
           assert(nestedSet, `Column-vector answer was not generated for ${question.id} ${part}(${nestedLabel})`);
           assert(nestedSet.options.every((option) => choices.toLatex(option).includes(String.raw`\begin{pmatrix}`)));
           verifiedColumnVectorQuestion = true;
+        }
+        if (question.id === "M10TZ1SL_P2_Q9" && part === "c" && nestedLabel === "ii") {
+          assert(nestedSet, "The real decreasing-function explanation did not produce choices.");
+          assert.equal(
+            choices.toLatex(nestedSet.options[nestedSet.correctOption]),
+            String.raw`f'(x) \lt 0\text{ for all }x\text{ in the domain, so }f\text{ is decreasing}`,
+          );
+          assert.equal(nestedSet.options.length, 5);
+          verifiedMonotonicityReasonQuestion = true;
         }
       }
       const accepted = choices.extractAcceptedAnswers(rows, prompt);
@@ -1075,6 +1106,7 @@ assert(verifiedComplexArgumentQuestion, "The real complex-argument regression qu
 assert(verifiedInverseFunctionQuestion, "The real inverse-function regression question was not audited.");
 assert(verifiedComparisonReasonQuestion, "The real Euler comparison-and-reason question was not audited.");
 assert(verifiedMaclaurinSeriesQuestion, "The real Maclaurin-series regression question was not audited.");
+assert(verifiedMonotonicityReasonQuestion, "The real decreasing-function explanation question was not audited.");
 console.log(`Total: ${generated}/${checked} mark-scheme answer groups produced five safe choices; every generated set passed notation, duplicate and accepted-answer checks.`);
 console.log(`Nested parts: ${nestedGenerated}/${nestedChecked} answerable parts produced five safe choices; drawing, proof and show-that parts remained whiteboard tasks.`);
 let allActiveQuestions = 0;
