@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 10 October 2026
+Last updated: 12 October 2026
 
 ## Purpose of this file
 
@@ -145,6 +145,8 @@ The student-data Supabase project is hosted specifically in **West EU (Ireland)*
 On 6 October 2026, production authentication email for the Ireland Supabase student platform was moved from Supabase's testing-only shared mailer to Resend custom SMTP. Authentication messages use the sender name **Mr Flynn IB** and `accounts@mrflynnib.com`, with a dedicated sending-only Resend credential restricted to `mrflynnib.com`. The Supabase authentication email rate limit is configured for 100 messages per hour, while the Resend free-plan daily allowance remains the practical overall limit. The website account form provides a self-service option to resend a signup confirmation email. Student accounts, passwords and platform data remain in Supabase; Resend is used only to deliver transactional authentication email.
 
 The IB and IGCSE question-bank journeys must both present **Student dashboard** and **Teacher dashboard** as separate, explicit choices within their own curriculum areas. They must not share an identity or account page. The teacher route must introduce that curriculum's account page as a teacher journey and preselect Teacher when a new account is created. Approved teacher accounts must open the clearly labelled teacher dashboard rather than the student progress dashboard; student dashboards focus on completed questions and whiteboards, while teacher dashboards focus on classes and assignments. IB and IGCSE classes, questions and assignments remain fully separated after sign-in.
+
+Within the IGCSE area, the **Question bank** navigation link is account-aware. A signed-in IGCSE student or teacher goes to their corresponding dashboard, which is the natural starting point for saved progress, classes and assignments. A visitor who is not signed in still goes directly to the public IGCSE question bank, where clear **Student sign in** and **Teacher sign in** actions are available without blocking access to the questions.
 
 Rob has confirmed that he previously worked with the IB and received direct guidance that questions may be used when they have been changed sufficiently. He confirms that the questions intended for this bank have been changed accordingly and does not want their original sources displayed publicly. Treat this as Rob's product-owner confirmation rather than an independently verified legal opinion. Preserve any private provenance or working notes included in supplied files, but do not add public source labels unless Rob requests them or a particular third-party licence expressly requires attribution.
 
