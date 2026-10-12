@@ -129,6 +129,9 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
     if (/\b(?:award|follow through|method mark|answer only|correct answer|reasonable attempt|complete solution|cao|oe)\b|\([MABRGEN]\d+\)|\bft\b/i.test(option)) {
       qualityIssue(`${role}: marking language`, meta, prompt, option, rendered);
     }
+    if (new RegExp(`^[-+]?\\d+(?:\\.\\d+)?\\s+[-+]?\\d+(?:\\.\\d+)?\\s+(?:minutes?|hours?|mins?|hrs?|s|cm|mm|km|m|kg|g|rad|ppm)$`, "i").test(option)) {
+      qualityIssue(`${role}: unrounded value joined to final answer`, meta, prompt, option, rendered);
+    }
     if (option.length > 260) qualityIssue(`${role}: too long`, meta, prompt, option, rendered);
     if (/\b(\w{3,})\s+\1\b/i.test(option)
       || /\bon the floor on the floor\b|\bbecause because\b|\bmight have (?:received no report|refused to respond|finished responding) to\b/i.test(option)
@@ -741,6 +744,15 @@ const labelledRoundedAnswers = choices.extractAcceptedAnswers(
 );
 assert.deepEqual(labelledRoundedAnswers, ["7.81 m"]);
 assert(choices.generateChoiceSet(labelledRoundedAnswers, "audit-labelled-rounded"));
+
+const lineBreakRoundedAnswers = choices.extractAcceptedAnswers(
+  [["4.71104<br>4.71 (minutes)", "A2 N3"]],
+  "How long will it take for the barrel to be half-full?",
+);
+assert.deepEqual(lineBreakRoundedAnswers, ["4.71 minutes"]);
+const lineBreakRoundedChoices = choices.generateChoiceSet(lineBreakRoundedAnswers, "audit-line-break-rounded");
+assert(lineBreakRoundedChoices);
+assert(lineBreakRoundedChoices.options.every((option) => !/^[-+]?\d+(?:\.\d+)?\s+[-+]?\d/.test(option)));
 
 const distributionAnswers = choices.extractAcceptedAnswers(
   [[String.raw`\(\overline{X}\sim N\left(\mu,\dfrac{\sigma^2}{100}\right)\)`, "A1"]],
