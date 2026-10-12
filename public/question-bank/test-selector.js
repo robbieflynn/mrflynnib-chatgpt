@@ -40,9 +40,44 @@
     var body = card && card.querySelector(".qb-body");
     if (!body) return "";
     var clone = body.cloneNode(true);
-    clone.querySelectorAll(".qb-ms-toggle,.qb-sol-toggle,.qb-markscheme,.qb-solution").forEach(function (node) { node.remove(); });
+    clone.querySelectorAll("button,.qb-ms-toggle,.qb-sol-toggle,.qb-markscheme,.qb-solution,.qb-whiteboard,.qb-whiteboard-resizer,.qb-diagram-copy-hint").forEach(function (node) { node.remove(); });
+    clone.querySelectorAll(".qb-diagram").forEach(function (diagram) {
+      diagram.classList.remove("qb-whiteboard-source");
+      diagram.removeAttribute("data-whiteboard-source");
+      diagram.querySelectorAll("svg").forEach(function (svg) {
+        svg.removeAttribute("role");
+        svg.removeAttribute("tabindex");
+        svg.removeAttribute("aria-label");
+        svg.removeAttribute("title");
+      });
+    });
+    clone.querySelectorAll(".qb-question-pane").forEach(function (pane) {
+      pane.replaceWith.apply(pane, Array.from(pane.childNodes));
+    });
+    clone.querySelectorAll(".qb-question-workspace").forEach(function (workspace) {
+      workspace.replaceWith.apply(workspace, Array.from(workspace.childNodes));
+    });
     clone.querySelectorAll("[id]").forEach(function (node) { node.removeAttribute("id"); });
     return clone.innerHTML;
+  }
+
+  function printableMarkscheme(question) {
+    if (!question || !Array.isArray(question.markscheme) || typeof markschemeHTML !== "function") return "";
+    var holder = document.createElement("div");
+    holder.innerHTML = markschemeHTML(question);
+    holder.querySelectorAll("button,.qb-diagram-copy-hint").forEach(function (node) { node.remove(); });
+    holder.querySelectorAll(".qb-diagram").forEach(function (diagram) {
+      diagram.classList.remove("qb-whiteboard-source");
+      diagram.removeAttribute("data-whiteboard-source");
+      diagram.querySelectorAll("svg").forEach(function (svg) {
+        svg.removeAttribute("role");
+        svg.removeAttribute("tabindex");
+        svg.removeAttribute("aria-label");
+        svg.removeAttribute("title");
+      });
+    });
+    holder.querySelectorAll("[id]").forEach(function (node) { node.removeAttribute("id"); });
+    return holder.innerHTML;
   }
 
   function summaryFor(card) {
@@ -58,7 +93,8 @@
       paper: cleanText(question.paperNumber),
       section: question.section === "B" ? "B" : "A",
       marks: Number(question.marks) || 0,
-      html: printableHTML(card)
+      html: printableHTML(card),
+      markSchemeHtml: printableMarkscheme(question)
     };
   }
 

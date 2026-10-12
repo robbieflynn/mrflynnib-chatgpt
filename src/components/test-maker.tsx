@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
 import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
 
@@ -17,7 +17,10 @@ type TestQuestion = {
   section: Section;
   marks: number;
   html: string;
+  markSchemeHtml?: string;
 };
+
+type NumberedQuestion = TestQuestion & { number: number };
 
 const courseNames: Record<Course, string> = {
   "AA HL": "Mathematics: analysis and approaches, higher level",
@@ -45,17 +48,79 @@ function SummaryMath({ children }: { children: string }) {
   return <>{pieces}</>;
 }
 
-function QuestionMarkup({ question, number, includeAnswerSpace }: { question: TestQuestion; number: number; includeAnswerSpace: boolean }) {
+function AnswerBox({ marks }: { marks: number }) {
+  const lines = Math.max(6, Math.min(12, marks + 3));
+  return <div className="test-answer-box" aria-hidden="true">{Array.from({ length: lines }, (_, index) => <span className="test-answer-line" key={index} />)}</div>;
+}
+
+function needsContinuationPage(question: TestQuestion) {
+  const diagramCount = (question.html.match(/<svg\b/gi) || []).length;
+  const tableCount = (question.html.match(/<table\b/gi) || []).length;
+  const textOnlyLength = question.html.replace(/<svg[\s\S]*?<\/svg>/gi, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().length;
+  return diagramCount > 1 || (diagramCount === 1 && (question.marks >= 7 || textOnlyLength > 900)) || tableCount > 1 || textOnlyLength > 2100;
+}
+
+function QuestionMarkup({ question }: { question: NumberedQuestion }) {
   return (
     <article className="test-paper-question">
       <div className="test-paper-question-heading">
-        <strong>{number}.</strong>
+        <strong>{question.number}.</strong>
         <span>[Maximum mark: {question.marks}]</span>
       </div>
       <div className="test-question-body" dangerouslySetInnerHTML={{ __html: question.html }} />
-      {includeAnswerSpace ? <div className="test-answer-space" style={{ "--answer-lines": Math.max(2, Math.min(6, Math.ceil(question.marks / 2))) } as React.CSSProperties} aria-hidden="true" /> : null}
     </article>
   );
+}
+
+function PageFooter({ label }: { label: string }) {
+  return <footer className="test-paper-footer"><span>Mr Flynn IB</span><span>{label}</span></footer>;
+}
+
+function SectionAIntro() {
+  return <div className="test-exam-opening">
+    <p className="test-working-notice">Full marks are not necessarily awarded for a correct answer with no working. Answers must be supported by working and/or explanations. Where an answer is incorrect, some marks may be given for a correct method, provided this is shown by written working. You are therefore advised to show all working.</p>
+    <h2>Section A</h2>
+    <p>Answer all questions. Answers must be written within the answer boxes provided. Working may be continued below the lines, if necessary.</p>
+  </div>;
+}
+
+function SectionBIntro() {
+  return <div className="test-exam-opening test-section-b-opening"><p>Do not write solutions on this page.</p><h2>Section B</h2><p>Answer all questions in the booklet provided.</p></div>;
+}
+
+function SectionAQuestionPages({ question, first, includeAnswerSpace, paperTitle }: { question: NumberedQuestion; first: boolean; includeAnswerSpace: boolean; paperTitle: string }) {
+  const continuation = includeAnswerSpace && needsContinuationPage(question);
+  return <Fragment>
+    <section className="test-page test-question-page">
+      {first ? <SectionAIntro /> : null}
+      <QuestionMarkup question={question} />
+      {includeAnswerSpace && !continuation ? <AnswerBox marks={question.marks} /> : null}
+      {continuation ? <p className="test-continues">This question continues on the following page.</p> : null}
+      <PageFooter label={paperTitle} />
+    </section>
+    {continuation ? <section className="test-page test-question-page test-continuation-page">
+      <p className="test-continuation-heading">(Question {question.number} continued)</p>
+      <AnswerBox marks={question.marks} />
+      <PageFooter label={paperTitle} />
+    </section> : null}
+  </Fragment>;
+}
+
+function SectionBQuestionPage({ question, first, paperTitle }: { question: NumberedQuestion; first: boolean; paperTitle: string }) {
+  return <section className="test-page test-question-page test-section-b-page">
+    {first ? <SectionBIntro /> : null}
+    <QuestionMarkup question={question} />
+    <PageFooter label={paperTitle} />
+  </section>;
+}
+
+function MarkSchemePage({ question, first, paperTitle }: { question: NumberedQuestion; first: boolean; paperTitle: string }) {
+  return <section className="test-page test-markscheme-page">
+    {first ? <div className="test-markscheme-title"><h2>Mark scheme</h2><p>For teacher use</p></div> : null}
+    <div className="test-paper-question-heading"><strong>{question.number}.</strong><span>[Maximum mark: {question.marks}]</span></div>
+    {question.markSchemeHtml ? <div className="test-markscheme-content" dangerouslySetInnerHTML={{ __html: question.markSchemeHtml }} /> : <p className="test-markscheme-unavailable">No mark scheme is available for this question.</p>}
+    <PageFooter label={`${paperTitle} · Mark scheme`} />
+  </section>;
 }
 
 export function TestMaker() {
@@ -71,6 +136,7 @@ export function TestMaker() {
   const [duration, setDuration] = useState("90");
   const [testDate, setTestDate] = useState("");
   const [includeAnswerSpace, setIncludeAnswerSpace] = useState(true);
+  const [includeMarkScheme, setIncludeMarkScheme] = useState(true);
   const [questions, setQuestions] = useState<TestQuestion[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
 
@@ -181,16 +247,15 @@ export function TestMaker() {
     setQuestions((current) => current.map((question) => question.id === id ? { ...question, section } : question));
   };
 
+  const numberedQuestions = useMemo(() => questions.map((question, index) => ({ ...question, number: index + 1 })), [questions]);
   const sections = useMemo(() => ({
-    A: questions.filter((question) => question.section === "A"),
-    B: questions.filter((question) => question.section === "B"),
-  }), [questions]);
+    A: numberedQuestions.filter((question) => question.section === "A"),
+    B: numberedQuestions.filter((question) => question.section === "B"),
+  }), [numberedQuestions]);
   const totalMarks = questions.reduce((total, question) => total + question.marks, 0);
   const calculatorCopy = course.startsWith("AI") || paper === "Paper 2"
     ? "A graphic display calculator is required for this paper."
     : "A calculator is not permitted for this paper.";
-
-  let questionNumber = 0;
 
   return (
     <>
@@ -207,7 +272,8 @@ export function TestMaker() {
             <label className="field"><span>Test paper format</span><select value={paper} onChange={(event) => setPaper(event.target.value as Paper)}><option>Paper 1</option><option>Paper 2</option></select><small className="muted">Controls the cover and calculator instruction. It does not restrict which questions you can browse.</small></label>
             <label className="field"><span>Time allowed in minutes</span><input inputMode="numeric" value={duration} onChange={(event) => setDuration(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>
             <label className="field"><span>Test date <small className="muted">(optional)</small></span><input type="date" value={testDate} onChange={(event) => setTestDate(event.target.value)} /></label>
-            <label className="test-maker-check field-full"><input type="checkbox" checked={includeAnswerSpace} onChange={(event) => setIncludeAnswerSpace(event.target.checked)} /><span><strong>Include lined answer space</strong><small>Turn this off if students will answer on separate paper.</small></span></label>
+            <label className="test-maker-check field-full"><input type="checkbox" checked={includeAnswerSpace} onChange={(event) => setIncludeAnswerSpace(event.target.checked)} /><span><strong>Include Section A answer boxes</strong><small>Each Section A question receives its own bordered writing area, with a continuation page when the question or diagram needs more room.</small></span></label>
+            <label className="test-maker-check field-full"><input type="checkbox" checked={includeMarkScheme} onChange={(event) => setIncludeMarkScheme(event.target.checked)} /><span><strong>Include the mark scheme</strong><small>Add a separate teacher mark scheme after the test paper.</small></span></label>
           </div>
         </section>
 
@@ -249,25 +315,19 @@ export function TestMaker() {
             <span className="cluster"><button className="button button-secondary" type="button" onClick={() => setPreviewOpen(false)}>Close preview</button><button className="button" type="button" onClick={() => window.print()}>Print or save as PDF</button></span>
           </div>
           <div className="test-preview-pages">
-      <div className="test-print-root" aria-label="Printable test preview">
-        <section className="test-page test-cover-page">
-          <header className="test-paper-brand"><span>MR FLYNN IB</span><small>Teacher-created practice paper</small></header>
-          <div className="test-cover-title"><p>Practice examination</p><h1>{title || "Mathematics practice test"}</h1><h2>{courseNames[course]}</h2><strong>{paper}</strong>{school ? <span>{school}</span> : null}</div>
-          <dl className="test-cover-facts"><div><dt>Time allowed</dt><dd>{duration || "90"} minutes</dd></div><div><dt>Maximum mark</dt><dd>{totalMarks}</dd></div></dl>
-          <div className="test-candidate-fields"><span>Name</span><i /><span>Class</span><i /><span>Date</span><i>{testDate ? new Date(`${testDate}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}</i></div>
-          <section className="test-instructions"><h3>Instructions to candidates</h3><ul><li>Do not begin until instructed.</li><li>{calculatorCopy}</li><li>A clean copy of the mathematics formula booklet may be used.</li><li>Show all working. Unsupported answers may not receive full marks.</li><li>Unless otherwise stated, give exact answers or answers correct to three significant figures.</li><li>Answer every question in the sections included in this paper.</li></ul></section>
-          <footer className="test-paper-footer"><span>Mr Flynn IB</span><span>Practice paper</span></footer>
-        </section>
+            <div className="test-print-root" aria-label="Printable test preview">
+              <section className="test-page test-cover-page">
+                <div className="test-cover-title"><h2>{courseNames[course]}</h2><strong>{paper}</strong><h1>{title || "Mathematics practice test"}</h1>{school ? <span>{school}</span> : null}</div>
+                <div className="test-candidate-fields"><span>Name</span><i /><span>Class</span><i /><span>Date</span><i>{testDate ? new Date(`${testDate}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}</i></div>
+                <p className="test-time-allowed">{duration || "90"} minutes</p>
+                <section className="test-instructions"><h3>Instructions to candidates</h3><ul><li>Do not open this paper until instructed to do so.</li><li>{calculatorCopy}</li>{sections.A.length ? <li>Section A: answer all questions. Answers must be written within the answer boxes provided.</li> : null}{sections.B.length ? <li>Section B: answer all questions in the booklet provided.</li> : null}<li>Unless otherwise stated in the question, all numerical answers should be given exactly or correct to three significant figures.</li><li>A clean copy of the appropriate mathematics formula booklet is required for this paper.</li><li>The maximum mark for this paper is [{totalMarks} marks].</li></ul></section>
+                <PageFooter label="Teacher-created practice paper" />
+              </section>
 
-        {(["A", "B"] as Section[]).map((section) => sections[section].length ? <section className="test-page test-section-page" key={section}>
-          <header className="test-running-header"><span>{course}</span><span>{paper}</span></header>
-          <div className="test-section-intro"><p>Section {section}</p><h2>{section === "A" ? "Short-response questions" : "Extended-response questions"}</h2><span>{section === "A" ? "Answer all questions. Show your method clearly." : "Answer all questions. Give full reasoning and working where appropriate."}</span></div>
-          <div className="test-paper-questions">
-            {sections[section].map((question) => { questionNumber += 1; return <QuestionMarkup includeAnswerSpace={includeAnswerSpace} key={question.id} number={questionNumber} question={question} />; })}
-          </div>
-          <footer className="test-paper-footer"><span>{title || "Mathematics practice test"}</span><span>Section {section}</span></footer>
-        </section> : null)}
-      </div>
+              {sections.A.map((question, index) => <SectionAQuestionPages first={index === 0} includeAnswerSpace={includeAnswerSpace} key={question.id} paperTitle={title || "Mathematics practice test"} question={question} />)}
+              {sections.B.map((question, index) => <SectionBQuestionPage first={index === 0} key={question.id} paperTitle={title || "Mathematics practice test"} question={question} />)}
+              {includeMarkScheme ? numberedQuestions.map((question, index) => <MarkSchemePage first={index === 0} key={`markscheme-${question.id}`} paperTitle={title || "Mathematics practice test"} question={question} />) : null}
+            </div>
           </div>
         </div>
       </div> : null}

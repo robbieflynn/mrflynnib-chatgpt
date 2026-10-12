@@ -397,55 +397,67 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-preview-pages .test-print-root { margin-top: 0; }
 
 .test-print-root { margin-top: 1.5rem; display: grid; gap: 1.5rem; justify-items: center; color: #111; font-family: Arial, Helvetica, sans-serif; }
-.test-page { position: relative; width: min(100%, 210mm); min-height: 297mm; padding: 17mm 17mm 18mm 20mm; overflow: hidden; background: white; box-shadow: 0 18px 55px rgba(11,21,48,.14); }
-.test-paper-brand, .test-running-header { padding-bottom: 4mm; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: .5mm solid #111; }
-.test-paper-brand span { font-size: 13pt; font-weight: 900; letter-spacing: .16em; }
-.test-paper-brand small, .test-running-header { font-size: 8pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
-.test-cover-title { min-height: 98mm; padding: 29mm 0 18mm; display: flex; flex-direction: column; align-items: flex-start; }
-.test-cover-title p { margin: 0 0 5mm; font-size: 10pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-.test-cover-title h1 { max-width: 15ch; margin: 0; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 31pt; line-height: 1.02; letter-spacing: -.035em; }
-.test-cover-title h2 { max-width: 32ch; margin: 8mm 0 3mm; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 14pt; font-weight: 500; line-height: 1.25; }
-.test-cover-title strong { font-size: 18pt; }
-.test-cover-title > span { margin-top: 6mm; font-size: 10pt; }
-.test-cover-facts { margin: 0 0 10mm; display: grid; grid-template-columns: 1fr 1fr; border: .4mm solid #111; }
-.test-cover-facts div { padding: 4mm 5mm; display: flex; justify-content: space-between; gap: 1rem; }
-.test-cover-facts div + div { border-left: .3mm solid #111; }
-.test-cover-facts dt { font-size: 9pt; font-weight: 700; }
-.test-cover-facts dd { margin: 0; font-size: 9pt; }
-.test-candidate-fields { margin-bottom: 10mm; display: grid; grid-template-columns: auto 1fr; align-items: end; gap: 5mm 4mm; font-size: 9pt; }
+.test-page { position: relative; width: min(100%, 210mm); min-height: 297mm; padding: 14mm 18mm 18mm 18mm; overflow: hidden; background: white; box-shadow: 0 18px 55px rgba(11,21,48,.14); }
+.test-cover-page, .test-question-page { display: flex; flex-direction: column; }
+.test-cover-title { min-height: 91mm; padding: 15mm 0 13mm; display: flex; flex-direction: column; align-items: flex-start; }
+.test-cover-title h2 { max-width: 34ch; margin: 0; color: #111; font: 400 14pt/1.3 Arial, Helvetica, sans-serif; }
+.test-cover-title strong { margin-top: 2mm; font-size: 13pt; }
+.test-cover-title h1 { max-width: 22ch; margin: 17mm 0 0; color: #111; font: 600 25pt/1.08 Arial, Helvetica, sans-serif; letter-spacing: -.025em; }
+.test-cover-title > span { margin-top: 5mm; font-size: 10pt; }
+.test-candidate-fields { margin-bottom: 9mm; display: grid; grid-template-columns: auto 1fr; align-items: end; gap: 5mm 4mm; font-size: 9pt; }
 .test-candidate-fields i { min-height: 6mm; border-bottom: .3mm solid #111; font-style: normal; text-align: right; }
-.test-instructions { padding: 6mm; border: .4mm solid #111; }
-.test-instructions h3 { margin: 0 0 3mm; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 11pt; }
-.test-instructions ul { margin: 0; padding-left: 5mm; display: grid; gap: 1.4mm; }
-.test-instructions li { font-size: 8.5pt; line-height: 1.35; }
-.test-paper-footer { position: absolute; right: 17mm; bottom: 8mm; left: 20mm; padding-top: 2mm; display: flex; justify-content: space-between; border-top: .25mm solid #777; color: #555; font-size: 7.5pt; }
+.test-time-allowed { margin: 0 0 7mm; font-size: 10pt; }
+.test-instructions { padding: 0; border: 0; }
+.test-instructions h3 { margin: 0 0 3mm; color: #111; font: 700 10pt/1.3 Arial, Helvetica, sans-serif; }
+.test-instructions ul { margin: 0; padding-left: 5mm; display: grid; gap: 1.5mm; }
+.test-instructions li { padding-left: 1mm; font-size: 9pt; line-height: 1.35; }
+.test-paper-footer { position: absolute; right: 18mm; bottom: 7mm; left: 18mm; display: flex; justify-content: space-between; color: #555; font-size: 7pt; }
 .test-paper-footer span:last-child { margin-left: auto; }
-.test-section-page { overflow: visible; }
-.test-section-intro { margin: 10mm 0 12mm; padding: 7mm 0; display: grid; gap: 1.5mm; border-top: .7mm solid #111; border-bottom: .3mm solid #111; }
-.test-section-intro p { margin: 0 0 1.5mm; font-size: 9pt; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-.test-section-intro h2 { margin: 0 0 2mm; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 21pt; letter-spacing: -.02em; }
-.test-section-intro p, .test-section-intro h2, .test-section-intro span { display: block; }
-.test-section-intro span { font-size: 9pt; }
-.test-paper-questions { display: grid; gap: 12mm; padding-bottom: 9mm; }
+.test-exam-opening { margin-bottom: 8mm; font-size: 9.5pt; line-height: 1.42; }
+.test-exam-opening p { margin: 0; }
+.test-exam-opening .test-working-notice { margin-bottom: 9mm; }
+.test-exam-opening h2 { margin: 0 0 6mm; color: #111; font: 700 11pt/1.2 Arial, Helvetica, sans-serif; text-align: center; }
+.test-section-b-opening > p:first-child { margin-bottom: 17mm; text-align: center; }
+.test-section-b-opening h2 { margin-bottom: 6mm; }
 .test-paper-question { break-inside: avoid-page; page-break-inside: avoid; }
-.test-paper-question-heading { margin-bottom: 4mm; display: flex; justify-content: space-between; gap: 1rem; }
-.test-paper-question-heading strong { font-size: 12pt; }
-.test-paper-question-heading span { color: #333; font-size: 8.5pt; font-style: italic; }
-.test-question-body { padding-left: 7mm; font-family: "Times New Roman", Times, serif; font-size: 11.5pt; line-height: 1.55; }
-.test-question-body p { margin: 0 0 4mm; }
+.test-paper-question-heading { margin-bottom: 5mm; display: flex; justify-content: flex-start; align-items: baseline; gap: 8mm; }
+.test-paper-question-heading strong { font-size: 10pt; }
+.test-paper-question-heading span { color: #333; font-size: 9pt; }
+.test-question-body { padding-left: 8mm; font: 9.5pt/1.45 Arial, Helvetica, sans-serif; }
+.test-question-body p, .test-question-body .qb-stem { margin: 0 0 4mm; }
 .test-question-body .qb-parts, .test-question-body .qb-subparts { margin: 3mm 0 0; padding: 0; display: grid; gap: 4mm; list-style: none; }
 .test-question-body .qb-parts > li { display: grid; grid-template-columns: 9mm minmax(0, 1fr); align-items: start; }
 .test-question-body .qb-parts > li > b { font-weight: 700; }
 .test-question-body .qb-subparts > li { display: grid; grid-template-columns: 10mm minmax(0, 1fr); align-items: start; }
 .test-question-body .qb-part-text, .test-question-body .qb-sub-text { min-width: 0; }
-.test-question-body .qb-marks-tag { float: right; margin-left: 5mm; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; font-style: italic; white-space: nowrap; }
-.test-question-body .qb-diagram { margin: 6mm auto; display: grid; place-items: center; }
-.test-question-body .qb-diagram svg, .test-question-body svg { max-width: 100%; max-height: 86mm; }
-.test-question-body table { width: 100%; margin: 4mm 0; border-collapse: collapse; font-size: 9.5pt; }
+.test-question-body .qb-marks-tag { float: right; margin-left: 5mm; color: #333; font: 9pt/1.3 Arial, Helvetica, sans-serif; white-space: nowrap; }
+.test-question-body .qb-question-workspace, .test-question-body .qb-question-pane { display: contents; }
+.test-question-body button, .test-question-body .qb-whiteboard, .test-question-body .qb-whiteboard-resizer, .test-question-body .qb-diagram-copy-hint { display: none !important; }
+.test-question-body .qb-diagram { margin: 5mm auto; padding: 0 !important; display: grid; place-items: center; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
+.test-question-body .qb-diagram svg, .test-question-body svg { width: auto; max-width: 100%; max-height: 90mm; border: 0 !important; background: transparent !important; box-shadow: none !important; }
+.test-question-body table { width: 100%; margin: 4mm 0; border-collapse: collapse; font-size: 9pt; }
 .test-question-body th, .test-question-body td { padding: 2mm; border: .25mm solid #222; text-align: center; }
-.test-question-body .katex { font-size: 1em; }
-.test-question-body .katex-display { margin: 4mm 0; overflow: visible; }
-.test-answer-space { height: calc(var(--answer-lines) * 8mm); margin: 7mm 0 0 7mm; background: repeating-linear-gradient(to bottom, transparent 0, transparent calc(8mm - .2mm), #b9b9b9 calc(8mm - .2mm), #b9b9b9 8mm); }
+.test-question-body .katex, .test-question-body .katex-display > .katex { font-size: 1em; }
+.test-question-body .katex-display { margin: 3mm 0; overflow: visible; }
+.test-answer-box { min-height: 72mm; margin-top: 7mm; padding: 10mm 8mm 8mm; flex: 1; border: .28mm solid #666; }
+.test-answer-line { height: 7.5mm; display: block; border-top: .25mm dotted #777; }
+.test-continuation-heading { margin: 0 0 8mm; font-size: 9pt; text-align: center; }
+.test-continuation-page .test-answer-box { margin-top: 0; }
+.test-continues { margin: auto 0 1mm; font-size: 8pt; text-align: right; }
+.test-section-b-page .test-paper-question { margin-top: 1mm; }
+.test-markscheme-title { margin-bottom: 12mm; text-align: center; }
+.test-markscheme-title h2 { margin: 0; color: #111; font: 700 15pt/1.2 Arial, Helvetica, sans-serif; }
+.test-markscheme-title p { margin: 2mm 0 0; font-size: 8pt; }
+.test-markscheme-content { padding-left: 8mm; font-size: 9pt; line-height: 1.4; }
+.test-markscheme-content .qb-ms-group { margin-bottom: 5mm; }
+.test-markscheme-content .qb-ms-label { margin-bottom: 2mm; font-weight: 700; }
+.test-markscheme-content .qb-ms-lines { margin: 0; padding-left: 6mm; list-style: none; }
+.test-markscheme-content .qb-ms-lines li { padding: 1.5mm 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8mm; border-bottom: .2mm solid #ddd; }
+.test-markscheme-content .qb-ms-tag { font-weight: 700; white-space: nowrap; }
+.test-markscheme-content .qb-diagram { margin: 5mm auto; text-align: center; }
+.test-markscheme-content svg { max-width: 100%; max-height: 80mm; }
+.test-markscheme-content .katex { font-size: 1em; }
+.test-markscheme-unavailable { padding-left: 8mm; font-size: 9pt; }
 .student-classes-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .35fr); gap: 1.5rem; align-items: start; }
 .teacher-access-card strong { font-size: 1.05rem; }
 .assignment-status-bar { padding: 1rem 1.15rem; display: grid; grid-template-columns: auto minmax(140px, 1fr) auto auto auto; align-items: center; gap: 1.2rem; border-radius: 1.1rem; background: linear-gradient(135deg, #102652, var(--ink)); color: white; }
@@ -828,11 +840,10 @@ a.teacher-list-row:hover { background: var(--sky); }
   #main-content, .test-maker-workspace, .test-maker-workspace > .section-tight, .test-maker-workspace > .section-tight > .container { width: auto !important; max-width: none !important; margin: 0 !important; padding: 0 !important; background: white !important; }
   .test-preview-overlay, .test-preview-modal, .test-preview-pages { position: static !important; width: auto !important; max-width: none !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; border-radius: 0 !important; background: white !important; box-shadow: none !important; backdrop-filter: none !important; }
   .test-print-root { margin: 0; display: block; }
-  .test-page { width: 210mm; min-height: 297mm; margin: 0; padding: 17mm 17mm 18mm 20mm; overflow: visible; box-shadow: none; break-after: auto; page-break-after: auto; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .test-page { width: 210mm; height: 297mm; min-height: 297mm; margin: 0; padding: 14mm 18mm 18mm; overflow: hidden; box-shadow: none; break-after: auto; page-break-after: auto; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .test-markscheme-page { height: auto; overflow: visible; }
   .test-page + .test-page { break-before: page; page-break-before: always; }
-  .test-section-intro { break-after: avoid-page; page-break-after: avoid; }
-  .test-paper-questions { display: block !important; }
-  .test-paper-question { margin-bottom: 12mm; break-inside: auto !important; page-break-inside: auto !important; }
+  .test-paper-question { break-inside: avoid-page; page-break-inside: avoid; }
   .test-question-body .qb-diagram, .test-question-body table, .test-question-body .katex-display { break-inside: avoid; page-break-inside: avoid; }
 }
 
