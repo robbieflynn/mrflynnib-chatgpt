@@ -99,7 +99,22 @@
     };
   }
 
+  function refreshStoredMarkschemes() {
+    var getQuestion = window.mrflynnibQuestionById;
+    if (typeof getQuestion !== "function") return;
+    selected.forEach(function (id) {
+      var saved = details[id];
+      if (!saved || saved.markSchemeHtml) return;
+      var markSchemeHtml = printableMarkscheme(getQuestion(id));
+      if (markSchemeHtml) saved.markSchemeHtml = markSchemeHtml;
+    });
+  }
+
   function publish() {
+    // Older saved drafts did not contain mark-scheme HTML. Enrich every
+    // selected question from the loaded bank, including questions that are not
+    // on the currently visible filtered page.
+    refreshStoredMarkschemes();
     var published = selected.map(function (id) { return details[id]; }).filter(Boolean);
     if (draftKey) {
       var savedDetails = {};
