@@ -470,7 +470,8 @@
     var decision = "";
     var allowsExampleRows = rows.some(function (row) {
       if (!Array.isArray(row) || !/(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""))) return false;
-      return /\b(?:accept any|any reasonable|any viable|any appropriate|any sensible|any one of the following|correct answer and valid reasoning|yes with (?:a )?(?:correct )?reason|no with (?:a )?(?:correct )?(?:reason|figures)|yes and correct reason|no \+ reason)\b/i.test(plainText(row[0]));
+      return /\b(?:accept any|any reasonable|any viable|any appropriate|any sensible|any one of the following|correct answer and valid reasoning|yes with (?:a )?(?:correct )?reason|no with (?:a )?(?:correct )?(?:reason|figures)|yes and correct reason|no \+ reason)\b/i.test(plainText(row[0]))
+        || isGenericReasonPlaceholder(normalizeExplanationText(latexToPlain(String(row[0] || ""))));
     });
     rows.forEach(function (row) {
       if (!Array.isArray(row)) return;
@@ -519,6 +520,7 @@
         .trim();
       answer = normalizeExplanationText(answer);
       if (!answer || /^\s*(?:accept any|any reasonable|any viable reason|any appropriate reason|any sensible comment|any one of the following|complete solution|correct answer|answer only|yes with (?:a )?(?:correct )?reason|no with (?:a )?(?:correct )?(?:reason|figures)|yes and correct reason|no \+ reason)\b/i.test(answer)) return;
+      if (isGenericReasonPlaceholder(answer)) return;
       if (hasMarkingLanguage(answer) || answer.length > 240) return;
       groups[groups.length - 1].push({ text: answer, code: String(row[1] || "") });
     });
@@ -2913,6 +2915,15 @@
       .trim();
   }
 
+  function isGenericReasonPlaceholder(value) {
+    var answer = clean(value)
+      .replace(/^\s*\((?:i{1,3}|iv|v|vi{0,3}|ix|x)\)\s*/i, "")
+      .replace(/\s*\((?:seen anywhere|may be seen[^)]*)\)\s*$/i, "")
+      .trim();
+    return /^(?:accept\s+)?(?:any\s+)?(?:complete\s+)?(?:valid|correct|appropriate|reasonable|consistent)\s+(?:reason|reasoning|explanation|justification)(?:\s+(?:with|including|referring|for|based)\b[\s\S]*)?$/i.test(answer)
+      || /^correct answer and valid reasoning(?:\s+[\s\S]*)?$/i.test(answer);
+  }
+
   function hasMarkingLanguage(value) {
     return /\b(?:award(?:ed)?|follow through|method mark|answer only|correct answer|reasonable attempt|complete solution|transformation with correct|must be seen|do not condone|condone|cao|oe|or equivalent|their answer|their value|markscheme|mark scheme)\b|\([MABRGEN]\d+(?:ft)?\)|\b[MABRGEN]\d+(?:ft)?\b/i.test(String(value || ""));
   }
@@ -2933,7 +2944,8 @@
   function isChoiceTextSafe(value) {
     var answer = clean(value);
     if (isRawLatexAnswer(answer)) return isSafeRawLatex(answer);
-    if (!isDisplaySafe(answer) || hasMarkingLanguage(answer) || hasAwkwardWording(answer) || /\d\.\d+(?:…|\.\.\.)/.test(answer)) return false;
+    if (!isDisplaySafe(answer) || hasMarkingLanguage(answer) || hasAwkwardWording(answer)
+      || isGenericReasonPlaceholder(answer) || /\d\.\d+(?:…|\.\.\.)/.test(answer)) return false;
     if (/\/\s*(?:-|0(?:\.0*)?\b)/.test(answer) || /±\s*-/.test(answer)) return false;
     var simpleCoordinates = answer.match(/\(\s*-?[^,();]+\s*,\s*-?[^,();]+\s*\)/g) || [];
     if (new Set(simpleCoordinates.map(canonical)).size !== simpleCoordinates.length) return false;
@@ -3952,6 +3964,31 @@
       return validateChoiceSet([correct], shuffledOptions, correctOption)
         ? { acceptedAnswers: [correct], options: shuffledOptions, correctOption: correctOption }
         : null;
+    }
+    var monotonicityPrompt = fullQuestion.match(/\bexplain why\s+([A-Za-z])\s+is\s+(?:an?\s+)?(increasing|decreasing)\s+function\b/i);
+    if (monotonicityPrompt) {
+      var monotonicityFunction = monotonicityPrompt[1];
+      var monotonicityDirection = monotonicityPrompt[2].toLowerCase();
+      var derivativeEvidence = monotonicityDirection === "decreasing"
+        ? /(?:derivative[^.]{0,80}\bnegative\b|[A-Za-z]'\s*\(\s*x\s*\)\s*<\s*0)/i.test(rowText)
+        : /(?:derivative[^.]{0,80}\bpositive\b|[A-Za-z]'\s*\(\s*x\s*\)\s*>\s*0)/i.test(rowText);
+      if (derivativeEvidence) {
+        var derivativeSign = monotonicityDirection === "decreasing" ? "<" : ">";
+        var oppositeDirection = monotonicityDirection === "decreasing" ? "increasing" : "decreasing";
+        var monotonicityLabel = function (usesDerivative, sign, conclusion) {
+          var latexSign = sign === "<" ? "\\lt" : sign === ">" ? "\\gt" : sign;
+          var expression = monotonicityFunction + (usesDerivative ? "'(x)" : "(x)") + " " + latexSign + " 0";
+          return LATEX_ANSWER_PREFIX + expression + "\\text{ for all }x\\text{ in the domain, so }"
+            + monotonicityFunction + "\\text{ is " + conclusion + "}";
+        };
+        var monotonicityCorrect = monotonicityLabel(true, derivativeSign, monotonicityDirection);
+        return fixedExplanationSet(monotonicityCorrect, [
+          monotonicityLabel(true, derivativeSign === "<" ? ">" : "<", monotonicityDirection),
+          monotonicityLabel(true, derivativeSign, oppositeDirection),
+          monotonicityLabel(true, "=", monotonicityDirection),
+          monotonicityLabel(false, derivativeSign, monotonicityDirection),
+        ]);
+      }
     }
     if (/(?:regression line[\s\S]*(?:reason why|should not be used)|reason why[\s\S]*equation[\s\S]*should not be used)/i.test(fullQuestion)) {
       var regressionCorrect = explanationAnswerFromRows(rows, prompt);
