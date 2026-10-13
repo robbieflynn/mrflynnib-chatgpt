@@ -344,6 +344,27 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-picker-summary-copy { min-width: 0; display: grid; gap: .15rem; }
 .assignment-picker-summary .button { flex: none; }
 .test-maker-preview-buttons { justify-content: flex-end; }
+.saved-test-library { padding: clamp(1rem, 2.4vw, 1.4rem); border: 1px solid #bfd4df; border-radius: 1.2rem; background: linear-gradient(135deg, #fff, #f3f9fc); box-shadow: 0 12px 34px rgba(11,21,48,.05); }
+.saved-test-library-heading { align-items: flex-end; }
+.saved-test-library-heading > div { display: grid; gap: .18rem; }
+.saved-test-library-heading h2 { font-size: 1.35rem; }
+.saved-test-list { display: grid; overflow: hidden; border: 1px solid #d4e0e5; border-radius: .9rem; background: white; }
+.saved-test-row { min-height: 78px; padding: .82rem .9rem; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: .8rem; border-bottom: 1px solid #e4eaed; }
+.saved-test-row:last-child { border-bottom: 0; }
+.saved-test-row.is-active { background: #f0f8fd; box-shadow: inset 4px 0 0 var(--teal); }
+.saved-test-copy { min-width: 0; display: grid; gap: .08rem; }
+.saved-test-copy strong { overflow: hidden; color: var(--ink); font-size: .9rem; text-overflow: ellipsis; white-space: nowrap; }
+.saved-test-copy span { color: var(--teal-dark); font-size: .73rem; font-weight: 800; }
+.saved-test-copy small { color: var(--muted); font-size: .68rem; }
+.saved-test-current { padding: .32rem .52rem; border-radius: 999px; background: #dff1fb; color: var(--teal-dark); font-size: .66rem; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; }
+.saved-test-actions { display: flex; align-items: center; gap: .4rem; }
+.saved-test-delete { min-height: 34px; padding: .45rem .65rem; border: 1px solid #e1c8c8; border-radius: .55rem; background: white; color: #8c3030; font: 800 .7rem/1 var(--font-sans); cursor: pointer; }
+.saved-test-delete:hover { border-color: #c87a7a; background: #fff5f5; }
+.saved-test-delete:disabled { opacity: .5; cursor: default; }
+.saved-test-empty { min-height: 92px; padding: 1rem; display: flex; align-items: center; justify-content: center; gap: .8rem; border: 1px dashed #bed0d9; border-radius: .85rem; background: rgba(255,255,255,.72); color: var(--muted); }
+.saved-test-empty > span { width: 2rem; height: 2rem; display: grid; place-items: center; border-radius: 50%; background: var(--sky); color: var(--teal-dark); font-weight: 900; }
+.saved-test-empty strong { color: var(--ink); }
+.saved-test-empty p { margin: .1rem 0 0; font-size: .78rem; }
 .test-shadow-summary { padding: 1rem; border-color: #8fc9b2; background: #f5fbf8; }
 .test-shadow-summary .assignment-selection-heading { padding: 0; border: 0; background: transparent; }
 .test-shadow-summary .assignment-selection-heading p { margin: .25rem 0 0; color: var(--muted); }
@@ -830,6 +851,11 @@ a.teacher-list-row:hover { background: var(--sky); }
   .assignment-picker-summary { position: static; align-items: stretch; flex-direction: column; }
   .assignment-picker-summary .button { width: 100%; }
   .test-maker-preview-buttons { align-items: stretch; flex-direction: column; }
+  .saved-test-library-heading { align-items: stretch; }
+  .saved-test-library-heading .button { width: 100%; }
+  .saved-test-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .saved-test-actions { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr auto; }
+  .saved-test-actions .button { width: 100%; }
   .assignment-selection-list li { grid-template-columns: 32px minmax(0, 1fr); }
   .assignment-selection-list button { grid-column: 2; width: fit-content; }
   .teacher-tool-banner { grid-template-columns: auto minmax(0, 1fr); }

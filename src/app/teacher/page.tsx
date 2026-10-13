@@ -29,8 +29,8 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
       </section> : null}
       <section className="teacher-tool-banner">
         <div className="teacher-tool-banner-icon" aria-hidden="true">T</div>
-        <div><p className="eyebrow">Teacher tools</p><h2>Build a printable IB-style test</h2><p>Select questions by course, topic, difficulty and section, then print a professionally formatted paper.</p></div>
-        <Link className="button" href="/teacher/test-maker">Open test maker</Link>
+        <div><p className="eyebrow">Teacher tools</p><h2>IB Test Maker</h2><p>Select questions by course, topic, difficulty and section, then save, reuse and print a professionally formatted paper.</p></div>
+        <Link className="button" href="/teacher/test-maker">Open IB Test Maker</Link>
       </section>
       <div className="teacher-layout">
         <div className="stack-lg">

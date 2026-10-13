@@ -4,6 +4,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import katex from "katex";
 import renderMathInElement from "katex/contrib/auto-render";
 import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
+import type { SavedTestPayload, SavedTestRecord } from "@/lib/saved-test";
 
 type Course = "AA HL" | "AA SL" | "AI HL" | "AI SL";
 type SinglePaper = "Paper 1" | "Paper 2";
@@ -488,11 +489,12 @@ function MarkSchemePreviewPages({ paper, paperTitle, questions }: { paper: Singl
   </div>;
 }
 
-export function TestMaker() {
+export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: SavedTestRecord[] }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(640);
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
+  const pendingRestoreRef = useRef<SavedTestRecord | null>(null);
   const [frameHeight, setFrameHeight] = useState(640);
   const [course, setCourse] = useState<Course>("AA HL");
   const [paper, setPaper] = useState<Paper>("Paper 1");
@@ -513,6 +515,11 @@ export function TestMaker() {
   const [printTarget, setPrintTarget] = useState<PrintTarget>("paper-1");
   const [analysisDownloading, setAnalysisDownloading] = useState(false);
   const [analysisError, setAnalysisError] = useState("");
+  const [savedTests, setSavedTests] = useState(initialSavedTests);
+  const [activeSavedTestId, setActiveSavedTestId] = useState<string | null>(null);
+  const [saveBusy, setSaveBusy] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [saveError, setSaveError] = useState("");
   const combinedPapers = paper === "Paper 1 and Paper 2";
   const displayQuestions = useMemo(() => orderQuestionsForDisplay(questions, course, combinedPapers), [combinedPapers, course, questions]);
   const numberedQuestions = useMemo(() => numberQuestions(displayQuestions, combinedPapers), [combinedPapers, displayQuestions]);
@@ -548,6 +555,16 @@ export function TestMaker() {
     return `/question-bank/ib-bank.html?${query.toString()}`;
   }, [course]);
 
+  const sendPendingRestore = useCallback(() => {
+    const savedTest = pendingRestoreRef.current;
+    if (!savedTest) return;
+    frameRef.current?.contentWindow?.postMessage({
+      type: "mrflynnib-test-set-selection",
+      questions: savedTest.payload.questions,
+      shadowQuestions: savedTest.payload.shadowQuestions,
+    }, window.location.origin);
+  }, []);
+
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
     if (!frame || loadingMoreRef.current || !hasMoreRef.current) return;
@@ -573,7 +590,16 @@ export function TestMaker() {
         cancelAnimationFrame(animationFrame);
         animationFrame = requestAnimationFrame(loadMoreIfNeeded);
       }
+      if (event.data?.type === "mrflynnib-test-ready") {
+        sendPendingRestore();
+      }
       if (event.data?.type === "mrflynnib-test-selection" && Array.isArray(event.data.questions)) {
+        const pending = pendingRestoreRef.current;
+        if (pending) {
+          const receivedIds = event.data.questions.map((item: { id?: unknown }) => String(item?.id || ""));
+          const expectedIds = pending.payload.questions.map((question) => question.id);
+          if (!event.data.restoring && receivedIds.join("|") !== expectedIds.join("|")) return;
+        }
         const next: TestQuestion[] = event.data.questions
           .filter((item: unknown): item is TestQuestion => Boolean(item && typeof item === "object" && "id" in item && "html" in item))
           .slice(0, 50)
@@ -590,6 +616,28 @@ export function TestMaker() {
         }
         setQuestions(next);
         if (!next.length) setPreviewMode(null);
+      }
+      if (event.data?.type === "mrflynnib-test-restored") {
+        const savedTest = pendingRestoreRef.current;
+        const missing = Array.isArray(event.data.missing) ? event.data.missing.length : 0;
+        if (!savedTest?.payload.shadowQuestions.length) pendingRestoreRef.current = null;
+        if (savedTest) {
+          setShadowSourceSignature(savedTest.payload.questions.map((question) => `${question.id}:${question.section}`).join("|"));
+          setSaveMessage(missing
+            ? `${savedTest.title} opened. ${missing} unavailable ${missing === 1 ? "question was" : "questions were"} left out.`
+            : `${savedTest.title} opened and is ready to edit.`);
+        }
+      }
+      if (event.data?.type === "mrflynnib-test-shadow-restored") {
+        pendingRestoreRef.current = null;
+        const next = Array.isArray(event.data.questions)
+          ? event.data.questions
+            .filter((item: unknown): item is TestQuestion => Boolean(item && typeof item === "object" && "id" in item && "html" in item))
+            .slice(0, 50)
+            .map((item: TestQuestion) => ({ ...item, section: item.section === "B" ? "B" : "A" as Section }))
+          : [];
+        setShadowQuestions(next);
+        if (next.length) setShadowMessage(`Saved shadow paper restored with ${next.length} ${next.length === 1 ? "question" : "questions"}.`);
       }
       if (event.data?.type === "mrflynnib-test-shadow") {
         setShadowLoading(false);
@@ -630,7 +678,7 @@ export function TestMaker() {
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [combinedPapers, course, displayQuestions, loadMoreIfNeeded, previewVariant, shadowSourceSignature, source]);
+  }, [combinedPapers, course, displayQuestions, loadMoreIfNeeded, previewVariant, sendPendingRestore, shadowSourceSignature, source]);
 
   useEffect(() => {
     if (!previewMode) return;
@@ -771,6 +819,152 @@ export function TestMaker() {
     }
   };
 
+  const savedPayload = useCallback((): SavedTestPayload => ({
+    version: 1,
+    school,
+    durationPaper1,
+    durationPaper2,
+    testDate,
+    includeMarkScheme,
+    includeAnalysis,
+    questions: displayQuestions.map((question) => ({ id: question.id, section: question.section })),
+    shadowQuestions: shadowDisplayQuestions.map((question) => ({ id: question.id, section: question.section })),
+  }), [displayQuestions, durationPaper1, durationPaper2, includeAnalysis, includeMarkScheme, school, shadowDisplayQuestions, testDate]);
+
+  const writeSavedTest = useCallback(async ({ id, savedTitle, savedCourse, savedPaper, questionCount, savedTotalMarks, payload }: {
+    id?: string;
+    savedTitle: string;
+    savedCourse: Course;
+    savedPaper: Paper;
+    questionCount: number;
+    savedTotalMarks: number;
+    payload: SavedTestPayload;
+  }) => {
+    const response = await fetch("/api/teacher/saved-tests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, title: savedTitle, course: savedCourse, paper: savedPaper, questionCount, totalMarks: savedTotalMarks, payload }),
+    });
+    const result = await response.json().catch(() => null) as { test?: SavedTestRecord; message?: string } | null;
+    if (!response.ok || !result?.test) throw new Error(result?.message || "The test could not be saved.");
+    return result.test;
+  }, []);
+
+  const saveCurrentTest = useCallback(async (asNew = false) => {
+    if (!displayQuestions.length || saveBusy) return;
+    setSaveBusy(true);
+    setSaveError("");
+    setSaveMessage("");
+    try {
+      const saved = await writeSavedTest({
+        id: asNew ? undefined : activeSavedTestId ?? undefined,
+        savedTitle: asNew && activeSavedTestId ? `${title || "Mathematics practice test"} copy` : title || "Mathematics practice test",
+        savedCourse: course,
+        savedPaper: paper,
+        questionCount: displayQuestions.length,
+        savedTotalMarks: displayQuestions.reduce((total, question) => total + question.marks, 0),
+        payload: savedPayload(),
+      });
+      setSavedTests((current) => [saved, ...current.filter((item) => item.id !== saved.id)].sort((left, right) => right.updatedAt.localeCompare(left.updatedAt)));
+      setActiveSavedTestId(saved.id);
+      if (asNew && activeSavedTestId) setTitle(saved.title);
+      setSaveMessage(asNew && activeSavedTestId ? "A new copy has been saved." : activeSavedTestId ? "Your changes have been saved." : "Your test has been saved.");
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "The test could not be saved.");
+    } finally {
+      setSaveBusy(false);
+    }
+  }, [activeSavedTestId, course, displayQuestions, paper, saveBusy, savedPayload, title, writeSavedTest]);
+
+  const openSavedTest = useCallback((savedTest: SavedTestRecord) => {
+    const sameCourse = savedTest.course === course;
+    pendingRestoreRef.current = savedTest;
+    setActiveSavedTestId(savedTest.id);
+    setSaveError("");
+    setSaveMessage(`Opening ${savedTest.title}…`);
+    setPreviewMode(null);
+    setTitle(savedTest.title);
+    setSchool(savedTest.payload.school);
+    setDurationPaper1(savedTest.payload.durationPaper1);
+    setDurationPaper2(savedTest.payload.durationPaper2);
+    setTestDate(savedTest.payload.testDate);
+    setIncludeMarkScheme(savedTest.payload.includeMarkScheme);
+    setIncludeAnalysis(savedTest.payload.includeAnalysis);
+    setPaper(savedTest.paper);
+    setQuestions([]);
+    setShadowQuestions([]);
+    setShadowMessage("");
+    setShadowSourceSignature("");
+    if (!sameCourse) {
+      frameHeightRef.current = 640;
+      setFrameHeight(640);
+      hasMoreRef.current = true;
+      setCourse(savedTest.course);
+    } else {
+      window.requestAnimationFrame(sendPendingRestore);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [course, sendPendingRestore]);
+
+  const duplicateSavedTest = useCallback(async (savedTest: SavedTestRecord) => {
+    if (saveBusy) return;
+    setSaveBusy(true);
+    setSaveError("");
+    setSaveMessage("");
+    try {
+      const copy = await writeSavedTest({
+        savedTitle: `${savedTest.title} copy`,
+        savedCourse: savedTest.course,
+        savedPaper: savedTest.paper,
+        questionCount: savedTest.questionCount,
+        savedTotalMarks: savedTest.totalMarks,
+        payload: savedTest.payload,
+      });
+      setSavedTests((current) => [copy, ...current]);
+      setSaveMessage(`${copy.title} has been saved.`);
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "The test could not be duplicated.");
+    } finally {
+      setSaveBusy(false);
+    }
+  }, [saveBusy, writeSavedTest]);
+
+  const deleteSavedTest = useCallback(async (savedTest: SavedTestRecord) => {
+    if (saveBusy || !window.confirm(`Delete “${savedTest.title}”? This cannot be undone.`)) return;
+    setSaveBusy(true);
+    setSaveError("");
+    setSaveMessage("");
+    try {
+      const response = await fetch(`/api/teacher/saved-tests?id=${encodeURIComponent(savedTest.id)}`, { method: "DELETE" });
+      const result = await response.json().catch(() => null) as { message?: string } | null;
+      if (!response.ok) throw new Error(result?.message || "The saved test could not be deleted.");
+      setSavedTests((current) => current.filter((item) => item.id !== savedTest.id));
+      if (activeSavedTestId === savedTest.id) setActiveSavedTestId(null);
+      setSaveMessage(activeSavedTestId === savedTest.id ? "The saved version was deleted. The open test remains available until you leave this page." : "The saved test was deleted.");
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "The saved test could not be deleted.");
+    } finally {
+      setSaveBusy(false);
+    }
+  }, [activeSavedTestId, saveBusy]);
+
+  const startNewTest = () => {
+    if (questions.length && !window.confirm("Start a new test? Any changes that have not been saved will be lost.")) return;
+    pendingRestoreRef.current = null;
+    setActiveSavedTestId(null);
+    setTitle("Mathematics practice test");
+    setSchool("");
+    setDurationPaper1("90");
+    setDurationPaper2("90");
+    setTestDate("");
+    setIncludeMarkScheme(true);
+    setIncludeAnalysis(true);
+    setPaper("Paper 1");
+    setSaveError("");
+    setSaveMessage("New test started.");
+    clearQuestions();
+  };
+
   const totalMarks = questions.reduce((total, question) => total + question.marks, 0);
   const shadowTotalMarks = shadowQuestions.reduce((total, question) => total + question.marks, 0);
   const applicationsCourse = isApplicationsCourse(course);
@@ -793,9 +987,24 @@ export function TestMaker() {
   return (
     <>
       <div className="test-builder-ui stack-xl">
+        {saveError ? <p className="form-message form-error" role="alert">{saveError}</p> : null}
+        {saveMessage ? <p className="form-message form-success" role="status">{saveMessage}</p> : null}
+        <section className="saved-test-library stack" aria-labelledby="saved-tests-heading">
+          <div className="teacher-section-heading saved-test-library-heading">
+            <div><p className="eyebrow">Your library</p><h2 id="saved-tests-heading">Saved tests</h2><p className="muted">Open a test to edit or print it again. Saving keeps it with your teacher account.</p></div>
+            <button className="button button-secondary button-small" type="button" onClick={startNewTest}>Start a new test</button>
+          </div>
+          {savedTests.length ? <div className="saved-test-list">
+            {savedTests.map((savedTest) => <article className={`saved-test-row${activeSavedTestId === savedTest.id ? " is-active" : ""}`} key={savedTest.id}>
+              <span className="saved-test-copy"><strong>{savedTest.title}</strong><span>{savedTest.course} · {savedTest.paper}</span><small>{savedTest.questionCount} {savedTest.questionCount === 1 ? "question" : "questions"} · {savedTest.totalMarks} marks · Updated {new Date(savedTest.updatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</small></span>
+              {activeSavedTestId === savedTest.id ? <span className="saved-test-current">Open</span> : null}
+              <span className="saved-test-actions"><button className="button button-secondary button-small" disabled={saveBusy} type="button" onClick={() => openSavedTest(savedTest)}>Open</button><button className="button button-secondary button-small" disabled={saveBusy} type="button" onClick={() => duplicateSavedTest(savedTest)}>Duplicate</button><button className="saved-test-delete" disabled={saveBusy} type="button" onClick={() => deleteSavedTest(savedTest)}>Delete</button></span>
+            </article>)}
+          </div> : <div className="saved-test-empty"><span aria-hidden="true">＋</span><div><strong>No saved tests yet</strong><p>Your first saved paper will appear here, ready to reopen whenever you need it.</p></div></div>}
+        </section>
         <section className="test-maker-setup stack-lg" aria-labelledby="test-details-heading">
           <div className="teacher-section-heading">
-            <div><p className="eyebrow">Test details</p><h2 id="test-details-heading">Set up the paper</h2></div>
+            <div><p className="eyebrow">Test details</p><h2 id="test-details-heading">{activeSavedTestId ? "Edit the saved paper" : "Set up the paper"}</h2></div>
             <p className="muted">{setupSummary}</p>
           </div>
           <div className="test-maker-form form-grid">
@@ -822,6 +1031,8 @@ export function TestMaker() {
             <div className="assignment-picker-summary" aria-live="polite">
               <span className="assignment-picker-summary-copy"><strong>{questions.length} {questions.length === 1 ? "question" : "questions"} selected</strong><span>{totalMarks} {totalMarks === 1 ? "mark" : "marks"} in total</span></span>
               <span className="cluster test-maker-preview-buttons">
+                {questions.length ? <button className="button button-small" disabled={saveBusy} type="button" onClick={() => saveCurrentTest(false)}>{saveBusy ? "Saving…" : activeSavedTestId ? "Save changes" : "Save test"}</button> : null}
+                {questions.length && activeSavedTestId ? <button className="button button-secondary button-small" disabled={saveBusy} type="button" onClick={() => saveCurrentTest(true)}>Save as new copy</button> : null}
                 {questions.length ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("test")}>Preview test</button> : null}
                 {questions.length && includeMarkScheme ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("mark-scheme")}>Preview mark scheme</button> : null}
                 {questions.length && includeAnalysis ? <button className="button button-secondary button-small" disabled={analysisDownloading} type="button" onClick={() => downloadAnalysisWorkbook("original")}>{analysisDownloading ? "Preparing analysis…" : "Download question-level analysis"}</button> : null}

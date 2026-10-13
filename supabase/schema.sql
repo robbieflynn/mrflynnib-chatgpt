@@ -106,6 +106,19 @@ create table if not exists public.assignments (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.saved_tests (
+  id uuid primary key default gen_random_uuid(),
+  teacher_id uuid not null references auth.users(id) on delete cascade,
+  title text not null check (char_length(title) between 1 and 100),
+  course text not null check (course in ('AA HL', 'AA SL', 'AI HL', 'AI SL')),
+  paper text not null check (paper in ('Paper 1', 'Paper 2', 'Paper 1 and Paper 2')),
+  question_count integer not null check (question_count between 1 and 50),
+  total_marks integer not null check (total_marks between 1 and 1000),
+  payload jsonb not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.assignments add column if not exists show_mark_scheme boolean not null default true;
 alter table public.assignments add column if not exists feedback_mode text not null default 'after_question';
 alter table public.assignments drop constraint if exists assignments_feedback_mode_check;
@@ -192,6 +205,7 @@ alter table public.whiteboard_documents enable row level security;
 alter table public.classes enable row level security;
 alter table public.class_memberships enable row level security;
 alter table public.assignments enable row level security;
+alter table public.saved_tests enable row level security;
 alter table public.assignment_questions enable row level security;
 alter table public.assignment_answer_keys enable row level security;
 alter table public.assignment_question_progress enable row level security;
@@ -327,6 +341,8 @@ create policy "Students read own memberships" on public.class_memberships for se
 
 drop policy if exists "Teachers manage own assignments" on public.assignments;
 create policy "Teachers manage own assignments" on public.assignments for all using (teacher_id = (select auth.uid()) and public.teaches_class(class_id)) with check (teacher_id = (select auth.uid()) and public.teaches_class(class_id));
+drop policy if exists "Teachers manage own saved tests" on public.saved_tests;
+create policy "Teachers manage own saved tests" on public.saved_tests for all using (teacher_id = (select auth.uid()) and public.is_teacher()) with check (teacher_id = (select auth.uid()) and public.is_teacher());
 drop policy if exists "Students read class assignments" on public.assignments;
 create policy "Students read class assignments" on public.assignments for select using (status = 'published' and public.is_class_member(class_id));
 
@@ -358,6 +374,7 @@ create index if not exists whiteboard_documents_user_updated_idx on public.white
 create index if not exists classes_teacher_idx on public.classes (teacher_id, archived);
 create index if not exists class_memberships_student_idx on public.class_memberships (student_id);
 create index if not exists assignments_class_idx on public.assignments (class_id, created_at desc);
+create index if not exists saved_tests_teacher_updated_idx on public.saved_tests (teacher_id, updated_at desc);
 create index if not exists assignment_progress_assignment_idx on public.assignment_question_progress (assignment_id, student_id);
 create index if not exists assignment_responses_assignment_idx on public.assignment_responses (assignment_id, student_id);
 
