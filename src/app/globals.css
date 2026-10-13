@@ -696,8 +696,10 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-matrix-legend span { padding: .35rem .55rem; border-radius: .55rem; background: white; color: var(--muted); font-size: .7rem; font-weight: 800; }
 .assignment-matrix-legend .is-correct { background: #e7f5ed; color: #176846; }
 .assignment-matrix-legend .is-retry { background: #fff4d4; color: #74520a; }
+.assignment-matrix-legend .is-try-again { background: #fff0c7; color: #765109; }
 .assignment-matrix-legend .is-incorrect { background: #feeceb; color: #9c302c; }
 .assignment-matrix-legend .is-review { background: #eaf2fb; color: #235f91; }
+.assignment-matrix-legend .is-legacy { background: #eef1f3; color: #536570; }
 .assignment-matrix-scroll { max-width: 100%; overflow: auto; border: 1px solid #cad6db; border-radius: 1.15rem; background: white; box-shadow: 0 16px 42px rgba(11,21,48,.06); }
 .assignment-matrix { width: max-content; min-width: 100%; border-spacing: 0; }
 .assignment-matrix th, .assignment-matrix td { height: 62px; padding: .38rem; border-left: 1px solid #e2e8ea; border-top: 1px solid #e2e8ea; text-align: center; }
@@ -705,6 +707,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-matrix thead th span, .assignment-matrix thead th small { display: block; }
 .assignment-matrix thead th span { font-size: .82rem; }
 .assignment-matrix thead th small { margin-top: .12rem; color: var(--muted); font-size: .57rem; font-weight: 750; text-transform: uppercase; }
+.assignment-matrix thead .assignment-matrix-parts th { top: 62px; height: 34px; padding: .2rem .38rem; border-top: 1px solid #d5dfe3; background: #f8fafb; }
+.assignment-matrix thead .assignment-matrix-parts th span { color: #405868; font-size: .68rem; font-weight: 850; }
 .assignment-matrix .assignment-matrix-student { position: sticky; left: 0; z-index: 3; min-width: 210px; border-left: 0; background: white; text-align: left; }
 .assignment-matrix thead .assignment-matrix-student { z-index: 4; background: #f2f5f6; }
 .assignment-matrix-student a { min-height: 46px; padding: .2rem .55rem; display: grid; align-content: center; gap: .05rem; border-radius: .55rem; }
@@ -719,8 +723,10 @@ a.teacher-list-row:hover { background: var(--sky); }
 .matrix-cell:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(11,21,48,.14); }
 .matrix-cell.is-correct { background: #dff2e7; color: #176846; }
 .matrix-cell.is-retry { background: #ffefbb; color: #76530a; }
+.matrix-cell.is-try-again { background: #fff0c7; color: #765109; }
 .matrix-cell.is-incorrect { background: #f8d9d6; color: #a63029; }
 .matrix-cell.is-review { background: #dcecf9; color: #225f92; }
+.matrix-cell.is-legacy { background: #e8ecee; color: #536570; }
 .matrix-cell.is-attempted { background: #e8ecee; color: #61717c; }
 .matrix-cell.is-empty { border-color: #e0e6e8; background: #fafbfb; }
 .assignment-note-neutral { border-color: #d6dde0; background: #f5f7f8; }
