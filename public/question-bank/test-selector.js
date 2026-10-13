@@ -18,7 +18,7 @@
 
   var style = document.createElement("style");
   style.textContent = [
-    ".qb-header .qb-brand::after{content:' · Test maker';font-size:.72em;color:var(--ink-soft);font-weight:600}",
+    ".qb-header .qb-brand::after{content:' · IB Test Maker';font-size:.72em;color:var(--ink-soft);font-weight:600}",
     ".qb-course-switch,.qb-progress-toggle,.qb-ms-toggle,.qb-sol-toggle,.qb-markscheme,.qb-solution{display:none!important}",
     ".qb-card{padding-top:0}",
     ".qb-test-select{margin:0 -18px 18px;padding:12px 18px;display:flex;align-items:center;gap:10px;background:#f3f9ff;border-bottom:1px solid #b9d5ef;border-radius:10px 10px 0 0;font:700 13px/1.2 var(--ui);color:var(--flynn-blue);cursor:pointer}",
@@ -149,7 +149,7 @@
     });
   }
 
-  function publish() {
+  function publish(restoring) {
     // Older saved drafts did not contain mark-scheme HTML. Enrich every
     // selected question from the loaded bank, including questions that are not
     // on the currently visible filtered page.
@@ -160,7 +160,7 @@
       published.forEach(function (item) { savedDetails[item.id] = item; });
       try { window.sessionStorage.setItem(draftKey, JSON.stringify({ ids: selected, details: savedDetails })); } catch { /* The live selection still works if storage is full. */ }
     }
-    window.parent.postMessage({ type: "mrflynnib-test-selection", questions: published }, window.location.origin);
+    window.parent.postMessage({ type: "mrflynnib-test-selection", questions: published, restoring: restoring === true }, window.location.origin);
   }
 
   function clearSelection() {
@@ -193,10 +193,53 @@
     publish();
   }
 
+  function summariesForSources(sources) {
+    var missing = [];
+    var questions = [];
+    sources.slice(0, MAX_SELECTED).forEach(function (source) {
+      var id = String(source && source.id || "");
+      if (!id || questions.some(function (question) { return question.id === id; })) return;
+      var visible = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
+      var summary = summaryFor(visible || detachedCard(id));
+      if (!summary) {
+        missing.push(id);
+        return;
+      }
+      summary.section = source && source.section === "B" ? "B" : "A";
+      questions.push(summary);
+    });
+    return { questions: questions, missing: missing };
+  }
+
+  function setSelection(sources, shadowSources) {
+    selected = [];
+    details = {};
+    var resolved = summariesForSources(sources);
+    resolved.questions.forEach(function (summary) {
+      selected.push(summary.id);
+      details[summary.id] = summary;
+    });
+    document.querySelectorAll(".qb-card").forEach(function (card) {
+      var isSelected = selected.indexOf(String(card.dataset.id || "")) !== -1;
+      var checkbox = card.querySelector(".qb-test-select input[type=checkbox]");
+      var copy = card.querySelector(".qb-test-select span");
+      if (checkbox) checkbox.checked = isSelected;
+      if (copy) copy.textContent = isSelected ? "Selected for test" : "Add to test";
+      card.classList.toggle("qb-test-selected", isSelected);
+    });
+    publish(true);
+    window.parent.postMessage({ type: "mrflynnib-test-restored", selected: selected.length, missing: resolved.missing }, window.location.origin);
+    if (Array.isArray(shadowSources) && shadowSources.length) {
+      var shadow = summariesForSources(shadowSources);
+      window.parent.postMessage({ type: "mrflynnib-test-shadow-restored", questions: shadow.questions, missing: shadow.missing }, window.location.origin);
+    }
+  }
+
   window.addEventListener("message", function (event) {
     if (event.origin !== window.location.origin || event.source !== window.parent) return;
     if (event.data && event.data.type === "mrflynnib-test-clear") clearSelection();
     if (event.data && event.data.type === "mrflynnib-test-remove") removeSelection(String(event.data.id || ""));
+    if (event.data && event.data.type === "mrflynnib-test-set-selection" && Array.isArray(event.data.questions)) setSelection(event.data.questions, event.data.shadowQuestions);
     if (event.data && event.data.type === "mrflynnib-test-create-shadow") createShadow(Array.isArray(event.data.sources) ? event.data.sources : []);
     if (event.data && event.data.type === "mrflynnib-test-reorder" && Array.isArray(event.data.ids)) {
       var next = event.data.ids.map(String).filter(function (id) { return selected.indexOf(id) !== -1; });
@@ -265,4 +308,5 @@
   if (list) new MutationObserver(decorateAll).observe(list, { childList: true, subtree: true });
   decorateAll();
   publish();
+  window.parent.postMessage({ type: "mrflynnib-test-ready" }, window.location.origin);
 })();
