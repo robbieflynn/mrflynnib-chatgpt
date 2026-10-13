@@ -32,7 +32,7 @@ const colours = {
   white: "FFFFFFFF",
 };
 
-const maxStudents = 40;
+const maxStudents = 100;
 const firstStudentRow = 9;
 const lastStudentRow = firstStudentRow + maxStudents - 1;
 const firstQuestionColumn = 3;
