@@ -51,24 +51,37 @@ function SummaryMath({ children }: { children: string }) {
 }
 
 function AnswerBox({ marks, compact = false }: { marks: number; compact?: boolean }) {
-  const lines = compact ? 4 : Math.max(6, Math.min(12, marks + 3));
+  const lines = Math.max(6, Math.min(12, marks + 3));
   return <div className={`test-answer-box${compact ? " test-answer-box-compact" : ""}`} aria-hidden="true">{Array.from({ length: lines }, (_, index) => <span className="test-answer-line" key={index} />)}</div>;
 }
 
+function decodeMathEntities(value: string) {
+  return value
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#(?:39|x27);/gi, "'");
+}
+
+function renderMarkSchemeMath(html: string) {
+  const render = (expression: string, displayMode: boolean) => katex.renderToString(decodeMathEntities(expression), {
+    displayMode,
+    throwOnError: false,
+    strict: false,
+  });
+
+  // Render the stored TeX before it enters the page. This makes the preview
+  // and the browser's print snapshot identical, even when Print is clicked
+  // immediately after opening the mark scheme.
+  return html
+    .replace(/\\\[([\s\S]*?)\\\]/g, (_match, expression) => render(expression, true))
+    .replace(/\\\(([\s\S]*?)\\\)/g, (_match, expression) => render(expression, false));
+}
+
 function RenderedMarkScheme({ html }: { html: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!ref.current) return;
-    renderMathInElement(ref.current, {
-      delimiters: [
-        { left: "\\(", right: "\\)", display: false },
-        { left: "\\[", right: "\\]", display: true },
-      ],
-      throwOnError: false,
-      strict: false,
-    });
-  }, [html]);
-  return <div className="test-markscheme-content" dangerouslySetInnerHTML={{ __html: html }} ref={ref} />;
+  const renderedHtml = useMemo(() => renderMarkSchemeMath(html), [html]);
+  return <div className="test-markscheme-content" dangerouslySetInnerHTML={{ __html: renderedHtml }} />;
 }
 
 function restoreLatexSource(container: HTMLElement) {

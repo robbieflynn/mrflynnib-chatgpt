@@ -445,11 +445,11 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-question-body .katex, .test-question-body .katex-display > .katex { font-size: 1em; }
 .test-question-body .katex-display { margin: 3mm 0; overflow: visible; }
 .test-answer-box { min-height: 60mm; margin-top: 7mm; padding: 10mm 8mm 8mm; flex: 1 1 0; overflow: hidden; border: .28mm solid #666; }
-.test-answer-box-compact { min-height: 42mm; max-height: 48mm; padding-top: 7mm; flex: none; }
+.test-answer-box-compact { min-height: 42mm; padding-top: 7mm; }
 .test-answer-line { height: 7.5mm; display: block; border-top: .25mm dotted #777; }
 .test-continuation-heading { margin: 0 0 8mm; font-size: 9pt; text-align: center; }
 .test-continuation-page .test-answer-box { margin-top: 0; }
-.test-continues { margin: auto 0 1mm; font-size: 8pt; text-align: right; }
+.test-continues { margin: 3mm 0 1mm; font-size: 8pt; text-align: right; }
 .test-section-b-page .test-paper-question { margin-top: 1mm; }
 .test-markscheme-title { margin-bottom: 12mm; text-align: center; }
 .test-markscheme-title h2 { margin: 0; color: #111; font: 700 15pt/1.2 Arial, Helvetica, sans-serif; }
