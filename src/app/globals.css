@@ -407,27 +407,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-preview-toolbar p:last-child { color: var(--muted); font-size: .8rem; }
 .test-preview-actions { justify-content: flex-end; }
 .test-preview-action-panel { display: grid; gap: .35rem; justify-items: end; }
-.test-analysis-error { max-width: 34rem; color: #b42318; font-size: .78rem; text-align: right; }
 .test-preview-pages { padding: clamp(1rem, 3vw, 2rem); overflow: auto; }
 .test-preview-pages .test-print-root { margin-top: 0; }
-.test-analysis-preview { width: min(100%, 980px); margin: 0 auto; overflow: hidden; border: 1px solid #cbd9df; border-radius: 1rem; background: white; box-shadow: 0 18px 55px rgba(11,21,48,.1); }
-.test-analysis-preview-heading { padding: 1.2rem 1.3rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #dbe4e8; background: #f7fafb; }
-.test-analysis-preview-heading h3 { margin-top: .15rem; font-size: 1.35rem; }
-.test-analysis-preview-heading > strong { padding: .45rem .7rem; border-radius: 999px; background: #e5f2fa; color: #165680; font-size: .8rem; }
-.test-analysis-preview-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid #dbe4e8; }
-.test-analysis-preview-summary > div { padding: .85rem 1rem; display: grid; gap: .15rem; border-left: 1px solid #e4eaed; }
-.test-analysis-preview-summary > div:first-child { border-left: 0; }
-.test-analysis-preview-summary span { color: var(--muted); font-size: .7rem; font-weight: 800; text-transform: uppercase; }
-.test-analysis-preview-summary strong { color: var(--ink); font-size: .88rem; }
-.test-analysis-preview-table-wrap { max-height: 390px; overflow: auto; }
-.test-analysis-preview table { width: 100%; border-collapse: collapse; font-size: .82rem; }
-.test-analysis-preview th, .test-analysis-preview td { padding: .72rem 1rem; border-bottom: 1px solid #e6ecef; text-align: left; }
-.test-analysis-preview th { position: sticky; top: 0; background: #102652; color: white; font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; }
-.test-analysis-preview td:last-child, .test-analysis-preview th:last-child { text-align: right; }
-.test-analysis-preview-sheets { padding: 1rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; background: #f7fafb; }
-.test-analysis-preview-sheets > div { padding: .8rem; display: grid; gap: .22rem; border: 1px solid #d4e0e5; border-radius: .7rem; background: white; }
-.test-analysis-preview-sheets strong { color: var(--teal-dark); font-size: .8rem; }
-.test-analysis-preview-sheets span { color: var(--muted); font-size: .72rem; line-height: 1.4; }
 
 .test-print-root { margin-top: 1.5rem; display: grid; gap: 1.5rem; justify-items: center; color: #111; font-family: Arial, Helvetica, sans-serif; }
 .test-paper-pages, .test-markscheme-pages, .test-paper-set, .test-markscheme-set { display: contents; }
@@ -849,9 +830,6 @@ a.teacher-list-row:hover { background: var(--sky); }
   .assignment-picker-summary { position: static; align-items: stretch; flex-direction: column; }
   .assignment-picker-summary .button { width: 100%; }
   .test-maker-preview-buttons { align-items: stretch; flex-direction: column; }
-  .test-analysis-preview-summary, .test-analysis-preview-sheets { grid-template-columns: 1fr; }
-  .test-analysis-preview-summary > div { border-top: 1px solid #e4eaed; border-left: 0; }
-  .test-analysis-preview-summary > div:first-child { border-top: 0; }
   .assignment-selection-list li { grid-template-columns: 32px minmax(0, 1fr); }
   .assignment-selection-list button { grid-column: 2; width: fit-content; }
   .teacher-tool-banner { grid-template-columns: auto minmax(0, 1fr); }

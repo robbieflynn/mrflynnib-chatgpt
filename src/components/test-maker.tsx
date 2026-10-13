@@ -9,7 +9,7 @@ type Course = "AA HL" | "AA SL" | "AI HL" | "AI SL";
 type SinglePaper = "Paper 1" | "Paper 2";
 type Paper = SinglePaper | "Paper 1 and Paper 2";
 type Section = "A" | "B";
-type PreviewMode = "test" | "mark-scheme" | "analysis";
+type PreviewMode = "test" | "mark-scheme";
 type PreviewVariant = "original" | "shadow";
 type PrintTarget = "paper-1" | "paper-2" | "mark-scheme-1" | "mark-scheme-2";
 
@@ -661,8 +661,10 @@ export function TestMaker() {
     });
   }, []);
 
-  const downloadAnalysisWorkbook = useCallback(async () => {
-    if (!activeNumberedQuestions.length || analysisDownloading) return;
+  const downloadAnalysisWorkbook = useCallback(async (variant: PreviewVariant) => {
+    const workbookQuestions = variant === "shadow" ? shadowNumberedQuestions : numberedQuestions;
+    const workbookTitle = variant === "shadow" ? `${title || "Mathematics practice test"} · Shadow paper` : title || "Mathematics practice test";
+    if (!workbookQuestions.length || analysisDownloading) return;
     setAnalysisDownloading(true);
     setAnalysisError("");
     try {
@@ -670,12 +672,12 @@ export function TestMaker() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: activeTitle,
+          title: workbookTitle,
           course,
           paper,
           teacherOrClass: school,
           testDate,
-          questions: activeNumberedQuestions.map(({ number, title: questionTitle, topic, subtopic, marks, paper: sourcePaper, section }) => ({
+          questions: workbookQuestions.map(({ number, title: questionTitle, topic, subtopic, marks, paper: sourcePaper, section }) => ({
             number,
             title: questionTitle,
             topic,
@@ -706,7 +708,7 @@ export function TestMaker() {
     } finally {
       setAnalysisDownloading(false);
     }
-  }, [activeNumberedQuestions, activeTitle, analysisDownloading, course, paper, school, testDate]);
+  }, [analysisDownloading, course, numberedQuestions, paper, school, shadowNumberedQuestions, testDate, title]);
 
   const createShadowPaper = () => {
     if (!displayQuestions.length || shadowLoading) return;
@@ -807,7 +809,7 @@ export function TestMaker() {
             </> : <label className="field"><span>Time allowed in minutes</span><input inputMode="numeric" value={paper === "Paper 1" ? durationPaper1 : durationPaper2} onChange={(event) => (paper === "Paper 1" ? setDurationPaper1 : setDurationPaper2)(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>}
             <label className="field"><span>Test date <small className="muted">(optional)</small></span><input type="date" value={testDate} onChange={(event) => setTestDate(event.target.value)} /></label>
             <label className="test-maker-check field-full"><input type="checkbox" checked={includeMarkScheme} onChange={(event) => setIncludeMarkScheme(event.target.checked)} /><span><strong>Prepare a separate mark scheme</strong><small>Preview the teacher mark scheme and save or print it as its own PDF.</small></span></label>
-            <label className="test-maker-check field-full"><input type="checkbox" checked={includeAnalysis} onChange={(event) => setIncludeAnalysis(event.target.checked)} /><span><strong>Prepare question-level analysis</strong><small>Preview and download the editable question-level analysis workbook.</small></span></label>
+            <label className="test-maker-check field-full"><input type="checkbox" checked={includeAnalysis} onChange={(event) => setIncludeAnalysis(event.target.checked)} /><span><strong>Prepare question-level analysis</strong><small>Download the editable question-level analysis workbook with the selected test.</small></span></label>
           </div>
         </section>
 
@@ -822,18 +824,19 @@ export function TestMaker() {
               <span className="cluster test-maker-preview-buttons">
                 {questions.length ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("test")}>Preview test</button> : null}
                 {questions.length && includeMarkScheme ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("mark-scheme")}>Preview mark scheme</button> : null}
-                {questions.length && includeAnalysis ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("analysis")}>Preview question-level analysis</button> : null}
+                {questions.length && includeAnalysis ? <button className="button button-secondary button-small" disabled={analysisDownloading} type="button" onClick={() => downloadAnalysisWorkbook("original")}>{analysisDownloading ? "Preparing analysis…" : "Download question-level analysis"}</button> : null}
                 {questions.length ? <button className="button button-small" disabled={shadowLoading} type="button" onClick={createShadowPaper}>{shadowLoading ? "Matching questions…" : shadowQuestions.length ? "Remake shadow paper" : "Create shadow paper"}</button> : null}
                 {questions.length ? <button className="button button-secondary button-small" type="button" onClick={clearQuestions}>Remove all</button> : null}
               </span>
             </div>
+            {analysisError ? <p className="form-message form-error" role="alert">{analysisError}</p> : null}
             {shadowMessage ? <p className={shadowQuestions.length ? "form-message form-success" : "form-message"} role="status">{shadowMessage}</p> : null}
             {shadowQuestions.length ? <section className="assignment-selection-review test-shadow-summary" aria-labelledby="shadow-test-heading">
               <div className="assignment-selection-heading"><div><p className="eyebrow">Matched alternative</p><h3 id="shadow-test-heading">Shadow paper</h3><p>Same question count and assessment pattern; every question is different.</p></div><span>{shadowTotalMarks} marks</span></div>
               <div className="cluster test-maker-preview-buttons">
                 <button className="button button-secondary button-small" type="button" onClick={() => openPreview("test", "shadow")}>Preview shadow test</button>
                 {includeMarkScheme ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("mark-scheme", "shadow")}>Preview shadow mark scheme</button> : null}
-                {includeAnalysis ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("analysis", "shadow")}>Preview shadow analysis</button> : null}
+                {includeAnalysis ? <button className="button button-secondary button-small" disabled={analysisDownloading} type="button" onClick={() => downloadAnalysisWorkbook("shadow")}>{analysisDownloading ? "Preparing analysis…" : "Download shadow analysis"}</button> : null}
               </div>
             </section> : null}
             <section className="assignment-selection-review" aria-labelledby="selected-test-questions">
@@ -861,22 +864,15 @@ export function TestMaker() {
       {activeNumberedQuestions.length && previewMode ? <div className="test-preview-overlay" role="dialog" aria-modal="true" aria-labelledby="test-preview-heading" onMouseDown={(event) => { if (event.target === event.currentTarget) setPreviewMode(null); }}>
         <div className="test-preview-modal">
           <div className="test-preview-toolbar">
-            <div><p className="eyebrow">{previewVariant === "shadow" ? "Shadow version" : previewMode === "analysis" ? "Workbook preview" : "Print preview"}</p><h2 id="test-preview-heading">{previewMode === "test" ? (previewVariant === "shadow" ? "Your shadow paper" : "Your test paper") : previewMode === "mark-scheme" ? (previewVariant === "shadow" ? "Your shadow mark scheme" : "Your mark scheme") : (previewVariant === "shadow" ? "Shadow question-level analysis" : "Question-level analysis")}</h2><p>{previewMode === "analysis" ? "Review what the workbook will contain, then download the editable Excel file." : "Review every page below, then print it or save it as a PDF."}</p></div>
+            <div><p className="eyebrow">{previewVariant === "shadow" ? "Shadow version" : "Print preview"}</p><h2 id="test-preview-heading">{previewMode === "test" ? (previewVariant === "shadow" ? "Your shadow paper" : "Your test paper") : (previewVariant === "shadow" ? "Your shadow mark scheme" : "Your mark scheme")}</h2><p>Review every page below, then print it or save it as a PDF.</p></div>
             <div className="test-preview-action-panel"><span className="cluster test-preview-actions"><button className="button button-secondary" type="button" onClick={() => setPreviewMode(null)}>Close preview</button>
               {previewMode === "test" ? activePaperSets.filter((set) => set.questions.length).map((set) => <button className="button" type="button" key={`print-${set.paper}`} onClick={() => printPages(set.paper === "Paper 1" ? "paper-1" : "paper-2")}>Print or save {combinedPapers ? `${set.paper} ` : ""}{previewVariant === "shadow" ? "shadow " : ""}test PDF</button>) : null}
               {previewMode === "mark-scheme" ? activePaperSets.filter((set) => set.questions.length).map((set) => <button className="button" type="button" key={`print-mark-${set.paper}`} onClick={() => printPages(set.paper === "Paper 1" ? "mark-scheme-1" : "mark-scheme-2")}>Print or save {combinedPapers ? `${set.paper} ` : ""}{previewVariant === "shadow" ? "shadow " : ""}mark scheme PDF</button>) : null}
-              {previewMode === "analysis" ? <button className="button" type="button" disabled={analysisDownloading} onClick={downloadAnalysisWorkbook}>{analysisDownloading ? "Preparing workbook…" : "Download question-level analysis"}</button> : null}
-            </span>{analysisError ? <small className="test-analysis-error" role="alert">{analysisError}</small> : null}</div>
+            </span></div>
           </div>
           <div className="test-preview-pages">
             {previewMode === "test" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">{activePaperSets.filter((set) => set.questions.length).map((set) => <PaperPreviewPages course={course} duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} testDate={testDate} />)}</div> : null}
             {previewMode === "mark-scheme" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable mark scheme preview">{activePaperSets.filter((set) => set.questions.length).map((set) => <MarkSchemePreviewPages key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} />)}</div> : null}
-            {previewMode === "analysis" ? <section className="test-analysis-preview">
-              <div className="test-analysis-preview-heading"><div><p className="eyebrow">One editable workbook</p><h3>{activeTitle}</h3></div><strong>{activeNumberedQuestions.reduce((sum, question) => sum + question.marks, 0)} marks</strong></div>
-              <div className="test-analysis-preview-summary"><div><span>Course</span><strong>{course}</strong></div><div><span>Paper</span><strong>{paper}</strong></div><div><span>Questions</span><strong>{activeNumberedQuestions.length}</strong></div><div><span>Students</span><strong>100 spaces</strong></div></div>
-              <div className="test-analysis-preview-table-wrap"><table><thead><tr><th>Paper</th><th>Question</th><th>Subtopic</th><th>Marks</th></tr></thead><tbody>{activeNumberedQuestions.map((question) => <tr key={`analysis-${question.id}`}><td>{combinedPapers ? questionPaper(question.paper) : paper}</td><td>{question.number}</td><td>{question.subtopic || question.topic}</td><td>{question.marks}</td></tr>)}</tbody></table></div>
-              <div className="test-analysis-preview-sheets"><div><strong>Mark entry</strong><span>Enter names and question scores. Paper 1, Paper 2 and overall totals, percentages and grades calculate automatically for combined tests.</span></div><div><strong>Class analysis</strong><span>See each paper, question and subtopic with red below 32%, orange from 32% to 70%, and green above 70%.</span></div><div><strong>Student feedback</strong><span>Select any student to see their grade and colour-coded question breakdown.</span></div></div>
-            </section> : null}
           </div>
         </div>
       </div> : null}
