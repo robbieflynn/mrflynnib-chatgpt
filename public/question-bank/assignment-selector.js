@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 13;
+  var DRAFT_VERSION = 14;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
@@ -120,11 +120,14 @@
     if (event.origin !== window.location.origin || event.source !== window.parent) return;
     if (event.data && event.data.type === "mrflynnib-assignment-clear") clearSelection();
     if (event.data && event.data.type === "mrflynnib-assignment-remove") removeSelection(String(event.data.id || ""));
+    if (event.data && event.data.type === "mrflynnib-assignment-create-shadow") createShadowSelection(Array.isArray(event.data.sources) ? event.data.sources : []);
   });
 
   function questionFor(id) {
     var card = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
-    return card && card.mrflynnibQuestion ? card.mrflynnibQuestion : null;
+    if (card && card.mrflynnibQuestion) return card.mrflynnibQuestion;
+    var getQuestion = window.mrflynnibQuestionById;
+    return typeof getQuestion === "function" ? getQuestion(id) : null;
   }
 
   function questionSummary(id) {
@@ -132,6 +135,8 @@
     var question = questionFor(id);
     if (!question) return existing || { id: id, title: "Selected question" };
     var card = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
+    var metaFor = window.mrflynnibQuestionMeta;
+    var meta = typeof metaFor === "function" ? metaFor(id) : null;
     var text = function (selector) {
       var node = card && card.querySelector(selector);
       return node ? String(node.textContent || "").replace(/\s+/g, " ").trim() : "";
@@ -139,12 +144,45 @@
     return {
       id: id,
       title: plainText(question.title) || existing && existing.title || "Selected question",
-      topic: text(".qb-badge.topic .main") || existing && existing.topic || "",
-      subtopic: text(".qb-badge.topic .subs") || existing && existing.subtopic || "",
-      paper: text(".qb-badge.course") || existing && existing.paper || "",
-      difficulty: text(".qb-badge:not(.course):not(.topic):not(.marks)") || existing && existing.difficulty || "",
+      topic: meta && meta.topic || text(".qb-badge.topic .main") || existing && existing.topic || "",
+      subtopic: meta && meta.subtopic || text(".qb-badge.topic .subs") || existing && existing.subtopic || "",
+      paper: meta && meta.paper || text(".qb-badge.course") || existing && existing.paper || "",
+      difficulty: meta && meta.difficulty || text(".qb-badge:not(.course):not(.topic):not(.marks)") || existing && existing.difficulty || "",
       marks: Number(question.marks) || existing && existing.marks || null
     };
+  }
+
+  function createShadowSelection(sources) {
+    var findMatches = window.mrflynnibFindShadowQuestions;
+    if (typeof findMatches !== "function") {
+      window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: false, unmatched: [{ title: "The question bank is still loading." }] }, window.location.origin);
+      return;
+    }
+    var result = findMatches(sources);
+    if (!result || (result.unmatched && result.unmatched.length) || !result.ids || result.ids.length !== sources.length) {
+      window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: false, unmatched: result && result.unmatched || [{ title: "No complete shadow match was found." }] }, window.location.origin);
+      return;
+    }
+    selected = new Set(result.ids.map(String));
+    configs = {};
+    summaries = {};
+    Array.from(selected).forEach(function (id) {
+      configs[id] = defaultConfig(id);
+      summaries[id] = questionSummary(id);
+    });
+    document.querySelectorAll(".qb-card").forEach(function (card) {
+      var id = String(card.dataset.id || "");
+      var isSelected = selected.has(id);
+      var checkbox = card.querySelector(".qb-assignment-select input[type=checkbox]");
+      var copy = card.querySelector(".qb-assignment-select span");
+      var editor = card.querySelector(".qb-assignment-answer");
+      if (checkbox) checkbox.checked = isSelected;
+      if (copy) copy.textContent = isSelected ? "Selected for assignment" : "Add to assignment";
+      if (editor) editor.hidden = !isSelected;
+      card.classList.toggle("qb-assignment-selected", isSelected);
+    });
+    publish();
+    window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: true, matches: result.matches || [] }, window.location.origin);
   }
 
   function plainText(value) {

@@ -85,18 +85,57 @@
     var question = card && card.mrflynnibQuestion;
     var id = card && card.dataset.id;
     if (!question || !id) return null;
+    var metaFor = window.mrflynnibQuestionMeta;
+    var meta = typeof metaFor === "function" ? metaFor(id) : null;
     var firstTopic = Array.isArray(question.topics) && question.topics[0] ? question.topics[0] : {};
     return {
       id: String(id),
       title: cleanText(question.title) || "Selected question",
-      topic: cleanText(firstTopic.main),
-      subtopic: cleanText(firstTopic.sub),
-      paper: cleanText(question.paperNumber),
-      section: question.section === "B" ? "B" : "A",
+      topic: cleanText(meta && meta.topic || firstTopic.main),
+      subtopic: cleanText(meta && meta.subtopic || firstTopic.sub),
+      paper: cleanText(meta && meta.paper || question.paperNumber),
+      section: meta && meta.section === "B" || question.section === "B" ? "B" : "A",
       marks: Number(question.marks) || 0,
       html: printableHTML(card),
       markSchemeHtml: printableMarkscheme(question)
     };
+  }
+
+  function detachedCard(id) {
+    var getQuestion = window.mrflynnibQuestionById;
+    var renderCard = window.mrflynnibQuestionCardHTML;
+    if (typeof getQuestion !== "function" || typeof renderCard !== "function") return null;
+    var question = getQuestion(id);
+    var html = renderCard(id);
+    if (!question || !html) return null;
+    var holder = document.createElement("div");
+    holder.innerHTML = html;
+    var card = holder.querySelector(".qb-card");
+    if (!card) return null;
+    card.mrflynnibQuestion = question;
+    return card;
+  }
+
+  function createShadow(sources) {
+    var findMatches = window.mrflynnibFindShadowQuestions;
+    if (typeof findMatches !== "function") {
+      window.parent.postMessage({ type: "mrflynnib-test-shadow", questions: [], unmatched: [{ title: "The question bank is still loading." }] }, window.location.origin);
+      return;
+    }
+    var result = findMatches(sources);
+    if (!result || (result.unmatched && result.unmatched.length)) {
+      window.parent.postMessage({ type: "mrflynnib-test-shadow", questions: [], unmatched: result && result.unmatched || [{ title: "No complete shadow match was found." }] }, window.location.origin);
+      return;
+    }
+    var questions = result.ids.map(function (id) {
+      var visible = document.querySelector('.qb-card[data-id="' + CSS.escape(String(id)) + '"]');
+      return summaryFor(visible || detachedCard(String(id)));
+    }).filter(Boolean);
+    if (questions.length !== result.ids.length) {
+      window.parent.postMessage({ type: "mrflynnib-test-shadow", questions: [], unmatched: [{ title: "One matched question could not be prepared for printing." }] }, window.location.origin);
+      return;
+    }
+    window.parent.postMessage({ type: "mrflynnib-test-shadow", questions: questions, unmatched: [] }, window.location.origin);
   }
 
   function refreshStoredMarkschemes() {
@@ -158,6 +197,7 @@
     if (event.origin !== window.location.origin || event.source !== window.parent) return;
     if (event.data && event.data.type === "mrflynnib-test-clear") clearSelection();
     if (event.data && event.data.type === "mrflynnib-test-remove") removeSelection(String(event.data.id || ""));
+    if (event.data && event.data.type === "mrflynnib-test-create-shadow") createShadow(Array.isArray(event.data.sources) ? event.data.sources : []);
     if (event.data && event.data.type === "mrflynnib-test-reorder" && Array.isArray(event.data.ids)) {
       var next = event.data.ids.map(String).filter(function (id) { return selected.indexOf(id) !== -1; });
       if (next.length === selected.length) { selected = next; publish(); }

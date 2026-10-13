@@ -10,6 +10,7 @@ type SinglePaper = "Paper 1" | "Paper 2";
 type Paper = SinglePaper | "Paper 1 and Paper 2";
 type Section = "A" | "B";
 type PreviewMode = "test" | "mark-scheme" | "analysis";
+type PreviewVariant = "original" | "shadow";
 type PrintTarget = "paper-1" | "paper-2" | "mark-scheme-1" | "mark-scheme-2";
 
 type TestQuestion = {
@@ -70,6 +71,27 @@ function candidateInstructions(course: Course, paper: SinglePaper, totalMarks: n
 
 function questionPaper(value: string): SinglePaper {
   return /paper\s*2/i.test(value) ? "Paper 2" : "Paper 1";
+}
+
+function orderQuestionsForDisplay(items: TestQuestion[], course: Course, combinedPapers: boolean) {
+  const orderSections = (questions: TestQuestion[]) => isApplicationsCourse(course)
+    ? questions
+    : [...questions.filter((question) => question.section !== "B"), ...questions.filter((question) => question.section === "B")];
+  if (!combinedPapers) return orderSections(items);
+  return [
+    ...orderSections(items.filter((question) => questionPaper(question.paper) === "Paper 1")),
+    ...orderSections(items.filter((question) => questionPaper(question.paper) === "Paper 2")),
+  ];
+}
+
+function numberQuestions(items: TestQuestion[], combinedPapers: boolean): NumberedQuestion[] {
+  if (!combinedPapers) return items.map((question, index) => ({ ...question, number: index + 1 }));
+  let paper1Number = 0;
+  let paper2Number = 0;
+  return items.map((question) => ({
+    ...question,
+    number: questionPaper(question.paper) === "Paper 1" ? ++paper1Number : ++paper2Number,
+  }));
 }
 
 function draftId(course: Course) {
@@ -482,30 +504,20 @@ export function TestMaker() {
   const [includeMarkScheme, setIncludeMarkScheme] = useState(true);
   const [includeAnalysis, setIncludeAnalysis] = useState(true);
   const [questions, setQuestions] = useState<TestQuestion[]>([]);
+  const [shadowQuestions, setShadowQuestions] = useState<TestQuestion[]>([]);
+  const [shadowSourceSignature, setShadowSourceSignature] = useState("");
+  const [shadowMessage, setShadowMessage] = useState("");
+  const [shadowLoading, setShadowLoading] = useState(false);
   const [previewMode, setPreviewMode] = useState<PreviewMode | null>(null);
+  const [previewVariant, setPreviewVariant] = useState<PreviewVariant>("original");
   const [printTarget, setPrintTarget] = useState<PrintTarget>("paper-1");
   const [analysisDownloading, setAnalysisDownloading] = useState(false);
   const [analysisError, setAnalysisError] = useState("");
   const combinedPapers = paper === "Paper 1 and Paper 2";
-  const displayQuestions = useMemo(() => {
-    const orderSections = (items: TestQuestion[]) => isApplicationsCourse(course)
-      ? items
-      : [...items.filter((question) => question.section !== "B"), ...items.filter((question) => question.section === "B")];
-    if (!combinedPapers) return orderSections(questions);
-    return [
-      ...orderSections(questions.filter((question) => questionPaper(question.paper) === "Paper 1")),
-      ...orderSections(questions.filter((question) => questionPaper(question.paper) === "Paper 2")),
-    ];
-  }, [combinedPapers, course, questions]);
-  const numberedQuestions = useMemo(() => {
-    if (!combinedPapers) return displayQuestions.map((question, index) => ({ ...question, number: index + 1 }));
-    let paper1Number = 0;
-    let paper2Number = 0;
-    return displayQuestions.map((question) => ({
-      ...question,
-      number: questionPaper(question.paper) === "Paper 1" ? ++paper1Number : ++paper2Number,
-    }));
-  }, [combinedPapers, displayQuestions]);
+  const displayQuestions = useMemo(() => orderQuestionsForDisplay(questions, course, combinedPapers), [combinedPapers, course, questions]);
+  const numberedQuestions = useMemo(() => numberQuestions(displayQuestions, combinedPapers), [combinedPapers, displayQuestions]);
+  const shadowDisplayQuestions = useMemo(() => orderQuestionsForDisplay(shadowQuestions, course, combinedPapers), [combinedPapers, course, shadowQuestions]);
+  const shadowNumberedQuestions = useMemo(() => numberQuestions(shadowDisplayQuestions, combinedPapers), [combinedPapers, shadowDisplayQuestions]);
   const paper1Questions = useMemo(() => numberedQuestions.filter((question) => !combinedPapers || questionPaper(question.paper) === "Paper 1"), [combinedPapers, numberedQuestions]);
   const paper2Questions = useMemo(() => combinedPapers ? numberedQuestions.filter((question) => questionPaper(question.paper) === "Paper 2") : numberedQuestions, [combinedPapers, numberedQuestions]);
   const paperSets = useMemo(() => combinedPapers
@@ -514,6 +526,17 @@ export function TestMaker() {
       { paper: "Paper 2" as const, duration: durationPaper2, questions: paper2Questions },
     ]
     : [{ paper: paper as SinglePaper, duration: paper === "Paper 1" ? durationPaper1 : durationPaper2, questions: numberedQuestions }], [combinedPapers, durationPaper1, durationPaper2, numberedQuestions, paper, paper1Questions, paper2Questions]);
+  const shadowPaper1Questions = useMemo(() => shadowNumberedQuestions.filter((question) => !combinedPapers || questionPaper(question.paper) === "Paper 1"), [combinedPapers, shadowNumberedQuestions]);
+  const shadowPaper2Questions = useMemo(() => combinedPapers ? shadowNumberedQuestions.filter((question) => questionPaper(question.paper) === "Paper 2") : shadowNumberedQuestions, [combinedPapers, shadowNumberedQuestions]);
+  const shadowPaperSets = useMemo(() => combinedPapers
+    ? [
+      { paper: "Paper 1" as const, duration: durationPaper1, questions: shadowPaper1Questions },
+      { paper: "Paper 2" as const, duration: durationPaper2, questions: shadowPaper2Questions },
+    ]
+    : [{ paper: paper as SinglePaper, duration: paper === "Paper 1" ? durationPaper1 : durationPaper2, questions: shadowNumberedQuestions }], [combinedPapers, durationPaper1, durationPaper2, paper, shadowNumberedQuestions, shadowPaper1Questions, shadowPaper2Questions]);
+  const activeNumberedQuestions = previewVariant === "shadow" ? shadowNumberedQuestions : numberedQuestions;
+  const activePaperSets = previewVariant === "shadow" ? shadowPaperSets : paperSets;
+  const activeTitle = previewVariant === "shadow" ? `${title || "Mathematics practice test"} · Shadow paper` : title || "Mathematics practice test";
 
   const source = useMemo(() => {
     const query = new URLSearchParams({
@@ -551,12 +574,42 @@ export function TestMaker() {
         animationFrame = requestAnimationFrame(loadMoreIfNeeded);
       }
       if (event.data?.type === "mrflynnib-test-selection" && Array.isArray(event.data.questions)) {
-        const next = event.data.questions
+        const next: TestQuestion[] = event.data.questions
           .filter((item: unknown): item is TestQuestion => Boolean(item && typeof item === "object" && "id" in item && "html" in item))
           .slice(0, 50)
           .map((item: TestQuestion) => ({ ...item, section: item.section === "B" ? "B" : "A" }));
+        const nextSignature = orderQuestionsForDisplay(next, course, combinedPapers).map((question) => `${question.id}:${question.section}`).join("|");
+        if (shadowSourceSignature && nextSignature !== shadowSourceSignature) {
+          setShadowQuestions([]);
+          setShadowSourceSignature("");
+          setShadowMessage("The original selection changed, so the previous shadow paper was cleared. Create it again when the test is ready.");
+          if (previewVariant === "shadow") {
+            setPreviewVariant("original");
+            setPreviewMode(null);
+          }
+        }
         setQuestions(next);
         if (!next.length) setPreviewMode(null);
+      }
+      if (event.data?.type === "mrflynnib-test-shadow") {
+        setShadowLoading(false);
+        const unmatched = Array.isArray(event.data.unmatched) ? event.data.unmatched : [];
+        const next = Array.isArray(event.data.questions)
+          ? event.data.questions
+            .filter((item: unknown): item is TestQuestion => Boolean(item && typeof item === "object" && "id" in item && "html" in item))
+            .slice(0, 50)
+            .map((item: TestQuestion) => ({ ...item, section: item.section === "B" ? "B" : "A" as Section }))
+          : [];
+        if (unmatched.length || next.length !== displayQuestions.length) {
+          const names = unmatched.slice(0, 3).map((item: { title?: string }) => item.title || "a selected question").join(", ");
+          setShadowQuestions([]);
+          setShadowSourceSignature("");
+          setShadowMessage(`A complete shadow paper could not be made yet. No equally suitable alternative was found for ${names || "one or more selected questions"}.`);
+        } else {
+          setShadowQuestions(next);
+          setShadowSourceSignature(displayQuestions.map((question) => `${question.id}:${question.section}`).join("|"));
+          setShadowMessage(`Shadow paper ready: ${next.length} matched ${next.length === 1 ? "question" : "questions"}, with the same paper, section, difficulty and subtopic pattern.`);
+        }
       }
     };
     let ticking = false;
@@ -574,7 +627,7 @@ export function TestMaker() {
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [loadMoreIfNeeded, source]);
+  }, [combinedPapers, course, displayQuestions, loadMoreIfNeeded, previewVariant, shadowSourceSignature, source]);
 
   useEffect(() => {
     if (!previewMode) return;
@@ -606,7 +659,7 @@ export function TestMaker() {
   }, []);
 
   const downloadAnalysisWorkbook = useCallback(async () => {
-    if (!numberedQuestions.length || analysisDownloading) return;
+    if (!activeNumberedQuestions.length || analysisDownloading) return;
     setAnalysisDownloading(true);
     setAnalysisError("");
     try {
@@ -614,12 +667,12 @@ export function TestMaker() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: title || "Mathematics practice test",
+          title: activeTitle,
           course,
           paper,
           teacherOrClass: school,
           testDate,
-          questions: numberedQuestions.map(({ number, title: questionTitle, topic, subtopic, marks, paper: sourcePaper, section }) => ({
+          questions: activeNumberedQuestions.map(({ number, title: questionTitle, topic, subtopic, marks, paper: sourcePaper, section }) => ({
             number,
             title: questionTitle,
             topic,
@@ -650,11 +703,30 @@ export function TestMaker() {
     } finally {
       setAnalysisDownloading(false);
     }
-  }, [analysisDownloading, course, numberedQuestions, paper, school, testDate, title]);
+  }, [activeNumberedQuestions, activeTitle, analysisDownloading, course, paper, school, testDate]);
+
+  const createShadowPaper = () => {
+    if (!displayQuestions.length || shadowLoading) return;
+    setShadowLoading(true);
+    setShadowMessage("Finding a different question for every position…");
+    frameRef.current?.contentWindow?.postMessage({
+      type: "mrflynnib-test-create-shadow",
+      sources: displayQuestions.map((question) => ({ id: question.id, section: question.section })),
+    }, window.location.origin);
+  };
+
+  const openPreview = (mode: PreviewMode, variant: PreviewVariant = "original") => {
+    setPreviewVariant(variant);
+    setAnalysisError("");
+    setPreviewMode(mode);
+  };
 
   const resetForCourse = (nextCourse: Course) => {
     setPreviewMode(null);
     setQuestions([]);
+    setShadowQuestions([]);
+    setShadowSourceSignature("");
+    setShadowMessage("");
     frameHeightRef.current = 640;
     setFrameHeight(640);
     hasMoreRef.current = true;
@@ -667,6 +739,9 @@ export function TestMaker() {
 
   const clearQuestions = () => {
     setPreviewMode(null);
+    setShadowQuestions([]);
+    setShadowSourceSignature("");
+    setShadowMessage("");
     frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-test-clear" }, window.location.origin);
   };
 
@@ -684,9 +759,15 @@ export function TestMaker() {
 
   const changeSection = (id: string, section: Section) => {
     setQuestions((current) => current.map((question) => question.id === id ? { ...question, section } : question));
+    if (shadowQuestions.length) {
+      setShadowQuestions([]);
+      setShadowSourceSignature("");
+      setShadowMessage("The original section choice changed, so the previous shadow paper was cleared. Create it again when the test is ready.");
+    }
   };
 
   const totalMarks = questions.reduce((total, question) => total + question.marks, 0);
+  const shadowTotalMarks = shadowQuestions.reduce((total, question) => total + question.marks, 0);
   const applicationsCourse = isApplicationsCourse(course);
   const setupSummary = combinedPapers
     ? "Paper 1 and Paper 2 are prepared as separate papers. Their marks are combined in one question-level analysis workbook."
@@ -736,12 +817,22 @@ export function TestMaker() {
             <div className="assignment-picker-summary" aria-live="polite">
               <span className="assignment-picker-summary-copy"><strong>{questions.length} {questions.length === 1 ? "question" : "questions"} selected</strong><span>{totalMarks} {totalMarks === 1 ? "mark" : "marks"} in total</span></span>
               <span className="cluster test-maker-preview-buttons">
-                {questions.length ? <button className="button button-secondary button-small" type="button" onClick={() => setPreviewMode("test")}>Preview test</button> : null}
-                {questions.length && includeMarkScheme ? <button className="button button-secondary button-small" type="button" onClick={() => setPreviewMode("mark-scheme")}>Preview mark scheme</button> : null}
-                {questions.length && includeAnalysis ? <button className="button button-secondary button-small" type="button" onClick={() => setPreviewMode("analysis")}>Preview question-level analysis</button> : null}
+                {questions.length ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("test")}>Preview test</button> : null}
+                {questions.length && includeMarkScheme ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("mark-scheme")}>Preview mark scheme</button> : null}
+                {questions.length && includeAnalysis ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("analysis")}>Preview question-level analysis</button> : null}
+                {questions.length ? <button className="button button-small" disabled={shadowLoading} type="button" onClick={createShadowPaper}>{shadowLoading ? "Matching questions…" : shadowQuestions.length ? "Remake shadow paper" : "Create shadow paper"}</button> : null}
                 {questions.length ? <button className="button button-secondary button-small" type="button" onClick={clearQuestions}>Remove all</button> : null}
               </span>
             </div>
+            {shadowMessage ? <p className={shadowQuestions.length ? "form-message form-success" : "form-message"} role="status">{shadowMessage}</p> : null}
+            {shadowQuestions.length ? <section className="assignment-selection-review test-shadow-summary" aria-labelledby="shadow-test-heading">
+              <div className="assignment-selection-heading"><div><p className="eyebrow">Matched alternative</p><h3 id="shadow-test-heading">Shadow paper</h3><p>Same question count and assessment pattern; every question is different.</p></div><span>{shadowTotalMarks} marks</span></div>
+              <div className="cluster test-maker-preview-buttons">
+                <button className="button button-secondary button-small" type="button" onClick={() => openPreview("test", "shadow")}>Preview shadow test</button>
+                {includeMarkScheme ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("mark-scheme", "shadow")}>Preview shadow mark scheme</button> : null}
+                {includeAnalysis ? <button className="button button-secondary button-small" type="button" onClick={() => openPreview("analysis", "shadow")}>Preview shadow analysis</button> : null}
+              </div>
+            </section> : null}
             <section className="assignment-selection-review" aria-labelledby="selected-test-questions">
               <div className="assignment-selection-heading"><div><p className="eyebrow">Test contents</p><h3 id="selected-test-questions">Selected questions</h3></div><span>{questions.length} of 50</span></div>
               {questions.length ? <ol className={`test-selection-list${applicationsCourse ? " test-selection-list-no-sections" : ""}`}>
@@ -764,23 +855,23 @@ export function TestMaker() {
 
       </div>
 
-      {questions.length && previewMode ? <div className="test-preview-overlay" role="dialog" aria-modal="true" aria-labelledby="test-preview-heading" onMouseDown={(event) => { if (event.target === event.currentTarget) setPreviewMode(null); }}>
+      {activeNumberedQuestions.length && previewMode ? <div className="test-preview-overlay" role="dialog" aria-modal="true" aria-labelledby="test-preview-heading" onMouseDown={(event) => { if (event.target === event.currentTarget) setPreviewMode(null); }}>
         <div className="test-preview-modal">
           <div className="test-preview-toolbar">
-            <div><p className="eyebrow">{previewMode === "analysis" ? "Workbook preview" : "Print preview"}</p><h2 id="test-preview-heading">{previewMode === "test" ? "Your test paper" : previewMode === "mark-scheme" ? "Your mark scheme" : "Question-level analysis"}</h2><p>{previewMode === "analysis" ? "Review what the workbook will contain, then download the editable Excel file." : "Review every page below, then print it or save it as a PDF."}</p></div>
+            <div><p className="eyebrow">{previewVariant === "shadow" ? "Shadow version" : previewMode === "analysis" ? "Workbook preview" : "Print preview"}</p><h2 id="test-preview-heading">{previewMode === "test" ? (previewVariant === "shadow" ? "Your shadow paper" : "Your test paper") : previewMode === "mark-scheme" ? (previewVariant === "shadow" ? "Your shadow mark scheme" : "Your mark scheme") : (previewVariant === "shadow" ? "Shadow question-level analysis" : "Question-level analysis")}</h2><p>{previewMode === "analysis" ? "Review what the workbook will contain, then download the editable Excel file." : "Review every page below, then print it or save it as a PDF."}</p></div>
             <div className="test-preview-action-panel"><span className="cluster test-preview-actions"><button className="button button-secondary" type="button" onClick={() => setPreviewMode(null)}>Close preview</button>
-              {previewMode === "test" ? paperSets.filter((set) => set.questions.length).map((set) => <button className="button" type="button" key={`print-${set.paper}`} onClick={() => printPages(set.paper === "Paper 1" ? "paper-1" : "paper-2")}>Print or save {combinedPapers ? `${set.paper} ` : ""}test PDF</button>) : null}
-              {previewMode === "mark-scheme" ? paperSets.filter((set) => set.questions.length).map((set) => <button className="button" type="button" key={`print-mark-${set.paper}`} onClick={() => printPages(set.paper === "Paper 1" ? "mark-scheme-1" : "mark-scheme-2")}>Print or save {combinedPapers ? `${set.paper} ` : ""}mark scheme PDF</button>) : null}
+              {previewMode === "test" ? activePaperSets.filter((set) => set.questions.length).map((set) => <button className="button" type="button" key={`print-${set.paper}`} onClick={() => printPages(set.paper === "Paper 1" ? "paper-1" : "paper-2")}>Print or save {combinedPapers ? `${set.paper} ` : ""}{previewVariant === "shadow" ? "shadow " : ""}test PDF</button>) : null}
+              {previewMode === "mark-scheme" ? activePaperSets.filter((set) => set.questions.length).map((set) => <button className="button" type="button" key={`print-mark-${set.paper}`} onClick={() => printPages(set.paper === "Paper 1" ? "mark-scheme-1" : "mark-scheme-2")}>Print or save {combinedPapers ? `${set.paper} ` : ""}{previewVariant === "shadow" ? "shadow " : ""}mark scheme PDF</button>) : null}
               {previewMode === "analysis" ? <button className="button" type="button" disabled={analysisDownloading} onClick={downloadAnalysisWorkbook}>{analysisDownloading ? "Preparing workbook…" : "Download question-level analysis"}</button> : null}
             </span>{analysisError ? <small className="test-analysis-error" role="alert">{analysisError}</small> : null}</div>
           </div>
           <div className="test-preview-pages">
-            {previewMode === "test" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">{paperSets.filter((set) => set.questions.length).map((set) => <PaperPreviewPages course={course} duration={set.duration} key={set.paper} paper={set.paper} paperTitle={title || "Mathematics practice test"} questions={set.questions} school={school} testDate={testDate} />)}</div> : null}
-            {previewMode === "mark-scheme" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable mark scheme preview">{paperSets.filter((set) => set.questions.length).map((set) => <MarkSchemePreviewPages key={set.paper} paper={set.paper} paperTitle={title || "Mathematics practice test"} questions={set.questions} />)}</div> : null}
+            {previewMode === "test" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">{activePaperSets.filter((set) => set.questions.length).map((set) => <PaperPreviewPages course={course} duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} testDate={testDate} />)}</div> : null}
+            {previewMode === "mark-scheme" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable mark scheme preview">{activePaperSets.filter((set) => set.questions.length).map((set) => <MarkSchemePreviewPages key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} />)}</div> : null}
             {previewMode === "analysis" ? <section className="test-analysis-preview">
-              <div className="test-analysis-preview-heading"><div><p className="eyebrow">One editable workbook</p><h3>{title || "Mathematics practice test"}</h3></div><strong>{totalMarks} marks</strong></div>
-              <div className="test-analysis-preview-summary"><div><span>Course</span><strong>{course}</strong></div><div><span>Paper</span><strong>{paper}</strong></div><div><span>Questions</span><strong>{questions.length}</strong></div><div><span>Students</span><strong>100 spaces</strong></div></div>
-              <div className="test-analysis-preview-table-wrap"><table><thead><tr><th>Paper</th><th>Question</th><th>Subtopic</th><th>Marks</th></tr></thead><tbody>{numberedQuestions.map((question) => <tr key={`analysis-${question.id}`}><td>{combinedPapers ? questionPaper(question.paper) : paper}</td><td>{question.number}</td><td>{question.subtopic || question.topic}</td><td>{question.marks}</td></tr>)}</tbody></table></div>
+              <div className="test-analysis-preview-heading"><div><p className="eyebrow">One editable workbook</p><h3>{activeTitle}</h3></div><strong>{activeNumberedQuestions.reduce((sum, question) => sum + question.marks, 0)} marks</strong></div>
+              <div className="test-analysis-preview-summary"><div><span>Course</span><strong>{course}</strong></div><div><span>Paper</span><strong>{paper}</strong></div><div><span>Questions</span><strong>{activeNumberedQuestions.length}</strong></div><div><span>Students</span><strong>100 spaces</strong></div></div>
+              <div className="test-analysis-preview-table-wrap"><table><thead><tr><th>Paper</th><th>Question</th><th>Subtopic</th><th>Marks</th></tr></thead><tbody>{activeNumberedQuestions.map((question) => <tr key={`analysis-${question.id}`}><td>{combinedPapers ? questionPaper(question.paper) : paper}</td><td>{question.number}</td><td>{question.subtopic || question.topic}</td><td>{question.marks}</td></tr>)}</tbody></table></div>
               <div className="test-analysis-preview-sheets"><div><strong>Mark entry</strong><span>Enter names and question scores. Paper 1, Paper 2 and overall totals, percentages and grades calculate automatically for combined tests.</span></div><div><strong>Class analysis</strong><span>See each paper, question and subtopic with red below 32%, orange from 32% to 70%, and green above 70%.</span></div><div><strong>Student feedback</strong><span>Select any student to see their grade and colour-coded question breakdown.</span></div></div>
             </section> : null}
           </div>

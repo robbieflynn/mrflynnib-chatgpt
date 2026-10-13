@@ -160,6 +160,13 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
 
   const questions = orderQuestions(input);
   const lastQuestionColumn = firstQuestionColumn + questions.length - 1;
+  const questionPaperGroups = (input.paper === "Paper 1 and Paper 2" ? ["Paper 1", "Paper 2"] : [input.paper]).map((label) => {
+    const questionIndexes = questions
+      .map((question, questionIndex) => ({ question, questionIndex }))
+      .filter(({ question }) => input.paper !== "Paper 1 and Paper 2" || paperLabel(question.paper) === label)
+      .map(({ questionIndex }) => questionIndex);
+    return { label, questionIndexes };
+  }).filter((group) => group.questionIndexes.length);
   const summaryLabels = input.paper === "Paper 1 and Paper 2" ? ["Paper 1", "Paper 2", "Overall"] as const : ["Overall"] as const;
   const summaryGroups = summaryLabels.map((label, index) => ({
     label,
@@ -218,6 +225,12 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getCell("A6").value = "Student details";
   entry.getCell("A7").value = "Name";
   entry.getCell("B7").value = "Teacher";
+  questionPaperGroups.forEach((group) => {
+    const firstColumn = firstQuestionColumn + group.questionIndexes[0];
+    const lastColumn = firstQuestionColumn + group.questionIndexes[group.questionIndexes.length - 1];
+    if (firstColumn !== lastColumn) entry.mergeCells(6, firstColumn, 6, lastColumn);
+    entry.getCell(6, firstColumn).value = `${group.label} questions`;
+  });
   summaryGroups.forEach((group) => {
     const groupTotalColumn = group.startColumn;
     const groupPercentageColumn = groupTotalColumn + 1;
@@ -240,12 +253,12 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   });
   entry.getCell("A7").alignment = { vertical: "middle", horizontal: "left" };
   entry.getCell("B7").alignment = { vertical: "middle", horizontal: "left" };
-  entry.getRow(7).height = 38;
+  entry.getRow(6).height = 24;
+  entry.getRow(7).height = 52;
 
   questions.forEach((question, index) => {
     const column = firstQuestionColumn + index;
-    entry.getCell(6, column).value = input.paper === "Paper 1 and Paper 2" ? `${paperLabel(question.paper).replace("Paper ", "P")} Q${question.number}` : `Q${question.number}`;
-    entry.getCell(7, column).value = question.subtopic || question.title;
+    entry.getCell(7, column).value = `Q${question.number}\n${question.subtopic || question.title}`;
     entry.getCell(8, column).value = question.marks;
     entry.getColumn(column).width = 12;
     for (let row = firstStudentRow; row <= lastStudentRow; row += 1) {
@@ -254,9 +267,9 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
       cell.dataValidation = { type: "whole", operator: "between", allowBlank: true, showErrorMessage: true, errorTitle: "Check this mark", error: `Enter a whole number from 0 to ${question.marks}.`, formulae: [0, question.marks] };
     }
     entry.getCell(7, column).note = `${question.title}\nMain topic: ${question.topic}`;
-    entry.getCell(6, column).alignment = { horizontal: "center", vertical: "middle" };
     entry.getCell(8, column).alignment = { horizontal: "center", vertical: "middle" };
     entry.getCell(7, column).font = { name: "Arial", size: 8, bold: true, color: { argb: colours.navy } };
+    entry.getCell(7, column).alignment = { horizontal: "center", vertical: "middle", wrapText: true };
     const columnLetter = columnName(column);
     addQuestionMarkRules(entry, `${columnLetter}${firstStudentRow}:${columnLetter}${lastStudentRow}`, `${columnLetter}${firstStudentRow}`, `${columnLetter}$8`);
   });
@@ -391,64 +404,100 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
 
   const feedback = workbook.addWorksheet("Student feedback", {
     views: [{ state: "frozen", ySplit: 9, showGridLines: false }],
-    properties: { defaultRowHeight: 20 },
-    pageSetup: { orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, paperSize: 9, margins: { left: 0.4, right: 0.4, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 } },
+    properties: { defaultRowHeight: 22 },
+    pageSetup: { orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9, margins: { left: 0.45, right: 0.45, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 }, printTitlesRow: "1:9" },
   });
   feedback.properties.tabColor = { argb: "FF79AEDD" };
-  styleTitle(feedback, "H", "Student feedback", "Choose a student below, then print or save this sheet as their individual feedback page.");
+  styleTitle(feedback, "H", "Individual student feedback", "Choose a student below, then print or save this clear question-by-question summary.");
   feedback.getCell("A4").value = "Student";
-  feedback.getCell("A4").font = { name: "Arial", size: 10, bold: true, color: { argb: colours.navy } };
-  feedback.mergeCells("B4:D4");
+  feedback.getCell("A4").font = { name: "Arial", size: 11, bold: true, color: { argb: colours.navy } };
+  feedback.getCell("A4").alignment = { vertical: "middle" };
+  feedback.mergeCells("B4:H4");
   feedback.getCell("B4").fill = solidFill(colours.input);
   feedback.getCell("B4").border = border();
+  feedback.getCell("B4").font = { name: "Arial", size: 13, bold: true, color: { argb: colours.navy } };
+  feedback.getCell("B4").alignment = { vertical: "middle" };
+  feedback.getRow(4).height = 30;
   workbook.definedNames.add(`'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow}`, "StudentNames");
   feedback.getCell("B4").dataValidation = { type: "list", allowBlank: true, showErrorMessage: true, errorTitle: "Choose a student", error: "Select a student from the list.", showInputMessage: true, promptTitle: "Student feedback", prompt: "Choose a student whose name has been entered on the Marks entry sheet.", formulae: ["StudentNames"] };
-  feedback.getRow(6).values = ["Teacher", null, "Total", null, "Percentage", null, "Grade", null];
-  styleRange(feedback, 6, 7, 1, 8, (cell, row) => {
+  [["A6:B6", "Teacher"], ["C6:D6", "Total mark"], ["E6:F6", "Percentage"], ["G6:H6", "Grade"]].forEach(([range, label]) => {
+    feedback.mergeCells(range);
+    const cell = feedback.getCell(range.split(":")[0]);
+    cell.value = label;
+    cell.fill = solidFill(colours.paleBlue);
+    cell.font = { name: "Arial", size: 10, bold: true, color: { argb: colours.navy } };
+    cell.alignment = { vertical: "middle", horizontal: "center" };
     cell.border = border();
-    cell.font = { name: "Arial", size: 9, bold: row === 6, color: { argb: colours.navy } };
-    if (row === 6) cell.fill = solidFill(colours.paleBlue);
   });
+  ["A7:B7", "C7:D7", "E7:F7", "G7:H7"].forEach((range) => {
+    feedback.mergeCells(range);
+    const cell = feedback.getCell(range.split(":")[0]);
+    cell.font = { name: "Arial", size: 15, bold: true, color: { argb: colours.navy } };
+    cell.alignment = { vertical: "middle", horizontal: "center" };
+    cell.border = border();
+  });
+  feedback.getRow(6).height = 24;
+  feedback.getRow(7).height = 32;
   feedback.getCell("A7").value = formula(`IFERROR(INDEX('Marks entry'!$B$${firstStudentRow}:$B$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
   feedback.getCell("C7").value = formula(`IFERROR(INDEX('Marks entry'!$${totalColumnLetter}$${firstStudentRow}:$${totalColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
   feedback.getCell("E7").value = formula(`IFERROR(INDEX('Marks entry'!$${percentageColumnLetter}$${firstStudentRow}:$${percentageColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
   feedback.getCell("E7").numFmt = "0.0%";
   feedback.getCell("G7").value = formula(`IFERROR(INDEX('Marks entry'!$${gradeColumnLetter}$${firstStudentRow}:$${gradeColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
-  feedback.getRow(9).values = ["Paper", "Question", "Subtopic", "Score", "Out of", "%"];
+  feedback.getRow(9).values = ["Question", "Subtopic", null, "Score", "Out of", "%"];
+  feedback.mergeCells("B9:C9");
   styleRange(feedback, 9, 9, 1, 6, (cell) => {
     cell.fill = solidFill(colours.navy);
     cell.font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
     cell.border = border();
   });
+  let feedbackRow = 10;
+  let currentFeedbackPaper = "";
+  const feedbackQuestionRows: number[] = [];
   questions.forEach((question, index) => {
-    const row = 10 + index;
+    const questionPaperName = input.paper === "Paper 1 and Paper 2" ? paperLabel(question.paper) : input.paper;
+    if (questionPaperName !== currentFeedbackPaper) {
+      currentFeedbackPaper = questionPaperName;
+      feedback.mergeCells(`A${feedbackRow}:F${feedbackRow}`);
+      const paperCell = feedback.getCell(feedbackRow, 1);
+      paperCell.value = questionPaperName;
+      paperCell.fill = solidFill(colours.blue);
+      paperCell.font = { name: "Arial", size: 11, bold: true, color: { argb: colours.white } };
+      paperCell.alignment = { vertical: "middle", horizontal: "left" };
+      paperCell.border = border();
+      feedback.getRow(feedbackRow).height = 26;
+      feedbackRow += 1;
+    }
+    const row = feedbackRow;
+    feedbackQuestionRows.push(row);
     const sourceColumn = columnName(firstQuestionColumn + index);
-    feedback.getCell(row, 1).value = input.paper === "Paper 1 and Paper 2" ? paperLabel(question.paper) : input.paper;
-    feedback.getCell(row, 2).value = `Q${question.number}`;
-    feedback.getCell(row, 3).value = question.subtopic || question.title;
-    feedback.getCell(row, 3).note = `${question.title}\nMain topic: ${question.topic}`;
+    feedback.getCell(row, 1).value = `Q${question.number}`;
+    feedback.mergeCells(`B${row}:C${row}`);
+    feedback.getCell(row, 2).value = question.subtopic || question.title;
+    feedback.getCell(row, 2).note = `${question.title}\nMain topic: ${question.topic}`;
     feedback.getCell(row, 4).value = formula(`IFERROR(INDEX('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
     feedback.getCell(row, 5).value = question.marks;
     feedback.getCell(row, 6).value = formula(`IF(ISNUMBER(D${row}),D${row}/E${row},"")`);
     feedback.getCell(row, 6).numFmt = "0.0%";
+    styleRange(feedback, row, row, 1, 6, (cell, _currentRow, column) => {
+      cell.font = { name: "Arial", size: 10, color: { argb: colours.navy } };
+      cell.border = border();
+      cell.alignment = { vertical: "middle", wrapText: true, horizontal: column >= 4 ? "center" : "left" };
+    });
+    feedback.getRow(row).height = 27;
+    feedbackRow += 1;
   });
-  const feedbackLastRow = 9 + questions.length;
-  styleRange(feedback, 10, feedbackLastRow, 1, 6, (cell) => {
-    cell.font = { name: "Arial", size: 9, color: { argb: colours.navy } };
-    cell.border = border();
-    cell.alignment = { vertical: "middle", wrapText: true };
-  });
-  feedback.getColumn(1).width = 12;
-  feedback.getColumn(2).width = 11;
-  feedback.getColumn(3).width = 36;
+  const feedbackLastRow = feedbackRow - 1;
+  feedback.getColumn(1).width = 13;
+  feedback.getColumn(2).width = 24;
+  feedback.getColumn(3).width = 24;
   feedback.getColumn(4).width = 13;
   feedback.getColumn(5).width = 13;
   feedback.getColumn(6).width = 13;
   feedback.getColumn(7).width = 11;
   feedback.getColumn(8).width = 6;
-  addPercentageRules(feedback, `D10:F${feedbackLastRow}`, "$F10");
+  feedbackQuestionRows.forEach((row) => addPercentageRules(feedback, `D${row}:F${row}`, `$F${row}`));
   feedback.pageSetup.printArea = `A1:H${feedbackLastRow}`;
-  feedback.headerFooter.oddFooter = "Mr Flynn IB  •  &F  •  Page &P of &N";
+  feedback.headerFooter.oddFooter = "&F  •  Page &P of &N";
 
   return workbook.xlsx.writeBuffer();
 }

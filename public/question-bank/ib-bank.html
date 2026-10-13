@@ -551017,6 +551017,70 @@ function diagramN11TZ0P2Q1grid(){
     var b = banksOf(q);
     return b.length > 0 && b.every(function(x){ return HELD_BANKS.indexOf(x) >= 0; });
   }
+  function shadowTopicKeys(q){
+    return topicsOf(q).map(function(topic){
+      return String(topic.main || '').trim() + '|' + String(topic.sub || '').trim();
+    }).filter(function(value){ return value !== '|'; }).sort();
+  }
+  function shadowQuestionMeta(q){
+    var topics = topicsOf(q), firstTopic = topics[0] || {};
+    return {
+      id: String(q.id || ''),
+      title: String(q.title || ''),
+      topic: String(firstTopic.main || ''),
+      subtopic: String(firstTopic.sub || ''),
+      paper: String(paperNumberOf(q) || ''),
+      section: hasSections() && q.section === 'B' ? 'B' : 'A',
+      difficulty: String(difficultyOf(q) || 'Medium'),
+      marks: Number(q.marks) || 0
+    };
+  }
+  window.mrflynnibQuestionMeta = function(id){
+    var q = state.byId[String(id)];
+    return q ? shadowQuestionMeta(q) : null;
+  };
+  window.mrflynnibQuestionCardHTML = function(id){
+    var q = state.byId[String(id)];
+    return q ? cardHTML(q, 1) : '';
+  };
+  window.mrflynnibFindShadowQuestions = function(sources){
+    var requested = Array.isArray(sources) ? sources.map(function(source){
+      return typeof source === 'string' ? { id: source } : (source || {});
+    }) : [];
+    var originalIds = new Set(requested.map(function(source){ return String(source.id || ''); }));
+    var used = new Set(originalIds);
+    var matches = [], unmatched = [];
+    requested.forEach(function(source){
+      var original = state.byId[String(source.id || '')];
+      if(!original){ unmatched.push({ id: String(source.id || ''), title: 'Question no longer available' }); return; }
+      var originalMeta = shadowQuestionMeta(original);
+      var requiredSection = source.section === 'B' ? 'B' : originalMeta.section;
+      var originalTopics = shadowTopicKeys(original);
+      var candidates = state.all.filter(function(candidate){
+        if(!candidate || !candidate.id || used.has(String(candidate.id))) return false;
+        if(isHeld(candidate) || candidate.offSyllabus || candidate.provisional) return false;
+        if(banksOf(candidate).indexOf(state.course) < 0) return false;
+        if(HAS_PAPERS && paperNumberOf(candidate) !== originalMeta.paper) return false;
+        if(hasSections() && (candidate.section === 'B' ? 'B' : 'A') !== requiredSection) return false;
+        if(difficultyOf(candidate) !== originalMeta.difficulty) return false;
+        var candidateMeta = shadowQuestionMeta(candidate);
+        return candidateMeta.topic === originalMeta.topic && candidateMeta.subtopic === originalMeta.subtopic;
+      }).sort(function(left, right){
+        var leftTopics = shadowTopicKeys(left), rightTopics = shadowTopicKeys(right);
+        var leftExact = leftTopics.join('||') === originalTopics.join('||') ? 0 : 1;
+        var rightExact = rightTopics.join('||') === originalTopics.join('||') ? 0 : 1;
+        if(leftExact !== rightExact) return leftExact - rightExact;
+        var markDifference = Math.abs((Number(left.marks) || 0) - originalMeta.marks) - Math.abs((Number(right.marks) || 0) - originalMeta.marks);
+        if(markDifference) return markDifference;
+        return String(left.id).localeCompare(String(right.id));
+      });
+      var match = candidates[0];
+      if(!match){ unmatched.push(originalMeta); return; }
+      used.add(String(match.id));
+      matches.push(shadowQuestionMeta(match));
+    });
+    return { ids: matches.map(function(match){ return match.id; }), matches: matches, unmatched: unmatched };
+  };
   // Canonical main-topic order. Substituted by build.py PER BANK: the IB banks
   // use the 5 IB syllabus topics, the IGCSE bank the 6 Edexcel ones in spec
   // order. Hard-coded to the IB five, the IGCSE mains - different words - fell
@@ -551395,8 +551459,8 @@ function diagramN11TZ0P2Q1grid(){
 <script src="/question-bank/progress.js?v=1"></script>
 <script src="/question-bank/whiteboard.js?v=19"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=17"></script>
-<script src="/question-bank/assignment-selector.js?v=25"></script>
-<script src="/question-bank/test-selector.js?v=6"></script>
+<script src="/question-bank/assignment-selector.js?v=26"></script>
+<script src="/question-bank/test-selector.js?v=7"></script>
 <script src="/question-bank/assignment-response.js?v=9"></script>
 </body>
 </html>

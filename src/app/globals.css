@@ -344,6 +344,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-picker-summary-copy { min-width: 0; display: grid; gap: .15rem; }
 .assignment-picker-summary .button { flex: none; }
 .test-maker-preview-buttons { justify-content: flex-end; }
+.test-shadow-summary { padding: 1rem; border-color: #8fc9b2; background: #f5fbf8; }
+.test-shadow-summary .assignment-selection-heading { padding: 0; border: 0; background: transparent; }
+.test-shadow-summary .assignment-selection-heading p { margin: .25rem 0 0; color: var(--muted); }
 .assignment-selection-review { overflow: hidden; border: 1px solid #cbd9df; border-radius: 1rem; background: #fff; }
 .assignment-selection-heading { padding: 1rem 1.05rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #e1e8eb; background: #f8fafb; }
 .assignment-selection-heading h3 { margin-top: .15rem; font-size: 1.15rem; }
