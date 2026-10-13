@@ -459,6 +459,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-continues { margin: 3mm 0 1mm; font-size: 8pt; text-align: right; }
 .test-continues-without-box { margin-top: auto; }
 .test-section-b-page .test-paper-question { margin-top: 1mm; }
+.test-section-b-page .test-question-body > .qb-parts { margin-top: 0; }
+.test-part-label-placeholder { min-width: 9mm; }
+.test-page-flow-end { display: block; height: 0; }
 .test-markscheme-title { margin-bottom: 12mm; text-align: center; }
 .test-markscheme-title h2 { margin: 0; color: #111; font: 700 15pt/1.2 Arial, Helvetica, sans-serif; }
 .test-markscheme-title p { margin: 2mm 0 0; font-size: 8pt; }

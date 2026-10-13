@@ -173,6 +173,95 @@ function QuestionMarkup({ question }: { question: NumberedQuestion }) {
   );
 }
 
+function splitPrintableQuestionHtml(html: string) {
+  if (typeof document === "undefined") return [html];
+
+  const root = document.createElement("div");
+  root.innerHTML = html;
+  const units: string[] = [];
+
+  const splitInnerHtml = (innerHtml: string) => {
+    const holder = document.createElement("div");
+    holder.innerHTML = innerHtml
+      .replace(/(?:<br\s*\/?>(?:\s|&nbsp;)*){2,}/gi, '<span data-test-page-break="true"></span>')
+      .replace(/\n\s*\n/g, '<span data-test-page-break="true"></span>');
+    const segments: string[] = [];
+    let inline = "";
+    const flushInline = () => {
+      if (!inline.trim()) {
+        inline = "";
+        return;
+      }
+      segments.push(inline);
+      inline = "";
+    };
+
+    Array.from(holder.childNodes).forEach((node) => {
+      if (node instanceof HTMLElement && node.dataset.testPageBreak === "true") {
+        flushInline();
+        return;
+      }
+      if (node instanceof HTMLElement && node.matches("table, .qb-diagram, ul.qb-subparts, ol.qb-subparts")) {
+        flushInline();
+        if (node.matches("ul.qb-subparts, ol.qb-subparts")) {
+          Array.from(node.children).forEach((child) => {
+            segments.push(`<${node.tagName.toLowerCase()} class="${node.className}">${child.outerHTML}</${node.tagName.toLowerCase()}>`);
+          });
+        } else {
+          segments.push(node.outerHTML);
+        }
+        return;
+      }
+      inline += node instanceof HTMLElement ? node.outerHTML : node.textContent ?? "";
+    });
+    flushInline();
+    return segments;
+  };
+
+  Array.from(root.childNodes).forEach((node) => {
+    if (!(node instanceof HTMLElement)) {
+      if (node.textContent?.trim()) units.push(`<p>${node.textContent}</p>`);
+      return;
+    }
+
+    if (node.matches("ul.qb-parts, ol.qb-parts")) {
+      Array.from(node.children).forEach((child) => {
+        if (!(child instanceof HTMLElement)) return;
+        const label = child.querySelector(":scope > b")?.outerHTML ?? "<b></b>";
+        const body = child.querySelector<HTMLElement>(":scope > .qb-part-text");
+        if (!body) {
+          units.push(`<ul class="qb-parts">${child.outerHTML}</ul>`);
+          return;
+        }
+        const bodyClone = body.cloneNode(true) as HTMLElement;
+        const marks = bodyClone.querySelector<HTMLElement>(".qb-marks-tag")?.outerHTML ?? "";
+        bodyClone.querySelector(".qb-marks-tag")?.remove();
+        const segments = splitInnerHtml(bodyClone.innerHTML);
+        if (!segments.length) segments.push("");
+        segments.forEach((segment, index) => {
+          const segmentLabel = index === 0 ? label : '<b class="test-part-label-placeholder" aria-hidden="true"></b>';
+          const segmentMarks = index === segments.length - 1 ? marks : "";
+          units.push(`<ul class="qb-parts"><li>${segmentLabel}<div class="qb-part-text">${segment}${segmentMarks}</div></li></ul>`);
+        });
+      });
+      return;
+    }
+
+    if (node.matches(".qb-stem, p")) {
+      const segments = splitInnerHtml(node.innerHTML);
+      if (segments.length > 1) {
+        const tag = node.tagName.toLowerCase();
+        const className = node.className ? ` class="${node.className}"` : "";
+        segments.forEach((segment) => units.push(`<${tag}${className}>${segment}</${tag}>`));
+        return;
+      }
+    }
+    units.push(node.outerHTML);
+  });
+
+  return units.length ? units : [html];
+}
+
 function PageFooter({ label }: { label: string }) {
   return <footer className="test-paper-footer"><span>Mr Flynn IB</span><span>{label}</span></footer>;
 }
@@ -260,11 +349,69 @@ function SectionAQuestionPages({ question, first, paperTitle, showSectionIntro =
 }
 
 function SectionBQuestionPage({ question, first, paperTitle, showSectionIntro = true }: { question: NumberedQuestion; first: boolean; paperTitle: string; showSectionIntro?: boolean }) {
-  return <section className="test-page test-question-page test-section-b-page">
-    {first ? showSectionIntro ? <SectionBIntro /> : <ApplicationsPaperTwoIntro /> : null}
-    <QuestionMarkup question={question} />
+  const pageRefs = useRef<Array<HTMLElement | null>>([]);
+  const [pages, setPages] = useState<string[][]>([[question.html]]);
+
+  useEffect(() => {
+    const animationFrame = requestAnimationFrame(() => setPages([splitPrintableQuestionHtml(question.html)]));
+    return () => cancelAnimationFrame(animationFrame);
+  }, [question.html]);
+
+  useEffect(() => {
+    let animationFrame = 0;
+    let secondAnimationFrame = 0;
+    const checkFit = () => {
+      cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(secondAnimationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        secondAnimationFrame = requestAnimationFrame(() => {
+          for (let index = 0; index < pages.length; index += 1) {
+            const page = pageRefs.current[index];
+            const footer = page?.querySelector<HTMLElement>(".test-paper-footer");
+            const flowEnd = page?.querySelector<HTMLElement>(".test-page-flow-end");
+            if (!page || !footer || !flowEnd) continue;
+            const safeBottom = footer.getBoundingClientRect().top - 8;
+            if (flowEnd.getBoundingClientRect().bottom <= safeBottom || pages[index].length <= 1) continue;
+
+            setPages((current) => {
+              const next = current.map((pageUnits) => [...pageUnits]);
+              const moved = next[index].pop();
+              if (!moved) return current;
+              if (next[index + 1]) next[index + 1].unshift(moved);
+              else next.push([moved]);
+              return next;
+            });
+            return;
+          }
+        });
+      });
+    };
+
+    checkFit();
+    const resizeObserver = new ResizeObserver(checkFit);
+    pageRefs.current.forEach((page) => { if (page) resizeObserver.observe(page); });
+    const mutationObserver = new MutationObserver(checkFit);
+    pageRefs.current.forEach((page) => { if (page) mutationObserver.observe(page, { childList: true, subtree: true, characterData: true }); });
+    pageRefs.current.forEach((page) => page?.querySelectorAll("img").forEach((image) => image.addEventListener("load", checkFit, { once: true })));
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(secondAnimationFrame);
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+    };
+  }, [pages]);
+
+  return <Fragment>{pages.map((pageUnits, pageIndex) => <section className="test-page test-question-page test-section-b-page" key={`${question.id}-page-${pageIndex}`} ref={(node) => { pageRefs.current[pageIndex] = node; }}>
+    {pageIndex === 0 && first ? showSectionIntro ? <SectionBIntro /> : <ApplicationsPaperTwoIntro /> : null}
+    {pageIndex > 0 ? <p className="test-continuation-heading">(Question {question.number} continued)</p> : null}
+    <article className="test-paper-question">
+      {pageIndex === 0 ? <div className="test-paper-question-heading"><strong>{question.number}.</strong><span>[Maximum mark: {question.marks}]</span></div> : null}
+      <RenderedQuestion html={pageUnits.join("")} />
+    </article>
+    <span className="test-page-flow-end" aria-hidden="true" />
     <PageFooter label={paperTitle} />
-  </section>;
+  </section>)}</Fragment>;
 }
 
 function MarkSchemePage({ question, first, paperTitle }: { question: NumberedQuestion; first: boolean; paperTitle: string }) {
