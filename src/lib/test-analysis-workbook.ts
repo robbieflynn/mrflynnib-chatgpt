@@ -12,7 +12,7 @@ export type TestAnalysisQuestion = {
 
 export type TestAnalysisInput = {
   title: string;
-  course: "AA HL" | "AA SL" | "AI HL" | "AI SL";
+  course: "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher";
   paper: "Paper 1" | "Paper 2" | "Paper 1 and Paper 2";
   teacherOrClass: string;
   testDate: string;
@@ -73,13 +73,13 @@ function styleTitle(sheet: ExcelJS.Worksheet, lastColumn: string, title: string,
   sheet.getRow(2).height = 22;
 }
 
-function styleFrozenEntryTitle(sheet: ExcelJS.Worksheet, lastColumn: string) {
+function styleFrozenEntryTitle(sheet: ExcelJS.Worksheet, lastColumn: string, course: TestAnalysisInput["course"]) {
   sheet.mergeCells("A1:B1");
   sheet.mergeCells(`C1:${lastColumn}1`);
   sheet.mergeCells("A2:B2");
   sheet.mergeCells(`C2:${lastColumn}2`);
 
-  sheet.getCell("A1").value = "IB test marks entry";
+  sheet.getCell("A1").value = course === "IGCSE Higher" ? "IGCSE test marks entry" : "IB test marks entry";
   sheet.getCell("C1").value = "Question-level analysis";
   sheet.getCell("A2").value = "Student details stay visible";
   sheet.getCell("C2").value = "Enter names, teachers and question marks only. Totals, percentages and grades calculate automatically.";
@@ -152,7 +152,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = "Mr Flynn IB";
   workbook.company = "Mr Flynn IB";
-  workbook.subject = "IB Mathematics question-level analysis";
+  workbook.subject = `${input.course === "IGCSE Higher" ? "IGCSE" : "IB"} Mathematics question-level analysis`;
   workbook.title = `${input.title} analysis`;
   workbook.created = new Date();
   workbook.modified = new Date();
@@ -196,7 +196,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   });
   entry.views = [{ state: "frozen", xSplit: 2, ySplit: 8, topLeftCell: "C9", activeCell: "C9", showGridLines: false }];
   entry.properties.tabColor = { argb: colours.blue };
-  styleFrozenEntryTitle(entry, gradeColumnLetter);
+  styleFrozenEntryTitle(entry, gradeColumnLetter, input.course);
   entry.getCell("A3").value = "Test";
   entry.getCell("B3").value = input.title;
   entry.getCell("A4").value = "Course";
@@ -317,7 +317,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   });
 
   entry.mergeCells(`${boundariesLabelLetter}${boundariesHeadingRow}:${boundariesValueLetter}${boundariesHeadingRow}`);
-  entry.getCell(`${boundariesLabelLetter}${boundariesHeadingRow}`).value = "Optional IB grade boundaries";
+  entry.getCell(`${boundariesLabelLetter}${boundariesHeadingRow}`).value = "Optional grade boundaries";
   entry.getCell(`${boundariesLabelLetter}${boundariesHeadingRow}`).fill = solidFill(colours.blue);
   entry.getCell(`${boundariesLabelLetter}${boundariesHeadingRow}`).font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
   entry.getCell(boundariesHeaderRow, boundariesLabelColumn).value = "Grade";

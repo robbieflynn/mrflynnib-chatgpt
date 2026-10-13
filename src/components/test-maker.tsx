@@ -6,7 +6,8 @@ import renderMathInElement from "katex/contrib/auto-render";
 import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
 import type { SavedTestPayload, SavedTestRecord } from "@/lib/saved-test";
 
-type Course = "AA HL" | "AA SL" | "AI HL" | "AI SL";
+type IBCourse = "AA HL" | "AA SL" | "AI HL" | "AI SL";
+type Course = IBCourse | "IGCSE Higher";
 type SinglePaper = "Paper 1" | "Paper 2";
 type Paper = SinglePaper | "Paper 1 and Paper 2";
 type Section = "A" | "B";
@@ -33,10 +34,15 @@ const courseNames: Record<Course, string> = {
   "AA SL": "Mathematics: analysis and approaches, standard level",
   "AI HL": "Mathematics: applications and interpretation, higher level",
   "AI SL": "Mathematics: applications and interpretation, standard level",
+  "IGCSE Higher": "Edexcel International GCSE Mathematics A, Higher Tier",
 };
 
 function isApplicationsCourse(course: Course) {
   return course.startsWith("AI");
+}
+
+function isIgcseCourse(course: Course) {
+  return course === "IGCSE Higher";
 }
 
 function formulaBookletName(course: Course) {
@@ -47,6 +53,21 @@ function formulaBookletName(course: Course) {
 }
 
 function candidateInstructions(course: Course, paper: SinglePaper, totalMarks: number) {
+  if (isIgcseCourse(course)) {
+    return [
+      "Use black ink or ball-point pen.",
+      "Fill in the boxes at the top of this page with your name and teacher.",
+      "Answer all questions.",
+      "Without sufficient working, correct answers may be awarded no marks.",
+      "Answer the questions in the spaces provided. There may be more space than you need.",
+      "Calculators may be used.",
+      "You must not write anything on the formulae page. Anything you write on the formulae page will gain no credit.",
+      `The total mark for this paper is ${totalMarks}.`,
+      "The marks for each question are shown in brackets. Use this as a guide as to how much time to spend on each question.",
+      "Read each question carefully before you start to answer it.",
+      "Check your answers if you have time at the end.",
+    ];
+  }
   const applications = isApplicationsCourse(course);
   const calculator = applications || paper === "Paper 2"
     ? "A graphic display calculator is required for this paper."
@@ -75,7 +96,7 @@ function questionPaper(value: string): SinglePaper {
 }
 
 function orderQuestionsForDisplay(items: TestQuestion[], course: Course, combinedPapers: boolean) {
-  const orderSections = (questions: TestQuestion[]) => isApplicationsCourse(course)
+  const orderSections = (questions: TestQuestion[]) => isApplicationsCourse(course) || isIgcseCourse(course)
     ? questions
     : [...questions.filter((question) => question.section !== "B"), ...questions.filter((question) => question.section === "B")];
   if (!combinedPapers) return orderSections(items);
@@ -489,19 +510,112 @@ function MarkSchemePreviewPages({ paper, paperTitle, questions }: { paper: Singl
   </div>;
 }
 
-export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: SavedTestRecord[] }) {
+function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "prism" | "cylinder" | "sphere" }) {
+  if (kind === "trapezium") return <svg aria-hidden="true" viewBox="0 0 180 100"><path d="M42 82h104l-24-58H66z" /><path d="M66 15v18M122 15v18M60 20h68M34 91h120" /><text x="91" y="16">a</text><text x="91" y="99">b</text><text x="77" y="60">h</text></svg>;
+  if (kind === "triangle") return <svg aria-hidden="true" viewBox="0 0 180 105"><path d="M24 88 90 15l66 73z" /><text x="86" y="13">C</text><text x="11" y="99">A</text><text x="158" y="99">B</text><text x="49" y="48">b</text><text x="130" y="48">a</text><text x="87" y="102">c</text></svg>;
+  if (kind === "cone") return <svg aria-hidden="true" viewBox="0 0 150 120"><ellipse cx="76" cy="98" rx="43" ry="14" /><path d="M33 98 76 14l43 84M76 14v84" strokeDasharray="5 4" /><text x="82" y="58">h</text><text x="49" y="57">l</text><text x="96" y="94">r</text></svg>;
+  if (kind === "prism") return <svg aria-hidden="true" viewBox="0 0 170 105"><path d="M20 75 55 31l45 8 45-15v55l-45 12-45-8zM100 39v52M20 75l80 16" /><text x="53" y="61">cross</text><text x="50" y="73">section</text><text x="105" y="101">length</text></svg>;
+  if (kind === "cylinder") return <svg aria-hidden="true" viewBox="0 0 140 115"><ellipse cx="67" cy="24" rx="37" ry="13" /><path d="M30 24v66c0 17 74 17 74 0V24M67 24h37" /><text x="83" y="20">r</text><text x="110" y="61">h</text></svg>;
+  return <svg aria-hidden="true" viewBox="0 0 130 115"><circle cx="62" cy="58" r="45" /><ellipse cx="62" cy="58" rx="45" ry="15" strokeDasharray="5 4" /><path d="M62 58 97 33" /><text x="80" y="40">r</text></svg>;
+}
+
+function IgcseFormulaSheet({ paperTitle }: { paperTitle: string }) {
+  return <section className="test-page igcse-formula-page">
+    <div className="igcse-page-frame">
+      <header className="igcse-formula-title"><h2>International GCSE Mathematics</h2><p>Formulae sheet - Higher Tier</p></header>
+      <div className="igcse-formula-grid">
+        <article><h3>Arithmetic series</h3><p>Sum to <i>n</i> terms, <SummaryMath>{"\\(S_n=\\frac{n}{2}[2a+(n-1)d]\\)"}</SummaryMath></p></article>
+        <article><h3>Area of trapezium</h3><p><SummaryMath>{"\\(A=\\frac{1}{2}(a+b)h\\)"}</SummaryMath></p><FormulaDiagram kind="trapezium" /></article>
+        <article><h3>The quadratic equation</h3><p>The solutions of <SummaryMath>{"\\(ax^2+bx+c=0\\)"}</SummaryMath>, where <SummaryMath>{"\\(a\\ne0\\)"}</SummaryMath>, are given by:</p><p className="igcse-display-formula"><SummaryMath>{"\\(x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}\\)"}</SummaryMath></p></article>
+        <article className="igcse-formula-wide"><h3>Trigonometry <span>In any triangle <i>ABC</i></span></h3><div className="igcse-formula-with-diagram"><FormulaDiagram kind="triangle" /><div><p><strong>Sine Rule</strong> <SummaryMath>{"\\(\\frac{a}{\\sin A}=\\frac{b}{\\sin B}=\\frac{c}{\\sin C}\\)"}</SummaryMath></p><p><strong>Cosine Rule</strong> <SummaryMath>{"\\(a^2=b^2+c^2-2bc\\cos A\\)"}</SummaryMath></p><p><strong>Area of triangle</strong> <SummaryMath>{"\\(A=\\frac{1}{2}ab\\sin C\\)"}</SummaryMath></p></div></div></article>
+        <article><p><strong>Volume of cone</strong> <SummaryMath>{"\\(=\\frac{1}{3}\\pi r^2h\\)"}</SummaryMath></p><p><strong>Curved surface area of cone</strong> <SummaryMath>{"\\(=\\pi rl\\)"}</SummaryMath></p><FormulaDiagram kind="cone" /></article>
+        <article><p><strong>Volume of prism</strong><br />= area of cross section × length</p><FormulaDiagram kind="prism" /></article>
+        <article><p><strong>Volume of cylinder</strong> <SummaryMath>{"\\(=\\pi r^2h\\)"}</SummaryMath></p><p><strong>Curved surface area of cylinder</strong> <SummaryMath>{"\\(=2\\pi rh\\)"}</SummaryMath></p><FormulaDiagram kind="cylinder" /></article>
+        <article><p><strong>Volume of sphere</strong> <SummaryMath>{"\\(=\\frac{4}{3}\\pi r^3\\)"}</SummaryMath></p><p><strong>Surface area of sphere</strong> <SummaryMath>{"\\(=4\\pi r^2\\)"}</SummaryMath></p><FormulaDiagram kind="sphere" /></article>
+      </div>
+    </div>
+    <PageFooter label={paperTitle} />
+  </section>;
+}
+
+function isCompactIgcseQuestion(question: NumberedQuestion) {
+  const textLength = question.html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().length;
+  const diagrams = (question.html.match(/\bqb-diagram\b/gi) || []).length;
+  const tables = (question.html.match(/<table\b/gi) || []).length;
+  return question.marks <= 4 && textLength < 760 && diagrams === 0 && tables === 0;
+}
+
+function igcseQuestionPages(questions: NumberedQuestion[]) {
+  const pages: NumberedQuestion[][] = [];
+  questions.forEach((question, index) => {
+    const current = pages[pages.length - 1];
+    const canShare = index > 0 && current?.length === 1 && isCompactIgcseQuestion(current[0]) && isCompactIgcseQuestion(question) && current[0].marks + question.marks <= 7;
+    if (canShare) current.push(question);
+    else pages.push([question]);
+  });
+  return pages;
+}
+
+function IgcseQuestionPage({ questions, first, paperTitle, totalQuestions }: { questions: NumberedQuestion[]; first: boolean; paperTitle: string; totalQuestions: number }) {
+  return <section className="test-page igcse-question-page">
+    <div className="igcse-page-frame">
+      {first ? <div className="igcse-paper-opening"><strong>Answer all {totalQuestions} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
+      <div className={`igcse-question-stack${questions.length > 1 ? " has-two-questions" : ""}`}>
+        {questions.map((question) => <article className="igcse-print-question" key={question.id}>
+          <div className="igcse-question-copy"><strong className="igcse-question-number">{question.number}</strong><RenderedQuestion html={question.html} /></div>
+          <div className="igcse-answer-space" style={{ minHeight: `${Math.max(24, Math.min(78, question.marks * 10 + 10))}mm` }} aria-hidden="true"><span /></div>
+          <p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p>
+        </article>)}
+      </div>
+    </div>
+    <PageFooter label={paperTitle} />
+  </section>;
+}
+
+function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school, testDate }: { duration: string; paper: SinglePaper; paperTitle: string; questions: NumberedQuestion[]; school: string; testDate: string }) {
+  const totalMarks = questions.reduce((total, question) => total + question.marks, 0);
+  const instructions = candidateInstructions("IGCSE Higher", paper, totalMarks);
+  const pages = igcseQuestionPages(questions);
+  return <div className={`test-paper-set test-paper-set-${paper === "Paper 1" ? "paper-1" : "paper-2"} igcse-paper-set`}>
+    <section className="test-page test-cover-page igcse-cover-page">
+      <div className="igcse-cover-panel">
+        <p className="igcse-cover-kicker">Edexcel International GCSE</p>
+        <h2>Mathematics A</h2>
+        <strong>{paper}</strong>
+        <p>Higher Tier</p>
+        <h1>{paperTitle}</h1>
+        {school ? <span>{school}</span> : null}
+      </div>
+      <div className="test-candidate-details igcse-candidate-details">
+        <div className="test-candidate-name"><span>Name</span><i /></div>
+        <div><span>Teacher</span><i /></div>
+        <div><span>Date</span><i>{testDate ? new Date(`${testDate}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}</i></div>
+      </div>
+      <p className="test-time-allowed">Time: {duration || "120"} minutes</p>
+      <section className="test-instructions igcse-instructions"><h3>Instructions</h3><ul>{instructions.slice(0, 7).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul><h3>Information</h3><ul>{instructions.slice(7, 9).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul><h3>Advice</h3><ul>{instructions.slice(9).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul></section>
+      <PageFooter label="Teacher-created Edexcel IGCSE Mathematics practice paper" />
+    </section>
+    <IgcseFormulaSheet paperTitle={paperTitle} />
+    {pages.map((pageQuestions, index) => <IgcseQuestionPage first={index === 0} key={`igcse-page-${index}`} paperTitle={paperTitle} questions={pageQuestions} totalQuestions={questions.length} />)}
+  </div>;
+}
+
+export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSavedTests?: SavedTestRecord[]; bank?: "ib" | "igcse" }) {
+  const igcse = bank === "igcse";
+  const defaultCourse: Course = igcse ? "IGCSE Higher" : "AA HL";
+  const defaultTitle = igcse ? "IGCSE Mathematics practice test" : "Mathematics practice test";
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(640);
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const pendingRestoreRef = useRef<SavedTestRecord | null>(null);
   const [frameHeight, setFrameHeight] = useState(640);
-  const [course, setCourse] = useState<Course>("AA HL");
+  const [course, setCourse] = useState<Course>(defaultCourse);
   const [paper, setPaper] = useState<Paper>("Paper 1");
-  const [title, setTitle] = useState("Mathematics practice test");
+  const [title, setTitle] = useState(defaultTitle);
   const [school, setSchool] = useState("");
-  const [durationPaper1, setDurationPaper1] = useState("90");
-  const [durationPaper2, setDurationPaper2] = useState("90");
+  const [durationPaper1, setDurationPaper1] = useState(igcse ? "120" : "90");
+  const [durationPaper2, setDurationPaper2] = useState(igcse ? "120" : "90");
   const [testDate, setTestDate] = useState("");
   const [includeMarkScheme, setIncludeMarkScheme] = useState(true);
   const [includeAnalysis, setIncludeAnalysis] = useState(true);
@@ -521,6 +635,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
   const [saveMessage, setSaveMessage] = useState("");
   const [saveError, setSaveError] = useState("");
   const combinedPapers = paper === "Paper 1 and Paper 2";
+  const usesSections = !igcse && !isApplicationsCourse(course);
   const displayQuestions = useMemo(() => orderQuestionsForDisplay(questions, course, combinedPapers), [combinedPapers, course, questions]);
   const numberedQuestions = useMemo(() => numberQuestions(displayQuestions, combinedPapers), [combinedPapers, displayQuestions]);
   const shadowDisplayQuestions = useMemo(() => orderQuestionsForDisplay(shadowQuestions, course, combinedPapers), [combinedPapers, course, shadowQuestions]);
@@ -543,7 +658,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
     : [{ paper: paper as SinglePaper, duration: paper === "Paper 1" ? durationPaper1 : durationPaper2, questions: shadowNumberedQuestions }], [combinedPapers, durationPaper1, durationPaper2, paper, shadowNumberedQuestions, shadowPaper1Questions, shadowPaper2Questions]);
   const activeNumberedQuestions = previewVariant === "shadow" ? shadowNumberedQuestions : numberedQuestions;
   const activePaperSets = previewVariant === "shadow" ? shadowPaperSets : paperSets;
-  const activeTitle = previewVariant === "shadow" ? `${title || "Mathematics practice test"} · Shadow paper` : title || "Mathematics practice test";
+  const activeTitle = previewVariant === "shadow" ? `${title || defaultTitle} · Shadow paper` : title || defaultTitle;
 
   const source = useMemo(() => {
     const query = new URLSearchParams({
@@ -551,9 +666,10 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
       embedded: "1",
       test: "1",
       draft: draftId(course),
+      testLabel: igcse ? "IGCSE Test Maker" : "IB Test Maker",
     });
-    return `/question-bank/ib-bank.html?${query.toString()}`;
-  }, [course]);
+    return `/question-bank/${igcse ? "igcse-bank" : "ib-bank"}.html?${query.toString()}`;
+  }, [course, igcse]);
 
   const sendPendingRestore = useCallback(() => {
     const savedTest = pendingRestoreRef.current;
@@ -711,7 +827,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
 
   const downloadAnalysisWorkbook = useCallback(async (variant: PreviewVariant) => {
     const workbookQuestions = variant === "shadow" ? shadowNumberedQuestions : numberedQuestions;
-    const workbookTitle = variant === "shadow" ? `${title || "Mathematics practice test"} · Shadow paper` : title || "Mathematics practice test";
+    const workbookTitle = variant === "shadow" ? `${title || defaultTitle} · Shadow paper` : title || defaultTitle;
     if (!workbookQuestions.length || analysisDownloading) return;
     setAnalysisDownloading(true);
     setAnalysisError("");
@@ -756,7 +872,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
     } finally {
       setAnalysisDownloading(false);
     }
-  }, [analysisDownloading, course, numberedQuestions, paper, school, shadowNumberedQuestions, testDate, title]);
+  }, [analysisDownloading, course, defaultTitle, numberedQuestions, paper, school, shadowNumberedQuestions, testDate, title]);
 
   const createShadowPaper = () => {
     if (!displayQuestions.length || shadowLoading) return;
@@ -804,7 +920,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
     const target = index + direction;
     if (index < 0 || target < 0 || target >= ordered.length) return;
     if (combinedPapers && questionPaper(ordered[index].paper) !== questionPaper(ordered[target].paper)) return;
-    if (!isApplicationsCourse(course) && (ordered[index].section === "B") !== (ordered[target].section === "B")) return;
+    if (usesSections && (ordered[index].section === "B") !== (ordered[target].section === "B")) return;
     [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
     setQuestions(ordered);
     frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-test-reorder", ids: ordered.map((question) => question.id) }, window.location.origin);
@@ -858,7 +974,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
     try {
       const saved = await writeSavedTest({
         id: asNew ? undefined : activeSavedTestId ?? undefined,
-        savedTitle: asNew && activeSavedTestId ? `${title || "Mathematics practice test"} copy` : title || "Mathematics practice test",
+        savedTitle: asNew && activeSavedTestId ? `${title || defaultTitle} copy` : title || defaultTitle,
         savedCourse: course,
         savedPaper: paper,
         questionCount: displayQuestions.length,
@@ -874,7 +990,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
     } finally {
       setSaveBusy(false);
     }
-  }, [activeSavedTestId, course, displayQuestions, paper, saveBusy, savedPayload, title, writeSavedTest]);
+  }, [activeSavedTestId, course, defaultTitle, displayQuestions, paper, saveBusy, savedPayload, title, writeSavedTest]);
 
   const openSavedTest = useCallback((savedTest: SavedTestRecord) => {
     const sameCourse = savedTest.course === course;
@@ -952,10 +1068,10 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
     if (questions.length && !window.confirm("Start a new test? Any changes that have not been saved will be lost.")) return;
     pendingRestoreRef.current = null;
     setActiveSavedTestId(null);
-    setTitle("Mathematics practice test");
+    setTitle(defaultTitle);
     setSchool("");
-    setDurationPaper1("90");
-    setDurationPaper2("90");
+    setDurationPaper1(igcse ? "120" : "90");
+    setDurationPaper2(igcse ? "120" : "90");
     setTestDate("");
     setIncludeMarkScheme(true);
     setIncludeAnalysis(true);
@@ -968,17 +1084,29 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
   const totalMarks = questions.reduce((total, question) => total + question.marks, 0);
   const shadowTotalMarks = shadowQuestions.reduce((total, question) => total + question.marks, 0);
   const applicationsCourse = isApplicationsCourse(course);
-  const setupSummary = combinedPapers
+  const setupSummary = igcse
+    ? combinedPapers
+      ? "Paper 1 and Paper 2 are prepared as separate calculator papers with the same instructions, formula sheet and question layout."
+      : "IGCSE Paper 1 and Paper 2 follow the same calculator-paper format, with a formula sheet and answers written in the spaces provided."
+    : combinedPapers
     ? "Paper 1 and Paper 2 are prepared as separate papers. Their marks are combined in one question-level analysis workbook."
     : applicationsCourse
     ? "AI Paper 1 prints answer boxes; AI Paper 2 uses a separate answer booklet. A graphic display calculator is required for both papers."
     : "AA uses Section A answer boxes and Section B booklet answers. Paper 1 is non-calculator; Paper 2 requires a graphic display calculator.";
-  const paperHelp = combinedPapers
+  const paperHelp = igcse
+    ? combinedPapers
+      ? "Selected questions are grouped into separate Paper 1 and Paper 2 papers using their source-paper classification."
+      : "Both IGCSE papers allow calculators and use the same instructions and question format."
+    : combinedPapers
     ? "Selected questions are grouped using their original Paper 1 or Paper 2 classification."
     : applicationsCourse
     ? "Paper 1 uses answer boxes; Paper 2 uses an answer booklet. You can browse questions from either source paper."
     : "Controls the cover and calculator instruction. It does not restrict which questions you can browse.";
-  const questionPickerHelp = combinedPapers
+  const questionPickerHelp = igcse
+    ? combinedPapers
+      ? "Choose from the full IGCSE Higher bank. Questions are grouped and numbered separately for Paper 1 and Paper 2."
+      : "Use the paper, topic, subtopic and difficulty filters below. There are no Section A or Section B divisions."
+    : combinedPapers
     ? "Choose from the full course bank. Questions are grouped and numbered separately for Paper 1 and Paper 2."
     : applicationsCourse
     ? "Use the paper, topic, subtopic and difficulty filters below. AI response layout is set automatically by Paper 1 or Paper 2."
@@ -1010,7 +1138,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
           <div className="test-maker-form form-grid">
             <label className="field"><span>Test title</span><input value={title} maxLength={100} onChange={(event) => setTitle(event.target.value)} /></label>
             <label className="field"><span>School or class <small className="muted">(optional)</small></span><input value={school} maxLength={100} placeholder="Year 13 Mathematics" onChange={(event) => setSchool(event.target.value)} /></label>
-            <label className="field"><span>Course</span><select value={course} onChange={(event) => resetForCourse(event.target.value as Course)}><option>AA HL</option><option>AA SL</option><option>AI HL</option><option>AI SL</option></select></label>
+            {igcse ? <label className="field"><span>Course</span><input readOnly value="Edexcel IGCSE Mathematics Higher" /></label> : <label className="field"><span>Course</span><select value={course} onChange={(event) => resetForCourse(event.target.value as Course)}><option>AA HL</option><option>AA SL</option><option>AI HL</option><option>AI SL</option></select></label>}
             <label className="field"><span>Test paper format</span><select value={paper} onChange={(event) => setPaper(event.target.value as Paper)}><option>Paper 1</option><option>Paper 2</option><option>Paper 1 and Paper 2</option></select><small className="muted">{paperHelp}</small></label>
             {combinedPapers ? <>
               <label className="field"><span>Paper 1 time in minutes</span><input inputMode="numeric" value={durationPaper1} onChange={(event) => setDurationPaper1(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>
@@ -1052,7 +1180,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
             </section> : null}
             <section className="assignment-selection-review" aria-labelledby="selected-test-questions">
               <div className="assignment-selection-heading"><div><p className="eyebrow">Test contents</p><h3 id="selected-test-questions">Selected questions</h3></div><span>{questions.length} of 50</span></div>
-              {questions.length ? <ol className={`test-selection-list${applicationsCourse ? " test-selection-list-no-sections" : ""}`}>
+              {questions.length ? <ol className={`test-selection-list${!usesSections ? " test-selection-list-no-sections" : ""}`}>
                 {displayQuestions.map((question, index) => {
                   const numberedQuestion = numberedQuestions.find((candidate) => candidate.id === question.id);
                   const previous = displayQuestions[index - 1];
@@ -1060,8 +1188,8 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
                   return <li key={question.id}>
                   <span className="assignment-selection-number">{combinedPapers ? `${questionPaper(question.paper) === "Paper 1" ? "P1" : "P2"} ${numberedQuestion?.number ?? index + 1}` : index + 1}</span>
                   <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[combinedPapers ? questionPaper(question.paper) : "", question.topic, question.subtopic].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
-                  {!applicationsCourse ? <label className="test-section-select"><span>Section</span><select aria-label={`Section for ${question.title}`} value={question.section} onChange={(event) => changeSection(question.id, event.target.value as Section)}><option value="A">A</option><option value="B">B</option></select></label> : null}
-                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper)) || (!applicationsCourse && (previous?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper)) || (!applicationsCourse && (next?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, 1)}>↓</button></span>
+                  {usesSections ? <label className="test-section-select"><span>Section</span><select aria-label={`Section for ${question.title}`} value={question.section} onChange={(event) => changeSection(question.id, event.target.value as Section)}><option value="A">A</option><option value="B">B</option></select></label> : null}
+                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper)) || (usesSections && (previous?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper)) || (usesSections && (next?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, 1)}>↓</button></span>
                   <button className="test-remove-question" type="button" onClick={() => removeQuestion(question.id)}>Remove</button>
                 </li>;})}
               </ol> : <div className="assignment-selection-empty"><strong>No questions selected yet</strong><span>Choose questions from the bank below. They will appear here in test order.</span></div>}
@@ -1082,7 +1210,7 @@ export function TestMaker({ initialSavedTests = [] }: { initialSavedTests?: Save
             </span></div>
           </div>
           <div className="test-preview-pages">
-            {previewMode === "test" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">{activePaperSets.filter((set) => set.questions.length).map((set) => <PaperPreviewPages course={course} duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} testDate={testDate} />)}</div> : null}
+            {previewMode === "test" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">{activePaperSets.filter((set) => set.questions.length).map((set) => igcse ? <IgcsePaperPreviewPages duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} testDate={testDate} /> : <PaperPreviewPages course={course as IBCourse} duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} testDate={testDate} />)}</div> : null}
             {previewMode === "mark-scheme" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable mark scheme preview">{activePaperSets.filter((set) => set.questions.length).map((set) => <MarkSchemePreviewPages key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} />)}</div> : null}
           </div>
         </div>
