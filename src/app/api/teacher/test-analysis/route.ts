@@ -4,7 +4,7 @@ import { buildTestAnalysisWorkbook, type TestAnalysisInput, type TestAnalysisQue
 
 export const runtime = "nodejs";
 
-const courses = new Set<TestAnalysisInput["course"]>(["AA HL", "AA SL", "AI HL", "AI SL"]);
+const courses = new Set<TestAnalysisInput["course"]>(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
 const papers = new Set<TestAnalysisInput["paper"]>(["Paper 1", "Paper 2", "Paper 1 and Paper 2"]);
 
 function text(value: unknown, maximum: number) {
@@ -13,7 +13,7 @@ function text(value: unknown, maximum: number) {
 
 function safeFilename(value: string) {
   const cleaned = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
-  return `${cleaned || "ib-mathematics-test"}-analysis.xlsx`;
+  return `${cleaned || "mathematics-test"}-analysis.xlsx`;
 }
 
 function parseQuestion(value: unknown): TestAnalysisQuestion | null {
@@ -25,7 +25,7 @@ function parseQuestion(value: unknown): TestAnalysisQuestion | null {
   return {
     number,
     title: text(question.title, 180) || `Question ${number}`,
-    topic: text(question.topic, 100) || "IB Mathematics",
+    topic: text(question.topic, 100) || "Mathematics",
     subtopic: text(question.subtopic, 120),
     marks,
     paper: text(question.paper, 30),
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Please sign in again." }, { status: 401 });
   const { data: profile } = await supabase.from("profiles").select("role,curriculum").eq("user_id", user.id).maybeSingle();
-  if (!profile || !new Set(["teacher", "admin"]).has(profile.role) || (profile.role !== "admin" && profile.curriculum && profile.curriculum !== "ib")) {
+  if (!profile || !new Set(["teacher", "admin"]).has(profile.role)) {
     return NextResponse.json({ message: "Teacher access is required." }, { status: 403 });
   }
 
@@ -55,7 +55,11 @@ export async function POST(request: Request) {
   const rawQuestions = Array.isArray(body.questions) ? body.questions.slice(0, 50) : [];
   const questions = rawQuestions.map((question) => parseQuestion(question)).filter((question): question is TestAnalysisQuestion => Boolean(question));
   if (!courses.has(course) || !papers.has(paper) || questions.length !== rawQuestions.length || questions.length === 0) {
-    return NextResponse.json({ message: "Choose at least one valid IB Mathematics question first." }, { status: 400 });
+    return NextResponse.json({ message: "Choose at least one valid Mathematics question first." }, { status: 400 });
+  }
+  const requiredCurriculum = course === "IGCSE Higher" ? "igcse" : "ib";
+  if (profile.role !== "admin" && profile.curriculum && profile.curriculum !== requiredCurriculum) {
+    return NextResponse.json({ message: `Teacher access to the ${requiredCurriculum === "igcse" ? "IGCSE" : "IB"} Test Maker is required.` }, { status: 403 });
   }
 
   try {

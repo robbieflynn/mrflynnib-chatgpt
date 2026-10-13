@@ -110,7 +110,7 @@ create table if not exists public.saved_tests (
   id uuid primary key default gen_random_uuid(),
   teacher_id uuid not null references auth.users(id) on delete cascade,
   title text not null check (char_length(title) between 1 and 100),
-  course text not null check (course in ('AA HL', 'AA SL', 'AI HL', 'AI SL')),
+  course text not null check (course in ('AA HL', 'AA SL', 'AI HL', 'AI SL', 'IGCSE Higher')),
   paper text not null check (paper in ('Paper 1', 'Paper 2', 'Paper 1 and Paper 2')),
   question_count integer not null check (question_count between 1 and 50),
   total_marks integer not null check (total_marks between 1 and 1000),

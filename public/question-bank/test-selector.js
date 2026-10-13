@@ -1,6 +1,7 @@
 (function () {
   var params = new URLSearchParams(window.location.search);
   if (params.get("test") !== "1" || window.parent === window) return;
+  var testLabel = params.get("testLabel") === "IGCSE Test Maker" ? "IGCSE Test Maker" : "IB Test Maker";
 
   var MAX_SELECTED = 50;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
@@ -18,7 +19,7 @@
 
   var style = document.createElement("style");
   style.textContent = [
-    ".qb-header .qb-brand::after{content:' · IB Test Maker';font-size:.72em;color:var(--ink-soft);font-weight:600}",
+    ".qb-header .qb-brand::after{content:" + JSON.stringify(" · " + testLabel) + ";font-size:.72em;color:var(--ink-soft);font-weight:600}",
     ".qb-course-switch,.qb-progress-toggle,.qb-ms-toggle,.qb-sol-toggle,.qb-markscheme,.qb-solution{display:none!important}",
     ".qb-card{padding-top:0}",
     ".qb-test-select{margin:0 -18px 18px;padding:12px 18px;display:flex;align-items:center;gap:10px;background:#f3f9ff;border-bottom:1px solid #b9d5ef;border-radius:10px 10px 0 0;font:700 13px/1.2 var(--ui);color:var(--flynn-blue);cursor:pointer}",

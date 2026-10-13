@@ -12,6 +12,7 @@ export default async function TeacherTestMakerPage() {
     .from("saved_tests")
     .select("id,title,course,paper,question_count,total_marks,payload,created_at,updated_at")
     .eq("teacher_id", user.id)
+    .in("course", ["AA HL", "AA SL", "AI HL", "AI SL"])
     .order("updated_at", { ascending: false });
   const savedTests = (savedRows ?? []).map((row) => savedTestRecordFromRow(row as Record<string, unknown>));
   return <main className="teacher-workspace test-maker-workspace">

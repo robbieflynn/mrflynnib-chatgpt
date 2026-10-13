@@ -8,7 +8,7 @@ import {
   type SavedTestQuestionReference,
 } from "@/lib/saved-test";
 
-const courses = new Set<SavedTestCourse>(["AA HL", "AA SL", "AI HL", "AI SL"]);
+const courses = new Set<SavedTestCourse>(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
 const papers = new Set<SavedTestPaper>(["Paper 1", "Paper 2", "Paper 1 and Paper 2"]);
 
 function shortText(value: unknown, maximum: number) {
@@ -54,10 +54,10 @@ async function teacherAccess() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: NextResponse.json({ message: "Please sign in again." }, { status: 401 }) } as const;
   const { data: profile } = await supabase.from("profiles").select("role,curriculum").eq("user_id", user.id).maybeSingle();
-  if (!profile || !new Set(["teacher", "admin"]).has(profile.role) || (profile.role !== "admin" && profile.curriculum && profile.curriculum !== "ib")) {
-    return { error: NextResponse.json({ message: "IB teacher access is required." }, { status: 403 }) } as const;
+  if (!profile || !new Set(["teacher", "admin"]).has(profile.role)) {
+    return { error: NextResponse.json({ message: "Teacher access is required." }, { status: 403 }) } as const;
   }
-  return { supabase, user } as const;
+  return { supabase, user, profile } as const;
 }
 
 export async function POST(request: Request) {
@@ -80,6 +80,10 @@ export async function POST(request: Request) {
   const payload = payloadFrom(body.payload);
   if (!courses.has(course) || !papers.has(paper) || !payload || questionCount !== payload.questions.length || !Number.isInteger(totalMarks) || totalMarks < 1 || totalMarks > 1000) {
     return NextResponse.json({ message: "Choose at least one valid question before saving the test." }, { status: 400 });
+  }
+  const requiredCurriculum = course === "IGCSE Higher" ? "igcse" : "ib";
+  if (access.profile.role !== "admin" && access.profile.curriculum && access.profile.curriculum !== requiredCurriculum) {
+    return NextResponse.json({ message: `Teacher access to the ${requiredCurriculum === "igcse" ? "IGCSE" : "IB"} Test Maker is required.` }, { status: 403 });
   }
 
   const values = {

@@ -1,4 +1,4 @@
-export type SavedTestCourse = "AA HL" | "AA SL" | "AI HL" | "AI SL";
+export type SavedTestCourse = "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher";
 export type SavedTestPaper = "Paper 1" | "Paper 2" | "Paper 1 and Paper 2";
 export type SavedTestSection = "A" | "B";
 
