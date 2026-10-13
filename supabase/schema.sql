@@ -208,6 +208,10 @@ create or replace function public.is_admin(account_id uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = ''
 as $$ select exists (select 1 from public.profiles where user_id = account_id and role = 'admin') $$;
 
+create or replace function public.profile_curriculum(account_id uuid default auth.uid())
+returns text language sql stable security definer set search_path = ''
+as $$ select curriculum from public.profiles where user_id = account_id $$;
+
 create or replace function public.teaches_class(class_uuid uuid, account_id uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = ''
 as $$ select exists (select 1 from public.classes where id = class_uuid and teacher_id = account_id) $$;
@@ -273,22 +277,32 @@ drop policy if exists "Admins update teacher applications" on public.profiles;
 create policy "Admins update teacher applications" on public.profiles for update using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Students read own progress" on public.question_progress;
-create policy "Students read own progress" on public.question_progress for select using ((select auth.uid()) = user_id);
+create policy "Students read own progress" on public.question_progress for select
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students insert own progress" on public.question_progress;
-create policy "Students insert own progress" on public.question_progress for insert with check ((select auth.uid()) = user_id);
+create policy "Students insert own progress" on public.question_progress for insert
+  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students update own progress" on public.question_progress;
-create policy "Students update own progress" on public.question_progress for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "Students update own progress" on public.question_progress for update
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()))
+  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students delete own progress" on public.question_progress;
-create policy "Students delete own progress" on public.question_progress for delete using ((select auth.uid()) = user_id);
+create policy "Students delete own progress" on public.question_progress for delete
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 
 drop policy if exists "Students read own whiteboards" on public.whiteboard_documents;
-create policy "Students read own whiteboards" on public.whiteboard_documents for select using ((select auth.uid()) = user_id);
+create policy "Students read own whiteboards" on public.whiteboard_documents for select
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students insert own whiteboards" on public.whiteboard_documents;
-create policy "Students insert own whiteboards" on public.whiteboard_documents for insert with check ((select auth.uid()) = user_id);
+create policy "Students insert own whiteboards" on public.whiteboard_documents for insert
+  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students update own whiteboards" on public.whiteboard_documents;
-create policy "Students update own whiteboards" on public.whiteboard_documents for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "Students update own whiteboards" on public.whiteboard_documents for update
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()))
+  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students delete own whiteboards" on public.whiteboard_documents;
-create policy "Students delete own whiteboards" on public.whiteboard_documents for delete using ((select auth.uid()) = user_id);
+create policy "Students delete own whiteboards" on public.whiteboard_documents for delete
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 
 drop policy if exists "Teachers read assigned whiteboards" on public.whiteboard_documents;
 create policy "Teachers read assigned whiteboards" on public.whiteboard_documents for select using (

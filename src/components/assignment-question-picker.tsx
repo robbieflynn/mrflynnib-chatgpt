@@ -170,7 +170,7 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSourceId
   return (
     <div className="assignment-picker stack">
       {selectedIds.map((id) => <input key={id} name="questionIds" type="hidden" value={id} />)}
-      {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ id, ...(responseConfigs[index] || {}) })} />)}
+      {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ ...(responseConfigs[index] || {}), id })} />)}
       {shadowStatus ? <p className={selectedIds.length === shadowIds.length && shadowIds.length ? "form-message form-success" : "form-message"} role="status">{shadowStatus}</p> : null}
       <div className="assignment-picker-summary" aria-live="polite">
         <span className="assignment-picker-summary-copy"><strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected for this assignment</strong><span>Select up to 100 questions. Your assignment contents are listed below.</span></span>

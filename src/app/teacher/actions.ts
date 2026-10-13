@@ -29,6 +29,19 @@ type ResponseConfig = {
   parts: ResponsePart[];
 };
 
+function teacherReviewResponseConfig(id: string): ResponseConfig {
+  return {
+    id,
+    type: "teacher_review",
+    acceptedAnswers: [],
+    numericAnswer: null,
+    tolerance: null,
+    options: [],
+    correctOption: null,
+    parts: [],
+  };
+}
+
 function cleanChoiceAnswer(value: string) {
   return value
     .replace(/[\u2212\u2013\u2014]/g, "-")
@@ -189,10 +202,16 @@ function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
       return { label, mode, acceptedAnswers: partAnswers, options: partOptions, correctOption: partCorrectOption };
     }).slice(0, 30);
     if (!id) return null;
-    if (type === "exact" && acceptedAnswers.length === 0) return null;
-    if (type === "numeric" && (!Number.isFinite(numericAnswer) || !Number.isFinite(tolerance) || Number(tolerance) < 0)) return null;
-    if (type === "multiple_choice" && !validChoiceSet(acceptedAnswers, options, correctOption)) return null;
-    if (type === "multipart" && (parts.length < 2 || parts.some((part) => !part.label || (part.mode === "multiple_choice" && !validChoiceSet(part.acceptedAnswers, part.options, part.correctOption))))) return null;
+    if (type === "exact" && acceptedAnswers.length === 0) return teacherReviewResponseConfig(id);
+    if (type === "numeric" && (!Number.isFinite(numericAnswer) || !Number.isFinite(tolerance) || Number(tolerance) < 0)) return teacherReviewResponseConfig(id);
+    if (type === "multiple_choice" && !validChoiceSet(acceptedAnswers, options, correctOption)) return teacherReviewResponseConfig(id);
+    if (type === "multipart") {
+      if (parts.length < 2 || parts.some((part) => !part.label)) return teacherReviewResponseConfig(id);
+      const safeParts = parts.map((part) => part.mode === "multiple_choice" && !validChoiceSet(part.acceptedAnswers, part.options, part.correctOption)
+        ? { label: part.label, mode: "whiteboard" as const, acceptedAnswers: [], options: [], correctOption: null }
+        : part);
+      return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption, parts: safeParts };
+    }
     return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption, parts };
   } catch {
     return null;
@@ -250,14 +269,14 @@ export async function createAssignment(formData: FormData) {
   const dueDate = String(formData.get("dueDate") || "");
   const requestedFeedbackMode = String(formData.get("feedbackMode") || "after_question");
   const feedbackMode = isAssignmentFeedbackMode(requestedFeedbackMode) ? requestedFeedbackMode : "after_question";
-  const questionIds = formData.getAll("questionIds").map(String).filter(Boolean).slice(0, 100);
+  const questionIds = Array.from(new Set(formData.getAll("questionIds").map(String).filter(Boolean))).slice(0, 100);
   const parsedConfigs = formData.getAll("responseConfigs").map(parseResponseConfig);
-  const responseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
+  const suppliedResponseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
+  const responseConfigs = new Map(questionIds.map((id) => [id, suppliedResponseConfigs.get(id) ?? teacherReviewResponseConfig(id)]));
 
   const { data: classRecord } = await supabase.from("classes").select("id,bank,course").eq("id", classId).eq("teacher_id", user.id).maybeSingle();
   if (!classRecord) redirect("/teacher?error=Class%20not%20found.");
   if (!title || questionIds.length === 0) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Add a title and select at least one question."));
-  if (questionIds.some((id) => !responseConfigs.has(id))) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Finish the answer-checking setup for every selected question."));
 
   const source = classRecord.bank === "igcse"
     ? progressManifest.igcse
