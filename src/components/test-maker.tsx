@@ -643,7 +643,7 @@ export function TestMaker() {
                 <div className="test-cover-title"><h2>{courseNames[course]}</h2><strong>{paper}</strong><h1>{title || "Mathematics practice test"}</h1>{school ? <span>{school}</span> : null}</div>
                 <div className="test-candidate-details">
                   <div className="test-candidate-name"><span>Name</span><i /></div>
-                  <div><span>Class</span><i /></div>
+                  <div><span>Teacher</span><i /></div>
                   <div><span>Date</span><i>{testDate ? new Date(`${testDate}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}</i></div>
                 </div>
                 <p className="test-time-allowed">{duration || "90"} minutes</p>

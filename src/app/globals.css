@@ -460,6 +460,11 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-continues-without-box { margin-top: auto; }
 .test-section-b-page .test-paper-question { margin-top: 1mm; }
 .test-section-b-page .test-question-body > .qb-parts { margin-top: 0; }
+.test-section-b-page .test-question-body .qb-parts,
+.test-section-b-page .test-question-body .qb-subparts { gap: 5.5mm; }
+.test-section-b-page .test-question-body .qb-part-text::after,
+.test-section-b-page .test-question-body .qb-sub-text::after { content: ""; display: block; clear: both; }
+.test-section-b-page .test-question-body .qb-marks-tag { margin-left: 8mm; margin-bottom: 1mm; line-height: 1.45; }
 .test-part-label-placeholder { min-width: 9mm; }
 .test-page-flow-end { display: block; height: 0; }
 .test-markscheme-title { margin-bottom: 12mm; text-align: center; }
