@@ -269,7 +269,7 @@ function splitPrintableQuestionHtml(html: string) {
 }
 
 function PageFooter({ label }: { label: string }) {
-  return <footer className="test-paper-footer"><span>Mr Flynn IB</span><span>{label}</span></footer>;
+  return <footer className="test-paper-footer"><span>{label}</span></footer>;
 }
 
 function SectionAIntro({ calculatorAllowed = false }: { calculatorAllowed?: boolean }) {
