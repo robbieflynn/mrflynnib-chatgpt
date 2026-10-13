@@ -182,6 +182,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getCell("D3").value = "Class";
   entry.getCell("E3").value = input.teacherOrClass;
   entry.getCell("D4").value = "Test date";
+  entry.mergeCells("E4:F4");
   if (input.testDate) {
     entry.getCell("E4").value = new Date(`${input.testDate}T12:00:00`);
     entry.getCell("E4").numFmt = "d mmmm yyyy";
