@@ -182,7 +182,7 @@
       card.classList.toggle("qb-assignment-selected", isSelected);
     });
     publish();
-    window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: true, matches: result.matches || [] }, window.location.origin);
+    window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: true, matches: result.matches || [], fallbacks: Number(result.fallbacks) || 0 }, window.location.origin);
   }
 
   function plainText(value) {

@@ -135,7 +135,10 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSourceId
       }
       if (event.data?.type === "mrflynnib-assignment-shadow-result") {
         if (event.data.complete) {
-          setShadowStatus(`Shadow task ready: ${shadowIds.length} matched ${shadowIds.length === 1 ? "question" : "questions"}. Review them below, then publish when you are happy.`);
+          const fallbackCount = Number(event.data.fallbacks) || 0;
+          setShadowStatus(fallbackCount
+            ? `Shadow task ready: all ${shadowIds.length} questions were replaced. ${fallbackCount} ${fallbackCount === 1 ? "question uses" : "questions use"} the closest available alternative. Review them below before publishing.`
+            : `Shadow task ready: ${shadowIds.length} matched ${shadowIds.length === 1 ? "question" : "questions"}. Review them below, then publish when you are happy.`);
         } else {
           const unmatched = Array.isArray(event.data.unmatched) ? event.data.unmatched : [];
           const names = unmatched.slice(0, 3).map((item: { title?: string }) => item.title || "a source question").join(", ");

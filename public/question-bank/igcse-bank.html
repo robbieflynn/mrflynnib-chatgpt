@@ -177084,20 +177084,32 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       var originalMeta = shadowQuestionMeta(original);
       var requiredSection = source.section === 'B' ? 'B' : originalMeta.section;
       var originalTopics = shadowTopicKeys(original);
+      function matchScore(candidate){
+        var candidateMeta = shadowQuestionMeta(candidate), score = 0;
+        if(HAS_PAPERS && candidateMeta.paper === originalMeta.paper) score += 160;
+        if(hasSections() && candidateMeta.section === requiredSection) score += 130;
+        if(candidateMeta.subtopic && candidateMeta.subtopic === originalMeta.subtopic) score += 130;
+        if(candidateMeta.topic && candidateMeta.topic === originalMeta.topic) score += 70;
+        if(candidateMeta.difficulty === originalMeta.difficulty) score += 50;
+        if(shadowTopicKeys(candidate).join('||') === originalTopics.join('||')) score += 15;
+        return score;
+      }
+      function isExactMatch(candidate){
+        var candidateMeta = shadowQuestionMeta(candidate);
+        return (!HAS_PAPERS || candidateMeta.paper === originalMeta.paper)
+          && (!hasSections() || candidateMeta.section === requiredSection)
+          && candidateMeta.difficulty === originalMeta.difficulty
+          && candidateMeta.topic === originalMeta.topic
+          && candidateMeta.subtopic === originalMeta.subtopic;
+      }
       var candidates = state.all.filter(function(candidate){
         if(!candidate || !candidate.id || used.has(String(candidate.id))) return false;
         if(isHeld(candidate) || candidate.offSyllabus || candidate.provisional) return false;
         if(banksOf(candidate).indexOf(state.course) < 0) return false;
-        if(HAS_PAPERS && paperNumberOf(candidate) !== originalMeta.paper) return false;
-        if(hasSections() && (candidate.section === 'B' ? 'B' : 'A') !== requiredSection) return false;
-        if(difficultyOf(candidate) !== originalMeta.difficulty) return false;
-        var candidateMeta = shadowQuestionMeta(candidate);
-        return candidateMeta.topic === originalMeta.topic && candidateMeta.subtopic === originalMeta.subtopic;
+        return true;
       }).sort(function(left, right){
-        var leftTopics = shadowTopicKeys(left), rightTopics = shadowTopicKeys(right);
-        var leftExact = leftTopics.join('||') === originalTopics.join('||') ? 0 : 1;
-        var rightExact = rightTopics.join('||') === originalTopics.join('||') ? 0 : 1;
-        if(leftExact !== rightExact) return leftExact - rightExact;
+        var scoreDifference = matchScore(right) - matchScore(left);
+        if(scoreDifference) return scoreDifference;
         var markDifference = Math.abs((Number(left.marks) || 0) - originalMeta.marks) - Math.abs((Number(right.marks) || 0) - originalMeta.marks);
         if(markDifference) return markDifference;
         return String(left.id).localeCompare(String(right.id));
@@ -177105,9 +177117,11 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       var match = candidates[0];
       if(!match){ unmatched.push(originalMeta); return; }
       used.add(String(match.id));
-      matches.push(shadowQuestionMeta(match));
+      var matchedMeta = shadowQuestionMeta(match);
+      matchedMeta.matchQuality = isExactMatch(match) ? 'exact' : 'closest';
+      matches.push(matchedMeta);
     });
-    return { ids: matches.map(function(match){ return match.id; }), matches: matches, unmatched: unmatched };
+    return { ids: matches.map(function(match){ return match.id; }), matches: matches, unmatched: unmatched, fallbacks: matches.filter(function(match){ return match.matchQuality === 'closest'; }).length };
   };
   // Canonical main-topic order. Substituted by build.py PER BANK: the IB banks
   // use the 5 IB syllabus topics, the IGCSE bank the 6 Edexcel ones in spec
@@ -177487,7 +177501,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 <script src="/question-bank/progress.js?v=1"></script>
 <script src="/question-bank/whiteboard.js?v=17"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=17"></script>
-<script src="/question-bank/assignment-selector.js?v=26"></script>
+<script src="/question-bank/assignment-selector.js?v=27"></script>
 <script src="/question-bank/assignment-response.js?v=9"></script>
 </body>
 </html>

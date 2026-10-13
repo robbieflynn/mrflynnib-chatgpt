@@ -606,9 +606,12 @@ export function TestMaker() {
           setShadowSourceSignature("");
           setShadowMessage(`A complete shadow paper could not be made yet. No equally suitable alternative was found for ${names || "one or more selected questions"}.`);
         } else {
+          const fallbackCount = Number(event.data.fallbacks) || 0;
           setShadowQuestions(next);
           setShadowSourceSignature(displayQuestions.map((question) => `${question.id}:${question.section}`).join("|"));
-          setShadowMessage(`Shadow paper ready: ${next.length} matched ${next.length === 1 ? "question" : "questions"}, with the same paper, section, difficulty and subtopic pattern.`);
+          setShadowMessage(fallbackCount
+            ? `Shadow paper ready: all ${next.length} questions were replaced. ${fallbackCount} ${fallbackCount === 1 ? "question uses" : "questions use"} the closest available alternative because no perfect match was available.`
+            : `Shadow paper ready: ${next.length} matched ${next.length === 1 ? "question" : "questions"}, with the same paper, section, difficulty and subtopic pattern.`);
         }
       }
     };

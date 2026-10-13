@@ -135,7 +135,7 @@
       window.parent.postMessage({ type: "mrflynnib-test-shadow", questions: [], unmatched: [{ title: "One matched question could not be prepared for printing." }] }, window.location.origin);
       return;
     }
-    window.parent.postMessage({ type: "mrflynnib-test-shadow", questions: questions, unmatched: [] }, window.location.origin);
+    window.parent.postMessage({ type: "mrflynnib-test-shadow", questions: questions, unmatched: [], fallbacks: Number(result.fallbacks) || 0 }, window.location.origin);
   }
 
   function refreshStoredMarkschemes() {
