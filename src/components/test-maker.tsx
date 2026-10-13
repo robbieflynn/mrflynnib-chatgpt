@@ -66,6 +66,7 @@ function candidateInstructions(course: Course, paper: SinglePaper, totalMarks: n
       "The marks for each question are shown in brackets. Use this as a guide as to how much time to spend on each question.",
       "Read each question carefully before you start to answer it.",
       "Check your answers if you have time at the end.",
+      "Good luck with your examination.",
     ];
   }
   const applications = isApplicationsCourse(course);
@@ -89,6 +90,14 @@ function candidateInstructions(course: Course, paper: SinglePaper, totalMarks: n
     `A clean copy of the ${formulaBookletName(course)} is required for this paper.`,
     `The maximum mark for this examination paper is [${totalMarks} marks].`,
   ];
+}
+
+function questionCountWords(value: number) {
+  const small = ["ZERO", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE", "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN", "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"];
+  const tens = ["", "", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY", "SEVENTY", "EIGHTY", "NINETY"];
+  if (value < 20) return small[value] ?? String(value);
+  if (value < 100) return `${tens[Math.floor(value / 10)]}${value % 10 ? ` ${small[value % 10]}` : ""}`;
+  return String(value);
 }
 
 function questionPaper(value: string): SinglePaper {
@@ -547,9 +556,9 @@ function isCompactIgcseQuestion(question: NumberedQuestion) {
 
 function igcseQuestionPages(questions: NumberedQuestion[]) {
   const pages: NumberedQuestion[][] = [];
-  questions.forEach((question, index) => {
+  questions.forEach((question) => {
     const current = pages[pages.length - 1];
-    const canShare = index > 0 && current?.length === 1 && isCompactIgcseQuestion(current[0]) && isCompactIgcseQuestion(question) && current[0].marks + question.marks <= 7;
+    const canShare = current?.length === 1 && isCompactIgcseQuestion(current[0]) && isCompactIgcseQuestion(question) && current[0].marks + question.marks <= 7;
     if (canShare) current.push(question);
     else pages.push([question]);
   });
@@ -559,7 +568,7 @@ function igcseQuestionPages(questions: NumberedQuestion[]) {
 function IgcseQuestionPage({ questions, first, paperTitle, totalQuestions }: { questions: NumberedQuestion[]; first: boolean; paperTitle: string; totalQuestions: number }) {
   return <section className="test-page igcse-question-page">
     <div className="igcse-page-frame">
-      {first ? <div className="igcse-paper-opening"><strong>Answer all {totalQuestions} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
+      {first ? <div className="igcse-paper-opening"><strong>Answer all {questionCountWords(totalQuestions)} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
       <div className={`igcse-question-stack${questions.length > 1 ? " has-two-questions" : ""}`}>
         {questions.map((question) => <article className="igcse-print-question" key={question.id}>
           <div className="igcse-question-copy"><strong className="igcse-question-number">{question.number}</strong><RenderedQuestion html={question.html} /></div>
@@ -592,6 +601,7 @@ function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school
         <div><span>Date</span><i>{testDate ? new Date(`${testDate}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}</i></div>
       </div>
       <p className="test-time-allowed">Time: {duration || "120"} minutes</p>
+      <section className="igcse-equipment"><strong>You must have:</strong><span>Ruler graduated in centimetres and millimetres, protractor, compasses, pen, HB pencil, eraser and calculator. Tracing paper may be used.</span></section>
       <section className="test-instructions igcse-instructions"><h3>Instructions</h3><ul>{instructions.slice(0, 7).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul><h3>Information</h3><ul>{instructions.slice(7, 9).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul><h3>Advice</h3><ul>{instructions.slice(9).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul></section>
       <PageFooter label="Teacher-created Edexcel IGCSE Mathematics practice paper" />
     </section>
