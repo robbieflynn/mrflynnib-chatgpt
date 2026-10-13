@@ -370,15 +370,22 @@ a.teacher-list-row:hover { background: var(--sky); }
 .teacher-tool-banner h2 { font-size: 1.25rem; }
 .teacher-tool-banner p:last-child { color: var(--muted); font-size: .83rem; }
 .test-maker-workspace > .section-tight { padding-bottom: 5rem; }
-.test-maker-setup { padding: clamp(1.1rem, 2.5vw, 1.6rem); border: 1px solid #cedbe1; border-radius: 1.2rem; background: white; box-shadow: 0 12px 34px rgba(11,21,48,.05); }
-.test-maker-form { padding-top: .25rem; }
-.test-maker-check { padding: .85rem 1rem; display: flex; align-items: center; gap: .75rem; border: 1px solid #cbd9df; border-radius: .8rem; background: #f8fafb; cursor: pointer; }
-.test-maker-check input { width: 1.15rem; height: 1.15rem; accent-color: var(--teal); }
+.test-maker-setup { padding: clamp(.9rem, 2vw, 1.25rem); border: 1px solid #cedbe1; border-radius: 1.2rem; background: white; box-shadow: 0 12px 34px rgba(11,21,48,.05); }
+.test-maker-setup.stack-lg { gap: 1.1rem; }
+.test-maker-form { gap: .7rem 1rem; padding-top: 0; }
+.test-maker-form .field { align-content: start; gap: .24rem; }
+.test-maker-form .field > span { font-size: .78rem; }
+.test-maker-form .field > small { font-size: .67rem; line-height: 1.35; }
+.test-maker-form input, .test-maker-form select { height: 40px; min-height: 40px; padding: .48rem .7rem; border-radius: .62rem; font-size: .82rem; }
+.test-maker-check { padding: .62rem .78rem; display: flex; align-items: center; gap: .65rem; border: 1px solid #cbd9df; border-radius: .7rem; background: #f8fafb; cursor: pointer; }
+.test-maker-check input { width: 1.15rem; height: 1.15rem; min-height: 1.15rem; padding: 0; accent-color: var(--teal); }
 .test-maker-check > span { display: grid; gap: .08rem; }
-.test-maker-check small { color: var(--muted); }
+.test-maker-check strong { font-size: .78rem; }
+.test-maker-check small { color: var(--muted); font-size: .67rem; line-height: 1.35; }
 .test-question-picker { padding-bottom: 0; }
 .test-selection-list { max-height: 440px; margin: 0; padding: 0; overflow: auto; list-style: none; }
 .test-selection-list li { min-height: 82px; padding: .7rem 1rem; display: grid; grid-template-columns: 36px minmax(0, 1fr) auto auto auto; align-items: center; gap: .72rem; border-bottom: 1px solid #e8edef; }
+.test-selection-list-no-sections li { grid-template-columns: 36px minmax(0, 1fr) auto auto; }
 .test-selection-list li:last-child { border-bottom: 0; }
 .test-section-select { display: grid; gap: .22rem; color: var(--muted); font-size: .62rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
 .test-section-select select { min-width: 70px; height: 34px; padding: .28rem .5rem; border: 1px solid #cbd7dc; border-radius: .55rem; background: white; color: var(--ink); font: 800 .78rem/1 var(--font-sans); }
