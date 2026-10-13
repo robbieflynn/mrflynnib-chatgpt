@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <body style="margin:0;background:#f4f7fb;color:#102a43;font-family:Arial,Helvetica,sans-serif;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+      Confirm your email address to finish creating your Mr Flynn IB account.
+    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f7fb;padding:32px 16px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#ffffff;border:1px solid #d9e2ec;border-radius:14px;">
+            <tr>
+              <td style="padding:34px 38px;">
+                <p style="margin:0 0 26px;color:#1f5f99;font-size:20px;font-weight:700;letter-spacing:-0.2px;">Mr Flynn IB</p>
+                <h1 style="margin:0 0 16px;color:#102a43;font-size:28px;line-height:1.2;">Confirm your account</h1>
+                <p style="margin:0 0 24px;color:#486581;font-size:16px;line-height:1.6;">
+                  Thanks for creating a Mr Flynn IB account. Confirm your email address to finish signing up and save your question-bank progress.
+                </p>
+                <p style="margin:0 0 26px;">
+                  <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=email&amp;next={{ .RedirectTo }}" style="display:inline-block;background:#1f5f99;border-radius:8px;color:#ffffff;font-size:16px;font-weight:700;line-height:1;padding:14px 20px;text-decoration:none;">Confirm my account</a>
+                </p>
+                <p style="margin:0 0 24px;color:#627d98;font-size:14px;line-height:1.6;">
+                  If you did not create this account, you can safely ignore this email.
+                </p>
+                <p style="margin:0;color:#829ab1;font-size:13px;line-height:1.5;">
+                  Mr Flynn IB<br />
+                  <a href="{{ .SiteURL }}" style="color:#1f5f99;">mrflynnib.com</a>
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
