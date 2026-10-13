@@ -10,9 +10,17 @@ type AssignmentSetupDraft = {
   feedbackMode: string;
 };
 
-export function AssignmentSetupFields({ draftId }: { draftId: string }) {
+type AssignmentSetupFieldsProps = {
+  draftId: string;
+  initialTitle?: string;
+  initialInstructions?: string;
+  initialFeedbackMode?: string;
+};
+
+export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstructions = "", initialFeedbackMode = "after_question" }: AssignmentSetupFieldsProps) {
   const fieldsRef = useRef<HTMLDivElement>(null);
   const storageKey = `mrflynnib-assignment-setup:${draftId}`;
+  const defaultFeedbackMode = isAssignmentFeedbackMode(initialFeedbackMode) ? initialFeedbackMode : "after_question";
 
   useEffect(() => {
     const fields = fieldsRef.current;
@@ -23,7 +31,7 @@ export function AssignmentSetupFields({ draftId }: { draftId: string }) {
       const title = fields.querySelector<HTMLInputElement>('input[name="title"]');
       const dueDate = fields.querySelector<HTMLInputElement>('input[name="dueDate"]');
       const instructions = fields.querySelector<HTMLTextAreaElement>('textarea[name="instructions"]');
-      const feedbackMode = typeof saved.feedbackMode === "string" && isAssignmentFeedbackMode(saved.feedbackMode) ? saved.feedbackMode : "after_question";
+      const feedbackMode = typeof saved.feedbackMode === "string" && isAssignmentFeedbackMode(saved.feedbackMode) ? saved.feedbackMode : defaultFeedbackMode;
       if (title) title.value = String(saved.title || "").slice(0, 120);
       if (dueDate) dueDate.value = String(saved.dueDate || "").slice(0, 10);
       if (instructions) instructions.value = String(saved.instructions || "").slice(0, 1500);
@@ -31,7 +39,7 @@ export function AssignmentSetupFields({ draftId }: { draftId: string }) {
     } catch {
       // Draft saving is a convenience. The form remains usable if browser storage is unavailable.
     }
-  }, [storageKey]);
+  }, [defaultFeedbackMode, storageKey]);
 
   function saveDraft() {
     const fields = fieldsRef.current;
@@ -49,10 +57,10 @@ export function AssignmentSetupFields({ draftId }: { draftId: string }) {
 
   return (
     <div className="assignment-setup-card form-grid" onChange={saveDraft} ref={fieldsRef}>
-      <label className="field"><span>Assignment title</span><input name="title" placeholder="Functions practice" maxLength={120} required /></label>
+      <label className="field"><span>Assignment title</span><input name="title" defaultValue={initialTitle} placeholder="Functions practice" maxLength={120} required /></label>
       <label className="field"><span>Due date <small className="muted">(optional)</small></span><input name="dueDate" type="date" /></label>
-      <label className="field field-full"><span>Instructions <small className="muted">(optional)</small></span><textarea name="instructions" maxLength={1500} placeholder="Complete the questions and show your working on the whiteboard or paper." /></label>
-      <fieldset className="assignment-feedback-settings field-full"><legend>Mark schemes and worked solutions</legend><p>Choose when students can open the complete feedback for each question. You can change this after publishing.</p><div className="assignment-feedback-options">{assignmentFeedbackOptions.map((option) => <label className="assignment-feedback-option" key={option.value}><input name="feedbackMode" type="radio" value={option.value} defaultChecked={option.value === "after_question"} /><span><strong>{option.label}</strong><small>{option.description}</small></span></label>)}</div></fieldset>
+      <label className="field field-full"><span>Instructions <small className="muted">(optional)</small></span><textarea name="instructions" defaultValue={initialInstructions} maxLength={1500} placeholder="Complete the questions and show your working on the whiteboard or paper." /></label>
+      <fieldset className="assignment-feedback-settings field-full"><legend>Mark schemes and worked solutions</legend><p>Choose when students can open the complete feedback for each question. You can change this after publishing.</p><div className="assignment-feedback-options">{assignmentFeedbackOptions.map((option) => <label className="assignment-feedback-option" key={option.value}><input name="feedbackMode" type="radio" value={option.value} defaultChecked={option.value === defaultFeedbackMode} /><span><strong>{option.label}</strong><small>{option.description}</small></span></label>)}</div></fieldset>
     </div>
   );
 }

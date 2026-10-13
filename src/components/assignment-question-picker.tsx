@@ -8,6 +8,7 @@ type AssignmentQuestionPickerProps = {
   bank: "ib" | "igcse";
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher";
   draftId: string;
+  shadowSourceIds?: string[];
 };
 
 type SelectedQuestionSummary = {
@@ -53,16 +54,19 @@ function cleanSummary(value: unknown): SelectedQuestionSummary | null {
   };
 }
 
-export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQuestionPickerProps) {
+export function AssignmentQuestionPicker({ bank, course, draftId, shadowSourceIds }: AssignmentQuestionPickerProps) {
+  const shadowIds = useMemo(() => shadowSourceIds ?? [], [shadowSourceIds]);
   const initialFrameHeight = bank === "igcse" ? 760 : 620;
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(initialFrameHeight);
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
+  const shadowRequestedRef = useRef(false);
   const [frameHeight, setFrameHeight] = useState(initialFrameHeight);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [responseConfigs, setResponseConfigs] = useState<Record<string, unknown>[]>([]);
   const [questionSummaries, setQuestionSummaries] = useState<Record<string, SelectedQuestionSummary>>({});
+  const [shadowStatus, setShadowStatus] = useState(shadowIds.length ? "Finding matched questions for the shadow task…" : "");
   const source = useMemo(() => {
     const query = new URLSearchParams({ course, embedded: "1", assignment: "1", draft: draftId });
     return `/question-bank/${bank === "igcse" ? "igcse-bank.html" : "ib-bank.html"}?${query.toString()}`;
@@ -106,6 +110,10 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
         }
         hasMoreRef.current = Number(event.data.rendered) < Number(event.data.total);
         loadingMoreRef.current = false;
+        if (shadowIds.length && !shadowRequestedRef.current && Number(event.data.total) > 0) {
+          shadowRequestedRef.current = true;
+          frame.contentWindow?.postMessage({ type: "mrflynnib-assignment-create-shadow", sources: shadowIds }, window.location.origin);
+        }
         cancelAnimationFrame(animationFrame);
         animationFrame = requestAnimationFrame(loadMoreIfNeeded);
       }
@@ -124,6 +132,18 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
           Object.keys(next).forEach((id) => { if (!ids.includes(id)) delete next[id]; });
           return next;
         });
+      }
+      if (event.data?.type === "mrflynnib-assignment-shadow-result") {
+        if (event.data.complete) {
+          const fallbackCount = Number(event.data.fallbacks) || 0;
+          setShadowStatus(fallbackCount
+            ? `Shadow task ready: all ${shadowIds.length} questions were replaced. ${fallbackCount} ${fallbackCount === 1 ? "question uses" : "questions use"} the closest available alternative. Review them below before publishing.`
+            : `Shadow task ready: ${shadowIds.length} matched ${shadowIds.length === 1 ? "question" : "questions"}. Review them below, then publish when you are happy.`);
+        } else {
+          const unmatched = Array.isArray(event.data.unmatched) ? event.data.unmatched : [];
+          const names = unmatched.slice(0, 3).map((item: { title?: string }) => item.title || "a source question").join(", ");
+          setShadowStatus(`A complete shadow task could not be made. No equally suitable alternative was found for ${names || "one or more source questions"}.`);
+        }
       }
     };
 
@@ -145,12 +165,13 @@ export function AssignmentQuestionPicker({ bank, course, draftId }: AssignmentQu
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [bank, loadMoreIfNeeded]);
+  }, [bank, loadMoreIfNeeded, shadowIds]);
 
   return (
     <div className="assignment-picker stack">
       {selectedIds.map((id) => <input key={id} name="questionIds" type="hidden" value={id} />)}
       {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ ...(responseConfigs[index] || {}), id })} />)}
+      {shadowStatus ? <p className={selectedIds.length === shadowIds.length && shadowIds.length ? "form-message form-success" : "form-message"} role="status">{shadowStatus}</p> : null}
       <div className="assignment-picker-summary" aria-live="polite">
         <span className="assignment-picker-summary-copy"><strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected for this assignment</strong><span>Select up to 100 questions. Your assignment contents are listed below.</span></span>
         {selectedIds.length ? <button className="button button-secondary button-small" onClick={clearSelection} type="button">Remove all questions</button> : null}

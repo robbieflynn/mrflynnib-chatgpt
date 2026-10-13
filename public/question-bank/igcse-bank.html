@@ -176460,6 +176460,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 
   // ---------- Persistence: merge seed into stored data without duplicating ----------
   var state = { all: [], filtered: [], rendered: 0, byId: {}, course: '' };
+  window.mrflynnibQuestionById = function(id){ return state.byId[String(id)] || null; };
 
   // How many cards to build per batch. 25 comfortably fills a screen; the
   // observer below appends the next 25 before the student reaches the bottom.
@@ -177044,6 +177045,84 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     var b = banksOf(q);
     return b.length > 0 && b.every(function(x){ return HELD_BANKS.indexOf(x) >= 0; });
   }
+  function shadowTopicKeys(q){
+    return topicsOf(q).map(function(topic){
+      return String(topic.main || '').trim() + '|' + String(topic.sub || '').trim();
+    }).filter(function(value){ return value !== '|'; }).sort();
+  }
+  function shadowQuestionMeta(q){
+    var topics = topicsOf(q), firstTopic = topics[0] || {};
+    return {
+      id: String(q.id || ''),
+      title: String(q.title || ''),
+      topic: String(firstTopic.main || ''),
+      subtopic: String(firstTopic.sub || ''),
+      paper: String(paperNumberOf(q) || ''),
+      section: hasSections() && q.section === 'B' ? 'B' : 'A',
+      difficulty: String(difficultyOf(q) || 'Medium'),
+      marks: Number(q.marks) || 0
+    };
+  }
+  window.mrflynnibQuestionMeta = function(id){
+    var q = state.byId[String(id)];
+    return q ? shadowQuestionMeta(q) : null;
+  };
+  window.mrflynnibQuestionCardHTML = function(id){
+    var q = state.byId[String(id)];
+    return q ? cardHTML(q, 1) : '';
+  };
+  window.mrflynnibFindShadowQuestions = function(sources){
+    var requested = Array.isArray(sources) ? sources.map(function(source){
+      return typeof source === 'string' ? { id: source } : (source || {});
+    }) : [];
+    var originalIds = new Set(requested.map(function(source){ return String(source.id || ''); }));
+    var used = new Set(originalIds);
+    var matches = [], unmatched = [];
+    requested.forEach(function(source){
+      var original = state.byId[String(source.id || '')];
+      if(!original){ unmatched.push({ id: String(source.id || ''), title: 'Question no longer available' }); return; }
+      var originalMeta = shadowQuestionMeta(original);
+      var requiredSection = source.section === 'B' ? 'B' : originalMeta.section;
+      var originalTopics = shadowTopicKeys(original);
+      function matchScore(candidate){
+        var candidateMeta = shadowQuestionMeta(candidate), score = 0;
+        if(HAS_PAPERS && candidateMeta.paper === originalMeta.paper) score += 160;
+        if(hasSections() && candidateMeta.section === requiredSection) score += 130;
+        if(candidateMeta.subtopic && candidateMeta.subtopic === originalMeta.subtopic) score += 130;
+        if(candidateMeta.topic && candidateMeta.topic === originalMeta.topic) score += 70;
+        if(candidateMeta.difficulty === originalMeta.difficulty) score += 50;
+        if(shadowTopicKeys(candidate).join('||') === originalTopics.join('||')) score += 15;
+        return score;
+      }
+      function isExactMatch(candidate){
+        var candidateMeta = shadowQuestionMeta(candidate);
+        return (!HAS_PAPERS || candidateMeta.paper === originalMeta.paper)
+          && (!hasSections() || candidateMeta.section === requiredSection)
+          && candidateMeta.difficulty === originalMeta.difficulty
+          && candidateMeta.topic === originalMeta.topic
+          && candidateMeta.subtopic === originalMeta.subtopic;
+      }
+      var candidates = state.all.filter(function(candidate){
+        if(!candidate || !candidate.id || used.has(String(candidate.id))) return false;
+        if(isHeld(candidate) || candidate.offSyllabus || candidate.provisional) return false;
+        if(banksOf(candidate).indexOf(state.course) < 0) return false;
+        return true;
+      }).sort(function(left, right){
+        var scoreDifference = matchScore(right) - matchScore(left);
+        if(scoreDifference) return scoreDifference;
+        var markDifference = Math.abs((Number(left.marks) || 0) - originalMeta.marks) - Math.abs((Number(right.marks) || 0) - originalMeta.marks);
+        if(markDifference) return markDifference;
+        return String(left.id).localeCompare(String(right.id));
+      });
+      var match = candidates[0];
+      if(!match){ unmatched.push(originalMeta); return; }
+      used.add(String(match.id));
+      var matchedMeta = shadowQuestionMeta(match);
+      matchedMeta.matchQuality = isExactMatch(match) ? 'exact' : 'closest';
+      matches.push(matchedMeta);
+    });
+    return { ids: matches.map(function(match){ return match.id; }), matches: matches, unmatched: unmatched, fallbacks: matches.filter(function(match){ return match.matchQuality === 'closest'; }).length };
+  };
   // Canonical main-topic order. Substituted by build.py PER BANK: the IB banks
   // use the 5 IB syllabus topics, the IGCSE bank the 6 Edexcel ones in spec
   // order. Hard-coded to the IB five, the IGCSE mains - different words - fell
@@ -177422,7 +177501,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 <script src="/question-bank/progress.js?v=2"></script>
 <script src="/question-bank/whiteboard.js?v=17"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=17"></script>
-<script src="/question-bank/assignment-selector.js?v=25"></script>
+<script src="/question-bank/assignment-selector.js?v=27"></script>
 <script src="/question-bank/assignment-response.js?v=9"></script>
 </body>
 </html>
