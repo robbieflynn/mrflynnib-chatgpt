@@ -480,6 +480,7 @@ export function TestMaker() {
   const [durationPaper2, setDurationPaper2] = useState("90");
   const [testDate, setTestDate] = useState("");
   const [includeMarkScheme, setIncludeMarkScheme] = useState(true);
+  const [includeAnalysis, setIncludeAnalysis] = useState(true);
   const [questions, setQuestions] = useState<TestQuestion[]>([]);
   const [previewMode, setPreviewMode] = useState<PreviewMode | null>(null);
   const [printTarget, setPrintTarget] = useState<PrintTarget>("paper-1");
@@ -714,6 +715,7 @@ export function TestMaker() {
             </> : <label className="field"><span>Time allowed in minutes</span><input inputMode="numeric" value={paper === "Paper 1" ? durationPaper1 : durationPaper2} onChange={(event) => (paper === "Paper 1" ? setDurationPaper1 : setDurationPaper2)(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>}
             <label className="field"><span>Test date <small className="muted">(optional)</small></span><input type="date" value={testDate} onChange={(event) => setTestDate(event.target.value)} /></label>
             <label className="test-maker-check field-full"><input type="checkbox" checked={includeMarkScheme} onChange={(event) => setIncludeMarkScheme(event.target.checked)} /><span><strong>Prepare a separate mark scheme</strong><small>Preview the teacher mark scheme and save or print it as its own PDF.</small></span></label>
+            <label className="test-maker-check field-full"><input type="checkbox" checked={includeAnalysis} onChange={(event) => setIncludeAnalysis(event.target.checked)} /><span><strong>Prepare question-level analysis</strong><small>Preview and download the editable question-level analysis workbook.</small></span></label>
           </div>
         </section>
 
@@ -728,7 +730,7 @@ export function TestMaker() {
               <span className="cluster test-maker-preview-buttons">
                 {questions.length ? <button className="button button-secondary button-small" type="button" onClick={() => setPreviewMode("test")}>Preview test</button> : null}
                 {questions.length && includeMarkScheme ? <button className="button button-secondary button-small" type="button" onClick={() => setPreviewMode("mark-scheme")}>Preview mark scheme</button> : null}
-                {questions.length ? <button className="button button-secondary button-small" type="button" onClick={() => setPreviewMode("analysis")}>Preview question-level analysis</button> : null}
+                {questions.length && includeAnalysis ? <button className="button button-secondary button-small" type="button" onClick={() => setPreviewMode("analysis")}>Preview question-level analysis</button> : null}
                 {questions.length ? <button className="button button-secondary button-small" type="button" onClick={clearQuestions}>Remove all</button> : null}
               </span>
             </div>
