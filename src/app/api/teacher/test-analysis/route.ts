@@ -5,7 +5,7 @@ import { buildTestAnalysisWorkbook, type TestAnalysisInput, type TestAnalysisQue
 export const runtime = "nodejs";
 
 const courses = new Set<TestAnalysisInput["course"]>(["AA HL", "AA SL", "AI HL", "AI SL"]);
-const papers = new Set<TestAnalysisInput["paper"]>(["Paper 1", "Paper 2"]);
+const papers = new Set<TestAnalysisInput["paper"]>(["Paper 1", "Paper 2", "Paper 1 and Paper 2"]);
 
 function text(value: unknown, maximum: number) {
   return typeof value === "string" ? value.trim().slice(0, maximum) : "";
@@ -16,14 +16,15 @@ function safeFilename(value: string) {
   return `${cleaned || "ib-mathematics-test"}-analysis.xlsx`;
 }
 
-function parseQuestion(value: unknown, index: number): TestAnalysisQuestion | null {
+function parseQuestion(value: unknown): TestAnalysisQuestion | null {
   if (!value || typeof value !== "object") return null;
   const question = value as Record<string, unknown>;
   const marks = Number(question.marks);
-  if (!Number.isInteger(marks) || marks < 1 || marks > 50) return null;
+  const number = Number(question.number);
+  if (!Number.isInteger(marks) || marks < 1 || marks > 50 || !Number.isInteger(number) || number < 1 || number > 50) return null;
   return {
-    number: index + 1,
-    title: text(question.title, 180) || `Question ${index + 1}`,
+    number,
+    title: text(question.title, 180) || `Question ${number}`,
     topic: text(question.topic, 100) || "IB Mathematics",
     subtopic: text(question.subtopic, 120),
     marks,
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
   const course = body.course as TestAnalysisInput["course"];
   const paper = body.paper as TestAnalysisInput["paper"];
   const rawQuestions = Array.isArray(body.questions) ? body.questions.slice(0, 50) : [];
-  const questions = rawQuestions.map(parseQuestion).filter((question): question is TestAnalysisQuestion => Boolean(question));
+  const questions = rawQuestions.map((question) => parseQuestion(question)).filter((question): question is TestAnalysisQuestion => Boolean(question));
   if (!courses.has(course) || !papers.has(paper) || questions.length !== rawQuestions.length || questions.length === 0) {
     return NextResponse.json({ message: "Choose at least one valid IB Mathematics question first." }, { status: 400 });
   }

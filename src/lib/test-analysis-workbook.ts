@@ -13,7 +13,7 @@ export type TestAnalysisQuestion = {
 export type TestAnalysisInput = {
   title: string;
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL";
-  paper: "Paper 1" | "Paper 2";
+  paper: "Paper 1" | "Paper 2" | "Paper 1 and Paper 2";
   teacherOrClass: string;
   testDate: string;
   questions: TestAnalysisQuestion[];
@@ -24,10 +24,10 @@ const colours = {
   blue: "FF1F66B3",
   paleBlue: "FFEAF4FC",
   line: "FFCFD9E6",
-  input: "FFFFF3CD",
-  orange: "FFFCE5CD",
-  green: "FFDDF4E8",
-  red: "FFFCE1E1",
+  input: "FFF1F6F9",
+  orange: "FFF9CB9C",
+  green: "FFB7E1CD",
+  red: "FFF4B6B6",
   grey: "FFF5F7FA",
   white: "FFFFFFFF",
 };
@@ -130,6 +130,10 @@ function formula(value: string): ExcelJS.CellFormulaValue {
   return { formula: value };
 }
 
+function paperLabel(value: string) {
+  return /paper\s*2/i.test(value) ? "Paper 2" : "Paper 1";
+}
+
 export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = "Mr Flynn IB";
@@ -174,7 +178,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getCell("B4").value = input.course;
   entry.getCell("A5").value = "Paper";
   entry.getCell("B5").value = input.paper;
-  entry.getCell("B5").dataValidation = { type: "list", allowBlank: false, formulae: ['"Paper 1,Paper 2"'] };
+  entry.getCell("B5").dataValidation = { type: "list", allowBlank: false, formulae: ['"Paper 1,Paper 2,Paper 1 and Paper 2"'] };
   entry.getCell("D3").value = "Class";
   entry.getCell("E3").value = input.teacherOrClass;
   entry.getCell("D4").value = "Test date";
@@ -216,7 +220,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
 
   questions.forEach((question, index) => {
     const column = firstQuestionColumn + index;
-    entry.getCell(6, column).value = `Q${question.number}`;
+    entry.getCell(6, column).value = input.paper === "Paper 1 and Paper 2" ? `${paperLabel(question.paper).replace("Paper ", "P")} Q${question.number}` : `Q${question.number}`;
     entry.getCell(7, column).value = question.subtopic || question.title;
     entry.getCell(8, column).value = question.marks;
     entry.getColumn(column).width = 12;
@@ -289,7 +293,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     pageSetup: { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 },
   });
   analysis.properties.tabColor = { argb: "FF3B82C4" };
-  styleTitle(analysis, "G", "Class question analysis", "This question-by-question view updates as marks are entered on the first sheet.");
+  styleTitle(analysis, "H", "Class question analysis", "This question-by-question view updates as marks are entered on the first sheet.");
   [["A4", "Students entered"], ["C4", "Class average"], ["E4", "Highest"], ["G4", "Lowest"]].forEach(([address, label]) => {
     const cell = analysis.getCell(address);
     cell.value = label;
@@ -303,8 +307,8 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   analysis.getCell("G5").value = formula(`IF(COUNT('Marks entry'!$${percentageColumnLetter}$${firstStudentRow}:$${percentageColumnLetter}$${lastStudentRow})=0,"",MIN('Marks entry'!$${percentageColumnLetter}$${firstStudentRow}:$${percentageColumnLetter}$${lastStudentRow}))`);
   ["C5", "E5", "G5"].forEach((address) => { analysis.getCell(address).numFmt = "0.0%"; });
   ["A5", "C5", "E5", "G5"].forEach((address) => { analysis.getCell(address).border = border(); });
-  analysis.getRow(7).values = ["Question", "Subtopic", "Maximum", "Average mark", "Average %", "Attempted", "Teaching signal"];
-  styleRange(analysis, 7, 7, 1, 7, (cell) => {
+  analysis.getRow(7).values = ["Paper", "Question", "Subtopic", "Maximum", "Average mark", "Average %", "Attempted", "Teaching signal"];
+  styleRange(analysis, 7, 7, 1, 8, (cell) => {
     cell.fill = solidFill(colours.navy);
     cell.font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
     cell.border = border();
@@ -313,27 +317,29 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   questions.forEach((question, index) => {
     const row = 8 + index;
     const sourceColumn = columnName(firstQuestionColumn + index);
-    analysis.getCell(row, 1).value = `Q${question.number}`;
-    analysis.getCell(row, 2).value = question.subtopic || question.title;
-    analysis.getCell(row, 2).note = `${question.title}\nMain topic: ${question.topic}`;
-    analysis.getCell(row, 3).value = question.marks;
-    analysis.getCell(row, 4).value = formula(`IF(COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})=0,"",AVERAGE('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow}))`);
-    analysis.getCell(row, 5).value = formula(`IF(COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})=0,"",D${row}/C${row})`);
-    analysis.getCell(row, 5).numFmt = "0.0%";
-    analysis.getCell(row, 6).value = formula(`COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})`);
-    analysis.getCell(row, 7).value = formula(`IF(NOT(ISNUMBER(E${row})),"",IF(E${row}>0.75,"Strong",IF(E${row}>0.25,"Developing","Priority for review")))`);
+    analysis.getCell(row, 1).value = input.paper === "Paper 1 and Paper 2" ? paperLabel(question.paper) : input.paper;
+    analysis.getCell(row, 2).value = `Q${question.number}`;
+    analysis.getCell(row, 3).value = question.subtopic || question.title;
+    analysis.getCell(row, 3).note = `${question.title}\nMain topic: ${question.topic}`;
+    analysis.getCell(row, 4).value = question.marks;
+    analysis.getCell(row, 5).value = formula(`IF(COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})=0,"",AVERAGE('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow}))`);
+    analysis.getCell(row, 6).value = formula(`IF(COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})=0,"",E${row}/D${row})`);
+    analysis.getCell(row, 6).numFmt = "0.0%";
+    analysis.getCell(row, 7).value = formula(`COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})`);
+    analysis.getCell(row, 8).value = formula(`IF(NOT(ISNUMBER(F${row})),"",IF(F${row}>0.75,"Strong",IF(F${row}>0.25,"Developing","Priority for review")))`);
   });
   const analysisLastRow = 7 + questions.length;
-  styleRange(analysis, 8, analysisLastRow, 1, 7, (cell) => {
+  styleRange(analysis, 8, analysisLastRow, 1, 8, (cell) => {
     cell.font = { name: "Arial", size: 9, color: { argb: colours.navy } };
     cell.border = border();
     cell.alignment = { vertical: "middle", wrapText: true };
   });
-  analysis.getColumn(1).width = 11;
-  analysis.getColumn(2).width = 32;
-  for (let column = 3; column <= 6; column += 1) analysis.getColumn(column).width = 14;
-  analysis.getColumn(7).width = 22;
-  addPercentageRules(analysis, `D8:G${analysisLastRow}`, "$E8");
+  analysis.getColumn(1).width = 12;
+  analysis.getColumn(2).width = 11;
+  analysis.getColumn(3).width = 32;
+  for (let column = 4; column <= 7; column += 1) analysis.getColumn(column).width = 14;
+  analysis.getColumn(8).width = 22;
+  addPercentageRules(analysis, `E8:H${analysisLastRow}`, "$F8");
 
   const feedback = workbook.addWorksheet("Student feedback", {
     views: [{ state: "frozen", ySplit: 9, showGridLines: false }],
@@ -359,7 +365,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   feedback.getCell("C7").value = formula(`IFERROR(INDEX('Marks entry'!$${totalColumnLetter}$${firstStudentRow}:$${totalColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
   feedback.getCell("E7").value = formula(`IFERROR(INDEX('Marks entry'!$${percentageColumnLetter}$${firstStudentRow}:$${percentageColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
   feedback.getCell("E7").numFmt = "0.0%";
-  feedback.getRow(9).values = ["Question", "Subtopic", "Score", "Out of", "%", "Feedback"];
+  feedback.getRow(9).values = ["Paper", "Question", "Subtopic", "Score", "Out of", "%"];
   styleRange(feedback, 9, 9, 1, 6, (cell) => {
     cell.fill = solidFill(colours.navy);
     cell.font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
@@ -368,14 +374,14 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   questions.forEach((question, index) => {
     const row = 10 + index;
     const sourceColumn = columnName(firstQuestionColumn + index);
-    feedback.getCell(row, 1).value = `Q${question.number}`;
-    feedback.getCell(row, 2).value = question.subtopic || question.title;
-    feedback.getCell(row, 2).note = `${question.title}\nMain topic: ${question.topic}`;
-    feedback.getCell(row, 3).value = formula(`IFERROR(INDEX('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
-    feedback.getCell(row, 4).value = question.marks;
-    feedback.getCell(row, 5).value = formula(`IF(ISNUMBER(C${row}),C${row}/D${row},"")`);
-    feedback.getCell(row, 5).numFmt = "0.0%";
-    feedback.getCell(row, 6).value = formula(`IF(NOT(ISNUMBER(E${row})),"",IF(E${row}>0.75,"Strong performance",IF(E${row}>0.25,"Developing; revisit this subtopic","Priority for review")))`);
+    feedback.getCell(row, 1).value = input.paper === "Paper 1 and Paper 2" ? paperLabel(question.paper) : input.paper;
+    feedback.getCell(row, 2).value = `Q${question.number}`;
+    feedback.getCell(row, 3).value = question.subtopic || question.title;
+    feedback.getCell(row, 3).note = `${question.title}\nMain topic: ${question.topic}`;
+    feedback.getCell(row, 4).value = formula(`IFERROR(INDEX('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
+    feedback.getCell(row, 5).value = question.marks;
+    feedback.getCell(row, 6).value = formula(`IF(ISNUMBER(D${row}),D${row}/E${row},"")`);
+    feedback.getCell(row, 6).numFmt = "0.0%";
   });
   const feedbackLastRow = 9 + questions.length;
   styleRange(feedback, 10, feedbackLastRow, 1, 6, (cell) => {
@@ -383,13 +389,13 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     cell.border = border();
     cell.alignment = { vertical: "middle", wrapText: true };
   });
-  feedback.getColumn(1).width = 11;
-  feedback.getColumn(2).width = 36;
-  feedback.getColumn(3).width = 13;
+  feedback.getColumn(1).width = 12;
+  feedback.getColumn(2).width = 11;
+  feedback.getColumn(3).width = 36;
   feedback.getColumn(4).width = 13;
   feedback.getColumn(5).width = 13;
-  feedback.getColumn(6).width = 30;
-  addPercentageRules(feedback, `C10:F${feedbackLastRow}`, "$E10");
+  feedback.getColumn(6).width = 13;
+  addPercentageRules(feedback, `D10:F${feedbackLastRow}`, "$F10");
   const notesHeadingRow = feedbackLastRow + 2;
   feedback.mergeCells(`A${notesHeadingRow}:F${notesHeadingRow}`);
   feedback.getCell(`A${notesHeadingRow}`).value = "Teacher notes";
