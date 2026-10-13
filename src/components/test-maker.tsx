@@ -439,6 +439,9 @@ export function TestMaker() {
   const [questions, setQuestions] = useState<TestQuestion[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [printTarget, setPrintTarget] = useState<PrintTarget>("paper");
+  const [analysisDownloading, setAnalysisDownloading] = useState(false);
+  const [analysisError, setAnalysisError] = useState("");
+  const numberedQuestions = useMemo(() => questions.map((question, index) => ({ ...question, number: index + 1 })), [questions]);
 
   const source = useMemo(() => {
     const query = new URLSearchParams({
@@ -530,6 +533,53 @@ export function TestMaker() {
     });
   }, []);
 
+  const downloadAnalysisWorkbook = useCallback(async () => {
+    if (!numberedQuestions.length || analysisDownloading) return;
+    setAnalysisDownloading(true);
+    setAnalysisError("");
+    try {
+      const response = await fetch("/api/teacher/test-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title || "Mathematics practice test",
+          course,
+          paper,
+          teacherOrClass: school,
+          testDate,
+          questions: numberedQuestions.map(({ number, title: questionTitle, topic, subtopic, marks, paper: sourcePaper, section }) => ({
+            number,
+            title: questionTitle,
+            topic,
+            subtopic,
+            marks,
+            paper: sourcePaper,
+            section,
+          })),
+        }),
+      });
+      if (!response.ok) {
+        const result = await response.json().catch(() => null) as { message?: string } | null;
+        throw new Error(result?.message || "The analysis workbook could not be prepared.");
+      }
+      const blob = await response.blob();
+      const disposition = response.headers.get("Content-Disposition") || "";
+      const filename = disposition.match(/filename="([^"]+)"/)?.[1] || "ib-mathematics-test-analysis.xlsx";
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setAnalysisError(error instanceof Error ? error.message : "The analysis workbook could not be prepared.");
+    } finally {
+      setAnalysisDownloading(false);
+    }
+  }, [analysisDownloading, course, numberedQuestions, paper, school, testDate, title]);
+
   const resetForCourse = (nextCourse: Course) => {
     setPreviewOpen(false);
     setQuestions([]);
@@ -562,7 +612,6 @@ export function TestMaker() {
     setQuestions((current) => current.map((question) => question.id === id ? { ...question, section } : question));
   };
 
-  const numberedQuestions = useMemo(() => questions.map((question, index) => ({ ...question, number: index + 1 })), [questions]);
   const sections = useMemo(() => ({
     A: numberedQuestions.filter((question) => question.section === "A"),
     B: numberedQuestions.filter((question) => question.section === "B"),
@@ -634,7 +683,7 @@ export function TestMaker() {
         <div className="test-preview-modal">
           <div className="test-preview-toolbar">
             <div><p className="eyebrow">Print preview</p><h2 id="test-preview-heading">Your test paper</h2><p>Review every page below, then print it or save it as a PDF.</p></div>
-            <span className="cluster test-preview-actions"><button className="button button-secondary" type="button" onClick={() => setPreviewOpen(false)}>Close preview</button><button className="button" type="button" onClick={() => printPages("paper")}>Print or save test PDF</button>{includeMarkScheme ? <button className="button" type="button" onClick={() => printPages("mark-scheme")}>Print or save mark scheme PDF</button> : null}</span>
+            <div className="test-preview-action-panel"><span className="cluster test-preview-actions"><button className="button button-secondary" type="button" onClick={() => setPreviewOpen(false)}>Close preview</button><button className="button" type="button" onClick={() => printPages("paper")}>Print or save test PDF</button>{includeMarkScheme ? <button className="button" type="button" onClick={() => printPages("mark-scheme")}>Print or save mark scheme PDF</button> : null}<button className="button" type="button" disabled={analysisDownloading} onClick={downloadAnalysisWorkbook}>{analysisDownloading ? "Preparing workbook…" : "Download analysis workbook"}</button></span>{analysisError ? <small className="test-analysis-error" role="alert">{analysisError}</small> : null}</div>
           </div>
           <div className="test-preview-pages">
             <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">

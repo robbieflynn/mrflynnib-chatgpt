@@ -401,6 +401,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-preview-toolbar h2 { font-size: 1.35rem; }
 .test-preview-toolbar p:last-child { color: var(--muted); font-size: .8rem; }
 .test-preview-actions { justify-content: flex-end; }
+.test-preview-action-panel { display: grid; gap: .35rem; justify-items: end; }
+.test-analysis-error { max-width: 34rem; color: #b42318; font-size: .78rem; text-align: right; }
 .test-preview-pages { padding: clamp(1rem, 3vw, 2rem); overflow: auto; }
 .test-preview-pages .test-print-root { margin-top: 0; }
 
@@ -833,6 +835,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .test-selection-list .test-remove-question { grid-column: 2; width: fit-content; }
   .test-preview-toolbar { align-items: stretch; flex-direction: column; }
   .test-preview-toolbar .cluster { display: grid; grid-template-columns: 1fr 1fr; }
+  .test-preview-action-panel { justify-items: stretch; }
+  .test-analysis-error { max-width: none; text-align: left; }
   .test-preview-toolbar .button { width: 100%; }
   .test-preview-overlay { padding: 0; }
   .test-preview-modal { min-height: 100%; border-radius: 0; }
