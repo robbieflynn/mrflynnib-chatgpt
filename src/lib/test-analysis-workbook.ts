@@ -20,16 +20,16 @@ export type TestAnalysisInput = {
 };
 
 const colours = {
-  navy: "0B1B3B",
-  blue: "1F66B3",
-  paleBlue: "EAF4FC",
-  line: "CFD9E6",
-  input: "FFF3CD",
-  orange: "FCE5CD",
-  green: "DDF4E8",
-  red: "FCE1E1",
-  grey: "F5F7FA",
-  white: "FFFFFF",
+  navy: "FF0B1B3B",
+  blue: "FF1F66B3",
+  paleBlue: "FFEAF4FC",
+  line: "FFCFD9E6",
+  input: "FFFFF3CD",
+  orange: "FFFCE5CD",
+  green: "FFDDF4E8",
+  red: "FFFCE1E1",
+  grey: "FFF5F7FA",
+  white: "FFFFFFFF",
 };
 
 const maxStudents = 40;
@@ -54,7 +54,8 @@ function border(style: ExcelJS.BorderStyle = "thin"): Partial<ExcelJS.Borders> {
 }
 
 function solidFill(argb: string): ExcelJS.Fill {
-  return { type: "pattern", pattern: "solid", fgColor: { argb } };
+  const opaqueArgb = argb.length === 6 ? `FF${argb}` : argb;
+  return { type: "pattern", pattern: "solid", fgColor: { argb: opaqueArgb }, bgColor: { argb: opaqueArgb } };
 }
 
 function styleTitle(sheet: ExcelJS.Worksheet, lastColumn: string, title: string, subtitle: string) {
@@ -67,8 +68,33 @@ function styleTitle(sheet: ExcelJS.Worksheet, lastColumn: string, title: string,
 
   sheet.mergeCells(`A2:${lastColumn}2`);
   sheet.getCell("A2").value = subtitle;
-  sheet.getCell("A2").font = { name: "Arial", size: 10, color: { argb: "D7E6F7" } };
+  sheet.getCell("A2").font = { name: "Arial", size: 10, color: { argb: "FFD7E6F7" } };
   sheet.getCell("A2").fill = solidFill(colours.navy);
+  sheet.getRow(2).height = 22;
+}
+
+function styleFrozenEntryTitle(sheet: ExcelJS.Worksheet, lastColumn: string) {
+  sheet.mergeCells("A1:B1");
+  sheet.mergeCells(`C1:${lastColumn}1`);
+  sheet.mergeCells("A2:B2");
+  sheet.mergeCells(`C2:${lastColumn}2`);
+
+  sheet.getCell("A1").value = "IB test marks entry";
+  sheet.getCell("C1").value = "Question-level analysis";
+  sheet.getCell("A2").value = "Student details stay visible";
+  sheet.getCell("C2").value = "Enter names, teachers and question marks only. Totals, percentages and grades calculate automatically.";
+
+  ["A1", "C1", "A2", "C2"].forEach((address) => {
+    sheet.getCell(address).fill = solidFill(colours.navy);
+    sheet.getCell(address).alignment = { vertical: "middle" };
+  });
+  ["A1", "C1"].forEach((address) => {
+    sheet.getCell(address).font = { name: "Arial", size: 17, bold: true, color: { argb: colours.white } };
+  });
+  ["A2", "C2"].forEach((address) => {
+    sheet.getCell(address).font = { name: "Arial", size: 9, color: { argb: "FFD7E6F7" } };
+  });
+  sheet.getRow(1).height = 30;
   sheet.getRow(2).height = 22;
 }
 
@@ -101,7 +127,7 @@ function addQuestionMarkRules(sheet: ExcelJS.Worksheet, range: string, firstCell
 }
 
 function formula(value: string): ExcelJS.CellFormulaValue {
-  return { formula: value, result: "" };
+  return { formula: value };
 }
 
 export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
@@ -135,13 +161,13 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   const totalMarks = questions.reduce((sum, question) => sum + question.marks, 0);
 
   const entry = workbook.addWorksheet("Marks entry", {
-    views: [{ state: "frozen", ySplit: 8 }],
+    views: [{ state: "frozen", xSplit: 2, ySplit: 8, topLeftCell: "C9", activeCell: "C9", showGridLines: false }],
     properties: { defaultRowHeight: 20 },
     pageSetup: { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 },
   });
-  entry.views = [{ state: "frozen", ySplit: 8, showGridLines: false }];
+  entry.views = [{ state: "frozen", xSplit: 2, ySplit: 8, topLeftCell: "C9", activeCell: "C9", showGridLines: false }];
   entry.properties.tabColor = { argb: colours.blue };
-  styleTitle(entry, gradeColumnLetter, "IB test marks entry", "Enter student names, teacher names and marks only. All summary fields calculate automatically.");
+  styleFrozenEntryTitle(entry, gradeColumnLetter);
   entry.getCell("A3").value = "Test";
   entry.getCell("B3").value = input.title;
   entry.getCell("A4").value = "Course";
@@ -222,7 +248,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     entry.getCell(row, totalColumn).value = formula(`IF(COUNTA(C${row}:${lastQuestionColumnLetter}${row})=0,"",SUM(C${row}:${lastQuestionColumnLetter}${row}))`);
     entry.getCell(row, percentageColumn).value = formula(`IF(COUNT(C${row}:${lastQuestionColumnLetter}${row})=0,"",${totalColumnLetter}${row}/${totalColumnLetter}$8)`);
     entry.getCell(row, percentageColumn).numFmt = "0.0%";
-    entry.getCell(row, gradeColumn).value = formula(`IF(COUNT(C${row}:${lastQuestionColumnLetter}${row})=0,"",IF(COUNT($${boundariesValueLetter}$${boundariesFirstRow}:$${boundariesValueLetter}$${boundariesLastThresholdRow})<6,"",IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow},7,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 1},6,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 2},5,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 3},4,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 4},3,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesLastThresholdRow},2,1))))))))`);
+    entry.getCell(row, gradeColumn).value = formula(`IF(COUNT(C${row}:${lastQuestionColumnLetter}${row})=0,"",IF(COUNT($${boundariesValueLetter}$${boundariesFirstRow}:$${boundariesValueLetter}$${boundariesLastThresholdRow})<6,"",IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow}/100,7,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 1}/100,6,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 2}/100,5,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 3}/100,4,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 4}/100,3,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesLastThresholdRow}/100,2,1))))))))`);
   }
   addPercentageRules(entry, `${percentageColumnLetter}${firstStudentRow}:${percentageColumnLetter}${lastStudentRow}`, `${percentageColumnLetter}${firstStudentRow}`);
 
@@ -236,10 +262,10 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     const row = boundariesFirstRow + offset;
     entry.getCell(row, boundariesLabelColumn).value = 7 - offset;
     entry.getCell(row, boundariesValueColumn).value = offset === 6 ? 0 : null;
-    entry.getCell(row, boundariesValueColumn).numFmt = "0%";
+    entry.getCell(row, boundariesValueColumn).numFmt = '0"%"';
     if (offset < 6) {
       entry.getCell(row, boundariesValueColumn).fill = solidFill(colours.input);
-      entry.getCell(row, boundariesValueColumn).dataValidation = { type: "decimal", operator: "between", allowBlank: true, formulae: [0, 1] };
+      entry.getCell(row, boundariesValueColumn).dataValidation = { type: "whole", operator: "between", allowBlank: true, showErrorMessage: true, errorTitle: "Check this boundary", error: "Enter a whole percentage from 0 to 100, for example 70 for 70%.", formulae: [0, 100] };
     }
   }
   styleRange(entry, boundariesHeaderRow, boundariesLastRow, boundariesLabelColumn, boundariesValueColumn, (cell, row) => {
@@ -253,7 +279,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow}`).font = { name: "Arial", size: 9, bold: true, color: { argb: colours.navy } };
   entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow}`).fill = solidFill(colours.grey);
   entry.mergeCells(`${boundariesLabelLetter}${boundariesNoteRow + 1}:${boundariesValueLetter}${boundariesNoteRow + 3}`);
-  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).value = "Enter the six upper grade thresholds only if you want grades calculated. Leave them blank to use totals and percentages only.";
+  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).value = "Enter the six upper grade thresholds as whole percentages (for example, enter 70 for 70%). Grades update automatically. Leave them blank to use totals and percentages only.";
   entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).alignment = { wrapText: true, vertical: "top" };
   entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).font = { name: "Arial", size: 9, color: { argb: colours.navy } };
 
@@ -262,7 +288,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     properties: { defaultRowHeight: 20 },
     pageSetup: { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 },
   });
-  analysis.properties.tabColor = { argb: "3B82C4" };
+  analysis.properties.tabColor = { argb: "FF3B82C4" };
   styleTitle(analysis, "G", "Class question analysis", "This question-by-question view updates as marks are entered on the first sheet.");
   [["A4", "Students entered"], ["C4", "Class average"], ["E4", "Highest"], ["G4", "Lowest"]].forEach(([address, label]) => {
     const cell = analysis.getCell(address);
@@ -314,14 +340,14 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     properties: { defaultRowHeight: 20 },
     pageSetup: { orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, paperSize: 9, margins: { left: 0.4, right: 0.4, top: 0.5, bottom: 0.5, header: 0.2, footer: 0.2 } },
   });
-  feedback.properties.tabColor = { argb: "79AEDD" };
+  feedback.properties.tabColor = { argb: "FF79AEDD" };
   styleTitle(feedback, "F", "Student feedback", "Choose a student below, then print or save this sheet as their individual feedback page.");
   feedback.getCell("A4").value = "Student";
   feedback.getCell("A4").font = { name: "Arial", size: 10, bold: true, color: { argb: colours.navy } };
   feedback.mergeCells("B4:D4");
   feedback.getCell("B4").fill = solidFill(colours.input);
   feedback.getCell("B4").border = border();
-  workbook.definedNames.add("StudentNames", `'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow}`);
+  workbook.definedNames.add(`'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow}`, "StudentNames");
   feedback.getCell("B4").dataValidation = { type: "list", allowBlank: true, showErrorMessage: true, errorTitle: "Choose a student", error: "Select a student from the list.", showInputMessage: true, promptTitle: "Student feedback", prompt: "Choose a student whose name has been entered on the Marks entry sheet.", formulae: ["StudentNames"] };
   feedback.getRow(6).values = ["Teacher", null, "Total", null, "Percentage", null];
   styleRange(feedback, 6, 7, 1, 6, (cell, row) => {
