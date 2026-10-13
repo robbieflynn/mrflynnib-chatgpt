@@ -8,6 +8,7 @@ import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
 type Course = "AA HL" | "AA SL" | "AI HL" | "AI SL";
 type Paper = "Paper 1" | "Paper 2";
 type Section = "A" | "B";
+type PrintTarget = "paper" | "mark-scheme";
 
 type TestQuestion = {
   id: string;
@@ -70,8 +71,43 @@ function RenderedMarkScheme({ html }: { html: string }) {
   return <div className="test-markscheme-content" dangerouslySetInnerHTML={{ __html: html }} ref={ref} />;
 }
 
+function restoreLatexSource(container: HTMLElement) {
+  Array.from(container.querySelectorAll<HTMLElement>(".katex")).forEach((math) => {
+    if (!math.isConnected) return;
+    const annotation = math.querySelector<HTMLElement>('annotation[encoding="application/x-tex"]');
+    const source = annotation?.textContent;
+    if (!source) return;
+    const displayWrapper = math.parentElement?.classList.contains("katex-display") ? math.parentElement : null;
+    const replacement = document.createTextNode(displayWrapper ? `\\[${source}\\]` : `\\(${source}\\)`);
+    (displayWrapper ?? math).replaceWith(replacement);
+  });
+}
+
+function RenderedQuestion({ html }: { html: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    // Selected questions arrive from an already-typeset iframe. Restore the
+    // original TeX and typeset it in this document so scripts, roots and other
+    // mathematical notation use one consistent set of print metrics.
+    restoreLatexSource(ref.current);
+    renderMathInElement(ref.current, {
+      delimiters: [
+        { left: "\\(", right: "\\)", display: false },
+        { left: "\\[", right: "\\]", display: true },
+      ],
+      throwOnError: false,
+      strict: false,
+    });
+  }, [html]);
+  return <div className="test-question-body" dangerouslySetInnerHTML={{ __html: html }} ref={ref} />;
+}
+
 function needsContinuationPage(question: TestQuestion) {
-  const diagramCount = (question.html.match(/<svg\b/gi) || []).length;
+  // KaTeX uses small SVGs to draw roots and stretchy symbols. Counting every
+  // SVG treated expressions such as cube roots as full diagrams and wrongly
+  // compressed their answer boxes. Only genuine question diagrams count here.
+  const diagramCount = (question.html.match(/\bqb-diagram\b/gi) || []).length;
   const tableCount = (question.html.match(/<table\b/gi) || []).length;
   const textOnlyLength = question.html.replace(/<svg[\s\S]*?<\/svg>/gi, "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().length;
   return diagramCount > 1 || (diagramCount === 1 && (question.marks >= 7 || textOnlyLength > 900)) || tableCount > 1 || textOnlyLength > 2100;
@@ -84,7 +120,7 @@ function QuestionMarkup({ question }: { question: NumberedQuestion }) {
         <strong>{question.number}.</strong>
         <span>[Maximum mark: {question.marks}]</span>
       </div>
-      <div className="test-question-body" dangerouslySetInnerHTML={{ __html: question.html }} />
+      <RenderedQuestion html={question.html} />
     </article>
   );
 }
@@ -156,6 +192,7 @@ export function TestMaker() {
   const [includeMarkScheme, setIncludeMarkScheme] = useState(true);
   const [questions, setQuestions] = useState<TestQuestion[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [printTarget, setPrintTarget] = useState<PrintTarget>("paper");
 
   const source = useMemo(() => {
     const query = new URLSearchParams({
@@ -232,6 +269,21 @@ export function TestMaker() {
     };
   }, [previewOpen]);
 
+  useEffect(() => {
+    const resetPrintTarget = () => setPrintTarget("paper");
+    window.addEventListener("afterprint", resetPrintTarget);
+    return () => window.removeEventListener("afterprint", resetPrintTarget);
+  }, []);
+
+  const printPages = useCallback((target: PrintTarget) => {
+    setPrintTarget(target);
+    // Give React and the browser one complete paint before opening the native
+    // print dialog so the correct set of pages is present in the PDF preview.
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => window.print());
+    });
+  }, []);
+
   const resetForCourse = (nextCourse: Course) => {
     setPreviewOpen(false);
     setQuestions([]);
@@ -290,7 +342,7 @@ export function TestMaker() {
             <label className="field"><span>Time allowed in minutes</span><input inputMode="numeric" value={duration} onChange={(event) => setDuration(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>
             <label className="field"><span>Test date <small className="muted">(optional)</small></span><input type="date" value={testDate} onChange={(event) => setTestDate(event.target.value)} /></label>
             <label className="test-maker-check field-full"><input type="checkbox" checked={includeAnswerSpace} onChange={(event) => setIncludeAnswerSpace(event.target.checked)} /><span><strong>Include Section A answer boxes</strong><small>Each Section A question receives its own bordered writing area, with a continuation page when the question or diagram needs more room.</small></span></label>
-            <label className="test-maker-check field-full"><input type="checkbox" checked={includeMarkScheme} onChange={(event) => setIncludeMarkScheme(event.target.checked)} /><span><strong>Include the mark scheme</strong><small>Add a separate teacher mark scheme after the test paper.</small></span></label>
+            <label className="test-maker-check field-full"><input type="checkbox" checked={includeMarkScheme} onChange={(event) => setIncludeMarkScheme(event.target.checked)} /><span><strong>Prepare a separate mark scheme</strong><small>Preview the teacher mark scheme and save or print it as its own PDF.</small></span></label>
           </div>
         </section>
 
@@ -329,11 +381,12 @@ export function TestMaker() {
         <div className="test-preview-modal">
           <div className="test-preview-toolbar">
             <div><p className="eyebrow">Print preview</p><h2 id="test-preview-heading">Your test paper</h2><p>Review every page below, then print it or save it as a PDF.</p></div>
-            <span className="cluster"><button className="button button-secondary" type="button" onClick={() => setPreviewOpen(false)}>Close preview</button><button className="button" type="button" onClick={() => window.print()}>Print or save as PDF</button></span>
+            <span className="cluster test-preview-actions"><button className="button button-secondary" type="button" onClick={() => setPreviewOpen(false)}>Close preview</button><button className="button" type="button" onClick={() => printPages("paper")}>Print or save test PDF</button>{includeMarkScheme ? <button className="button" type="button" onClick={() => printPages("mark-scheme")}>Print or save mark scheme PDF</button> : null}</span>
           </div>
           <div className="test-preview-pages">
-            <div className="test-print-root" aria-label="Printable test preview">
-              <section className="test-page test-cover-page">
+            <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">
+              <div className="test-paper-pages">
+                <section className="test-page test-cover-page">
                 <div className="test-cover-title"><h2>{courseNames[course]}</h2><strong>{paper}</strong><h1>{title || "Mathematics practice test"}</h1>{school ? <span>{school}</span> : null}</div>
                 <div className="test-candidate-details">
                   <div className="test-candidate-name"><span>Name</span><i /></div>
@@ -343,11 +396,12 @@ export function TestMaker() {
                 <p className="test-time-allowed">{duration || "90"} minutes</p>
                 <section className="test-instructions"><h3>Instructions to candidates</h3><ul><li>Do not open this paper until instructed to do so.</li><li>{calculatorCopy}</li>{sections.A.length ? <li>Section A: answer all questions. Answers must be written within the answer boxes provided.</li> : null}{sections.B.length ? <li>Section B: answer all questions in the booklet provided.</li> : null}<li>Unless otherwise stated in the question, all numerical answers should be given exactly or correct to three significant figures.</li><li>A clean copy of the appropriate mathematics formula booklet is required for this paper.</li><li>The maximum mark for this paper is [{totalMarks} marks].</li></ul></section>
                 <PageFooter label="Teacher-created practice paper" />
-              </section>
+                </section>
 
-              {sections.A.map((question, index) => <SectionAQuestionPages first={index === 0} includeAnswerSpace={includeAnswerSpace} key={question.id} paperTitle={title || "Mathematics practice test"} question={question} />)}
-              {sections.B.map((question, index) => <SectionBQuestionPage first={index === 0} key={question.id} paperTitle={title || "Mathematics practice test"} question={question} />)}
-              {includeMarkScheme ? numberedQuestions.map((question, index) => <MarkSchemePage first={index === 0} key={`markscheme-${question.id}`} paperTitle={title || "Mathematics practice test"} question={question} />) : null}
+                {sections.A.map((question, index) => <SectionAQuestionPages first={index === 0} includeAnswerSpace={includeAnswerSpace} key={question.id} paperTitle={title || "Mathematics practice test"} question={question} />)}
+                {sections.B.map((question, index) => <SectionBQuestionPage first={index === 0} key={question.id} paperTitle={title || "Mathematics practice test"} question={question} />)}
+              </div>
+              {includeMarkScheme ? <div className="test-markscheme-pages">{numberedQuestions.map((question, index) => <MarkSchemePage first={index === 0} key={`markscheme-${question.id}`} paperTitle={title || "Mathematics practice test"} question={question} />)}</div> : null}
             </div>
           </div>
         </div>
