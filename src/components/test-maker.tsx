@@ -487,18 +487,25 @@ export function TestMaker() {
   const [analysisDownloading, setAnalysisDownloading] = useState(false);
   const [analysisError, setAnalysisError] = useState("");
   const combinedPapers = paper === "Paper 1 and Paper 2";
-  const displayQuestions = useMemo(() => combinedPapers
-    ? [...questions.filter((question) => questionPaper(question.paper) === "Paper 1"), ...questions.filter((question) => questionPaper(question.paper) === "Paper 2")]
-    : questions, [combinedPapers, questions]);
+  const displayQuestions = useMemo(() => {
+    const orderSections = (items: TestQuestion[]) => isApplicationsCourse(course)
+      ? items
+      : [...items.filter((question) => question.section !== "B"), ...items.filter((question) => question.section === "B")];
+    if (!combinedPapers) return orderSections(questions);
+    return [
+      ...orderSections(questions.filter((question) => questionPaper(question.paper) === "Paper 1")),
+      ...orderSections(questions.filter((question) => questionPaper(question.paper) === "Paper 2")),
+    ];
+  }, [combinedPapers, course, questions]);
   const numberedQuestions = useMemo(() => {
-    if (!combinedPapers) return questions.map((question, index) => ({ ...question, number: index + 1 }));
+    if (!combinedPapers) return displayQuestions.map((question, index) => ({ ...question, number: index + 1 }));
     let paper1Number = 0;
     let paper2Number = 0;
     return displayQuestions.map((question) => ({
       ...question,
       number: questionPaper(question.paper) === "Paper 1" ? ++paper1Number : ++paper2Number,
     }));
-  }, [combinedPapers, displayQuestions, questions]);
+  }, [combinedPapers, displayQuestions]);
   const paper1Questions = useMemo(() => numberedQuestions.filter((question) => !combinedPapers || questionPaper(question.paper) === "Paper 1"), [combinedPapers, numberedQuestions]);
   const paper2Questions = useMemo(() => combinedPapers ? numberedQuestions.filter((question) => questionPaper(question.paper) === "Paper 2") : numberedQuestions, [combinedPapers, numberedQuestions]);
   const paperSets = useMemo(() => combinedPapers
@@ -669,6 +676,7 @@ export function TestMaker() {
     const target = index + direction;
     if (index < 0 || target < 0 || target >= ordered.length) return;
     if (combinedPapers && questionPaper(ordered[index].paper) !== questionPaper(ordered[target].paper)) return;
+    if (!isApplicationsCourse(course) && (ordered[index].section === "B") !== (ordered[target].section === "B")) return;
     [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
     setQuestions(ordered);
     frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-test-reorder", ids: ordered.map((question) => question.id) }, window.location.origin);
@@ -745,7 +753,7 @@ export function TestMaker() {
                   <span className="assignment-selection-number">{combinedPapers ? `${questionPaper(question.paper) === "Paper 1" ? "P1" : "P2"} ${numberedQuestion?.number ?? index + 1}` : index + 1}</span>
                   <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[combinedPapers ? questionPaper(question.paper) : "", question.topic, question.subtopic].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
                   {!applicationsCourse ? <label className="test-section-select"><span>Section</span><select aria-label={`Section for ${question.title}`} value={question.section} onChange={(event) => changeSection(question.id, event.target.value as Section)}><option value="A">A</option><option value="B">B</option></select></label> : null}
-                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper))} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper))} onClick={() => reorder(question.id, 1)}>↓</button></span>
+                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper)) || (!applicationsCourse && (previous?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper)) || (!applicationsCourse && (next?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, 1)}>↓</button></span>
                   <button className="test-remove-question" type="button" onClick={() => removeQuestion(question.id)}>Remove</button>
                 </li>;})}
               </ol> : <div className="assignment-selection-empty"><strong>No questions selected yet</strong><span>Choose questions from the bank below. They will appear here in test order.</span></div>}
@@ -773,7 +781,7 @@ export function TestMaker() {
               <div className="test-analysis-preview-heading"><div><p className="eyebrow">One editable workbook</p><h3>{title || "Mathematics practice test"}</h3></div><strong>{totalMarks} marks</strong></div>
               <div className="test-analysis-preview-summary"><div><span>Course</span><strong>{course}</strong></div><div><span>Paper</span><strong>{paper}</strong></div><div><span>Questions</span><strong>{questions.length}</strong></div><div><span>Students</span><strong>100 spaces</strong></div></div>
               <div className="test-analysis-preview-table-wrap"><table><thead><tr><th>Paper</th><th>Question</th><th>Subtopic</th><th>Marks</th></tr></thead><tbody>{numberedQuestions.map((question) => <tr key={`analysis-${question.id}`}><td>{combinedPapers ? questionPaper(question.paper) : paper}</td><td>{question.number}</td><td>{question.subtopic || question.topic}</td><td>{question.marks}</td></tr>)}</tbody></table></div>
-              <div className="test-analysis-preview-sheets"><div><strong>Mark entry</strong><span>Enter names and question scores. Totals, percentages and grades calculate automatically.</span></div><div><strong>Class analysis</strong><span>See each paper, question and subtopic with stronger red, orange and green performance bands.</span></div><div><strong>Student feedback</strong><span>Select any student from a dropdown to see their colour-coded question breakdown.</span></div></div>
+              <div className="test-analysis-preview-sheets"><div><strong>Mark entry</strong><span>Enter names and question scores. Paper 1, Paper 2 and overall totals, percentages and grades calculate automatically for combined tests.</span></div><div><strong>Class analysis</strong><span>See each paper, question and subtopic with red below 32%, orange from 32% to 70%, and green above 70%.</span></div><div><strong>Student feedback</strong><span>Select any student to see their grade and colour-coded question breakdown.</span></div></div>
             </section> : null}
           </div>
         </div>
