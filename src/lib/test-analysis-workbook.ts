@@ -153,11 +153,11 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   const percentageColumnLetter = columnName(percentageColumn);
   const gradeColumnLetter = columnName(gradeColumn);
   const lastQuestionColumnLetter = columnName(lastQuestionColumn);
-  const boundariesLabelColumn = 1;
-  const boundariesValueColumn = 2;
+  const boundariesLabelColumn = gradeColumn + 2;
+  const boundariesValueColumn = boundariesLabelColumn + 1;
   const boundariesLabelLetter = columnName(boundariesLabelColumn);
   const boundariesValueLetter = columnName(boundariesValueColumn);
-  const boundariesHeadingRow = lastStudentRow + 3;
+  const boundariesHeadingRow = firstStudentRow;
   const boundariesHeaderRow = boundariesHeadingRow + 1;
   const boundariesFirstRow = boundariesHeaderRow + 1;
   const boundariesLastThresholdRow = boundariesFirstRow + 5;
@@ -242,6 +242,9 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getColumn(totalColumn).width = 11;
   entry.getColumn(percentageColumn).width = 11;
   entry.getColumn(gradeColumn).width = 11;
+  entry.getColumn(gradeColumn + 1).width = 3;
+  entry.getColumn(boundariesLabelColumn).width = 13;
+  entry.getColumn(boundariesValueColumn).width = 14;
   styleRange(entry, firstStudentRow, lastStudentRow, 1, gradeColumn, (cell, _row, column) => {
     cell.border = border();
     cell.font = { name: "Arial", size: 10, color: { argb: colours.navy } };
