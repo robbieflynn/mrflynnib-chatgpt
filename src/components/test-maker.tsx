@@ -50,9 +50,9 @@ function SummaryMath({ children }: { children: string }) {
   return <>{pieces}</>;
 }
 
-function AnswerBox({ marks, compact = false }: { marks: number; compact?: boolean }) {
+function AnswerBox({ marks, compact = false, boxRef }: { marks: number; compact?: boolean; boxRef?: React.Ref<HTMLDivElement> }) {
   const lines = Math.max(6, Math.min(12, marks + 3));
-  return <div className={`test-answer-box${compact ? " test-answer-box-compact" : ""}`} aria-hidden="true">{Array.from({ length: lines }, (_, index) => <span className="test-answer-line" key={index} />)}</div>;
+  return <div className={`test-answer-box${compact ? " test-answer-box-compact" : ""}`} aria-hidden="true" ref={boxRef}>{Array.from({ length: lines }, (_, index) => <span className="test-answer-line" key={index} />)}</div>;
 }
 
 function decodeMathEntities(value: string) {
@@ -155,13 +155,53 @@ function SectionBIntro() {
 }
 
 function SectionAQuestionPages({ question, first, includeAnswerSpace, paperTitle }: { question: NumberedQuestion; first: boolean; includeAnswerSpace: boolean; paperTitle: string }) {
-  const continuation = includeAnswerSpace && needsContinuationPage(question);
+  const pageRef = useRef<HTMLElement>(null);
+  const answerBoxRef = useRef<HTMLDivElement>(null);
+  const continuationNoticeRef = useRef<HTMLParagraphElement>(null);
+  const [moveAnswerBoxToContinuation, setMoveAnswerBoxToContinuation] = useState(false);
+  const plannedContinuation = includeAnswerSpace && needsContinuationPage(question);
+  const continuation = includeAnswerSpace && (plannedContinuation || moveAnswerBoxToContinuation);
+
+  useEffect(() => {
+    if (!includeAnswerSpace || moveAnswerBoxToContinuation) return;
+    const page = pageRef.current;
+    const answerBox = answerBoxRef.current;
+    if (!page || !answerBox) return;
+
+    let animationFrame = 0;
+    const checkFit = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        const footer = page.querySelector<HTMLElement>(".test-paper-footer");
+        const finalFlowElement = continuationNoticeRef.current ?? answerBox;
+        if (!footer || !finalFlowElement) return;
+        const safeBottom = footer.getBoundingClientRect().top - 8;
+        if (finalFlowElement.getBoundingClientRect().bottom > safeBottom) {
+          setMoveAnswerBoxToContinuation(true);
+        }
+      });
+    };
+
+    checkFit();
+    const resizeObserver = new ResizeObserver(checkFit);
+    resizeObserver.observe(page);
+    resizeObserver.observe(answerBox);
+    const mutationObserver = new MutationObserver(checkFit);
+    mutationObserver.observe(page, { childList: true, subtree: true, characterData: true });
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+    };
+  }, [includeAnswerSpace, moveAnswerBoxToContinuation, plannedContinuation, question.html]);
+
   return <Fragment>
-    <section className="test-page test-question-page">
+    <section className="test-page test-question-page" ref={pageRef}>
       {first ? <SectionAIntro /> : null}
       <QuestionMarkup question={question} />
-      {includeAnswerSpace ? <AnswerBox compact={continuation} marks={question.marks} /> : null}
-      {continuation ? <p className="test-continues">This question continues on the following page.</p> : null}
+      {includeAnswerSpace && !moveAnswerBoxToContinuation ? <AnswerBox boxRef={answerBoxRef} compact={continuation} marks={question.marks} /> : null}
+      {continuation ? <p className={`test-continues${moveAnswerBoxToContinuation ? " test-continues-without-box" : ""}`} ref={continuationNoticeRef}>This question continues on the following page.</p> : null}
       <PageFooter label={paperTitle} />
     </section>
     {continuation ? <section className="test-page test-question-page test-continuation-page">
