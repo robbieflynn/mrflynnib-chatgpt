@@ -177063,6 +177063,18 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       marks: Number(q.marks) || 0
     };
   }
+  function shadowSourceMeta(source){
+    return {
+      id: String(source.id || ''),
+      title: String(source.title || 'Saved assignment question'),
+      topic: String(source.topic || ''),
+      subtopic: String(source.subtopic || ''),
+      paper: String(source.paper || ''),
+      section: source.section === 'B' ? 'B' : 'A',
+      difficulty: String(source.difficulty || ''),
+      marks: Number(source.marks) || 0
+    };
+  }
   window.mrflynnibQuestionMeta = function(id){
     var q = state.byId[String(id)];
     return q ? shadowQuestionMeta(q) : null;
@@ -177080,25 +177092,26 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     var matches = [], unmatched = [];
     requested.forEach(function(source){
       var original = state.byId[String(source.id || '')];
-      if(!original){ unmatched.push({ id: String(source.id || ''), title: 'Question no longer available' }); return; }
-      var originalMeta = shadowQuestionMeta(original);
+      var originalMeta = original ? shadowQuestionMeta(original) : shadowSourceMeta(source);
       var requiredSection = source.section === 'B' ? 'B' : originalMeta.section;
-      var originalTopics = shadowTopicKeys(original);
+      var originalTopics = original
+        ? shadowTopicKeys(original)
+        : [originalMeta.topic + '|' + originalMeta.subtopic].filter(function(value){ return value !== '|'; });
       function matchScore(candidate){
         var candidateMeta = shadowQuestionMeta(candidate), score = 0;
-        if(HAS_PAPERS && candidateMeta.paper === originalMeta.paper) score += 160;
+        if(HAS_PAPERS && originalMeta.paper && candidateMeta.paper === originalMeta.paper) score += 160;
         if(hasSections() && candidateMeta.section === requiredSection) score += 130;
         if(candidateMeta.subtopic && candidateMeta.subtopic === originalMeta.subtopic) score += 130;
         if(candidateMeta.topic && candidateMeta.topic === originalMeta.topic) score += 70;
-        if(candidateMeta.difficulty === originalMeta.difficulty) score += 50;
+        if(originalMeta.difficulty && candidateMeta.difficulty === originalMeta.difficulty) score += 50;
         if(shadowTopicKeys(candidate).join('||') === originalTopics.join('||')) score += 15;
         return score;
       }
       function isExactMatch(candidate){
         var candidateMeta = shadowQuestionMeta(candidate);
-        return (!HAS_PAPERS || candidateMeta.paper === originalMeta.paper)
+        return (!HAS_PAPERS || !originalMeta.paper || candidateMeta.paper === originalMeta.paper)
           && (!hasSections() || candidateMeta.section === requiredSection)
-          && candidateMeta.difficulty === originalMeta.difficulty
+          && (!originalMeta.difficulty || candidateMeta.difficulty === originalMeta.difficulty)
           && candidateMeta.topic === originalMeta.topic
           && candidateMeta.subtopic === originalMeta.subtopic;
       }

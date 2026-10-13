@@ -152,14 +152,25 @@
     };
   }
 
-  function createShadowSelection(sources) {
+  var shadowRetryTimer = 0;
+  function createShadowSelection(sources, attempt) {
+    attempt = Number(attempt) || 0;
+    window.clearTimeout(shadowRetryTimer);
     var findMatches = window.mrflynnibFindShadowQuestions;
     if (typeof findMatches !== "function") {
-      window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: false, unmatched: [{ title: "The question bank is still loading." }] }, window.location.origin);
+      if (attempt < 80) {
+        shadowRetryTimer = window.setTimeout(function () { createShadowSelection(sources, attempt + 1); }, 250);
+        return;
+      }
+      window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: false, unmatched: [{ title: "The question bank could not finish loading." }] }, window.location.origin);
       return;
     }
     var result = findMatches(sources);
     if (!result || (result.unmatched && result.unmatched.length) || !result.ids || result.ids.length !== sources.length) {
+      if (attempt < 80) {
+        shadowRetryTimer = window.setTimeout(function () { createShadowSelection(sources, attempt + 1); }, 250);
+        return;
+      }
       window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: false, unmatched: result && result.unmatched || [{ title: "No complete shadow match was found." }] }, window.location.origin);
       return;
     }

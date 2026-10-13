@@ -8,7 +8,17 @@ type AssignmentQuestionPickerProps = {
   bank: "ib" | "igcse";
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher";
   draftId: string;
-  shadowSourceIds?: string[];
+  shadowSources?: ShadowSource[];
+};
+
+type ShadowSource = {
+  id: string;
+  title: string;
+  topic: string;
+  subtopic: string;
+  paper: string;
+  difficulty: string;
+  marks: number | null;
 };
 
 type SelectedQuestionSummary = {
@@ -54,8 +64,9 @@ function cleanSummary(value: unknown): SelectedQuestionSummary | null {
   };
 }
 
-export function AssignmentQuestionPicker({ bank, course, draftId, shadowSourceIds }: AssignmentQuestionPickerProps) {
-  const shadowIds = useMemo(() => shadowSourceIds ?? [], [shadowSourceIds]);
+export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources }: AssignmentQuestionPickerProps) {
+  const shadowQuestions = useMemo(() => shadowSources ?? [], [shadowSources]);
+  const shadowIds = useMemo(() => shadowQuestions.map((sourceQuestion) => sourceQuestion.id), [shadowQuestions]);
   const initialFrameHeight = bank === "igcse" ? 760 : 620;
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(initialFrameHeight);
@@ -112,7 +123,7 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSourceId
         loadingMoreRef.current = false;
         if (shadowIds.length && !shadowRequestedRef.current && Number(event.data.total) > 0) {
           shadowRequestedRef.current = true;
-          frame.contentWindow?.postMessage({ type: "mrflynnib-assignment-create-shadow", sources: shadowIds }, window.location.origin);
+          frame.contentWindow?.postMessage({ type: "mrflynnib-assignment-create-shadow", sources: shadowQuestions }, window.location.origin);
         }
         cancelAnimationFrame(animationFrame);
         animationFrame = requestAnimationFrame(loadMoreIfNeeded);
@@ -165,7 +176,7 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSourceId
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [bank, loadMoreIfNeeded, shadowIds]);
+  }, [bank, loadMoreIfNeeded, shadowIds, shadowQuestions]);
 
   return (
     <div className="assignment-picker stack">
