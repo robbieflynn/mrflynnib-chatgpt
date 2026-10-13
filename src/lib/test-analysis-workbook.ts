@@ -24,7 +24,8 @@ const colours = {
   blue: "1F66B3",
   paleBlue: "EAF4FC",
   line: "CFD9E6",
-  amber: "FFF3CD",
+  input: "FFF3CD",
+  orange: "FCE5CD",
   green: "DDF4E8",
   red: "FCE1E1",
   grey: "F5F7FA",
@@ -81,9 +82,20 @@ function addPercentageRules(sheet: ExcelJS.Worksheet, range: string, firstCell: 
   sheet.addConditionalFormatting({
     ref: range,
     rules: [
-      { type: "expression", priority: 1, formulae: [`AND(${firstCell}<>"",${firstCell}<0.4)`], style: { fill: solidFill(colours.red) } },
-      { type: "expression", priority: 2, formulae: [`AND(${firstCell}>=0.4,${firstCell}<0.7)`], style: { fill: solidFill(colours.amber) } },
-      { type: "expression", priority: 3, formulae: [`${firstCell}>=0.7`], style: { fill: solidFill(colours.green) } },
+      { type: "expression", priority: 1, formulae: [`AND(ISNUMBER(${firstCell}),${firstCell}<=0.25)`], style: { fill: solidFill(colours.red) } },
+      { type: "expression", priority: 2, formulae: [`AND(ISNUMBER(${firstCell}),${firstCell}>0.25,${firstCell}<=0.75)`], style: { fill: solidFill(colours.orange) } },
+      { type: "expression", priority: 3, formulae: [`AND(ISNUMBER(${firstCell}),${firstCell}>0.75)`], style: { fill: solidFill(colours.green) } },
+    ],
+  });
+}
+
+function addQuestionMarkRules(sheet: ExcelJS.Worksheet, range: string, firstCell: string, maximumCell: string) {
+  sheet.addConditionalFormatting({
+    ref: range,
+    rules: [
+      { type: "expression", priority: 1, formulae: [`AND(ISNUMBER(${firstCell}),${firstCell}/${maximumCell}<=0.25)`], style: { fill: solidFill(colours.red) } },
+      { type: "expression", priority: 2, formulae: [`AND(ISNUMBER(${firstCell}),${firstCell}/${maximumCell}>0.25,${firstCell}/${maximumCell}<=0.75)`], style: { fill: solidFill(colours.orange) } },
+      { type: "expression", priority: 3, formulae: [`AND(ISNUMBER(${firstCell}),${firstCell}/${maximumCell}>0.75)`], style: { fill: solidFill(colours.green) } },
     ],
   });
 }
@@ -111,18 +123,23 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   const percentageColumnLetter = columnName(percentageColumn);
   const gradeColumnLetter = columnName(gradeColumn);
   const lastQuestionColumnLetter = columnName(lastQuestionColumn);
-  const boundariesLabelColumn = gradeColumn + 2;
-  const boundariesValueColumn = boundariesLabelColumn + 1;
+  const boundariesLabelColumn = 1;
+  const boundariesValueColumn = 2;
   const boundariesLabelLetter = columnName(boundariesLabelColumn);
   const boundariesValueLetter = columnName(boundariesValueColumn);
+  const boundariesHeadingRow = lastStudentRow + 3;
+  const boundariesHeaderRow = boundariesHeadingRow + 1;
+  const boundariesFirstRow = boundariesHeaderRow + 1;
+  const boundariesLastThresholdRow = boundariesFirstRow + 5;
+  const boundariesLastRow = boundariesFirstRow + 6;
   const totalMarks = questions.reduce((sum, question) => sum + question.marks, 0);
 
   const entry = workbook.addWorksheet("Marks entry", {
-    views: [{ state: "frozen", xSplit: 2, ySplit: 8 }],
+    views: [{ state: "frozen", ySplit: 8 }],
     properties: { defaultRowHeight: 20 },
     pageSetup: { orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0, paperSize: 9 },
   });
-  entry.views = [{ state: "frozen", xSplit: 2, ySplit: 8, showGridLines: false }];
+  entry.views = [{ state: "frozen", ySplit: 8, showGridLines: false }];
   entry.properties.tabColor = { argb: colours.blue };
   styleTitle(entry, gradeColumnLetter, "IB test marks entry", "Enter student names, teacher names and marks only. All summary fields calculate automatically.");
   entry.getCell("A3").value = "Test";
@@ -131,12 +148,11 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getCell("B4").value = input.course;
   entry.getCell("A5").value = "Paper";
   entry.getCell("B5").value = input.paper;
-  if (input.teacherOrClass) {
-    entry.getCell("D3").value = "Teacher or class";
-    entry.getCell("E3").value = input.teacherOrClass;
-  }
+  entry.getCell("B5").dataValidation = { type: "list", allowBlank: false, formulae: ['"Paper 1,Paper 2"'] };
+  entry.getCell("D3").value = "Class";
+  entry.getCell("E3").value = input.teacherOrClass;
+  entry.getCell("D4").value = "Test date";
   if (input.testDate) {
-    entry.getCell("D4").value = "Test date";
     entry.getCell("E4").value = new Date(`${input.testDate}T12:00:00`);
     entry.getCell("E4").numFmt = "d mmmm yyyy";
   }
@@ -145,7 +161,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   });
   ["B3", "B4", "B5", "E3", "E4"].forEach((address) => {
     entry.getCell(address).font = { name: "Arial", size: 10, color: { argb: colours.navy } };
-    entry.getCell(address).fill = solidFill(colours.paleBlue);
+    entry.getCell(address).fill = solidFill(["B5", "E3", "E4"].includes(address) ? colours.input : colours.paleBlue);
     entry.getCell(address).border = border();
   });
 
@@ -175,18 +191,20 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   questions.forEach((question, index) => {
     const column = firstQuestionColumn + index;
     entry.getCell(6, column).value = `Q${question.number}`;
-    entry.getCell(7, column).value = question.topic;
+    entry.getCell(7, column).value = question.subtopic || question.title;
     entry.getCell(8, column).value = question.marks;
     entry.getColumn(column).width = 12;
     for (let row = firstStudentRow; row <= lastStudentRow; row += 1) {
       const cell = entry.getCell(row, column);
-      cell.fill = solidFill(colours.amber);
+      cell.fill = solidFill(colours.input);
       cell.dataValidation = { type: "whole", operator: "between", allowBlank: true, showErrorMessage: true, errorTitle: "Check this mark", error: `Enter a whole number from 0 to ${question.marks}.`, formulae: [0, question.marks] };
     }
-    entry.getCell(7, column).note = `${question.title}\n${question.subtopic || question.topic}`;
+    entry.getCell(7, column).note = `${question.title}\nMain topic: ${question.topic}`;
     entry.getCell(6, column).alignment = { horizontal: "center", vertical: "middle" };
     entry.getCell(8, column).alignment = { horizontal: "center", vertical: "middle" };
     entry.getCell(7, column).font = { name: "Arial", size: 8, bold: true, color: { argb: colours.navy } };
+    const columnLetter = columnName(column);
+    addQuestionMarkRules(entry, `${columnLetter}${firstStudentRow}:${columnLetter}${lastStudentRow}`, `${columnLetter}${firstStudentRow}`, `${columnLetter}$8`);
   });
 
   entry.getColumn(1).width = 24;
@@ -198,47 +216,46 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     cell.border = border();
     cell.font = { name: "Arial", size: 10, color: { argb: colours.navy } };
     cell.alignment = { vertical: "middle", horizontal: column <= 2 ? "left" : "center" };
-    if (column <= 2) cell.fill = solidFill(colours.amber);
+    if (column <= 2) cell.fill = solidFill(colours.input);
   });
   for (let row = firstStudentRow; row <= lastStudentRow; row += 1) {
     entry.getCell(row, totalColumn).value = formula(`IF(COUNTA(C${row}:${lastQuestionColumnLetter}${row})=0,"",SUM(C${row}:${lastQuestionColumnLetter}${row}))`);
-    entry.getCell(row, percentageColumn).value = formula(`IF(${totalColumnLetter}${row}="","",${totalColumnLetter}${row}/${totalColumnLetter}$8)`);
+    entry.getCell(row, percentageColumn).value = formula(`IF(COUNT(C${row}:${lastQuestionColumnLetter}${row})=0,"",${totalColumnLetter}${row}/${totalColumnLetter}$8)`);
     entry.getCell(row, percentageColumn).numFmt = "0.0%";
-    entry.getCell(row, gradeColumn).value = formula(`IF(${percentageColumnLetter}${row}="","",IF(COUNT($${boundariesValueLetter}$5:$${boundariesValueLetter}$10)<6,"",IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$5,7,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$6,6,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$7,5,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$8,4,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$9,3,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$10,2,1))))))))`);
+    entry.getCell(row, gradeColumn).value = formula(`IF(COUNT(C${row}:${lastQuestionColumnLetter}${row})=0,"",IF(COUNT($${boundariesValueLetter}$${boundariesFirstRow}:$${boundariesValueLetter}$${boundariesLastThresholdRow})<6,"",IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow},7,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 1},6,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 2},5,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 3},4,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesFirstRow + 4},3,IF(${percentageColumnLetter}${row}>=$${boundariesValueLetter}$${boundariesLastThresholdRow},2,1))))))))`);
   }
   addPercentageRules(entry, `${percentageColumnLetter}${firstStudentRow}:${percentageColumnLetter}${lastStudentRow}`, `${percentageColumnLetter}${firstStudentRow}`);
 
-  entry.mergeCells(`${boundariesLabelLetter}3:${boundariesValueLetter}3`);
-  entry.getCell(`${boundariesLabelLetter}3`).value = "Optional IB grade boundaries";
-  entry.getCell(`${boundariesLabelLetter}3`).fill = solidFill(colours.blue);
-  entry.getCell(`${boundariesLabelLetter}3`).font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
-  entry.getCell(4, boundariesLabelColumn).value = "Grade";
-  entry.getCell(4, boundariesValueColumn).value = "Minimum %";
+  entry.mergeCells(`${boundariesLabelLetter}${boundariesHeadingRow}:${boundariesValueLetter}${boundariesHeadingRow}`);
+  entry.getCell(`${boundariesLabelLetter}${boundariesHeadingRow}`).value = "Optional IB grade boundaries";
+  entry.getCell(`${boundariesLabelLetter}${boundariesHeadingRow}`).fill = solidFill(colours.blue);
+  entry.getCell(`${boundariesLabelLetter}${boundariesHeadingRow}`).font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
+  entry.getCell(boundariesHeaderRow, boundariesLabelColumn).value = "Grade";
+  entry.getCell(boundariesHeaderRow, boundariesValueColumn).value = "Minimum %";
   for (let offset = 0; offset < 7; offset += 1) {
-    const row = 5 + offset;
+    const row = boundariesFirstRow + offset;
     entry.getCell(row, boundariesLabelColumn).value = 7 - offset;
     entry.getCell(row, boundariesValueColumn).value = offset === 6 ? 0 : null;
     entry.getCell(row, boundariesValueColumn).numFmt = "0%";
     if (offset < 6) {
-      entry.getCell(row, boundariesValueColumn).fill = solidFill(colours.amber);
+      entry.getCell(row, boundariesValueColumn).fill = solidFill(colours.input);
       entry.getCell(row, boundariesValueColumn).dataValidation = { type: "decimal", operator: "between", allowBlank: true, formulae: [0, 1] };
     }
   }
-  styleRange(entry, 4, 11, boundariesLabelColumn, boundariesValueColumn, (cell, row) => {
+  styleRange(entry, boundariesHeaderRow, boundariesLastRow, boundariesLabelColumn, boundariesValueColumn, (cell, row) => {
     cell.border = border();
-    cell.font = { name: "Arial", size: 9, bold: row === 4, color: { argb: colours.navy } };
-    if (row === 4) cell.fill = solidFill(colours.paleBlue);
+    cell.font = { name: "Arial", size: 9, bold: row === boundariesHeaderRow, color: { argb: colours.navy } };
+    if (row === boundariesHeaderRow) cell.fill = solidFill(colours.paleBlue);
   });
-  entry.getColumn(boundariesLabelColumn).width = 12;
-  entry.getColumn(boundariesValueColumn).width = 18;
-  entry.mergeCells(`${boundariesLabelLetter}13:${boundariesValueLetter}13`);
-  entry.getCell(`${boundariesLabelLetter}13`).value = "How to use";
-  entry.getCell(`${boundariesLabelLetter}13`).font = { name: "Arial", size: 9, bold: true, color: { argb: colours.navy } };
-  entry.getCell(`${boundariesLabelLetter}13`).fill = solidFill(colours.grey);
-  entry.mergeCells(`${boundariesLabelLetter}14:${boundariesValueLetter}16`);
-  entry.getCell(`${boundariesLabelLetter}14`).value = "Enter the six upper grade thresholds only if you want grades calculated. Leave them blank to use totals and percentages only.";
-  entry.getCell(`${boundariesLabelLetter}14`).alignment = { wrapText: true, vertical: "top" };
-  entry.getCell(`${boundariesLabelLetter}14`).font = { name: "Arial", size: 9, color: { argb: colours.navy } };
+  const boundariesNoteRow = boundariesLastRow + 2;
+  entry.mergeCells(`${boundariesLabelLetter}${boundariesNoteRow}:${boundariesValueLetter}${boundariesNoteRow}`);
+  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow}`).value = "How to use";
+  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow}`).font = { name: "Arial", size: 9, bold: true, color: { argb: colours.navy } };
+  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow}`).fill = solidFill(colours.grey);
+  entry.mergeCells(`${boundariesLabelLetter}${boundariesNoteRow + 1}:${boundariesValueLetter}${boundariesNoteRow + 3}`);
+  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).value = "Enter the six upper grade thresholds only if you want grades calculated. Leave them blank to use totals and percentages only.";
+  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).alignment = { wrapText: true, vertical: "top" };
+  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).font = { name: "Arial", size: 9, color: { argb: colours.navy } };
 
   const analysis = workbook.addWorksheet("Class analysis", {
     views: [{ state: "frozen", ySplit: 7, showGridLines: false }],
@@ -260,7 +277,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   analysis.getCell("G5").value = formula(`IF(COUNT('Marks entry'!$${percentageColumnLetter}$${firstStudentRow}:$${percentageColumnLetter}$${lastStudentRow})=0,"",MIN('Marks entry'!$${percentageColumnLetter}$${firstStudentRow}:$${percentageColumnLetter}$${lastStudentRow}))`);
   ["C5", "E5", "G5"].forEach((address) => { analysis.getCell(address).numFmt = "0.0%"; });
   ["A5", "C5", "E5", "G5"].forEach((address) => { analysis.getCell(address).border = border(); });
-  analysis.getRow(7).values = ["Question", "Topic", "Maximum", "Average mark", "Average %", "Attempted", "Teaching signal"];
+  analysis.getRow(7).values = ["Question", "Subtopic", "Maximum", "Average mark", "Average %", "Attempted", "Teaching signal"];
   styleRange(analysis, 7, 7, 1, 7, (cell) => {
     cell.fill = solidFill(colours.navy);
     cell.font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
@@ -271,14 +288,14 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     const row = 8 + index;
     const sourceColumn = columnName(firstQuestionColumn + index);
     analysis.getCell(row, 1).value = `Q${question.number}`;
-    analysis.getCell(row, 2).value = question.topic;
-    analysis.getCell(row, 2).note = `${question.title}\n${question.subtopic || question.topic}`;
+    analysis.getCell(row, 2).value = question.subtopic || question.title;
+    analysis.getCell(row, 2).note = `${question.title}\nMain topic: ${question.topic}`;
     analysis.getCell(row, 3).value = question.marks;
     analysis.getCell(row, 4).value = formula(`IF(COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})=0,"",AVERAGE('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow}))`);
-    analysis.getCell(row, 5).value = formula(`IF(D${row}="","",D${row}/C${row})`);
+    analysis.getCell(row, 5).value = formula(`IF(COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})=0,"",D${row}/C${row})`);
     analysis.getCell(row, 5).numFmt = "0.0%";
     analysis.getCell(row, 6).value = formula(`COUNT('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow})`);
-    analysis.getCell(row, 7).value = formula(`IF(E${row}="","",IF(E${row}>=0.8,"Strong",IF(E${row}>=0.6,"Secure",IF(E${row}>=0.4,"Developing","Priority for review"))))`);
+    analysis.getCell(row, 7).value = formula(`IF(NOT(ISNUMBER(E${row})),"",IF(E${row}>0.75,"Strong",IF(E${row}>0.25,"Developing","Priority for review")))`);
   });
   const analysisLastRow = 7 + questions.length;
   styleRange(analysis, 8, analysisLastRow, 1, 7, (cell) => {
@@ -290,7 +307,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   analysis.getColumn(2).width = 32;
   for (let column = 3; column <= 6; column += 1) analysis.getColumn(column).width = 14;
   analysis.getColumn(7).width = 22;
-  addPercentageRules(analysis, `E8:E${analysisLastRow}`, "E8");
+  addPercentageRules(analysis, `D8:G${analysisLastRow}`, "$E8");
 
   const feedback = workbook.addWorksheet("Student feedback", {
     views: [{ state: "frozen", ySplit: 9, showGridLines: false }],
@@ -302,10 +319,10 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   feedback.getCell("A4").value = "Student";
   feedback.getCell("A4").font = { name: "Arial", size: 10, bold: true, color: { argb: colours.navy } };
   feedback.mergeCells("B4:D4");
-  feedback.getCell("B4").fill = solidFill(colours.amber);
+  feedback.getCell("B4").fill = solidFill(colours.input);
   feedback.getCell("B4").border = border();
   workbook.definedNames.add("StudentNames", `'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow}`);
-  feedback.getCell("B4").dataValidation = { type: "list", allowBlank: true, formulae: ["StudentNames"] };
+  feedback.getCell("B4").dataValidation = { type: "list", allowBlank: true, showErrorMessage: true, errorTitle: "Choose a student", error: "Select a student from the list.", showInputMessage: true, promptTitle: "Student feedback", prompt: "Choose a student whose name has been entered on the Marks entry sheet.", formulae: ["StudentNames"] };
   feedback.getRow(6).values = ["Teacher", null, "Total", null, "Percentage", null];
   styleRange(feedback, 6, 7, 1, 6, (cell, row) => {
     cell.border = border();
@@ -316,7 +333,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   feedback.getCell("C7").value = formula(`IFERROR(INDEX('Marks entry'!$${totalColumnLetter}$${firstStudentRow}:$${totalColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
   feedback.getCell("E7").value = formula(`IFERROR(INDEX('Marks entry'!$${percentageColumnLetter}$${firstStudentRow}:$${percentageColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
   feedback.getCell("E7").numFmt = "0.0%";
-  feedback.getRow(9).values = ["Question", "Topic", "Score", "Out of", "%", "Feedback"];
+  feedback.getRow(9).values = ["Question", "Subtopic", "Score", "Out of", "%", "Feedback"];
   styleRange(feedback, 9, 9, 1, 6, (cell) => {
     cell.fill = solidFill(colours.navy);
     cell.font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
@@ -326,12 +343,13 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     const row = 10 + index;
     const sourceColumn = columnName(firstQuestionColumn + index);
     feedback.getCell(row, 1).value = `Q${question.number}`;
-    feedback.getCell(row, 2).value = `${question.topic}: ${question.subtopic || question.title}`;
+    feedback.getCell(row, 2).value = question.subtopic || question.title;
+    feedback.getCell(row, 2).note = `${question.title}\nMain topic: ${question.topic}`;
     feedback.getCell(row, 3).value = formula(`IFERROR(INDEX('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
     feedback.getCell(row, 4).value = question.marks;
-    feedback.getCell(row, 5).value = formula(`IF(C${row}="","",C${row}/D${row})`);
+    feedback.getCell(row, 5).value = formula(`IF(ISNUMBER(C${row}),C${row}/D${row},"")`);
     feedback.getCell(row, 5).numFmt = "0.0%";
-    feedback.getCell(row, 6).value = formula(`IF(E${row}="","",IF(E${row}>=0.8,"Strong performance",IF(E${row}>=0.6,"Secure understanding",IF(E${row}>=0.4,"Developing; revisit this topic","Priority for review"))))`);
+    feedback.getCell(row, 6).value = formula(`IF(NOT(ISNUMBER(E${row})),"",IF(E${row}>0.75,"Strong performance",IF(E${row}>0.25,"Developing; revisit this subtopic","Priority for review")))`);
   });
   const feedbackLastRow = 9 + questions.length;
   styleRange(feedback, 10, feedbackLastRow, 1, 6, (cell) => {
@@ -345,7 +363,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   feedback.getColumn(4).width = 13;
   feedback.getColumn(5).width = 13;
   feedback.getColumn(6).width = 30;
-  addPercentageRules(feedback, `E10:E${feedbackLastRow}`, "E10");
+  addPercentageRules(feedback, `C10:F${feedbackLastRow}`, "$E10");
   const notesHeadingRow = feedbackLastRow + 2;
   feedback.mergeCells(`A${notesHeadingRow}:F${notesHeadingRow}`);
   feedback.getCell(`A${notesHeadingRow}`).value = "Teacher notes";
