@@ -397,7 +397,11 @@
         });
         fields.appendChild(partList);
       } else {
-        methodCopy.textContent = "Student confirms this question is completed on the whiteboard or paper.";
+        methodCopy.textContent = "";
+        var whiteboard = document.createElement("span");
+        whiteboard.className = "qb-answer-review-note";
+        whiteboard.textContent = "Student confirms this question is completed on the whiteboard or paper.";
+        fields.appendChild(whiteboard);
       }
     }
 

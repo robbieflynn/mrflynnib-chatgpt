@@ -1013,6 +1013,50 @@ const intervalAnswers = choices.extractAcceptedAnswers(
 assert.deepEqual(intervalAnswers, ["[-3, 3/2]"]);
 assert(choices.generateChoiceSet(intervalAnswers, "audit-interval"));
 
+const unrestrictedDomain = choices.generateChoiceSet(
+  ["x∈blackboard(R)"],
+  "audit-unrestricted-domain",
+  "State the domain of f.",
+);
+assert(unrestrictedDomain);
+assert(unrestrictedDomain.options.every((option) => !/blackboard\([QZNC]\)/.test(option)));
+assert(unrestrictedDomain.options.some((option) => option === "x≠0"));
+
+const unrestrictedRange = choices.generateChoiceSet(
+  ["f(x)∈blackboard(R)"],
+  "audit-unrestricted-range",
+  "State the range of f.",
+);
+assert(unrestrictedRange);
+assert(unrestrictedRange.options.every((option) => !/blackboard\([QZNC]\)/.test(option)));
+assert(unrestrictedRange.options.some((option) => option === "-1≤f(x)≤1"));
+
+const yInterceptAnswers = choices.extractAcceptedAnswers(
+  [[String.raw`\(y\)-intercept is \(-\dfrac13\) (exact), \(-0.333\), \(\left(0,-\dfrac13\right)\)`, "A1"]],
+  String.raw`Find the \(y\)-intercept.`,
+);
+assert.deepEqual(yInterceptAnswers, ["(0,-1/3)"]);
+const yInterceptChoices = choices.generateChoiceSet(yInterceptAnswers, "audit-y-intercept", "Find the y-intercept.");
+assert(yInterceptChoices);
+assert(yInterceptChoices.options.every((option) => /^\(0,/.test(option)));
+
+const evaluatedFunctionAnswers = choices.extractAcceptedAnswers(
+  [
+    [String.raw`\(f(1) = 1-\arctan1 = 1-\dfrac{\pi}{4}\)`, "A1"],
+    [String.raw`\(f\left(-\sqrt3\right) = -\sqrt3-\arctan\left(-\sqrt3\right) = -\sqrt3+\dfrac{\pi}{3}\)`, "A1"],
+  ],
+  String.raw`Find \(f(1)\) and \(f\left(-\sqrt3\right)\).`,
+);
+assert.deepEqual(evaluatedFunctionAnswers, ["f(1)=1-π/4; f(-sqrt(3))=-sqrt(3)+π/3"]);
+const evaluatedFunctionChoices = choices.generateChoiceSet(
+  evaluatedFunctionAnswers,
+  "audit-evaluated-functions",
+  String.raw`Find \(f(1)\) and \(f\left(-\sqrt3\right)\).`,
+);
+assert(evaluatedFunctionChoices);
+assert.equal(evaluatedFunctionChoices.options[evaluatedFunctionChoices.correctOption], evaluatedFunctionAnswers[0]);
+assert(evaluatedFunctionChoices.options.every((option) => /^f\(1\)=.+; f\(-sqrt\(3\)\)=/.test(option)));
+
 const nestedRadicalAnswers = choices.extractAcceptedAnswers(
   [[String.raw`\(r=x\sqrt{\dfrac{3\sqrt3}{\pi}}\)`, "A1"]],
   "Find the radius in terms of x.",
