@@ -460,6 +460,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-continues-without-box { margin-top: auto; }
 .test-section-b-page .test-paper-question { margin-top: 1mm; }
 .test-section-b-page .test-question-body > .qb-parts { margin-top: 0; }
+.test-section-b-page .test-question-body > .qb-parts + .qb-parts { margin-top: 5.5mm; }
 .test-section-b-page .test-question-body .qb-parts,
 .test-section-b-page .test-question-body .qb-subparts { gap: 5.5mm; }
 .test-section-b-page .test-question-body .qb-part-text::after,
