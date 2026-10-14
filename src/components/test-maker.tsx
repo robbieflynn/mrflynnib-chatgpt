@@ -324,6 +324,17 @@ function splitPrintableQuestionHtml(html: string) {
   return units.length ? units : [html];
 }
 
+function hasClippedIgcseContent(questionCopy: HTMLElement) {
+  const candidates = [
+    questionCopy,
+    ...Array.from(questionCopy.querySelectorAll<HTMLElement>(
+      ".test-question-body, .qb-parts, .qb-parts > li, .qb-part-text, .qb-subparts, .qb-subparts > li, .qb-sub-text, .qb-diagram, table",
+    )),
+  ];
+
+  return candidates.some((element) => element.scrollHeight > element.clientHeight + 2);
+}
+
 function formatIgcseQuestionHtml(html: string) {
   return html.replace(
     /<span class="qb-marks-tag">\[\s*(\d+)\s+marks?\s*\]<\/span>/gi,
@@ -636,7 +647,10 @@ function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions 
             const page = pageRefs.current[index];
             const questionCopy = page?.querySelector<HTMLElement>(".igcse-question-copy");
             if (!page || !questionCopy) continue;
-            const contentFits = questionCopy.scrollHeight <= questionCopy.clientHeight + 2;
+            // A flexed part can hide an oversized diagram without increasing the
+            // outer question's scrollHeight. Check every potentially constrained
+            // descendant so clipped grids and tables trigger page splitting too.
+            const contentFits = !hasClippedIgcseContent(questionCopy);
             if (contentFits) continue;
 
             const unsplitQuestion = pages.length === 1 && pages[0].length === 1 && pages[0][0] === question.html;
