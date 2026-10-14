@@ -675,8 +675,57 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-dashboard-hero { background: radial-gradient(circle at 75% 10%, rgba(35,127,202,.35), transparent 28%), #071733; }
 .student-dashboard-hero-igcse, .teacher-dashboard-hero-igcse { background: radial-gradient(circle at 75% 10%, rgba(179,38,54,.4), transparent 30%), #2b0d16; }
 .student-dashboard-hero-igcse .dashboard-role-label, .teacher-dashboard-hero-igcse .dashboard-role-label { color: #ffbdc6; }
+.student-dashboard-hero .dashboard-hero-shell { gap: .35rem; }
+.student-dashboard-hero .dashboard-account-row { min-height: 2.25rem; }
+.student-dashboard-hero .dashboard-hero-layout { min-height: 118px; }
+.student-dashboard-hero .dashboard-hero-copy { gap: .45rem; }
+.student-dashboard-hero .dashboard-hero-copy h1 { max-width: 30ch; }
 .teacher-dashboard-hero { background: radial-gradient(circle at 78% 12%, rgba(31,151,139,.2), transparent 30%), #091831; }
 .teacher-dashboard-hero-igcse { border-bottom-color: rgba(179,38,54,.6); }
+.student-next-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(290px, .65fr); gap: 1.25rem; align-items: stretch; }
+.student-next-card { position: relative; min-height: 300px; padding: clamp(1.4rem, 3vw, 2.2rem); display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "copy copy" "progress action"; align-content: space-between; gap: 1.5rem 2rem; overflow: hidden; border-radius: 1.35rem; color: white; background: linear-gradient(135deg, #174f98, #0b2148 68%); box-shadow: 0 18px 48px rgba(11,33,72,.18); }
+.student-next-card::before { content: ""; position: absolute; width: 280px; height: 280px; right: -95px; top: -135px; border: 1px solid rgba(255,255,255,.14); border-radius: 50%; box-shadow: 0 0 0 42px rgba(255,255,255,.035), 0 0 0 86px rgba(255,255,255,.025); }
+.student-next-card > * { position: relative; z-index: 1; }
+.student-dashboard-igcse .student-next-card { background: linear-gradient(135deg, #9d2635, #3a101b 70%); }
+.student-next-card-copy { grid-area: copy; display: grid; align-content: start; gap: .55rem; }
+.student-dashboard-kicker { color: var(--dashboard-accent-dark); font-size: .72rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.student-next-card .student-dashboard-kicker { color: #a9dcff; }
+.student-dashboard-igcse .student-next-card .student-dashboard-kicker { color: #ffc1c9; }
+.student-next-context { color: rgba(255,255,255,.72); font-size: .82rem; font-weight: 750; }
+.student-next-card h2 { max-width: 17ch; color: white; font-size: clamp(2rem, 4vw, 3.2rem); }
+.student-next-card-copy > p:last-child { max-width: 52ch; color: rgba(255,255,255,.72); font-size: .92rem; }
+.student-next-progress { grid-area: progress; width: min(100%, 360px); display: grid; align-self: end; gap: .5rem; }
+.student-next-progress > span { color: rgba(255,255,255,.7); font-size: .75rem; }
+.student-next-progress strong { color: white; font-size: .92rem; }
+.student-next-progress > i { height: 8px; overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.17); }
+.student-next-progress > i b { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f0b33c, #ffe19c); }
+.student-next-button { grid-area: action; align-self: end; gap: .65rem; border-color: rgba(255,255,255,.1); background: white; color: #123b72; box-shadow: none; white-space: nowrap; }
+.student-next-button:hover { border-color: white; background: #eef7ff; color: #0b2c59; }
+.student-dashboard-igcse .student-next-button { background: white; color: var(--igcse-red-dark); box-shadow: none; }
+.student-dashboard-igcse .student-next-button:hover { background: #fff0f2; color: #5a1723; }
+.student-progress-summary { min-height: 300px; padding: 1.35rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: space-between; gap: 1.25rem; border: 1px solid #dce2e5; border-radius: 1.35rem; background: white; box-shadow: 0 10px 30px rgba(11,21,48,.055); }
+.student-progress-summary > div:first-child { display: grid; align-content: start; gap: .12rem; }
+.student-progress-number { margin-top: .3rem; color: var(--ink); font-size: clamp(2rem, 4vw, 3rem); line-height: 1; }
+.student-progress-summary > div:first-child > span { max-width: 18ch; color: var(--muted); font-size: .78rem; line-height: 1.35; }
+.student-progress-ring { --student-progress: 0deg; width: 76px; height: 76px; padding: 8px; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(var(--dashboard-accent) var(--student-progress), #e8edf0 0); }
+.student-progress-ring::before { content: ""; grid-area: 1 / 1; width: 100%; height: 100%; border-radius: 50%; background: white; }
+.student-progress-ring span { grid-area: 1 / 1; position: relative; z-index: 1; color: var(--dashboard-accent-dark); font-size: .8rem; font-weight: 900; }
+.student-progress-summary dl { grid-column: 1 / -1; margin: 0; display: grid; gap: .65rem; }
+.student-progress-summary dl div { padding-top: .65rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid #e5eaec; }
+.student-progress-summary dt { color: var(--muted); font-size: .74rem; }
+.student-progress-summary dd { margin: 0; color: var(--ink); font-size: .92rem; font-weight: 900; }
+.student-learning-section { padding: clamp(1.1rem, 2.2vw, 1.45rem); border: 1px solid #dce2e5; border-radius: 1rem; background: linear-gradient(180deg, #fff, #fbfcfd); box-shadow: 0 6px 20px rgba(11,21,48,.035); }
+.student-learning-section .dashboard-topics { gap: 1.2rem; }
+.student-learning-section .dashboard-topic-list { gap: .65rem; }
+.student-learning-overview { margin-top: -.7rem; }
+.student-completed-assignments { overflow: hidden; border: 1px solid #dce3e6; border-radius: .85rem; background: #f8fafb; }
+.student-completed-assignments > summary { min-height: 52px; padding: .8rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .8rem; font-weight: 850; cursor: pointer; list-style: none; }
+.student-completed-assignments > summary::-webkit-details-marker { display: none; }
+.student-completed-assignments > summary span { color: var(--dashboard-accent-dark); font-size: 1.15rem; transition: transform .2s ease; }
+.student-completed-assignments[open] > summary span { transform: rotate(45deg); }
+.student-completed-assignments > .student-assignment-list { padding: 0 .7rem .7rem; }
+.student-assignment-card.is-complete { opacity: .78; }
+.student-assignment-card.is-complete:hover { opacity: 1; }
 .student-class-section, .dashboard-panel { padding: clamp(1.1rem, 2.2vw, 1.45rem); border: 1px solid #dce2e5; border-radius: 1rem; background: white; box-shadow: 0 6px 20px rgba(11,21,48,.035); }
 .student-section-heading { padding-bottom: .35rem; }
 .student-class-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
@@ -894,6 +943,10 @@ a.teacher-list-row:hover { background: var(--sky); }
   .assignment-status-bar { grid-template-columns: 1fr 1fr; }
   .dashboard-hero-layout { grid-template-columns: 1fr; align-items: start; }
   .dashboard-hero-stats { width: min(100%, 520px); }
+  .student-next-grid { grid-template-columns: 1fr; }
+  .student-progress-summary { min-height: auto; grid-template-columns: minmax(0, 1fr) auto; }
+  .student-progress-summary dl { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+  .student-progress-summary dl div { min-width: 0; padding: .75rem; display: grid; align-content: start; border: 0; border-radius: .75rem; background: #f4f7f8; }
   .student-class-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .teacher-workspace-title { grid-template-columns: 1fr; align-items: start; }
   .teacher-workspace-stats { width: fit-content; }
@@ -931,6 +984,13 @@ a.teacher-list-row:hover { background: var(--sky); }
   .dashboard-hero-stats > div:first-child { border-left: 0; }
   .dashboard-hero-stats strong { font-size: 1.3rem; }
   .dashboard-hero-stats span { font-size: .56rem; }
+  .student-dashboard-hero .dashboard-hero-layout { min-height: 95px; }
+  .student-next-card { min-height: 350px; grid-template-columns: 1fr; grid-template-areas: "copy" "progress" "action"; gap: 1.1rem; }
+  .student-next-card h2 { font-size: clamp(2rem, 10vw, 2.7rem); }
+  .student-next-button { width: 100%; }
+  .student-progress-summary { grid-template-columns: minmax(0, 1fr) auto; }
+  .student-progress-summary dl { grid-template-columns: 1fr; gap: 0; }
+  .student-progress-summary dl div { padding: .65rem 0; display: flex; border-top: 1px solid #e5eaec; border-radius: 0; background: transparent; }
   .teacher-approval-panel { padding: 1rem; }
   .student-class-grid { grid-template-columns: 1fr; }
   .join-class-form { grid-template-columns: 1fr; }
