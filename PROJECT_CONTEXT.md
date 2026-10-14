@@ -168,6 +168,12 @@ Rob has confirmed that he previously worked with the IB and received direct guid
 
 Rob supplied the English November 2020 Legacy HL source papers and matching markschemes for Paper 1, Paper 2 and the Calculus Paper 3. The set has been inspected and contains 27 questions in total: 12 in Paper 1, 11 in Paper 2 and 4 in Calculus Paper 3. The notation, diagrams and question-to-markscheme pairings are readable. Treat these PDFs as private source material for classification and sufficiently changed question-bank content. Do not publish the original paper pages, original markscheme pages or verbatim IB wording.
 
+### Teacher assignment reporting
+
+On 14 October 2026, Rob approved a class-level **Class performance** history inside each teacher class. Keep student names fixed on the left and assignments in chronological columns, with completed auto-checked work shown as a percentage, unfinished work labelled clearly, manually reviewed work kept out of misleading percentage calculations, a per-student overall average, and a class average for each assignment. Each result should link to the existing detailed student submission and each assignment heading should link to the assignment overview.
+
+The downloadable question-level analysis workbook keeps the overall student percentage but does not show a redundant percentage beside every individual question on the printable **Student feedback** sheet. Show the question score and maximum mark, and retain the red, orange and green performance colouring.
+
 ### Internal Assessment (IA)
 
 IA guidance is a major part of Rob's reputation and should be treated as a prominent, dedicated website area rather than buried inside general course or free-resource content. The homepage should introduce this expertise clearly and lead to an IA section containing Rob's videos, his complete IA guide playlist, an IA ideas playlist, and the IA book. The playlists should remain clearly distinguished so visitors can choose between learning the full process and exploring possible topics.

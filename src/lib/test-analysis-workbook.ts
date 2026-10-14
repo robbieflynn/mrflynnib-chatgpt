@@ -453,8 +453,8 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   feedback.getCell("E7").value = formula(`IFERROR(INDEX('Marks entry'!$${percentageColumnLetter}$${firstStudentRow}:$${percentageColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
   feedback.getCell("E7").numFmt = "0.0%";
   feedback.getCell("G7").value = formula(`IFERROR(INDEX('Marks entry'!$${gradeColumnLetter}$${firstStudentRow}:$${gradeColumnLetter}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
-  feedback.getRow(9).values = ["Question", "Subtopic", null, "Score", "Out of", "%"];
-  feedback.mergeCells("B9:C9");
+  feedback.getRow(9).values = ["Question", "Subtopic", null, null, "Score", "Out of"];
+  feedback.mergeCells("B9:D9");
   styleRange(feedback, 9, 9, 1, 6, (cell) => {
     cell.fill = solidFill(colours.navy);
     cell.font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
@@ -481,13 +481,11 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
     feedbackQuestionRows.push(row);
     const sourceColumn = columnName(firstQuestionColumn + index);
     feedback.getCell(row, 1).value = `Q${question.number}`;
-    feedback.mergeCells(`B${row}:C${row}`);
+    feedback.mergeCells(`B${row}:D${row}`);
     feedback.getCell(row, 2).value = question.subtopic || question.title;
     feedback.getCell(row, 2).note = `${question.title}\nMain topic: ${question.topic}`;
-    feedback.getCell(row, 4).value = formula(`IFERROR(INDEX('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
-    feedback.getCell(row, 5).value = question.marks;
-    feedback.getCell(row, 6).value = formula(`IF(ISNUMBER(D${row}),D${row}/E${row},"")`);
-    feedback.getCell(row, 6).numFmt = "0.0%";
+    feedback.getCell(row, 5).value = formula(`IFERROR(INDEX('Marks entry'!$${sourceColumn}$${firstStudentRow}:$${sourceColumn}$${lastStudentRow},MATCH($B$4,'Marks entry'!$A$${firstStudentRow}:$A$${lastStudentRow},0)),"")`);
+    feedback.getCell(row, 6).value = question.marks;
     styleRange(feedback, row, row, 1, 6, (cell, _currentRow, column) => {
       cell.font = { name: "Arial", size: 10, color: { argb: colours.navy } };
       cell.border = border();
@@ -498,14 +496,14 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   });
   const feedbackLastRow = feedbackRow - 1;
   feedback.getColumn(1).width = 13;
-  feedback.getColumn(2).width = 24;
-  feedback.getColumn(3).width = 24;
-  feedback.getColumn(4).width = 13;
+  feedback.getColumn(2).width = 22;
+  feedback.getColumn(3).width = 22;
+  feedback.getColumn(4).width = 16;
   feedback.getColumn(5).width = 13;
   feedback.getColumn(6).width = 13;
   feedback.getColumn(7).width = 11;
   feedback.getColumn(8).width = 6;
-  feedbackQuestionRows.forEach((row) => addPercentageRules(feedback, `D${row}:F${row}`, `$F${row}`));
+  feedbackQuestionRows.forEach((row) => addQuestionMarkRules(feedback, `A${row}:F${row}`, `$E${row}`, `$F${row}`));
   feedback.pageSetup.printArea = `A1:H${feedbackLastRow}`;
   feedback.headerFooter.oddFooter = "&F  •  Page &P of &N";
 
