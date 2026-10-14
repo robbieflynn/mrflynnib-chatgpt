@@ -287,24 +287,13 @@ function splitPrintableQuestionHtml(html: string) {
     }
 
     if (node.matches("ul.qb-parts, ol.qb-parts")) {
+      const tag = node.tagName.toLowerCase();
+      const className = node.className ? ` class="${node.className}"` : "";
       Array.from(node.children).forEach((child) => {
         if (!(child instanceof HTMLElement)) return;
-        const label = child.querySelector(":scope > b")?.outerHTML ?? "<b></b>";
-        const body = child.querySelector<HTMLElement>(":scope > .qb-part-text");
-        if (!body) {
-          units.push(`<ul class="qb-parts">${child.outerHTML}</ul>`);
-          return;
-        }
-        const bodyClone = body.cloneNode(true) as HTMLElement;
-        const marks = bodyClone.querySelector<HTMLElement>(".qb-marks-tag")?.outerHTML ?? "";
-        bodyClone.querySelector(".qb-marks-tag")?.remove();
-        const segments = splitInnerHtml(bodyClone.innerHTML);
-        if (!segments.length) segments.push("");
-        segments.forEach((segment, index) => {
-          const segmentLabel = index === 0 ? label : '<b class="test-part-label-placeholder" aria-hidden="true"></b>';
-          const segmentMarks = index === segments.length - 1 ? marks : "";
-          units.push(`<ul class="qb-parts"><li>${segmentLabel}<div class="qb-part-text">${segment}${segmentMarks}</div></li></ul>`);
-        });
+        // A labelled question part is an atomic print unit. If its text,
+        // table or diagram will not fit, move the entire part to the next page.
+        units.push(`<${tag}${className}>${child.outerHTML}</${tag}>`);
       });
       return;
     }
