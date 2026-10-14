@@ -209,6 +209,14 @@ function RenderedQuestion({ html }: { html: string }) {
       throwOnError: false,
       strict: false,
     });
+    // Coordinate, statistical and plotting grids contain many ruled SVG
+    // lines. Give those figures their own print size: the bank's standard
+    // diagram height is appropriate for small geometry sketches, but it makes
+    // a grid too small for a student to draw on.
+    Array.from(ref.current.querySelectorAll<HTMLElement>(".qb-diagram")).forEach((diagram) => {
+      const svg = diagram.querySelector("svg");
+      diagram.classList.toggle("qb-print-graph-grid", Boolean(svg && svg.querySelectorAll("line").length >= 18));
+    });
   }, [html]);
   return <div className="test-question-body" dangerouslySetInnerHTML={{ __html: html }} ref={ref} />;
 }
@@ -314,14 +322,20 @@ function splitPrintableQuestionHtml(html: string) {
 }
 
 function hasClippedIgcseContent(questionCopy: HTMLElement) {
+  const copyBounds = questionCopy.getBoundingClientRect();
   const candidates = [
     questionCopy,
     ...Array.from(questionCopy.querySelectorAll<HTMLElement>(
-      ".test-question-body, .qb-parts, .qb-parts > li, .qb-part-text, .qb-subparts, .qb-subparts > li, .qb-sub-text, .qb-diagram, table",
+      ".test-question-body, .qb-parts, .qb-parts > li, .qb-part-text, .qb-subparts, .qb-subparts > li, .qb-sub-text, .qb-diagram, .qb-diagram svg, table",
     )),
   ];
 
-  return candidates.some((element) => element.scrollHeight > element.clientHeight + 2);
+  return candidates.some((element) => {
+    if (element.scrollHeight > element.clientHeight + 2) return true;
+    if (element === questionCopy) return false;
+    const bounds = element.getBoundingClientRect();
+    return bounds.bottom > copyBounds.bottom + 2 || bounds.right > copyBounds.right + 2 || bounds.left < copyBounds.left - 2;
+  });
 }
 
 function formatIgcseQuestionHtml(html: string) {
@@ -635,11 +649,16 @@ function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions 
           for (let index = 0; index < pages.length; index += 1) {
             const page = pageRefs.current[index];
             const questionCopy = page?.querySelector<HTMLElement>(".igcse-question-copy");
+            const pageFrame = page?.querySelector<HTMLElement>(".igcse-page-frame");
+            const flowEnd = page?.querySelector<HTMLElement>(".igcse-page-flow-end");
             if (!page || !questionCopy) continue;
             // A flexed part can hide an oversized diagram without increasing the
             // outer question's scrollHeight. Check every potentially constrained
             // descendant so clipped grids and tables trigger page splitting too.
-            const contentFits = !hasClippedIgcseContent(questionCopy);
+            // Once a question has been split, its units use natural height; the
+            // final flow marker therefore also has to remain inside the page frame.
+            const fitsFrame = !pageFrame || !flowEnd || flowEnd.getBoundingClientRect().bottom <= pageFrame.getBoundingClientRect().bottom - 4;
+            const contentFits = !hasClippedIgcseContent(questionCopy) && fitsFrame;
             if (contentFits) continue;
 
             const unsplitQuestion = pages.length === 1 && pages[0].length === 1 && pages[0][0] === question.html;
@@ -684,11 +703,12 @@ function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions 
     const finalPage = pageIndex === pages.length - 1;
     const pageHtml = pageUnits.join("");
     const hasParts = /\bqb-parts\b/i.test(pageHtml);
+    const splitQuestion = pages.length > 1;
     return <section className="test-page test-question-page igcse-question-page igcse-single-question-page" key={`${question.id}-igcse-page-${pageIndex}`} ref={(node) => { pageRefs.current[pageIndex] = node; }}>
       <div className="igcse-page-frame">
         {first && pageIndex === 0 ? <div className="igcse-paper-opening"><strong>Answer all {questionCountWords(totalQuestions)} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
         <div className="igcse-question-stack">
-          <article className={`igcse-print-question${hasParts ? " has-parts" : ""}`}>
+          <article className={`igcse-print-question${hasParts ? " has-parts" : ""}${splitQuestion ? " is-split" : ""}`}>
             <div className="igcse-question-copy"><strong className="igcse-question-number">{pageIndex === 0 ? question.number : ""}</strong><RenderedQuestion html={formatIgcseQuestionHtml(pageHtml)} /></div>
             {finalPage ? <>{!hasParts ? <div className="igcse-answer-space" aria-hidden="true"><span /></div> : null}<p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p></> : <p className="igcse-question-continues">This question continues on the following page.</p>}
             <span className="igcse-page-flow-end" aria-hidden="true" />
