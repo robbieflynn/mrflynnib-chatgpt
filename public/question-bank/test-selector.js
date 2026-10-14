@@ -96,6 +96,7 @@
       subtopic: cleanText(meta && meta.subtopic || firstTopic.sub),
       paper: cleanText(meta && meta.paper || question.paperNumber),
       section: meta && meta.section === "B" || question.section === "B" ? "B" : "A",
+      difficulty: cleanText(meta && meta.difficulty || question.difficulty || "Medium"),
       marks: Number(question.marks) || 0,
       html: printableHTML(card),
       markSchemeHtml: printableMarkscheme(question)
@@ -144,8 +145,13 @@
     if (typeof getQuestion !== "function") return;
     selected.forEach(function (id) {
       var saved = details[id];
-      if (!saved || saved.markSchemeHtml) return;
-      var markSchemeHtml = printableMarkscheme(getQuestion(id));
+      if (!saved) return;
+      var question = getQuestion(id);
+      var metaFor = window.mrflynnibQuestionMeta;
+      var meta = typeof metaFor === "function" ? metaFor(id) : null;
+      if (!saved.difficulty) saved.difficulty = cleanText(meta && meta.difficulty || question && question.difficulty || "Medium");
+      if (saved.markSchemeHtml) return;
+      var markSchemeHtml = printableMarkscheme(question);
       if (markSchemeHtml) saved.markSchemeHtml = markSchemeHtml;
     });
   }

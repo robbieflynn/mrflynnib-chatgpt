@@ -3,6 +3,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
 import renderMathInElement from "katex/contrib/auto-render";
+import { assessmentDifficultyRank, orderAssessmentQuestions } from "@/lib/assessment-question-order";
 import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
 import type { SavedTestPayload, SavedTestRecord } from "@/lib/saved-test";
 
@@ -22,6 +23,7 @@ type TestQuestion = {
   subtopic: string;
   paper: string;
   section: Section;
+  difficulty: string;
   marks: number;
   html: string;
   markSchemeHtml?: string;
@@ -105,14 +107,7 @@ function questionPaper(value: string): SinglePaper {
 }
 
 function orderQuestionsForDisplay(items: TestQuestion[], course: Course, combinedPapers: boolean) {
-  const orderSections = (questions: TestQuestion[]) => isApplicationsCourse(course) || isIgcseCourse(course)
-    ? questions
-    : [...questions.filter((question) => question.section !== "B"), ...questions.filter((question) => question.section === "B")];
-  if (!combinedPapers) return orderSections(items);
-  return [
-    ...orderSections(items.filter((question) => questionPaper(question.paper) === "Paper 1")),
-    ...orderSections(items.filter((question) => questionPaper(question.paper) === "Paper 2")),
-  ];
+  return orderAssessmentQuestions(items, course, combinedPapers);
 }
 
 function numberQuestions(items: TestQuestion[], combinedPapers: boolean): NumberedQuestion[] {
@@ -971,6 +966,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     if (index < 0 || target < 0 || target >= ordered.length) return;
     if (combinedPapers && questionPaper(ordered[index].paper) !== questionPaper(ordered[target].paper)) return;
     if (usesSections && (ordered[index].section === "B") !== (ordered[target].section === "B")) return;
+    if (assessmentDifficultyRank(ordered[index].difficulty) !== assessmentDifficultyRank(ordered[target].difficulty)) return;
     [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
     setQuestions(ordered);
     frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-test-reorder", ids: ordered.map((question) => question.id) }, window.location.origin);
@@ -1237,9 +1233,9 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
                   const next = displayQuestions[index + 1];
                   return <li key={question.id}>
                   <span className="assignment-selection-number">{combinedPapers ? `${questionPaper(question.paper) === "Paper 1" ? "P1" : "P2"} ${numberedQuestion?.number ?? index + 1}` : index + 1}</span>
-                  <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[combinedPapers ? questionPaper(question.paper) : "", question.topic, question.subtopic].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
+                  <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[combinedPapers ? questionPaper(question.paper) : "", question.topic, question.subtopic, question.difficulty].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
                   {usesSections ? <label className="test-section-select"><span>Section</span><select aria-label={`Section for ${question.title}`} value={question.section} onChange={(event) => changeSection(question.id, event.target.value as Section)}><option value="A">A</option><option value="B">B</option></select></label> : null}
-                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper)) || (usesSections && (previous?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper)) || (usesSections && (next?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, 1)}>↓</button></span>
+                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper)) || (usesSections && (previous?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(previous?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper)) || (usesSections && (next?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(next?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, 1)}>↓</button></span>
                   <button className="test-remove-question" type="button" onClick={() => removeQuestion(question.id)}>Remove</button>
                 </li>;})}
               </ol> : <div className="assignment-selection-empty"><strong>No questions selected yet</strong><span>Choose questions from the bank below. They will appear here in test order.</span></div>}

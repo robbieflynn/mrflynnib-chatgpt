@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import progressManifest from "@/data/question-bank-progress.json";
 import { requireAdmin, requireTeacher } from "@/lib/account-access";
 import { isAssignmentFeedbackMode } from "@/lib/assignment-feedback";
+import { orderAssessmentQuestions } from "@/lib/assessment-question-order";
 
 const validCourses = new Set(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
 const validResponseTypes = new Set(["teacher_review", "exact", "numeric", "multiple_choice", "multipart"]);
@@ -282,7 +283,12 @@ export async function createAssignment(formData: FormData) {
     ? progressManifest.igcse
     : progressManifest.courses[classRecord.course as keyof typeof progressManifest.courses];
   const summaries = new Map(source.questions.map((question) => [question.id, question]));
-  const selected = questionIds.map((id) => summaries.get(id)).filter((question): question is NonNullable<typeof question> => Boolean(question));
+  const selectedInChosenOrder = questionIds.map((id) => summaries.get(id)).filter((question): question is NonNullable<typeof question> => Boolean(question));
+  const selected = orderAssessmentQuestions(selectedInChosenOrder.map((question) => ({
+    ...question,
+    paper: question.paperNumber || question.paper || "",
+    section: "section" in question && question.section === "B" ? "B" : "A",
+  })), classRecord.course as "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher");
   if (selected.length !== questionIds.length) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "One or more questions are no longer available."));
 
   const dueAt = dueDate ? new Date(`${dueDate}T23:59:00`).toISOString() : null;

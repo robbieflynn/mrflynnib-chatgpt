@@ -14,6 +14,7 @@ type ShadowSource = {
   topic: string;
   subtopic: string;
   paper: string;
+  section: "A" | "B";
   difficulty: string;
   marks: number | null;
 };
@@ -57,6 +58,7 @@ export default async function NewAssignmentPage({ params, searchParams }: { para
           topic: sourceQuestion?.topics[0]?.main || "",
           subtopic: sourceQuestion?.topics[0]?.sub || String(question.topic_snapshot || ""),
           paper: sourceQuestion?.paperNumber || sourceQuestion?.paper || "",
+          section: sourceQuestion && "section" in sourceQuestion && sourceQuestion.section === "B" ? "B" : "A",
           difficulty: sourceQuestion?.difficulty || "",
           marks: Number(sourceQuestion?.marks) || null,
         };

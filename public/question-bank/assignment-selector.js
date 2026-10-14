@@ -147,6 +147,7 @@
       topic: meta && meta.topic || text(".qb-badge.topic .main") || existing && existing.topic || "",
       subtopic: meta && meta.subtopic || text(".qb-badge.topic .subs") || existing && existing.subtopic || "",
       paper: meta && meta.paper || text(".qb-badge.course") || existing && existing.paper || "",
+      section: meta && meta.section === "B" || question.section === "B" ? "B" : "A",
       difficulty: meta && meta.difficulty || text(".qb-badge:not(.course):not(.topic):not(.marks)") || existing && existing.difficulty || "",
       marks: Number(question.marks) || existing && existing.marks || null
     };
