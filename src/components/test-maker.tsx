@@ -526,10 +526,10 @@ function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "p
   const className = `igcse-formula-diagram igcse-formula-diagram-${kind}`;
   if (kind === "trapezium") return <svg aria-hidden="true" className={className} viewBox="0 0 180 120">
     <path d="M42 88h96l-22-51H66z" />
-    <path className="formula-dimension" d="M66 31V18m50 13V18M66 23h50M42 94v14m96-14v14M42 103h96M92 42v41" />
-    <path className="formula-right-angle" d="M92 88V78h10" />
-    <path className="formula-arrowhead" d="m66 23 8-4v8zm50 0-8-4v8zM42 103l8-4v8zm96 0-8-4v8zM92 42l-4 8h8zm0 41-4-8h8z" />
-    <text x="88" y="16">a</text><text x="88" y="118">b</text><text x="79" y="67">h</text>
+    <path className="formula-dimension" d="M66 31V18M116 31V18M66 23H116M42 94V108M138 94V108M42 103H138M92 42V88" />
+    <path className="formula-right-angle" d="M92 88V78H102" />
+    <path className="formula-arrowhead" d="M66 23 74 19V27ZM116 23 108 19V27ZM42 103 50 99V107ZM138 103 130 99V107ZM92 42 88 50H96ZM92 88 88 80H96Z" />
+    <text x="88" y="16">a</text><text x="88" y="118">b</text><text x="79" y="68">h</text>
   </svg>;
   if (kind === "triangle") return <svg aria-hidden="true" className={className} viewBox="0 0 180 120">
     <path d="M28 98 90 22l62 76z" />
@@ -539,18 +539,17 @@ function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "p
     <path d="M42 118 96 22l54 96" />
     <path d="M42 118a54 16 0 0 0 108 0" />
     <path className="formula-hidden" d="M42 118a54 16 0 0 1 108 0" />
-    <path className="formula-dimension" d="M31 118 84 24M96 118h53M164 22v96" />
-    <path className="formula-arrowhead" d="m31 118 3-9 7 4zm53-94-3 9-7-4zm65 94-9-4v8zm15-96-4 9h8zm0 96-4-9h8z" />
+    <path className="formula-dimension" d="M28 126 84 26M96 118H150M165 22V118" />
+    <path className="formula-arrowhead" d="M28 126 29 116 37 121ZM84 26 75 31 82 36ZM150 118 141 114V122ZM165 22 161 31H169ZM165 118 161 109H169Z" />
     <circle className="formula-point" cx="96" cy="118" r="2" />
-    <text x="48" y="73">l</text><text x="118" y="113">r</text><text x="170" y="74">h</text>
+    <text x="47" y="78">l</text><text x="119" y="113">r</text><text x="171" y="75">h</text>
   </svg>;
   if (kind === "prism") return <svg aria-hidden="true" className={className} viewBox="0 0 220 145">
-    <path className="formula-cross-section" d="M22 90q16-47 55-47 18 21 19 62-35 20-74-15z" />
-    <path d="M77 43 181 28q18 21 19 62l-104 15M22 90l104-15M96 105l104-15" />
-    <path className="formula-hidden" d="M126 75q17-43 55-47M126 75q36 30 74 15" />
-    <path className="formula-dimension" d="m103 128 96-15" />
-    <path className="formula-arrowhead" d="m103 128 7-6 2 8zm96-15-7 6-2-8z" />
-    <text className="formula-label-upright" x="34" y="84">cross</text><text className="formula-label-upright" x="31" y="98">section</text><text className="formula-label-upright" x="142" y="140">length</text>
+    <path className="formula-cross-section" d="M18 80C34 58 56 42 80 36C91 56 94 84 80 108C55 105 34 96 18 80Z" />
+    <path d="M80 36 181 18M80 108 181 90M181 18C195 38 198 66 181 90" />
+    <path className="formula-dimension" d="M90 128 190 109" />
+    <path className="formula-arrowhead" d="M90 128 98 121 100 131ZM190 109 182 116 180 106Z" />
+    <text className="formula-label-upright" x="34" y="78">cross</text><text className="formula-label-upright" x="31" y="94">section</text><text className="formula-label-upright" x="132" y="140">length</text>
   </svg>;
   if (kind === "cylinder") return <svg aria-hidden="true" className={className} viewBox="0 0 170 150">
     <ellipse cx="72" cy="32" rx="42" ry="15" />
@@ -568,7 +567,7 @@ function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "p
     <path className="formula-dimension" d="m82 76 39-39" />
     <path className="formula-arrowhead" d="m121 37-9 3 6 6z" />
     <circle className="formula-point" cx="82" cy="76" r="2" />
-    <text x="96" y="48">r</text>
+    <text x="99" y="60">r</text>
   </svg>;
 }
 
@@ -607,6 +606,79 @@ function igcseQuestionPages(questions: NumberedQuestion[]) {
     else pages.push([question]);
   });
   return pages;
+}
+
+function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions }: { question: NumberedQuestion; first: boolean; paperTitle: string; totalQuestions: number }) {
+  const pageRefs = useRef<Array<HTMLElement | null>>([]);
+  const [pages, setPages] = useState<string[][]>([[question.html]]);
+
+  useEffect(() => {
+    const animationFrame = requestAnimationFrame(() => setPages([splitPrintableQuestionHtml(question.html)]));
+    return () => cancelAnimationFrame(animationFrame);
+  }, [question.html]);
+
+  useEffect(() => {
+    let animationFrame = 0;
+    let secondAnimationFrame = 0;
+    const checkFit = () => {
+      cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(secondAnimationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        secondAnimationFrame = requestAnimationFrame(() => {
+          for (let index = 0; index < pages.length; index += 1) {
+            const page = pageRefs.current[index];
+            const frame = page?.querySelector<HTMLElement>(".igcse-page-frame");
+            const flowEnd = page?.querySelector<HTMLElement>(".igcse-page-flow-end");
+            if (!page || !frame || !flowEnd) continue;
+            const safeBottom = frame.getBoundingClientRect().bottom - 8;
+            const contentFits = flowEnd.getBoundingClientRect().bottom <= safeBottom && frame.scrollHeight <= frame.clientHeight + 2;
+            if (contentFits || pages[index].length <= 1) continue;
+
+            setPages((current) => {
+              const next = current.map((pageUnits) => [...pageUnits]);
+              const moved = next[index].pop();
+              if (!moved) return current;
+              if (next[index + 1]) next[index + 1].unshift(moved);
+              else next.push([moved]);
+              return next;
+            });
+            return;
+          }
+        });
+      });
+    };
+
+    checkFit();
+    const resizeObserver = new ResizeObserver(checkFit);
+    pageRefs.current.forEach((page) => { if (page) resizeObserver.observe(page); });
+    const mutationObserver = new MutationObserver(checkFit);
+    pageRefs.current.forEach((page) => { if (page) mutationObserver.observe(page, { childList: true, subtree: true, characterData: true }); });
+    pageRefs.current.forEach((page) => page?.querySelectorAll("img").forEach((image) => image.addEventListener("load", checkFit, { once: true })));
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(secondAnimationFrame);
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+    };
+  }, [pages]);
+
+  return <Fragment>{pages.map((pageUnits, pageIndex) => {
+    const finalPage = pageIndex === pages.length - 1;
+    return <section className="test-page igcse-question-page igcse-single-question-page" key={`${question.id}-igcse-page-${pageIndex}`} ref={(node) => { pageRefs.current[pageIndex] = node; }}>
+      <div className="igcse-page-frame">
+        {first && pageIndex === 0 ? <div className="igcse-paper-opening"><strong>Answer all {questionCountWords(totalQuestions)} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
+        <div className="igcse-question-stack">
+          <article className="igcse-print-question">
+            <div className="igcse-question-copy"><strong className="igcse-question-number">{pageIndex === 0 ? question.number : ""}</strong><RenderedQuestion html={pageUnits.join("")} /></div>
+            {finalPage ? <><div className="igcse-answer-space" aria-hidden="true"><span /></div><p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p></> : <p className="igcse-question-continues">This question continues on the following page.</p>}
+            <span className="igcse-page-flow-end" aria-hidden="true" />
+          </article>
+        </div>
+      </div>
+      <PageFooter label={paperTitle} />
+    </section>;
+  })}</Fragment>;
 }
 
 function IgcseQuestionPage({ questions, first, paperTitle, totalQuestions }: { questions: NumberedQuestion[]; first: boolean; paperTitle: string; totalQuestions: number }) {
@@ -649,7 +721,9 @@ function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school
       <PageFooter label="Teacher-created practice paper" />
     </section>
     <IgcseFormulaSheet paperTitle={paperTitle} />
-    {pages.map((pageQuestions, index) => <IgcseQuestionPage first={index === 0} key={`igcse-page-${index}`} paperTitle={paperTitle} questions={pageQuestions} totalQuestions={questions.length} />)}
+    {pages.map((pageQuestions, index) => pageQuestions.length === 1
+      ? <IgcseSingleQuestionPages first={index === 0} key={`igcse-question-${pageQuestions[0].id}`} paperTitle={paperTitle} question={pageQuestions[0]} totalQuestions={questions.length} />
+      : <IgcseQuestionPage first={index === 0} key={`igcse-page-${index}`} paperTitle={paperTitle} questions={pageQuestions} totalQuestions={questions.length} />)}
   </div>;
 }
 
@@ -666,7 +740,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
   const [frameHeight, setFrameHeight] = useState(640);
   const [course, setCourse] = useState<Course>(defaultCourse);
   const [paper, setPaper] = useState<Paper>("Paper 1");
-  const [igcseSelectionPaper, setIgcseSelectionPaper] = useState<SinglePaper>("Paper 1");
+  const [selectionPaper, setSelectionPaper] = useState<SinglePaper>("Paper 1");
   const [title, setTitle] = useState(defaultTitle);
   const [school, setSchool] = useState("");
   const [durationPaper1, setDurationPaper1] = useState(igcse ? "120" : "90");
@@ -743,9 +817,9 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
   const sendSelectionTarget = useCallback(() => {
     frameRef.current?.contentWindow?.postMessage({
       type: "mrflynnib-test-target",
-      paper: igcse && combinedPapers ? igcseSelectionPaper : "",
+      paper: combinedPapers ? selectionPaper : "",
     }, window.location.origin);
-  }, [combinedPapers, igcse, igcseSelectionPaper]);
+  }, [combinedPapers, selectionPaper]);
 
   useEffect(() => {
     sendSelectionTarget();
@@ -793,13 +867,13 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
           .slice(0, 50)
           .map((item: TestQuestion) => ({
             ...item,
-            paper: igcse
-              ? restoredPaperById.get(item.id) ?? paperAssignmentsRef.current[item.id] ?? (combinedPapers ? igcseSelectionPaper : "Paper 1")
-              : item.paper,
+            paper: combinedPapers
+              ? restoredPaperById.get(item.id) ?? paperAssignmentsRef.current[item.id] ?? selectionPaper
+              : igcse ? "Paper 1" : item.paper,
             section: item.section === "B" ? "B" : "A",
           }));
         paperAssignmentsRef.current = Object.fromEntries(next.map((question) => [question.id, questionPaper(question.paper)]));
-        const nextSignature = questionSignature(orderQuestionsForDisplay(next, course, combinedPapers), igcse && combinedPapers);
+        const nextSignature = questionSignature(orderQuestionsForDisplay(next, course, combinedPapers), combinedPapers);
         if (shadowSourceSignature && nextSignature !== shadowSourceSignature) {
           setShadowQuestions([]);
           setShadowSourceSignature("");
@@ -817,7 +891,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
         const missing = Array.isArray(event.data.missing) ? event.data.missing.length : 0;
         if (!savedTest?.payload.shadowQuestions.length) pendingRestoreRef.current = null;
         if (savedTest) {
-          setShadowSourceSignature(savedTest.payload.questions.map((question) => `${question.id}:${question.section}${igcse && combinedPapers ? `:${question.paper ?? "Paper 1"}` : ""}`).join("|"));
+          setShadowSourceSignature(savedTest.payload.questions.map((question) => `${question.id}:${question.section}${combinedPapers ? `:${question.paper ?? "Paper 1"}` : ""}`).join("|"));
           setSaveMessage(missing
             ? `${savedTest.title} opened. ${missing} unavailable ${missing === 1 ? "question was" : "questions were"} left out.`
             : `${savedTest.title} opened and is ready to edit.`);
@@ -833,7 +907,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
             .slice(0, 50)
             .map((item: TestQuestion) => ({
               ...item,
-              paper: igcse ? restoredPaperById.get(item.id) ?? item.paper : item.paper,
+              paper: combinedPapers ? restoredPaperById.get(item.id) ?? item.paper : igcse ? "Paper 1" : item.paper,
               section: item.section === "B" ? "B" : "A" as Section,
             }))
           : [];
@@ -849,7 +923,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
             .slice(0, 50)
             .map((item: TestQuestion, index: number) => ({
               ...item,
-              paper: igcse ? displayQuestions[index]?.paper ?? "Paper 1" : item.paper,
+              paper: combinedPapers ? displayQuestions[index]?.paper ?? selectionPaper : igcse ? "Paper 1" : item.paper,
               section: item.section === "B" ? "B" : "A" as Section,
             }))
           : [];
@@ -861,7 +935,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
         } else {
           const fallbackCount = Number(event.data.fallbacks) || 0;
           setShadowQuestions(next);
-          setShadowSourceSignature(questionSignature(displayQuestions, igcse && combinedPapers));
+          setShadowSourceSignature(questionSignature(displayQuestions, combinedPapers));
           setShadowMessage(fallbackCount
             ? `Shadow paper ready: all ${next.length} questions were replaced. ${fallbackCount} ${fallbackCount === 1 ? "question uses" : "questions use"} the closest available alternative because no perfect match was available.`
             : `Shadow paper ready: ${next.length} matched ${next.length === 1 ? "question" : "questions"}, with the same difficulty and subtopic pattern.`);
@@ -883,7 +957,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [combinedPapers, course, displayQuestions, igcse, igcseSelectionPaper, loadMoreIfNeeded, previewVariant, sendPendingRestore, sendSelectionTarget, shadowSourceSignature, source]);
+  }, [combinedPapers, course, displayQuestions, igcse, loadMoreIfNeeded, previewVariant, selectionPaper, sendPendingRestore, sendSelectionTarget, shadowSourceSignature, source]);
 
   useEffect(() => {
     if (!previewMode) return;
@@ -1025,7 +1099,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     }
   };
 
-  const changeIgcsePaper = (id: string, assignedPaper: SinglePaper) => {
+  const changeQuestionPaper = (id: string, assignedPaper: SinglePaper) => {
     paperAssignmentsRef.current[id] = assignedPaper;
     setQuestions((current) => current.map((question) => question.id === id ? { ...question, paper: assignedPaper } : question));
     if (shadowQuestions.length) {
@@ -1043,7 +1117,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     setShadowSourceSignature("");
     setShadowMessage("");
     if (igcse && normalizedPaper !== "Paper 1 and Paper 2") {
-      setIgcseSelectionPaper("Paper 1");
+      setSelectionPaper("Paper 1");
       setQuestions((current) => current.map((question) => ({ ...question, paper: "Paper 1" })));
       paperAssignmentsRef.current = Object.fromEntries(questions.map((question) => [question.id, "Paper 1"]));
     }
@@ -1121,7 +1195,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     setIncludeMarkScheme(savedTest.payload.includeMarkScheme);
     setIncludeAnalysis(savedTest.payload.includeAnalysis);
     setPaper(igcse && savedTest.paper === "Paper 2" ? "Paper 1" : savedTest.paper);
-    setIgcseSelectionPaper("Paper 1");
+    setSelectionPaper("Paper 1");
     setQuestions([]);
     setShadowQuestions([]);
     setShadowMessage("");
@@ -1191,7 +1265,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     setIncludeMarkScheme(true);
     setIncludeAnalysis(true);
     setPaper("Paper 1");
-    setIgcseSelectionPaper("Paper 1");
+    setSelectionPaper("Paper 1");
     setSaveError("");
     setSaveMessage("New test started.");
     clearQuestions();
@@ -1214,7 +1288,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
       ? "Choose Paper 1 or Paper 2 before adding questions. You can move any selected question later."
       : "All selected questions form one paper."
     : combinedPapers
-    ? "Selected questions are grouped using their original Paper 1 or Paper 2 classification."
+    ? "Choose Paper 1 or Paper 2 before adding questions. You can move any selected question later."
     : applicationsCourse
     ? "Paper 1 uses answer boxes; Paper 2 uses an answer booklet. You can browse questions from either source paper."
     : "Controls the cover and calculator instruction. It does not restrict which questions you can browse.";
@@ -1223,7 +1297,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
       ? "Choose a destination paper, then select from the full IGCSE Higher bank. Questions are numbered separately in each paper."
       : "Use the topic, subtopic and difficulty filters below. There are no Section A or Section B divisions."
     : combinedPapers
-    ? "Choose from the full course bank. Questions are grouped and numbered separately for Paper 1 and Paper 2."
+    ? "Choose a destination paper, then select from the full course bank. Questions are grouped and numbered separately in Paper 1 and Paper 2."
     : applicationsCourse
     ? "Use the paper, topic, subtopic and difficulty filters below. AI response layout is set automatically by Paper 1 or Paper 2."
     : "Use the paper, topic, subtopic, difficulty and section filters below. Questions are renumbered automatically.";
@@ -1294,31 +1368,31 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
                 {includeAnalysis ? <button className="button button-secondary button-small" disabled={analysisDownloading} type="button" onClick={() => downloadAnalysisWorkbook("shadow")}>{analysisDownloading ? "Preparing analysis…" : "Download shadow analysis"}</button> : null}
               </div>
             </section> : null}
-            {igcse && combinedPapers ? <section className="igcse-paper-destination" aria-labelledby="igcse-paper-destination-heading">
-              <div><p className="eyebrow">Add questions to</p><h3 id="igcse-paper-destination-heading">Choose the destination paper</h3><p>Select a paper here, then choose questions from the bank below. Every selected question can also be moved afterwards.</p></div>
-              <div className="igcse-paper-destination-options" role="group" aria-label="Destination for newly selected questions">
+            {combinedPapers ? <section className="test-paper-destination" aria-labelledby="test-paper-destination-heading">
+              <div><p className="eyebrow">Add questions to</p><h3 id="test-paper-destination-heading">Choose the destination paper</h3><p>Select a paper here, then choose questions from the bank below. Every selected question can also be moved afterwards.</p></div>
+              <div className="test-paper-destination-options" role="group" aria-label="Destination for newly selected questions">
                 {(["Paper 1", "Paper 2"] as const).map((paperName) => {
                   const count = questions.filter((question) => questionPaper(question.paper) === paperName).length;
-                  return <button aria-pressed={igcseSelectionPaper === paperName} className={igcseSelectionPaper === paperName ? "is-active" : ""} key={paperName} onClick={() => setIgcseSelectionPaper(paperName)} type="button"><strong>{paperName}</strong><span>{count} {count === 1 ? "question" : "questions"}</span></button>;
+                  return <button aria-pressed={selectionPaper === paperName} className={selectionPaper === paperName ? "is-active" : ""} key={paperName} onClick={() => setSelectionPaper(paperName)} type="button"><strong>{paperName}</strong><span>{count} {count === 1 ? "question" : "questions"}</span></button>;
                 })}
               </div>
             </section> : null}
             <section className="assignment-selection-review" aria-labelledby="selected-test-questions">
               <div className="assignment-selection-heading"><div><p className="eyebrow">Test contents</p><h3 id="selected-test-questions">Selected questions</h3></div><span>{questions.length} of 50</span></div>
-              {questions.length ? <ol className={`test-selection-list${!usesSections ? " test-selection-list-no-sections" : ""}${igcse && combinedPapers ? " test-selection-list-paper-assignment" : ""}`}>
+              {questions.length ? <ol className={`test-selection-list${!usesSections ? " test-selection-list-no-sections" : ""}${combinedPapers ? " test-selection-list-paper-assignment" : ""}`}>
                 {displayQuestions.map((question, index) => {
                   const numberedQuestion = numberedQuestions.find((candidate) => candidate.id === question.id);
                   const previous = displayQuestions[index - 1];
                   const next = displayQuestions[index + 1];
                   const assignedPaper = questionPaper(question.paper);
-                  const beginsPaperGroup = igcse && combinedPapers && (!previous || questionPaper(previous.paper) !== assignedPaper);
+                  const beginsPaperGroup = combinedPapers && (!previous || questionPaper(previous.paper) !== assignedPaper);
                   return <Fragment key={question.id}>
-                    {beginsPaperGroup ? <li className="igcse-selected-paper-heading"><strong>{assignedPaper}</strong><span>{displayQuestions.filter((candidate) => questionPaper(candidate.paper) === assignedPaper).length} selected</span></li> : null}
+                    {beginsPaperGroup ? <li className="test-selected-paper-heading"><strong>{assignedPaper}</strong><span>{displayQuestions.filter((candidate) => questionPaper(candidate.paper) === assignedPaper).length} selected</span></li> : null}
                     <li>
                       <span className="assignment-selection-number">{combinedPapers ? `${assignedPaper === "Paper 1" ? "P1" : "P2"} ${numberedQuestion?.number ?? index + 1}` : index + 1}</span>
                       <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[!igcse && combinedPapers ? assignedPaper : "", question.topic, question.subtopic, question.difficulty].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
                       {usesSections ? <label className="test-section-select"><span>Section</span><select aria-label={`Section for ${question.title}`} value={question.section} onChange={(event) => changeSection(question.id, event.target.value as Section)}><option value="A">A</option><option value="B">B</option></select></label> : null}
-                      {igcse && combinedPapers ? <label className="test-section-select test-paper-select"><span>Paper</span><select aria-label={`Paper for ${question.title}`} value={assignedPaper} onChange={(event) => changeIgcsePaper(question.id, event.target.value as SinglePaper)}><option>Paper 1</option><option>Paper 2</option></select></label> : null}
+                      {combinedPapers ? <label className="test-section-select test-paper-select"><span>Paper</span><select aria-label={`Paper for ${question.title}`} value={assignedPaper} onChange={(event) => changeQuestionPaper(question.id, event.target.value as SinglePaper)}><option>Paper 1</option><option>Paper 2</option></select></label> : null}
                       <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== assignedPaper) || (usesSections && (previous?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(previous?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== assignedPaper) || (usesSections && (next?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(next?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, 1)}>↓</button></span>
                       <button className="test-remove-question" type="button" onClick={() => removeQuestion(question.id)}>Remove</button>
                     </li>

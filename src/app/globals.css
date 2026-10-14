@@ -408,23 +408,24 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-maker-check strong { font-size: .78rem; }
 .test-maker-check small { color: var(--muted); font-size: .67rem; line-height: 1.35; }
 .test-question-picker { padding-bottom: 0; }
-.igcse-paper-destination { padding: 1rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, .7fr); align-items: center; gap: 1rem; border: 1px solid #a9cbe0; border-radius: 1rem; background: linear-gradient(135deg, #f7fbfe, #edf6fb); }
-.igcse-paper-destination h3 { margin-top: .16rem; font-size: 1.08rem; }
-.igcse-paper-destination p:last-child { margin-top: .25rem; color: var(--muted); font-size: .76rem; }
-.igcse-paper-destination-options { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
-.igcse-paper-destination-options button { min-height: 62px; padding: .65rem .75rem; display: grid; gap: .15rem; border: 1px solid #b8ccd7; border-radius: .75rem; background: white; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
-.igcse-paper-destination-options button:hover { border-color: #6ba4c7; background: #f7fbfe; }
-.igcse-paper-destination-options button.is-active { border-color: var(--teal); background: #102652; color: white; box-shadow: 0 8px 20px rgba(16,38,82,.16); }
-.igcse-paper-destination-options strong { font-size: .86rem; }
-.igcse-paper-destination-options span { color: var(--muted); font-size: .7rem; }
-.igcse-paper-destination-options .is-active span { color: rgba(255,255,255,.72); }
+.test-paper-destination { padding: 1rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, .7fr); align-items: center; gap: 1rem; border: 1px solid #a9cbe0; border-radius: 1rem; background: linear-gradient(135deg, #f7fbfe, #edf6fb); }
+.test-paper-destination h3 { margin-top: .16rem; font-size: 1.08rem; }
+.test-paper-destination p:last-child { margin-top: .25rem; color: var(--muted); font-size: .76rem; }
+.test-paper-destination-options { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+.test-paper-destination-options button { min-height: 62px; padding: .65rem .75rem; display: grid; gap: .15rem; border: 1px solid #b8ccd7; border-radius: .75rem; background: white; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.test-paper-destination-options button:hover { border-color: #6ba4c7; background: #f7fbfe; }
+.test-paper-destination-options button.is-active { border-color: var(--teal); background: #102652; color: white; box-shadow: 0 8px 20px rgba(16,38,82,.16); }
+.test-paper-destination-options strong { font-size: .86rem; }
+.test-paper-destination-options span { color: var(--muted); font-size: .7rem; }
+.test-paper-destination-options .is-active span { color: rgba(255,255,255,.72); }
 .test-selection-list { max-height: 440px; margin: 0; padding: 0; overflow: auto; list-style: none; }
 .test-selection-list li { min-height: 82px; padding: .7rem 1rem; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto auto auto; align-items: center; gap: .72rem; border-bottom: 1px solid #e8edef; }
 .test-selection-list-no-sections li { grid-template-columns: 44px minmax(0, 1fr) auto auto; }
-.test-selection-list-paper-assignment li:not(.igcse-selected-paper-heading) { grid-template-columns: 44px minmax(0, 1fr) auto auto auto; }
-.test-selection-list li.igcse-selected-paper-heading { min-height: 44px; padding: .58rem 1rem; display: flex; justify-content: space-between; border-bottom-color: #c7d8e1; background: #edf5f9; color: #102652; }
-.igcse-selected-paper-heading strong { font-size: .82rem; }
-.igcse-selected-paper-heading span { color: var(--muted); font-size: .68rem; font-weight: 800; }
+.test-selection-list-paper-assignment li:not(.test-selected-paper-heading) { grid-template-columns: 44px minmax(0, 1fr) auto auto auto; }
+.test-selection-list-paper-assignment:not(.test-selection-list-no-sections) li:not(.test-selected-paper-heading) { grid-template-columns: 44px minmax(0, 1fr) auto auto auto auto; }
+.test-selection-list li.test-selected-paper-heading { min-height: 44px; padding: .58rem 1rem; display: flex; justify-content: space-between; border-bottom-color: #c7d8e1; background: #edf5f9; color: #102652; }
+.test-selected-paper-heading strong { font-size: .82rem; }
+.test-selected-paper-heading span { color: var(--muted); font-size: .68rem; font-weight: 800; }
 .test-paper-select select { min-width: 92px; }
 .test-selection-list .assignment-selection-number { width: auto; min-width: 38px; padding-inline: .35rem; border-radius: 999px; }
 .test-selection-list li:last-child { border-bottom: 0; }
@@ -541,14 +542,14 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-formula-page { height: 297mm; display: flex; flex-direction: column; }
 .igcse-formula-page .igcse-page-frame { padding: 7mm 8mm 8mm; }
 .igcse-formula-title { margin-bottom: 4mm; text-align: center; }
-.igcse-formula-title h2 { margin: 0; color: #111; font: 700 14pt/1.2 Arial, Helvetica, sans-serif; }
-.igcse-formula-title p { margin: 1mm 0 0; font: 700 11pt/1.2 Arial, Helvetica, sans-serif; }
-.igcse-formula-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 29mm 45mm 48mm 58mm 52mm; border-top: .25mm solid #777; border-left: .25mm solid #777; }
-.igcse-formula-grid article { min-height: 0; padding: 3.5mm 4mm; display: grid; align-content: start; justify-items: start; overflow: hidden; border-right: .25mm solid #777; border-bottom: .25mm solid #777; font-size: 8.5pt; line-height: 1.35; text-align: left; }
+.igcse-formula-title h2 { margin: 0; color: #111; font: 700 15pt/1.2 Georgia, "Times New Roman", serif; }
+.igcse-formula-title p { margin: 1mm 0 0; font: 700 12pt/1.2 Georgia, "Times New Roman", serif; }
+.igcse-formula-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 24mm 41mm 52mm 61mm 54mm; border-top: .25mm solid #777; border-left: .25mm solid #777; }
+.igcse-formula-grid article { min-height: 0; padding: 3mm 4mm; display: grid; align-content: start; justify-items: start; overflow: hidden; border-right: .25mm solid #777; border-bottom: .25mm solid #777; font-family: Georgia, "Times New Roman", serif; font-size: 10pt; line-height: 1.32; text-align: left; }
 .igcse-formula-grid article:nth-child(1) { grid-column: 1; grid-row: 1; }
 .igcse-formula-grid article:nth-child(2) { grid-column: 2; grid-row: 1 / span 2; }
 .igcse-formula-grid article:nth-child(3) { grid-column: 1; grid-row: 2; }
-.igcse-formula-grid article h3 { margin: 0 0 2mm; color: #111; font: 700 9.5pt/1.25 Arial, Helvetica, sans-serif; }
+.igcse-formula-grid article h3 { margin: 0 0 2mm; color: #111; font: 700 11pt/1.22 Georgia, "Times New Roman", serif; }
 .igcse-formula-grid article h3 span { margin-left: 2mm; font-weight: 400; }
 .igcse-formula-grid article p { margin: 0 0 2mm; }
 .igcse-formula-grid .igcse-formula-wide { grid-column: 1 / -1; grid-row: 3; }
@@ -556,16 +557,17 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-formula-grid article:nth-child(6) { grid-column: 2; grid-row: 4; }
 .igcse-formula-grid article:nth-child(7) { grid-column: 1; grid-row: 5; }
 .igcse-formula-grid article:nth-child(8) { grid-column: 2; grid-row: 5; }
-.igcse-formula-with-diagram { width: 100%; display: grid; grid-template-columns: 48mm minmax(0, 1fr); align-items: center; gap: 7mm; text-align: left; }
-.igcse-formula-with-diagram > div { display: grid; gap: 2mm; }
-.igcse-formula-grid .igcse-formula-diagram { width: 100%; max-width: 48mm; height: 31mm; margin: auto; overflow: visible; fill: none; stroke: #111; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.igcse-formula-grid .igcse-formula-diagram-trapezium { height: 37mm; margin-top: 2mm; }
-.igcse-formula-grid .igcse-formula-diagram-triangle { height: 32mm; }
+.igcse-formula-with-diagram { width: 100%; display: grid; grid-template-columns: 46mm minmax(0, 1fr); align-items: center; gap: 6mm; text-align: left; }
+.igcse-formula-with-diagram > div { display: grid; gap: 2.5mm; }
+.igcse-formula-with-diagram > div p { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: center; gap: 3mm; }
+.igcse-formula-grid .igcse-formula-diagram { width: 100%; max-width: 62mm; height: 32mm; margin: auto; overflow: visible; fill: none; stroke: #111; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.igcse-formula-grid .igcse-formula-diagram-trapezium { max-width: 52mm; height: 42mm; margin-top: 1mm; }
+.igcse-formula-grid .igcse-formula-diagram-triangle { max-width: 58mm; height: 35mm; }
 .igcse-formula-grid .igcse-formula-diagram-cone,
-.igcse-formula-grid .igcse-formula-diagram-prism { height: 35mm; margin-top: auto; }
+.igcse-formula-grid .igcse-formula-diagram-prism { max-width: 65mm; height: 40mm; margin-top: auto; }
 .igcse-formula-grid .igcse-formula-diagram-cylinder,
-.igcse-formula-grid .igcse-formula-diagram-sphere { height: 31mm; margin-top: auto; }
-.igcse-formula-grid .igcse-formula-diagram text { fill: #111; stroke: none; font: italic 11px Georgia, "Times New Roman", serif; }
+.igcse-formula-grid .igcse-formula-diagram-sphere { max-width: 45mm; height: 34mm; margin-top: auto; }
+.igcse-formula-grid .igcse-formula-diagram text { fill: #111; stroke: none; font: italic 12px Georgia, "Times New Roman", serif; }
 .igcse-formula-grid .igcse-formula-diagram .formula-label-upright { font-style: normal; }
 .igcse-formula-grid .igcse-formula-diagram .formula-dimension { stroke-width: 1.15; }
 .igcse-formula-grid .igcse-formula-diagram .formula-hidden { stroke-dasharray: 5 4; }
@@ -573,7 +575,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-formula-grid .igcse-formula-diagram .formula-arrowhead,
 .igcse-formula-grid .igcse-formula-diagram .formula-point { fill: #111; stroke: none; }
 .igcse-formula-grid .igcse-formula-diagram .formula-cross-section { fill: #e9e9e9; }
-.igcse-display-formula .katex { font-size: 1.12em; }
+.igcse-formula-grid .katex { font-size: 1.14em; }
+.igcse-display-formula { width: 100%; text-align: center; }
+.igcse-display-formula .katex { font-size: 1.45em; }
 .igcse-paper-opening { margin-bottom: 7mm; display: grid; gap: 1.5mm; font-size: 9pt; text-align: center; }
 .igcse-question-stack { min-height: 0; flex: 1 1 0; display: flex; flex-direction: column; }
 .igcse-print-question { min-height: 0; display: flex; flex: 1 1 0; flex-direction: column; }
@@ -584,6 +588,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-answer-space { position: relative; min-height: 24mm; flex: 1 1 24mm; }
 .igcse-answer-space > span { position: absolute; right: 0; bottom: 0; width: 42mm; border-bottom: .2mm dotted #aaa; }
 .igcse-question-total { margin: 3mm 0 0; padding-bottom: 2mm; border-bottom: .25mm solid #aaa; font-size: 8.5pt; font-weight: 700; text-align: center; }
+.igcse-question-continues { margin: auto 0 0; padding-top: 5mm; font-size: 8pt; text-align: right; }
+.igcse-page-flow-end { display: block; height: 0; }
 .igcse-question-stack.has-two-questions .igcse-print-question { flex-basis: 0; }
 .igcse-question-stack.has-two-questions .igcse-answer-space { min-height: 22mm; flex-basis: 22mm; }
 .student-classes-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .35fr); gap: 1.5rem; align-items: start; }
@@ -949,8 +955,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .test-selection-list .test-paper-select { grid-column: 2; }
   .test-selection-list .test-order-buttons { grid-column: 3; grid-row: 2; }
   .test-selection-list .test-remove-question { grid-column: 2; width: fit-content; }
-  .igcse-paper-destination { grid-template-columns: 1fr; }
-  .test-selection-list li.igcse-selected-paper-heading { display: flex; }
+  .test-paper-destination { grid-template-columns: 1fr; }
+  .test-selection-list li.test-selected-paper-heading { display: flex; }
   .test-preview-toolbar { align-items: stretch; flex-direction: column; }
   .test-preview-toolbar .cluster { display: grid; grid-template-columns: 1fr 1fr; }
   .test-preview-action-panel { justify-items: stretch; }
