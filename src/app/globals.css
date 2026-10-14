@@ -596,6 +596,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="4"]) { flex-grow: 4; }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="5"]) { flex-grow: 5; }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="6"]) { flex-grow: 6; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts:has(.qb-diagram, table) { flex: 0 0 auto; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-diagram, table) { min-height: 0; height: auto; flex: 0 0 auto; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-diagram, table) > .qb-part-text { height: auto; }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li::after { content: ""; position: absolute; right: 0; bottom: 7mm; width: 48mm; border-bottom: .2mm dotted #777; }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li > .qb-part-text { min-height: 0; height: 100%; display: flex; flex-direction: column; }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li > .qb-part-text > .qb-marks-tag { position: absolute; right: 0; bottom: 0; margin: 0; color: #111; font-size: 8.5pt; font-style: normal; }
