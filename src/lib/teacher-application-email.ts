@@ -2,7 +2,7 @@ export async function sendTeacherApplicationEmail({ name, email }: { name: strin
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return false;
   const sender = process.env.SCHOOL_ENQUIRY_FROM_EMAIL ?? "Mr Flynn IB Website <website@mrflynnib.com>";
-  const recipient = process.env.SCHOOL_ENQUIRY_TO_EMAIL ?? "contact@mrflynnib.com";
+  const recipient = process.env.TEACHER_APPLICATION_TO_EMAIL ?? "mrflynnib@gmail.com";
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Accept: "application/json", Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
