@@ -826,6 +826,41 @@ a.teacher-list-row:hover { background: var(--sky); }
 .teacher-roster-heading { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .75rem; }
 .teacher-roster-heading .eyebrow { margin-bottom: .35rem; }
 .teacher-panel-count { width: fit-content; padding: .35rem .62rem; border-radius: 999px; background: var(--workspace-accent-soft); color: var(--workspace-accent-dark); font-size: .72rem; font-weight: 850; white-space: nowrap; }
+.class-performance-legend { display: flex; flex-wrap: wrap; gap: .5rem; }
+.class-performance-legend span { padding: .34rem .58rem; border-radius: 999px; font-size: .68rem; font-weight: 850; }
+.class-performance-legend .is-strong { background: #dff2e7; color: #176846; }
+.class-performance-legend .is-developing { background: #ffefbb; color: #76530a; }
+.class-performance-legend .is-attention { background: #f8d9d6; color: #a63029; }
+.class-performance-legend .is-progress { background: #eaf2fb; color: #235f91; }
+.class-performance-legend .is-review { background: #eef1f3; color: #536570; }
+.class-performance-scroll { max-width: 100%; overflow: auto; border: 1px solid #cad6db; border-radius: 1.15rem; background: white; box-shadow: 0 16px 42px rgba(11,21,48,.06); }
+.class-performance-table { width: max-content; min-width: 100%; border-spacing: 0; }
+.class-performance-table th, .class-performance-table td { min-width: 148px; height: 72px; padding: .48rem; border-left: 1px solid #e2e8ea; border-top: 1px solid #e2e8ea; text-align: center; }
+.class-performance-table thead th { position: sticky; top: 0; z-index: 2; height: 82px; border-top: 0; background: #f2f5f6; }
+.class-performance-table thead th > a { min-height: 58px; padding: .35rem .45rem; display: grid; align-content: center; gap: .2rem; border-radius: .6rem; }
+.class-performance-table thead th > a:hover { background: var(--workspace-accent-soft); }
+.class-performance-table thead th strong { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; }
+.class-performance-table thead th small { color: var(--muted); font-size: .62rem; }
+.class-performance-table .class-performance-student { position: sticky; left: 0; z-index: 3; min-width: 210px; border-left: 0; background: white; text-align: left; }
+.class-performance-table thead .class-performance-student { z-index: 4; background: #f2f5f6; }
+.class-performance-student-inner { min-height: 54px; display: flex; align-items: center; gap: .65rem; }
+.class-performance-student-inner > span:last-child { display: grid; gap: .05rem; }
+.class-performance-table tbody .class-performance-student small { color: var(--muted); font-size: .64rem; font-weight: 600; }
+.class-performance-score { min-height: 54px; padding: .4rem .5rem; display: grid; place-items: center; align-content: center; gap: .05rem; border: 1px solid transparent; border-radius: .75rem; transition: transform .15s ease, box-shadow .15s ease; }
+.class-performance-score:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(11,21,48,.12); }
+.class-performance-score strong, .class-performance-table .class-performance-overall strong, .class-performance-average td strong { font-size: .9rem; }
+.class-performance-score small, .class-performance-table .class-performance-overall small, .class-performance-average td small { color: inherit; font-size: .58rem; font-weight: 650; opacity: .78; }
+.class-performance-score.is-strong { background: #dff2e7; color: #176846; }
+.class-performance-score.is-developing { background: #ffefbb; color: #76530a; }
+.class-performance-score.is-attention { background: #f8d9d6; color: #a63029; }
+.class-performance-score.is-in-progress { background: #eaf2fb; color: #235f91; }
+.class-performance-score.is-review { background: #eef1f3; color: #536570; }
+.class-performance-score.is-not-started { border-color: #e0e6e8; background: #fafbfb; color: #70808a; }
+.class-performance-table .class-performance-overall { min-width: 110px; background: #f8fafb; }
+.class-performance-table tbody .class-performance-overall strong, .class-performance-table tbody .class-performance-overall small { display: block; }
+.class-performance-average th, .class-performance-average td { background: #eef4f7; }
+.class-performance-average td a { min-height: 52px; display: grid; place-content: center; gap: .05rem; border-radius: .65rem; }
+.class-performance-average td a:hover { background: white; }
 .teacher-assignment-row { grid-template-columns: minmax(180px, 1fr) auto auto 1.4rem; }
 .teacher-list-meta { display: grid; min-width: 70px; color: var(--muted); font-size: .68rem; text-align: right; }
 .teacher-list-meta strong { color: var(--ink); font-size: .96rem; }
@@ -1065,6 +1100,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .assignment-summary-grid > div:nth-child(-n+2), .assignment-summary-grid-four > div:nth-child(-n+2) { border-top: 0; }
   .assignment-matrix .assignment-matrix-student { min-width: 155px; }
   .assignment-matrix-student strong { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .class-performance-table .class-performance-student { min-width: 170px; }
+  .class-performance-table th, .class-performance-table td { min-width: 132px; }
 }
 
 @media print {
