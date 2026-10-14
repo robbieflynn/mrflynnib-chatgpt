@@ -602,6 +602,12 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li::after { content: ""; position: absolute; right: 0; bottom: 7mm; width: 48mm; border-bottom: .2mm dotted #777; }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li > .qb-part-text { min-height: 0; height: 100%; display: block; }
 .igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li > .qb-part-text > .qb-marks-tag { position: absolute; right: 0; bottom: 0; margin: 0; color: #111; font-size: 8.5pt; font-style: normal; }
+.igcse-print-question.is-split .igcse-question-copy { flex: 0 0 auto; overflow: visible; }
+.igcse-print-question.is-split .igcse-question-copy .test-question-body { height: auto; display: block; }
+.igcse-print-question.is-split .igcse-question-copy .test-question-body > .qb-parts { display: block; margin-top: 3mm; }
+.igcse-print-question.is-split .igcse-question-copy .test-question-body > .qb-parts > li { min-height: 28mm; height: auto; display: grid; }
+.igcse-question-page .test-question-body .qb-diagram.qb-print-graph-grid { width: 100%; margin: 6mm auto; }
+.igcse-question-page .test-question-body .qb-diagram.qb-print-graph-grid svg { width: min(100%, 145mm); max-width: 145mm; height: auto; max-height: 120mm; }
 .igcse-answer-space { position: relative; min-height: 24mm; flex: 1 1 24mm; }
 .igcse-answer-space > span { position: absolute; right: 0; bottom: 0; width: 42mm; border-bottom: .2mm dotted #aaa; }
 .igcse-question-total { margin: 3mm 0 0; padding-bottom: 2mm; border-bottom: .25mm solid #aaa; font-size: 8.5pt; font-weight: 700; text-align: center; }
