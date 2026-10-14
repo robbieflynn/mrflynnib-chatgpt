@@ -19,7 +19,7 @@ export default async function IgcseTeacherTestMakerPage() {
   return <main className="teacher-workspace teacher-workspace-igcse test-maker-workspace">
     <section className="teacher-workspace-hero"><Container className="stack-lg">
       <Breadcrumbs items={[{ label: "IGCSE teacher dashboard", href: "/igcse/teacher" }, { label: "IGCSE Test Maker" }]} />
-      <div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">IGCSE teacher tools</p><h1>IGCSE Test Maker</h1><p>Create, save and reuse polished, print-ready Edexcel IGCSE Mathematics practice papers.</p></div><span className="teacher-workspace-icon" aria-hidden="true">T</span></div>
+      <div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">IGCSE teacher tools</p><h1>IGCSE Test Maker</h1><p>Create, save and reuse polished, print-ready mathematics practice papers.</p></div><span className="teacher-workspace-icon" aria-hidden="true">T</span></div>
     </Container></section>
     <section className="section-tight"><Container><TestMaker bank="igcse" initialSavedTests={savedTests} /></Container></section>
   </main>;

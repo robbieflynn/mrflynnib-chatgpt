@@ -86480,14 +86480,18 @@ function diagram4ma1_2022j_2h_q14(){
   var u = 40, w = 660, h = 330, x0 = 70, y0 = 250;
   var B = [x0, y0], D = [x0 + BD * u, y0];
   var A = [x0, y0 - AB * u], C0 = [D[0], y0 - CD * u];
+  var wireAngle = Math.atan2(C0[1] - A[1], C0[0] - A[0]);
+  var arcRadius = 60;
+  var arcEnd = [A[0] + arcRadius * Math.cos(wireAngle), A[1] + arcRadius * Math.sin(wireAngle)];
+  var labelRadius = 86;
   var s = H.ARROW_DEF
     + H.polyOpen([[B[0] - 30, y0], [D[0] + 45, y0]])
     + H.polyOpen([A, B]) + H.polyOpen([D, C0])
     + H.polyOpen([A, C0], { dash: '7 5', width: 1.3 })
     + H.polyOpen([A, [A[0] + 250, A[1]]], { dash: '2 3', width: 1.1 })
     + H.rightAngle(B, A, D, 12) + H.rightAngle(D, C0, B, 12)
-    + H.angleArc(A[0], A[1], A[0] + 250, A[1], C0[0], C0[1], 60)
-    + H.figKnock(A[0] + 88, A[1] + 22, H.figVar('x'))
+    + '<path d="M '+(A[0] + arcRadius)+' '+A[1]+' A '+arcRadius+' '+arcRadius+' 0 0 1 '+arcEnd[0]+' '+arcEnd[1]+'" fill="none" stroke="#16233b" stroke-width="1.4"/>'
+    + H.figKnock(A[0] + labelRadius * Math.cos(wireAngle / 2), A[1] + labelRadius * Math.sin(wireAngle / 2) + 4, H.figVar('x'))
     + H.dimArrow([B[0], y0 + 30], [D[0], y0 + 30], 0, { label: '12 m', gap: 13 })
     + H.dimArrow([D[0] + 32, C0[1]], [D[0] + 32, y0], 0, { label: '2.6 m', gap: -12 })
     + H.figKnock(A[0] - 11, A[1] + 5, H.figVar('A'), { anchor: 'end', italic: true, size: 15 })
@@ -176743,6 +176747,10 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       return '<div class="qb-ms-group">'+label+linesHtml+'</div>';
     }).join('') + '</div>';
   }
+
+  // The test maker loads this bank inside an iframe. Expose the same renderer
+  // as the IB bank so new and previously saved tests can include mark schemes.
+  window.mrflynnibMarkschemeHTML = markschemeHTML;
 
   // A "<" that is not opening one of our own tags has to be escaped before the
   // string goes anywhere near innerHTML. Question text is full of them -

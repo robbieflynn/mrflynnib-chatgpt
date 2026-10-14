@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
+import { orderAssessmentQuestions } from "@/lib/assessment-question-order";
 import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
 
 type AssignmentQuestionPickerProps = {
@@ -17,6 +18,7 @@ type ShadowSource = {
   topic: string;
   subtopic: string;
   paper: string;
+  section: "A" | "B";
   difficulty: string;
   marks: number | null;
 };
@@ -27,6 +29,7 @@ type SelectedQuestionSummary = {
   topic: string;
   subtopic: string;
   paper: string;
+  section: "A" | "B";
   difficulty: string;
   marks: number | null;
 };
@@ -59,6 +62,7 @@ function cleanSummary(value: unknown): SelectedQuestionSummary | null {
     topic: text("topic"),
     subtopic: text("subtopic"),
     paper: text("paper"),
+    section: summary.section === "B" ? "B" : "A",
     difficulty: text("difficulty"),
     marks: Number.isFinite(marks) && marks > 0 ? marks : null,
   };
@@ -129,20 +133,31 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
         animationFrame = requestAnimationFrame(loadMoreIfNeeded);
       }
       if (event.data?.type === "mrflynnib-assignment-selection" && Array.isArray(event.data.ids)) {
-        const ids = event.data.ids.map(String).slice(0, 100);
-        setSelectedIds(ids);
-        setResponseConfigs(Array.isArray(event.data.configs) ? event.data.configs.slice(0, 100) : []);
-        setQuestionSummaries((current) => {
-          const next = { ...current };
-          if (Array.isArray(event.data.summaries)) {
-            event.data.summaries.forEach((value: unknown) => {
-              const summary = cleanSummary(value);
-              if (summary && ids.includes(summary.id)) next[summary.id] = summary;
-            });
-          }
-          Object.keys(next).forEach((id) => { if (!ids.includes(id)) delete next[id]; });
-          return next;
-        });
+        const ids: string[] = event.data.ids.map((value: unknown) => String(value)).slice(0, 100);
+        const next: Record<string, SelectedQuestionSummary> = {};
+        if (Array.isArray(event.data.summaries)) {
+          event.data.summaries.forEach((value: unknown) => {
+            const summary = cleanSummary(value);
+            if (summary && ids.includes(summary.id)) next[summary.id] = summary;
+          });
+        }
+        const orderedIds = orderAssessmentQuestions(ids.map((id): SelectedQuestionSummary => next[id] || {
+          id,
+          title: "Selected question",
+          topic: "",
+          subtopic: "",
+          paper: "",
+          section: "A",
+          difficulty: "",
+          marks: null,
+        }), course).map((question) => question.id);
+        const incomingConfigs: Record<string, unknown>[] = Array.isArray(event.data.configs)
+          ? event.data.configs.slice(0, 100).map((value: unknown) => value && typeof value === "object" ? value as Record<string, unknown> : {})
+          : [];
+        const configById = new Map<string, Record<string, unknown>>(ids.map((id, index) => [id, incomingConfigs[index] || {}]));
+        setSelectedIds(orderedIds);
+        setResponseConfigs(orderedIds.map((id) => configById.get(id) || {}));
+        setQuestionSummaries(next);
       }
       if (event.data?.type === "mrflynnib-assignment-shadow-result") {
         if (event.data.complete) {
@@ -176,7 +191,7 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [bank, loadMoreIfNeeded, shadowIds, shadowQuestions]);
+  }, [bank, course, loadMoreIfNeeded, shadowIds, shadowQuestions]);
 
   return (
     <div className="assignment-picker stack">

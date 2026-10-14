@@ -3,6 +3,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import katex from "katex";
 import renderMathInElement from "katex/contrib/auto-render";
+import { assessmentDifficultyRank, orderAssessmentQuestions } from "@/lib/assessment-question-order";
 import { mathematicalSummaryTitle } from "@/lib/assignment-summary-math";
 import type { SavedTestPayload, SavedTestRecord } from "@/lib/saved-test";
 
@@ -22,6 +23,7 @@ type TestQuestion = {
   subtopic: string;
   paper: string;
   section: Section;
+  difficulty: string;
   marks: number;
   html: string;
   markSchemeHtml?: string;
@@ -34,7 +36,7 @@ const courseNames: Record<Course, string> = {
   "AA SL": "Mathematics: analysis and approaches, standard level",
   "AI HL": "Mathematics: applications and interpretation, higher level",
   "AI SL": "Mathematics: applications and interpretation, standard level",
-  "IGCSE Higher": "Edexcel International GCSE Mathematics A, Higher Tier",
+  "IGCSE Higher": "Mathematics, Higher Tier",
 };
 
 function isApplicationsCourse(course: Course) {
@@ -105,14 +107,7 @@ function questionPaper(value: string): SinglePaper {
 }
 
 function orderQuestionsForDisplay(items: TestQuestion[], course: Course, combinedPapers: boolean) {
-  const orderSections = (questions: TestQuestion[]) => isApplicationsCourse(course) || isIgcseCourse(course)
-    ? questions
-    : [...questions.filter((question) => question.section !== "B"), ...questions.filter((question) => question.section === "B")];
-  if (!combinedPapers) return orderSections(items);
-  return [
-    ...orderSections(items.filter((question) => questionPaper(question.paper) === "Paper 1")),
-    ...orderSections(items.filter((question) => questionPaper(question.paper) === "Paper 2")),
-  ];
+  return orderAssessmentQuestions(items, course, combinedPapers);
 }
 
 function numberQuestions(items: TestQuestion[], combinedPapers: boolean): NumberedQuestion[] {
@@ -520,18 +515,59 @@ function MarkSchemePreviewPages({ paper, paperTitle, questions }: { paper: Singl
 }
 
 function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "prism" | "cylinder" | "sphere" }) {
-  if (kind === "trapezium") return <svg aria-hidden="true" viewBox="0 0 180 100"><path d="M42 82h104l-24-58H66z" /><path d="M66 15v18M122 15v18M60 20h68M34 91h120" /><text x="91" y="16">a</text><text x="91" y="99">b</text><text x="77" y="60">h</text></svg>;
-  if (kind === "triangle") return <svg aria-hidden="true" viewBox="0 0 180 105"><path d="M24 88 90 15l66 73z" /><text x="86" y="13">C</text><text x="11" y="99">A</text><text x="158" y="99">B</text><text x="49" y="48">b</text><text x="130" y="48">a</text><text x="87" y="102">c</text></svg>;
-  if (kind === "cone") return <svg aria-hidden="true" viewBox="0 0 150 120"><ellipse cx="76" cy="98" rx="43" ry="14" /><path d="M33 98 76 14l43 84M76 14v84" strokeDasharray="5 4" /><text x="82" y="58">h</text><text x="49" y="57">l</text><text x="96" y="94">r</text></svg>;
-  if (kind === "prism") return <svg aria-hidden="true" viewBox="0 0 170 105"><path d="M20 75 55 31l45 8 45-15v55l-45 12-45-8zM100 39v52M20 75l80 16" /><text x="53" y="61">cross</text><text x="50" y="73">section</text><text x="105" y="101">length</text></svg>;
-  if (kind === "cylinder") return <svg aria-hidden="true" viewBox="0 0 140 115"><ellipse cx="67" cy="24" rx="37" ry="13" /><path d="M30 24v66c0 17 74 17 74 0V24M67 24h37" /><text x="83" y="20">r</text><text x="110" y="61">h</text></svg>;
-  return <svg aria-hidden="true" viewBox="0 0 130 115"><circle cx="62" cy="58" r="45" /><ellipse cx="62" cy="58" rx="45" ry="15" strokeDasharray="5 4" /><path d="M62 58 97 33" /><text x="80" y="40">r</text></svg>;
+  const className = `igcse-formula-diagram igcse-formula-diagram-${kind}`;
+  if (kind === "trapezium") return <svg aria-hidden="true" className={className} viewBox="0 0 180 120">
+    <path d="M42 88h96l-22-51H66z" />
+    <path className="formula-dimension" d="M66 31V18m50 13V18M66 23h50M42 94v14m96-14v14M42 103h96M92 42v41" />
+    <path className="formula-right-angle" d="M92 88V78h10" />
+    <path className="formula-arrowhead" d="m66 23 8-4v8zm50 0-8-4v8zM42 103l8-4v8zm96 0-8-4v8zM92 42l-4 8h8zm0 41-4-8h8z" />
+    <text x="88" y="16">a</text><text x="88" y="118">b</text><text x="79" y="67">h</text>
+  </svg>;
+  if (kind === "triangle") return <svg aria-hidden="true" className={className} viewBox="0 0 180 120">
+    <path d="M28 98 90 22l62 76z" />
+    <text x="86" y="17">C</text><text x="14" y="108">A</text><text x="155" y="108">B</text><text x="48" y="58">b</text><text x="130" y="58">a</text><text x="87" y="115">c</text>
+  </svg>;
+  if (kind === "cone") return <svg aria-hidden="true" className={className} viewBox="0 0 190 150">
+    <path d="M42 118 96 22l54 96" />
+    <path d="M42 118a54 16 0 0 0 108 0" />
+    <path className="formula-hidden" d="M42 118a54 16 0 0 1 108 0" />
+    <path className="formula-dimension" d="M31 118 84 24M96 118h53M164 22v96" />
+    <path className="formula-arrowhead" d="m31 118 3-9 7 4zm53-94-3 9-7-4zm65 94-9-4v8zm15-96-4 9h8zm0 96-4-9h8z" />
+    <circle className="formula-point" cx="96" cy="118" r="2" />
+    <text x="48" y="73">l</text><text x="118" y="113">r</text><text x="170" y="74">h</text>
+  </svg>;
+  if (kind === "prism") return <svg aria-hidden="true" className={className} viewBox="0 0 220 145">
+    <path className="formula-cross-section" d="M22 90q16-47 55-47 18 21 19 62-35 20-74-15z" />
+    <path d="M77 43 181 28q18 21 19 62l-104 15M22 90l104-15M96 105l104-15" />
+    <path className="formula-hidden" d="M126 75q17-43 55-47M126 75q36 30 74 15" />
+    <path className="formula-dimension" d="m103 128 96-15" />
+    <path className="formula-arrowhead" d="m103 128 7-6 2 8zm96-15-7 6-2-8z" />
+    <text className="formula-label-upright" x="34" y="84">cross</text><text className="formula-label-upright" x="31" y="98">section</text><text className="formula-label-upright" x="142" y="140">length</text>
+  </svg>;
+  if (kind === "cylinder") return <svg aria-hidden="true" className={className} viewBox="0 0 170 150">
+    <ellipse cx="72" cy="32" rx="42" ry="15" />
+    <path d="M30 32v82m84-82v82M30 114a42 15 0 0 0 84 0" />
+    <path className="formula-hidden" d="M30 114a42 15 0 0 1 84 0" />
+    <path className="formula-dimension" d="M72 32h42M132 32v82" />
+    <path className="formula-arrowhead" d="m114 32-9-4v8zm18 0-4 9h8zm0 82-4-9h8z" />
+    <circle className="formula-point" cx="72" cy="32" r="2" />
+    <text x="92" y="27">r</text><text x="140" y="76">h</text>
+  </svg>;
+  return <svg aria-hidden="true" className={className} viewBox="0 0 170 150">
+    <circle cx="82" cy="76" r="55" />
+    <path d="M27 76a55 18 0 0 0 110 0" />
+    <path className="formula-hidden" d="M27 76a55 18 0 0 1 110 0" />
+    <path className="formula-dimension" d="m82 76 39-39" />
+    <path className="formula-arrowhead" d="m121 37-9 3 6 6z" />
+    <circle className="formula-point" cx="82" cy="76" r="2" />
+    <text x="96" y="48">r</text>
+  </svg>;
 }
 
 function IgcseFormulaSheet({ paperTitle }: { paperTitle: string }) {
   return <section className="test-page igcse-formula-page">
     <div className="igcse-page-frame">
-      <header className="igcse-formula-title"><h2>International GCSE Mathematics</h2><p>Formulae sheet - Higher Tier</p></header>
+      <header className="igcse-formula-title"><h2>Formulae sheet</h2><p>Higher Tier</p></header>
       <div className="igcse-formula-grid">
         <article><h3>Arithmetic series</h3><p>Sum to <i>n</i> terms, <SummaryMath>{"\\(S_n=\\frac{n}{2}[2a+(n-1)d]\\)"}</SummaryMath></p></article>
         <article><h3>Area of trapezium</h3><p><SummaryMath>{"\\(A=\\frac{1}{2}(a+b)h\\)"}</SummaryMath></p><FormulaDiagram kind="trapezium" /></article>
@@ -572,7 +608,7 @@ function IgcseQuestionPage({ questions, first, paperTitle, totalQuestions }: { q
       <div className={`igcse-question-stack${questions.length > 1 ? " has-two-questions" : ""}`}>
         {questions.map((question) => <article className="igcse-print-question" key={question.id}>
           <div className="igcse-question-copy"><strong className="igcse-question-number">{question.number}</strong><RenderedQuestion html={question.html} /></div>
-          <div className="igcse-answer-space" style={{ minHeight: `${Math.max(24, Math.min(78, question.marks * 10 + 10))}mm` }} aria-hidden="true"><span /></div>
+          <div className="igcse-answer-space" aria-hidden="true"><span /></div>
           <p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p>
         </article>)}
       </div>
@@ -588,8 +624,7 @@ function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school
   return <div className={`test-paper-set test-paper-set-${paper === "Paper 1" ? "paper-1" : "paper-2"} igcse-paper-set`}>
     <section className="test-page test-cover-page igcse-cover-page">
       <div className="igcse-cover-panel">
-        <p className="igcse-cover-kicker">Edexcel International GCSE</p>
-        <h2>Mathematics A</h2>
+        <h2>Mathematics</h2>
         <strong>{paper}</strong>
         <p>Higher Tier</p>
         <h1>{paperTitle}</h1>
@@ -603,7 +638,7 @@ function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school
       <p className="test-time-allowed">Time: {duration || "120"} minutes</p>
       <section className="igcse-equipment"><strong>You must have:</strong><span>Ruler graduated in centimetres and millimetres, protractor, compasses, pen, HB pencil, eraser and calculator. Tracing paper may be used.</span></section>
       <section className="test-instructions igcse-instructions"><h3>Instructions</h3><ul>{instructions.slice(0, 7).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul><h3>Information</h3><ul>{instructions.slice(7, 9).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul><h3>Advice</h3><ul>{instructions.slice(9).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul></section>
-      <PageFooter label="Teacher-created Edexcel IGCSE Mathematics practice paper" />
+      <PageFooter label="Teacher-created practice paper" />
     </section>
     <IgcseFormulaSheet paperTitle={paperTitle} />
     {pages.map((pageQuestions, index) => <IgcseQuestionPage first={index === 0} key={`igcse-page-${index}`} paperTitle={paperTitle} questions={pageQuestions} totalQuestions={questions.length} />)}
@@ -931,6 +966,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     if (index < 0 || target < 0 || target >= ordered.length) return;
     if (combinedPapers && questionPaper(ordered[index].paper) !== questionPaper(ordered[target].paper)) return;
     if (usesSections && (ordered[index].section === "B") !== (ordered[target].section === "B")) return;
+    if (assessmentDifficultyRank(ordered[index].difficulty) !== assessmentDifficultyRank(ordered[target].difficulty)) return;
     [ordered[index], ordered[target]] = [ordered[target], ordered[index]];
     setQuestions(ordered);
     frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-test-reorder", ids: ordered.map((question) => question.id) }, window.location.origin);
@@ -1147,8 +1183,8 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
           </div>
           <div className="test-maker-form form-grid">
             <label className="field"><span>Test title</span><input value={title} maxLength={100} onChange={(event) => setTitle(event.target.value)} /></label>
-            <label className="field"><span>School or class <small className="muted">(optional)</small></span><input value={school} maxLength={100} placeholder="Year 13 Mathematics" onChange={(event) => setSchool(event.target.value)} /></label>
-            {igcse ? <label className="field"><span>Course</span><input readOnly value="Edexcel IGCSE Mathematics Higher" /></label> : <label className="field"><span>Course</span><select value={course} onChange={(event) => resetForCourse(event.target.value as Course)}><option>AA HL</option><option>AA SL</option><option>AI HL</option><option>AI SL</option></select></label>}
+            <label className="field"><span>School or class <small className="muted">(optional)</small></span><input value={school} maxLength={100} placeholder={igcse ? "Year 11 Mathematics" : "Year 13 Mathematics"} onChange={(event) => setSchool(event.target.value)} /></label>
+            {igcse ? <label className="field"><span>Course</span><input readOnly value="IGCSE Mathematics Higher" /></label> : <label className="field"><span>Course</span><select value={course} onChange={(event) => resetForCourse(event.target.value as Course)}><option>AA HL</option><option>AA SL</option><option>AI HL</option><option>AI SL</option></select></label>}
             <label className="field"><span>Test paper format</span><select value={paper} onChange={(event) => setPaper(event.target.value as Paper)}><option>Paper 1</option><option>Paper 2</option><option>Paper 1 and Paper 2</option></select><small className="muted">{paperHelp}</small></label>
             {combinedPapers ? <>
               <label className="field"><span>Paper 1 time in minutes</span><input inputMode="numeric" value={durationPaper1} onChange={(event) => setDurationPaper1(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>
@@ -1197,9 +1233,9 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
                   const next = displayQuestions[index + 1];
                   return <li key={question.id}>
                   <span className="assignment-selection-number">{combinedPapers ? `${questionPaper(question.paper) === "Paper 1" ? "P1" : "P2"} ${numberedQuestion?.number ?? index + 1}` : index + 1}</span>
-                  <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[combinedPapers ? questionPaper(question.paper) : "", question.topic, question.subtopic].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
+                  <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[combinedPapers ? questionPaper(question.paper) : "", question.topic, question.subtopic, question.difficulty].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
                   {usesSections ? <label className="test-section-select"><span>Section</span><select aria-label={`Section for ${question.title}`} value={question.section} onChange={(event) => changeSection(question.id, event.target.value as Section)}><option value="A">A</option><option value="B">B</option></select></label> : null}
-                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper)) || (usesSections && (previous?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper)) || (usesSections && (next?.section === "B") !== (question.section === "B"))} onClick={() => reorder(question.id, 1)}>↓</button></span>
+                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper)) || (usesSections && (previous?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(previous?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper)) || (usesSections && (next?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(next?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, 1)}>↓</button></span>
                   <button className="test-remove-question" type="button" onClick={() => removeQuestion(question.id)}>Remove</button>
                 </li>;})}
               </ol> : <div className="assignment-selection-empty"><strong>No questions selected yet</strong><span>Choose questions from the bank below. They will appear here in test order.</span></div>}

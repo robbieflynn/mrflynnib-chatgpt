@@ -21,7 +21,7 @@ export default async function IgcseTeacherPage({ searchParams }: { searchParams:
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}{message.success ? <p className="form-message form-success">{message.success}</p> : null}
       <section className="teacher-tool-banner">
         <div className="teacher-tool-banner-icon" aria-hidden="true">T</div>
-        <div><p className="eyebrow">Teacher tools</p><h2>IGCSE Test Maker</h2><p>Select questions by paper, topic, subtopic and difficulty, then save, reuse and print a professionally formatted Edexcel-style paper.</p></div>
+        <div><p className="eyebrow">Teacher tools</p><h2>IGCSE Test Maker</h2><p>Select questions by paper, topic, subtopic and difficulty, then save, reuse and print a professionally formatted practice paper.</p></div>
         <Link className="button" href="/igcse/teacher/test-maker">Open IGCSE Test Maker</Link>
       </section>
       <div className="teacher-layout">

@@ -187,8 +187,10 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   const boundariesHeadingRow = firstStudentRow;
   const boundariesHeaderRow = boundariesHeadingRow + 1;
   const boundariesFirstRow = boundariesHeaderRow + 1;
-  const boundariesLastThresholdRow = boundariesFirstRow + 5;
-  const boundariesLastRow = boundariesFirstRow + 6;
+  const highestGrade = input.course === "IGCSE Higher" ? 9 : 7;
+  const thresholdCount = highestGrade - 1;
+  const boundariesLastThresholdRow = boundariesFirstRow + thresholdCount - 1;
+  const boundariesLastRow = boundariesFirstRow + highestGrade - 1;
   const entry = workbook.addWorksheet("Marks entry", {
     views: [{ state: "frozen", xSplit: 2, ySplit: 8, topLeftCell: "C9", activeCell: "C9", showGridLines: false }],
     properties: { defaultRowHeight: 20 },
@@ -308,7 +310,12 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
       entry.getCell(row, groupTotalColumn).value = formula(`IF(COUNTA(${scores})=0,"",SUM(${scores}))`);
       entry.getCell(row, groupPercentageColumn).value = formula(`IF(COUNT(${scores})=0,"",${totalCell}/${columnName(groupTotalColumn)}$8)`);
       entry.getCell(row, groupPercentageColumn).numFmt = "0.0%";
-      entry.getCell(row, groupGradeColumn).value = formula(`IF(COUNT(${scores})=0,"",IF(COUNT($${boundariesValueLetter}$${boundariesFirstRow}:$${boundariesValueLetter}$${boundariesLastThresholdRow})<6,"",IF(${percentageCell}>=$${boundariesValueLetter}$${boundariesFirstRow}/100,7,IF(${percentageCell}>=$${boundariesValueLetter}$${boundariesFirstRow + 1}/100,6,IF(${percentageCell}>=$${boundariesValueLetter}$${boundariesFirstRow + 2}/100,5,IF(${percentageCell}>=$${boundariesValueLetter}$${boundariesFirstRow + 3}/100,4,IF(${percentageCell}>=$${boundariesValueLetter}$${boundariesFirstRow + 4}/100,3,IF(${percentageCell}>=$${boundariesValueLetter}$${boundariesLastThresholdRow}/100,2,1))))))))`);
+      let gradeLookup = "1";
+      for (let grade = 2; grade <= highestGrade; grade += 1) {
+        const boundaryRow = boundariesFirstRow + highestGrade - grade;
+        gradeLookup = `IF(${percentageCell}>=$${boundariesValueLetter}$${boundaryRow}/100,${grade},${gradeLookup})`;
+      }
+      entry.getCell(row, groupGradeColumn).value = formula(`IF(COUNT(${scores})=0,"",IF(COUNT($${boundariesValueLetter}$${boundariesFirstRow}:$${boundariesValueLetter}$${boundariesLastThresholdRow})<${thresholdCount},"",${gradeLookup}))`);
     });
   }
   summaryGroups.forEach((group) => {
@@ -322,12 +329,12 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getCell(`${boundariesLabelLetter}${boundariesHeadingRow}`).font = { name: "Arial", size: 10, bold: true, color: { argb: colours.white } };
   entry.getCell(boundariesHeaderRow, boundariesLabelColumn).value = "Grade";
   entry.getCell(boundariesHeaderRow, boundariesValueColumn).value = "Minimum %";
-  for (let offset = 0; offset < 7; offset += 1) {
+  for (let offset = 0; offset < highestGrade; offset += 1) {
     const row = boundariesFirstRow + offset;
-    entry.getCell(row, boundariesLabelColumn).value = 7 - offset;
-    entry.getCell(row, boundariesValueColumn).value = offset === 6 ? 0 : null;
+    entry.getCell(row, boundariesLabelColumn).value = highestGrade - offset;
+    entry.getCell(row, boundariesValueColumn).value = offset === thresholdCount ? 0 : null;
     entry.getCell(row, boundariesValueColumn).numFmt = '0"%"';
-    if (offset < 6) {
+    if (offset < thresholdCount) {
       entry.getCell(row, boundariesValueColumn).fill = solidFill(colours.input);
       entry.getCell(row, boundariesValueColumn).dataValidation = { type: "whole", operator: "between", allowBlank: true, showErrorMessage: true, errorTitle: "Check this boundary", error: "Enter a whole percentage from 0 to 100, for example 70 for 70%.", formulae: [0, 100] };
     }
@@ -343,7 +350,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow}`).font = { name: "Arial", size: 9, bold: true, color: { argb: colours.navy } };
   entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow}`).fill = solidFill(colours.grey);
   entry.mergeCells(`${boundariesLabelLetter}${boundariesNoteRow + 1}:${boundariesValueLetter}${boundariesNoteRow + 3}`);
-  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).value = "Enter the six upper grade thresholds as whole percentages (for example, enter 70 for 70%). Grades update automatically. Leave them blank to use totals and percentages only.";
+  entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).value = `Enter the ${thresholdCount} upper grade thresholds as whole percentages (for example, enter 70 for 70%). Grades update automatically. Leave them blank to use totals and percentages only.`;
   entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).alignment = { wrapText: true, vertical: "top" };
   entry.getCell(`${boundariesLabelLetter}${boundariesNoteRow + 1}`).font = { name: "Arial", size: 9, color: { argb: colours.navy } };
 
