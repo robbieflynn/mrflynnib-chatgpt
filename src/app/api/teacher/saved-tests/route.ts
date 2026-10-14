@@ -25,7 +25,11 @@ function questionReferences(value: unknown): SavedTestQuestionReference[] | null
     const id = shortText(source.id, 160);
     if (!id || seen.has(id)) return null;
     seen.add(id);
-    references.push({ id, section: source.section === "B" ? "B" : "A" });
+    references.push({
+      id,
+      section: source.section === "B" ? "B" : "A",
+      paper: source.paper === "Paper 2" ? "Paper 2" : source.paper === "Paper 1" ? "Paper 1" : undefined,
+    });
   }
   return references;
 }

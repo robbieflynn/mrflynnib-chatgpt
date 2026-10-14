@@ -159,6 +159,9 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   workbook.calcProperties.fullCalcOnLoad = true;
 
   const questions = orderQuestions(input);
+  const paperDisplayName = input.course === "IGCSE Higher"
+    ? input.paper === "Paper 1 and Paper 2" ? "Two papers" : "One paper"
+    : input.paper;
   const lastQuestionColumn = firstQuestionColumn + questions.length - 1;
   const questionPaperGroups = (input.paper === "Paper 1 and Paper 2" ? ["Paper 1", "Paper 2"] : [input.paper]).map((label) => {
     const questionIndexes = questions
@@ -204,8 +207,8 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   entry.getCell("A4").value = "Course";
   entry.getCell("B4").value = input.course;
   entry.getCell("A5").value = "Paper";
-  entry.getCell("B5").value = input.paper;
-  entry.getCell("B5").dataValidation = { type: "list", allowBlank: false, formulae: ['"Paper 1,Paper 2,Paper 1 and Paper 2"'] };
+  entry.getCell("B5").value = paperDisplayName;
+  if (input.course !== "IGCSE Higher") entry.getCell("B5").dataValidation = { type: "list", allowBlank: false, formulae: ['"Paper 1,Paper 2,Paper 1 and Paper 2"'] };
   entry.getCell("D3").value = "Class";
   entry.getCell("E3").value = input.teacherOrClass;
   entry.getCell("D4").value = "Test date";
@@ -384,7 +387,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   questions.forEach((question, index) => {
     const row = 8 + index;
     const sourceColumn = columnName(firstQuestionColumn + index);
-    analysis.getCell(row, 1).value = input.paper === "Paper 1 and Paper 2" ? paperLabel(question.paper) : input.paper;
+    analysis.getCell(row, 1).value = input.paper === "Paper 1 and Paper 2" ? paperLabel(question.paper) : paperDisplayName;
     analysis.getCell(row, 2).value = `Q${question.number}`;
     analysis.getCell(row, 3).value = question.subtopic || question.title;
     analysis.getCell(row, 3).note = `${question.title}\nMain topic: ${question.topic}`;
@@ -461,7 +464,7 @@ export async function buildTestAnalysisWorkbook(input: TestAnalysisInput) {
   let currentFeedbackPaper = "";
   const feedbackQuestionRows: number[] = [];
   questions.forEach((question, index) => {
-    const questionPaperName = input.paper === "Paper 1 and Paper 2" ? paperLabel(question.paper) : input.paper;
+    const questionPaperName = input.paper === "Paper 1 and Paper 2" ? paperLabel(question.paper) : paperDisplayName;
     if (questionPaperName !== currentFeedbackPaper) {
       currentFeedbackPaper = questionPaperName;
       feedback.mergeCells(`A${feedbackRow}:F${feedbackRow}`);

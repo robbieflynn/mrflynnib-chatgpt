@@ -408,9 +408,24 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-maker-check strong { font-size: .78rem; }
 .test-maker-check small { color: var(--muted); font-size: .67rem; line-height: 1.35; }
 .test-question-picker { padding-bottom: 0; }
+.igcse-paper-destination { padding: 1rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(330px, .7fr); align-items: center; gap: 1rem; border: 1px solid #a9cbe0; border-radius: 1rem; background: linear-gradient(135deg, #f7fbfe, #edf6fb); }
+.igcse-paper-destination h3 { margin-top: .16rem; font-size: 1.08rem; }
+.igcse-paper-destination p:last-child { margin-top: .25rem; color: var(--muted); font-size: .76rem; }
+.igcse-paper-destination-options { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+.igcse-paper-destination-options button { min-height: 62px; padding: .65rem .75rem; display: grid; gap: .15rem; border: 1px solid #b8ccd7; border-radius: .75rem; background: white; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.igcse-paper-destination-options button:hover { border-color: #6ba4c7; background: #f7fbfe; }
+.igcse-paper-destination-options button.is-active { border-color: var(--teal); background: #102652; color: white; box-shadow: 0 8px 20px rgba(16,38,82,.16); }
+.igcse-paper-destination-options strong { font-size: .86rem; }
+.igcse-paper-destination-options span { color: var(--muted); font-size: .7rem; }
+.igcse-paper-destination-options .is-active span { color: rgba(255,255,255,.72); }
 .test-selection-list { max-height: 440px; margin: 0; padding: 0; overflow: auto; list-style: none; }
 .test-selection-list li { min-height: 82px; padding: .7rem 1rem; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto auto auto; align-items: center; gap: .72rem; border-bottom: 1px solid #e8edef; }
 .test-selection-list-no-sections li { grid-template-columns: 44px minmax(0, 1fr) auto auto; }
+.test-selection-list-paper-assignment li:not(.igcse-selected-paper-heading) { grid-template-columns: 44px minmax(0, 1fr) auto auto auto; }
+.test-selection-list li.igcse-selected-paper-heading { min-height: 44px; padding: .58rem 1rem; display: flex; justify-content: space-between; border-bottom-color: #c7d8e1; background: #edf5f9; color: #102652; }
+.igcse-selected-paper-heading strong { font-size: .82rem; }
+.igcse-selected-paper-heading span { color: var(--muted); font-size: .68rem; font-weight: 800; }
+.test-paper-select select { min-width: 92px; }
 .test-selection-list .assignment-selection-number { width: auto; min-width: 38px; padding-inline: .35rem; border-radius: 999px; }
 .test-selection-list li:last-child { border-bottom: 0; }
 .test-section-select { display: grid; gap: .22rem; color: var(--muted); font-size: .62rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
@@ -931,8 +946,11 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-tool-banner .button { grid-column: 1 / -1; width: 100%; }
   .test-selection-list li { grid-template-columns: 32px minmax(0, 1fr) auto; }
   .test-selection-list .test-section-select { grid-column: 2; }
+  .test-selection-list .test-paper-select { grid-column: 2; }
   .test-selection-list .test-order-buttons { grid-column: 3; grid-row: 2; }
   .test-selection-list .test-remove-question { grid-column: 2; width: fit-content; }
+  .igcse-paper-destination { grid-template-columns: 1fr; }
+  .test-selection-list li.igcse-selected-paper-heading { display: flex; }
   .test-preview-toolbar { align-items: stretch; flex-direction: column; }
   .test-preview-toolbar .cluster { display: grid; grid-template-columns: 1fr 1fr; }
   .test-preview-action-panel { justify-items: stretch; }

@@ -5,6 +5,7 @@ export type SavedTestSection = "A" | "B";
 export type SavedTestQuestionReference = {
   id: string;
   section: SavedTestSection;
+  paper?: "Paper 1" | "Paper 2";
 };
 
 export type SavedTestPayload = {

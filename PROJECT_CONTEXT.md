@@ -47,6 +47,8 @@ Rob has confirmed that the IGCSE offer is for **Edexcel IGCSE Mathematics**. The
 
 The IGCSE question bank must expand within the website and use the parent page's single natural scrollbar, matching the IB question-bank experience. Do not restore a fixed-height embedded window or a second internal scrollbar.
 
+Paper 1 and Paper 2 are equivalent for IGCSE question selection. Do not show Paper 1 or Paper 2 as filters, badges, or question metadata in the IGCSE question bank. In the IGCSE Test Maker, teachers choose **One paper** or **Two papers**. When two papers are chosen, newly selected questions go to an explicit Paper 1 or Paper 2 destination chosen by the teacher, and every selected question can be moved between the two papers. Never infer that destination from the source paper on which a question originally appeared.
+
 Do not promote an Edexcel IGCSE Mathematics syllabus checklist until Rob supplies and approves one. The IGCSE hub should lead directly with its four route cards rather than a generic “Making sense of IGCSE Mathematics” hero or buttons that merely jump down the same page.
 
 The verified Teachable destination for the existing IGCSE course is `https://learn.mrflynnib.com/p/igcse`. Present the website course page simply around **lessons on every topic and past-paper solutions**, with one principal button leading to this Teachable course.
