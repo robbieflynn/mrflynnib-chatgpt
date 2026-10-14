@@ -517,11 +517,11 @@ function MarkSchemePreviewPages({ paper, paperTitle, questions }: { paper: Singl
 function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "prism" | "cylinder" | "sphere" }) {
   const className = `igcse-formula-diagram igcse-formula-diagram-${kind}`;
   if (kind === "trapezium") return <svg aria-hidden="true" className={className} viewBox="0 0 180 120">
-    <path d="M45 88h90l-20-51H65z" />
-    <path className="formula-dimension" d="M65 31V18m50 13V18M65 23h50M45 94v14m90-14v14M45 103h90M91 42v41" />
-    <path className="formula-right-angle" d="M91 88V78h10" />
-    <path className="formula-arrowhead" d="m65 23 8-4v8zm50 0-8-4v8zM45 103l8-4v8zm90 0-8-4v8zM91 42l-4 8h8zm0 41-4-8h8z" />
-    <text x="87" y="16">a</text><text x="87" y="118">b</text><text x="98" y="67">h</text>
+    <path d="M42 88h96l-22-51H66z" />
+    <path className="formula-dimension" d="M66 31V18m50 13V18M66 23h50M42 94v14m96-14v14M42 103h96M92 42v41" />
+    <path className="formula-right-angle" d="M92 88V78h10" />
+    <path className="formula-arrowhead" d="m66 23 8-4v8zm50 0-8-4v8zM42 103l8-4v8zm96 0-8-4v8zM92 42l-4 8h8zm0 41-4-8h8z" />
+    <text x="88" y="16">a</text><text x="88" y="118">b</text><text x="79" y="67">h</text>
   </svg>;
   if (kind === "triangle") return <svg aria-hidden="true" className={className} viewBox="0 0 180 120">
     <path d="M28 98 90 22l62 76z" />
@@ -537,12 +537,12 @@ function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "p
     <text x="48" y="73">l</text><text x="118" y="113">r</text><text x="170" y="74">h</text>
   </svg>;
   if (kind === "prism") return <svg aria-hidden="true" className={className} viewBox="0 0 220 145">
-    <path className="formula-cross-section" d="M24 91q34-53 72-35 11 28 5 63-45 2-77-28z" />
-    <path d="m96 56 88-20q18 26 11 64l-94 19M24 91l88-21m-11 49 94-19" />
-    <path className="formula-hidden" d="m112 70q10 24 7 46" />
-    <path className="formula-dimension" d="m105 132 91-22" />
-    <path className="formula-arrowhead" d="m105 132 7-7 2 8zm91-22-7 7-2-8z" />
-    <text className="formula-label-upright" x="45" y="88">cross</text><text className="formula-label-upright" x="42" y="102">section</text><text className="formula-label-upright" x="142" y="140">length</text>
+    <path className="formula-cross-section" d="M22 90q16-47 55-47 18 21 19 62-35 20-74-15z" />
+    <path d="M77 43 181 28q18 21 19 62l-104 15M22 90l104-15M96 105l104-15" />
+    <path className="formula-hidden" d="M126 75q17-43 55-47M126 75q36 30 74 15" />
+    <path className="formula-dimension" d="m103 128 96-15" />
+    <path className="formula-arrowhead" d="m103 128 7-6 2 8zm96-15-7 6-2-8z" />
+    <text className="formula-label-upright" x="34" y="84">cross</text><text className="formula-label-upright" x="31" y="98">section</text><text className="formula-label-upright" x="142" y="140">length</text>
   </svg>;
   if (kind === "cylinder") return <svg aria-hidden="true" className={className} viewBox="0 0 170 150">
     <ellipse cx="72" cy="32" rx="42" ry="15" />
@@ -560,7 +560,7 @@ function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "p
     <path className="formula-dimension" d="m82 76 39-39" />
     <path className="formula-arrowhead" d="m121 37-9 3 6 6z" />
     <circle className="formula-point" cx="82" cy="76" r="2" />
-    <text x="101" y="54">r</text>
+    <text x="96" y="48">r</text>
   </svg>;
 }
 
@@ -608,7 +608,7 @@ function IgcseQuestionPage({ questions, first, paperTitle, totalQuestions }: { q
       <div className={`igcse-question-stack${questions.length > 1 ? " has-two-questions" : ""}`}>
         {questions.map((question) => <article className="igcse-print-question" key={question.id}>
           <div className="igcse-question-copy"><strong className="igcse-question-number">{question.number}</strong><RenderedQuestion html={question.html} /></div>
-          <div className="igcse-answer-space" style={{ minHeight: `${Math.max(24, Math.min(78, question.marks * 10 + 10))}mm` }} aria-hidden="true"><span /></div>
+          <div className="igcse-answer-space" aria-hidden="true"><span /></div>
           <p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p>
         </article>)}
       </div>

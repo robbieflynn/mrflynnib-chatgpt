@@ -543,33 +543,34 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-formula-grid article:nth-child(8) { grid-column: 2; grid-row: 5; }
 .igcse-formula-with-diagram { width: 100%; display: grid; grid-template-columns: 48mm minmax(0, 1fr); align-items: center; gap: 7mm; text-align: left; }
 .igcse-formula-with-diagram > div { display: grid; gap: 2mm; }
-.igcse-formula-grid svg { width: 100%; max-width: 48mm; height: 31mm; margin: auto; overflow: visible; fill: none; stroke: #111; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.igcse-formula-grid .igcse-formula-diagram { width: 100%; max-width: 48mm; height: 31mm; margin: auto; overflow: visible; fill: none; stroke: #111; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .igcse-formula-grid .igcse-formula-diagram-trapezium { height: 37mm; margin-top: 2mm; }
 .igcse-formula-grid .igcse-formula-diagram-triangle { height: 32mm; }
 .igcse-formula-grid .igcse-formula-diagram-cone,
 .igcse-formula-grid .igcse-formula-diagram-prism { height: 35mm; margin-top: auto; }
 .igcse-formula-grid .igcse-formula-diagram-cylinder,
 .igcse-formula-grid .igcse-formula-diagram-sphere { height: 31mm; margin-top: auto; }
-.igcse-formula-grid svg text { fill: #111; stroke: none; font: italic 11px Georgia, "Times New Roman", serif; }
-.igcse-formula-grid svg .formula-label-upright { font-style: normal; }
-.igcse-formula-grid svg .formula-dimension { stroke-width: 1.15; }
-.igcse-formula-grid svg .formula-hidden { stroke-dasharray: 5 4; }
-.igcse-formula-grid svg .formula-right-angle { stroke-width: 1.1; }
-.igcse-formula-grid svg .formula-arrowhead,
-.igcse-formula-grid svg .formula-point { fill: #111; stroke: none; }
-.igcse-formula-grid svg .formula-cross-section { fill: #e9e9e9; }
+.igcse-formula-grid .igcse-formula-diagram text { fill: #111; stroke: none; font: italic 11px Georgia, "Times New Roman", serif; }
+.igcse-formula-grid .igcse-formula-diagram .formula-label-upright { font-style: normal; }
+.igcse-formula-grid .igcse-formula-diagram .formula-dimension { stroke-width: 1.15; }
+.igcse-formula-grid .igcse-formula-diagram .formula-hidden { stroke-dasharray: 5 4; }
+.igcse-formula-grid .igcse-formula-diagram .formula-right-angle { stroke-width: 1.1; }
+.igcse-formula-grid .igcse-formula-diagram .formula-arrowhead,
+.igcse-formula-grid .igcse-formula-diagram .formula-point { fill: #111; stroke: none; }
+.igcse-formula-grid .igcse-formula-diagram .formula-cross-section { fill: #e9e9e9; }
 .igcse-display-formula .katex { font-size: 1.12em; }
 .igcse-paper-opening { margin-bottom: 7mm; display: grid; gap: 1.5mm; font-size: 9pt; text-align: center; }
-.igcse-question-stack { min-height: 0; flex: 1; display: flex; flex-direction: column; }
-.igcse-print-question { min-height: 0; display: flex; flex: 1 1 auto; flex-direction: column; }
+.igcse-question-stack { min-height: 0; flex: 1 1 0; display: flex; flex-direction: column; }
+.igcse-print-question { min-height: 0; display: flex; flex: 1 1 0; flex-direction: column; }
 .igcse-print-question + .igcse-print-question { margin-top: 6mm; padding-top: 7mm; border-top: .45mm solid #aaa; }
 .igcse-question-copy { display: grid; grid-template-columns: 8mm minmax(0, 1fr); align-items: start; }
 .igcse-question-number { padding-top: .3mm; font-size: 9.5pt; }
 .igcse-question-copy .test-question-body { padding-left: 0; }
-.igcse-answer-space { position: relative; min-height: 24mm; flex: 1 1 auto; }
+.igcse-answer-space { position: relative; min-height: 24mm; flex: 1 1 24mm; }
 .igcse-answer-space > span { position: absolute; right: 0; bottom: 0; width: 42mm; border-bottom: .2mm dotted #aaa; }
 .igcse-question-total { margin: 3mm 0 0; padding-bottom: 2mm; border-bottom: .25mm solid #aaa; font-size: 8.5pt; font-weight: 700; text-align: center; }
-.igcse-question-stack.has-two-questions .igcse-answer-space { min-height: 22mm !important; }
+.igcse-question-stack.has-two-questions .igcse-print-question { flex-basis: 0; }
+.igcse-question-stack.has-two-questions .igcse-answer-space { min-height: 22mm; flex-basis: 22mm; }
 .student-classes-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .35fr); gap: 1.5rem; align-items: start; }
 .teacher-access-card strong { font-size: 1.05rem; }
 .assignment-status-bar { padding: 1rem 1.15rem; display: grid; grid-template-columns: auto minmax(140px, 1fr) auto auto auto; align-items: center; gap: 1.2rem; border-radius: 1.1rem; background: linear-gradient(135deg, #102652, var(--ink)); color: white; }
