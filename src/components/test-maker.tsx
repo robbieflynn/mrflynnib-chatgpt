@@ -681,7 +681,7 @@ function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions 
     const finalPage = pageIndex === pages.length - 1;
     const pageHtml = pageUnits.join("");
     const hasParts = /\bqb-parts\b/i.test(pageHtml);
-    return <section className="test-page igcse-question-page igcse-single-question-page" key={`${question.id}-igcse-page-${pageIndex}`} ref={(node) => { pageRefs.current[pageIndex] = node; }}>
+    return <section className="test-page test-question-page igcse-question-page igcse-single-question-page" key={`${question.id}-igcse-page-${pageIndex}`} ref={(node) => { pageRefs.current[pageIndex] = node; }}>
       <div className="igcse-page-frame">
         {first && pageIndex === 0 ? <div className="igcse-paper-opening"><strong>Answer all {questionCountWords(totalQuestions)} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
         <div className="igcse-question-stack">
@@ -698,7 +698,7 @@ function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions 
 }
 
 function IgcseQuestionPage({ questions, first, paperTitle, totalQuestions }: { questions: NumberedQuestion[]; first: boolean; paperTitle: string; totalQuestions: number }) {
-  return <section className="test-page igcse-question-page">
+  return <section className="test-page test-question-page igcse-question-page">
     <div className="igcse-page-frame">
       {first ? <div className="igcse-paper-opening"><strong>Answer all {questionCountWords(totalQuestions)} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
       <div className={`igcse-question-stack${questions.length > 1 ? " has-two-questions" : ""}`}>
