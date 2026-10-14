@@ -578,13 +578,27 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-formula-grid .katex { font-size: 1.14em; }
 .igcse-display-formula { width: 100%; text-align: center; }
 .igcse-display-formula .katex { font-size: 1.45em; }
-.igcse-paper-opening { margin-bottom: 7mm; display: grid; gap: 1.5mm; font-size: 9pt; text-align: center; }
+.igcse-paper-opening { margin-bottom: 14mm; display: grid; gap: 3mm; font-size: 10pt; text-align: center; }
 .igcse-question-stack { min-height: 0; flex: 1 1 0; display: flex; flex-direction: column; }
 .igcse-print-question { min-height: 0; display: flex; flex: 1 1 0; flex-direction: column; }
 .igcse-print-question + .igcse-print-question { margin-top: 6mm; padding-top: 7mm; border-top: .45mm solid #aaa; }
 .igcse-question-copy { display: grid; grid-template-columns: 8mm minmax(0, 1fr); align-items: start; }
 .igcse-question-number { padding-top: .3mm; font-size: 9.5pt; }
 .igcse-question-copy .test-question-body { padding-left: 0; }
+.igcse-print-question.has-parts .igcse-question-copy { min-height: 0; flex: 1 1 0; overflow: hidden; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body { min-height: 0; height: 100%; display: flex; flex-direction: column; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-stem { flex: 0 0 auto; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts { min-height: 0; margin-top: 3mm; display: flex; flex: 1 1 auto; flex-direction: column; gap: 4mm; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li { position: relative; min-height: 28mm; padding-bottom: 11mm; display: grid; flex: 1 1 0; grid-template-columns: 9mm minmax(0, 1fr); align-items: start; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="1"]) { flex-grow: 1; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="2"]) { flex-grow: 2; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="3"]) { flex-grow: 3; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="4"]) { flex-grow: 4; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="5"]) { flex-grow: 5; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li:has(.qb-marks-tag[data-igcse-marks="6"]) { flex-grow: 6; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li::after { content: ""; position: absolute; right: 0; bottom: 7mm; width: 48mm; border-bottom: .2mm dotted #777; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li > .qb-part-text { min-height: 0; height: 100%; display: flex; flex-direction: column; }
+.igcse-print-question.has-parts .igcse-question-copy .test-question-body > .qb-parts > li > .qb-part-text > .qb-marks-tag { position: absolute; right: 0; bottom: 0; margin: 0; color: #111; font-size: 8.5pt; font-style: normal; }
 .igcse-answer-space { position: relative; min-height: 24mm; flex: 1 1 24mm; }
 .igcse-answer-space > span { position: absolute; right: 0; bottom: 0; width: 42mm; border-bottom: .2mm dotted #aaa; }
 .igcse-question-total { margin: 3mm 0 0; padding-bottom: 2mm; border-bottom: .25mm solid #aaa; font-size: 8.5pt; font-weight: 700; text-align: center; }

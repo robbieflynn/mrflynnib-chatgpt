@@ -324,6 +324,13 @@ function splitPrintableQuestionHtml(html: string) {
   return units.length ? units : [html];
 }
 
+function formatIgcseQuestionHtml(html: string) {
+  return html.replace(
+    /<span class="qb-marks-tag">\[\s*(\d+)\s+marks?\s*\]<\/span>/gi,
+    (_match, marks: string) => `<span class="qb-marks-tag" data-igcse-marks="${marks}">(${marks})</span>`,
+  );
+}
+
 function PageFooter({ label }: { label: string }) {
   return <footer className="test-paper-footer"><span>{label}</span></footer>;
 }
@@ -613,7 +620,7 @@ function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions 
   const [pages, setPages] = useState<string[][]>([[question.html]]);
 
   useEffect(() => {
-    const animationFrame = requestAnimationFrame(() => setPages([splitPrintableQuestionHtml(question.html)]));
+    const animationFrame = requestAnimationFrame(() => setPages([[question.html]]));
     return () => cancelAnimationFrame(animationFrame);
   }, [question.html]);
 
@@ -627,12 +634,19 @@ function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions 
         secondAnimationFrame = requestAnimationFrame(() => {
           for (let index = 0; index < pages.length; index += 1) {
             const page = pageRefs.current[index];
-            const frame = page?.querySelector<HTMLElement>(".igcse-page-frame");
-            const flowEnd = page?.querySelector<HTMLElement>(".igcse-page-flow-end");
-            if (!page || !frame || !flowEnd) continue;
-            const safeBottom = frame.getBoundingClientRect().bottom - 8;
-            const contentFits = flowEnd.getBoundingClientRect().bottom <= safeBottom && frame.scrollHeight <= frame.clientHeight + 2;
-            if (contentFits || pages[index].length <= 1) continue;
+            const questionCopy = page?.querySelector<HTMLElement>(".igcse-question-copy");
+            if (!page || !questionCopy) continue;
+            const contentFits = questionCopy.scrollHeight <= questionCopy.clientHeight + 2;
+            if (contentFits) continue;
+
+            const unsplitQuestion = pages.length === 1 && pages[0].length === 1 && pages[0][0] === question.html;
+            if (unsplitQuestion) {
+              const units = splitPrintableQuestionHtml(question.html);
+              if (units.length > 1) setPages([units]);
+              return;
+            }
+
+            if (pages[index].length <= 1) continue;
 
             setPages((current) => {
               const next = current.map((pageUnits) => [...pageUnits]);
@@ -661,17 +675,19 @@ function IgcseSingleQuestionPages({ question, first, paperTitle, totalQuestions 
       resizeObserver.disconnect();
       mutationObserver.disconnect();
     };
-  }, [pages]);
+  }, [pages, question.html]);
 
   return <Fragment>{pages.map((pageUnits, pageIndex) => {
     const finalPage = pageIndex === pages.length - 1;
+    const pageHtml = pageUnits.join("");
+    const hasParts = /\bqb-parts\b/i.test(pageHtml);
     return <section className="test-page igcse-question-page igcse-single-question-page" key={`${question.id}-igcse-page-${pageIndex}`} ref={(node) => { pageRefs.current[pageIndex] = node; }}>
       <div className="igcse-page-frame">
         {first && pageIndex === 0 ? <div className="igcse-paper-opening"><strong>Answer all {questionCountWords(totalQuestions)} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
         <div className="igcse-question-stack">
-          <article className="igcse-print-question">
-            <div className="igcse-question-copy"><strong className="igcse-question-number">{pageIndex === 0 ? question.number : ""}</strong><RenderedQuestion html={pageUnits.join("")} /></div>
-            {finalPage ? <><div className="igcse-answer-space" aria-hidden="true"><span /></div><p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p></> : <p className="igcse-question-continues">This question continues on the following page.</p>}
+          <article className={`igcse-print-question${hasParts ? " has-parts" : ""}`}>
+            <div className="igcse-question-copy"><strong className="igcse-question-number">{pageIndex === 0 ? question.number : ""}</strong><RenderedQuestion html={formatIgcseQuestionHtml(pageHtml)} /></div>
+            {finalPage ? <>{!hasParts ? <div className="igcse-answer-space" aria-hidden="true"><span /></div> : null}<p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p></> : <p className="igcse-question-continues">This question continues on the following page.</p>}
             <span className="igcse-page-flow-end" aria-hidden="true" />
           </article>
         </div>
@@ -686,11 +702,14 @@ function IgcseQuestionPage({ questions, first, paperTitle, totalQuestions }: { q
     <div className="igcse-page-frame">
       {first ? <div className="igcse-paper-opening"><strong>Answer all {questionCountWords(totalQuestions)} questions.</strong><strong>Write your answers in the spaces provided.</strong><strong>You must write down all the stages in your working.</strong></div> : null}
       <div className={`igcse-question-stack${questions.length > 1 ? " has-two-questions" : ""}`}>
-        {questions.map((question) => <article className="igcse-print-question" key={question.id}>
-          <div className="igcse-question-copy"><strong className="igcse-question-number">{question.number}</strong><RenderedQuestion html={question.html} /></div>
-          <div className="igcse-answer-space" aria-hidden="true"><span /></div>
-          <p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p>
-        </article>)}
+        {questions.map((question) => {
+          const hasParts = /\bqb-parts\b/i.test(question.html);
+          return <article className={`igcse-print-question${hasParts ? " has-parts" : ""}`} key={question.id}>
+            <div className="igcse-question-copy"><strong className="igcse-question-number">{question.number}</strong><RenderedQuestion html={formatIgcseQuestionHtml(question.html)} /></div>
+            {!hasParts ? <div className="igcse-answer-space" aria-hidden="true"><span /></div> : null}
+            <p className="igcse-question-total">(Total for Question {question.number} is {question.marks} {question.marks === 1 ? "mark" : "marks"})</p>
+          </article>;
+        })}
       </div>
     </div>
     <PageFooter label={paperTitle} />
