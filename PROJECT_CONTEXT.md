@@ -174,6 +174,8 @@ Rob supplied the English November 2020 Legacy HL source papers and matching mark
 
 On 14 October 2026, Rob approved a class-level **Class performance** history inside each teacher class. Keep student names fixed on the left and assignments in chronological columns, with completed auto-checked work shown as a percentage, unfinished work labelled clearly, manually reviewed work kept out of misleading percentage calculations, a per-student overall average, and a class average for each assignment. Each result should link to the existing detailed student submission and each assignment heading should link to the assignment overview.
 
+The administrator's teacher-account directory must remain practical as registrations grow. It provides immediate name-or-email search, filters for curriculum area, approval state and email-confirmation state, a visible result count, and a reset action. Registrations appear newest first by default, with optional oldest-first and alphabetical ordering.
+
 The downloadable question-level analysis workbook keeps the overall student percentage but does not show a redundant percentage beside every individual question on the printable **Student feedback** sheet. Show the question score and maximum mark, and retain the red, orange and green performance colouring.
 
 ### Internal Assessment (IA)

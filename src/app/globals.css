@@ -658,6 +658,15 @@ a.teacher-list-row:hover { background: var(--sky); }
 .teacher-approval-row small { color: var(--muted); }
 .teacher-approval-heading-actions { justify-items: end; }
 .teacher-approval-heading-actions .muted { font-size: .84rem; }
+.teacher-account-directory { display: grid; gap: .75rem; }
+.teacher-account-toolbar { padding: 1rem; display: grid; grid-template-columns: minmax(240px, 1.45fr) repeat(4, minmax(130px, .75fr)); gap: .75rem; align-items: end; border: 1px solid var(--line); border-radius: 1rem; background: white; box-shadow: 0 10px 30px rgba(11,21,48,.04); }
+.teacher-account-toolbar label { display: grid; gap: .38rem; }
+.teacher-account-toolbar label > span { color: var(--ink-2); font-size: .7rem; font-weight: 850; letter-spacing: .035em; }
+.teacher-account-toolbar input, .teacher-account-toolbar select { min-height: 42px; padding: .58rem .68rem; border-radius: .62rem; font-size: .78rem; }
+.teacher-account-results-bar { min-height: 2.2rem; padding: 0 .15rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: var(--muted); font-size: .82rem; }
+.teacher-account-results-bar strong { color: var(--ink); font-size: 1rem; }
+.teacher-account-results-bar button { padding: .3rem 0; border: 0; background: transparent; color: var(--teal-dark); font-size: .78rem; font-weight: 850; cursor: pointer; }
+.teacher-account-results-bar button:hover { text-decoration: underline; text-underline-offset: .2em; }
 .teacher-account-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 1.1rem; background: white; box-shadow: 0 10px 30px rgba(11,21,48,.045); }
 .teacher-account-table { width: 100%; min-width: 1160px; border-collapse: collapse; font-size: .82rem; }
 .teacher-account-table th { padding: .8rem .85rem; background: #edf2f4; color: var(--muted); font-size: .68rem; font-weight: 900; letter-spacing: .07em; text-align: left; text-transform: uppercase; }
@@ -672,6 +681,15 @@ a.teacher-list-row:hover { background: var(--sky); }
 .account-state-badge.is-waiting, .account-state-badge.is-pending { background: #fff0cb; color: #76530a; }
 .account-state-badge.is-rejected { background: #f8d9d6; color: #9b302b; }
 .teacher-account-actions { margin-top: .5rem; display: flex; gap: .65rem; }
+.teacher-account-table .teacher-account-empty { padding: 2rem; color: var(--muted); text-align: center; }
+@media (max-width: 1100px) {
+  .teacher-account-toolbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .teacher-account-search { grid-column: 1 / -1; }
+}
+@media (max-width: 650px) {
+  .teacher-account-toolbar { grid-template-columns: 1fr; }
+  .teacher-account-search { grid-column: auto; }
+}
 .text-button { padding: 0; border: 0; background: transparent; color: var(--teal-dark); font: inherit; font-size: .72rem; font-weight: 850; cursor: pointer; }
 .text-button:hover { text-decoration: underline; }
 .text-button.is-danger { color: #9b302b; }
