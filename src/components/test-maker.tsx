@@ -106,6 +106,14 @@ function questionPaper(value: string): SinglePaper {
   return /paper\s*2/i.test(value) ? "Paper 2" : "Paper 1";
 }
 
+function igcsePaperCountLabel(value: Paper) {
+  return value === "Paper 1 and Paper 2" ? "Two papers" : "One paper";
+}
+
+function questionSignature(items: TestQuestion[], includeAssignedPaper: boolean) {
+  return items.map((question) => `${question.id}:${question.section}${includeAssignedPaper ? `:${questionPaper(question.paper)}` : ""}`).join("|");
+}
+
 function orderQuestionsForDisplay(items: TestQuestion[], course: Course, combinedPapers: boolean) {
   return orderAssessmentQuestions(items, course, combinedPapers);
 }
@@ -507,10 +515,10 @@ function PaperPreviewPages({ course, duration, paper, paperTitle, questions, sch
   </div>;
 }
 
-function MarkSchemePreviewPages({ paper, paperTitle, questions }: { paper: SinglePaper; paperTitle: string; questions: NumberedQuestion[] }) {
+function MarkSchemePreviewPages({ paper, paperTitle, questions, showPaperLabel = true }: { paper: SinglePaper; paperTitle: string; questions: NumberedQuestion[]; showPaperLabel?: boolean }) {
   const paperClass = paper === "Paper 1" ? "paper-1" : "paper-2";
   return <div className={`test-markscheme-set test-markscheme-set-${paperClass}`}>
-    {questions.map((question, index) => <MarkSchemePage first={index === 0} key={`markscheme-${paperClass}-${question.id}`} paperTitle={`${paperTitle} · ${paper}`} question={question} />)}
+    {questions.map((question, index) => <MarkSchemePage first={index === 0} key={`markscheme-${paperClass}-${question.id}`} paperTitle={`${paperTitle}${showPaperLabel ? ` · ${paper}` : ""}`} question={question} />)}
   </div>;
 }
 
@@ -617,7 +625,7 @@ function IgcseQuestionPage({ questions, first, paperTitle, totalQuestions }: { q
   </section>;
 }
 
-function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school, testDate }: { duration: string; paper: SinglePaper; paperTitle: string; questions: NumberedQuestion[]; school: string; testDate: string }) {
+function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school, showPaperLabel, testDate }: { duration: string; paper: SinglePaper; paperTitle: string; questions: NumberedQuestion[]; school: string; showPaperLabel: boolean; testDate: string }) {
   const totalMarks = questions.reduce((total, question) => total + question.marks, 0);
   const instructions = candidateInstructions("IGCSE Higher", paper, totalMarks);
   const pages = igcseQuestionPages(questions);
@@ -625,7 +633,7 @@ function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school
     <section className="test-page test-cover-page igcse-cover-page">
       <div className="igcse-cover-panel">
         <h2>Mathematics</h2>
-        <strong>{paper}</strong>
+        {showPaperLabel ? <strong>{paper}</strong> : null}
         <p>Higher Tier</p>
         <h1>{paperTitle}</h1>
         {school ? <span>{school}</span> : null}
@@ -654,9 +662,11 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const pendingRestoreRef = useRef<SavedTestRecord | null>(null);
+  const paperAssignmentsRef = useRef<Record<string, SinglePaper>>({});
   const [frameHeight, setFrameHeight] = useState(640);
   const [course, setCourse] = useState<Course>(defaultCourse);
   const [paper, setPaper] = useState<Paper>("Paper 1");
+  const [igcseSelectionPaper, setIgcseSelectionPaper] = useState<SinglePaper>("Paper 1");
   const [title, setTitle] = useState(defaultTitle);
   const [school, setSchool] = useState("");
   const [durationPaper1, setDurationPaper1] = useState(igcse ? "120" : "90");
@@ -705,6 +715,10 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
   const activePaperSets = previewVariant === "shadow" ? shadowPaperSets : paperSets;
   const activeTitle = previewVariant === "shadow" ? `${title || defaultTitle} · Shadow paper` : title || defaultTitle;
 
+  useEffect(() => {
+    paperAssignmentsRef.current = Object.fromEntries(questions.map((question) => [question.id, questionPaper(question.paper)]));
+  }, [questions]);
+
   const source = useMemo(() => {
     const query = new URLSearchParams({
       course,
@@ -725,6 +739,17 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
       shadowQuestions: savedTest.payload.shadowQuestions,
     }, window.location.origin);
   }, []);
+
+  const sendSelectionTarget = useCallback(() => {
+    frameRef.current?.contentWindow?.postMessage({
+      type: "mrflynnib-test-target",
+      paper: igcse && combinedPapers ? igcseSelectionPaper : "",
+    }, window.location.origin);
+  }, [combinedPapers, igcse, igcseSelectionPaper]);
+
+  useEffect(() => {
+    sendSelectionTarget();
+  }, [sendSelectionTarget, source]);
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
@@ -753,6 +778,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
       }
       if (event.data?.type === "mrflynnib-test-ready") {
         sendPendingRestore();
+        sendSelectionTarget();
       }
       if (event.data?.type === "mrflynnib-test-selection" && Array.isArray(event.data.questions)) {
         const pending = pendingRestoreRef.current;
@@ -761,11 +787,19 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
           const expectedIds = pending.payload.questions.map((question) => question.id);
           if (!event.data.restoring && receivedIds.join("|") !== expectedIds.join("|")) return;
         }
+        const restoredPaperById = new Map((pending?.payload.questions ?? []).map((question) => [question.id, question.paper]));
         const next: TestQuestion[] = event.data.questions
           .filter((item: unknown): item is TestQuestion => Boolean(item && typeof item === "object" && "id" in item && "html" in item))
           .slice(0, 50)
-          .map((item: TestQuestion) => ({ ...item, section: item.section === "B" ? "B" : "A" }));
-        const nextSignature = orderQuestionsForDisplay(next, course, combinedPapers).map((question) => `${question.id}:${question.section}`).join("|");
+          .map((item: TestQuestion) => ({
+            ...item,
+            paper: igcse
+              ? restoredPaperById.get(item.id) ?? paperAssignmentsRef.current[item.id] ?? (combinedPapers ? igcseSelectionPaper : "Paper 1")
+              : item.paper,
+            section: item.section === "B" ? "B" : "A",
+          }));
+        paperAssignmentsRef.current = Object.fromEntries(next.map((question) => [question.id, questionPaper(question.paper)]));
+        const nextSignature = questionSignature(orderQuestionsForDisplay(next, course, combinedPapers), igcse && combinedPapers);
         if (shadowSourceSignature && nextSignature !== shadowSourceSignature) {
           setShadowQuestions([]);
           setShadowSourceSignature("");
@@ -783,19 +817,25 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
         const missing = Array.isArray(event.data.missing) ? event.data.missing.length : 0;
         if (!savedTest?.payload.shadowQuestions.length) pendingRestoreRef.current = null;
         if (savedTest) {
-          setShadowSourceSignature(savedTest.payload.questions.map((question) => `${question.id}:${question.section}`).join("|"));
+          setShadowSourceSignature(savedTest.payload.questions.map((question) => `${question.id}:${question.section}${igcse && combinedPapers ? `:${question.paper ?? "Paper 1"}` : ""}`).join("|"));
           setSaveMessage(missing
             ? `${savedTest.title} opened. ${missing} unavailable ${missing === 1 ? "question was" : "questions were"} left out.`
             : `${savedTest.title} opened and is ready to edit.`);
         }
       }
       if (event.data?.type === "mrflynnib-test-shadow-restored") {
+        const savedTest = pendingRestoreRef.current;
         pendingRestoreRef.current = null;
+        const restoredPaperById = new Map((savedTest?.payload.shadowQuestions ?? []).map((question) => [question.id, question.paper]));
         const next = Array.isArray(event.data.questions)
           ? event.data.questions
             .filter((item: unknown): item is TestQuestion => Boolean(item && typeof item === "object" && "id" in item && "html" in item))
             .slice(0, 50)
-            .map((item: TestQuestion) => ({ ...item, section: item.section === "B" ? "B" : "A" as Section }))
+            .map((item: TestQuestion) => ({
+              ...item,
+              paper: igcse ? restoredPaperById.get(item.id) ?? item.paper : item.paper,
+              section: item.section === "B" ? "B" : "A" as Section,
+            }))
           : [];
         setShadowQuestions(next);
         if (next.length) setShadowMessage(`Saved shadow paper restored with ${next.length} ${next.length === 1 ? "question" : "questions"}.`);
@@ -807,7 +847,11 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
           ? event.data.questions
             .filter((item: unknown): item is TestQuestion => Boolean(item && typeof item === "object" && "id" in item && "html" in item))
             .slice(0, 50)
-            .map((item: TestQuestion) => ({ ...item, section: item.section === "B" ? "B" : "A" as Section }))
+            .map((item: TestQuestion, index: number) => ({
+              ...item,
+              paper: igcse ? displayQuestions[index]?.paper ?? "Paper 1" : item.paper,
+              section: item.section === "B" ? "B" : "A" as Section,
+            }))
           : [];
         if (unmatched.length || next.length !== displayQuestions.length) {
           const names = unmatched.slice(0, 3).map((item: { title?: string }) => item.title || "a selected question").join(", ");
@@ -817,10 +861,10 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
         } else {
           const fallbackCount = Number(event.data.fallbacks) || 0;
           setShadowQuestions(next);
-          setShadowSourceSignature(displayQuestions.map((question) => `${question.id}:${question.section}`).join("|"));
+          setShadowSourceSignature(questionSignature(displayQuestions, igcse && combinedPapers));
           setShadowMessage(fallbackCount
             ? `Shadow paper ready: all ${next.length} questions were replaced. ${fallbackCount} ${fallbackCount === 1 ? "question uses" : "questions use"} the closest available alternative because no perfect match was available.`
-            : `Shadow paper ready: ${next.length} matched ${next.length === 1 ? "question" : "questions"}, with the same paper, section, difficulty and subtopic pattern.`);
+            : `Shadow paper ready: ${next.length} matched ${next.length === 1 ? "question" : "questions"}, with the same difficulty and subtopic pattern.`);
         }
       }
     };
@@ -839,7 +883,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [combinedPapers, course, displayQuestions, loadMoreIfNeeded, previewVariant, sendPendingRestore, shadowSourceSignature, source]);
+  }, [combinedPapers, course, displayQuestions, igcse, igcseSelectionPaper, loadMoreIfNeeded, previewVariant, sendPendingRestore, sendSelectionTarget, shadowSourceSignature, source]);
 
   useEffect(() => {
     if (!previewMode) return;
@@ -925,7 +969,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     setShadowMessage("Finding a different question for every position…");
     frameRef.current?.contentWindow?.postMessage({
       type: "mrflynnib-test-create-shadow",
-      sources: displayQuestions.map((question) => ({ id: question.id, section: question.section })),
+      sources: displayQuestions.map((question) => ({ id: question.id, section: question.section, paper: questionPaper(question.paper) })),
     }, window.location.origin);
   };
 
@@ -981,6 +1025,30 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     }
   };
 
+  const changeIgcsePaper = (id: string, assignedPaper: SinglePaper) => {
+    paperAssignmentsRef.current[id] = assignedPaper;
+    setQuestions((current) => current.map((question) => question.id === id ? { ...question, paper: assignedPaper } : question));
+    if (shadowQuestions.length) {
+      setShadowQuestions([]);
+      setShadowSourceSignature("");
+      setShadowMessage("The paper assignment changed, so the previous shadow test was cleared. Create it again when the test is ready.");
+    }
+  };
+
+  const changePaperFormat = (nextPaper: Paper) => {
+    const normalizedPaper = igcse && nextPaper === "Paper 2" ? "Paper 1" : nextPaper;
+    setPaper(normalizedPaper);
+    setPreviewMode(null);
+    setShadowQuestions([]);
+    setShadowSourceSignature("");
+    setShadowMessage("");
+    if (igcse && normalizedPaper !== "Paper 1 and Paper 2") {
+      setIgcseSelectionPaper("Paper 1");
+      setQuestions((current) => current.map((question) => ({ ...question, paper: "Paper 1" })));
+      paperAssignmentsRef.current = Object.fromEntries(questions.map((question) => [question.id, "Paper 1"]));
+    }
+  };
+
   const savedPayload = useCallback((): SavedTestPayload => ({
     version: 1,
     school,
@@ -989,8 +1057,8 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     testDate,
     includeMarkScheme,
     includeAnalysis,
-    questions: displayQuestions.map((question) => ({ id: question.id, section: question.section })),
-    shadowQuestions: shadowDisplayQuestions.map((question) => ({ id: question.id, section: question.section })),
+    questions: displayQuestions.map((question) => ({ id: question.id, section: question.section, paper: questionPaper(question.paper) })),
+    shadowQuestions: shadowDisplayQuestions.map((question) => ({ id: question.id, section: question.section, paper: questionPaper(question.paper) })),
   }), [displayQuestions, durationPaper1, durationPaper2, includeAnalysis, includeMarkScheme, school, shadowDisplayQuestions, testDate]);
 
   const writeSavedTest = useCallback(async ({ id, savedTitle, savedCourse, savedPaper, questionCount, savedTotalMarks, payload }: {
@@ -1052,7 +1120,8 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     setTestDate(savedTest.payload.testDate);
     setIncludeMarkScheme(savedTest.payload.includeMarkScheme);
     setIncludeAnalysis(savedTest.payload.includeAnalysis);
-    setPaper(savedTest.paper);
+    setPaper(igcse && savedTest.paper === "Paper 2" ? "Paper 1" : savedTest.paper);
+    setIgcseSelectionPaper("Paper 1");
     setQuestions([]);
     setShadowQuestions([]);
     setShadowMessage("");
@@ -1066,7 +1135,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
       window.requestAnimationFrame(sendPendingRestore);
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [course, sendPendingRestore]);
+  }, [course, igcse, sendPendingRestore]);
 
   const duplicateSavedTest = useCallback(async (savedTest: SavedTestRecord) => {
     if (saveBusy) return;
@@ -1122,6 +1191,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     setIncludeMarkScheme(true);
     setIncludeAnalysis(true);
     setPaper("Paper 1");
+    setIgcseSelectionPaper("Paper 1");
     setSaveError("");
     setSaveMessage("New test started.");
     clearQuestions();
@@ -1132,8 +1202,8 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
   const applicationsCourse = isApplicationsCourse(course);
   const setupSummary = igcse
     ? combinedPapers
-      ? "Paper 1 and Paper 2 are prepared as separate calculator papers with the same instructions, formula sheet and question layout."
-      : "IGCSE Paper 1 and Paper 2 follow the same calculator-paper format, with a formula sheet and answers written in the spaces provided."
+      ? "Build two separate calculator papers from the same complete question bank. You choose which paper receives every question."
+      : "Build one complete calculator paper, with a formula sheet and answers written in the spaces provided."
     : combinedPapers
     ? "Paper 1 and Paper 2 are prepared as separate papers. Their marks are combined in one question-level analysis workbook."
     : applicationsCourse
@@ -1141,8 +1211,8 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     : "AA uses Section A answer boxes and Section B booklet answers. Paper 1 is non-calculator; Paper 2 requires a graphic display calculator.";
   const paperHelp = igcse
     ? combinedPapers
-      ? "Selected questions are grouped into separate Paper 1 and Paper 2 papers using their source-paper classification."
-      : "Both IGCSE papers allow calculators and use the same instructions and question format."
+      ? "Choose Paper 1 or Paper 2 before adding questions. You can move any selected question later."
+      : "All selected questions form one paper."
     : combinedPapers
     ? "Selected questions are grouped using their original Paper 1 or Paper 2 classification."
     : applicationsCourse
@@ -1150,8 +1220,8 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
     : "Controls the cover and calculator instruction. It does not restrict which questions you can browse.";
   const questionPickerHelp = igcse
     ? combinedPapers
-      ? "Choose from the full IGCSE Higher bank. Questions are grouped and numbered separately for Paper 1 and Paper 2."
-      : "Use the paper, topic, subtopic and difficulty filters below. There are no Section A or Section B divisions."
+      ? "Choose a destination paper, then select from the full IGCSE Higher bank. Questions are numbered separately in each paper."
+      : "Use the topic, subtopic and difficulty filters below. There are no Section A or Section B divisions."
     : combinedPapers
     ? "Choose from the full course bank. Questions are grouped and numbered separately for Paper 1 and Paper 2."
     : applicationsCourse
@@ -1170,7 +1240,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
           </div>
           {savedTests.length ? <div className="saved-test-list">
             {savedTests.map((savedTest) => <article className={`saved-test-row${activeSavedTestId === savedTest.id ? " is-active" : ""}`} key={savedTest.id}>
-              <span className="saved-test-copy"><strong>{savedTest.title}</strong><span>{savedTest.course} · {savedTest.paper}</span><small>{savedTest.questionCount} {savedTest.questionCount === 1 ? "question" : "questions"} · {savedTest.totalMarks} marks · Updated {new Date(savedTest.updatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</small></span>
+              <span className="saved-test-copy"><strong>{savedTest.title}</strong><span>{savedTest.course} · {igcse ? igcsePaperCountLabel(savedTest.paper) : savedTest.paper}</span><small>{savedTest.questionCount} {savedTest.questionCount === 1 ? "question" : "questions"} · {savedTest.totalMarks} marks · Updated {new Date(savedTest.updatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</small></span>
               {activeSavedTestId === savedTest.id ? <span className="saved-test-current">Open</span> : null}
               <span className="saved-test-actions"><button className="button button-secondary button-small" disabled={saveBusy} type="button" onClick={() => openSavedTest(savedTest)}>Open</button><button className="button button-secondary button-small" disabled={saveBusy} type="button" onClick={() => duplicateSavedTest(savedTest)}>Duplicate</button><button className="saved-test-delete" disabled={saveBusy} type="button" onClick={() => deleteSavedTest(savedTest)}>Delete</button></span>
             </article>)}
@@ -1185,7 +1255,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
             <label className="field"><span>Test title</span><input value={title} maxLength={100} onChange={(event) => setTitle(event.target.value)} /></label>
             <label className="field"><span>School or class <small className="muted">(optional)</small></span><input value={school} maxLength={100} placeholder={igcse ? "Year 11 Mathematics" : "Year 13 Mathematics"} onChange={(event) => setSchool(event.target.value)} /></label>
             {igcse ? <label className="field"><span>Course</span><input readOnly value="IGCSE Mathematics Higher" /></label> : <label className="field"><span>Course</span><select value={course} onChange={(event) => resetForCourse(event.target.value as Course)}><option>AA HL</option><option>AA SL</option><option>AI HL</option><option>AI SL</option></select></label>}
-            <label className="field"><span>Test paper format</span><select value={paper} onChange={(event) => setPaper(event.target.value as Paper)}><option>Paper 1</option><option>Paper 2</option><option>Paper 1 and Paper 2</option></select><small className="muted">{paperHelp}</small></label>
+            <label className="field"><span>{igcse ? "Number of papers" : "Test paper format"}</span><select value={paper} onChange={(event) => changePaperFormat(event.target.value as Paper)}>{igcse ? <><option value="Paper 1">One paper</option><option value="Paper 1 and Paper 2">Two papers</option></> : <><option>Paper 1</option><option>Paper 2</option><option>Paper 1 and Paper 2</option></>}</select><small className="muted">{paperHelp}</small></label>
             {combinedPapers ? <>
               <label className="field"><span>Paper 1 time in minutes</span><input inputMode="numeric" value={durationPaper1} onChange={(event) => setDurationPaper1(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>
               <label className="field"><span>Paper 2 time in minutes</span><input inputMode="numeric" value={durationPaper2} onChange={(event) => setDurationPaper2(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>
@@ -1224,23 +1294,38 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
                 {includeAnalysis ? <button className="button button-secondary button-small" disabled={analysisDownloading} type="button" onClick={() => downloadAnalysisWorkbook("shadow")}>{analysisDownloading ? "Preparing analysis…" : "Download shadow analysis"}</button> : null}
               </div>
             </section> : null}
+            {igcse && combinedPapers ? <section className="igcse-paper-destination" aria-labelledby="igcse-paper-destination-heading">
+              <div><p className="eyebrow">Add questions to</p><h3 id="igcse-paper-destination-heading">Choose the destination paper</h3><p>Select a paper here, then choose questions from the bank below. Every selected question can also be moved afterwards.</p></div>
+              <div className="igcse-paper-destination-options" role="group" aria-label="Destination for newly selected questions">
+                {(["Paper 1", "Paper 2"] as const).map((paperName) => {
+                  const count = questions.filter((question) => questionPaper(question.paper) === paperName).length;
+                  return <button aria-pressed={igcseSelectionPaper === paperName} className={igcseSelectionPaper === paperName ? "is-active" : ""} key={paperName} onClick={() => setIgcseSelectionPaper(paperName)} type="button"><strong>{paperName}</strong><span>{count} {count === 1 ? "question" : "questions"}</span></button>;
+                })}
+              </div>
+            </section> : null}
             <section className="assignment-selection-review" aria-labelledby="selected-test-questions">
               <div className="assignment-selection-heading"><div><p className="eyebrow">Test contents</p><h3 id="selected-test-questions">Selected questions</h3></div><span>{questions.length} of 50</span></div>
-              {questions.length ? <ol className={`test-selection-list${!usesSections ? " test-selection-list-no-sections" : ""}`}>
+              {questions.length ? <ol className={`test-selection-list${!usesSections ? " test-selection-list-no-sections" : ""}${igcse && combinedPapers ? " test-selection-list-paper-assignment" : ""}`}>
                 {displayQuestions.map((question, index) => {
                   const numberedQuestion = numberedQuestions.find((candidate) => candidate.id === question.id);
                   const previous = displayQuestions[index - 1];
                   const next = displayQuestions[index + 1];
-                  return <li key={question.id}>
-                  <span className="assignment-selection-number">{combinedPapers ? `${questionPaper(question.paper) === "Paper 1" ? "P1" : "P2"} ${numberedQuestion?.number ?? index + 1}` : index + 1}</span>
-                  <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[combinedPapers ? questionPaper(question.paper) : "", question.topic, question.subtopic, question.difficulty].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
-                  {usesSections ? <label className="test-section-select"><span>Section</span><select aria-label={`Section for ${question.title}`} value={question.section} onChange={(event) => changeSection(question.id, event.target.value as Section)}><option value="A">A</option><option value="B">B</option></select></label> : null}
-                  <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== questionPaper(question.paper)) || (usesSections && (previous?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(previous?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== questionPaper(question.paper)) || (usesSections && (next?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(next?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, 1)}>↓</button></span>
-                  <button className="test-remove-question" type="button" onClick={() => removeQuestion(question.id)}>Remove</button>
-                </li>;})}
+                  const assignedPaper = questionPaper(question.paper);
+                  const beginsPaperGroup = igcse && combinedPapers && (!previous || questionPaper(previous.paper) !== assignedPaper);
+                  return <Fragment key={question.id}>
+                    {beginsPaperGroup ? <li className="igcse-selected-paper-heading"><strong>{assignedPaper}</strong><span>{displayQuestions.filter((candidate) => questionPaper(candidate.paper) === assignedPaper).length} selected</span></li> : null}
+                    <li>
+                      <span className="assignment-selection-number">{combinedPapers ? `${assignedPaper === "Paper 1" ? "P1" : "P2"} ${numberedQuestion?.number ?? index + 1}` : index + 1}</span>
+                      <span className="assignment-selection-copy"><strong><SummaryMath>{question.title}</SummaryMath></strong><span>{[!igcse && combinedPapers ? assignedPaper : "", question.topic, question.subtopic, question.difficulty].filter(Boolean).join(" · ")}</span><small>{question.marks} {question.marks === 1 ? "mark" : "marks"}</small></span>
+                      {usesSections ? <label className="test-section-select"><span>Section</span><select aria-label={`Section for ${question.title}`} value={question.section} onChange={(event) => changeSection(question.id, event.target.value as Section)}><option value="A">A</option><option value="B">B</option></select></label> : null}
+                      {igcse && combinedPapers ? <label className="test-section-select test-paper-select"><span>Paper</span><select aria-label={`Paper for ${question.title}`} value={assignedPaper} onChange={(event) => changeIgcsePaper(question.id, event.target.value as SinglePaper)}><option>Paper 1</option><option>Paper 2</option></select></label> : null}
+                      <span className="test-order-buttons"><button type="button" aria-label={`Move ${question.title} up`} disabled={!previous || (combinedPapers && questionPaper(previous.paper) !== assignedPaper) || (usesSections && (previous?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(previous?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, -1)}>↑</button><button type="button" aria-label={`Move ${question.title} down`} disabled={!next || (combinedPapers && questionPaper(next.paper) !== assignedPaper) || (usesSections && (next?.section === "B") !== (question.section === "B")) || assessmentDifficultyRank(next?.difficulty) !== assessmentDifficultyRank(question.difficulty)} onClick={() => reorder(question.id, 1)}>↓</button></span>
+                      <button className="test-remove-question" type="button" onClick={() => removeQuestion(question.id)}>Remove</button>
+                    </li>
+                  </Fragment>;})}
               </ol> : <div className="assignment-selection-empty"><strong>No questions selected yet</strong><span>Choose questions from the bank below. They will appear here in test order.</span></div>}
             </section>
-            <iframe className="assignment-bank-frame" loading="eager" ref={frameRef} scrolling="no" src={source} style={{ height: `${frameHeight}px` }} title={`${course} ${paper} test question selector`} />
+            <iframe className="assignment-bank-frame" loading="eager" ref={frameRef} scrolling="no" src={source} style={{ height: `${frameHeight}px` }} title={igcse ? "IGCSE test question selector" : `${course} ${paper} test question selector`} />
           </div>
         </section>
 
@@ -1256,8 +1341,8 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
             </span></div>
           </div>
           <div className="test-preview-pages">
-            {previewMode === "test" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">{activePaperSets.filter((set) => set.questions.length).map((set) => igcse ? <IgcsePaperPreviewPages duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} testDate={testDate} /> : <PaperPreviewPages course={course as IBCourse} duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} testDate={testDate} />)}</div> : null}
-            {previewMode === "mark-scheme" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable mark scheme preview">{activePaperSets.filter((set) => set.questions.length).map((set) => <MarkSchemePreviewPages key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} />)}</div> : null}
+            {previewMode === "test" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable test preview">{activePaperSets.filter((set) => set.questions.length).map((set) => igcse ? <IgcsePaperPreviewPages duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} showPaperLabel={combinedPapers} testDate={testDate} /> : <PaperPreviewPages course={course as IBCourse} duration={set.duration} key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} school={school} testDate={testDate} />)}</div> : null}
+            {previewMode === "mark-scheme" ? <div className="test-print-root" data-print-target={printTarget} aria-label="Printable mark scheme preview">{activePaperSets.filter((set) => set.questions.length).map((set) => <MarkSchemePreviewPages key={set.paper} paper={set.paper} paperTitle={activeTitle} questions={set.questions} showPaperLabel={!igcse || combinedPapers} />)}</div> : null}
           </div>
         </div>
       </div> : null}

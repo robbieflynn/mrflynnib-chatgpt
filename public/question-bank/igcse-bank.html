@@ -415,7 +415,7 @@
   <div class="qb-header">
     <div class="qb-eyebrow"><i></i><span id="qb-brand-course">IB Mathematics</span></div>
     <div class="qb-brand">Question Bank</div>
-    <div class="qb-sub">Filter by topic, paper and difficulty.</div>
+    <div class="qb-sub">Filter by topic and difficulty.</div>
   </div>
 
   <div class="qb-gate" id="qb-gate" hidden>
@@ -426,11 +426,6 @@
 
   <div class="qb-controls" id="qb-controls" hidden>
     <input type="text" id="qb-search" placeholder="Search questions&hellip;">
-    <select id="qb-papernum">
-      <option value="">All papers</option>
-      <option value="Paper 1">Paper 1</option>
-      <option value="Paper 2">Paper 2</option>
-    </select>
     <select id="qb-section">
       <option value="">Short and long</option>
       <option value="A">Short questions</option>
@@ -176883,13 +176878,9 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     var bankLabel = (qBanks.indexOf('AA SL') >= 0 && qBanks.indexOf('AA HL') >= 0)
       ? 'AA SL &amp; HL'
       : (qBanks.length ? qBanks.join(' &middot; ') : 'not in either bank');
-    // Show the current Paper 1 / Paper 2 classification without exposing the
-    // source session or time-zone provenance stored with the question.
-    var qPaperNum = paperNumberOf(q);
-    // IGCSE does not need a paper filter, but students and teachers still need
-    // the Paper 1 / Paper 2 classification on each individual question.
-    var showPaperNum = qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2';
-    var courseTag = showPaperNum ? '<span class="qb-badge course">'+qPaperNum+'</span>' : '';
+    // Paper 1 and Paper 2 are equivalent in IGCSE, so source-paper metadata is
+    // deliberately never exposed as a question-bank category or card badge.
+    var courseTag = '';
     // Provenance notes ("on an AA SL paper but the content is AA HL only",
     // "extract: part (a) of a longer question") were removed on Rob's
     // instruction: they are bookkeeping for us, not information a student
@@ -177278,7 +177269,8 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     var diff = document.getElementById('qb-difficulty').value;
     var section = document.getElementById('qb-section').value;
     var course = state.course;
-    var paperNum = document.getElementById('qb-papernum').value;
+    var paperSelect = document.getElementById('qb-papernum');
+    var paperNum = paperSelect ? paperSelect.value : '';
     // "this topic only" is meaningless without a subtopic chosen, so the box is
     // hidden until one is, and ignored if it somehow stays ticked.
     var onlyWrap = document.getElementById('qb-only-wrap');
@@ -177430,7 +177422,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
   }
 
   document.getElementById('qb-topic').addEventListener('change', populateSubtopicOptions);
-  ['qb-search','qb-section','qb-topic','qb-subtopic','qb-difficulty','qb-papernum','qb-only'].forEach(function(id){
+  ['qb-search','qb-section','qb-topic','qb-subtopic','qb-difficulty','qb-only'].forEach(function(id){
     var _el=document.getElementById(id); if(_el){ _el.addEventListener('input', applyFilters); _el.addEventListener('change', applyFilters); }
   });
 
@@ -177523,7 +177515,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 <script src="/question-bank/whiteboard.js?v=17"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=17"></script>
 <script src="/question-bank/assignment-selector.js?v=27"></script>
-<script src="/question-bank/test-selector.js?v=10"></script>
+<script src="/question-bank/test-selector.js?v=11"></script>
 <script src="/question-bank/assignment-response.js?v=9"></script>
 </body>
 </html>

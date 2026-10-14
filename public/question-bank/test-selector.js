@@ -8,6 +8,12 @@
   var draftKey = draftId ? "mrflynnib-test-draft:" + draftId : "";
   var selected = [];
   var details = {};
+  var paperTarget = "";
+
+  function selectionCopy(isSelected) {
+    if (isSelected) return "Selected for test";
+    return paperTarget ? "Add to " + paperTarget : "Add to test";
+  }
 
   if (draftKey) {
     try {
@@ -180,7 +186,7 @@
       var checkbox = card.querySelector(".qb-test-select input[type=checkbox]");
       var copy = card.querySelector(".qb-test-select span");
       if (checkbox) checkbox.checked = false;
-      if (copy) copy.textContent = "Add to test";
+      if (copy) copy.textContent = selectionCopy(false);
       card.classList.remove("qb-test-selected");
     });
     publish();
@@ -194,7 +200,7 @@
       var checkbox = card.querySelector(".qb-test-select input[type=checkbox]");
       var copy = card.querySelector(".qb-test-select span");
       if (checkbox) checkbox.checked = false;
-      if (copy) copy.textContent = "Add to test";
+      if (copy) copy.textContent = selectionCopy(false);
       card.classList.remove("qb-test-selected");
     }
     publish();
@@ -213,6 +219,7 @@
         return;
       }
       summary.section = source && source.section === "B" ? "B" : "A";
+      if (source && (source.paper === "Paper 1" || source.paper === "Paper 2")) summary.paper = source.paper;
       questions.push(summary);
     });
     return { questions: questions, missing: missing };
@@ -231,7 +238,7 @@
       var checkbox = card.querySelector(".qb-test-select input[type=checkbox]");
       var copy = card.querySelector(".qb-test-select span");
       if (checkbox) checkbox.checked = isSelected;
-      if (copy) copy.textContent = isSelected ? "Selected for test" : "Add to test";
+      if (copy) copy.textContent = selectionCopy(isSelected);
       card.classList.toggle("qb-test-selected", isSelected);
     });
     publish(true);
@@ -248,6 +255,14 @@
     if (event.data && event.data.type === "mrflynnib-test-remove") removeSelection(String(event.data.id || ""));
     if (event.data && event.data.type === "mrflynnib-test-set-selection" && Array.isArray(event.data.questions)) setSelection(event.data.questions, event.data.shadowQuestions);
     if (event.data && event.data.type === "mrflynnib-test-create-shadow") createShadow(Array.isArray(event.data.sources) ? event.data.sources : []);
+    if (event.data && event.data.type === "mrflynnib-test-target") {
+      paperTarget = event.data.paper === "Paper 1" || event.data.paper === "Paper 2" ? event.data.paper : "";
+      document.querySelectorAll(".qb-card").forEach(function (card) {
+        var checkbox = card.querySelector(".qb-test-select input[type=checkbox]");
+        var copy = card.querySelector(".qb-test-select span");
+        if (copy) copy.textContent = selectionCopy(Boolean(checkbox && checkbox.checked));
+      });
+    }
     if (event.data && event.data.type === "mrflynnib-test-reorder" && Array.isArray(event.data.ids)) {
       var next = event.data.ids.map(String).filter(function (id) { return selected.indexOf(id) !== -1; });
       if (next.length === selected.length) { selected = next; publish(); }
@@ -277,7 +292,7 @@
     checkbox.checked = selected.indexOf(id) !== -1;
     checkbox.setAttribute("aria-label", "Add this question to the test");
     var copy = document.createElement("span");
-    copy.textContent = checkbox.checked ? "Selected for test" : "Add to test";
+    copy.textContent = selectionCopy(checkbox.checked);
     label.appendChild(checkbox);
     label.appendChild(copy);
     card.insertBefore(label, card.firstChild);
@@ -300,7 +315,7 @@
         selected = selected.filter(function (item) { return item !== id; });
         delete details[id];
       }
-      copy.textContent = checkbox.checked ? "Selected for test" : "Add to test";
+      copy.textContent = selectionCopy(checkbox.checked);
       card.classList.toggle("qb-test-selected", checkbox.checked);
       publish();
     });
