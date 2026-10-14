@@ -567,7 +567,7 @@ function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "p
     <path d="M80 36 181 18M80 108 181 90M181 18C195 38 198 66 181 90" />
     <path className="formula-dimension" d="M90 128 190 109" />
     <path className="formula-arrowhead" d="M90 128 98 121 100 131ZM190 109 182 116 180 106Z" />
-    <text className="formula-label-upright" x="34" y="78">cross</text><text className="formula-label-upright" x="31" y="94">section</text><text className="formula-label-upright" x="132" y="140">length</text>
+    <text className="formula-label-upright" x="39" y="73">cross</text><text className="formula-label-upright" x="36" y="89">section</text><text className="formula-label-upright" x="132" y="140">length</text>
   </svg>;
   if (kind === "cylinder") return <svg aria-hidden="true" className={className} viewBox="0 0 170 150">
     <ellipse cx="72" cy="32" rx="42" ry="15" />
