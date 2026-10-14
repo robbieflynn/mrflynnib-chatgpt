@@ -34,7 +34,7 @@ const courseNames: Record<Course, string> = {
   "AA SL": "Mathematics: analysis and approaches, standard level",
   "AI HL": "Mathematics: applications and interpretation, higher level",
   "AI SL": "Mathematics: applications and interpretation, standard level",
-  "IGCSE Higher": "Edexcel International GCSE Mathematics A, Higher Tier",
+  "IGCSE Higher": "Mathematics, Higher Tier",
 };
 
 function isApplicationsCourse(course: Course) {
@@ -520,18 +520,59 @@ function MarkSchemePreviewPages({ paper, paperTitle, questions }: { paper: Singl
 }
 
 function FormulaDiagram({ kind }: { kind: "trapezium" | "triangle" | "cone" | "prism" | "cylinder" | "sphere" }) {
-  if (kind === "trapezium") return <svg aria-hidden="true" viewBox="0 0 180 100"><path d="M42 82h104l-24-58H66z" /><path d="M66 15v18M122 15v18M60 20h68M34 91h120" /><text x="91" y="16">a</text><text x="91" y="99">b</text><text x="77" y="60">h</text></svg>;
-  if (kind === "triangle") return <svg aria-hidden="true" viewBox="0 0 180 105"><path d="M24 88 90 15l66 73z" /><text x="86" y="13">C</text><text x="11" y="99">A</text><text x="158" y="99">B</text><text x="49" y="48">b</text><text x="130" y="48">a</text><text x="87" y="102">c</text></svg>;
-  if (kind === "cone") return <svg aria-hidden="true" viewBox="0 0 150 120"><ellipse cx="76" cy="98" rx="43" ry="14" /><path d="M33 98 76 14l43 84M76 14v84" strokeDasharray="5 4" /><text x="82" y="58">h</text><text x="49" y="57">l</text><text x="96" y="94">r</text></svg>;
-  if (kind === "prism") return <svg aria-hidden="true" viewBox="0 0 170 105"><path d="M20 75 55 31l45 8 45-15v55l-45 12-45-8zM100 39v52M20 75l80 16" /><text x="53" y="61">cross</text><text x="50" y="73">section</text><text x="105" y="101">length</text></svg>;
-  if (kind === "cylinder") return <svg aria-hidden="true" viewBox="0 0 140 115"><ellipse cx="67" cy="24" rx="37" ry="13" /><path d="M30 24v66c0 17 74 17 74 0V24M67 24h37" /><text x="83" y="20">r</text><text x="110" y="61">h</text></svg>;
-  return <svg aria-hidden="true" viewBox="0 0 130 115"><circle cx="62" cy="58" r="45" /><ellipse cx="62" cy="58" rx="45" ry="15" strokeDasharray="5 4" /><path d="M62 58 97 33" /><text x="80" y="40">r</text></svg>;
+  const className = `igcse-formula-diagram igcse-formula-diagram-${kind}`;
+  if (kind === "trapezium") return <svg aria-hidden="true" className={className} viewBox="0 0 180 120">
+    <path d="M45 88h90l-20-51H65z" />
+    <path className="formula-dimension" d="M65 31V18m50 13V18M65 23h50M45 94v14m90-14v14M45 103h90M91 42v41" />
+    <path className="formula-right-angle" d="M91 88V78h10" />
+    <path className="formula-arrowhead" d="m65 23 8-4v8zm50 0-8-4v8zM45 103l8-4v8zm90 0-8-4v8zM91 42l-4 8h8zm0 41-4-8h8z" />
+    <text x="87" y="16">a</text><text x="87" y="118">b</text><text x="98" y="67">h</text>
+  </svg>;
+  if (kind === "triangle") return <svg aria-hidden="true" className={className} viewBox="0 0 180 120">
+    <path d="M28 98 90 22l62 76z" />
+    <text x="86" y="17">C</text><text x="14" y="108">A</text><text x="155" y="108">B</text><text x="48" y="58">b</text><text x="130" y="58">a</text><text x="87" y="115">c</text>
+  </svg>;
+  if (kind === "cone") return <svg aria-hidden="true" className={className} viewBox="0 0 190 150">
+    <path d="M42 118 96 22l54 96" />
+    <path d="M42 118a54 16 0 0 0 108 0" />
+    <path className="formula-hidden" d="M42 118a54 16 0 0 1 108 0" />
+    <path className="formula-dimension" d="M31 118 84 24M96 118h53M164 22v96" />
+    <path className="formula-arrowhead" d="m31 118 3-9 7 4zm53-94-3 9-7-4zm65 94-9-4v8zm15-96-4 9h8zm0 96-4-9h8z" />
+    <circle className="formula-point" cx="96" cy="118" r="2" />
+    <text x="48" y="73">l</text><text x="118" y="113">r</text><text x="170" y="74">h</text>
+  </svg>;
+  if (kind === "prism") return <svg aria-hidden="true" className={className} viewBox="0 0 220 145">
+    <path className="formula-cross-section" d="M24 91q34-53 72-35 11 28 5 63-45 2-77-28z" />
+    <path d="m96 56 88-20q18 26 11 64l-94 19M24 91l88-21m-11 49 94-19" />
+    <path className="formula-hidden" d="m112 70q10 24 7 46" />
+    <path className="formula-dimension" d="m105 132 91-22" />
+    <path className="formula-arrowhead" d="m105 132 7-7 2 8zm91-22-7 7-2-8z" />
+    <text className="formula-label-upright" x="45" y="88">cross</text><text className="formula-label-upright" x="42" y="102">section</text><text className="formula-label-upright" x="142" y="140">length</text>
+  </svg>;
+  if (kind === "cylinder") return <svg aria-hidden="true" className={className} viewBox="0 0 170 150">
+    <ellipse cx="72" cy="32" rx="42" ry="15" />
+    <path d="M30 32v82m84-82v82M30 114a42 15 0 0 0 84 0" />
+    <path className="formula-hidden" d="M30 114a42 15 0 0 1 84 0" />
+    <path className="formula-dimension" d="M72 32h42M132 32v82" />
+    <path className="formula-arrowhead" d="m114 32-9-4v8zm18 0-4 9h8zm0 82-4-9h8z" />
+    <circle className="formula-point" cx="72" cy="32" r="2" />
+    <text x="92" y="27">r</text><text x="140" y="76">h</text>
+  </svg>;
+  return <svg aria-hidden="true" className={className} viewBox="0 0 170 150">
+    <circle cx="82" cy="76" r="55" />
+    <path d="M27 76a55 18 0 0 0 110 0" />
+    <path className="formula-hidden" d="M27 76a55 18 0 0 1 110 0" />
+    <path className="formula-dimension" d="m82 76 39-39" />
+    <path className="formula-arrowhead" d="m121 37-9 3 6 6z" />
+    <circle className="formula-point" cx="82" cy="76" r="2" />
+    <text x="101" y="54">r</text>
+  </svg>;
 }
 
 function IgcseFormulaSheet({ paperTitle }: { paperTitle: string }) {
   return <section className="test-page igcse-formula-page">
     <div className="igcse-page-frame">
-      <header className="igcse-formula-title"><h2>International GCSE Mathematics</h2><p>Formulae sheet - Higher Tier</p></header>
+      <header className="igcse-formula-title"><h2>Formulae sheet</h2><p>Higher Tier</p></header>
       <div className="igcse-formula-grid">
         <article><h3>Arithmetic series</h3><p>Sum to <i>n</i> terms, <SummaryMath>{"\\(S_n=\\frac{n}{2}[2a+(n-1)d]\\)"}</SummaryMath></p></article>
         <article><h3>Area of trapezium</h3><p><SummaryMath>{"\\(A=\\frac{1}{2}(a+b)h\\)"}</SummaryMath></p><FormulaDiagram kind="trapezium" /></article>
@@ -588,8 +629,7 @@ function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school
   return <div className={`test-paper-set test-paper-set-${paper === "Paper 1" ? "paper-1" : "paper-2"} igcse-paper-set`}>
     <section className="test-page test-cover-page igcse-cover-page">
       <div className="igcse-cover-panel">
-        <p className="igcse-cover-kicker">Edexcel International GCSE</p>
-        <h2>Mathematics A</h2>
+        <h2>Mathematics</h2>
         <strong>{paper}</strong>
         <p>Higher Tier</p>
         <h1>{paperTitle}</h1>
@@ -603,7 +643,7 @@ function IgcsePaperPreviewPages({ duration, paper, paperTitle, questions, school
       <p className="test-time-allowed">Time: {duration || "120"} minutes</p>
       <section className="igcse-equipment"><strong>You must have:</strong><span>Ruler graduated in centimetres and millimetres, protractor, compasses, pen, HB pencil, eraser and calculator. Tracing paper may be used.</span></section>
       <section className="test-instructions igcse-instructions"><h3>Instructions</h3><ul>{instructions.slice(0, 7).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul><h3>Information</h3><ul>{instructions.slice(7, 9).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul><h3>Advice</h3><ul>{instructions.slice(9).map((instruction) => <li key={instruction}>{instruction}</li>)}</ul></section>
-      <PageFooter label="Teacher-created Edexcel IGCSE Mathematics practice paper" />
+      <PageFooter label="Teacher-created practice paper" />
     </section>
     <IgcseFormulaSheet paperTitle={paperTitle} />
     {pages.map((pageQuestions, index) => <IgcseQuestionPage first={index === 0} key={`igcse-page-${index}`} paperTitle={paperTitle} questions={pageQuestions} totalQuestions={questions.length} />)}
@@ -1147,8 +1187,8 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
           </div>
           <div className="test-maker-form form-grid">
             <label className="field"><span>Test title</span><input value={title} maxLength={100} onChange={(event) => setTitle(event.target.value)} /></label>
-            <label className="field"><span>School or class <small className="muted">(optional)</small></span><input value={school} maxLength={100} placeholder="Year 13 Mathematics" onChange={(event) => setSchool(event.target.value)} /></label>
-            {igcse ? <label className="field"><span>Course</span><input readOnly value="Edexcel IGCSE Mathematics Higher" /></label> : <label className="field"><span>Course</span><select value={course} onChange={(event) => resetForCourse(event.target.value as Course)}><option>AA HL</option><option>AA SL</option><option>AI HL</option><option>AI SL</option></select></label>}
+            <label className="field"><span>School or class <small className="muted">(optional)</small></span><input value={school} maxLength={100} placeholder={igcse ? "Year 11 Mathematics" : "Year 13 Mathematics"} onChange={(event) => setSchool(event.target.value)} /></label>
+            {igcse ? <label className="field"><span>Course</span><input readOnly value="IGCSE Mathematics Higher" /></label> : <label className="field"><span>Course</span><select value={course} onChange={(event) => resetForCourse(event.target.value as Course)}><option>AA HL</option><option>AA SL</option><option>AI HL</option><option>AI SL</option></select></label>}
             <label className="field"><span>Test paper format</span><select value={paper} onChange={(event) => setPaper(event.target.value as Paper)}><option>Paper 1</option><option>Paper 2</option><option>Paper 1 and Paper 2</option></select><small className="muted">{paperHelp}</small></label>
             {combinedPapers ? <>
               <label className="field"><span>Paper 1 time in minutes</span><input inputMode="numeric" value={durationPaper1} onChange={(event) => setDurationPaper1(event.target.value.replace(/[^0-9]/g, "").slice(0, 3))} /></label>
