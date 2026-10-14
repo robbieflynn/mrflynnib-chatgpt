@@ -100,7 +100,8 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
     setPending(false);
     if (signInError) {
       if (signInError.code === "email_not_confirmed") {
-        return setError("Your email address has not been confirmed yet. Request a new confirmation email below.");
+        setMode("resend");
+        return setError("Your email address has not been confirmed yet. Send a new confirmation email below.");
       }
       return setError("That email address and password did not match.");
     }
