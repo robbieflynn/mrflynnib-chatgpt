@@ -21,7 +21,7 @@ export async function requestTeacherAccess() {
 
   const { data: status, error } = await supabase.rpc("request_teacher_access");
   if (error || status !== "pending") {
-    redirect(`${accountPath}?error=${encodeURIComponent("Your teacher access request could not be sent. Please try again.")}`);
+    redirect(`${accountPath}?teacher=approval-required&error=${encodeURIComponent("Your teacher access request could not be sent. Please try again.")}`);
   }
 
   if (user.email) {
