@@ -86,6 +86,46 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     redirect(`${destination}error=${encodeURIComponent("IB and IGCSE use separate accounts. Sign out before entering the other account area.")}`);
   }
   if (profile?.role === "teacher" || profile?.role === "admin") redirect(isIgcse ? "/igcse/teacher" : "/teacher");
+  const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
+  const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
+  const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
+  const teacherRequested = pageSearchParams.teacher === "requested";
+
+  if (teacherApprovalRequired || teacherRequested) {
+    const requestPending = profile?.teacher_status === "pending" || teacherRequested;
+    const studentDashboardHref = isIgcse ? "/igcse/account" : "/account";
+
+    return (
+      <>
+        <PageHero
+          eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"}
+          title={requestPending ? "Teacher access requested" : "Looking for the teacher dashboard?"}
+          intro={requestPending
+            ? "Your request is waiting for approval. You can continue using your student dashboard while it is reviewed."
+            : "Your account is currently set up as a student. You can request teacher access using this same account."}
+        />
+        <section className="section-tight">
+          <Container className="narrow">
+            <div className="account-card teacher-access-gate stack-lg">
+              {accountError ? <p className="form-message form-error">{accountError}</p> : null}
+              <div className="stack-sm">
+                <h2>{requestPending ? "What happens next?" : "Keep everything in one account"}</h2>
+                <p>{requestPending
+                  ? "Once an administrator approves the request, this account will open the teacher dashboard."
+                  : "Your question-bank progress and saved work will remain in place. Your account will stay as a student account until an administrator approves the request."}</p>
+              </div>
+              {requestPending ? <p className="teacher-pending-note"><strong>Approval pending</strong><span>No further action is needed. You can return here to check the status.</span></p> : null}
+              <div className="teacher-access-gate-actions">
+                {!requestPending ? <form action={requestTeacherAccess}><button className="button" type="submit">Request teacher access</button></form> : null}
+                <Link className="button button-secondary" href={studentDashboardHref}>Return to student dashboard</Link>
+              </div>
+            </div>
+          </Container>
+        </section>
+      </>
+    );
+  }
+
   const selectedCourse = getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "") ?? questionBankCourses[0];
   const courseProgress = isIgcse ? progressManifest.igcse : progressManifest.courses[selectedCourse.code];
   const bank = isIgcse ? "igcse" : "ib";
@@ -177,12 +217,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       ? `/igcse/question-bank?topic=${encodeURIComponent(firstIncompleteTopic.name)}&subtopic=${encodeURIComponent(firstIncompleteSubtopic.name)}`
       : `/question-bank/${selectedCourse.slug}?topic=${encodeURIComponent(firstIncompleteTopic.name)}&subtopic=${encodeURIComponent(firstIncompleteSubtopic.name)}`
     : questionBankHref;
-  const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
-  const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
-  const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
-  const teacherRequested = pageSearchParams.teacher === "requested";
-  const canRequestTeacherAccess = profile?.role === "student" && profile.teacher_status !== "pending";
-
   return (
     <>
       <section className={`dashboard-hero student-dashboard-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
@@ -203,13 +237,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <Container className="stack-xl">
           {accountError ? <p className="form-message form-error">{accountError}</p> : null}
           {accountSuccess ? <p className="form-message form-success">{accountSuccess}</p> : null}
-          {teacherRequested ? <p className="form-message form-success">Your teacher account request has been sent for approval. You can use the student question bank while you wait.</p> : null}
-          {teacherApprovalRequired ? <p className="form-message form-error">{profile?.teacher_status === "pending" ? "Your teacher account is waiting for approval." : "Teacher access must be approved before this account can create classes and assignments."}</p> : null}
-          {profile?.teacher_status === "pending" && !teacherRequested ? <p className="teacher-pending-note"><strong>Teacher approval pending</strong><span>You will be able to create classes and assignments once your request is approved.</span></p> : null}
-          {canRequestTeacherAccess ? <section className="teacher-access-request">
-            <div><strong>Are you a teacher?</strong><span>Request teacher access using this account. Your progress and saved work will remain in place while the request is reviewed.</span></div>
-            <form action={requestTeacherAccess}><button className="button button-secondary button-small" type="submit">Request teacher access</button></form>
-          </section> : null}
           <div className="student-next-grid">
             <section className="student-next-card">
               <div className="student-next-card-copy">
