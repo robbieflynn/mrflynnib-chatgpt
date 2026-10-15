@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
 import progressManifest from "@/data/question-bank-progress.json";
-import { joinClass } from "./actions";
+import { joinClass, requestTeacherAccess } from "./actions";
 
 export const metadata: Metadata = {
   title: "Mr Flynn IB account",
@@ -181,6 +181,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
   const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
   const teacherRequested = pageSearchParams.teacher === "requested";
+  const canRequestTeacherAccess = profile?.role === "student" && profile.teacher_status !== "pending";
 
   return (
     <>
@@ -205,6 +206,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           {teacherRequested ? <p className="form-message form-success">Your teacher account request has been sent for approval. You can use the student question bank while you wait.</p> : null}
           {teacherApprovalRequired ? <p className="form-message form-error">{profile?.teacher_status === "pending" ? "Your teacher account is waiting for approval." : "Teacher access must be approved before this account can create classes and assignments."}</p> : null}
           {profile?.teacher_status === "pending" && !teacherRequested ? <p className="teacher-pending-note"><strong>Teacher approval pending</strong><span>You will be able to create classes and assignments once your request is approved.</span></p> : null}
+          {canRequestTeacherAccess ? <section className="teacher-access-request">
+            <div><strong>Are you a teacher?</strong><span>Request teacher access using this account. Your progress and saved work will remain in place while the request is reviewed.</span></div>
+            <form action={requestTeacherAccess}><button className="button button-secondary button-small" type="submit">Request teacher access</button></form>
+          </section> : null}
           <div className="student-next-grid">
             <section className="student-next-card">
               <div className="student-next-card-copy">
