@@ -650,6 +650,10 @@ a.teacher-list-row:hover { background: var(--sky); }
 .status-pill { display: inline-flex; width: fit-content; padding: .3rem .55rem; border-radius: 999px; background: #eef1f2; color: var(--muted); font-size: .75rem; font-weight: 850; }
 .status-pill.is-submitted { background: #e5f6ef; color: var(--success); }
 .teacher-pending-note { padding: 1rem 1.2rem; display: grid; gap: .1rem; border: 1px solid #dfc27d; border-radius: .9rem; background: #fff8e7; color: var(--ink-2); }
+.teacher-access-request { padding: 1rem 1.15rem; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; border: 1px solid #cbdde8; border-radius: .95rem; background: #f5faff; color: var(--ink-2); }
+.teacher-access-request > div { display: grid; gap: .12rem; }
+.teacher-access-request span { color: var(--muted); font-size: .8rem; line-height: 1.45; }
+.teacher-access-request form { flex: 0 0 auto; }
 .teacher-approval-panel { padding: 1.25rem 1.35rem; gap: 1rem; border: 1px solid #dce2e5; border-radius: 1rem; background: white; box-shadow: 0 6px 20px rgba(11,21,48,.035); }
 .teacher-approval-list { display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: .85rem; background: white; }
 .teacher-approval-row { min-height: 82px; padding: .9rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid #e7ebed; }
@@ -687,6 +691,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-account-search { grid-column: 1 / -1; }
 }
 @media (max-width: 650px) {
+  .teacher-access-request { align-items: stretch; flex-direction: column; }
+  .teacher-access-request .button { width: 100%; }
   .teacher-account-toolbar { grid-template-columns: 1fr; }
   .teacher-account-search { grid-column: auto; }
 }
