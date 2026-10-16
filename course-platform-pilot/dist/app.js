@@ -1,5 +1,6 @@
 const library = window.MR_FLYNN_LIBRARY;
 const pastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
+const practiceLibrary = window.MR_FLYNN_PRACTICE;
 
 const courseDefinitions = [
   {
@@ -274,6 +275,7 @@ function renderLesson(lesson) {
   document.getElementById("metaTopic").textContent = `${lesson.topic} · ${library.topicNames[lesson.topic]}`;
   document.getElementById("metaDuration").textContent = formatDuration(lesson.seconds);
   document.getElementById("metaAccess").textContent = lesson.scope;
+  renderLessonPractice(lesson);
   const completeButton = document.getElementById("completeButton");
   completeButton.classList.toggle("is-complete", complete);
   completeButton.lastElementChild.textContent = complete ? "Completed" : "Mark complete";
@@ -285,6 +287,24 @@ function renderLesson(lesson) {
     document.getElementById("videoLoading").classList.remove("is-hidden");
     frame.src = nextSource;
     frame.onload = () => document.getElementById("videoLoading").classList.add("is-hidden");
+  }
+}
+
+function renderLessonPractice(lesson) {
+  const panel = document.getElementById("lessonPractice");
+  const practice = practiceLibrary?.lessons?.[lesson.id];
+  panel.hidden = !practice;
+  if (!practice) return;
+
+  const frame = document.getElementById("practiceFrame");
+  const url = new URL("/public/question-bank/ib-bank.html", window.location.href);
+  url.searchParams.set("embedded", "1");
+  url.searchParams.set("course", "AA SL");
+  url.searchParams.set("ids", practice.questionIds.join(","));
+  url.searchParams.set("solutions", "1");
+  if (frame.src !== url.href) {
+    document.getElementById("practiceFrameWrap").style.height = "660px";
+    frame.src = url.href;
   }
 }
 
@@ -312,12 +332,21 @@ function renderLessonList(query = "") {
     const heading = group !== previousGroup ? `<div class="lesson-group-label">${escapeHtml(group)}</div>` : "";
     previousGroup = group;
     const complete = state.completed.includes(lesson.id);
+    const practice = practiceLibrary?.lessons?.[lesson.id];
     return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""}" type="button" data-lesson-id="${lesson.id}">
       <span class="lesson-state">${complete ? "✓" : "▶"}</span>
-      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}</small></span>
+      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice" : ""}</small></span>
     </button>`;
   }).join("");
 }
+
+window.addEventListener("message", (event) => {
+  const frame = document.getElementById("practiceFrame");
+  if (event.origin !== window.location.origin || event.source !== frame?.contentWindow) return;
+  if (event.data?.type !== "mrflynnib-question-bank-height") return;
+  const height = Math.min(Math.max(Number(event.data.height) || 660, 420), 5200);
+  document.getElementById("practiceFrameWrap").style.height = `${height}px`;
+});
 
 function moveLesson(direction) {
   const currentIndex = currentCourse.lessons.findIndex((lesson) => lesson.id === currentLessonId);

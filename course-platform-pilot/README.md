@@ -10,6 +10,7 @@ This is an isolated, local-only prototype of the future student course experienc
 - 640 Teachable-aligned lesson placements across the four courses
 - Shared SL-and-HL foundations plus clearly labelled HL extensions
 - Real Bunny Stream playback, topic navigation and whole-course search
+- A 12-lesson AA shared-foundation practice pilot using exact existing question-bank records and mark schemes
 - A top-level past-paper solutions hub with course, session, paper and question navigation
 - 1,207 verified Teachable-to-Bunny past-paper solution placements across the four IB courses
 - Lesson completion and resume state stored only in the browser
@@ -22,6 +23,7 @@ This is an isolated, local-only prototype of the future student course experienc
 - Real authentication or password storage
 - Payments and access expiry
 - Secure signed Bunny playback tokens
+- Practice mappings beyond the initial 12-lesson pilot
 - Persistent server-side progress
 - Email or account administration
 

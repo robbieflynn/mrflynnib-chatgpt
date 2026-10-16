@@ -44,6 +44,17 @@
   }
   #qbank-root *{ box-sizing: border-box; }
 
+  html.qb-embedded body{ margin:0; background:transparent; }
+  html.qb-embedded #qbank-root{ border:0; border-radius:0; background:transparent; }
+  html.qb-embedded .qb-header,
+  html.qb-embedded .qb-controls,
+  html.qb-embedded .qb-gate{ display:none !important; }
+  html.qb-embedded .qb-list{ padding:14px; }
+  html.qb-embedded .qb-card{ box-shadow:none; }
+  html.qb-embedded .qb-card-source,
+  html.qb-embedded .qb-card-crosslist,
+  html.qb-embedded .qb-badge.course{ display:none; }
+
   /* The deep navy band from the site's own "free syllabus checklists" section,
      with the same eyebrow motif: a short blue rule, then small tracked caps.
      A first attempt made this a plain cream strip with one line of text in it;
@@ -408,7 +419,7 @@
   .qb-more-msg{ text-align:center; padding:14px 0 2px; font-size:12px; color:var(--ink-soft); }
 </style>
 
-<link rel="stylesheet" href="/question-bank/whiteboard.css?v=15">
+<link rel="stylesheet" href="whiteboard.css?v=15">
 <style>
 /* Keep long worked equations inside their panel on narrow screens. */
 .qb-question-workspace { grid-template-columns: minmax(0, 1fr); }
@@ -550441,7 +550452,8 @@ function diagramN11TZ0P2Q1grid(){
   var REQUESTED_COURSE = EMBED_PARAMS.get('course') || '';
   var REQUESTED_TOPIC = EMBED_PARAMS.get('topic') || '';
   var REQUESTED_SUBTOPIC = EMBED_PARAMS.get('subtopic') || '';
-  var REQUESTED_IDS = new Set((EMBED_PARAMS.get('ids') || '').split(',').filter(Boolean));
+  var REQUESTED_ID_LIST = (EMBED_PARAMS.get('ids') || '').split(',').filter(Boolean);
+  var REQUESTED_IDS = new Set(REQUESTED_ID_LIST);
   var SHOW_SOLUTIONS = EMBED_PARAMS.get('solutions') !== '0';
   var requestedFiltersApplied = false;
   function reportEmbeddedHeight(){
@@ -550456,6 +550468,7 @@ function diagramN11TZ0P2Q1grid(){
     }, window.location.origin);
   }
   if(IS_EMBEDDED){
+    document.documentElement.classList.add('qb-embedded');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     if(typeof ResizeObserver !== 'undefined'){
@@ -551255,6 +551268,7 @@ function diagramN11TZ0P2Q1grid(){
     var showOff = false, showProv = false, showHeld = false;
 
     var out = state.all.filter(function(item){
+      if(REQUESTED_IDS.size && !REQUESTED_IDS.has(String(item.id))) return false;
       // A direct ID list is an assignment snapshot. Keep those questions
       // available even if a later bank update moves them out of the public
       // course, off syllabus, or into a provisional holding state.
@@ -551317,13 +551331,17 @@ function diagramN11TZ0P2Q1grid(){
       if(!subtopic) return 0;
       return topicsOf(q).some(function(t){ return t.sub !== subtopic; }) ? 1 : 0;
     }
-    out.sort(function(a, b){
-      var d = rankOf(a) - rankOf(b);
-      if(d) return d;
-      d = nudgeOf(a) - nudgeOf(b);
-      if(d) return d;
-      return mixedOf(a) - mixedOf(b);
-    });
+    if(REQUESTED_ID_LIST.length){
+      out.sort(function(a, b){ return REQUESTED_ID_LIST.indexOf(String(a.id)) - REQUESTED_ID_LIST.indexOf(String(b.id)); });
+    } else {
+      out.sort(function(a, b){
+        var d = rankOf(a) - rankOf(b);
+        if(d) return d;
+        d = nudgeOf(a) - nudgeOf(b);
+        if(d) return d;
+        return mixedOf(a) - mixedOf(b);
+      });
+    }
 
     document.getElementById('qb-count-num').textContent = out.length;
     var list = document.getElementById('qb-list');
@@ -551484,7 +551502,7 @@ function diagramN11TZ0P2Q1grid(){
 </script>
 
 <script src="/question-bank/progress.js?v=2"></script>
-<script src="/question-bank/whiteboard.js?v=19"></script>
+<script src="whiteboard.js?v=19"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=17"></script>
 <script src="/question-bank/assignment-selector.js?v=27"></script>
 <script src="/question-bank/test-selector.js?v=11"></script>
