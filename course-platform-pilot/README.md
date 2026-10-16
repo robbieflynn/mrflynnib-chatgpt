@@ -6,7 +6,8 @@ This is an isolated, local-only prototype of the future student course experienc
 
 - AA SL, AA HL, AI SL and AI HL course experiences
 - All five syllabus topics for every course
-- 453 real Bunny Stream videos across 20 organised collections
+- 442 verified, student-facing Bunny Stream videos across 20 organised collections
+- 640 Teachable-aligned lesson placements across the four courses
 - Shared SL-and-HL foundations plus clearly labelled HL extensions
 - Real Bunny Stream playback, topic navigation and whole-course search
 - Lesson completion and resume state stored only in the browser
@@ -24,4 +25,4 @@ This is an isolated, local-only prototype of the future student course experienc
 
 Serve the repository root locally, then open `/course-platform-pilot/dist/`.
 
-`dist/library-data.js` is a static, non-secret snapshot of the Bunny library metadata used by the prototype. To refresh it after future uploads, copy the existing Bunny Stream API key in the Bunny dashboard and run `generate-library-data.mjs`; the key is read from the clipboard and is never written to the project.
+`dist/library-data.js` is a static, non-secret snapshot of the Bunny library metadata used by the prototype. Refresh it with `generate-library-data.mjs`, passing the verified Bunny snapshot and Teachable catalogue paths. The generator includes only ready AA/AI course collections, maps the exact Teachable lesson catalogue, removes exact duplicate records, prefers combined and Teachable-edit versions, and keeps deliberately suppressed videos out of the student preview. No Bunny API key is written to the project.

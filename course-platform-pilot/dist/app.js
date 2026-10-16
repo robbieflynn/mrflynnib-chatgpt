@@ -50,12 +50,11 @@ function collectionLessons(name, topic, scope) {
 
 function buildCourse(definition) {
   const topics = [1, 2, 3, 4, 5].map((number) => {
-    const sharedName = `${definition.subject} - Topic ${number} - SL + HL`;
-    const lessons = collectionLessons(sharedName, number, "SL + HL foundation");
-    if (definition.level === "HL") {
-      const extensionName = `${definition.subject} HL - Topic ${number} - HL only`;
-      lessons.push(...collectionLessons(extensionName, number, "HL extension"));
-    }
+    const mappedLessons = library.courses?.[definition.code];
+    const lessons = mappedLessons
+      ? mappedLessons.filter((lesson) => lesson.topic === number).map((lesson) => ({ ...lesson }))
+      : collectionLessons(`${definition.subject} - Topic ${number} - SL + HL`, number, "SL + HL foundation");
+    if (!mappedLessons && definition.level === "HL") lessons.push(...collectionLessons(`${definition.subject} HL - Topic ${number} - HL only`, number, "HL extension"));
     lessons.sort(naturalSort);
     return {
       number,
@@ -77,7 +76,7 @@ const courses = Object.fromEntries(courseDefinitions.map((definition) => {
   return [course.id, course];
 }));
 
-const storageKey = "mrflynnib-course-platform-v2";
+const storageKey = "mrflynnib-course-platform-v3";
 let state = loadState();
 let currentCourseId = courses[state.lastCourse] ? state.lastCourse : "aa-sl";
 let currentCourse = courses[currentCourseId];
@@ -92,16 +91,7 @@ function loadState() {
     const saved = JSON.parse(localStorage.getItem(storageKey));
     if (saved && Array.isArray(saved.completed)) return saved;
   } catch {}
-  try {
-    const earlier = JSON.parse(localStorage.getItem("mrflynnib-course-pilot-v1"));
-    return {
-      completed: Array.isArray(earlier?.completed) ? earlier.completed : [],
-      lastCourse: earlier?.course === "HL" ? "aa-hl" : "aa-sl",
-      lastLesson: earlier?.lastLesson || null,
-    };
-  } catch {
-    return { completed: [], lastCourse: "aa-sl", lastLesson: null };
-  }
+  return { completed: [], lastCourse: "aa-sl", lastLesson: null };
 }
 
 function saveState() {

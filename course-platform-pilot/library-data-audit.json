@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-10-16T04:32:17.339Z",
+  "source": "/Users/rob/Documents/Codex/mrflynnib-chatgpt/outputs/video-library-audit/master-storage/bunny-library-snapshot.json",
+  "expectedCatalogPath": "/Users/rob/Documents/Codex/mrflynnib-chatgpt/outputs/video-library-audit/expected-catalog.json",
+  "sourceVideos": 2164,
+  "readyCourseCandidates": 457,
+  "uniqueStudentFacingVideos": 442,
+  "courseLessonCounts": {
+    "AA SL": 113,
+    "AA HL": 217,
+    "AI SL": 84,
+    "AI HL": 226
+  },
+  "suppressedVideoIds": [
+    "797e99ea-089e-4f25-84fd-e42aab742b4c",
+    "7d82c17b-122c-4344-8640-28d5be087fa0",
+    "b9adda93-c11b-4d8a-b61a-20e86f21e04b"
+  ],
+  "duplicateCandidatesRemoved": 7,
+  "unmatchedCount": 0,
+  "reviewedMatchCount": 2,
+  "crossFamilyReuse": [
+    {
+      "course": "AA HL",
+      "expectedTitle": "3.13.1 Scalar product and angle between vectors",
+      "status": "verified",
+      "score": 1900,
+      "videoId": "352a19bb-f72d-42ef-a85e-c45467041f8e",
+      "candidateCollection": "AI HL - Topic 3 - HL only",
+      "candidateTitle": "3.13.1 Scalar product and angle between vectors.mov"
+    }
+  ],
+  "unmatched": [],
+  "reviewedMatches": [
+    {
+      "course": "AA HL",
+      "expectedTitle": "1.10.6 Binomial theorem extension",
+      "status": "reviewed_match",
+      "score": 553,
+      "videoId": "044da60a-f4cd-46c6-a71f-95b0087e3bb5",
+      "candidateCollection": "AA HL - Topic 1 - HL only",
+      "candidateTitle": "1.10.2 Binomial theroem extension.mov"
+    },
+    {
+      "course": "AA HL",
+      "expectedTitle": "1.15.9 Use of counter example",
+      "status": "reviewed_match",
+      "score": 387,
+      "videoId": "ed461415-103f-4b7c-a993-691440c18e53",
+      "candidateCollection": "AA HL - Topic 1 - HL only",
+      "candidateTitle": "1.15.8 Use of counterexample.mov"
+    }
+  ]
+}
