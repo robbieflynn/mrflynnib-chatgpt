@@ -8,6 +8,7 @@ const courseDefinitions = [
     code: "AA SL",
     name: "Analysis & Approaches SL",
     description: "The complete AA SL video course, organised across all five syllabus topics.",
+    image: "assets/course-aa-sl.png",
     accent: "blue",
   },
   {
@@ -17,6 +18,7 @@ const courseDefinitions = [
     code: "AA HL",
     name: "Analysis & Approaches HL",
     description: "The complete shared foundation plus every AA HL extension lesson.",
+    image: "assets/course-aa-hl.png",
     accent: "navy",
   },
   {
@@ -26,6 +28,7 @@ const courseDefinitions = [
     code: "AI SL",
     name: "Applications & Interpretation SL",
     description: "The complete AI SL video course, organised across all five syllabus topics.",
+    image: "assets/course-ai-sl.png",
     accent: "teal",
   },
   {
@@ -35,6 +38,7 @@ const courseDefinitions = [
     code: "AI HL",
     name: "Applications & Interpretation HL",
     description: "The complete shared foundation plus every AI HL extension lesson.",
+    image: "assets/course-ai-hl.png",
     accent: "indigo",
   },
 ];
@@ -169,9 +173,7 @@ function courseCard(course, large = false) {
   const label = course.level === "HL" ? "Foundation + HL extension" : "Complete SL course";
   return `<article class="course-card ${large ? "is-large" : ""} accent-${course.accent}">
     <div class="course-card-art">
-      <span class="course-card-code">${course.code}</span>
-      <span class="course-card-symbol">${course.subject === "AA" ? "∫" : "σ"}</span>
-      <span class="course-card-formula">${course.subject === "AA" ? "f′(x)" : "P(X ≤ x)"}</span>
+      <img src="${course.image}" alt="${course.code} course cover — Mr Flynn IB" loading="lazy" />
     </div>
     <div class="course-card-body">
       <div class="course-card-meta"><span>${label}</span><span>${course.lessons.length} lessons</span></div>
@@ -193,7 +195,9 @@ function renderDashboard() {
   const lastLesson = course.lessons.find((lesson) => lesson.id === state.lastLesson);
   const nextLesson = lastLesson || course.lessons.find((lesson) => !state.completed.includes(lesson.id)) || course.lessons[0];
   const percentage = percentFor(course);
-  document.getElementById("continueCourseCode").textContent = course.code;
+  const continueCourseImage = document.getElementById("continueCourseImage");
+  continueCourseImage.src = course.image;
+  continueCourseImage.alt = `${course.code} course cover — Mr Flynn IB`;
   document.getElementById("continueLessonTitle").textContent = `${nextLesson.code} ${nextLesson.title}`;
   document.getElementById("continueLessonMeta").textContent = `Topic ${nextLesson.topic}: ${library.topicNames[nextLesson.topic]} · ${formatDuration(nextLesson.seconds)}`;
   document.getElementById("continueProgressLabel").textContent = `${percentage}% complete`;
