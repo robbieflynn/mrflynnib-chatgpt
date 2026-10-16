@@ -672,6 +672,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .teacher-account-results-bar button:hover { text-decoration: underline; text-underline-offset: .2em; }
 .teacher-account-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 1.1rem; background: white; box-shadow: 0 10px 30px rgba(11,21,48,.045); }
 .teacher-account-table { width: 100%; min-width: 1160px; border-collapse: collapse; font-size: .82rem; }
+.student-account-table { min-width: 980px; }
 .teacher-account-table th { padding: .8rem .85rem; background: #edf2f4; color: var(--muted); font-size: .68rem; font-weight: 900; letter-spacing: .07em; text-align: left; text-transform: uppercase; }
 .teacher-account-table td { padding: .9rem .85rem; vertical-align: top; border-top: 1px solid #e4e9eb; color: var(--ink-2); }
 .teacher-account-table tbody tr:hover { background: #f8fbfc; }
