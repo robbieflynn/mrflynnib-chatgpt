@@ -299,7 +299,8 @@ function renderLessonPractice(lesson) {
   const frame = document.getElementById("practiceFrame");
   const url = new URL("/public/question-bank/ib-bank.html", window.location.href);
   url.searchParams.set("embedded", "1");
-  url.searchParams.set("course", "AA SL");
+  url.searchParams.set("practice", "1");
+  url.searchParams.set("course", practice.course);
   url.searchParams.set("ids", practice.questionIds.join(","));
   url.searchParams.set("solutions", "1");
   if (frame.src !== url.href) {

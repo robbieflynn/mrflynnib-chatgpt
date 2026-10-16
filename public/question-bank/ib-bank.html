@@ -54,6 +54,7 @@
   html.qb-embedded .qb-card-source,
   html.qb-embedded .qb-card-crosslist,
   html.qb-embedded .qb-badge.course{ display:none; }
+  html.qb-embedded.qb-practice .qb-badge.course{ display:inline-flex; }
 
   /* The deep navy band from the site's own "free syllabus checklists" section,
      with the same eyebrow motif: a short blue rule, then small tracked caps.
@@ -550449,6 +550450,7 @@ function diagramN11TZ0P2Q1grid(){
   // When hosted inside the main website, the parent page owns the scrollbar.
   var EMBED_PARAMS = new URLSearchParams(window.location.search);
   var IS_EMBEDDED = EMBED_PARAMS.get('embedded') === '1';
+  var IS_PRACTICE = EMBED_PARAMS.get('practice') === '1';
   var REQUESTED_COURSE = EMBED_PARAMS.get('course') || '';
   var REQUESTED_TOPIC = EMBED_PARAMS.get('topic') || '';
   var REQUESTED_SUBTOPIC = EMBED_PARAMS.get('subtopic') || '';
@@ -550469,6 +550471,7 @@ function diagramN11TZ0P2Q1grid(){
   }
   if(IS_EMBEDDED){
     document.documentElement.classList.add('qb-embedded');
+    if(IS_PRACTICE) document.documentElement.classList.add('qb-practice');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     if(typeof ResizeObserver !== 'undefined'){
@@ -550866,7 +550869,12 @@ function diagramN11TZ0P2Q1grid(){
     // source session or time-zone provenance stored with the question.
     var qPaperNum = paperNumberOf(q);
     var showPaperNum = HAS_PAPERS && (qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2');
-    var courseTag = showPaperNum ? '<span class="qb-badge course">'+qPaperNum+'</span>' : '';
+    var paperLabel = qPaperNum;
+    if(state.course.indexOf('AA ') === 0){
+      if(qPaperNum === 'Paper 1') paperLabel += ' &middot; Non-calculator';
+      if(qPaperNum === 'Paper 2') paperLabel += ' &middot; Calculator';
+    }
+    var courseTag = showPaperNum ? '<span class="qb-badge course">'+paperLabel+'</span>' : '';
     // Provenance notes ("on an AA SL paper but the content is AA HL only",
     // "extract: part (a) of a longer question") were removed on Rob's
     // instruction: they are bookkeeping for us, not information a student
