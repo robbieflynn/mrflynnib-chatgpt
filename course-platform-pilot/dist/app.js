@@ -1,4 +1,5 @@
 const library = window.MR_FLYNN_LIBRARY;
+const pastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
 
 const courseDefinitions = [
   {
@@ -88,6 +89,10 @@ let currentLessonId = currentCourse.lessons.some((lesson) => lesson.id === state
   ? state.lastLesson
   : currentCourse.lessons[0]?.id;
 let currentTopic = currentCourse.lessons.find((lesson) => lesson.id === currentLessonId)?.topic || 1;
+let currentPastPaperCourse = "AA HL";
+let currentPastPaperSession = "all";
+let currentPastPaperSetId = null;
+let currentPastPaperQuestionId = null;
 let toastTimer;
 
 function loadState() {
@@ -164,6 +169,7 @@ function setView(viewName) {
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (viewName === "dashboard") renderDashboard();
   if (viewName === "courses") renderCourseCards();
+  if (viewName === "pastPapers") renderPastPapers();
   if (viewName === "progress") renderProgress();
 }
 
@@ -355,6 +361,95 @@ function renderProgress() {
   }).join("");
 }
 
+function pastPaperSets() {
+  const sets = pastPaperLibrary?.courses?.[currentPastPaperCourse] || [];
+  return currentPastPaperSession === "all"
+    ? sets
+    : sets.filter((set) => set.session === currentPastPaperSession);
+}
+
+function renderPastPaperTabs() {
+  document.getElementById("pastPaperCourseTabs").innerHTML = courseDefinitions.map((definition) => {
+    const stats = pastPaperLibrary.stats[definition.code];
+    return `<button class="past-paper-course-tab ${definition.code === currentPastPaperCourse ? "is-active" : ""}" type="button" data-past-course="${definition.code}">
+      <span>${definition.code}</span>
+      <strong>${escapeHtml(definition.name)}</strong>
+      <small>${stats.papers} papers · ${stats.questions} solutions</small>
+    </button>`;
+  }).join("");
+}
+
+function renderPastPaperSessionFilter() {
+  const select = document.getElementById("pastPaperSessionFilter");
+  const sessions = [...new Set((pastPaperLibrary.courses[currentPastPaperCourse] || []).map((set) => set.session))];
+  select.innerHTML = `<option value="all">All sessions</option>${sessions.map((session) => `<option value="${escapeHtml(session)}">${escapeHtml(session)}</option>`).join("")}`;
+  if (!sessions.includes(currentPastPaperSession)) currentPastPaperSession = "all";
+  select.value = currentPastPaperSession;
+}
+
+function renderPastPaperCatalog() {
+  const sets = pastPaperSets();
+  if (!sets.some((set) => set.id === currentPastPaperSetId)) currentPastPaperSetId = sets[0]?.id || null;
+  document.getElementById("pastPaperCatalogTitle").textContent = `${currentPastPaperCourse} papers`;
+  document.getElementById("pastPaperResultCount").textContent = `${sets.length} paper${sets.length === 1 ? "" : "s"}`;
+  document.getElementById("pastPaperSetList").innerHTML = sets.length ? sets.map((set) => {
+    const meta = [set.timezone, set.paper].filter(Boolean).join(" · ");
+    return `<button class="paper-set-card ${set.id === currentPastPaperSetId ? "is-active" : ""}" type="button" data-paper-set-id="${set.id}">
+      <span><small>${escapeHtml(set.session)}</small><strong>${escapeHtml(meta)}</strong><em>${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}</em></span>
+      <i aria-hidden="true">→</i>
+    </button>`;
+  }).join("") : '<p class="no-results">No papers match this session.</p>';
+}
+
+function currentPastPaperSet() {
+  return (pastPaperLibrary.courses[currentPastPaperCourse] || []).find((set) => set.id === currentPastPaperSetId);
+}
+
+function renderPastPaperQuestions() {
+  const set = currentPastPaperSet();
+  if (!set) {
+    document.getElementById("pastPaperQuestionList").innerHTML = "";
+    document.getElementById("pastPaperSetTitle").textContent = "Questions";
+    document.getElementById("pastPaperQuestionCount").textContent = "";
+    return;
+  }
+  if (!set.questions.some((question) => question.id === currentPastPaperQuestionId)) currentPastPaperQuestionId = set.questions[0]?.id || null;
+  document.getElementById("pastPaperSetTitle").textContent = [set.session, set.timezone, set.paper].filter(Boolean).join(" · ");
+  document.getElementById("pastPaperQuestionCount").textContent = `${set.questions.length} solution${set.questions.length === 1 ? "" : "s"}`;
+  document.getElementById("pastPaperQuestionList").innerHTML = set.questions.map((question, index) => `<button class="paper-question-button ${question.id === currentPastPaperQuestionId ? "is-active" : ""}" type="button" data-paper-question-id="${question.id}">
+    <span>${index + 1}</span><strong>${escapeHtml(question.title)}</strong><small>${formatDuration(question.seconds)}</small>
+  </button>`).join("");
+  const question = set.questions.find((candidate) => candidate.id === currentPastPaperQuestionId) || set.questions[0];
+  if (question) renderPastPaperQuestion(question);
+}
+
+function renderPastPaperQuestion(question) {
+  const set = currentPastPaperSet();
+  if (!set || !question) return;
+  currentPastPaperQuestionId = question.id;
+  const index = set.questions.findIndex((candidate) => candidate.id === question.id);
+  document.getElementById("pastPaperQuestionPosition").textContent = `Solution ${index + 1} of ${set.questions.length}`;
+  document.getElementById("pastPaperQuestionTitle").textContent = question.title;
+  document.getElementById("pastPaperQuestionMeta").textContent = [set.session, set.timezone, set.paper, formatDuration(question.seconds)].filter(Boolean).join(" · ");
+  document.getElementById("pastPaperBadge").textContent = currentPastPaperCourse;
+  const frame = document.getElementById("pastPaperFrame");
+  const nextSource = `https://iframe.mediadelivery.net/embed/${pastPaperLibrary.libraryId}/${question.id}?autoplay=false&loop=false&muted=false&preload=true&responsive=true`;
+  if (frame.src !== nextSource) {
+    document.getElementById("pastPaperLoading").classList.remove("is-hidden");
+    frame.src = nextSource;
+    frame.onload = () => document.getElementById("pastPaperLoading").classList.add("is-hidden");
+  }
+}
+
+function renderPastPapers() {
+  const stats = pastPaperLibrary.stats[currentPastPaperCourse];
+  renderPastPaperTabs();
+  renderPastPaperSessionFilter();
+  document.getElementById("pastPaperCourseStats").innerHTML = `<strong>${currentPastPaperCourse}</strong><span>${stats.papers} papers with ${stats.questions} verified worked solutions</span>`;
+  renderPastPaperCatalog();
+  renderPastPaperQuestions();
+}
+
 document.addEventListener("click", (event) => {
   const viewButton = event.target.closest("[data-view]");
   if (viewButton) setView(viewButton.dataset.view);
@@ -382,6 +477,35 @@ document.addEventListener("click", (event) => {
       if (window.innerWidth < 920) document.getElementById("videoShell").scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
+
+  const pastCourseButton = event.target.closest("[data-past-course]");
+  if (pastCourseButton) {
+    currentPastPaperCourse = pastCourseButton.dataset.pastCourse;
+    currentPastPaperSession = "all";
+    currentPastPaperSetId = null;
+    currentPastPaperQuestionId = null;
+    renderPastPapers();
+  }
+
+  const paperSetButton = event.target.closest("[data-paper-set-id]");
+  if (paperSetButton) {
+    currentPastPaperSetId = paperSetButton.dataset.paperSetId;
+    currentPastPaperQuestionId = null;
+    renderPastPaperCatalog();
+    renderPastPaperQuestions();
+    if (window.innerWidth < 920) document.querySelector(".paper-solution-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  const paperQuestionButton = event.target.closest("[data-paper-question-id]");
+  if (paperQuestionButton) {
+    const set = currentPastPaperSet();
+    const question = set?.questions.find((candidate) => candidate.id === paperQuestionButton.dataset.paperQuestionId);
+    if (question) {
+      renderPastPaperQuestion(question);
+      renderPastPaperQuestions();
+      if (window.innerWidth < 920) document.querySelector(".paper-player-shell").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
 });
 
 document.getElementById("openMenu").addEventListener("click", () => {
@@ -394,6 +518,13 @@ document.getElementById("previousLesson").addEventListener("click", () => moveLe
 document.getElementById("nextLesson").addEventListener("click", () => moveLesson(1));
 document.getElementById("completeButton").addEventListener("click", toggleComplete);
 document.getElementById("lessonSearch").addEventListener("input", (event) => renderLessonList(event.target.value));
+document.getElementById("pastPaperSessionFilter").addEventListener("change", (event) => {
+  currentPastPaperSession = event.target.value;
+  currentPastPaperSetId = null;
+  currentPastPaperQuestionId = null;
+  renderPastPaperCatalog();
+  renderPastPaperQuestions();
+});
 
 const accountButton = document.getElementById("accountButton");
 const accountMenu = document.getElementById("accountMenu");

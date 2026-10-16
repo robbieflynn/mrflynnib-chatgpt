@@ -427,3 +427,7 @@ Rob then requested restoring the header's **Explore courses** button and removin
 Rob subsequently standardised the customer-facing capitalisation to **One-to-One** and requested a fifth homepage route for mobile only. Keep the desktop homepage at its four balanced principal cards. On viewports up to 650 pixels wide, show a compact fifth card after Tutoring titled **One-to-One Tuition with IB Tutors**, link it to `/go/ib-tutors`, list Physics, Chemistry, Biology and Maths, and use the partner's navy and orange palette so it is distinct but harmonious with the homepage.
 
 Keep this mobile-only IB Tutors card on the same white background as the four principal cards. Use navy text and restrained orange accents rather than a dark filled background.
+
+## Private course-platform navigation, 16 October 2026
+
+Rob confirmed that past-paper solutions should be a separate top-level destination in the future student course platform rather than being buried inside individual courses. The authenticated start screen should make the two main study routes immediately clear: structured course lessons and past-paper solutions. The past-paper area stays within the selected IB curriculum and lets the student choose AA HL, AA SL, AI HL or AI SL, then browse by exam session, paper and question. This decision applies to the private course-platform prototype only until Rob approves a production rollout.
