@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import curriculumData from "@/data/curricula.json";
 import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { courseAccessPlans, courses } from "@/lib/content";
-import { courseCheckoutPath } from "@/lib/outbound-destinations";
 
 type CurriculumTopic = { name: string; lessons: string[] };
 const curricula = curriculumData as Record<string, CurriculumTopic[]>;
@@ -62,12 +61,12 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <p className="lede">{course.description}</p>
           </div>
           <aside className="course-purchase-card">
-            <div className="stack"><Eyebrow>Choose your access</Eyebrow><h2>One complete course. Three access options.</h2><p>Every plan includes the complete {course.shortTitle} course. Choose and purchase your access on Teachable.</p></div>
+            <div className="stack"><Eyebrow>Choose your access</Eyebrow><h2>One complete course. Three access options.</h2><p>Every plan includes the complete {course.shortTitle} course. Choose your access and attach it to your Mr Flynn IB account.</p></div>
             <ul className="access-plan-list">
               {courseAccessPlans.map((plan) => <li className={plan.recommended ? "access-plan-recommended" : ""} key={plan.duration}><div><strong>{plan.duration}</strong>{plan.recommended && <span>Recommended</span>}<small>{plan.description}</small></div><b>${plan.price}</b></li>)}
             </ul>
-            <ButtonLink href={courseCheckoutPath(course.shortTitle)}>View access plans and enroll</ButtonLink>
-            <small>Prices are in US dollars. Payment and secure course access continue on Teachable.</small>
+            <ButtonLink href={`/courses/${course.slug}/checkout`}>View access plans and enrol</ButtonLink>
+            <small>Prices are in US dollars. Payment is completed securely with Ziina.</small>
           </aside>
         </Container>
       </section>

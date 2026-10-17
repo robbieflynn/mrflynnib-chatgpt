@@ -2210,3 +2210,38 @@ a.teacher-list-row:hover { background: var(--sky); }
   .account-stats { grid-template-columns: 1fr; }
   .account-actions { align-items: stretch; flex-direction: column; }
 }
+
+/* Native course checkout preview. */
+.checkout-page { min-height: 72vh; padding: clamp(3rem, 7vw, 6.5rem) 0; background: linear-gradient(180deg, #f3f9ff 0, #fff 44%); }
+.checkout-heading { max-width: 760px; }
+.checkout-heading h1 { max-width: 13ch; }
+.checkout-plan-stack { display: grid; gap: 1.25rem; }
+.checkout-test-notice { width: fit-content; padding: .8rem 1rem; display: flex; gap: .65rem; align-items: center; border: 1px solid #f1c76e; border-radius: .8rem; background: #fff8df; color: #674a08; font-size: .84rem; }
+.checkout-test-notice strong { text-transform: uppercase; letter-spacing: .07em; font-size: .72rem; }
+.checkout-plan-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: stretch; }
+.checkout-plan-card { position: relative; min-height: 310px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; border: 1px solid var(--line); border-radius: 1.25rem; background: white; box-shadow: 0 16px 44px rgba(11,21,48,.06); }
+.checkout-plan-card.is-recommended { border-color: rgba(35,127,202,.52); box-shadow: 0 20px 55px rgba(35,127,202,.13); }
+.checkout-plan-card > div { display: grid; gap: .5rem; }
+.checkout-plan-card h2 { font-size: 1.5rem; }
+.checkout-plan-card p { color: var(--muted); font-size: .9rem; }
+.checkout-plan-card .button { width: 100%; margin-top: auto; }
+.checkout-plan-card .button:disabled { cursor: wait; opacity: .62; }
+.checkout-plan-badge { width: fit-content; padding: .34rem .58rem; border-radius: 999px; background: var(--teal); color: white; font-size: .68rem; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; }
+.checkout-plan-price { display: flex; align-items: flex-start; color: var(--ink); font-size: 3.25rem; letter-spacing: -.06em; line-height: 1; }
+.checkout-plan-price small { margin: .38rem .25rem 0 0; color: var(--muted); font-size: .78rem; letter-spacing: .02em; }
+.checkout-security-note { color: var(--muted); font-size: .78rem; text-align: center; }
+.checkout-signin-card, .checkout-result-card { padding: clamp(1.5rem, 4vw, 3rem); border: 1px solid var(--line); border-radius: 1.25rem; background: white; box-shadow: 0 18px 50px rgba(11,21,48,.07); }
+.checkout-signin-card { max-width: 680px; }
+.checkout-signin-card .button { width: fit-content; }
+.checkout-result-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+@media (max-width: 800px) {
+  .checkout-plan-grid { grid-template-columns: 1fr; }
+  .checkout-plan-card { min-height: auto; }
+}
+
+@media (max-width: 650px) {
+  .checkout-page { padding-top: 2rem; }
+  .checkout-test-notice { width: 100%; align-items: flex-start; flex-direction: column; gap: .2rem; }
+  .checkout-result-actions, .checkout-result-actions .button, .checkout-signin-card .button { width: 100%; }
+}

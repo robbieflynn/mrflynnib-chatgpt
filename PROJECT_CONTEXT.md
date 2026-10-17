@@ -57,13 +57,15 @@ IB and IGCSE must use completely separate account and login journeys. One signed
 
 ### Online courses
 
-Courses cover the IB Mathematics pathways AA HL, AA SL, AI HL, and AI SL. Teachable hosts course checkout, enrollment, login, and learning delivery. MrFlynnIB.com should provide premium course landing pages, previews, curriculum information, FAQs, evidence, and clear calls to action, then send customers deliberately and seamlessly to the correct Teachable destination. Existing students need an obvious Teachable login route.
+On 17 October 2026, Rob chose Ziina for the first native course-payment launch and completed the initial Ziina account setup. Build a custom server-side checkout in test mode first. Charge the confirmed IB access prices in USD, keep the Ziina access token and webhook secret only in encrypted server-side Vercel variables, and grant access only after a signed webhook has been verified against Ziina's API. The initial Professional-account launch must pass a complete test payment, account-entitlement and small live payment/payout check before general sales. Do not invent IGCSE pricing; add that product to checkout only after Rob confirms its price.
+
+Courses cover the IB Mathematics pathways AA HL, AA SL, AI HL, and AI SL. Teachable remains the current live service while the native Mr Flynn IB course platform and Ziina checkout are tested. The target platform keeps checkout, account entitlement and learning delivery inside the Mr Flynn IB journey. Do not remove or disrupt existing Teachable access until the native platform has passed final content, payment and access checks.
 
 Every individual course will offer the same three one-time access options: **3 months for US$49**, **1 year for US$69**, and **2 years for US$79**. The two-year option is the recommended, best-value plan. Every option includes the same complete course; only the access period changes. Do not use an invented crossed-out price or make the one-year option more expensive than two years.
 
-Keep the prospective-customer and existing-student journeys distinct. The main Courses page should simply say **“Choose your course”** and present AA HL, AA SL, AI HL, and AI SL without prices or unnecessary course-choice advice. Each individual course page should preview the three access options but use one principal **“View access plans and enroll”** button leading to that course's Teachable purchase page, where the student selects and purchases a plan. Existing students should have a persistent, obvious **“My courses”** route to Teachable in the website navigation and a supporting **“Already enrolled?”** route on course pages.
+Keep the prospective-customer and existing-student journeys distinct. The main Courses page should simply say **“Choose your course”** and present AA HL, AA SL, AI HL, and AI SL without prices or unnecessary course-choice advice. Each individual course page should preview the three access options and use one principal **“View access plans and enrol”** button. In the native-platform preview this leads to the signed-in Ziina checkout; existing students use their Mr Flynn IB account. Until Rob approves the final cutover, public production keeps its working Teachable journey.
 
-Do not duplicate Teachable's learning platform unless a later strategic decision provides a compelling reason.
+The native course-platform decision made in October 2026 supersedes the earlier instruction not to duplicate Teachable. Preserve Teachable only as the safe current service during migration and cut over deliberately after approval.
 
 ### Book
 

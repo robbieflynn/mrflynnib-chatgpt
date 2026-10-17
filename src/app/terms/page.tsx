@@ -26,8 +26,8 @@ export default function TermsPage() {
           </section>
 
           <section className="stack">
-            <h2 style={{ fontSize: "2rem" }}>Courses and Teachable</h2>
-            <p>Course checkout, payment, enrollment, account login and lesson delivery take place through Teachable. The price, access period and other important purchase information are shown before checkout. Teachable&apos;s applicable checkout terms and refund process also apply to purchases made on its platform.</p>
+            <h2 style={{ fontSize: "2rem" }}>Course purchases and access</h2>
+            <p>For native Mr Flynn IB purchases, the price, course and access period are shown before payment and checkout is processed securely by Ziina. Course access is attached to the signed-in account after payment has been confirmed. Mr Flynn IB does not store full card details. Purchases made through Teachable during the platform transition remain subject to the information and applicable terms shown on Teachable.</p>
             <p>Mr Flynn IB remains responsible for the course content and reasonable course support. For help with an enrollment or course, email <a className="text-link" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p>
           </section>
 
@@ -55,7 +55,7 @@ export default function TermsPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Availability and external services</h2>
-            <p>We aim to keep the website accurate and available, but temporary errors, maintenance or service interruptions may occur. Links to Teachable, YouTube, Amazon and other external services lead to platforms with their own terms and privacy practices.</p>
+            <p>We aim to keep the website accurate and available, but temporary errors, maintenance or service interruptions may occur. Ziina, Teachable, YouTube, Amazon and other external services have their own terms and privacy practices.</p>
             <p>Nothing in these terms excludes or limits a right or responsibility that cannot lawfully be excluded. To the extent permitted by law, Mr Flynn IB is not responsible for indirect losses arising solely from use of, or inability to use, the website.</p>
           </section>
 

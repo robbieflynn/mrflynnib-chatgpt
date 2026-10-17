@@ -1,14 +1,15 @@
 # Mr Flynn IB website: first production build
 
-A complete first-pass Next.js website for **MrFlynnIB.com**, positioning the business as an expert-led IB Mathematics platform while keeping Teachable as the course delivery and enrolment layer.
+A complete Next.js website for **MrFlynnIB.com**, now preparing the native course, account and Ziina checkout journey while preserving Teachable during the controlled transition.
 
 ## Included
 
 - Responsive homepage with four commercial routes: courses, tutoring, school licences and book
 - AA HL, AA SL, AI HL and AI SL course catalogue and dynamic course pages
-- Teachable enrolment links and student-login redirect
+- Existing Teachable access preserved during the native-platform transition
 - Free IA videos, direct syllabus-checklist downloads and native question bank
 - Student accounts with synced question progress and editable whiteboard working
+- Ziina-hosted course checkout with signed webhook verification and account entitlements
 - Tutoring application form
 - School-licence enquiry form and proposed licence tiers
 - Book, About, Results, Contact and FAQ pages
@@ -38,6 +39,20 @@ Open `http://localhost:3000`.
 5. Optionally add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for contact and tutoring enquiry storage if those forms are restored later.
 6. Confirm final course availability, access periods and operational terms.
 7. Complete legal review and configure consent before non-essential tracking.
+8. Run the Ziina checkout migration, add the Ziina variables below, and complete the test-payment checklist before enabling live payments.
+
+## Ziina course checkout
+
+The website creates payment intents on the server and redirects customers to Ziina's hosted checkout. Ziina confirms the final status through an HMAC-signed webhook; the success redirect alone never grants course access.
+
+1. Run `supabase/migrations/20261017_ziina_checkout.sql` in Supabase.
+2. Add `ZIINA_ACCESS_TOKEN` and a long random `ZIINA_WEBHOOK_SECRET` to Vercel Preview only.
+3. Keep `ZIINA_TEST_MODE=true`. Set `ZIINA_ALLOW_TEST_ENTITLEMENTS=true` only while checking that a completed test payment grants the expected course and expiry date.
+4. Register `https://<preview-domain>/api/webhooks/ziina` in Ziina with exactly the same webhook secret.
+5. Test all three access periods, cancellation and failure handling, duplicate webhook delivery, account ownership and expiry dates.
+6. Confirm a small real payment, entitlement and Ziina payout before setting `ZIINA_TEST_MODE=false` in Production.
+
+Never expose the Ziina access token or webhook secret in browser code, chat, Git or a `NEXT_PUBLIC_` variable.
 
 ## Resend school-enquiry setup
 
@@ -62,7 +77,7 @@ Never commit the API key. Store it only as an encrypted environment variable in 
 
 ## Architecture decision
 
-The public website owns brand, positioning, SEO, audience journeys, question-bank accounts and saved practice data. Teachable owns course checkout, login and lesson delivery. The website serves the checklist PDFs directly. Resend sends transactional school-enquiry notifications. Supabase provides secure student authentication, question progress and whiteboard storage; it is not a duplicate course platform.
+The public website owns brand, positioning, SEO, audience journeys and the native account experience. Ziina provides hosted payment checkout; Supabase stores authenticated course entitlements, question progress and saved work. Teachable remains available during the controlled migration and must not be removed until the native platform passes final review. The website serves checklist PDFs directly, and Resend sends transactional school-enquiry notifications.
 
 ## Image update
 
