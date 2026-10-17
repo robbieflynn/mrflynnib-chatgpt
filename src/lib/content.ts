@@ -12,9 +12,9 @@ export type Course = {
 };
 
 export const courseAccessPlans = [
-  { duration: "3 months", price: 49, description: "For focused exam revision", recommended: false },
-  { duration: "1 year", price: 69, description: "For a full academic year", recommended: false },
-  { duration: "2 years", price: 79, description: "For the complete IB journey", recommended: true },
+  { id: "three-months", duration: "3 months", durationMonths: 3, price: 49, description: "For focused exam revision", recommended: false },
+  { id: "one-year", duration: "1 year", durationMonths: 12, price: 69, description: "For a full academic year", recommended: false },
+  { id: "two-years", duration: "2 years", durationMonths: 24, price: 79, description: "For the complete IB journey", recommended: true },
 ] as const;
 
 export const courses: Course[] = [
@@ -96,7 +96,7 @@ export const faqs = [
   {
     question: "Where are the courses hosted?",
     answer:
-      "Course lessons and student access are hosted on Teachable. MrFlynnIB.com explains the courses, helps you choose the right one and links securely to Teachable for enrollment and login.",
+      "Course lessons, payment and student access are being brought into the Mr Flynn IB platform. Until the new course area passes its final checks, existing Teachable access remains available to current students.",
   },
   {
     question: "Which IB Mathematics courses are covered?",
@@ -116,7 +116,7 @@ export const faqs = [
   {
     question: "I am already enrolled. How do I access my lessons?",
     answer:
-      "Use the My courses link at the top of the website. It takes existing students directly to the Teachable login used for course access.",
+      "Use your Mr Flynn IB account to open your course dashboard. Existing Teachable students will keep their current access during the transition.",
   },
   {
     question: "How can I find out about tutoring?",
