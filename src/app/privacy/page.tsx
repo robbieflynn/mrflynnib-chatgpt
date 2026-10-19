@@ -28,7 +28,7 @@ export default function PrivacyPage() {
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Information we collect</h2>
             <p>We collect information you choose to provide, such as your name, email address, school, role, country and the contents of an enquiry. If you create a question bank account, we store your account details, completed-question progress, saved whiteboard working and information needed to keep the service secure.</p>
-            <p>When you enroll through Teachable, we may receive limited student, enrollment, purchase and course-progress information made available to course creators. Basic technical logs may also be created when you use the website.</p>
+            <p>When you create an account or purchase course access, we may store your account details, selected course and access period, payment-intent status and course progress. Ziina processes card details through its secure checkout; Mr Flynn IB does not receive or store your full card number. During the course-platform transition, we may also receive limited enrollment, purchase and progress information made available by Teachable. Basic technical logs may be created when you use the website.</p>
             <p>The syllabus checklists download directly from this website. You do not need to provide personal information to download them.</p>
           </section>
 
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Services we use</h2>
-            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, Google Workspace for business email, Resend for transactional school-enquiry notifications, Supabase for account or enquiry data where configured, and Teachable for course checkout, enrollment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
+            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, Google Workspace for business email, Resend for transactional school-enquiry notifications, Supabase for account, entitlement or enquiry data where configured, Ziina for payment processing, and Teachable during the course-platform transition. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
             <p>These providers process information under their own terms and may process it in different countries. We share only the information reasonably needed for each service.</p>
           </section>
 
