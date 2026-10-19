@@ -8,6 +8,23 @@ const apiKeyPath = "/private/tmp/mrflynnib-bunny-api-key";
 const eligibleCollection = /^(AA|AI)( HL)? - Topic ([1-5]) - (SL \+ HL|HL only)$/;
 const courseOrder = ["AA SL", "AA HL", "AI SL", "AI HL"];
 
+// The Teachable source catalogue contains the same 8:37 Change of base lesson
+// twice in AI HL, at 1.7.3 and 1.9.2. Rob chose the HL-only 1.9.2 placement for
+// the student course, so retain the source evidence but suppress 1.7.3 here.
+const suppressedExpectedLessons = new Set([
+  "AI HL|1.7.3 Change of base",
+]);
+
+// Student-facing corrections confirmed after the Teachable/Bunny audit. Keep
+// source titles unchanged in the audit evidence, but present the corrected
+// curriculum sequence in the course interface.
+const presentationOverrides = new Map([
+  ["d5c720d9-4540-4c45-b822-a0c84764b619", { code: "1.15.6" }],
+  ["c4db88f7-5d17-4e3e-acf2-8b714152fe0f", { title: "Graphs of y = [f(x)]²" }],
+  ["54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f", { title: "Eigenvalues and eigenvectors" }],
+  ["ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae", { title: "Arcs and sectors with radians" }],
+]);
+
 // These are intentionally not student-facing. The two older edits have verified
 // replacements, while AA HL 3.11 was explicitly held back by Rob on 15 Oct 2026.
 const suppressedVideoIds = new Set([
@@ -28,6 +45,7 @@ const normalize = (value) => cleanTitle(value)
   .trim();
 const lessonCode = (value) => (String(value || "").match(/^(\d+(?:\.\d+){1,2})\b/) || [])[1] || "";
 const titleBody = (value) => normalize(value).replace(/^\d+(?: \d+){1,2}\s+/, "");
+const canonicalTitleBody = (value) => titleBody(value).replace(/\s+combined$/, "").trim();
 const splitTitle = (title) => {
   const cleaned = cleanTitle(title).replace(/\s+[–—-]\s+Teachable edit$/i, "");
   const match = cleaned.match(/^(\d+(?:\.\d+){0,2})\s*(.*)$/);
@@ -58,8 +76,11 @@ function preferredVideo(first, second) {
 function matchScore(expected, video) {
   const expectedBody = titleBody(expected.title);
   const videoBody = titleBody(video.title);
+  const expectedCanonicalBody = canonicalTitleBody(expected.title);
+  const videoCanonicalBody = canonicalTitleBody(video.title);
   let score = overlap(tokens(expected.title), tokens(video.title)) * 500;
   if (expectedBody === videoBody) score += 900;
+  else if (expectedCanonicalBody === videoCanonicalBody) score += 1000;
   if (lessonCode(expected.title) === lessonCode(video.title)) score += 280;
   const durationGap = Math.abs(durationSeconds(expected.duration) - Number(video.length || 0));
   if (durationGap <= 3) score += 220;
@@ -125,29 +146,36 @@ for (const course of courseOrder) {
   const usedInCourse = new Set();
   courseLessons[course] = [];
   for (const expected of expectedCatalog.filter((item) => item.course === course)) {
+    const expectedKey = `${course}|${cleanTitle(expected.title)}`;
+    if (suppressedExpectedLessons.has(expectedKey)) {
+      matches.push({
+        course,
+        section: expected.section,
+        expectedTitle: expected.title,
+        expectedDuration: expected.duration,
+        teachableUrl: expected.url,
+        status: "suppressed_by_review",
+        reason: "Duplicate curriculum placement removed from the student preview",
+      });
+      continue;
+    }
     const topic = Number((expected.section.match(/Topic (\d)/) || [])[1]);
-    const sameFamily = candidateVideos.filter((video) => {
+    const eligibleForLesson = candidateVideos.filter((video) => {
       const collection = video.collectionName.match(eligibleCollection);
       return collection
-        && collection[1] === family
         && Number(collection[3]) === topic
         && (level === "HL" || collection[4] === "SL + HL")
         && !usedInCourse.has(video.guid);
     });
-    let ranked = sameFamily.map((video) => ({ video, score: matchScore(expected, video) })).sort((a, b) => b.score - a.score);
-
-    // A small number of lessons are genuinely shared between AA and AI but are
-    // stored in only one family collection. Reuse that exact asset when the
-    // title and duration provide a stronger match than any family-local record.
-    if (!ranked[0] || ranked[0].score < 350) {
-      ranked = candidateVideos
-        .filter((video) => {
-          const collection = video.collectionName.match(eligibleCollection);
-          return collection && Number(collection[3]) === topic && !usedInCourse.has(video.guid);
-        })
-        .map((video) => ({ video, score: matchScore(expected, video) }))
-        .sort((a, b) => b.score - a.score);
-    }
+    // Shared AA/AI assets are common. Consider both families, but prefer the
+    // course-local record when title and duration evidence is otherwise equal.
+    // This lets an exact-duration shared asset beat a local older edit.
+    const ranked = eligibleForLesson
+      .map((video) => ({
+        video,
+        score: matchScore(expected, video) + (video.collectionName.startsWith(family) ? 50 : 0),
+      }))
+      .sort((a, b) => b.score - a.score);
 
     const best = ranked[0];
     if (!best || best.score < 350) {
@@ -157,23 +185,55 @@ for (const course of courseOrder) {
 
     usedInCourse.add(best.video.guid);
     const parsed = splitTitle(expected.title);
+    const presentation = presentationOverrides.get(best.video.guid) || {};
     courseLessons[course].push({
       id: best.video.guid,
-      code: parsed.code,
-      title: parsed.title,
+      code: presentation.code || parsed.code,
+      title: presentation.title || parsed.title,
       seconds: Number(best.video.length) || durationSeconds(expected.duration),
       status: Number(best.video.status),
       topic,
       scope: /HL only$/.test(best.video.collectionName) ? "HL extension" : "SL + HL foundation",
     });
+    const expectedSeconds = durationSeconds(expected.duration);
+    const actualSeconds = Number(best.video.length) || 0;
+    const durationDeltaSeconds = actualSeconds - expectedSeconds;
+    const expectedNormalized = normalize(expected.title);
+    const candidateNormalized = normalize(best.video.title);
+    const expectedBody = titleBody(expected.title);
+    const candidateBody = titleBody(best.video.title);
+    const tokenOverlap = overlap(tokens(expected.title), tokens(best.video.title));
+    const exactTitle = expectedNormalized === candidateNormalized;
+    const sameTitleBody = expectedBody === candidateBody;
+    const sameCode = lessonCode(expected.title) === lessonCode(best.video.title);
+    const exactDuration = Math.abs(durationDeltaSeconds) <= 1;
+    const closeDuration = Math.abs(durationDeltaSeconds) <= 3;
+    let auditStatus = "needs_review";
+    if (exactTitle && exactDuration) auditStatus = "exact_match";
+    else if (closeDuration && (sameTitleBody || sameCode || tokenOverlap >= 0.75)) auditStatus = "verified_equivalent";
+
     matches.push({
       course,
+      section: expected.section,
       expectedTitle: expected.title,
+      expectedDuration: expected.duration,
+      expectedSeconds,
+      teachableUrl: expected.url,
       status: best.score >= 750 ? "verified" : "reviewed_match",
+      auditStatus,
       score: Math.round(best.score),
       videoId: best.video.guid,
       candidateCollection: best.video.collectionName,
       candidateTitle: best.video.title,
+      candidateSeconds: actualSeconds,
+      durationDeltaSeconds,
+      exactTitle,
+      sameTitleBody,
+      sameCode,
+      tokenOverlap: Number(tokenOverlap.toFixed(3)),
+      crossFamilyReuse: !best.video.collectionName.startsWith(family),
+      bunnyStatus: Number(best.video.status),
+      bunnyStorageSize: Number(best.video.storageSize) || 0,
     });
   }
   courseLessons[course].sort((a, b) => (a.topic - b.topic) || naturalSort(a, b));
@@ -184,7 +244,8 @@ const selectedVideos = candidateVideos.filter((video) => uniqueVideoIds.has(vide
 const collections = {};
 for (const video of selectedVideos) {
   const parsed = splitTitle(video.title);
-  (collections[video.collectionName] ??= []).push({ id: video.guid, code: parsed.code, title: parsed.title, seconds: Number(video.length) || 0, status: Number(video.status) });
+  const presentation = presentationOverrides.get(video.guid) || {};
+  (collections[video.collectionName] ??= []).push({ id: video.guid, code: presentation.code || parsed.code, title: presentation.title || parsed.title, seconds: Number(video.length) || 0, status: Number(video.status) });
 }
 for (const lessons of Object.values(collections)) lessons.sort(naturalSort);
 
@@ -211,6 +272,7 @@ const audit = {
   uniqueStudentFacingVideos: selectedVideos.length,
   courseLessonCounts: Object.fromEntries(courseOrder.map((course) => [course, courseLessons[course].length])),
   suppressedVideoIds: [...suppressedVideoIds],
+  suppressedExpectedLessons: [...suppressedExpectedLessons],
   duplicateCandidatesRemoved: readyCandidates.length - candidateVideos.length,
   unmatchedCount: unmatched.length,
   reviewedMatchCount: matches.filter((item) => item.status === "reviewed_match").length,
@@ -220,9 +282,11 @@ const audit = {
   }),
   unmatched,
   reviewedMatches: matches.filter((item) => item.status === "reviewed_match"),
+  placements: matches,
 };
 
 writeFileSync(new URL("./dist/library-data.js", import.meta.url), `window.MR_FLYNN_LIBRARY = ${JSON.stringify(data, null, 2)};\n`);
+writeFileSync(new URL("./dist/video-audit-data.js", import.meta.url), `window.MR_FLYNN_VIDEO_AUDIT = ${JSON.stringify(audit, null, 2)};\n`);
 writeFileSync(new URL("./library-data-audit.json", import.meta.url), `${JSON.stringify(audit, null, 2)}\n`);
-console.log(`Generated ${data.stats.videos} unique ready videos for ${matches.length - unmatched.length}/${matches.length} Teachable course lessons.`);
+console.log(`Generated ${data.stats.videos} unique ready videos; ${matches.filter((item) => item.status === "suppressed_by_review").length} duplicate catalogue placement(s) suppressed by review.`);
 if (unmatched.length) process.exitCode = 1;
