@@ -90,6 +90,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
   const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
   const teacherRequested = pageSearchParams.teacher === "requested";
+  const teacherApprovalPending = profile?.teacher_status === "pending";
 
   if (teacherApprovalRequired || teacherRequested) {
     const requestPending = profile?.teacher_status === "pending" || teacherRequested;
@@ -226,9 +227,15 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           </div>
           <div className="dashboard-hero-layout">
             <div className="dashboard-hero-copy">
-              <span className="dashboard-role-label">Student dashboard</span>
+              <span className="dashboard-role-label">
+                {teacherApprovalPending ? "Teacher status: waiting approval" : "Student dashboard"}
+              </span>
               <h1>{displayName ? `Welcome back, ${displayName}` : "Your learning dashboard"}</h1>
-              <p>Here&apos;s what to focus on next.</p>
+              <p>
+                {teacherApprovalPending
+                  ? "Your teacher account is being reviewed. You can use the question bank while you wait."
+                  : "Here's what to focus on next."}
+              </p>
             </div>
           </div>
         </Container>
@@ -237,6 +244,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <Container className="stack-xl">
           {accountError ? <p className="form-message form-error">{accountError}</p> : null}
           {accountSuccess ? <p className="form-message form-success">{accountSuccess}</p> : null}
+          {teacherApprovalPending ? (
+            <p className="teacher-pending-note">
+              <strong>Teacher status: waiting approval</strong>
+              <span>You do not need to apply again. Once approved, this account will open your teacher dashboard automatically.</span>
+            </p>
+          ) : null}
           <div className="student-next-grid">
             <section className="student-next-card">
               <div className="student-next-card-copy">
@@ -281,7 +294,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                   <span aria-hidden="true">→</span>
                 </Link>;
               })}
-              {!activeAssignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>{assignments.length ? "Everything is submitted" : "No assignments yet"}</strong><p>{assignments.length ? "Nice work. Your next assignment will appear here when it is set." : "Your teacher&apos;s assignments will appear here."}</p></div></div> : null}
+              {!activeAssignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>{assignments.length ? "Everything is submitted" : "No assignments yet"}</strong><p>{assignments.length ? "Nice work. Your next assignment will appear here when it is set." : "Your teacher's assignments will appear here."}</p></div></div> : null}
             </div>
             {completedAssignments.length ? <details className="student-completed-assignments"><summary>Submitted assignments ({completedAssignments.length})<span aria-hidden="true">+</span></summary><div className="student-assignment-list">{completedAssignments.map((assignment) => <Link className="student-assignment-card is-complete" href={`/assignments/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>Submitted</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Submitted</span><span aria-hidden="true">→</span></Link>)}</div></details> : null}
           </section>
