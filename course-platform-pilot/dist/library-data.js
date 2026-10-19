@@ -1,10 +1,10 @@
 window.MR_FLYNN_LIBRARY = {
   "libraryId": "775873",
-  "generatedAt": "2026-10-16T04:32:17.339Z",
+  "generatedAt": "2026-10-17T13:22:18.881Z",
   "stats": {
-    "videos": 442,
-    "seconds": 287390,
-    "storageBytes": 225526350510
+    "videos": 441,
+    "seconds": 287265,
+    "storageBytes": 225425396905
   },
   "topicNames": {
     "1": "Number and algebra",
@@ -655,10 +655,10 @@ window.MR_FLYNN_LIBRARY = {
         "scope": "SL + HL foundation"
       },
       {
-        "id": "ff814b89-cfb0-4cc9-be09-fc3a9e6bb0e8",
+        "id": "639dc690-35bc-4a84-b7fb-89844ecaf252",
         "code": "4.2.4",
         "title": "Outliers",
-        "seconds": 610,
+        "seconds": 570,
         "status": 4,
         "topic": 4,
         "scope": "SL + HL foundation"
@@ -1405,7 +1405,7 @@ window.MR_FLYNN_LIBRARY = {
       },
       {
         "id": "d5c720d9-4540-4c45-b822-a0c84764b619",
-        "code": "1.15.5",
+        "code": "1.15.6",
         "title": "Proof by induction (De Moivre)",
         "seconds": 719,
         "status": 4,
@@ -1746,10 +1746,10 @@ window.MR_FLYNN_LIBRARY = {
         "scope": "HL extension"
       },
       {
-        "id": "61ce1deb-7a5c-4de9-a3ba-1741202aba3b",
+        "id": "990b6aba-3d06-489d-81e6-70a683d4f23a",
         "code": "2.16.1",
         "title": "Graphs of modulus functions",
-        "seconds": 445,
+        "seconds": 615,
         "status": 4,
         "topic": 2,
         "scope": "HL extension"
@@ -1775,7 +1775,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "c4db88f7-5d17-4e3e-acf2-8b714152fe0f",
         "code": "2.16.4",
-        "title": "Graphs of y=(f(x))^2",
+        "title": "Graphs of y = [f(x)]²",
         "seconds": 498,
         "status": 4,
         "topic": 2,
@@ -2043,7 +2043,7 @@ window.MR_FLYNN_LIBRARY = {
         "scope": "HL extension"
       },
       {
-        "id": "352a19bb-f72d-42ef-a85e-c45467041f8e",
+        "id": "d59efdcc-103a-44e4-b2c9-827c1a7ef6f7",
         "code": "3.13.1",
         "title": "Scalar product and angle between vectors",
         "seconds": 832,
@@ -2250,10 +2250,10 @@ window.MR_FLYNN_LIBRARY = {
         "scope": "SL + HL foundation"
       },
       {
-        "id": "ff814b89-cfb0-4cc9-be09-fc3a9e6bb0e8",
+        "id": "639dc690-35bc-4a84-b7fb-89844ecaf252",
         "code": "4.2.4",
         "title": "Outliers",
-        "seconds": 610,
+        "seconds": 570,
         "status": 4,
         "topic": 4,
         "scope": "SL + HL foundation"
@@ -3883,15 +3883,6 @@ window.MR_FLYNN_LIBRARY = {
         "scope": "SL + HL foundation"
       },
       {
-        "id": "ee5444e4-1f38-4dc4-9474-818a4c90dc63",
-        "code": "1.7.3",
-        "title": "Change of base",
-        "seconds": 517,
-        "status": 4,
-        "topic": 1,
-        "scope": "SL + HL foundation"
-      },
-      {
         "id": "f0014dba-fcce-4d49-aa9f-853ba87a537a",
         "code": "1.8.1",
         "title": "System of linear equations",
@@ -4074,7 +4065,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f",
         "code": "1.15.1",
-        "title": "Eigenvalues and eigenvectors combined",
+        "title": "Eigenvalues and eigenvectors",
         "seconds": 1089,
         "status": 4,
         "topic": 1,
@@ -4488,7 +4479,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae",
         "code": "3.7.2",
-        "title": "Arcs and sectors",
+        "title": "Arcs and sectors with radians",
         "seconds": 552,
         "status": 4,
         "topic": 3,
@@ -6416,7 +6407,7 @@ window.MR_FLYNN_LIBRARY = {
       },
       {
         "id": "d5c720d9-4540-4c45-b822-a0c84764b619",
-        "code": "1.15.5",
+        "code": "1.15.6",
         "title": "Proof by induction (De Moivre)",
         "seconds": 719,
         "status": 4
@@ -6955,7 +6946,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae",
         "code": "3.7.2",
-        "title": "Arcs and sectors",
+        "title": "Arcs and sectors with radians",
         "seconds": 552,
         "status": 4
       },
@@ -7442,7 +7433,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f",
         "code": "1.15.1",
-        "title": "Eigenvalues and eigenvectors combined",
+        "title": "Eigenvalues and eigenvectors",
         "seconds": 1089,
         "status": 4
       },
@@ -8038,13 +8029,6 @@ window.MR_FLYNN_LIBRARY = {
         "status": 4
       },
       {
-        "id": "ee5444e4-1f38-4dc4-9474-818a4c90dc63",
-        "code": "1.7.3",
-        "title": "Change of base",
-        "seconds": 517,
-        "status": 4
-      },
-      {
         "id": "f0014dba-fcce-4d49-aa9f-853ba87a537a",
         "code": "1.8.1",
         "title": "System of linear equations",
@@ -8100,6 +8084,13 @@ window.MR_FLYNN_LIBRARY = {
         "code": "3.12.3",
         "title": "Magnitude and unit vectors",
         "seconds": 758,
+        "status": 4
+      },
+      {
+        "id": "d59efdcc-103a-44e4-b2c9-827c1a7ef6f7",
+        "code": "3.13.1",
+        "title": "Scalar product and angle between vectors",
+        "seconds": 832,
         "status": 4
       },
       {
@@ -8280,10 +8271,10 @@ window.MR_FLYNN_LIBRARY = {
         "status": 4
       },
       {
-        "id": "61ce1deb-7a5c-4de9-a3ba-1741202aba3b",
+        "id": "990b6aba-3d06-489d-81e6-70a683d4f23a",
         "code": "2.16.1",
-        "title": "Graphs of modulus functions",
-        "seconds": 445,
+        "title": "Graphs of modulus functions combined",
+        "seconds": 615,
         "status": 4
       },
       {
@@ -8303,7 +8294,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "c4db88f7-5d17-4e3e-acf2-8b714152fe0f",
         "code": "2.16.4",
-        "title": "Graphs of y=(f(x))^2",
+        "title": "Graphs of y = [f(x)]²",
         "seconds": 498,
         "status": 4
       }
@@ -8342,13 +8333,6 @@ window.MR_FLYNN_LIBRARY = {
         "code": "4.2.3",
         "title": "Interpreting box plots",
         "seconds": 503,
-        "status": 4
-      },
-      {
-        "id": "ff814b89-cfb0-4cc9-be09-fc3a9e6bb0e8",
-        "code": "4.2.4",
-        "title": "Outliers",
-        "seconds": 610,
         "status": 4
       },
       {

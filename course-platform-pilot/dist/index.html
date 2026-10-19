@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Private prototype of the Mr Flynn IB student course platform." />
     <meta name="robots" content="noindex,nofollow" />
-    <title>My courses | Mr Flynn IB</title>
+    <title>My AA HL course | Mr Flynn IB</title>
     <link rel="icon" href="assets/mr-flynn-mark.png" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20261018-10" />
   </head>
   <body>
     <div class="prototype-strip">
@@ -31,7 +31,7 @@
           </button>
           <button class="nav-item" type="button" data-view="courses">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 16.5A2.5 2.5 0 0 1 6.5 14H20M8 7h8"/></svg>
-            <span>My courses</span>
+            <span id="coursesNavLabel">My course</span>
           </button>
           <button class="nav-item" type="button" data-view="pastPapers">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h7M9 16h7"/></svg>
@@ -46,8 +46,7 @@
         <div class="sidebar-summary">
           <p class="eyebrow">Video library</p>
           <div><strong id="sidebarVideoCount">442</strong><span>lessons</span></div>
-          <div><strong id="sidebarHours">80</strong><span>hours</span></div>
-          <small>AA and AI, SL and HL</small>
+          <small id="sidebarCourseLabel">Analysis &amp; Approaches HL</small>
         </div>
 
         <button class="help-card" type="button" id="helpButton">
@@ -79,13 +78,13 @@
         <section id="dashboardView" class="view is-visible">
           <div class="welcome-row">
             <div>
-              <p class="eyebrow">Welcome back</p>
-              <h1>Your IB Mathematics courses</h1>
-              <p>Every lesson in one calm, organised learning space.</p>
+              <p class="eyebrow" id="welcomeEyebrow">Welcome back</p>
+              <h1 id="welcomeTitle">Your AA HL course</h1>
+              <p id="welcomeCopy">Your lessons, practice and past-paper solutions in one calm learning space.</p>
             </div>
             <div class="library-status">
               <span class="status-mark">✓</span>
-              <span><small>Course library</small><strong>All five topics available</strong></span>
+              <span><small>Course library</small><strong id="libraryStatusText">All five topics available</strong></span>
             </div>
           </div>
 
@@ -130,36 +129,35 @@
 
           <section class="section-block">
             <div class="section-heading">
-              <div><p class="eyebrow">Your library</p><h2>My courses</h2></div>
-              <button class="text-button" type="button" data-view="courses">View all courses →</button>
+              <div><p class="eyebrow" id="enrolmentEyebrow">Your enrolment</p><h2 id="dashboardCoursesTitle">My course</h2></div>
+              <button class="text-button" type="button" data-view="courses" id="dashboardCoursesButton">Open course →</button>
             </div>
             <div class="course-grid" id="dashboardCourseGrid"></div>
           </section>
 
           <section class="platform-summary">
             <article><strong id="summaryVideos">442</strong><span>video lessons</span></article>
-            <article><strong id="summaryHours">80 hrs</strong><span>of teaching</span></article>
-            <article><strong>5</strong><span>topics per course</span></article>
+            <article><strong id="summaryTopics">5</strong><span id="summaryTopicsLabel">syllabus topics</span></article>
             <article><strong>1</strong><span>student login</span></article>
           </section>
         </section>
 
         <section id="coursesView" class="view">
           <div class="page-intro">
-            <p class="eyebrow">Your library</p>
-            <h1>My courses</h1>
-            <p>Choose your IB Mathematics pathway. HL courses include the complete shared SL foundation and the HL extensions.</p>
+            <p class="eyebrow" id="coursesEyebrow">Your library</p>
+            <h1 id="coursesTitle">My course</h1>
+            <p id="coursesDescription">Your account includes the complete AA HL course across all five syllabus topics.</p>
           </div>
           <div class="course-grid course-grid-large" id="allCourseGrid"></div>
         </section>
 
         <section id="courseView" class="view">
           <header class="course-hero" id="courseHero">
-            <button class="back-button" type="button" data-view="courses">← My courses</button>
+            <button class="back-button" id="courseBackButton" type="button" data-view="courses">← My course</button>
             <div class="course-hero-row">
               <div>
                 <span class="course-code" id="courseCode">AA SL</span>
-                <p class="eyebrow">IB Mathematics</p>
+                <p class="eyebrow" id="courseFamily">IB Mathematics</p>
                 <h1 id="courseName">Analysis &amp; Approaches SL</h1>
                 <p id="courseSummary">A complete, structured course across all five syllabus topics.</p>
               </div>
@@ -167,8 +165,7 @@
             </div>
             <div class="course-stats">
               <span><strong id="courseLessonCount">0</strong> lessons</span>
-              <span><strong id="courseHours">0</strong> hours</span>
-              <span><strong>5</strong> topics</span>
+              <span><strong id="courseTopicCount">5</strong> topics</span>
             </div>
             <div class="progress-track light"><span id="courseProgressBar"></span></div>
           </header>
@@ -193,7 +190,6 @@
                 <div><small>COURSE</small><strong id="metaCourse">AA SL</strong></div>
                 <div><small>TOPIC</small><strong id="metaTopic">1 · Number and algebra</strong></div>
                 <div><small>DURATION</small><strong id="metaDuration">0 min</strong></div>
-                <div><small>ACCESS</small><strong id="metaAccess">SL + HL foundation</strong></div>
               </div>
               <section class="lesson-practice" id="lessonPractice" hidden aria-labelledby="lessonPracticeTitle">
                 <div class="lesson-practice-head">
@@ -202,11 +198,12 @@
                     <h3 id="lessonPracticeTitle">Practice this lesson</h3>
                     <p>These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.</p>
                   </div>
-                  <span class="practice-count">2 questions</span>
-                </div>
-                <div class="practice-key" aria-label="Practice question order">
-                  <span><b>1</b><strong>Quick check</strong><small>Check the main idea</small></span>
-                  <span><b>2</b><strong>Exam practice</strong><small>Apply it in context</small></span>
+                  <div class="lesson-practice-actions">
+                    <span class="practice-count" id="practiceCount">Practice questions</span>
+                    <button class="practice-expand-button" id="practiceExpandButton" type="button" aria-pressed="false">
+                      <span aria-hidden="true">⛶</span><span>Expand practice</span>
+                    </button>
+                  </div>
                 </div>
                 <div class="practice-frame-wrap" id="practiceFrameWrap">
                   <iframe id="practiceFrame" title="Lesson practice questions" loading="lazy"></iframe>
@@ -236,10 +233,10 @@
           <div class="page-intro past-paper-intro">
             <p class="eyebrow">Exam preparation</p>
             <h1>Past paper solutions</h1>
-            <p>Choose your course, find an exam session and open the worked solution for the exact question you need.</p>
+            <p>Find an AA HL exam session, paper and the worked solution for the exact question you need.</p>
           </div>
 
-          <div class="past-paper-course-tabs" id="pastPaperCourseTabs" aria-label="Choose an IB Mathematics course"></div>
+          <div class="past-paper-course-tabs" id="pastPaperCourseTabs" aria-label="Your enrolled IB Mathematics course"></div>
 
           <section class="past-paper-toolbar" aria-label="Past paper filters">
             <div id="pastPaperCourseStats"></div>
@@ -286,7 +283,7 @@
           <div class="page-intro">
             <p class="eyebrow">Learning activity</p>
             <h1>Your progress</h1>
-            <p>See your progress across every course in this prototype.</p>
+            <p>See your progress across your AA HL course.</p>
           </div>
           <div class="progress-course-grid" id="progressCourseGrid"></div>
         </section>
@@ -297,14 +294,14 @@
       <button class="dialog-close" id="closeLogin" type="button" aria-label="Close sign-in preview">×</button>
       <img src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" />
       <p class="eyebrow">Student sign in</p>
-      <h2>One account for every course</h2>
-      <p>This previews the single login that would replace the separate Teachable experience.</p>
+      <h2>One account for your course</h2>
+      <p>This previews the single login for a student enrolled in AA HL.</p>
       <form id="prototypeLoginForm">
         <label>Email address<input type="email" placeholder="student@example.com" required /></label>
         <label>Password<input type="password" placeholder="••••••••" required /></label>
-        <button class="primary-button full" type="submit">Sign in to my courses</button>
+        <button class="primary-button full" type="submit">Sign in to my course</button>
       </form>
-      <small class="dialog-note">Prototype only. Nothing is stored or submitted.</small>
+      <small class="dialog-note">Prototype only. No real account is created or submitted; course and practice progress stays on this device.</small>
     </dialog>
 
     <dialog class="prototype-dialog small" id="helpDialog">
@@ -317,8 +314,9 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="library-data.js"></script>
+    <script src="igcse-library-data.js"></script>
     <script src="past-paper-data.js"></script>
-    <script src="practice-data.js"></script>
-    <script src="app.js"></script>
+    <script src="practice-data.js?v=20261018-13"></script>
+    <script src="app.js?v=20261018-13"></script>
   </body>
 </html>

@@ -1,8 +1,29 @@
 const library = window.MR_FLYNN_LIBRARY;
+const igcseLibrary = window.MR_FLYNN_IGCSE_LIBRARY;
 const pastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
 const practiceLibrary = window.MR_FLYNN_PRACTICE;
+const previewParameters = new URLSearchParams(window.location.search);
+const previewMode = previewParameters.get("v");
+const reviewerMode = previewMode === "all-courses-review";
+const salesPreviewMode = previewMode?.startsWith("course-preview-") || false;
+const previewCourseId = salesPreviewMode
+  ? previewMode.replace("course-preview-", "")
+  : previewMode?.startsWith("single-course-")
+    ? previewMode.replace("single-course-", "")
+    : null;
+const previewTopic = Number(previewParameters.get("topic"));
 
 const courseDefinitions = [
+  {
+    id: "aa-hl",
+    subject: "AA",
+    level: "HL",
+    code: "AA HL",
+    name: "Analysis & Approaches HL",
+    description: "The complete AA HL course, organised across all five syllabus topics.",
+    image: "assets/course-aa-hl.png",
+    accent: "navy",
+  },
   {
     id: "aa-sl",
     subject: "AA",
@@ -14,14 +35,14 @@ const courseDefinitions = [
     accent: "blue",
   },
   {
-    id: "aa-hl",
-    subject: "AA",
+    id: "ai-hl",
+    subject: "AI",
     level: "HL",
-    code: "AA HL",
-    name: "Analysis & Approaches HL",
-    description: "The complete shared foundation plus every AA HL extension lesson.",
-    image: "assets/course-aa-hl.png",
-    accent: "navy",
+    code: "AI HL",
+    name: "Applications & Interpretation HL",
+    description: "The complete AI HL course, organised across all five syllabus topics.",
+    image: "assets/course-ai-hl.png",
+    accent: "indigo",
   },
   {
     id: "ai-sl",
@@ -34,14 +55,16 @@ const courseDefinitions = [
     accent: "teal",
   },
   {
-    id: "ai-hl",
-    subject: "AI",
-    level: "HL",
-    code: "AI HL",
-    name: "Applications & Interpretation HL",
-    description: "The complete shared foundation plus every AI HL extension lesson.",
-    image: "assets/course-ai-hl.png",
-    accent: "indigo",
+    id: "igcse",
+    subject: "IGCSE",
+    level: "",
+    code: "IGCSE",
+    name: "Edexcel IGCSE Mathematics",
+    description: "Lessons for every topic, organised across all six areas of the Edexcel IGCSE Mathematics course.",
+    image: null,
+    accent: "red",
+    topicCount: 6,
+    family: "Edexcel IGCSE Mathematics",
   },
 ];
 
@@ -55,12 +78,23 @@ function collectionLessons(name, topic, scope) {
 }
 
 function buildCourse(definition) {
-  const topics = [1, 2, 3, 4, 5].map((number) => {
+  const topicNumbers = Array.from({ length: definition.topicCount || 5 }, (_, index) => index + 1);
+  const topics = topicNumbers.map((number) => {
+    if (definition.id === "igcse") {
+      const lessons = igcseLibrary.lessons.filter((lesson) => lesson.topic === number).map((lesson) => ({ ...lesson }));
+      lessons.sort(naturalSort);
+      return {
+        number,
+        name: igcseLibrary.topicNames[number],
+        lessons,
+        seconds: lessons.reduce((total, lesson) => total + lesson.seconds, 0),
+      };
+    }
     const mappedLessons = library.courses?.[definition.code];
     const lessons = mappedLessons
       ? mappedLessons.filter((lesson) => lesson.topic === number).map((lesson) => ({ ...lesson }))
-      : collectionLessons(`${definition.subject} - Topic ${number} - SL + HL`, number, "SL + HL foundation");
-    if (!mappedLessons && definition.level === "HL") lessons.push(...collectionLessons(`${definition.subject} HL - Topic ${number} - HL only`, number, "HL extension"));
+      : collectionLessons(`${definition.subject} - Topic ${number} - SL + HL`, number, "Course lesson");
+    if (!mappedLessons && definition.level === "HL") lessons.push(...collectionLessons(`${definition.subject} HL - Topic ${number} - HL only`, number, "Course lesson"));
     lessons.sort(naturalSort);
     return {
       number,
@@ -82,15 +116,30 @@ const courses = Object.fromEntries(courseDefinitions.map((definition) => {
   return [course.id, course];
 }));
 
+// The student portal only shows courses the signed-in account owns. The
+// prototype learner is enrolled in AA HL so the preview demonstrates the
+// intended single-course experience without exposing the full catalogue.
+const validPreviewCourseId = courseDefinitions.some((definition) => definition.id === previewCourseId)
+  ? previewCourseId
+  : null;
+const enrolledCourseIds = reviewerMode
+  ? courseDefinitions.map((definition) => definition.id)
+  : [validPreviewCourseId || "aa-hl"];
+const enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
+const enrolledCourseId = validPreviewCourseId || "aa-hl";
+
 const storageKey = "mrflynnib-course-platform-v3";
+const practiceDatabaseName = "mrflynnib-course-preview";
+const practiceDatabaseVersion = 1;
+const practiceWhiteboardStore = "whiteboards";
 let state = loadState();
-let currentCourseId = courses[state.lastCourse] ? state.lastCourse : "aa-sl";
+let currentCourseId = enrolledCourseIds.includes(state.lastCourse) ? state.lastCourse : enrolledCourseId;
 let currentCourse = courses[currentCourseId];
 let currentLessonId = currentCourse.lessons.some((lesson) => lesson.id === state.lastLesson)
   ? state.lastLesson
   : currentCourse.lessons[0]?.id;
 let currentTopic = currentCourse.lessons.find((lesson) => lesson.id === currentLessonId)?.topic || 1;
-let currentPastPaperCourse = "AA HL";
+let currentPastPaperCourse = pastPaperLibrary.courses?.[currentCourse.code] ? currentCourse.code : "AA HL";
 let currentPastPaperSession = "all";
 let currentPastPaperSetId = null;
 let currentPastPaperQuestionId = null;
@@ -99,13 +148,86 @@ let toastTimer;
 function loadState() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
-    if (saved && Array.isArray(saved.completed)) return saved;
+    if (saved && Array.isArray(saved.completed)) {
+      if (!Array.isArray(saved.practiceCompleted)) saved.practiceCompleted = [];
+      return saved;
+    }
   } catch {}
-  return { completed: [], lastCourse: "aa-sl", lastLesson: null };
+  return { completed: [], practiceCompleted: [], lastCourse: enrolledCourseId, lastLesson: null };
 }
 
 function saveState() {
   localStorage.setItem(storageKey, JSON.stringify(state));
+}
+
+let practiceDatabasePromise;
+
+function openPracticeDatabase() {
+  if (!practiceDatabasePromise) {
+    practiceDatabasePromise = new Promise((resolve, reject) => {
+      const request = indexedDB.open(practiceDatabaseName, practiceDatabaseVersion);
+      request.onupgradeneeded = () => {
+        const database = request.result;
+        if (!database.objectStoreNames.contains(practiceWhiteboardStore)) {
+          database.createObjectStore(practiceWhiteboardStore);
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error("Could not open whiteboard storage"));
+    });
+  }
+  return practiceDatabasePromise;
+}
+
+function practiceCurriculumKey() {
+  return currentCourseId === "igcse" ? "igcse" : "ib";
+}
+
+function practiceQuestionKey(questionId) {
+  return `${practiceCurriculumKey()}:${questionId}`;
+}
+
+async function getSavedWhiteboard(questionId) {
+  const database = await openPracticeDatabase();
+  return new Promise((resolve, reject) => {
+    const request = database.transaction(practiceWhiteboardStore, "readonly")
+      .objectStore(practiceWhiteboardStore)
+      .get(practiceQuestionKey(questionId));
+    request.onsuccess = () => resolve(request.result?.document || null);
+    request.onerror = () => reject(request.error || new Error("Could not load whiteboard"));
+  });
+}
+
+async function saveWhiteboard(questionId, document) {
+  const database = await openPracticeDatabase();
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction(practiceWhiteboardStore, "readwrite");
+    transaction.objectStore(practiceWhiteboardStore).put({
+      document,
+      updatedAt: new Date().toISOString(),
+    }, practiceQuestionKey(questionId));
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error || new Error("Could not save whiteboard"));
+    transaction.onabort = () => reject(transaction.error || new Error("Whiteboard save was interrupted"));
+  });
+}
+
+function completedPracticeQuestionIds() {
+  const prefix = `${practiceCurriculumKey()}:`;
+  return state.practiceCompleted
+    .filter((key) => key.startsWith(prefix))
+    .map((key) => key.slice(prefix.length));
+}
+
+function sendPracticeAccountState(target) {
+  target.postMessage({
+    type: "mrflynnib-account-state",
+    configured: true,
+    signedIn: true,
+    readOnly: false,
+    localOnly: true,
+    completedQuestionIds: completedPracticeQuestionIds(),
+  }, window.location.origin);
 }
 
 function escapeHtml(value) {
@@ -125,11 +247,6 @@ function formatDuration(seconds, compact = false) {
   return remainder ? `${hours} hr ${remainder} min` : `${hours} hr`;
 }
 
-function formatHours(seconds) {
-  const hours = seconds / 3600;
-  return hours >= 10 ? `${Math.round(hours)}` : hours.toFixed(1);
-}
-
 function completedFor(course) {
   return course.lessons.filter((lesson) => state.completed.includes(lesson.id)).length;
 }
@@ -142,8 +259,61 @@ function topicCompleted(topic) {
   return topic.lessons.filter((lesson) => state.completed.includes(lesson.id)).length;
 }
 
+function topicName(course, topicNumber) {
+  return course.topics.find((topic) => topic.number === topicNumber)?.name || `Topic ${topicNumber}`;
+}
+
+function courseArtwork(course) {
+  if (course.image) {
+    return `<img src="${course.image}" alt="${escapeHtml(course.code)} course cover, Mr Flynn IB" loading="lazy" />`;
+  }
+  return `<div class="igcse-course-art" aria-label="Edexcel IGCSE Mathematics course cover">
+    <span>IGCSE</span><strong>Mathematics</strong><small>Mr Flynn IB</small>
+  </div>`;
+}
+
+function configurePreviewMode() {
+  if (!reviewerMode && !validPreviewCourseId) return;
+  if (validPreviewCourseId) {
+    const course = courses[validPreviewCourseId];
+    document.title = `${course.code} course preview | Mr Flynn IB`;
+    document.querySelector(".prototype-strip strong").textContent = salesPreviewMode ? `${course.code} free course preview` : `Private ${course.code} course preview`;
+    document.querySelector(".prototype-strip span").textContent = salesPreviewMode
+      ? "Try three complete lesson-and-practice samples. Locked lessons are included with full course access."
+      : "Review the real lesson, practice and curriculum experience before the public launch.";
+    return;
+  }
+  document.body.classList.add("reviewer-mode");
+  document.title = "All five courses review | Mr Flynn IB";
+  document.querySelector(".prototype-strip strong").textContent = "Private five-course review";
+  document.querySelector(".prototype-strip span").textContent = "Review-only view. Nothing here is live and no payments or student accounts are connected.";
+  document.getElementById("coursesNavLabel").textContent = "All courses";
+  document.getElementById("sidebarCourseLabel").textContent = "Four IB courses and Edexcel IGCSE";
+  document.getElementById("welcomeEyebrow").textContent = "Private review";
+  document.getElementById("welcomeTitle").textContent = "Review all five courses";
+  document.getElementById("welcomeCopy").textContent = "Open every course, topic and lesson from one private inspection view.";
+  document.getElementById("libraryStatusText").textContent = "Five complete course pathways";
+  document.getElementById("enrolmentEyebrow").textContent = "Review catalogue";
+  document.getElementById("dashboardCoursesTitle").textContent = "All five courses";
+  document.getElementById("dashboardCoursesButton").textContent = "Inspect all courses →";
+  document.getElementById("coursesEyebrow").textContent = "Private course review";
+  document.getElementById("coursesTitle").textContent = "All five courses";
+  document.getElementById("coursesDescription").textContent = "Inspect the complete lesson structure for AA HL, AA SL, AI HL, AI SL and Edexcel IGCSE Mathematics. Open any card to review its topics, videos and mapped practice.";
+  document.getElementById("courseBackButton").textContent = "← All courses";
+  document.getElementById("summaryTopics").textContent = "26";
+  document.getElementById("summaryTopicsLabel").textContent = "course topics";
+}
+
 function getCurrentLesson() {
   return currentCourse.lessons.find((lesson) => lesson.id === currentLessonId) || currentCourse.lessons[0];
+}
+
+function salesPreviewLessons(course = currentCourse) {
+  return course.topics.slice(0, 3).map((topic) => topic.lessons[0]).filter(Boolean);
+}
+
+function lessonIsAvailable(lesson) {
+  return !salesPreviewMode || salesPreviewLessons().some((sample) => sample.id === lesson.id);
 }
 
 function showToast(message) {
@@ -177,46 +347,45 @@ function setView(viewName) {
 function courseCard(course, large = false) {
   const completed = completedFor(course);
   const percentage = percentFor(course);
-  const label = course.level === "HL" ? "Foundation + HL extension" : "Complete SL course";
-  return `<article class="course-card ${large ? "is-large" : ""} accent-${course.accent}">
+  return `<button type="button" class="course-card ${large ? "is-large" : ""} accent-${course.accent}" data-course-id="${course.id}" aria-label="Open ${escapeHtml(course.code)} course">
     <div class="course-card-art">
-      <img src="${course.image}" alt="${course.code} course cover — Mr Flynn IB" loading="lazy" />
+      ${courseArtwork(course)}
     </div>
     <div class="course-card-body">
-      <div class="course-card-meta"><span>${label}</span><span>${course.lessons.length} lessons</span></div>
+      <div class="course-card-meta"><span>Complete ${course.code} course</span><span>${course.lessons.length} lessons</span></div>
       <h3>${course.name}</h3>
       <p>${course.description}</p>
       <div class="course-card-progress"><span style="width:${percentage}%"></span></div>
-      <div class="course-card-footer"><small>${completed} completed · ${formatHours(course.seconds)} hours</small><button type="button" data-course-id="${course.id}">Open course →</button></div>
+      <div class="course-card-footer"><small>${completed} of ${course.lessons.length} completed</small><span class="course-card-link">Open course →</span></div>
     </div>
-  </article>`;
+  </button>`;
 }
 
 function renderCourseCards() {
-  const markup = courseDefinitions.map((definition) => courseCard(courses[definition.id], true)).join("");
+  const markup = enrolledCourseDefinitions.map((definition) => courseCard(courses[definition.id], true)).join("");
   document.getElementById("allCourseGrid").innerHTML = markup;
 }
 
 function renderDashboard() {
-  const course = courses[state.lastCourse] || courses["aa-sl"];
+  const course = courses[enrolledCourseId];
   const lastLesson = course.lessons.find((lesson) => lesson.id === state.lastLesson);
   const nextLesson = lastLesson || course.lessons.find((lesson) => !state.completed.includes(lesson.id)) || course.lessons[0];
   const percentage = percentFor(course);
   const continueCourseImage = document.getElementById("continueCourseImage");
   continueCourseImage.src = course.image;
-  continueCourseImage.alt = `${course.code} course cover — Mr Flynn IB`;
+  continueCourseImage.alt = `${course.code} course cover, Mr Flynn IB`;
   document.getElementById("continueLessonTitle").textContent = `${nextLesson.code} ${nextLesson.title}`;
-  document.getElementById("continueLessonMeta").textContent = `Topic ${nextLesson.topic}: ${library.topicNames[nextLesson.topic]} · ${formatDuration(nextLesson.seconds)}`;
+  document.getElementById("continueLessonMeta").textContent = `Topic ${nextLesson.topic}: ${topicName(course, nextLesson.topic)} · ${formatDuration(nextLesson.seconds)}`;
   document.getElementById("continueProgressLabel").textContent = `${percentage}% complete`;
   document.getElementById("continueProgressCount").textContent = `${completedFor(course)} of ${course.lessons.length} lessons`;
   document.getElementById("continueProgressBar").style.width = `${percentage}%`;
   document.getElementById("continueButton").dataset.courseId = course.id;
   document.getElementById("continueButton").dataset.lessonId = nextLesson.id;
-  document.getElementById("dashboardCourseGrid").innerHTML = courseDefinitions.map((definition) => courseCard(courses[definition.id])).join("");
+  document.getElementById("dashboardCourseGrid").innerHTML = enrolledCourseDefinitions.map((definition) => courseCard(courses[definition.id])).join("");
 }
 
 function openCourse(courseId, lessonId = null) {
-  if (!courses[courseId]) return;
+  if (!courses[courseId] || !enrolledCourseIds.includes(courseId)) return;
   currentCourseId = courseId;
   currentCourse = courses[courseId];
   currentLessonId = lessonId && currentCourse.lessons.some((lesson) => lesson.id === lessonId)
@@ -251,9 +420,11 @@ function renderCourse() {
   document.getElementById("courseCode").textContent = currentCourse.code;
   document.getElementById("courseName").textContent = currentCourse.name;
   document.getElementById("courseSummary").textContent = currentCourse.description;
+  document.getElementById("courseFamily").textContent = currentCourse.family || "IB Mathematics";
   document.getElementById("coursePercent").textContent = `${percentage}%`;
   document.getElementById("courseLessonCount").textContent = currentCourse.lessons.length;
-  document.getElementById("courseHours").textContent = formatHours(currentCourse.seconds);
+  document.getElementById("courseTopicCount").textContent = currentCourse.topics.length;
+  document.getElementById("topicStrip").style.setProperty("--topic-count", currentCourse.topics.length);
   document.getElementById("courseProgressBar").style.width = `${percentage}%`;
   renderTopicStrip();
   renderLesson(lesson);
@@ -261,6 +432,10 @@ function renderCourse() {
 }
 
 function renderLesson(lesson) {
+  if (!lessonIsAvailable(lesson)) {
+    showToast("This lesson is included with full course access");
+    return;
+  }
   currentLessonId = lesson.id;
   currentTopic = lesson.topic;
   state.lastCourse = currentCourseId;
@@ -270,17 +445,18 @@ function renderLesson(lesson) {
   const complete = state.completed.includes(lesson.id);
   document.getElementById("lessonPosition").textContent = `Lesson ${courseIndex + 1} of ${currentCourse.lessons.length}`;
   document.getElementById("lessonTitle").textContent = `${lesson.code} ${lesson.title}`;
-  document.getElementById("lessonMeta").textContent = `Topic ${lesson.topic} · ${library.topicNames[lesson.topic]}`;
+  document.getElementById("lessonMeta").textContent = `Topic ${lesson.topic} · ${topicName(currentCourse, lesson.topic)}`;
   document.getElementById("metaCourse").textContent = currentCourse.code;
-  document.getElementById("metaTopic").textContent = `${lesson.topic} · ${library.topicNames[lesson.topic]}`;
+  document.getElementById("metaTopic").textContent = `${lesson.topic} · ${topicName(currentCourse, lesson.topic)}`;
   document.getElementById("metaDuration").textContent = formatDuration(lesson.seconds);
-  document.getElementById("metaAccess").textContent = lesson.scope;
   renderLessonPractice(lesson);
   const completeButton = document.getElementById("completeButton");
   completeButton.classList.toggle("is-complete", complete);
   completeButton.lastElementChild.textContent = complete ? "Completed" : "Mark complete";
-  document.getElementById("previousLesson").disabled = courseIndex <= 0;
-  document.getElementById("nextLesson").disabled = courseIndex >= currentCourse.lessons.length - 1;
+  const navigationLessons = salesPreviewMode ? salesPreviewLessons() : currentCourse.lessons;
+  const navigationIndex = navigationLessons.findIndex((candidate) => candidate.id === lesson.id);
+  document.getElementById("previousLesson").disabled = navigationIndex <= 0;
+  document.getElementById("nextLesson").disabled = navigationIndex >= navigationLessons.length - 1;
   const frame = document.getElementById("videoFrame");
   const nextSource = `https://iframe.mediadelivery.net/embed/${library.libraryId}/${lesson.id}?autoplay=false&loop=false&muted=false&preload=true&responsive=true`;
   if (frame.src !== nextSource) {
@@ -294,14 +470,32 @@ function renderLessonPractice(lesson) {
   const panel = document.getElementById("lessonPractice");
   const practice = practiceLibrary?.lessons?.[lesson.id];
   panel.hidden = !practice;
-  if (!practice) return;
+  if (!practice) {
+    setPracticeExpanded(false);
+    return;
+  }
+
+  const questionCount = practice.questionIds.length;
+  document.getElementById("practiceCount").textContent = `${questionCount} question${questionCount === 1 ? "" : "s"}`;
 
   const frame = document.getElementById("practiceFrame");
-  const url = new URL("/public/question-bank/ib-bank.html", window.location.href);
+  const bankFile = practice.bankPath || "ib-bank.html";
+  const url = new URL(`/public/question-bank/${bankFile}`, window.location.href);
+  url.searchParams.set("renderer", "20261018-13");
   url.searchParams.set("embedded", "1");
   url.searchParams.set("practice", "1");
   url.searchParams.set("course", practice.course);
+  url.searchParams.set("displayCourse", currentCourse.code);
   url.searchParams.set("ids", practice.questionIds.join(","));
+  if (practice.questionParts) {
+    url.searchParams.set("parts", JSON.stringify(practice.questionParts));
+  }
+  if (practice.questionPartTitles) {
+    url.searchParams.set("partTitles", JSON.stringify(practice.questionPartTitles));
+  }
+  if (practice.questionBodies) {
+    url.searchParams.set("bodies", JSON.stringify(practice.questionBodies));
+  }
   url.searchParams.set("solutions", "1");
   if (frame.src !== url.href) {
     document.getElementById("practiceFrameWrap").style.height = "660px";
@@ -309,15 +503,31 @@ function renderLessonPractice(lesson) {
   }
 }
 
+function syncPracticeFrameScroll(expanded) {
+  const frame = document.getElementById("practiceFrame");
+  if (!frame?.contentWindow) return;
+  frame.contentWindow.postMessage({ type: "mrflynnib-question-bank-scroll", enabled: expanded }, window.location.origin);
+}
+
+function setPracticeExpanded(expanded) {
+  const panel = document.getElementById("lessonPractice");
+  const button = document.getElementById("practiceExpandButton");
+  panel.classList.toggle("is-expanded", expanded);
+  document.body.classList.toggle("practice-expanded", expanded);
+  button.setAttribute("aria-pressed", String(expanded));
+  button.lastElementChild.textContent = expanded ? "Close expanded view" : "Expand practice";
+  syncPracticeFrameScroll(expanded);
+}
+
 function renderLessonList(query = "") {
   const list = document.getElementById("lessonList");
   const normalized = query.trim().toLowerCase();
   let lessons = normalized
-    ? currentCourse.lessons.filter((lesson) => `${lesson.code} ${lesson.title} ${library.topicNames[lesson.topic]} ${lesson.scope}`.toLowerCase().includes(normalized))
+    ? currentCourse.lessons.filter((lesson) => `${lesson.code} ${lesson.title} ${topicName(currentCourse, lesson.topic)} ${lesson.scope}`.toLowerCase().includes(normalized))
     : currentCourse.topics.find((topic) => topic.number === currentTopic)?.lessons || [];
 
   const headingTopic = normalized ? "All topics" : `Topic ${currentTopic}`;
-  const headingTitle = normalized ? "Search results" : library.topicNames[currentTopic];
+  const headingTitle = normalized ? "Search results" : topicName(currentCourse, currentTopic);
   document.getElementById("curriculumEyebrow").textContent = headingTopic;
   document.getElementById("curriculumTitle").textContent = headingTitle;
   document.getElementById("curriculumCount").textContent = `${lessons.length} lesson${lessons.length === 1 ? "" : "s"}`;
@@ -327,31 +537,98 @@ function renderLessonList(query = "") {
     return;
   }
 
-  let previousGroup = "";
+  let previousTopic = null;
   list.innerHTML = lessons.map((lesson) => {
-    const group = normalized ? `Topic ${lesson.topic} · ${lesson.scope}` : lesson.scope;
-    const heading = group !== previousGroup ? `<div class="lesson-group-label">${escapeHtml(group)}</div>` : "";
-    previousGroup = group;
+    const heading = normalized && lesson.topic !== previousTopic
+      ? `<div class="lesson-group-label">Topic ${lesson.topic} · ${escapeHtml(topicName(currentCourse, lesson.topic))}</div>`
+      : "";
+    previousTopic = lesson.topic;
     const complete = state.completed.includes(lesson.id);
     const practice = practiceLibrary?.lessons?.[lesson.id];
-    return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""}" type="button" data-lesson-id="${lesson.id}">
-      <span class="lesson-state">${complete ? "✓" : "▶"}</span>
-      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice" : ""}</small></span>
+    const locked = !lessonIsAvailable(lesson);
+    return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? "Locked lesson: " : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
+      <span class="lesson-state">${locked ? "⌑" : complete ? "✓" : "▶"}</span>
+      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? "Full course" : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice" : ""}`}</small></span>
     </button>`;
   }).join("");
 }
 
-window.addEventListener("message", (event) => {
+window.addEventListener("message", async (event) => {
   const frame = document.getElementById("practiceFrame");
   if (event.origin !== window.location.origin || event.source !== frame?.contentWindow) return;
-  if (event.data?.type !== "mrflynnib-question-bank-height") return;
-  const height = Math.min(Math.max(Number(event.data.height) || 660, 420), 5200);
-  document.getElementById("practiceFrameWrap").style.height = `${height}px`;
+  const message = event.data;
+  if (!message?.type) return;
+
+  if (message.type === "mrflynnib-question-bank-height") {
+    const height = Math.min(Math.max(Number(message.height) || 660, 420), 5200);
+    document.getElementById("practiceFrameWrap").style.height = `${height}px`;
+    return;
+  }
+
+  if (message.type === "mrflynnib-question-bank-ready") {
+    sendPracticeAccountState(event.source);
+    return;
+  }
+
+  if (message.type === "mrflynnib-progress-set") {
+    const key = practiceQuestionKey(String(message.questionId));
+    const completed = new Set(state.practiceCompleted);
+    if (message.completed) completed.add(key);
+    else completed.delete(key);
+    state.practiceCompleted = [...completed];
+    saveState();
+    event.source.postMessage({
+      type: "mrflynnib-progress-result",
+      questionId: String(message.questionId),
+      completed: Boolean(message.completed),
+      ok: true,
+    }, window.location.origin);
+    return;
+  }
+
+  if (message.type === "mrflynnib-whiteboard-load") {
+    try {
+      const document = await getSavedWhiteboard(String(message.questionId));
+      event.source.postMessage({
+        type: "mrflynnib-whiteboard-data",
+        questionId: String(message.questionId),
+        document,
+        ok: true,
+      }, window.location.origin);
+    } catch {
+      event.source.postMessage({
+        type: "mrflynnib-whiteboard-data",
+        questionId: String(message.questionId),
+        document: null,
+        ok: false,
+      }, window.location.origin);
+    }
+    return;
+  }
+
+  if (message.type === "mrflynnib-whiteboard-save") {
+    try {
+      await saveWhiteboard(String(message.questionId), message.document);
+      event.source.postMessage({
+        type: "mrflynnib-whiteboard-save-result",
+        questionId: String(message.questionId),
+        ok: true,
+      }, window.location.origin);
+    } catch (error) {
+      event.source.postMessage({
+        type: "mrflynnib-whiteboard-save-result",
+        questionId: String(message.questionId),
+        ok: false,
+        reason: error?.name === "QuotaExceededError" ? "too-large" : "storage-error",
+      }, window.location.origin);
+    }
+  }
 });
 
 function moveLesson(direction) {
-  const currentIndex = currentCourse.lessons.findIndex((lesson) => lesson.id === currentLessonId);
-  const next = currentCourse.lessons[currentIndex + direction];
+  const navigationLessons = salesPreviewMode ? salesPreviewLessons() : currentCourse.lessons;
+  const currentIndex = navigationLessons.findIndex((lesson) => lesson.id === currentLessonId);
+  const next = navigationLessons[currentIndex + direction];
   if (!next) return;
   renderLesson(next);
   renderTopicStrip();
@@ -372,7 +649,7 @@ function toggleComplete() {
 }
 
 function renderProgress() {
-  document.getElementById("progressCourseGrid").innerHTML = courseDefinitions.map((definition) => {
+  document.getElementById("progressCourseGrid").innerHTML = enrolledCourseDefinitions.map((definition) => {
     const course = courses[definition.id];
     const complete = completedFor(course);
     const percentage = percentFor(course);
@@ -399,13 +676,18 @@ function pastPaperSets() {
 }
 
 function renderPastPaperTabs() {
-  document.getElementById("pastPaperCourseTabs").innerHTML = courseDefinitions.map((definition) => {
+  const tabs = document.getElementById("pastPaperCourseTabs");
+  const definitions = enrolledCourseDefinitions.filter((definition) => pastPaperLibrary.courses?.[definition.code]);
+  tabs.classList.toggle("is-single-course", definitions.length === 1);
+  tabs.innerHTML = definitions.map((definition) => {
     const stats = pastPaperLibrary.stats[definition.code];
-    return `<button class="past-paper-course-tab ${definition.code === currentPastPaperCourse ? "is-active" : ""}" type="button" data-past-course="${definition.code}">
+    const Tag = reviewerMode ? "button" : "div";
+    const attributes = reviewerMode ? `type="button" data-past-course="${definition.code}"` : `aria-label="Your enrolled course"`;
+    return `<${Tag} class="past-paper-course-tab ${definition.code === currentPastPaperCourse ? "is-active" : ""}" ${attributes}>
       <span>${definition.code}</span>
       <strong>${escapeHtml(definition.name)}</strong>
       <small>${stats.papers} papers · ${stats.questions} solutions</small>
-    </button>`;
+    </${Tag}>`;
   }).join("");
 }
 
@@ -422,13 +704,41 @@ function renderPastPaperCatalog() {
   if (!sets.some((set) => set.id === currentPastPaperSetId)) currentPastPaperSetId = sets[0]?.id || null;
   document.getElementById("pastPaperCatalogTitle").textContent = `${currentPastPaperCourse} papers`;
   document.getElementById("pastPaperResultCount").textContent = `${sets.length} paper${sets.length === 1 ? "" : "s"}`;
-  document.getElementById("pastPaperSetList").innerHTML = sets.length ? sets.map((set) => {
-    const meta = [set.timezone, set.paper].filter(Boolean).join(" · ");
-    return `<button class="paper-set-card ${set.id === currentPastPaperSetId ? "is-active" : ""}" type="button" data-paper-set-id="${set.id}">
-      <span><small>${escapeHtml(set.session)}</small><strong>${escapeHtml(meta)}</strong><em>${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}</em></span>
-      <i aria-hidden="true">→</i>
-    </button>`;
-  }).join("") : '<p class="no-results">No papers match this session.</p>';
+  if (!sets.length) {
+    document.getElementById("pastPaperSetList").innerHTML = '<p class="no-results">No papers match this session.</p>';
+    return;
+  }
+
+  const yearGroups = [];
+  for (const set of sets) {
+    const year = set.session.match(/\b20\d{2}\b/)?.[0] || "Specimen";
+    const session = set.session.replace(/\s*\b20\d{2}\b\s*/, "").trim() || "Specimen";
+    let yearGroup = yearGroups.find((group) => group.year === year);
+    if (!yearGroup) {
+      yearGroup = { year, sessions: [] };
+      yearGroups.push(yearGroup);
+    }
+    let sessionGroup = yearGroup.sessions.find((group) => group.session === session);
+    if (!sessionGroup) {
+      sessionGroup = { session, sets: [] };
+      yearGroup.sessions.push(sessionGroup);
+    }
+    sessionGroup.sets.push(set);
+  }
+
+  document.getElementById("pastPaperSetList").innerHTML = yearGroups.map((yearGroup) => `<section class="paper-year-group">
+    <h3 class="paper-year-heading">${escapeHtml(yearGroup.year)}</h3>
+    ${yearGroup.sessions.map((sessionGroup) => `<div class="paper-session-group">
+      <p class="paper-session-heading">${escapeHtml(sessionGroup.session === "Specimen" ? "Official specimen papers" : `${sessionGroup.session} session`)}</p>
+      ${sessionGroup.sets.map((set) => {
+        const meta = [set.timezone, set.paper].filter(Boolean).join(" · ");
+        return `<button class="paper-set-card ${set.id === currentPastPaperSetId ? "is-active" : ""}" type="button" data-paper-set-id="${set.id}">
+          <span><strong>${escapeHtml(meta)}</strong><em>${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}</em></span>
+          <i aria-hidden="true">→</i>
+        </button>`;
+      }).join("")}
+    </div>`).join("")}
+  </section>`).join("");
 }
 
 function currentPastPaperSet() {
@@ -472,6 +782,7 @@ function renderPastPaperQuestion(question) {
 }
 
 function renderPastPapers() {
+  if (!pastPaperLibrary.stats[currentPastPaperCourse]) currentPastPaperCourse = "AA HL";
   const stats = pastPaperLibrary.stats[currentPastPaperCourse];
   renderPastPaperTabs();
   renderPastPaperSessionFilter();
@@ -547,6 +858,13 @@ document.getElementById("sidebarScrim").addEventListener("click", closeSidebar);
 document.getElementById("previousLesson").addEventListener("click", () => moveLesson(-1));
 document.getElementById("nextLesson").addEventListener("click", () => moveLesson(1));
 document.getElementById("completeButton").addEventListener("click", toggleComplete);
+document.getElementById("practiceExpandButton").addEventListener("click", () => {
+  const panel = document.getElementById("lessonPractice");
+  setPracticeExpanded(!panel.classList.contains("is-expanded"));
+});
+document.getElementById("practiceFrame").addEventListener("load", () => {
+  syncPracticeFrameScroll(document.getElementById("lessonPractice").classList.contains("is-expanded"));
+});
 document.getElementById("lessonSearch").addEventListener("input", (event) => renderLessonList(event.target.value));
 document.getElementById("pastPaperSessionFilter").addEventListener("change", (event) => {
   currentPastPaperSession = event.target.value;
@@ -587,9 +905,10 @@ document.getElementById("closeHelp").addEventListener("click", () => helpDialog.
 
 document.getElementById("resetProgress").addEventListener("click", () => {
   state.completed = [];
-  state.lastCourse = "aa-sl";
-  state.lastLesson = courses["aa-sl"].lessons[0]?.id || null;
-  currentCourseId = "aa-sl";
+  state.practiceCompleted = [];
+  state.lastCourse = enrolledCourseId;
+  state.lastLesson = courses[enrolledCourseId].lessons[0]?.id || null;
+  currentCourseId = enrolledCourseId;
   currentCourse = courses[currentCourseId];
   currentLessonId = state.lastLesson;
   currentTopic = 1;
@@ -599,18 +918,36 @@ document.getElementById("resetProgress").addEventListener("click", () => {
   renderCourseCards();
   renderProgress();
   if (document.getElementById("courseView").classList.contains("is-visible")) renderCourse();
+  const practiceFrame = document.getElementById("practiceFrame");
+  if (practiceFrame?.contentWindow) sendPracticeAccountState(practiceFrame.contentWindow);
   showToast("Prototype progress reset");
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeSidebar();
+  if (event.key === "Escape") {
+    if (document.getElementById("lessonPractice").classList.contains("is-expanded")) {
+      setPracticeExpanded(false);
+      return;
+    }
+    closeSidebar();
+  }
 });
 
-document.getElementById("sidebarVideoCount").textContent = library.stats.videos;
-document.getElementById("sidebarHours").textContent = Math.round(library.stats.seconds / 3600);
-document.getElementById("summaryVideos").textContent = library.stats.videos;
-document.getElementById("summaryHours").textContent = `${Math.round(library.stats.seconds / 3600)} hrs`;
+const enrolledCourse = courses[enrolledCourseId];
+const visibleLessonCount = reviewerMode
+  ? enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0)
+  : enrolledCourse.lessons.length;
+document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
+document.getElementById("summaryVideos").textContent = visibleLessonCount;
 
+configurePreviewMode();
 renderDashboard();
 renderCourseCards();
 renderProgress();
+if (reviewerMode) {
+  setView("courses");
+} else if (validPreviewCourseId) {
+  const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
+  const requestedLesson = courses[validPreviewCourseId].topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
+  openCourse(validPreviewCourseId, requestedLesson?.id || null);
+}

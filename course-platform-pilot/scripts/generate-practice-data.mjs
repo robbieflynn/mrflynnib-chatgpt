@@ -6,7 +6,9 @@ import { fileURLToPath } from "node:url";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "../..");
 const distDir = path.join(rootDir, "course-platform-pilot/dist");
-const bankPath = path.join(rootDir, "public/question-bank/ib-bank.html");
+const ibBankPath = path.join(rootDir, "public/question-bank/ib-bank.html");
+const igcseBankPath = path.join(rootDir, "public/question-bank/igcse-bank.html");
+const igcseLessonsPath = path.join(rootDir, "course-platform-pilot/igcse-lessons.json");
 const outputPath = path.join(distDir, "practice-data.js");
 const auditPath = path.join(rootDir, "course-platform-pilot/practice-audit.csv");
 
@@ -40,25 +42,2047 @@ function parseSeed(html) {
 }
 
 const library = loadWindowValue(path.join(distDir, "library-data.js"), "MR_FLYNN_LIBRARY");
-const seed = parseSeed(fs.readFileSync(bankPath, "utf8"));
+const ibSeed = parseSeed(fs.readFileSync(ibBankPath, "utf8")).map((question) => ({ ...question, sourceBank: "ib" }));
+const igcseSeed = parseSeed(fs.readFileSync(igcseBankPath, "utf8")).map((question) => ({ ...question, sourceBank: "igcse" }));
+const seed = [...ibSeed, ...igcseSeed];
+const igcseLessons = JSON.parse(fs.readFileSync(igcseLessonsPath, "utf8"));
 
-const pilotOverrides = {
+const verifiedOverrides = {
+  // The second question previously used here was about indices, not standard
+  // form. Keep the one exact match visible while a second is researched.
+  "95399e03-4f3d-47dd-8a88-41c986b50d91": ["A_M21TZ1SL_P1_Q2", "N20TZ0AISL_P1_Q1"],
+  // IGCSE lessons with a single or small set of exact existing-bank matches.
+  // Plain numerical fractions only. Algebraic fractions belong to lesson 2.2.5.
+  "c7eaa0b3-db8e-4105-b9c4-f29003650c63": ["4MA1_2019J_1HR_Q1", "4MA1_2018M_2H_Q4"],
+  // Simplifying surds only. Each mixed source is cropped to part (a), so no
+  // rationalising-the-denominator work appears before the dedicated lesson.
+  "24b7805f-537b-4b08-962c-92d7de9fa038": ["4MA1_2023J_2H_Q17", "4MA1_2024N_1H_Q17"],
+  "cbc83cb9-d117-46ea-ac62-bb7ac362394d": ["4MA1_2022J_2HR_Q13"],
+  // Keep the broader surds practice distinct from the simplifying lesson:
+  // no source question is repeated between the two lessons.
+  "4651759a-7060-41fe-aa6b-944408e39dc3": ["4MA1_2020J_2H_Q20", "4MA1_2023M_2H_Q23"],
+  // Sets without Venn diagrams. The following Venn-diagram lesson retains
+  // its already approved pair unchanged.
+  "de764a82-d18a-4259-8042-26a3a4a87486": ["4MA1_2020J_1HR_Q4", "4MA1_2019M_1HR_Q3"],
+  "668c4b07-12c3-4a7c-8504-9bff96be7291": ["4MA1_2018M_1H_Q4", "4MA1_2019M_1HR_Q13"],
+  // Both sources contain one direct percentage-change calculation followed
+  // by a different skill. Only the percentage-change part is displayed.
+  "62baae37-e03d-4e49-ae83-a9c5114e54cd": ["4MA1_2022J_2H_Q8", "4MA1_2020N_1HR_Q5"],
+  // Ratio introduction must not borrow a sharing question from lesson 1.7.2.
+  "5f20375a-ea2a-43fd-a74c-8bfaba28a66b": ["4MA1_2021M_1H_Q4", "4MA1_2019M_1HR_Q11"],
+  // Bounds progress from direct endpoint recall to a product of two rounded
+  // values. Only part (a) of the second source is shown.
+  "fbd320cc-1282-4830-a9ba-15241df8dd87": ["4MA1_2020N_2HR_Q5", "4MA1_2019J_2HR_Q17"],
+  // IGCSE Topic 2 algebra correction pass. Keep each lesson on its exact
+  // named operation and crop mixed source questions to the relevant part.
+  "133c4249-51e3-404b-b1da-d02e97ac254b": ["4MA1_2019J_1H_Q1", "4MA1_2021J_1H_Q5"],
+  "a517d3ce-4597-4559-bb22-f7a591d92bb3": ["4MA1_2023M_1H_Q14", "4MA1_2025M_2HR_Q13"],
+  "19a71d14-30c0-4bec-9be1-a1e978c703d9": ["4MA1_2019M_2HR_Q5", "4MA1_2024M_1H_Q12"],
+  "0cdedfbf-26ea-489e-b9ce-f8166c7ddbbc": ["4MA1_2019J_1H_Q11", "4MA1_2018M_2HR_Q22"],
+  "b262d7f9-4cba-4080-8aee-588b2b1b5569": ["4MA1_2018M_2H_Q1", "4MA1_2025M_2HR_Q17"],
+  "2933b84a-2edd-4f9e-a768-e79a27aeeae7": ["4MA1_2019M_1HR_Q4", "4MA1_2023J_2H_Q13"],
+  // The verified bank has no non-monic factorise-then-solve prompt. Keep the
+  // approved direct example alone rather than substituting factorisation only.
+  "7e85609d-7df5-4a52-a399-17b82dd85721": ["4MA1_2021M_2H_Q9"],
+  // One exact source writes a quadratic in completed-square form and then
+  // uses that form to solve. The previous two sources did not solve at all.
+  "79235cf6-1de4-4626-930e-42e9ca9ecd2d": ["4MA1_2018M_2HR_Q24"],
+  // Direct and contextual quadratic-formula practice, both ending in a
+  // rounded numerical answer.
+  "1394e37c-0c0e-4f7c-856f-aacff695cbda": ["4MA1_2018M_1H_Q11", "4MA1_2018M_1HR_Q16"],
+  // IGCSE Topic 3 review. Keep sequences distinct from series, keep the
+  // function introduction to direct substitution, and separate interpreting
+  // inverse notation from deriving an inverse-function formula.
+  "d0b8c40e-aef7-4945-bd5c-6045c5074475": ["4MA1_2021M_1H_Q2", "4MA1_2019J_2HR_Q3"],
+  "737ba3b2-f984-48ba-a0c0-2a6947f22e2c": ["4MA1_2020J_2H_Q25", "4MA1_2019M_1H_Q16"],
+  "ae16b3bf-a089-42b8-97c6-23e995688cc3": ["4MA1_2018M_1H_Q14", "4MA1_2019M_2H_Q24"],
+  "d084246b-aa0a-4a8b-a962-db8032c3bbcf": ["4MA1_2025M_2HR_Q19", "4MA1_2023M_1H_Q17", "4MA1_2020J_1HR_Q17"],
+  "fb79ddd5-ef05-48a7-a489-311620a88c6b": ["4MA1_2019J_1HR_Q23"],
+  "a99a4255-6920-4e01-9d11-9a0ce6d2f491": ["4MA1_2021J_1H_Q22", "4MA1_2024M_1H_Q15"],
+  "1ec9f03e-2faf-4349-b0ee-96686806c30b": ["4MA1_2020N_2H_Q6", "4MA1_2019M_1H_Q23"],
+  // There is only one clean standalone coordinate-distance source in the
+  // verified archive. Do not pad it with the rejected triangle/trigonometry
+  // question or with a later tangent/simultaneous-equations problem.
+  "c03ceb67-bb68-4fe8-a30e-922281449d50": ["4MA1_2022M_1H_Q10"],
+  // Direct power-rule differentiation only, cropped before each source moves
+  // on to negative gradients. The next lesson then applies differentiation
+  // to locate points having a specified gradient.
+  "498da047-40c6-4199-b592-da279e244583": ["4MA1_2018M_2H_Q17", "4MA1_2019J_1H_Q12"],
+  "d7be6548-9fb0-4b63-9658-870c96841260": ["4MA1_2020N_1HR_Q13", "4MA1_2023M_1H_Q11"],
+  // IGCSE Topic 4 geometry review. Keep one accessible pressure calculation
+  // then progress to comparing the greatest and least possible face pressure.
+  // Elevation/depression deliberately contains one example of each.
+  "d539bea7-bed1-4aca-a743-1d6698a310bf": ["4MA1_2018M_2HR_Q2", "4MA1_2019M_1HR_Q12"],
+  "4b8eb48d-283b-46bf-8938-bc964e29c1f4": ["4MA1_2021J_2HR_Q13", "4MA1_2021N_1H_Q12"],
+  // Separate sine-rule and cosine-rule practice precisely. The area lesson
+  // includes a direct request to calculate an area, not two inverse uses of
+  // an area already supplied in the prompt.
+  "04d5888d-ec67-4dc2-9b59-1a4ffa18a286": ["4MA1_2021N_1H_Q13", "4MA1_2022J_1HR_Q22"],
+  "ad2901e0-2e0e-4037-85d4-7eae92f2f194": ["4MA1_2018M_2H_Q18", "4MA1_2018M_1HR_Q18"],
+  "bc1ded39-4c6f-44cc-aa12-9685d8b20bc4": ["4MA1_2024M_2HR_Q15", "4MA1_2024M_1HR_Q15"],
+  // Pair one prism with one cylinder in surface-area practice, and vary the
+  // similar-solids work with a difference-between-volumes problem.
+  "45daaeca-eaab-4a30-aca8-b5c7b6dc9788": ["4MA1_2023J_1HR_Q2", "4MA1_2020N_2H_Q9"],
+  "19336094-e325-4a14-8c2a-dfd3b0529d65": ["4MA1_2019J_2H_Q16", "4MA1_2022J_1H_Q17"],
+  // IGCSE Topic 6 close-out. Keep ordinary frequency tables separate from
+  // grouped estimates, then add the requested easy-to-hard probability
+  // progression without repeating a source in another lesson.
+  "20b25248-b2b7-4f5b-b270-d68567b564d7": ["4MA1_2019J_2H_Q13"],
+  "2d8c3008-d9cc-456e-a1a7-05999fc917ed": ["4MA1_2018M_1HR_Q2", "4MA1_2020J_2HR_Q2", "4MA1_2019M_2H_Q1"],
+  "1a51ff2e-8cdc-4a3d-9f0b-85cf3f65e853": ["4MA1_2024M_2HR_Q14", "4MA1_2021N_2H_Q16", "4MA1_2022M_2HR_Q14"],
+  "949eaf81-334d-4578-a811-551fc53c7e3d": ["4MA1_2020N_2HR_Q1", "4MA1_2019M_2HR_Q6", "4MA1_2023M_1HR_Q12"],
+  "aa04feb7-a185-4620-88e0-500455ab7d9e": ["4MA1_2023M_1HR_Q13", "4MA1_2019M_2H_Q23"],
   "e533a89a-2e12-47b6-a54c-534a461dcb04": ["N09TZ0HL_P1_Q11X1", "M10TZ2HL_P2_Q1"],
   "6c582652-bd66-470e-9511-48be5574a322": ["M12TZ2SL_P2_Q3", "N18TZ0HL_P2_Q1"],
   "e6cca689-8f8c-4d4d-8566-7dff6e20a096": ["A_M22TZ1SL_P2_Q1", "A_SPECSL_P2_Q3"],
   "b3abcb64-544d-4926-bdc3-3861a2725078": ["A_M23TZ1SL_P2_Q2", "A_M24TZ1SL_P2_Q2"],
-  "7096456c-bd06-4c4f-9ac3-f2314a2fa334": ["M15TZ1SL_P1_Q3", "M14TZ2HL_P1_Q2"],
+  "7096456c-bd06-4c4f-9ac3-f2314a2fa334": ["M10TZ1HL_P1_Q4", "M14TZ2HL_P1_Q2"],
   "9f18b254-9055-436f-bbc8-4761ca34d5b7": ["M13TZ2SL_P1_Q3", "N08TZ0HL_P1_Q2"],
+  // Pure exponent and index manipulation only. The former automatic choices
+  // were a differentiation question and a logarithms question, neither of
+  // which belongs in this shared AA SL/HL lesson.
+  "4e377a7a-be35-4b76-bcbc-3684974dfaf9": ["A_EXPQ_P1_Q1", "A_EXPQ_P1_Q2"],
   "111f8aa4-20e2-41a1-8665-a1252556f0a0": ["A_M21TZ2HL_P1_Q1", "A_N24TZ0HL_P1_Q3"],
   "cf573eb5-7cdc-4534-a90b-faa307f6e5ff": ["M16TZ2SL_P1_Q3", "N14TZ0SL_P1_Q4"],
-  "64faaf0b-493f-4916-bbde-7ef666e2e7b4": ["A_M25TZ3HL_P1_Q1", "A_N25TZ3HL_P1_Q4"],
+  // Keep the shared AA lesson distinct from AI HL 1.9.2 so no question is
+  // repeated across two different lesson videos. Both questions must remain
+  // pure logarithm/change-of-base work: the rejected specimen question turned
+  // its second part into a trigonometric equation.
+  "64faaf0b-493f-4916-bbde-7ef666e2e7b4": ["A_N25TZ3HL_P1_Q4", "A_N21TZ0HL_P1_Q3"],
   "b492d0cc-b491-46aa-ba1e-48cf199ff207": ["M08TZ2HL_P1_Q12X1", "M12TZ1HL_P1_Q1"],
-  "f2db55ba-d9f3-48b2-976e-4d6fc8a35031": ["A_N24TZ0HL_P2_Q2", "M19TZ1HL_P1_Q2"],
+  // Full-expansion practice only. The neighbouring 1.9.2 lesson already
+  // covers finding a particular term or coefficient.
+  "f2db55ba-d9f3-48b2-976e-4d6fc8a35031": ["M09TZ2HL_P1_Q12X2", "N10TZ0HL_P1_Q3"],
+  // Generalized binomial theorem only: these use a fractional exponent and a
+  // negative fractional exponent. Positive-integer term questions belong in
+  // the preceding binomial lessons.
+  "044da60a-f4cd-46c6-a71f-95b0087e3bb5": ["A_BINQ_P1_Q1", "A_BINQ_P1_Q2"],
+  // Display only the direct decomposition parts of these source questions.
+  // Their later integration work belongs in the calculus course section.
+  "636981ff-833c-4f52-8c70-23ab18592831": ["A2_M24TZ1HL_P1_Q11", "A_M21TZ1HL_P2_Q12"],
+  // Keep this lesson on Cartesian arithmetic and equating real/imaginary
+  // parts. Modulus-argument form and Argand geometry are taught later.
+  "3aef226f-98dc-4ddd-8ad2-8d1bb8402444": ["M09TZ1HL_P1_Q1", "M11TZ1HL_P1_Q2"],
+  // Geometric meaning of complex multiplication: first multiplication by i,
+  // then interpreting a power as a rotation on the Argand diagram.
+  "6deba641-23f1-40d0-ae72-a3a41880b1a6": ["W_N24TZ0AIHL_P1_Q9", "A_M23TZ1HL_P2_Q6"],
+  // Both questions explicitly require complex conjugates: first proving a
+  // conjugate identity, then solving an equation containing z*.
+  "c3a6691b-3913-41ee-a041-c85daac52f12": ["M12TZ2HL_P1_Q12", "N20TZ0HL_P1_Q4"],
+  // Direct complex-root equations only. Polynomial roots and roots of unity
+  // are taught in the neighbouring lessons.
+  "921a99b5-a673-423c-aeed-402fec0952e0": ["N08TZ0HL_P1_Q13", "N11TZ0HL_P1_Q2"],
+  // Roots of unity only: listing the seventh roots of z^7 = 1, followed by
+  // the standard omega^3 = 1 and 1 + omega + omega^2 = 0 identities.
+  "bbe01c0e-9af6-47fc-845c-f2259ff05024": ["M16TZ2HL_P1_Q12", "M10TZ2HL_P1_Q13"],
+  // Keep the four mathematical-induction lessons in separate skill lanes.
+  // Series identities must not borrow inequality, divisibility or derivative
+  // proofs, and the same separation applies in the other three directions.
+  "bed60b96-c57b-4275-a68a-a2ebce000861": ["N18TZ0HL_P1_Q6", "M19TZ2HL_P2_Q7"],
+  "d64c1739-a831-456a-89de-118b14b8a694": ["N11TZ0HL_P1_Q6", "N19TZ0HL_P1_Q6"],
+  "dd4b59f8-91ac-4b8e-ba57-9d8abc2c3e8d": ["M14TZ1HL_P2_Q7", "A_N23TZ2HL_P1_Q6"],
+  // Start with the familiar 2^(n+1) > n^2 proof (including its short setup),
+  // then retain the more sophisticated logarithmic induction proof second.
+  "6c4d43e7-0781-4903-bdbf-d005aebf62d2": ["M19TZ1HL_P2_Q8", "A_M25TZ1HL_P1_Q8"],
+  // The bank contains one exact source part proving De Moivre's theorem by
+  // induction. Publish that part alone rather than padding the lesson with
+  // ordinary De Moivre calculations.
+  "d5c720d9-4540-4c45-b822-a0c84764b619": ["M14TZ2HL_P2_Q13"],
+  // Rob wants the simplest available factorial arrangement here. One clear
+  // books-on-a-shelf question is preferable to padding the lesson with a
+  // second question involving several restrictions.
+  "8c904f89-d4d6-4859-8403-9b64187f211b": ["M10TZ1HL_P2_Q7"],
   "127d3689-f30e-47ea-bbe3-98c8dccf4967": ["M08TZ2SL_P2_Q2", "M10TZ2SL_P2_Q4"],
+  "24e9be00-6958-4b90-a7a3-5ba5ad8c16f9": ["A_M21TZ1SL_P1_Q3", "M16TZ1HL_P1_Q1"],
+  // These larger function questions both begin with a simple evaluation task.
+  // Rob has approved using a relevant subpart where the bank has no clean
+  // standalone introductory question.
+  "17cbf90f-7617-48fa-855d-dc6b1013a2d4": ["N18TZ0SL_P1_Q2", "N16TZ0SL_P2_Q1"],
+  "f4b4002a-6087-473d-991e-559ff2b54108": ["N16TZ0SL_P2_Q1", "N18TZ0SL_P1_Q2"],
+  // Direct graph sketching only. Do not use questions that ask students to
+  // translate, reflect, stretch or otherwise transform an existing graph.
+  "eeb308ea-e4a0-44da-8932-705b5cb24c2f": ["M12TZ1SL_P2_Q2", "N17TZ0SL_P2_Q2"],
+  // Connect factorised form, intercepts/graph features and completed-square
+  // form. The second is the longer multi-stage question Rob recalled.
+  "c985a287-ffe1-4d77-a163-30d4d61621f5": ["A_N21TZ0SL_P1_Q1", "A_M21TZ1SL_P1_Q7"],
+  // Keep the first systems lesson as straightforward calculator solving. The
+  // second then develops the distinct parameter/non-unique-solution skill.
+  // No source question is shared between the two lessons.
+  "8a506d7d-a1aa-4133-87cd-1f6099c2a544": ["N15TZ0HL_P2_Q2", "N17TZ0HL_P2_Q1"],
+  "b8e1f841-d49c-4325-8d04-a78b335eb89b": ["M13TZ1HL_P2_Q2", "M14TZ1HL_P2_Q4"],
+  // Cubic factorisation through the factor theorem and polynomial division.
+  // Show only the polynomial parts of the longer first source.
+  "6468821a-a955-4837-b591-7e8bdf3705ca": ["A_M24TZ1HL_P1_Q11", "N17TZ0HL_P1_Q3"],
+  // Coordinate-distance formula practice only. The first source includes the
+  // midpoint as the short setup for the required distance calculation; the
+  // second selected part is a standalone distance between two locations.
+  "03d4a492-8fd9-4ab0-ab11-383f62d354d6": ["N16TZ0AISL_P2_Q3", "V_N25TZ3AISL_P2_Q3"],
+  // Exact special-angle triangles: 30°/45° in the first source and the exact
+  // 60° values (through its supplementary 120° angle) in the second.
+  "a71764ed-7e1e-4316-aa1c-b70aacab2437": ["M17TZ1SL_P1_Q3", "A_N22TZ0SL_P1_Q4"],
+  "d5e2d2ef-dd8a-41a2-8d2b-5846523f4ff8": ["N17TZ0SL_P1_Q5", "M15TZ1SL_P2_Q4"],
+  "84a0811a-9a01-4f18-ab5f-bf7d28f0ca9c": ["M16TZ2AISL_P1_Q8", "N13TZ0AISL_P1_Q10"],
+  // Function features only. Keep the first approved source and replace the
+  // repeated sketching source with a distinct graph-features question.
+  "c3c9cf1a-a9bc-4064-855b-9d526eed986d": ["N20TZ0AISL_P1_Q4", "N11TZ0AISL_P2_Q4"],
+  "87739b31-e9ec-48da-b45d-23f1265de2be": ["M16TZ2AISL_P1_Q8", "M18TZ2AISL_P1_Q11"],
+  // Keep the two estimator examples focused on estimation only. The first
+  // source's later paired-test part is displayed separately in 4.18.4.
+  "cf3e3632-d731-4df7-a800-ac8be01cdd5a": ["H_M15TZ0HL_P3S_Q2", "H_N18TZ0HL_P3S_Q2"],
+  // One-sample mean Z-tests use a known population standard deviation.
+  // Keep them separate from the neighbouring unknown-variance T-tests.
+  "c19965b9-5b04-4711-b5ff-b440ca6eba03": ["H_M19TZ0HL_P3S_Q3", "H_N14TZ0HL_P3S_Q5"],
+  "36efc894-0227-4bab-99f6-2f85cd8c9706": ["H_M18TZ0HL_P3S_Q3"],
+  // Matched pairs must compare repeated measurements from the same people.
+  // Display only the paired-test parts, not the neighbouring regression work.
+  "a05dc6dd-60a5-4987-9191-16ba898b9cca": ["H_M15TZ0HL_P3S_Q2", "H_N16TZ0HL_P3S_Q1X1"],
+  // Population-proportion testing is an exact binomial hypothesis test here.
+  // Use two direct, self-contained tests rather than Type I/II errors or a
+  // mixed chi-squared question.
+  "44d7af59-b287-482e-a04f-99fc8faaffeb": ["W_M21TZ1AIHL_P1_Q11", "W_N23TZ0AIHL_P2_Q7"],
+  // AI HL calculus precision pass. Direct-rule lessons stay empty when the
+  // archive has no clean unused source, instead of borrowing later chain-rule
+  // or substitution work. Each remaining lesson is mapped to the precise
+  // assessed skill and, where necessary, only the relevant subpart is shown.
+  "4100b350-f26f-44e3-bb90-7a03158e7b95": ["H_M18TZ1HL_P1_Q2"],
+  "b1ffb4f0-65d2-4031-aec4-acbdb5f97b7a": ["H_N10TZ0SL_P1_Q2", "M19TZ1SL_P2_Q3"],
+  "c6d7188a-fc5c-4552-a901-11ee186d96c1": ["M11TZ2HL_P2_Q9", "W_M23TZ2AIHL_P1_Q12"],
+  "a490ac5c-828a-4b25-a5e0-3cde3293071c": ["W_N21TZ0AIHL_P1_Q8", "M12TZ2HL_P1_Q7"],
+  "91d05699-bfeb-4a89-9666-ab1c9e0223cb": ["N09TZ0SL_P1_Q9", "M10TZ2SL_P1_Q8"],
+  "442602d9-44ec-4d6b-b6f8-1ae775349771": ["M08TZ2HL_P2_Q6", "M11TZ1SL_P2_Q9"],
+  "97665ecc-2be3-414c-9944-564bf6fa8645": ["N18TZ0HL_P2_Q2"],
+  "918840eb-bf55-4e83-8939-40af339f1d94": ["H_M15TZ1SL_P1_Q7"],
+  "d9d11f09-511a-436a-9792-f66fc8ceeac5": ["M13TZ1SL_P1_Q6"],
+  "99a7ab79-f157-4f85-83f1-52b8368acc0f": ["M11TZ2SL_P2_Q7"],
+  "baf50754-d084-4bea-84e4-6d755bc624c6": ["M08TZ2HL_P2_Q3", "M10TZ2SL_P2_Q6"],
+  "0c4f3b43-0879-4243-9e14-d8322f9f011c": ["H_N15TZ0HL_P2_Q5", "V_SPECAISL_P1_Q10"],
+  // Retain the approved first kinematics question. The second uses only the
+  // speed, position and distance parts of the Paper 2 toy-airplane problem;
+  // its later angle-between-flight-paths part is deliberately omitted.
+  "f9b565e2-2c78-4c12-a55a-827d39233645": ["N08TZ0SL_P1_Q2", "M10TZ2SL_P2_Q9"],
+  // Use a distinct AI HL airplane source here so the same archived particle
+  // question is not repeated under the AA HL kinematics lesson.
+  "1a185d48-f767-4296-99b1-17ef882d64f4": ["H_M14TZ2SL_P1_Q9", "N20TZ0SL_P1_Q7"],
+
+  // AI HL vector foundations. Keep the introduction empty, use only direct
+  // vector arithmetic in 3.10.2, and separate magnitude/unit-vector work from
+  // scalar products and angles. Variable-velocity practice must contain an
+  // actual time-dependent velocity vector.
+  "d852b265-6804-4467-99e9-953af805fb72": ["M13TZ1SL_P1_Q1", "M11TZ2SL_P1_Q3"],
+  "babb8fbc-b24b-44e2-b524-908650017797": ["N17TZ0SL_P2_Q3", "M10TZ2SL_P1_Q2"],
+  "ec7a9d6b-aacf-40ee-a175-9ff973312441": ["W_N22TZ0AIHL_P2_Q7", "W_M25TZ3AIHL_P1_Q14"],
+  // Rob approved the first scalar-product question and rejected the second.
+  "352a19bb-f72d-42ef-a85e-c45467041f8e": ["M15TZ2SL_P2_Q2"],
+  // The vector-product lesson shows the product calculation only. The two
+  // separate area sources prevent the same shade-sail question appearing in
+  // both adjacent lessons.
+  "1855d971-48f6-4e25-9790-e4671cd9748e": ["W_SPECAIHL_P1_Q11"],
+  "3f7dbc9d-77f5-4aa4-85f3-5eccf69f41c6": ["W_M23TZ1AIHL_P1_Q7", "W_M24TZ2AIHL_P1_Q8"],
+
+  // AA HL trigonometry and vectors correction pass. Each mapping respects the
+  // precise lesson boundary and avoids borrowing a later vector skill.
+  "2242b24b-b800-4f2c-bb5a-16bd04201870": ["M16TZ1HL_P1_Q5", "M10TZ2HL_P1_Q6"],
+  "646c6ce7-f4cb-47fb-b4c6-2a28e5029596": ["N13TZ0SL_P1_Q1", "N15TZ0SL_P1_Q2"],
+  "5a64332d-45ba-4535-bb8e-2a1fd52289e2": ["N09TZ0SL_P1_Q2", "M16TZ2SL_P1_Q7"],
+  "352a19bb-f72d-42ef-a85e-c45467041f8e": ["M15TZ2SL_P2_Q2", "M17TZ1SL_P2_Q2"],
+  "b70c2e32-c750-4851-a572-8587162396f0": ["M10TZ1HL_P1_Q6", "M10TZ2HL_P1_Q12"],
+  "1847f7c2-9f5a-48f5-a40e-12ef76b0cc9e": ["M18TZ2SL_P1_Q1", "N16TZ0SL_P1_Q4"],
+  "ed2cce38-614a-4256-b943-ab8c4856fa14": ["M11TZ2SL_P2_Q8", "N08TZ0HL_P2_Q4"],
+
+  // AA HL vectors: shortest-distance, cross-product and plane work must stay
+  // within the exact operation named by the lesson. Broadly related vector
+  // questions are not substitutes for the required calculation.
+  "f25aaf3c-7579-43af-9f0c-c82485651278": ["N13TZ0HL_P2_Q9", "A_N24TZ0HL_P2_Q11"],
+  // Keep Rob's approved first example and make the second a direct product
+  // calculation only; its triangle-area follow-up belongs in 3.16.3.
+  "b67a9adf-10a0-466a-b35f-41187f507502": ["W_M21TZ1AIHL_P1_Q5", "M16TZ1HL_P2_Q1"],
+  // Properties use proof/identity work rather than routine component
+  // calculation or area applications.
+  "0785ff34-a49a-4abd-8c2a-d11d0719370c": ["A_M21TZ2HL_P1_Q5", "A_M24TZ1HL_P2_Q12"],
+  "853c9429-eeeb-4c4b-b74d-a1d35c67171c": ["M13TZ1HL_P1_Q2", "A_N23TZ2HL_P2_Q8"],
+  // This is the one suitable source currently in the verified bank that
+  // actually asks for a plane in vector form. One exact question is better
+  // than padding the lesson with Cartesian-plane work.
+  "35a8aee0-4d48-4084-883f-fc23b5be9039": ["A_N25TZ1HL_P2_Q12"],
+  // Rob approved both existing Cartesian-plane questions; pin them so the
+  // newly freed sources above cannot make the automatic selector reshuffle
+  // this neighbouring lesson.
+  "504e0150-4027-4a1b-890d-ad172dae61a7": ["M17TZ1HL_P2_Q7", "M15TZ2HL_P2_Q5"],
+  // Both selected parts ask for the line in which two Cartesian planes meet.
+  // Angle-between-planes questions belong in 3.18.5.
+  "f6806af5-6f99-4c11-856b-e678d5fe533a": ["N11TZ0HL_P2_Q13", "A_M22TZ1HL_P1_Q11"],
+  "9282b2e6-3873-4ca7-9556-99f00cd43a0d": ["M12TZ1HL_P2_Q4", "A_M23TZ2HL_P2_Q6"],
+  // Replace the two parameter-heavy angle questions with the clearest
+  // available direct examples in the verified bank.
+  "40c21470-dbef-42f5-acfb-ba9658d8f02e": ["M10TZ1HL_P2_Q11"],
+  // Preserve the approved final angle-between-planes lesson exactly as Rob
+  // reviewed it; moving adjacent questions must not trigger a reshuffle.
+  "0766515e-903e-4598-9f61-215b9c8cb925": ["M10TZ1HL_P1_Q3", "M08TZ2HL_P1_Q10"],
+
+  // AA Topic 4 correction pass. Preserve the questions Rob approved, isolate
+  // only the relevant subparts from longer sources, and keep every source
+  // unique across the course.
+  "26a92a94-1132-4e90-9b26-63b98ffffc26": ["W_SPECAIHL_P1_Q1", "A_M25TZ3HL_P2_Q3"],
+  "45a2dc30-ca7b-47a2-a2b1-a1c2ef8d15c8": ["M12TZ1SL_P2_Q8", "M12TZ2SL_P1_Q1"],
+  // The fish source now belongs to the AI interpreting lesson. Keep this AA
+  // lesson on two distinct non-outlier box-plot tasks.
+  "8ea2af96-360e-4ae0-a160-43a031e64cba": ["M12TZ1HL_P2_Q5", "N12TZ0SL_P1_Q8"],
+  "be563c56-3e2f-437f-8e41-0fd0d83dc7c0": ["N15TZ0SL_P1_Q1", "A_M24TZ1SL_P2_Q1"],
+  "160cf57c-42a3-457c-877f-923a11a0b623": ["M14TZ1HL_P1_Q2", "A_N25TZ1HL_P2_Q5"],
+  "5dceb9a5-425e-4698-bd9b-67f54caf1ee9": ["M18TZ2SL_P1_Q3", "M16TZ2SL_P1_Q2"],
+  "125a9218-3aed-48c9-b96b-3cf08968de9c": ["A_M23TZ2SL_P2_Q1", "M14TZ1SL_P2_Q3"],
+  "ca2285a6-c9cc-4eac-adc1-8c6479e9b21e": ["A_SPECTZ0HL_P1_Q1", "A_N23TZ2HL_P1_Q2", "A_N24TZ0HL_P1_Q2"],
+  "f924ec98-3f94-4b6e-b485-50d9a7cb0959": ["M08TZ1SL_P2_Q6", "M15TZ1HL_P2_Q3", "M18TZ2HL_P2_Q8"],
+  "7cc0076e-c776-4fe4-8a63-43da44f92820": ["A_M23TZ1SL_P2_Q4", "A_SPECTZ0HL_P2_Q4"],
+
+  // AA HL Topic 4 probability-distribution correction pass. These choices
+  // follow the mathematical skill Rob specified for each individual video,
+  // rather than treating every question with a broad statistics label as
+  // interchangeable.
+  "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": ["M10TZ2HL_P2_Q3", "M14TZ1HL_P2_Q2"],
+  // Bayes' theorem (4.13) was explicitly approved and is intentionally left
+  // on its existing two questions.
+  "2153e754-5338-4e7e-aca4-6f0e2090c038": ["A_M25TZ2HL_P2_Q8", "M10TZ1HL_P1_Q10"],
+  "200f6314-6efb-426a-8767-c91323c22db3": ["M10TZ2HL_P2_Q2", "N16TZ0HL_P2_Q1"],
+  "4fa5e51a-f4dd-477e-b393-54f1be7266ec": ["M10TZ2HL_P1_Q1", "A_M22TZ1HL_P1_Q7"],
+  "76e8e8b2-11d1-4c5f-919c-8d18c85df672": ["M12TZ2HL_P2_Q7", "M12TZ1HL_P2_Q2"],
+  // The AA bank contains one exact probability-table mode question. Pair it
+  // with a short discrete-data median/mode question rather than padding this
+  // lesson with another expectation-only source.
+  "2f5766d2-e280-4aff-ac80-36b91b5218b7": ["A_M25TZ3HL_P2_Q3", "V_N25TZ3AISL_P1_Q1"],
+  // 4.14.6 was explicitly approved and therefore remains untouched.
+  "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": ["M17TZ2HL_P2_Q10", "A_M23TZ2HL_P1_Q6"],
+  "23301c56-b9aa-4101-ade8-1e2c41b65e54": ["A_N25TZ3HL_P1_Q7", "A_SPECTZ0HL_P2_Q6"],
+
+  // Deep-review pass: each pair below was checked against the specific lesson
+  // skill, not only the bank's broader subtopic label.
+  "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": ["A_M25TZ2HL_P1_Q1", "M17TZ2SL_P2_Q3"],
+  // A_N21TZ0SL_P1_Q1 belongs to the three-forms lesson above. Keep this
+  // neighbouring lesson on factorisation itself; show only part (a) of the
+  // first source so its later binomial-expansion work is not included.
+  "46e2372a-66cb-477e-96c7-fba7ae61c41d": ["M11TZ1HL_P2_Q5", "M13TZ1AISL_P1_Q9"],
+  // Straight equation solving first: display only the part solved by graph or
+  // quadratic formula. Retain the second source because it can also be solved
+  // with the quadratic formula without teaching sum/product of roots.
+  "88162068-c195-41a3-ae20-004900917331": ["N14TZ0SL_P1_Q1", "N17TZ0HL_P2_Q7"],
+  // N14TZ0SL_P1_Q1 now supplies the direct quadratic equation above. Use a
+  // different numerical intersection question for GDC solving.
+  "ac5e0aa4-64bb-4cbb-86aa-8d7f9315c0ac": ["M16TZ1SL_P2_Q2", "M09TZ1HL_P2_Q12X1"],
+  // Composite transformations must apply multiple transformations to one
+  // graph in sequence. The previous cubic-roots source presented two separate
+  // one-step transformations, so it did not assess this lesson's actual skill.
+  "2a607da2-7e6a-4dc8-b483-2819907798e0": ["M09TZ1SL_P1_Q5", "M10TZ2HL_P1_Q2"],
+  // Direct polynomial graphing only: first a cubic with its local minimum,
+  // then a quartic with its roots. Translation-only and indirect complex-root
+  // questions do not assess the graph-sketching skill taught here.
+  "916aa44f-5240-4926-9cb6-12800d012e0c": ["N16TZ0SL_P2_Q2", "N14TZ0SL_P2_Q4"],
+  // Keep the two neighbouring rational-function lessons algebraically exact
+  // and completely separate. The first pair has a genuine quadratic in the
+  // denominator; the second pair has a quadratic numerator over a linear
+  // denominator. No source is shared between the lessons.
+  "f8918c12-e985-4e26-bea3-c93f245655f1": ["M17TZ1HL_P1_Q11", "M11TZ2HL_P2_Q5"],
+  "54f53e20-a14f-447a-a43f-c865e7eb424e": ["A_N23TZ1HL_P2_Q11", "A_N24TZ0HL_P2_Q12"],
+  // Pure inequality practice only. Display the direct inequality part from
+  // each source and omit its unrelated inverse-function/integration follow-up.
+  // In particular, do not use modulus or transformation questions here.
+  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": ["A_N24TZ0HL_P1_Q6", "M14TZ1HL_P2_Q6"],
+  // One linear and one genuinely nonlinear modulus graph. Use only the
+  // graph-sketching part of the trigonometric source question.
+  "990b6aba-3d06-489d-81e6-70a683d4f23a": ["M18TZ2HL_P1_Q2", "A_N22TZ0HL_P1_Q10"],
+  // Direct modulus equation/inequality practice. Keep Rob's approved second
+  // question, but replace the mixed graph-and-square inequality source.
+  "5c188648-60b0-48f6-83a1-9d5c18235dac": ["N10TZ0HL_P1_Q1", "A_M23TZ1HL_P1_Q8"],
+  "c8ce5b5c-f78f-40a9-a8aa-2c5065925d0f": ["A_M23TZ1SL_P1_Q5", "A_M24TZ2HL_P1_Q2"],
+  // Right-angled-triangle ratios only. Select the direct SOHCAHTOA part from
+  // each source and never allow probability/Venn content to fill this lesson.
+  "f304a68a-2b24-482f-b9c7-91a2a7c8eb64": ["M14TZ2SL_P1_Q1", "N19TZ0SL_P2_Q4"],
+  // Both questions require the cosine rule in a non-right-angled triangle.
+  "e6560ee5-07fb-4933-8b76-0526087ff441": ["W_N24TZ0AIHL_P1_Q1", "N17TZ0SL_P1_Q4"],
+  // Keep the shared identities lesson on manipulation and proof only. Solving
+  // equations belongs in 3.8, and calculus/volume work is excluded entirely.
+  "c5f358f0-e49c-4fc1-a20a-296f64992376": ["M19TZ1HL_P1_Q9S", "N08TZ0SL_P1_Q7"],
+  // Both questions explicitly require an identity to rewrite a trigonometric
+  // equation and then solve it. They are distinct from the direct equation
+  // sources used in 3.8.1 and from the identity-only work in 3.6.
+  "a3b2933d-3e55-4244-b150-e467cf161e11": ["A_M21TZ2SL_P1_Q3", "A_M23TZ1SL_P1_Q4"],
+  "0afbd775-a826-4a73-9c51-bd57c458c850": ["N15TZ0HL_P1_Q1", "M15TZ1SL_P1_Q2"],
+  "ff814b89-cfb0-4cc9-be09-fc3a9e6bb0e8": ["M18TZ1SL_P1_Q2", "A_M22TZ2SL_P2_Q5"],
+  // AA SL/HL introductory calculus pass. Keep each lesson on the first skill
+  // it teaches and avoid stationary points, optimisation or mixed rules until
+  // their later dedicated lessons.
+  "03a83b7a-4df5-4d2c-a669-cfcf7b50787e": ["N20TZ0AISL_P1_Q11", "N17TZ0AISL_P2_Q5"],
+  "4ec4c4a2-a2de-4e61-9903-55f280bf9ab6": ["M14TZ1AISL_P1_Q10", "N16TZ0AISL_P1_Q14"],
+  "db4f51b7-b4c5-41ad-bb94-b0bd53f9bee3": ["N12TZ0SL_P1_Q4", "M18TZ2AISL_P1_Q14"],
+  "e884d9fa-1e59-4ccc-a67d-2c63d5140908": ["M19TZ1HL_P2_Q1", "N09TZ0SL_P1_Q10X1"],
+  "f4aa813d-a3e2-480a-9f8d-49d2b31a7a04": ["A_M21TZ1SL_P2_Q1", "N13TZ0SL_P2_Q3"],
+  "76f62a43-8fbd-46d5-aff6-c74b0488675a": ["A_M22TZ1SL_P1_Q2", "M13TZ2HL_P1_Q1"],
+  "20b8ec75-0605-426a-abec-066ca4c4f9d2": ["A_N22TZ0SL_P2_Q3", "A_M25TZ1HL_P1_Q3"],
+  "d336ee8b-277b-4f7d-90f8-c309a50d1d4c": ["M14TZ1SL_P1_Q6", "A_M23TZ2SL_P1_Q5"],
+  "9d0fc44f-c26e-4a61-9d6a-9d84d022c372": ["A_M22TZ2SL_P1_Q1", "M16TZ1SL_P1_Q10"],
+  "2ece54f8-dd4e-445e-8f8a-23858053df10": ["N08TZ0SL_P1_Q6", "M10TZ2SL_P1_Q7"],
+  "7c1d0df9-3f50-4bfb-ae45-b669c1405895": ["M10TZ1SL_P2_Q3", "M17TZ1SL_P1_Q6"],
+  "c4802e2e-45bf-4825-a2af-9aaa7724cd53": ["A_N21TZ0SL_P1_Q2", "M19TZ1SL_P1_Q5"],
+  // Both questions finish by sketching a derivative. The previous pair only
+  // interpreted derivative graphs and therefore belongs in 5.7.1 instead.
+  "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": ["M12TZ2SL_P2_Q2", "M14TZ2SL_P1_Q6"],
+  // Keep Rob's approved first question, then explicitly prove that the second
+  // stationary point is a maximum by using the second derivative.
+  "92c1b8b1-b956-4724-bd03-de85fb5d4f09": ["M11TZ1HL_P1_Q12X1", "N13TZ0HL_P1_Q10X1"],
+  // A substantial three-dimensional cuboid problem first, followed by the
+  // approved fencing-cost optimization problem.
+  "0922ca4f-d53f-4299-b9c9-eafe6d17caf1": ["M16TZ2SL_P1_Q9", "N09TZ0SL_P2_Q7"],
+  // One displacement model and one velocity model. Both are SL-accessible;
+  // the second is calculator practice and neither needs integration by parts.
+  "350494a1-e44b-4ddb-86db-72e19e69d525": ["M16TZ1HL_P2_Q3", "M12TZ2SL_P2_Q5"],
+  // Direct exponential integration paired with the approved logarithmic
+  // integral. Integration by parts is not part of this SL lesson.
+  "6d504905-61e3-40cb-972c-13ff1691ffbd": ["N20TZ0SL_P1_Q6", "A_M22TZ2SL_P2_Q2"],
+  // Remove the sin-squared question. Retain Rob's approved integral first,
+  // then use a distinct applied cosine integration question.
+  "5c83085a-0fc2-4199-89b3-34ce0cf5539b": ["M09TZ1HL_P2_Q6", "A_M23TZ1SL_P2_Q9"],
+  // Reverse-chain work here is limited to a linear inner function. Nonlinear
+  // substitutions belong in the next lesson.
+  "190dd207-d2d9-4de5-b374-aaa9e4f951de": ["N10TZ0SL_P1_Q6", "M14TZ2SL_P1_Q5"],
+  // Both substitution questions were approved. Put the more accessible
+  // trigonometric substitution before the logarithmic one.
+  // Keep this pair distinct from the AI HL adaptation of the November 2015
+  // source: Rob does not want the same underlying question in two lessons.
+  "924417ae-de6f-4e30-9f97-46ac0d001d4a": ["N12TZ0HL_P2_Q8", "N14TZ0HL_P1_Q6"],
+  "4fde506e-3b33-485d-9259-284f5f86bcd3": ["M09TZ2HL_P2_Q8", "M17TZ1HL_P1_Q4"],
+  "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": ["A_SPECHL_P1_Q3", "N18TZ0HL_P2_Q8"],
+
+  // AA HL Topic 5 final correction pass. Preserve every question Rob
+  // approved and replace only the rejected example in each lesson.
+  "7b6a362e-aa9a-44a8-a765-a5f4c282b7f1": ["M15TZ1HL_P1_Q4", "N18TZ0HL_P2_Q5"],
+  // Higher derivatives only: the second question now asks for successive and
+  // nineteenth derivatives, with no proof by induction.
+  "134931eb-dd12-49c0-847c-973b34aebd07": ["M15TZ2SL_P1_Q5", "N16TZ0SL_P1_Q10"],
+  "500bbe23-0129-4b7a-be4e-415d5ecf972b": ["A_M21TZ1HL_P1_Q8", "A_M24TZ2HL_P1_Q8"],
+  "068bee2e-fece-4b97-b0e8-8f244222a8c2": ["M17TZ1HL_P2_Q2", "M08TZ1HL_P2_Q6"],
+  // Keep the approved cone question and add a moving helicopter whose angle
+  // of elevation changes explicitly.
+  "5637bf1d-3809-4388-bce0-6c903c2c779b": ["M14TZ2HL_P2_Q9", "M09TZ2HL_P2_Q10"],
+  // Formula-booklet HL rules: inverse-trigonometric differentiation and an
+  // arctangent antiderivative, rather than ordinary SL product/chain work.
+  "dd3009b8-25ed-4425-b4a5-611cc3ba1665": ["N08TZ0HL_P2_Q12", "A_M21TZ2HL_P2_Q12"],
+  "57c2580c-3193-417f-be6c-0332c78845ca": ["M15TZ1HL_P1_Q3", "M16TZ2HL_P1_Q3"],
+  // A trigonometric substitution provides the requested trick substitution;
+  // retain the approved arctangent substitution second.
+  "c243c099-8009-4c45-b936-7ba9a05ef501": ["M09TZ2HL_P2_Q9", "M15TZ1HL_P1_Q8"],
+  "2cf30a58-a31b-47c7-a9c2-fd9bd7a49ca8": ["N15TZ0HL_P1_Q2", "M19TZ1HL_P2_Q5"],
+  // Both questions genuinely require integration by parts twice; the first
+  // is the requested exponential-times-sine example whose integral is moved
+  // to the other side.
+  "eb3a2412-6da8-4727-b13e-ca95e9dca23d": ["M11TZ2HL_P2_Q13B", "N18TZ0HL_P1_Q10"],
+  // The first area is explicitly bounded by the y-axis. Retain Rob's approved
+  // exact logarithmic area as the second question.
+  "feb99f1f-879d-4a54-a584-3978511b3cf1": ["N19TZ0HL_P2_Q11", "W_M24TZ1AIHL_P1_Q9"],
+  // Calculator then non-calculator volume-about-the-x-axis practice.
+  "1768c593-44ef-481a-a01b-5ad58562ce78": ["M15TZ1HL_P2_Q1", "M10TZ1SL_P1_Q6"],
+  "02f1bcd1-ff23-446b-974b-fcda8bf55cad": ["M19TZ2SL_P2_Q2", "A_N25TZ3HL_P2_Q5"],
+  // Retain the approved first question; the second now finds the intersection
+  // of two curves and uses their enclosed region for a volume of revolution.
+  "79541e13-1ab3-4f25-84fd-e42aab742b4c": ["A_N25TZ1HL_P2_Q8", "W_M23TZ2AIHL_P1_Q16"],
+  // Two direct and comparatively short separation-of-variables examples.
+  "f0fa4dc1-59c1-46c4-a077-8e442d0522e4": ["N12TZ0HL_P3_Q1", "N08TZ0HL_P3_Q4"],
+  "564111cf-c10c-41d3-92be-41c09f86ccdd": ["N12TZ0HL_P3_Q2", "A_M25TZ1HL_P2_Q9"],
+  "437f626f-c449-4b63-9278-9a5f5288b4cf": ["M10TZ0HL_P3_Q1", "M11TZ0HL_P3_Q2"],
+  "95f0cf3e-cd3b-40e6-af87-87bf8520df45": ["A_M25TZ1HL_P1_Q9", "M10TZ0HL_P3_Q3"],
+  // Replace the modelling-heavy first question with a direct first-order
+  // linear equation, while preserving the approved second example.
+  "cfd3b26c-a041-4b6a-bc7f-eb8d33f09fcb": ["A_M24TZ1HL_P2_Q7", "N17TZ0HL_P3_Q2"],
+  // Direct formula-based Maclaurin calculations.
+  "3b73bfe5-13de-4fa2-a29b-6e4e6f822481": ["N19TZ0HL_P3_Q3", "M11TZ0HL_P3_Q1"],
+  // One substitution series and one composed/product series.
+  "c379f1fc-7f63-4fa1-98dc-a7d4aff4d8e9": ["N20TZ0HL_P3_Q4", "A_M24TZ1HL_P1_Q8"],
+  "ceb60ab0-0098-4c17-9ad7-2615f30e8eb7": ["A_M21TZ2HL_P2_Q9", "A_N25TZ1HL_P1_Q5"],
+  // Term-by-term integration in both examples. The former DE-based source is
+  // moved into the dedicated differential-equations lesson below.
+  "44cf2485-5dd6-45d4-866b-1c187d67f198": ["N10TZ0HL_P3_Q3", "A_M22TZ1HL_P1_Q12"],
+  // Genuine Maclaurin sigma notation, not arithmetic/geometric-series work.
+  "67e6f294-1736-4781-b3d3-ebfaa24282c4": ["N12TZ0HL_P3_Q4", "N13TZ0HL_P3_Q4"],
+  // Both questions derive a Maclaurin series from a differential equation.
+  "091d13b9-cc8e-45ab-a0d0-8b81d01ed3ce": ["M18TZ0HL_P3_Q4", "N15TZ0HL_P3_Q2"],
+
+  // AI SL + HL Topic 1 review. Sigma notation stays finite: sum to infinity
+  // is not part of the shared SL content. The laws lesson starts with an
+  // accessible calculator evaluation before the approved powers equation.
+  // Quadratic modelling must remain modelling: retain the approved golf-ball
+  // context and replace the completed-square exercise with a water-rocket
+  // model that asks students to interpret and use the quadratic.
+  "00344a26-55c4-47cb-8a6f-6ce16079c81a": ["V_N22TZ0AISL_P1_Q3", "V_M23TZ2AISL_P1_Q10"],
+  "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": ["M13TZ2HL_P2_Q11X1", "V_M22TZ2AISL_P2_Q2"],
+  "7038e65e-6cf6-4f3e-b9d5-666683bb9f97": ["M13TZ2AISL_P1_Q13", "M15TZ1SL_P1_Q3"],
+  "8cb13923-f306-4a16-bbc5-93a1f15caa63": ["V_N21TZ0AISL_P1_Q3"],
+  "5e60b54a-6bf2-4cf5-be78-4f13509448fd": ["N16TZ0AISL_P1_Q1"],
+  // Keep the single approved AI HL change-of-base lesson. Its first question
+  // comes from the original 1.9.2 card; its second comes from the removed
+  // duplicate 1.7.3 card, exactly as Rob requested.
+  "67f3ebf1-fabb-4fc0-88f1-e50ef5d000ee": ["A_M25TZ3HL_P1_Q1", "M16TZ1HL_P1_Q6"],
+
+  // AI HL Topic 1 correction pass. Keep every lesson inside its exact skill
+  // boundary; use selected source parts when a longer exam question continues
+  // into a neighbouring topic.
+  "e0ae88fb-c9b0-4df3-94e5-0a6880f03068": ["M11TZ2SL_P1_Q5", "W_M25TZ1AIHL_P1_Q10"],
+  "9c656814-2fbe-4d15-a9ca-c05d1317ee37": ["H_M13TZ2HL_P1_Q9", "H_N14TZ0HL_P1_Q11X1"],
+  "f4f5804f-1998-41e3-8b43-5ba7d7ca2b40": ["N12TZ0HL_P1_Q10", "H_M18TZ2HL_P2_Q1"],
+  // One clean Cartesian-to-Euler conversion is preferable to padding the
+  // lesson with phasor or sinusoidal-modelling follow-up work.
+  "316a9cc6-d140-4513-8713-266476d64627": ["W_N21TZ0AIHL_P2_Q5"],
+  // This selected part explicitly interprets z -> z² as a rotation and an
+  // enlargement on the Argand diagram.
+  "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7": ["W_M24TZ2AIHL_P1_Q15"],
+  "e9c828e5-d1fc-4459-8e16-4f893814d04e": ["W_M25TZ3AIHL_P1_Q8", "W_M23TZ2AIHL_P1_Q13"],
+  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": ["W_N24TZ0AIHL_P1_Q11", "W_M24TZ2AIHL_P2_Q5", "W_M22TZ1AIHL_P1_Q11"],
+  "79bbc962-e946-49f0-a89e-5bd386389248": ["W_M24TZ1AIHL_P1_Q17", "W_M21TZ1AIHL_P2_Q5", "W_M21TZ2AIHL_P2_Q4"],
+  // Move the two phase-portrait questions out of eigenvalue/eigenvector
+  // practice and into the phase-portrait lessons where they belong.
+  "522e01c2-0046-41ec-b4cd-1b9a7e89e70b": ["W_SPECAIHL_P1_Q15X1", "W_N22TZ0AIHL_P1_Q12"],
+  // Free the explicit D^n question for Powers of matrices and keep the steady
+  // state lesson focused on solving for and interpreting a long-run state.
+  "aacabb23-fe64-4316-bbf5-d1737b8fbad8": ["W_M25TZ3AIHL_P1_Q15", "W_M23TZ2AIHL_P2_Q5"],
+
+  "120456b0-8e18-4d3b-9fcc-9765286afe78": ["N13TZ0AISL_P1_Q13", "V_M25TZ3AISL_P1_Q11"],
+  "35b51817-4a71-4b1b-9c57-056e58fe4a94": ["V_M24TZ1AISL_P1_Q5", "V_N24TZ1AISL_P1_Q10"],
+  // The opening straight-line lessons are coordinate geometry, not linear
+  // modelling. Use direct gradient and equation work, leaving contextual
+  // models for 2.5.1 Linear modelling.
+  "f5f90981-cc11-4c17-a3bd-1361bcc350ac": ["M17TZ2AISL_P1_Q4", "M15TZ2AISL_P1_Q3"],
+  "0c2d1242-eb4f-4dfe-9d0c-9fe06effad62": ["M11TZ2AISL_P1_Q5", "M11TZ1AISL_P1_Q10"],
+  "27660280-9a9e-4cb2-a00e-710c9722cca0": ["N12TZ0AISL_P1_Q8", "V_SPECAISL_P1_Q7"],
+  // Shared AI SL/HL function foundations must not use composite functions.
+  // Composite-function practice belongs only in the later AI HL lesson.
+  "bddfca14-6aee-440f-8b2c-0cb50d8d21f5": ["V_M25TZ2AISL_P1_Q9", "V_SPECAISL_P1_Q4"],
+  "a067432b-da49-4081-877b-d31f4161c517": ["M17TZ1AISL_P2_Q3", "M11TZ1AISL_P2_Q3"],
+  // AI Topic 2 modelling and function distinctions. Cubic modelling uses
+  // contextual cubic models with no displayed tangent or calculus work.
+  // Parameter fitting solves simultaneous equations for unknown polynomial
+  // coefficients. Composite functions and composite graph transformations
+  // remain separate skills. Semi-log practice logs only the dependent axis.
+  "ae67a312-31d7-4658-9ece-e427fd0eab34": ["V_M22TZ2AISL_P1_Q9", "V_M21TZ2AISL_P2_Q5"],
+  "4ddbe716-9ced-46ce-9569-b54880c76cfe": ["V_N23TZ1AISL_P1_Q7", "V_N25TZ1AISL_P2_Q4"],
+  "ac21b892-10cf-4fcc-b343-061386c5f8d5": ["N14TZ0SL_P2_Q1", "N10TZ0SL_P1_Q9"],
+  "cb268ace-1b45-47b1-b745-aaa2bc0fad62": ["N12TZ0SL_P2_Q9", "M08TZ1SL_P1_Q9"],
+  "10f9809d-0a3e-4e5c-83ea-738988915052": ["M19TZ2SL_P2_Q5", "W_N24TZ0AIHL_P1_Q13"],
+  "72a5f616-843a-4be5-875c-6e57afe3d730": ["W_N24TZ0AIHL_P1_Q6"],
+  "97dfa2ea-0da3-4f3e-a95f-1841d36df813": ["W_N22TZ0AIHL_P1_Q13"],
+  "90c27b46-f7e6-4c9e-90b6-1b781189a4a0": ["V_M21TZ1AISL_P1_Q2", "M19TZ1AISL_P1_Q2"],
+  "9631b700-3bd6-464c-a695-04888981de48": ["N11TZ0SL_P1_Q4A", "V_M25TZ3AISL_P1_Q9"],
+  // Keep the accessible rectangle example and replace the unusually demanding
+  // carton problem with a short cylinder whose objective is quadratic in r.
+  "1b02b32e-6598-4c7b-bb24-396fd7c373c7": ["N17TZ0SL_P1_Q6A", "M19TZ1AISL_P1_Q15"],
+  // AI SL/HL introductory calculus. Keep the two introductory videos blank,
+  // then separate each assessed skill cleanly: monotonicity, the power rule,
+  // gradient at a point, tangents/normals, power-rule integration and direct
+  // local maximum/minimum work. No HL-only derivative-graph questions appear.
+  "e98579d2-83b7-4dab-ab62-427fd2e8165e": ["V_N23TZ1AISL_P1_Q3", "V_M25TZ1AISL_P1_Q8"],
+  "741c0b0c-17ef-46e5-894c-c62447c47172": ["N12TZ0AISL_P1_Q15", "M13TZ1AISL_P1_Q15"],
+  "f06c971e-bbd7-4cb2-8db5-e3abbe338077": ["V_M22TZ2AISL_P1_Q11", "V_N24TZ2AISL_P1_Q12"],
+  "97a1a371-61a6-4585-971e-9fa6c167f39c": ["V_N24TZ1AISL_P1_Q12", "V_M23TZ1AISL_P1_Q5"],
+  "b31ff22b-38f1-489b-a9ce-209fa91d73e6": ["M14TZ1SL_P1_Q3", "V_M24TZ2AISL_P2_Q3"],
+  "0512477b-d893-4805-9d2e-2f597b8c8673": ["M14TZ1AISL_P1_Q15", "N13TZ0AISL_P1_Q9"],
+  "0f9fa92d-3b9f-4348-8368-4940114b9592": ["M11TZ2AISL_P1_Q14", "N11TZ0SL_P2_Q6"],
+  "1dab411c-5ce9-4532-9461-94d1b7817a7e": ["N15TZ0SL_P2_Q1", "N14TZ0SL_P2_Q3"],
+  // AI Topic 3 precision pass. These use only the prompt parts that assess
+  // the named lesson; later skills and unrelated follow-up work are hidden.
+  "657e5ac0-f7a7-4e5b-9940-b0999e263643": ["M12TZ1AISL_P1_Q2", "M15TZ2AISL_P1_Q1"],
+  "74b278eb-4d1f-4ff7-b35a-0bf29c49fb62": ["M15TZ2AISL_P1_Q12", "N19TZ0SL_P2_Q6D"],
+  "1900d762-9513-4e7c-9549-f40a2adf084d": ["N13TZ0AISL_P1_Q5", "M11TZ1AISL_P1_Q7"],
+  "9d6631de-db03-4cfa-a0f3-e35edc3c8bf5": ["M16TZ1AISL_P1_Q2", "V_N24TZ1AISL_P1_Q1"],
+  "4c20491d-5660-48b6-80eb-943004d1f8b0": ["V_N21TZ0AISL_P1_Q2", "M14TZ1SL_P2_Q1"],
+  "7d695de0-122e-4717-93d9-c147c6ecf959": ["M12TZ2SL_P2_Q1", "M18TZ2AISL_P1_Q8"],
+  "fc7bb062-c872-4524-9e57-e3a60793c557": ["V_M23TZ1AISL_P1_Q2", "V_N24TZ2AISL_P1_Q1"],
+  "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae": ["M13TZ1HL_P2_Q5"],
+  // AI HL contains only sin²θ + cos²θ = 1 and tanθ = sinθ/cosθ as identities.
+  // The current bank has no clean, unused question restricted to those two
+  // identities, so the identity lesson remains blank rather than using an
+  // unrelated vector, calculus, reciprocal or compound-angle question.
+  "0e81f809-f846-4459-bcca-fb84c32fb263": ["H_M08TZ1HL_P1_Q4"],
+  "890be651-35da-4ac2-ae19-017b48ecb19e": ["H_N15TZ0HL_P1_Q9", "H_M12TZ2HL_P1_Q2"],
+  "4bd0bcf2-4678-47bb-b0b2-44b6477227e1": ["H_N15TZ0HL_P1_Q9", "M08TZ1SL_P2_Q4"],
+  // AI SL/HL Topic 4 descriptive-statistics correction pass. Sampling now
+  // has two direct identification tasks, and the grouped-data lesson pairs a
+  // real histogram with a cumulative-frequency curve. Box-plot construction
+  // and reading stay free of outlier work. Interpreting uses only the
+  // fundraising comparison part and the two fish box plots.
+  "ae20100b-d4f8-47b7-94cb-274153bd96da": ["V_SPECAISL_P1_Q3", "V_M21TZ1AISL_P2_Q1"],
+  "4a1e0269-f69a-4d10-b6ca-ed2005103063": ["M17TZ1AISL_P1_Q1", "M19TZ2AISL_P1_Q12"],
+  "ceae5e0d-9738-456a-89e4-0312f721d52d": ["M19TZ1SL_P2_Q1", "M19TZ2AISL_P1_Q6"],
+  "aae0e405-1bd3-4357-a328-727f097360e4": ["V_M22TZ2AISL_P1_Q7", "M11TZ2SL_P1_Q6"],
+
+  // Matrix-transformation lessons use exact operation-specific sources. Do
+  // not let the broad matrix-transformations bank tag mix determinants,
+  // enlargements, reflections and composite affine transformations.
+  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": ["W_M22TZ1AIHL_P2_Q7"],
+  "7cb7f42a-7cfc-4b3d-95ba-cbb1297c215b": ["W_M25TZ1AIHL_P1_Q13", "W_N21TZ0AIHL_P2_Q4"],
+  "4ba2895d-48f5-439d-b0df-57c25ae1c824": ["W_N23TZ0AIHL_P2_Q6"],
+  "80522e92-56ee-4aa2-ae07-9e105b2efdf0": ["W_N24TZ0AIHL_P2_Q6", "W_M21TZ2AIHL_P1_Q14"],
+  "3047e664-8bf6-4140-8c0c-cabd97cd06b5": ["W_M22TZ2AIHL_P1_Q15", "W_N22TZ0AIHL_P1_Q9"],
+  // AI HL graph theory: each source is used in only one lesson, and each
+  // algorithm is kept distinct. Kruskal, Prim, nearest neighbour, route
+  // inspection and deleted vertex are not interchangeable merely because the
+  // source question is tagged broadly as graph theory.
+  "d889f97c-0abb-4fa0-8bd3-eee6927e5b7b": ["W_N22TZ0AIHL_P2_Q4"],
+  "4ca8f2d8-76d2-4e10-a48e-04d8a8d4eca3": ["W_M21TZ2AIHL_P1_Q11"],
+  "4a729d86-d2a5-475e-8194-1c24c98aa196": ["W_M22TZ2AIHL_P3_Q2", "W_M23TZ2AIHL_P2_Q4"],
+  "265ad472-09ff-46ba-bfba-1ee1ebe11cf5": ["W_M21TZ1AIHL_P1_Q10"],
+  "3cffb57c-653d-45a2-9983-68b1016b23e4": ["W_M25TZ2AIHL_P2_Q4"],
+  "4ea42a07-b2d6-46c6-bd79-0987f8c97236": ["W_M23TZ1AIHL_P2_Q4"],
+  "a90ee76e-0a72-4a15-bf3d-1a3094677f44": ["W_M24TZ1AIHL_P1_Q8", "W_N23TZ0AIHL_P2_Q5"],
+  "06dade6e-621a-4427-ad7c-1aa749bb8fa0": ["W_N21TZ0AIHL_P3_Q1"],
+  "c693e0c1-aeb5-4651-bc41-6791b5024408": ["W_N24TZ0AIHL_P3_Q1"],
+  "e64a4cac-d435-4860-a028-f9f0b8266165": ["W_M24TZ2AIHL_P2_Q4"],
+  "9252d878-0d2c-4c3a-9bc8-985d928387fb": ["W_M23TZ1AIHL_P1_Q3", "V_N24TZ1AISL_P2_Q1"],
+  "0a593676-5299-4966-95ee-c58e7e4ccba9": ["W_M25TZ3AIHL_P2_Q4", "W_SPECAIHL_P2_Q5"],
+
+  // AI Topic 4 correction pass. Each source below was checked at part level
+  // against the exact skill Rob named; broad statistics labels are not enough.
+  // The first outliers question now asks the student to test an actual value,
+  // rather than only finding the greatest value that would not be an outlier.
+  "639dc690-35bc-4a84-b7fb-89844ecaf252": ["V_M23TZ2AISL_P1_Q3", "M18TZ1SL_P1_Q2"],
+  // Direct use of P(A ∪ B) and P(A ∩ B), without padding this lesson
+  // with a context question whose probability formula is only incidental.
+  "a9ba5e52-d70c-45b8-822c-f80312ea5c9a": ["M11TZ1HL_P1_Q1", "M14TZ2HL_P1_Q1"],
+  // This exact extract explicitly explains why low expected frequencies must
+  // be combined before a chi-squared goodness-of-fit test. The other exact
+  // source in the archive is not an approved active-bank record, so one
+  // verified question is better than padding this lesson with the wrong task.
+  "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d": ["W_M23TZ1AIHL_P2_Q5"],
+  // These two current mappings already satisfy Rob's newer feedback: the
+  // second regression is a power model, and the second residual question
+  // calculates and compares SSR for two models. Pin them to prevent reshuffle.
+  "5da6d7d3-b205-4517-84f0-ab24321a3be3": ["W_N22TZ0AIHL_P1_Q11", "W_N23TZ0AIHL_P1_Q10"],
+  "876ad43a-c778-48f2-8c79-8a3d409cfd41": ["W_M23TZ1AIHL_P1_Q16", "W_SPECAIHL_P1_Q12"],
+  // The verified bank has one exact calculation-and-interpretation R² item.
+  "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": ["W_M23TZ2AIHL_P1_Q9"],
+  // Keep transformations of one variable separate from combinations of
+  // several independent variables.
+  "bb113001-688d-4876-91d0-208f1fdaa532": ["W_M24TZ1AIHL_P1_Q3", "M19TZ2SL_P1_Q8A"],
+  "45a38dec-e9f7-48db-b7ff-a998107ada10": ["H_N18TZ0HL_P3S_Q1", "W_M23TZ1AIHL_P1_Q11"],
+  // Keep Rob-approved Question 1. Replace the mixed Poisson source with the
+  // self-contained sample-mean part of an unused normal-distribution question.
+  "cde690c1-93a1-4385-b6cd-a31e4a885a7f": ["H_M17TZ0HL_P3S_Q2X1", "W_M22TZ1AIHL_P1_Q9"],
+  // Keep the two confidence-interval methods separate. Known variance uses a
+  // stated population standard deviation; unknown variance estimates it from
+  // the sample before forming the interval.
+  "1b5161c6-1227-4018-84fc-ab50132be01b": ["H_N15TZ0HL_P3S_Q1X1", "H_M15TZ0HL_P3S_Q3"],
+  "860ba46c-0af6-4351-a3fd-6ea5fd09c3b4": ["W_SPECAIHL_P1_Q9", "W_M21TZ2AIHL_P1_Q10"],
+  // AI HL hypothesis-testing and Markov-chain close-out. Poisson-mean
+  // practice must be an actual hypothesis test, correlation tests must state
+  // hypotheses in terms of rho, and the three error lessons stay separated
+  // by distribution. Preserve the approved transition-matrix questions and
+  // replace the repeated long-run example without changing Question 2.
+  "9675baa1-851f-4710-bceb-15dd0c01fdad": ["W_N21TZ0AIHL_P2_Q7", "W_M21TZ2AIHL_P1_Q15"],
+  "54fe02b9-8323-484e-af4e-b3b32efceeb8": ["H_N14TZ0HL_P3S_Q3X1", "W_M23TZ1AIHL_P1_Q8"],
+  "73e1e90c-6be8-463a-bc7b-bc43361419d6": ["W_M22TZ2AIHL_P1_Q12", "H_N16TZ0HL_P3S_Q2"],
+  "d68a3166-c653-4016-aa50-424a21748ac7": ["W_SPECAIHL_P1_Q16", "W_M22TZ1AIHL_P1_Q15"],
+  "fb36af72-faa4-4e66-bf8d-099bc54e766a": ["W_N22TZ0AIHL_P1_Q16"],
+  "d7181ae2-5583-4193-b704-31f78be6c565": ["W_N21TZ0AIHL_P1_Q9", "W_N23TZ0AIHL_P1_Q15"],
+  // AI HL Topic 5 close-out. Keep introductory kinematics scalar and direct;
+  // reserve the chain-rule identity a = v dv/ds for Kinematics 2. The first
+  // differential-equation card asks only for the model to be formed, while
+  // separation shows only actual separation work and omits slope fields.
+  "326ef6f4-cdc3-461c-b121-527fef739c83": ["M08TZ1SL_P1_Q6", "H_M17TZ2HL_P1_Q4"],
+  "54333f98-7d7a-4d6a-b3cf-347122e184bc": ["H_M14TZ1HL_P1_Q8", "W_N23TZ0AIHL_P3_Q1"],
+  "9af63d1a-407b-4f90-ae78-30c8291fcd59": ["W_M25TZ2AIHL_P1_Q12"],
+  "660e272a-8a71-4422-8450-61a7ea1d58cf": ["H_M13TZ2HL_P2_Q12", "W_M24TZ1AIHL_P2_Q5"],
+  // The conceptual Euler lesson stays blank; its two worked examples live in
+  // the following lesson. Coupled Euler practice is limited to the numerical
+  // Euler calculation, not the later interpretation or eigenvalue work.
+  "49e6c7ea-110b-4ab4-a0d5-97a2c9fe4b11": ["W_M24TZ1AIHL_P1_Q4", "W_M24TZ2AIHL_P1_Q7"],
+  "1310ef79-c234-4d20-9054-53eb85ef7749": ["W_N24TZ0AIHL_P1_Q17", "W_M25TZ3AIHL_P1_Q11"],
+  "a916a502-98ff-4105-8574-80aac522eda7": ["W_N21TZ0AIHL_P2_Q6", "W_SPECAIHL_P1_Q13"],
+  "ed654692-df93-4fbf-8bc5-a998e0897920": ["W_M24TZ2AIHL_P2_Q7X1", "W_M24TZ2AIHL_P2_Q7X2"],
+  // Exact phase-type examples. Source and centre remain blank until the bank
+  // contains clean unused examples with the required eigenvalue structures.
+  "de2388f1-fbf3-49c0-883b-1eff70b9cf7f": ["W_M21TZ2AIHL_P2_Q7"],
+  "f40d55e2-0669-40a7-b7d9-fcc477ef23d4": ["W_N24TZ0AIHL_P2_Q7"],
+  "6194b7ab-4cd6-4c43-9a54-288397647d66": ["W_M23TZ1AIHL_P2_Q6"],
+  // The first source explicitly requests the eigenvector-form solution Rob
+  // named; the second is the approved exact second-order solution.
+  "ceabfc5c-e18c-45d3-9ccd-2e3dcdf6ac5f": ["W_M23TZ2AIHL_P2_Q7", "W_M22TZ2AIHL_P2_Q7"],
 };
+
+// These lessons need finer-grained questions than the current bank offers.
+// Keeping them blank is preferable to reusing a broadly related pair that
+// teaches or assesses a different skill.
+const needsManualQuestionReview = new Set([
+  "26b43b60-35b9-45bf-94fc-90939a61e58c", // Complex numbers introduction
+  "0d899f02-1cb7-4081-9ece-616f4d0c9efd", // Complex solutions to polynomial equations
+  "11cf3ed5-0f7e-436b-9817-4c4e5386982a", // Introduction to matrices
+  "ea54bb0f-76bc-47a6-9220-190faf9677c1", // Algebra of matrices
+  "35b31ab2-691d-480d-8664-e77d13f2b7cc", // Multiplication of matrices
+  "c699f91b-43d0-4d3f-af5b-05a042516032", // Components of vectors: no genuine projection source yet
+  "d477bd69-e3be-4201-b8f0-2ba436cc3f6e", // Phase portrait: source
+  "e8505773-3b8b-41cc-84b3-d2e106e5533f", // Phase portrait: centre
+  // The only exact continuity sources are already assigned to other lessons,
+  // and the bank has no clean differentiability question. Leave both blank
+  // rather than duplicating a source or showing probability/first-principles
+  // questions that assess different skills.
+  "8bf9bb39-798f-4d37-aed8-fa1a2da85e61", // Continuous functions
+  "0b4fe42d-e0c8-419b-a8bc-10d6b71359c7", // Differentiable functions
+]);
+
+// Rob has explicitly decided that this short conceptual lesson does not need
+// attached exam practice. Keep both pathway copies intentionally blank so the
+// shared SL/HL views remain consistent and the audit does not treat them as
+// accidental gaps.
+const intentionallyWithoutPractice = new Set([
+  // The current archive has no clean question whose assessed skill is simply
+  // rounding a number to significant figures. Bounds and later calculations
+  // that merely request a rounded answer do not belong in this lesson.
+  "ad4a018c-8fbc-4876-8d5c-185faa0a4054", // IGCSE: Significant Figures
+  "e568bd0c-1738-4d97-b72e-0b1d2d0d9eea", // AA SL + AA HL: Introduction to differentiation/calculus
+  "d5e2d2ef-dd8a-41a2-8d2b-5846523f4ff8", // AA SL + AA HL: Introduction to limits
+  "35488928-8daf-4e41-9e34-60c9153b0b8c", // AA SL + AA HL: The number e
+  "24e9be00-6958-4b90-a7a3-5ba5ad8c16f9", // AA SL + AA HL: System of linear equations
+  "6d2ca245-7a2a-45ec-ae5c-5e6b7ac692eb", // AA SL + AA HL: Roots of a polynomial
+  "4be6b3ed-84bd-4d5c-a9d3-67362859ef39", // AA SL + AA HL: Features of graphs
+  "8a070f53-2a65-41ca-bd23-3feb183f79ab", // AA HL: Algebra of factorials
+  "00c950c1-60b5-4ff0-904d-b8c3f226c7f5", // AA HL: Proof by contradiction (infinite primes)
+  "ed461415-103f-4b7c-a993-691440c18e53", // AA HL: Use of counter example
+  "20867969-afe8-4c4f-8594-32ab84af1c17", // AA HL: Differential equations introduction
+  "44ad6968-438e-4f55-bb2e-6f97a1a44b69", // AA HL: Maclaurin series introduction
+  "46c63018-b709-4eab-a3ed-851044ddae8a", // AA HL: Euler's identity
+  "f004ff36-17a1-4061-bc14-1520f48f7bb7", // AI SL + AI HL: Roots of a polynomial
+  "d1156dcb-e3cc-4bdd-8985-b4729eacc0c0", // AI HL: Properties of matrices
+  "795817a0-1f56-45f4-b103-3b8936c00858", // AI HL: System of linear equations
+  "deba74b6-f5bc-4bf7-ad18-5918b6302196", // AI HL: Mr. Flynn's exact triangles
+  "890be651-35da-4ac2-ae19-017b48ecb19e", // AI HL: Unit circle
+  "4bd0bcf2-4678-47bb-b0b2-44b6477227e1", // AI HL: CAST diagram
+  "b4268179-f1d2-41ac-8573-6fd93c172880", // AI HL: Graphs of sin, cos and tan
+  "f9f1e45b-75b0-42ea-8228-b4f06345c516", // AI HL: Trig identities (no exact two-identity source yet)
+  "562cf78f-2adf-4021-abac-bb7b80049618", // AI HL: Matrix transformations intro/stretch (no exact stretch source)
+  "4f023b2b-b628-425a-a005-e96d992f7a32", // AI HL: Translations (no clean affine-translation source)
+  "58df1bd7-1084-430e-8512-ebfe2fdb1bb3", // AI HL: Vectors introduction
+  "347ec5b7-ccd1-4cee-a7f7-39315f5cb273", // AI HL: Introduction to graph theory
+  "c80a9dab-081b-418e-b719-31a425da82d8", // AI HL: Type I and Type II errors introduction
+  "e1998a7f-9388-4b70-9633-1863a15fb1ff", // AI HL: Markov chains introduction
+  "4344b991-0a6f-49c3-b858-32b177e746d6", // AI SL + AI HL: Variance and standard deviation by hand
+  "f90e3723-409e-4424-ad98-4684075dc4c5", // AI SL + AI HL: Chi-squared introduction
+  "8a686732-f574-43ed-891e-8e2fe01e29a5", // AI SL + AI HL: Introduction to differentiation
+  "1411cdc4-fc40-4c0c-8994-99b37500f165", // AI SL + AI HL: Introduction to limits
+  "40507693-613d-4de0-9c6a-f1c4f620cb50", // AI HL: direct sin/cos/ln/e derivatives (no clean unused non-chain source)
+  "a78266c3-8c07-4517-b09a-c67ae8c4345e", // AI HL: rational-exponent differentiation (no clean direct x^(1/2)-style source)
+  "c140dbc4-5bd3-48a7-834e-dfb032927422", // AI HL: relationship between graphs and derivatives
+  "eaa9adcd-5d3d-4fac-8b59-173980d36047", // AI HL: Euler's method (examples belong in the following lesson)
+  "1532c139-e18e-4daf-a429-15a50f300444", // AI HL: Sketching phase portraits introduction
+  "f5321b22-6b45-40ca-a705-57ee519bba5a", // AI HL: Surveys and questionnaires
+  "b5304489-6978-49c9-af8b-059e251c5754", // AI HL: Reliability versus validity
+  // No verified bank source currently assesses the precise normal-fit rule
+  // Rob specified: k - 1 - 2 after estimating both mean and standard deviation.
+  "53bbfe46-4d98-4159-b2df-eeea60362499", // AI HL: Chi-squared degrees of freedom
+]);
+
+// These are deliberate one-question lessons approved by Rob. They should not
+// reappear in the unresolved-gap audit merely because the general house style
+// uses two questions elsewhere.
+const intentionallySinglePractice = new Set([
+  "8c904f89-d4d6-4859-8403-9b64187f211b", // AA HL: Factorials and arrangements
+  "d5c720d9-4540-4c45-b822-a0c84764b619", // AA HL: Prove De Moivre by induction
+  "35a8aee0-4d48-4084-883f-fc23b5be9039", // AA HL: Vector equation of a plane
+  "40c21470-dbef-42f5-acfb-ba9658d8f02e", // AA HL: Angle between a line and a plane
+  "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
+  "5e60b54a-6bf2-4cf5-be78-4f13509448fd", // AI SL + AI HL: Rounding
+  "316a9cc6-d140-4513-8713-266476d64627", // AI HL: Euler form
+  "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7", // AI HL: Operations and geometric interpretation
+  "72a5f616-843a-4be5-875c-6e57afe3d730", // AI HL: Piecewise functions
+  "97dfa2ea-0da3-4f3e-a95f-1841d36df813", // AI HL: Scaling with logs (semi-log)
+  "9af63d1a-407b-4f90-ae78-30c8291fcd59", // AI HL: Setting up a differential equation
+  "de2388f1-fbf3-49c0-883b-1eff70b9cf7f", // AI HL: Phase portrait sink
+  "f40d55e2-0669-40a7-b7d9-fcc477ef23d4", // AI HL: Phase portrait spiral sink
+  "6194b7ab-4cd6-4c43-9a54-288397647d66", // AI HL: Phase portrait spiral source
+  "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae", // AI HL: Arcs and sectors with radians
+  "0e81f809-f846-4459-bcca-fb84c32fb263", // AI HL: Solving trig equations (approved non-vector source)
+  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b", // AI HL: Enlargements
+  "4ba2895d-48f5-439d-b0df-57c25ae1c824", // AI HL: Reflections
+  "1855d971-48f6-4e25-9790-e4671cd9748e", // AI HL: Vector product
+  "352a19bb-f72d-42ef-a85e-c45467041f8e", // AI HL: Scalar product and angle
+  "d889f97c-0abb-4fa0-8bd3-eee6927e5b7b", // AI HL: Weighted adjacency tables
+  "4ca8f2d8-76d2-4e10-a48e-04d8a8d4eca3", // AI HL: Graph routes
+  "265ad472-09ff-46ba-bfba-1ee1ebe11cf5", // AI HL: Prim's algorithm
+  "3cffb57c-653d-45a2-9983-68b1016b23e4", // AI HL: Prim's algorithm with adjacency table
+  "4ea42a07-b2d6-46c6-bd79-0987f8c97236", // AI HL: Eulerian graphs
+  "06dade6e-621a-4427-ad7c-1aa749bb8fa0", // AI HL: Hamiltonian graphs
+  "c693e0c1-aeb5-4651-bc41-6791b5024408", // AI HL: Travelling salesman problem
+  "e64a4cac-d435-4860-a028-f9f0b8266165", // AI HL: Travelling salesman practical problem
+  "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb", // AI HL: Coefficient of determination
+  "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d", // AI HL: Chi-squared categorising data
+  "36efc894-0227-4bab-99f6-2f85cd8c9706", // AI HL: Z-test two tailed (one exact known-variance source)
+  "fb36af72-faa4-4e66-bf8d-099bc54e766a", // AI HL: Binomial errors (one source containing both error types)
+  "4100b350-f26f-44e3-bb90-7a03158e7b95", // AI HL: Chain rule (one clean, accessible source)
+  "97665ecc-2be3-414c-9944-564bf6fa8645", // AI HL: Rational-power integration (one exact source)
+  "918840eb-bf55-4e83-8939-40af339f1d94", // AI HL: Integrating sin and cos (one clean unused source)
+  "d9d11f09-511a-436a-9792-f66fc8ceeac5", // AI HL: Integrating e^x and 1/x (one direct logarithmic source)
+  "99a7ab79-f157-4f85-83f1-52b8368acc0f", // AI HL: Inverse chain rule (one clean linear-inner source)
+  "20b25248-b2b7-4f5b-b270-d68567b564d7", // IGCSE: ordinary frequency tables
+]);
+
+// These lessons currently have one exact verified source, but Rob has not
+// approved them as permanent one-question exceptions. Show the good question,
+// do not auto-fill a wrong second one, and keep the audit status as needs-review.
+const incompleteSinglePractice = new Set([
+  "7e85609d-7df5-4a52-a399-17b82dd85721", // IGCSE: solving quadratics by factorising
+  "79235cf6-1de4-4626-930e-42e9ca9ecd2d", // IGCSE: solving by completing the square
+  "fb79ddd5-ef05-48a7-a489-311620a88c6b", // IGCSE: inverse-functions introduction
+  "c03ceb67-bb68-4fe8-a30e-922281449d50", // IGCSE: distance between two points
+]);
+
+// Rob explicitly approved three-question progressions for these two Topic 4
+// lessons. The probability lesson receives an additional harder formula
+// question, and binomial distribution is ordered easy, medium, then hard.
+const intentionallyTriplePractice = new Set([
+  "ca2285a6-c9cc-4eac-adc1-8c6479e9b21e", // AA SL + AA HL: Probability formulae
+  "f924ec98-3f94-4b6e-b485-50d9a7cb0959", // AA SL + AA HL: Binomial distribution
+  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f", // AI HL: Eigenvalues and eigenvectors
+  "79bbc962-e946-49f0-a89e-5bd386389248", // AI HL: Powers of matrices
+  "d084246b-aa0a-4a8b-a962-db8032c3bbcf", // IGCSE: Domain and Range
+  "2d8c3008-d9cc-456e-a1a7-05999fc917ed", // IGCSE: Grouped Data
+  "1a51ff2e-8cdc-4a3d-9f0b-85cf3f65e853", // IGCSE: Probability And/Or Rules
+  "949eaf81-334d-4578-a811-551fc53c7e3d", // IGCSE: Relative Frequency
+]);
+
+const practicePartOverrides = {
+  "fbd320cc-1282-4830-a9ba-15241df8dd87": {
+    "4MA1_2019J_2HR_Q17": ["a"],
+  },
+  "133c4249-51e3-404b-b1da-d02e97ac254b": {
+    "4MA1_2019J_1H_Q1": ["a"],
+    "4MA1_2021J_1H_Q5": ["a"],
+  },
+  "a517d3ce-4597-4559-bb22-f7a591d92bb3": {
+    "4MA1_2025M_2HR_Q13": ["a"],
+  },
+  "19a71d14-30c0-4bec-9be1-a1e978c703d9": {
+    "4MA1_2024M_1H_Q12": ["a"],
+  },
+  "b262d7f9-4cba-4080-8aee-588b2b1b5569": {
+    "4MA1_2018M_2H_Q1": ["a"],
+  },
+  "79235cf6-1de4-4626-930e-42e9ca9ecd2d": {
+    "4MA1_2018M_2HR_Q24": ["a", "b"],
+  },
+  "1394e37c-0c0e-4f7c-856f-aacff695cbda": {
+    "4MA1_2018M_1H_Q11": ["b"],
+    "4MA1_2018M_1HR_Q16": ["a", "b"],
+  },
+  "ae16b3bf-a089-42b8-97c6-23e995688cc3": {
+    "4MA1_2018M_1H_Q14": ["a"],
+    "4MA1_2019M_2H_Q24": ["a"],
+  },
+  "d084246b-aa0a-4a8b-a962-db8032c3bbcf": {
+    "4MA1_2025M_2HR_Q19": ["a"],
+    "4MA1_2023M_1H_Q17": ["a"],
+    "4MA1_2020J_1HR_Q17": ["b"],
+  },
+  "fb79ddd5-ef05-48a7-a489-311620a88c6b": {
+    "4MA1_2019J_1HR_Q23": ["a"],
+  },
+  "a99a4255-6920-4e01-9d11-9a0ce6d2f491": {
+    "4MA1_2024M_1H_Q15": ["b"],
+  },
+  "c03ceb67-bb68-4fe8-a30e-922281449d50": {
+    "4MA1_2022M_1H_Q10": ["a"],
+  },
+  "498da047-40c6-4199-b592-da279e244583": {
+    "4MA1_2018M_2H_Q17": ["a"],
+    "4MA1_2019J_1H_Q12": ["a"],
+  },
+  "24b7805f-537b-4b08-962c-92d7de9fa038": {
+    "4MA1_2023J_2H_Q17": ["a"],
+    "4MA1_2024N_1H_Q17": ["a"],
+  },
+  "62baae37-e03d-4e49-ae83-a9c5114e54cd": {
+    "4MA1_2022J_2H_Q8": ["a"],
+    "4MA1_2020N_1HR_Q5": ["a"],
+  },
+  "4100b350-f26f-44e3-bb90-7a03158e7b95": {
+    "H_M18TZ1HL_P1_Q2": ["a"],
+  },
+  "b1ffb4f0-65d2-4031-aec4-acbdb5f97b7a": {
+    "M19TZ1SL_P2_Q3": ["a"],
+  },
+  "a490ac5c-828a-4b25-a5e0-3cde3293071c": {
+    "W_N21TZ0AIHL_P1_Q8": ["b"],
+    "M12TZ2HL_P1_Q7": ["b"],
+  },
+  "91d05699-bfeb-4a89-9666-ab1c9e0223cb": {
+    "N09TZ0SL_P1_Q9": ["b"],
+    "M10TZ2SL_P1_Q8": ["a"],
+  },
+  "442602d9-44ec-4d6b-b6f8-1ae775349771": {
+    "M11TZ1SL_P2_Q9": ["c", "d"],
+  },
+  "baf50754-d084-4bea-84e4-6d755bc624c6": {
+    "M10TZ2SL_P2_Q6": ["c"],
+  },
+  "0c4f3b43-0879-4243-9e14-d8322f9f011c": {
+    "H_N15TZ0HL_P2_Q5": ["a"],
+    "V_SPECAISL_P1_Q10": ["a", "b"],
+  },
+  "cf3e3632-d731-4df7-a800-ac8be01cdd5a": {
+    "H_M15TZ0HL_P3S_Q2": ["a"],
+    "H_N18TZ0HL_P3S_Q2": ["a"],
+  },
+  "c19965b9-5b04-4711-b5ff-b440ca6eba03": {
+    "H_M19TZ0HL_P3S_Q3": ["e"],
+    "H_N14TZ0HL_P3S_Q5": ["a"],
+  },
+  "36efc894-0227-4bab-99f6-2f85cd8c9706": {
+    "H_M18TZ0HL_P3S_Q3": ["a", "b"],
+  },
+  "a05dc6dd-60a5-4987-9191-16ba898b9cca": {
+    "H_M15TZ0HL_P3S_Q2": ["b"],
+    "H_N16TZ0HL_P3S_Q1X1": ["d"],
+  },
+  "44d7af59-b287-482e-a04f-99fc8faaffeb": {
+    "W_M21TZ1AIHL_P1_Q11": ["b", "c", "d"],
+    "W_N23TZ0AIHL_P2_Q7": ["d"],
+  },
+  "9675baa1-851f-4710-bceb-15dd0c01fdad": {
+    "W_N21TZ0AIHL_P2_Q7": ["a"],
+    "W_M21TZ2AIHL_P1_Q15": ["a", "c"],
+  },
+  "73e1e90c-6be8-463a-bc7b-bc43361419d6": {
+    "W_M22TZ2AIHL_P1_Q12": ["a", "b"],
+    "H_N16TZ0HL_P3S_Q2": ["d"],
+  },
+  "d852b265-6804-4467-99e9-953af805fb72": {
+    "M13TZ1SL_P1_Q1": ["b"],
+    "M11TZ2SL_P1_Q3": ["a"],
+  },
+  "babb8fbc-b24b-44e2-b524-908650017797": {
+    "N17TZ0SL_P2_Q3": ["a"],
+    "M10TZ2SL_P1_Q2": ["b"],
+  },
+  "ec7a9d6b-aacf-40ee-a175-9ff973312441": {
+    "W_N22TZ0AIHL_P2_Q7": ["a"],
+    "W_M25TZ3AIHL_P1_Q14": ["a"],
+  },
+  "1855d971-48f6-4e25-9790-e4671cd9748e": {
+    "W_SPECAIHL_P1_Q11": ["b"],
+  },
+  "3f7dbc9d-77f5-4aa4-85f3-5eccf69f41c6": {
+    "W_M23TZ1AIHL_P1_Q7": ["a", "b"],
+    "W_M24TZ2AIHL_P1_Q8": ["b"],
+  },
+  "d889f97c-0abb-4fa0-8bd3-eee6927e5b7b": {
+    "W_N22TZ0AIHL_P2_Q4": ["c"],
+  },
+  "4a729d86-d2a5-475e-8194-1c24c98aa196": {
+    "W_M22TZ2AIHL_P3_Q2": ["d"],
+    "W_M23TZ2AIHL_P2_Q4": ["b"],
+  },
+  "265ad472-09ff-46ba-bfba-1ee1ebe11cf5": {
+    "W_M21TZ1AIHL_P1_Q10": ["a"],
+  },
+  "3cffb57c-653d-45a2-9983-68b1016b23e4": {
+    "W_M25TZ2AIHL_P2_Q4": ["a"],
+  },
+  "4ea42a07-b2d6-46c6-bd79-0987f8c97236": {
+    "W_M23TZ1AIHL_P2_Q4": ["a"],
+  },
+  "a90ee76e-0a72-4a15-bf3d-1a3094677f44": {
+    "W_N23TZ0AIHL_P2_Q5": ["d"],
+  },
+  "06dade6e-621a-4427-ad7c-1aa749bb8fa0": {
+    "W_N21TZ0AIHL_P3_Q1": ["a"],
+  },
+  "c693e0c1-aeb5-4651-bc41-6791b5024408": {
+    "W_N24TZ0AIHL_P3_Q1": ["a", "b"],
+  },
+  "e64a4cac-d435-4860-a028-f9f0b8266165": {
+    "W_M24TZ2AIHL_P2_Q4": ["a", "b", "c"],
+  },
+  "0a593676-5299-4966-95ee-c58e7e4ccba9": {
+    "W_M25TZ3AIHL_P2_Q4": ["e"],
+    "W_SPECAIHL_P2_Q5": ["g"],
+  },
+  "657e5ac0-f7a7-4e5b-9940-b0999e263643": {
+    "M15TZ2AISL_P1_Q1": ["a"],
+  },
+  "1900d762-9513-4e7c-9549-f40a2adf084d": {
+    "N13TZ0AISL_P1_Q5": ["a"],
+    "M11TZ1AISL_P1_Q7": ["a", "b"],
+  },
+  "9d6631de-db03-4cfa-a0f3-e35edc3c8bf5": {
+    "M16TZ1AISL_P1_Q2": ["a"],
+    "V_N24TZ1AISL_P1_Q1": ["b"],
+  },
+  "4c20491d-5660-48b6-80eb-943004d1f8b0": {
+    "V_N21TZ0AISL_P1_Q2": ["a"],
+    "M14TZ1SL_P2_Q1": ["a"],
+  },
+  "7d695de0-122e-4717-93d9-c147c6ecf959": {
+    "M18TZ2AISL_P1_Q8": ["b"],
+  },
+  "fc7bb062-c872-4524-9e57-e3a60793c557": {
+    "V_N24TZ2AISL_P1_Q1": ["a", "b"],
+  },
+  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": {
+    "W_M22TZ1AIHL_P2_Q7": ["b"],
+  },
+  "4ba2895d-48f5-439d-b0df-57c25ae1c824": {
+    "W_N23TZ0AIHL_P2_Q6": ["d"],
+  },
+  "80522e92-56ee-4aa2-ae07-9e105b2efdf0": {
+    "W_N24TZ0AIHL_P2_Q6": ["d"],
+  },
+  "3047e664-8bf6-4140-8c0c-cabd97cd06b5": {
+    "W_M22TZ2AIHL_P1_Q15": ["b"],
+    "W_N22TZ0AIHL_P1_Q9": ["a"],
+  },
+  "f5f90981-cc11-4c17-a3bd-1361bcc350ac": {
+    "M17TZ2AISL_P1_Q4": ["a"],
+    "M15TZ2AISL_P1_Q3": ["a"],
+  },
+  "0c2d1242-eb4f-4dfe-9d0c-9fe06effad62": {
+    "M11TZ1AISL_P1_Q10": ["a"],
+  },
+  "bddfca14-6aee-440f-8b2c-0cb50d8d21f5": {
+    "V_M25TZ2AISL_P1_Q9": ["a", "b"],
+    "V_SPECAISL_P1_Q4": ["a", "b"],
+  },
+  "a067432b-da49-4081-877b-d31f4161c517": {
+    "M17TZ1AISL_P2_Q3": ["a"],
+    "M11TZ1AISL_P2_Q3": ["a"],
+  },
+  "c3c9cf1a-a9bc-4064-855b-9d526eed986d": {
+    "N20TZ0AISL_P1_Q4": ["a"],
+    "N11TZ0AISL_P2_Q4": ["a"],
+  },
+  "ae67a312-31d7-4658-9ece-e427fd0eab34": {
+    "V_M21TZ2AISL_P2_Q5": ["a", "b"],
+  },
+  "4ddbe716-9ced-46ce-9569-b54880c76cfe": {
+    "V_N23TZ1AISL_P1_Q7": ["a", "b"],
+    "V_N25TZ1AISL_P2_Q4": ["a", "b"],
+  },
+  "ac21b892-10cf-4fcc-b343-061386c5f8d5": {
+    "N10TZ0SL_P1_Q9": ["a"],
+  },
+  "cb268ace-1b45-47b1-b745-aaa2bc0fad62": {
+    "N12TZ0SL_P2_Q9": ["c"],
+    "M08TZ1SL_P1_Q9": ["d"],
+  },
+  "97dfa2ea-0da3-4f3e-a95f-1841d36df813": {
+    "W_N22TZ0AIHL_P1_Q13": ["a"],
+  },
+  "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
+    "V_M22TZ2AISL_P2_Q2": ["d"],
+  },
+  "7038e65e-6cf6-4f3e-b9d5-666683bb9f97": {
+    "M13TZ2AISL_P1_Q13": ["a", "b"],
+  },
+  "03a83b7a-4df5-4d2c-a669-cfcf7b50787e": {
+    "N20TZ0AISL_P1_Q11": ["c"],
+    "N17TZ0AISL_P2_Q5": ["b", "c"],
+  },
+  "4ec4c4a2-a2de-4e61-9903-55f280bf9ab6": {
+    "M14TZ1AISL_P1_Q10": ["a"],
+    "N16TZ0AISL_P1_Q14": ["a"],
+  },
+  "db4f51b7-b4c5-41ad-bb94-b0bd53f9bee3": {
+    "M18TZ2AISL_P1_Q14": ["a", "b"],
+  },
+  "e884d9fa-1e59-4ccc-a67d-2c63d5140908": {
+    "N09TZ0SL_P1_Q10X1": ["a"],
+  },
+  "f4aa813d-a3e2-480a-9f8d-49d2b31a7a04": {
+    "N13TZ0SL_P2_Q3": ["b"],
+  },
+  "76f62a43-8fbd-46d5-aff6-c74b0488675a": {
+    "A_M22TZ1SL_P1_Q2": ["a", "b"],
+  },
+  "20b8ec75-0605-426a-abec-066ca4c4f9d2": {
+    "A_N22TZ0SL_P2_Q3": ["c"],
+  },
+  "9d0fc44f-c26e-4a61-9d6a-9d84d022c372": {
+    "M16TZ1SL_P1_Q10": ["a"],
+  },
+  "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": {
+    "M12TZ2SL_P2_Q2": ["a", "b"],
+    "M14TZ2SL_P1_Q6": ["a"],
+  },
+  "92c1b8b1-b956-4724-bd03-de85fb5d4f09": {
+    "N13TZ0HL_P1_Q10X1": ["a", "b"],
+  },
+  "5c83085a-0fc2-4199-89b3-34ce0cf5539b": {
+    "M09TZ1HL_P2_Q6": ["a"],
+    "A_M23TZ1SL_P2_Q9": ["c"],
+  },
+  "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": {
+    "M10TZ2HL_P2_Q3": ["a"],
+  },
+  "4fa5e51a-f4dd-477e-b393-54f1be7266ec": {
+    "M10TZ2HL_P1_Q1": ["a"],
+    "A_M22TZ1HL_P1_Q7": ["a"],
+  },
+  "2f5766d2-e280-4aff-ac80-36b91b5218b7": {
+    "A_M25TZ3HL_P2_Q3": ["a"],
+    "V_N25TZ3AISL_P1_Q1": ["a", "b"],
+  },
+  "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": {
+    "M17TZ2HL_P2_Q10": ["b", "c"],
+  },
+  "23301c56-b9aa-4101-ade8-1e2c41b65e54": {
+    "A_N25TZ3HL_P1_Q7": ["b"],
+  },
+  "26a92a94-1132-4e90-9b26-63b98ffffc26": {
+    "A_M25TZ3HL_P2_Q3": ["c"],
+  },
+  "45a2dc30-ca7b-47a2-a2b1-a1c2ef8d15c8": {
+    "M12TZ1SL_P2_Q8": ["a"],
+  },
+  "8ea2af96-360e-4ae0-a160-43a031e64cba": {
+    "N12TZ0SL_P1_Q8": ["b"],
+  },
+  "be563c56-3e2f-437f-8e41-0fd0d83dc7c0": {
+    "A_M24TZ1SL_P2_Q1": ["a", "b"],
+  },
+  "639dc690-35bc-4a84-b7fb-89844ecaf252": {
+    "V_M23TZ2AISL_P1_Q3": ["a", "b"],
+  },
+  "a9ba5e52-d70c-45b8-822c-f80312ea5c9a": {
+    "M11TZ1HL_P1_Q1": ["a"],
+    "M14TZ2HL_P1_Q1": ["a", "b"],
+  },
+  "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d": {
+    "W_M23TZ1AIHL_P2_Q5": ["c", "d"],
+  },
+  "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": {
+    "W_M23TZ2AIHL_P1_Q9": ["e"],
+  },
+  "bb113001-688d-4876-91d0-208f1fdaa532": {
+    "W_M24TZ1AIHL_P1_Q3": ["b"],
+    "M19TZ2SL_P1_Q8A": ["e"],
+  },
+  "45a38dec-e9f7-48db-b7ff-a998107ada10": {
+    "H_N18TZ0HL_P3S_Q1": ["a", "b"],
+  },
+  "ae20100b-d4f8-47b7-94cb-274153bd96da": {
+    "V_SPECAISL_P1_Q3": ["c"],
+    "V_M21TZ1AISL_P2_Q1": ["a"],
+  },
+  "ceae5e0d-9738-456a-89e4-0312f721d52d": {
+    "M19TZ1SL_P2_Q1": ["b", "c"],
+  },
+  "aae0e405-1bd3-4357-a328-727f097360e4": {
+    "V_M22TZ2AISL_P1_Q7": ["b"],
+  },
+  "160cf57c-42a3-457c-877f-923a11a0b623": {
+    "A_N25TZ1HL_P2_Q5": ["a"],
+  },
+  "7cc0076e-c776-4fe4-8a63-43da44f92820": {
+    "A_M23TZ1SL_P2_Q4": ["b"],
+  },
+  "2242b24b-b800-4f2c-bb5a-16bd04201870": {
+    "M16TZ1HL_P1_Q5": ["b"],
+  },
+  "b70c2e32-c750-4851-a572-8587162396f0": {
+    "M10TZ2HL_P1_Q12": ["b"],
+  },
+  "1847f7c2-9f5a-48f5-a40e-12ef76b0cc9e": {
+    "N16TZ0SL_P1_Q4": ["a"],
+  },
+  "ed2cce38-614a-4256-b943-ab8c4856fa14": {
+    "M11TZ2SL_P2_Q8": ["a", "b", "c"],
+  },
+  "f9b565e2-2c78-4c12-a55a-827d39233645": {
+    "M10TZ2SL_P2_Q9": ["a", "b"],
+  },
+  "1a185d48-f767-4296-99b1-17ef882d64f4": {
+    "H_M14TZ2SL_P1_Q9": ["a", "b"],
+  },
+  "03d4a492-8fd9-4ab0-ab11-383f62d354d6": {
+    "N16TZ0AISL_P2_Q3": ["b", "c"],
+    "V_N25TZ3AISL_P2_Q3": ["b"],
+  },
+  "f304a68a-2b24-482f-b9c7-91a2a7c8eb64": {
+    "M14TZ2SL_P1_Q1": ["a"],
+    "N19TZ0SL_P2_Q4": ["a"],
+  },
+  "c5f358f0-e49c-4fc1-a20a-296f64992376": {
+    "N08TZ0SL_P1_Q7": ["a"],
+  },
+  "636981ff-833c-4f52-8c70-23ab18592831": {
+    "A2_M24TZ1HL_P1_Q11": ["a"],
+    "A_M21TZ1HL_P2_Q12": ["a"],
+  },
+  "6468821a-a955-4837-b591-7e8bdf3705ca": {
+    "A_M24TZ1HL_P1_Q11": ["a", "b"],
+  },
+  "46e2372a-66cb-477e-96c7-fba7ae61c41d": {
+    "M11TZ1HL_P2_Q5": ["a"],
+  },
+  "eeb308ea-e4a0-44da-8932-705b5cb24c2f": {
+    "M12TZ1SL_P2_Q2": ["a", "b"],
+  },
+  "88162068-c195-41a3-ae20-004900917331": {
+    "N14TZ0SL_P1_Q1": ["b"],
+  },
+  "ac5e0aa4-64bb-4cbb-86aa-8d7f9315c0ac": {
+    "M16TZ1SL_P2_Q2": ["a"],
+  },
+  "2a607da2-7e6a-4dc8-b483-2819907798e0": {
+    "M09TZ1SL_P1_Q5": ["a"],
+  },
+  "916aa44f-5240-4926-9cb6-12800d012e0c": {
+    "N14TZ0SL_P2_Q4": ["a", "b"],
+  },
+  "f8918c12-e985-4e26-bea3-c93f245655f1": {
+    "M17TZ1HL_P1_Q11": ["a", "b"],
+  },
+  "54f53e20-a14f-447a-a43f-c865e7eb424e": {
+    "A_N23TZ1HL_P2_Q11": ["a", "b", "c", "d"],
+    "A_N24TZ0HL_P2_Q12": ["c", "d", "f"],
+  },
+  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
+    "A_N24TZ0HL_P1_Q6": ["a"],
+    "M14TZ1HL_P2_Q6": ["a"],
+  },
+  "990b6aba-3d06-489d-81e6-70a683d4f23a": {
+    "A_N22TZ0HL_P1_Q10": ["c"],
+  },
+  "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": {
+    "N18TZ0HL_P2_Q8": ["a"],
+  },
+  "6deba641-23f1-40d0-ae72-a3a41880b1a6": {
+    "W_N24TZ0AIHL_P1_Q9": ["c", "d"],
+  },
+  "c3a6691b-3913-41ee-a041-c85daac52f12": {
+    "M12TZ2HL_P1_Q12": ["c"],
+  },
+  "921a99b5-a673-423c-aeed-402fec0952e0": {
+    "N08TZ0HL_P1_Q13": ["a"],
+  },
+  "bbe01c0e-9af6-47fc-845c-f2259ff05024": {
+    "M16TZ2HL_P1_Q12": ["c"],
+    "M10TZ2HL_P1_Q13": ["a"],
+  },
+  "d5c720d9-4540-4c45-b822-a0c84764b619": {
+    "M14TZ2HL_P2_Q13": ["a"],
+  },
+  "f25aaf3c-7579-43af-9f0c-c82485651278": {
+    "N13TZ0HL_P2_Q9": ["b"],
+    "A_N24TZ0HL_P2_Q11": ["b"],
+  },
+  "b67a9adf-10a0-466a-b35f-41187f507502": {
+    "M16TZ1HL_P2_Q1": ["a"],
+  },
+  "0785ff34-a49a-4abd-8c2a-d11d0719370c": {
+    "A_M24TZ1HL_P2_Q12": ["a"],
+  },
+  "35a8aee0-4d48-4084-883f-fc23b5be9039": {
+    "A_N25TZ1HL_P2_Q12": ["b"],
+  },
+  "f6806af5-6f99-4c11-856b-e678d5fe533a": {
+    "N11TZ0HL_P2_Q13": ["a"],
+    "A_M22TZ1HL_P1_Q11": ["b"],
+  },
+  "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
+    "M10TZ1HL_P2_Q11": ["a", "d"],
+  },
+  "134931eb-dd12-49c0-847c-973b34aebd07": {
+    "N16TZ0SL_P1_Q10": ["a"],
+  },
+  "dd3009b8-25ed-4425-b4a5-611cc3ba1665": {
+    "N08TZ0HL_P2_Q12": ["c"],
+    "A_M21TZ2HL_P2_Q12": ["c"],
+  },
+  "57c2580c-3193-417f-be6c-0332c78845ca": {
+    "M16TZ2HL_P1_Q3": ["a", "b"],
+  },
+  "eb3a2412-6da8-4727-b13e-ca95e9dca23d": {
+    "M11TZ2HL_P2_Q13B": ["a"],
+    "N18TZ0HL_P1_Q10": ["a"],
+  },
+  "feb99f1f-879d-4a54-a584-3978511b3cf1": {
+    "N19TZ0HL_P2_Q11": ["b"],
+    "W_M24TZ1AIHL_P1_Q9": ["a", "b"],
+  },
+  "f0fa4dc1-59c1-46c4-a077-8e442d0522e4": {
+    "N12TZ0HL_P3_Q1": ["a"],
+    "N08TZ0HL_P3_Q4": ["a"],
+  },
+  "3b73bfe5-13de-4fa2-a29b-6e4e6f822481": {
+    "N19TZ0HL_P3_Q3": ["a"],
+    "M11TZ0HL_P3_Q1": ["a"],
+  },
+  "44cf2485-5dd6-45d4-866b-1c187d67f198": {
+    "N10TZ0HL_P3_Q3": ["a", "b"],
+    "A_M22TZ1HL_P1_Q12": ["a", "b"],
+  },
+  "67e6f294-1736-4781-b3d3-ebfaa24282c4": {
+    "N12TZ0HL_P3_Q4": ["a"],
+    "N13TZ0HL_P3_Q4": ["b"],
+  },
+  "e0ae88fb-c9b0-4df3-94e5-0a6880f03068": {
+    "M11TZ2SL_P1_Q5": ["a"],
+    "W_M25TZ1AIHL_P1_Q10": ["a"],
+  },
+  "9c656814-2fbe-4d15-a9ca-c05d1317ee37": {
+    "H_N14TZ0HL_P1_Q11X1": ["a"],
+  },
+  "f4f5804f-1998-41e3-8b43-5ba7d7ca2b40": {
+    "N12TZ0HL_P1_Q10": ["a"],
+    "H_M18TZ2HL_P2_Q1": ["a"],
+  },
+  "316a9cc6-d140-4513-8713-266476d64627": {
+    "W_N21TZ0AIHL_P2_Q5": ["a"],
+  },
+  "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7": {
+    "W_M24TZ2AIHL_P1_Q15": ["b"],
+  },
+  "e9c828e5-d1fc-4459-8e16-4f893814d04e": {
+    "W_M23TZ2AIHL_P1_Q13": ["a"],
+  },
+  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": {
+    "W_M24TZ2AIHL_P2_Q5": ["c", "d"],
+    "W_M22TZ1AIHL_P1_Q11": ["a"],
+  },
+  "79bbc962-e946-49f0-a89e-5bd386389248": {
+    "W_M24TZ1AIHL_P1_Q17": ["b", "c"],
+    "W_M21TZ1AIHL_P2_Q5": ["c", "d"],
+    "W_M21TZ2AIHL_P2_Q4": ["e"],
+  },
+  "54333f98-7d7a-4d6a-b3cf-347122e184bc": {
+    "W_N23TZ0AIHL_P3_Q1": ["a"],
+  },
+  "9af63d1a-407b-4f90-ae78-30c8291fcd59": {
+    "W_M25TZ2AIHL_P1_Q12": ["a"],
+  },
+  "660e272a-8a71-4422-8450-61a7ea1d58cf": {
+    "H_M13TZ2HL_P2_Q12": ["a"],
+    "W_M24TZ1AIHL_P2_Q5": ["b"],
+  },
+  "1310ef79-c234-4d20-9054-53eb85ef7749": {
+    "W_N24TZ0AIHL_P1_Q17": ["a"],
+    "W_M25TZ3AIHL_P1_Q11": ["b"],
+  },
+  "a916a502-98ff-4105-8574-80aac522eda7": {
+    "W_N21TZ0AIHL_P2_Q6": ["c", "d"],
+  },
+  "de2388f1-fbf3-49c0-883b-1eff70b9cf7f": {
+    "W_M21TZ2AIHL_P2_Q7": ["b", "c", "d", "f"],
+  },
+  "f40d55e2-0669-40a7-b7d9-fcc477ef23d4": {
+    "W_N24TZ0AIHL_P2_Q7": ["d"],
+  },
+  "6194b7ab-4cd6-4c43-9a54-288397647d66": {
+    "W_M23TZ1AIHL_P2_Q6": ["a", "b", "c", "d"],
+  },
+  "ceabfc5c-e18c-45d3-9ccd-2e3dcdf6ac5f": {
+    "W_M23TZ2AIHL_P2_Q7": ["a", "b", "c"],
+    "W_M22TZ2AIHL_P2_Q7": ["b", "c"],
+  },
+  "aacabb23-fe64-4316-bbf5-d1737b8fbad8": {
+    "W_M23TZ2AIHL_P2_Q5": ["c", "d"],
+  },
+  "cde690c1-93a1-4385-b6cd-a31e4a885a7f": {
+    "W_M22TZ1AIHL_P1_Q9": ["b"],
+  },
+  "1b5161c6-1227-4018-84fc-ab50132be01b": {
+    "H_M15TZ0HL_P3S_Q3": ["a"],
+  },
+  "e98579d2-83b7-4dab-ab62-427fd2e8165e": {
+    "V_N23TZ1AISL_P1_Q3": ["b", "c"],
+  },
+  "741c0b0c-17ef-46e5-894c-c62447c47172": {
+    "N12TZ0AISL_P1_Q15": ["a"],
+    "M13TZ1AISL_P1_Q15": ["a"],
+  },
+  "f06c971e-bbd7-4cb2-8db5-e3abbe338077": {
+    "V_M22TZ2AISL_P1_Q11": ["a", "b"],
+    "V_N24TZ2AISL_P1_Q12": ["a", "b"],
+  },
+  "b31ff22b-38f1-489b-a9ce-209fa91d73e6": {
+    "M14TZ1SL_P1_Q3": ["a"],
+    "V_M24TZ2AISL_P2_Q3": ["b"],
+  },
+};
+
+const practicePartTitles = {
+  "fbd320cc-1282-4830-a9ba-15241df8dd87": {
+    "4MA1_2019J_2HR_Q17": "Find a lower bound for a product",
+  },
+  "133c4249-51e3-404b-b1da-d02e97ac254b": {
+    "4MA1_2019J_1H_Q1": "Factorise by taking out a common factor",
+    "4MA1_2021J_1H_Q5": "Factorise fully using the common factor",
+  },
+  "a517d3ce-4597-4559-bb22-f7a591d92bb3": {
+    "4MA1_2025M_2HR_Q13": "Factorise a difference of two squares",
+  },
+  "19a71d14-30c0-4bec-9be1-a1e978c703d9": {
+    "4MA1_2024M_1H_Q12": "Factorise a non-monic quadratic",
+  },
+  "b262d7f9-4cba-4080-8aee-588b2b1b5569": {
+    "4MA1_2018M_2H_Q1": "Make a the subject of a formula",
+  },
+  "79235cf6-1de4-4626-930e-42e9ca9ecd2d": {
+    "4MA1_2018M_2HR_Q24": "Complete the square and use it to solve",
+  },
+  "1394e37c-0c0e-4f7c-856f-aacff695cbda": {
+    "4MA1_2018M_1H_Q11": "Solve a quadratic to three significant figures",
+    "4MA1_2018M_1HR_Q16": "Use a quadratic equation to find a length",
+  },
+  "ae16b3bf-a089-42b8-97c6-23e995688cc3": {
+    "4MA1_2018M_1H_Q14": "Evaluate f at a given input",
+    "4MA1_2019M_2H_Q24": "Substitute a value into a function",
+  },
+  "d084246b-aa0a-4a8b-a962-db8032c3bbcf": {
+    "4MA1_2025M_2HR_Q19": "Exclude a value from the domain",
+    "4MA1_2023M_1H_Q17": "Find the excluded domain value",
+    "4MA1_2020J_1HR_Q17": "State the range of a function",
+  },
+  "fb79ddd5-ef05-48a7-a489-311620a88c6b": {
+    "4MA1_2019J_1HR_Q23": "Interpret inverse-function notation",
+  },
+  "a99a4255-6920-4e01-9d11-9a0ce6d2f491": {
+    "4MA1_2024M_1H_Q15": "Find an inverse function",
+  },
+  "c03ceb67-bb68-4fe8-a30e-922281449d50": {
+    "4MA1_2022M_1H_Q10": "Calculate the distance between two coordinate points",
+  },
+  "498da047-40c6-4199-b592-da279e244583": {
+    "4MA1_2018M_2H_Q17": "Differentiate a cubic function",
+    "4MA1_2019J_1H_Q12": "Find the derivative of a cubic function",
+  },
+  "d7be6548-9fb0-4b63-9658-870c96841260": {
+    "4MA1_2020N_1HR_Q13": "Use differentiation to find points with gradient 2",
+    "4MA1_2023M_1H_Q11": "Use differentiation to find points with gradient 4",
+  },
+  "24b7805f-537b-4b08-962c-92d7de9fa038": {
+    "4MA1_2023J_2H_Q17": "Simplify a surd expression",
+    "4MA1_2024N_1H_Q17": "Express one surd as a multiple of another",
+  },
+  "62baae37-e03d-4e49-ae83-a9c5114e54cd": {
+    "4MA1_2022J_2H_Q8": "Find a percentage increase from two values",
+    "4MA1_2020N_1HR_Q5": "Find a population percentage increase",
+  },
+  "4100b350-f26f-44e3-bb90-7a03158e7b95": {
+    "H_M18TZ1HL_P1_Q2": "Differentiate sin²θ using the chain rule",
+  },
+  "b1ffb4f0-65d2-4031-aec4-acbdb5f97b7a": {
+    "M19TZ1SL_P2_Q3": "Differentiate x²e³ˣ using the product rule",
+  },
+  "a490ac5c-828a-4b25-a5e0-3cde3293071c": {
+    "W_N21TZ0AIHL_P1_Q8": "Sketch a function from the graph of its derivative",
+    "M12TZ2HL_P1_Q7": "Sketch f′ from the graph of f",
+  },
+  "91d05699-bfeb-4a89-9666-ab1c9e0223cb": {
+    "N09TZ0SL_P1_Q9": "Use f″ to justify a local maximum",
+    "M10TZ2SL_P1_Q8": "Use the second derivative to classify a maximum",
+  },
+  "442602d9-44ec-4d6b-b6f8-1ae775349771": {
+    "M11TZ1SL_P2_Q9": "Find and justify points of inflexion",
+  },
+  "baf50754-d084-4bea-84e4-6d755bc624c6": {
+    "M10TZ2SL_P2_Q6": "Explain why a signed integral is not the geometric area",
+  },
+  "0c4f3b43-0879-4243-9e14-d8322f9f011c": {
+    "H_N15TZ0HL_P2_Q5": "Find an area bounded by the y-axis by integrating with respect to y",
+    "V_SPECAISL_P1_Q10": "Find the area bounded by a parabola and the coordinate axes",
+  },
+  "cf3e3632-d731-4df7-a800-ac8be01cdd5a": {
+    "H_M15TZ0HL_P3S_Q2": "Find unbiased estimates from examination-mark differences",
+    "H_N18TZ0HL_P3S_Q2": "Find unbiased estimates from travel-time summary statistics",
+  },
+  "c19965b9-5b04-4711-b5ff-b440ca6eba03": {
+    "H_M19TZ0HL_P3S_Q3": "Carry out a one-tailed Z-test for a population mean",
+    "H_N14TZ0HL_P3S_Q5": "Find the critical region for a one-tailed Z-test",
+  },
+  "36efc894-0227-4bab-99f6-2f85cd8c9706": {
+    "H_M18TZ0HL_P3S_Q3": "Set up and carry out a two-tailed Z-test",
+  },
+  "a05dc6dd-60a5-4987-9191-16ba898b9cca": {
+    "H_M15TZ0HL_P3S_Q2": "Test whether extra tuition improved the same students' marks",
+    "H_N16TZ0HL_P3S_Q1X1": "Test the paired differences between two exams",
+  },
+  "44d7af59-b287-482e-a04f-99fc8faaffeb": {
+    "W_M21TZ1AIHL_P1_Q11": "Test a manufacturer's claimed fault proportion",
+    "W_N23TZ0AIHL_P2_Q7": "Test a supplier's claimed refrigerated-crate proportion",
+  },
+  "9675baa1-851f-4710-bceb-15dd0c01fdad": {
+    "W_N21TZ0AIHL_P2_Q7": "Test whether the Poisson mean exceeds two bikes per minute",
+    "W_M21TZ2AIHL_P1_Q15": "Test whether online booking increased the prescription rate",
+  },
+  "73e1e90c-6be8-463a-bc7b-bc43361419d6": {
+    "W_M22TZ2AIHL_P1_Q12": "Find Type I and Type II errors for two normal models",
+    "H_N16TZ0HL_P3S_Q2": "Find a Type II error using a normal approximation",
+  },
+  "d852b265-6804-4467-99e9-953af805fb72": {
+    "M13TZ1SL_P1_Q1": "Use vector addition to find an unknown vector",
+    "M11TZ2SL_P1_Q3": "Subtract two position vectors",
+  },
+  "babb8fbc-b24b-44e2-b524-908650017797": {
+    "N17TZ0SL_P2_Q3": "Find the magnitude of a vector",
+    "M10TZ2SL_P1_Q2": "Find a unit vector in a given direction",
+  },
+  "ec7a9d6b-aacf-40ee-a175-9ff973312441": {
+    "W_N22TZ0AIHL_P2_Q7": "Find a time-dependent velocity vector",
+    "W_M25TZ3AIHL_P1_Q14": "Differentiate a position vector to find velocity",
+  },
+  "1855d971-48f6-4e25-9790-e4671cd9748e": {
+    "W_SPECAIHL_P1_Q11": "Calculate and use a vector product",
+  },
+  "3f7dbc9d-77f5-4aa4-85f3-5eccf69f41c6": {
+    "W_M23TZ1AIHL_P1_Q7": "Use a vector product to find a triangle's area",
+    "W_M24TZ2AIHL_P1_Q8": "Find a triangle's area in three dimensions",
+  },
+  "d889f97c-0abb-4fa0-8bd3-eee6927e5b7b": {
+    "W_N22TZ0AIHL_P2_Q4": "Complete a weighted adjacency table",
+  },
+  "4a729d86-d2a5-475e-8194-1c24c98aa196": {
+    "W_M22TZ2AIHL_P3_Q2": "Apply Kruskal's algorithm to a weighted graph",
+    "W_M23TZ2AIHL_P2_Q4": "Build a minimum spanning tree using Kruskal's algorithm",
+  },
+  "265ad472-09ff-46ba-bfba-1ee1ebe11cf5": {
+    "W_M21TZ1AIHL_P1_Q10": "Use Prim's algorithm to find a minimum spanning tree",
+  },
+  "3cffb57c-653d-45a2-9983-68b1016b23e4": {
+    "W_M25TZ2AIHL_P2_Q4": "Use Prim's algorithm on a distance table",
+  },
+  "4ea42a07-b2d6-46c6-bd79-0987f8c97236": {
+    "W_M23TZ1AIHL_P2_Q4": "Determine whether an Eulerian trail exists",
+  },
+  "a90ee76e-0a72-4a15-bf3d-1a3094677f44": {
+    "W_N23TZ0AIHL_P2_Q5": "Solve a route-inspection problem",
+  },
+  "06dade6e-621a-4427-ad7c-1aa749bb8fa0": {
+    "W_N21TZ0AIHL_P3_Q1": "Write down a Hamiltonian cycle",
+  },
+  "c693e0c1-aeb5-4651-bc41-6791b5024408": {
+    "W_N24TZ0AIHL_P3_Q1": "Find upper and lower bounds for a travelling-salesman route",
+  },
+  "e64a4cac-d435-4860-a028-f9f0b8266165": {
+    "W_M24TZ2AIHL_P2_Q4": "Apply travelling-salesman bounds to a mobile-library route",
+  },
+  "0a593676-5299-4966-95ee-c58e7e4ccba9": {
+    "W_M25TZ3AIHL_P2_Q4": "Use the deleted-vertex algorithm to find a lower bound",
+    "W_SPECAIHL_P2_Q5": "Find a second lower bound by deleting a vertex",
+  },
+  "657e5ac0-f7a7-4e5b-9940-b0999e263643": {
+    "M15TZ2AISL_P1_Q1": "Calculate the distance between two coordinate points",
+  },
+  "1900d762-9513-4e7c-9549-f40a2adf084d": {
+    "N13TZ0AISL_P1_Q5": "Find a missing side using Pythagoras' theorem",
+    "M11TZ1AISL_P1_Q7": "Use Pythagoras' theorem to find two diagonals",
+  },
+  "9d6631de-db03-4cfa-a0f3-e35edc3c8bf5": {
+    "M16TZ1AISL_P1_Q2": "Use a trigonometric ratio to find a missing side",
+    "V_N24TZ1AISL_P1_Q1": "Use a trigonometric ratio to find a horizontal distance",
+  },
+  "4c20491d-5660-48b6-80eb-943004d1f8b0": {
+    "V_N21TZ0AISL_P1_Q2": "Use the cosine rule to find an angle",
+    "M14TZ1SL_P2_Q1": "Use the cosine rule to find a side",
+  },
+  "7d695de0-122e-4717-93d9-c147c6ecf959": {
+    "M18TZ2AISL_P1_Q8": "Find the area of a triangle using ½ab sin C",
+  },
+  "fc7bb062-c872-4524-9e57-e3a60793c557": {
+    "V_N24TZ2AISL_P1_Q1": "Angle of elevation: find the vertical rise",
+  },
+  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": {
+    "W_M22TZ1AIHL_P2_Q7": "Write the matrix for an enlargement with a given scale factor",
+  },
+  "4ba2895d-48f5-439d-b0df-57c25ae1c824": {
+    "W_N23TZ0AIHL_P2_Q6": "Write the general matrix for a reflection in y = (tan α)x",
+  },
+  "80522e92-56ee-4aa2-ae07-9e105b2efdf0": {
+    "W_N24TZ0AIHL_P2_Q6": "Combine a rotation and enlargement into one matrix",
+  },
+  "3047e664-8bf6-4140-8c0c-cabd97cd06b5": {
+    "W_M22TZ2AIHL_P1_Q15": "Calculate the determinant of a transformation matrix",
+    "W_N22TZ0AIHL_P1_Q9": "Use a determinant to find the area of a transformed shape",
+  },
+  "f5f90981-cc11-4c17-a3bd-1361bcc350ac": {
+    "M17TZ2AISL_P1_Q4": "Find the gradient of a straight line",
+    "M15TZ2AISL_P1_Q3": "Read the gradient and intercept of a straight line",
+  },
+  "0c2d1242-eb4f-4dfe-9d0c-9fe06effad62": {
+    "M11TZ1AISL_P1_Q10": "Find the equation of a straight line from its graph",
+  },
+  "bddfca14-6aee-440f-8b2c-0cb50d8d21f5": {
+    "V_M25TZ2AISL_P1_Q9": "Read and solve a function defined by a table",
+    "V_SPECAISL_P1_Q4": "Use function notation and identify a range",
+  },
+  "a067432b-da49-4081-877b-d31f4161c517": {
+    "M17TZ1AISL_P2_Q3": "Evaluate a function at x = 1",
+    "M11TZ1AISL_P2_Q3": "Evaluate a function at x = 2",
+  },
+  "c3c9cf1a-a9bc-4064-855b-9d526eed986d": {
+    "N20TZ0AISL_P1_Q4": "Identify a zero and a local minimum",
+    "N11TZ0AISL_P2_Q4": "Identify an asymptote, a zero and a local minimum",
+  },
+  "ae67a312-31d7-4658-9ece-e427fd0eab34": {
+    "V_M21TZ2AISL_P2_Q5": "Build a cubic volume model for a storage tin",
+  },
+  "4ddbe716-9ced-46ce-9569-b54880c76cfe": {
+    "V_N23TZ1AISL_P1_Q7": "Find a quadratic water-jet model from three points",
+    "V_N25TZ1AISL_P2_Q4": "Find a quadratic walkway model from three conditions",
+  },
+  "ac21b892-10cf-4fcc-b343-061386c5f8d5": {
+    "N10TZ0SL_P1_Q9": "Form a composite quadratic function",
+  },
+  "cb268ace-1b45-47b1-b745-aaa2bc0fad62": {
+    "N12TZ0SL_P2_Q9": "Reflect and then translate a quadratic graph",
+    "M08TZ1SL_P1_Q9": "Stretch and then translate a quadratic graph",
+  },
+  "97dfa2ea-0da3-4f3e-a95f-1841d36df813": {
+    "W_N22TZ0AIHL_P1_Q13": "Recover an exponential relationship from a semi-log graph",
+  },
+  "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
+    "V_M22TZ2AISL_P2_Q2": "Evaluate and interpret a finite sum in sigma notation",
+  },
+  "7038e65e-6cf6-4f3e-b9d5-666683bb9f97": {
+    "M13TZ2AISL_P1_Q13": "Evaluate a straightforward exponential expression",
+  },
+  "03a83b7a-4df5-4d2c-a669-cfcf7b50787e": {
+    "N20TZ0AISL_P1_Q11": "Read where a function is decreasing from its graph",
+    "N17TZ0AISL_P2_Q5": "Use the derivative to find where a function is increasing",
+  },
+  "4ec4c4a2-a2de-4e61-9903-55f280bf9ab6": {
+    "M14TZ1AISL_P1_Q10": "Differentiate x⁴ using the power rule",
+    "N16TZ0AISL_P1_Q14": "Differentiate a polynomial using the power rule",
+  },
+  "db4f51b7-b4c5-41ad-bb94-b0bd53f9bee3": {
+    "M18TZ2AISL_P1_Q14": "Differentiate and find the gradient at a point",
+  },
+  "e884d9fa-1e59-4ccc-a67d-2c63d5140908": {
+    "N09TZ0SL_P1_Q10X1": "Find the equation of the normal to y = √x",
+  },
+  "f4aa813d-a3e2-480a-9f8d-49d2b31a7a04": {
+    "N13TZ0SL_P2_Q3": "Integrate a fractional power using the power rule",
+  },
+  "76f62a43-8fbd-46d5-aff6-c74b0488675a": {
+    "A_M22TZ1SL_P1_Q2": "Evaluate a definite integral using the power rule",
+  },
+  "20b8ec75-0605-426a-abec-066ca4c4f9d2": {
+    "A_N22TZ0SL_P2_Q3": "Find the total area between a graph and the x-axis",
+  },
+  "9d0fc44f-c26e-4a61-9d6a-9d84d022c372": {
+    "M16TZ1SL_P1_Q10": "Use the chain rule to find a derivative at a point",
+  },
+  "2ece54f8-dd4e-445e-8f8a-23858053df10": {
+    "N08TZ0SL_P1_Q6": "Read extrema and inflexion from the graph of f′",
+  },
+  "7c1d0df9-3f50-4bfb-ae45-b669c1405895": {
+    "M10TZ1SL_P2_Q3": "Differentiate a function and sketch its derivative",
+  },
+  "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": {
+    "M12TZ2SL_P2_Q2": "Differentiate cos(eˣ) and sketch f′ using a GDC",
+    "M14TZ2SL_P1_Q6": "Sketch f′ from the graph of f",
+  },
+  "92c1b8b1-b956-4724-bd03-de85fb5d4f09": {
+    "N13TZ0HL_P1_Q10X1": "Find a stationary point and prove that it is a maximum",
+  },
+  "0922ca4f-d53f-4299-b9c9-eafe6d17caf1": {
+    "M16TZ2SL_P1_Q9": "Optimize the dimensions of an open cuboid container",
+    "N09TZ0SL_P2_Q7": "Minimize the cost of a rectangular enclosure",
+  },
+  "350494a1-e44b-4ddb-86db-72e19e69d525": {
+    "M16TZ1HL_P2_Q3": "Find velocity and acceleration from a displacement model",
+    "M12TZ2SL_P2_Q5": "Use a velocity model to find acceleration and displacement",
+  },
+  "6d504905-61e3-40cb-972c-13ff1691ffbd": {
+    "N20TZ0SL_P1_Q6": "Integrate an exponential function",
+    "A_M22TZ2SL_P2_Q2": "Integrate a function containing 1/x",
+  },
+  "5c83085a-0fc2-4199-89b3-34ce0cf5539b": {
+    "M09TZ1HL_P2_Q6": "Integrate a trigonometric expression",
+    "A_M23TZ1SL_P2_Q9": "Integrate a cosine rate model",
+  },
+  "190dd207-d2d9-4de5-b374-aaa9e4f951de": {
+    "N10TZ0SL_P1_Q6": "Integrate sin(2x − 3) by the inverse chain rule",
+    "M14TZ2SL_P1_Q5": "Integrate 4cos(2x) by the inverse chain rule",
+  },
+  "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": {
+    "M10TZ2HL_P2_Q3": "Use z = (x − μ)/σ to find the standard deviation",
+  },
+  "4fa5e51a-f4dd-477e-b393-54f1be7266ec": {
+    "M10TZ2HL_P1_Q1": "Normalise a continuous probability density",
+    "A_M22TZ1HL_P1_Q7": "Find the normalising constant of a continuous density",
+  },
+  "2f5766d2-e280-4aff-ac80-36b91b5218b7": {
+    "A_M25TZ3HL_P2_Q3": "Complete a discrete distribution and identify its mode",
+    "V_N25TZ3AISL_P1_Q1": "Find the mode and median of discrete data",
+  },
+  "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": {
+    "M17TZ2HL_P2_Q10": "Find the mean and variance of a continuous random variable",
+  },
+  "23301c56-b9aa-4101-ade8-1e2c41b65e54": {
+    "A_N25TZ3HL_P1_Q7": "Find the variance of a linear transformation",
+  },
+  "26a92a94-1132-4e90-9b26-63b98ffffc26": {
+    "A_M25TZ3HL_P2_Q3": "Identify systematic sampling",
+  },
+  "45a2dc30-ca7b-47a2-a2b1-a1c2ef8d15c8": {
+    "M12TZ1SL_P2_Q8": "Read frequencies and the median class from a histogram",
+  },
+  "8ea2af96-360e-4ae0-a160-43a031e64cba": {
+    "N12TZ0SL_P1_Q8": "Read values from a box-and-whisker plot",
+  },
+  "be563c56-3e2f-437f-8e41-0fd0d83dc7c0": {
+    "A_M24TZ1SL_P2_Q1": "Compare the centre and spread of two box plots",
+  },
+  "639dc690-35bc-4a84-b7fb-89844ecaf252": {
+    "V_M23TZ2AISL_P1_Q3": "Use the IQR rule to identify an actual outlier",
+  },
+  "a9ba5e52-d70c-45b8-822c-f80312ea5c9a": {
+    "M11TZ1HL_P1_Q1": "Use the union formula for mutually exclusive and independent events",
+    "M14TZ2HL_P1_Q1": "Calculate an intersection and a union",
+  },
+  "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d": {
+    "W_M23TZ1AIHL_P2_Q5": "Identify low expected frequencies before a chi-squared test",
+  },
+  "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": {
+    "W_M23TZ2AIHL_P1_Q9": "Calculate and interpret the coefficient of determination",
+  },
+  "bb113001-688d-4876-91d0-208f1fdaa532": {
+    "W_M24TZ1AIHL_P1_Q3": "Transform a mean and standard deviation",
+    "M19TZ2SL_P1_Q8A": "Transform a mean and variance after halving every value",
+  },
+  "45a38dec-e9f7-48db-b7ff-a998107ada10": {
+    "H_N18TZ0HL_P3S_Q1": "Find the expectation and variance of linear combinations",
+  },
+  "ae20100b-d4f8-47b7-94cb-274153bd96da": {
+    "V_SPECAISL_P1_Q3": "Identify systematic sampling",
+    "V_M21TZ1AISL_P2_Q1": "Identify systematic or quota sampling",
+  },
+  "ceae5e0d-9738-456a-89e4-0312f721d52d": {
+    "M19TZ1SL_P2_Q1": "Read a box plot and find its interquartile range",
+  },
+  "aae0e405-1bd3-4357-a328-727f097360e4": {
+    "V_M22TZ2AISL_P1_Q7": "Compare the centre and spread of two box plots",
+  },
+  "160cf57c-42a3-457c-877f-923a11a0b623": {
+    "A_N25TZ1HL_P2_Q5": "Estimate the mean and standard deviation from grouped data",
+  },
+  "7cc0076e-c776-4fe4-8a63-43da44f92820": {
+    "A_M23TZ1SL_P2_Q4": "Find the regression line of x on y",
+  },
+  "2242b24b-b800-4f2c-bb5a-16bd04201870": {
+    "M16TZ1HL_P1_Q5": "Use cos(60° − 45°) to find cos 15° exactly",
+  },
+  "b70c2e32-c750-4851-a572-8587162396f0": {
+    "M10TZ2HL_P1_Q12": "Expand scalar products involving p + q",
+  },
+  "1847f7c2-9f5a-48f5-a40e-12ef76b0cc9e": {
+    "N16TZ0SL_P1_Q4": "Vector equation of a line through two points in 3D",
+  },
+  "ed2cce38-614a-4256-b943-ab8c4856fa14": {
+    "M11TZ2SL_P2_Q8": "Form two lines in 3D and find the angle between them",
+  },
+  "f9b565e2-2c78-4c12-a55a-827d39233645": {
+    "M10TZ2SL_P2_Q9": "Airplane position, speed and distance travelled",
+  },
+  "1a185d48-f767-4296-99b1-17ef882d64f4": {
+    "H_M14TZ2SL_P1_Q9": "Airplane speed and height after two seconds",
+  },
+  "03d4a492-8fd9-4ab0-ab11-383f62d354d6": {
+    "N16TZ0AISL_P2_Q3": "Find the midpoint and then the distance AC",
+    "V_N25TZ3AISL_P2_Q3": "Distance between two points from east/north coordinates",
+  },
+  "f304a68a-2b24-482f-b9c7-91a2a7c8eb64": {
+    "M14TZ2SL_P1_Q1": "Use a right triangle to find cos A from sin A",
+    "N19TZ0SL_P2_Q4": "Find an angle in a 6–8–10 right triangle",
+  },
+  "c5f358f0-e49c-4fc1-a20a-296f64992376": {
+    "N08TZ0SL_P1_Q7": "Simplify a trigonometric expression to sin x",
+  },
+  "636981ff-833c-4f52-8c70-23ab18592831": {
+    "A2_M24TZ1HL_P1_Q11": "Partial fractions decomposition",
+    "A_M21TZ1HL_P2_Q12": "Partial fractions decomposition",
+  },
+  "6468821a-a955-4837-b591-7e8bdf3705ca": {
+    "A_M24TZ1HL_P1_Q11": "Verify a root, divide and factorise a cubic",
+  },
+  "46e2372a-66cb-477e-96c7-fba7ae61c41d": {
+    "M11TZ1HL_P2_Q5": "Factorise a quadratic into two linear factors",
+  },
+  "eeb308ea-e4a0-44da-8932-705b5cb24c2f": {
+    "M12TZ1SL_P2_Q2": "Vertex, completed-square form and roots of a quadratic",
+  },
+  "88162068-c195-41a3-ae20-004900917331": {
+    "N14TZ0SL_P1_Q1": "Solve x² + x − 6 = 0",
+  },
+  "ac5e0aa4-64bb-4cbb-86aa-8d7f9315c0ac": {
+    "M16TZ1SL_P2_Q2": "Use a GDC to solve x² = 3 ln(x + 1)",
+  },
+  "2a607da2-7e6a-4dc8-b483-2819907798e0": {
+    "M09TZ1SL_P1_Q5": "Vertical stretch followed by a horizontal translation",
+  },
+  "916aa44f-5240-4926-9cb6-12800d012e0c": {
+    "N16TZ0SL_P2_Q2": "Find the local minimum and sketch a cubic",
+    "N14TZ0SL_P2_Q4": "Sketch a quartic and find its roots",
+  },
+  "f8918c12-e985-4e26-bea3-c93f245655f1": {
+    "M17TZ1HL_P1_Q11": "Factorise a quadratic denominator and sketch its reciprocal",
+  },
+  "54f53e20-a14f-447a-a43f-c865e7eb424e": {
+    "A_N23TZ1HL_P2_Q11": "Asymptotes, intercepts and sketch of a quadratic-over-linear function",
+    "A_N24TZ0HL_P2_Q12": "Asymptotes and sketch of a quadratic-over-linear function",
+  },
+  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
+    "A_N24TZ0HL_P1_Q6": "Solve 4x² − 11x − 3 < 0",
+    "M14TZ1HL_P2_Q6": "Solve x(x + 2)⁶ > x",
+  },
+  "990b6aba-3d06-489d-81e6-70a683d4f23a": {
+    "A_N22TZ0HL_P1_Q10": "Sketch the modulus of a nonlinear trigonometric function",
+  },
+  "5c188648-60b0-48f6-83a1-9d5c18235dac": {
+    "N10TZ0HL_P1_Q1": "Solve |x − 1| > |2x − 1|",
+  },
+  "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": {
+    "A_SPECHL_P1_Q3": "Sketch y = (f(x))² + 1 from the graph of f",
+    "N18TZ0HL_P2_Q8": "Recover the possible graphs of f from the graph of (f(x))²",
+  },
+  "6deba641-23f1-40d0-ae72-a3a41880b1a6": {
+    "W_N24TZ0AIHL_P1_Q9": "Multiplication by i as a rotation",
+  },
+  "c3a6691b-3913-41ee-a041-c85daac52f12": {
+    "M12TZ2HL_P1_Q12": "A property of complex conjugates",
+  },
+  "921a99b5-a673-423c-aeed-402fec0952e0": {
+    "N08TZ0HL_P1_Q13": "Solve z⁴ = 1 − i",
+  },
+  "bbe01c0e-9af6-47fc-845c-f2259ff05024": {
+    "M16TZ2HL_P1_Q12": "The seven roots of z⁷ = 1",
+    "M10TZ2HL_P1_Q13": "Cube roots of unity using ω",
+  },
+  "d5c720d9-4540-4c45-b822-a0c84764b619": {
+    "M14TZ2HL_P2_Q13": "Prove De Moivre's theorem by induction",
+  },
+  "f25aaf3c-7579-43af-9f0c-c82485651278": {
+    "N13TZ0HL_P2_Q9": "Shortest distance from the origin to a line",
+    "A_N24TZ0HL_P2_Q11": "Smallest distance from the origin to a line",
+  },
+  "b67a9adf-10a0-466a-b35f-41187f507502": {
+    "M16TZ1HL_P2_Q1": "Calculate a vector product in component form",
+  },
+  "0785ff34-a49a-4abd-8c2a-d11d0719370c": {
+    "A_M24TZ1HL_P2_Q12": "Prove the identity linking scalar and vector products",
+  },
+  "35a8aee0-4d48-4084-883f-fc23b5be9039": {
+    "A_N25TZ1HL_P2_Q12": "State the vector equation of a plane containing two lines",
+  },
+  "f6806af5-6f99-4c11-856b-e678d5fe533a": {
+    "N11TZ0HL_P2_Q13": "Find the vector equation of the line where two planes intersect",
+    "A_M22TZ1HL_P1_Q11": "Determine the line of intersection of two planes",
+  },
+  "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
+    "M10TZ1HL_P2_Q11": "Find the angle between a plane and the x-axis",
+  },
+  "134931eb-dd12-49c0-847c-973b34aebd07": {
+    "N16TZ0SL_P1_Q10": "Find successive and higher derivatives",
+  },
+  "dd3009b8-25ed-4425-b4a5-611cc3ba1665": {
+    "N08TZ0HL_P2_Q12": "Differentiate an expression containing arcsin",
+    "A_M21TZ2HL_P2_Q12": "Differentiate an inverse-sine function",
+  },
+  "57c2580c-3193-417f-be6c-0332c78845ca": {
+    "M16TZ2HL_P1_Q3": "Use the arctangent integration formula",
+  },
+  "eb3a2412-6da8-4727-b13e-ca95e9dca23d": {
+    "M11TZ2HL_P2_Q13B": "Integrate e²ˣ sin x by repeated integration by parts",
+    "N18TZ0HL_P1_Q10": "Integrate eˣ cos 2x by repeated integration by parts",
+  },
+  "feb99f1f-879d-4a54-a584-3978511b3cf1": {
+    "N19TZ0HL_P2_Q11": "Find an area bounded by a curve and the y-axis",
+    "W_M24TZ1AIHL_P1_Q9": "Find an exact logarithmic area",
+  },
+  "f0fa4dc1-59c1-46c4-a077-8e442d0522e4": {
+    "N12TZ0HL_P3_Q1": "Solve a differential equation by separating variables",
+    "N08TZ0HL_P3_Q4": "Solve a separable trigonometric differential equation",
+  },
+  "3b73bfe5-13de-4fa2-a29b-6e4e6f822481": {
+    "N19TZ0HL_P3_Q3": "Find a Maclaurin series by differentiating",
+    "M11TZ0HL_P3_Q1": "Find the first three Maclaurin terms",
+  },
+  "44cf2485-5dd6-45d4-866b-1c187d67f198": {
+    "N10TZ0HL_P3_Q3": "Integrate a Maclaurin series term by term",
+    "A_M22TZ1HL_P1_Q12": "Use and integrate a Maclaurin series",
+  },
+  "67e6f294-1736-4781-b3d3-ebfaa24282c4": {
+    "N12TZ0HL_P3_Q4": "Write a Maclaurin series in sigma notation",
+    "N13TZ0HL_P3_Q4": "Derive a Maclaurin series in sigma notation",
+  },
+  "e0ae88fb-c9b0-4df3-94e5-0a6880f03068": {
+    "M11TZ2SL_P1_Q5": "Apply a logarithm law to simplify an expression",
+    "W_M25TZ1AIHL_P1_Q10": "Combine logarithms into a single logarithm",
+  },
+  "9c656814-2fbe-4d15-a9ca-c05d1317ee37": {
+    "H_N14TZ0HL_P1_Q11X1": "Find the inverse of an exponential function",
+  },
+  "f4f5804f-1998-41e3-8b43-5ba7d7ca2b40": {
+    "N12TZ0HL_P1_Q10": "Add complex numbers in Cartesian form",
+    "H_M18TZ2HL_P2_Q1": "Divide complex numbers in Cartesian form",
+  },
+  "316a9cc6-d140-4513-8713-266476d64627": {
+    "W_N21TZ0AIHL_P2_Q5": "Write a complex number in Euler form",
+  },
+  "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7": {
+    "W_M24TZ2AIHL_P1_Q15": "Interpret complex multiplication as rotation and enlargement",
+  },
+  "e9c828e5-d1fc-4459-8e16-4f893814d04e": {
+    "W_M23TZ2AIHL_P1_Q13": "Use an inverse matrix to undo two transformations",
+  },
+  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": {
+    "W_M24TZ2AIHL_P2_Q5": "Find a characteristic polynomial and eigenvectors",
+    "W_M22TZ1AIHL_P1_Q11": "Find an eigenvector for a given eigenvalue",
+  },
+  "79bbc962-e946-49f0-a89e-5bd386389248": {
+    "W_M24TZ1AIHL_P1_Q17": "Use Dⁿ to model repeated matrix transformations",
+    "W_M21TZ1AIHL_P2_Q5": "Use diagonalisation to find a long-run matrix power",
+    "W_M21TZ2AIHL_P2_Q4": "Use PDP⁻¹ to determine long-term behaviour",
+  },
+  "326ef6f4-cdc3-461c-b121-527fef739c83": {
+    "M08TZ1SL_P1_Q6": "Find displacement from a velocity function",
+    "H_M17TZ2HL_P1_Q4": "Use a displacement function to find when a particle is at rest",
+  },
+  "54333f98-7d7a-4d6a-b3cf-347122e184bc": {
+    "H_M14TZ1HL_P1_Q8": "Use a = v dv/ds to find acceleration",
+    "W_N23TZ0AIHL_P3_Q1": "Use a = v dv/ds in a falling-capsule model",
+  },
+  "9af63d1a-407b-4f90-ae78-30c8291fcd59": {
+    "W_M25TZ2AIHL_P1_Q12": "Form a differential equation from a proportional-rate model",
+  },
+  "660e272a-8a71-4422-8450-61a7ea1d58cf": {
+    "H_M13TZ2HL_P2_Q12": "Solve y dy/dx = cos 2x by separation",
+    "W_M24TZ1AIHL_P2_Q5": "Solve a separable differential equation with an initial condition",
+  },
+  "49e6c7ea-110b-4ab4-a0d5-97a2c9fe4b11": {
+    "W_M24TZ1AIHL_P1_Q4": "Apply Euler's method to a first-order differential equation",
+    "W_M24TZ2AIHL_P1_Q7": "Apply Euler's method to approximate a solution",
+  },
+  "1310ef79-c234-4d20-9054-53eb85ef7749": {
+    "W_N24TZ0AIHL_P1_Q17": "Apply Euler's method to a coupled predator-prey system",
+    "W_M25TZ3AIHL_P1_Q11": "Apply Euler's method to a coupled linear system",
+  },
+  "a916a502-98ff-4105-8574-80aac522eda7": {
+    "W_N21TZ0AIHL_P2_Q6": "Solve a coupled system using eigenvalues and eigenvectors",
+  },
+  "de2388f1-fbf3-49c0-883b-1eff70b9cf7f": {
+    "W_M21TZ2AIHL_P2_Q7": "Sketch a sink from two negative real eigenvalues",
+  },
+  "f40d55e2-0669-40a7-b7d9-fcc477ef23d4": {
+    "W_N24TZ0AIHL_P2_Q7": "Sketch a spiral sink from eigenvalues -2 ± 6i",
+  },
+  "6194b7ab-4cd6-4c43-9a54-288397647d66": {
+    "W_M23TZ1AIHL_P2_Q6": "Sketch a spiral source from eigenvalues 0.08 ± 0.4i",
+  },
+  "ceabfc5c-e18c-45d3-9ccd-2e3dcdf6ac5f": {
+    "W_M23TZ2AIHL_P2_Q7": "Find an exact coupled-system solution in eigenvector form",
+    "W_M22TZ2AIHL_P2_Q7": "Find an exact second-order solution from its eigenvalues",
+  },
+  "aacabb23-fe64-4316-bbf5-d1737b8fbad8": {
+    "W_M23TZ2AIHL_P2_Q5": "Find and interpret a steady-state population vector",
+  },
+  "cde690c1-93a1-4385-b6cd-a31e4a885a7f": {
+    "W_M22TZ1AIHL_P1_Q9": "Find a probability involving the mean of a normal sample",
+  },
+  "1b5161c6-1227-4018-84fc-ab50132be01b": {
+    "H_M15TZ0HL_P3S_Q3": "Calculate a confidence interval with known standard deviation",
+  },
+  "e98579d2-83b7-4dab-ab62-427fd2e8165e": {
+    "V_N23TZ1AISL_P1_Q3": "Find where a function is increasing",
+    "V_M25TZ1AISL_P1_Q8": "Show that a cost function is decreasing",
+  },
+  "741c0b0c-17ef-46e5-894c-c62447c47172": {
+    "N12TZ0AISL_P1_Q15": "Differentiate a cubic using the power rule",
+    "M13TZ1AISL_P1_Q15": "Differentiate a polynomial using the power rule",
+  },
+  "f06c971e-bbd7-4cb2-8db5-e3abbe338077": {
+    "V_M22TZ2AISL_P1_Q11": "Find the gradient of a curve at a point",
+    "V_N24TZ2AISL_P1_Q12": "Differentiate and find the gradient at x = 1",
+  },
+  "97a1a371-61a6-4585-971e-9fa6c167f39c": {
+    "V_N24TZ1AISL_P1_Q12": "Find the normal to a curve at a point",
+    "V_M23TZ1AISL_P1_Q5": "Find a tangent and test a proposed normal",
+  },
+  "b31ff22b-38f1-489b-a9ce-209fa91d73e6": {
+    "M14TZ1SL_P1_Q3": "Integrate x⁴ using the power rule",
+    "V_M24TZ2AISL_P2_Q3": "Integrate a quadratic using the power rule",
+  },
+  "0512477b-d893-4805-9d2e-2f597b8c8673": {
+    "M14TZ1AISL_P1_Q15": "Find a local minimum",
+    "N13TZ0AISL_P1_Q9": "Find the local minimum of a polynomial",
+  },
+};
+
+// A selected subpart sometimes contains every word the student needs while
+// the source stem describes unrelated earlier work. Blank only those stems so
+// the practice card really shows "part C only" rather than carrying a stray
+// table from the original multi-part question.
+const practiceBodyOverrides = {
+  // Part (e) is the exact known-sigma mean Z-test. Restate the sample mean
+  // established earlier in the source while omitting unrelated estimation.
+  "c19965b9-5b04-4711-b5ff-b440ca6eba03": {
+    "H_M19TZ0HL_P3S_Q3": "The weights of hens in a large population are normally distributed. A random sample of 100 hens has mean \\(\\overline{x}=1.998\\text{ kg}\\).",
+  },
+  // Part (d) is self-contained. Suppress the unrelated normal-distribution
+  // crate-mass stem so this card reads only as a population-proportion test.
+  "44d7af59-b287-482e-a04f-99fc8faaffeb": {
+    "W_N23TZ0AIHL_P2_Q7": "",
+  },
+  "cde690c1-93a1-4385-b6cd-a31e4a885a7f": {
+    "W_M22TZ1AIHL_P1_Q9": "The volumes of bottles of juice are normally distributed with mean \\(750\\text{ ml}\\) and standard deviation \\(20\\text{ ml}\\). Five bottles are chosen at random and independently of one another.",
+  },
+  // Part (d) depends on the amount and annual rate introduced immediately
+  // before it. Restate that information while omitting the unrelated earlier
+  // arithmetic-sequence work from the source question.
+  "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
+    "V_M22TZ2AISL_P2_Q2": "In 2022 Marek spent \\(\\$340\\) on chicken feed. He expects that amount to increase at an annual rate of \\(5.8\\,\\%\\).",
+  },
+  // Parts (b) and (c) are a clean, self-contained mean-and-variance exercise
+  // once the constants established in part (a) are stated in the stem.
+  "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": {
+    "M17TZ2HL_P2_Q10": "A continuous random variable \\(X\\) has probability density function \\(f\\) given by \\[f(x)=\\begin{cases}\\dfrac{x^2}{32}+\\dfrac{1}{12}, & 0\\le x\\le4,\\\\[5pt]0, & \\text{otherwise.}\\end{cases}\\]",
+  },
+  "26a92a94-1132-4e90-9b26-63b98ffffc26": {
+    "A_M25TZ3HL_P2_Q3": "",
+  },
+  // Isolate the exact matrix operation from the longer source question so the
+  // student sees a self-contained reflection or composite-matrix prompt.
+  "4ba2895d-48f5-439d-b0df-57c25ae1c824": {
+    "W_N23TZ0AIHL_P2_Q6": "The matrix \\(R\\) represents reflection in the line \\(y=(\\tan\\alpha)x\\), where \\(0\\le\\alpha<\\pi\\).",
+  },
+  "80522e92-56ee-4aa2-ae07-9e105b2efdf0": {
+    "W_N24TZ0AIHL_P2_Q6": "The matrix \\(A=\\begin{pmatrix}\\cos24^\\circ&-\\sin24^\\circ\\\\[3pt]\\sin24^\\circ&\\cos24^\\circ\\end{pmatrix}\\) represents a rotation about the origin. The matrix \\(B=\\begin{pmatrix}1.04&0\\\\0&1.04\\end{pmatrix}\\) represents an enlargement about the origin. Nia creates a composite transformation using \\(C=AB\\).",
+  },
+  "3047e664-8bf6-4140-8c0c-cabd97cd06b5": {
+    "W_M22TZ2AIHL_P1_Q15": "",
+  },
+  // Part (d) is the exact spiral-sink task. Restate the Spring 2 system and
+  // initial point so it remains self-contained after the Spring 1 parts are
+  // deliberately removed from the practice card.
+  "f40d55e2-0669-40a7-b7d9-fcc477ef23d4": {
+    "W_N24TZ0AIHL_P2_Q7": "Spring 2 is modelled by \\(\\dfrac{dx}{dt}=y\\) and \\(\\dfrac{dy}{dt}=-40x-4y\\). Its eigenvalues are \\(-2\\pm6i\\). At \\(t=0\\), \\(x=4\\) and \\(y=3\\).",
+  },
+};
+
+function selectedContentSignature(lessonId, questionId) {
+  const question = seed.find((candidate) => candidate.id === questionId);
+  if (!question) return "";
+  const labels = practicePartOverrides[lessonId]?.[questionId];
+  const wanted = labels?.length ? new Set(labels.map(String)) : null;
+  const parts = (question.parts || []).filter((part) => !wanted || wanted.has(String(part[0])));
+  const bodyOverrides = practiceBodyOverrides[lessonId] || {};
+  const body = Object.prototype.hasOwnProperty.call(bodyOverrides, questionId)
+    ? bodyOverrides[questionId]
+    : question.body || "";
+  return [body, ...parts.map((part) => part[1] || "")]
+    .join(" ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
 
 const aaRules = {
   1: [
+    [/scientific notation/, "Exponents and logarithms"],
     [/proof by contradiction/, "Proof by contradiction"],
     [/proof by induction/, "Proof by induction"],
     [/counter example|deductive proof/, "Simple deductive proof"],
@@ -74,6 +2098,8 @@ const aaRules = {
     [/roots of a polynomial/, "Polynomial functions"],
   ],
   2: [
+    [/functions introduction|evaluating functions/, "Composite functions"],
+    [/solving equations using substitution|solving equations with gdc/, "Quadratics"],
     [/gradient|straight line|parallel and perpendicular/, "Coordinate geometry"],
     [/composite functions/, "Composite functions"],
     [/inverse functions/, "Inverse functions"],
@@ -102,6 +2128,7 @@ const aaRules = {
     [/vector|scalar product|parametric form|angle between two lines|intersecting lines|point and a line/, "Vectors: lines and dot product"],
   ],
   4: [
+    [/testing for independence/, "Probability"],
     [/histogram|cumulative frequency/, "Histograms and cumulative frequency curves"],
     [/box|outliers/, "Box and whisker diagrams and outliers"],
     [/regression|correlation/, "Linear regression"],
@@ -152,8 +2179,10 @@ const aiRules = {
     [/exponent|log|number e|change of base/, "Exponents and logarithms"],
   ],
   2: [
-    [/gradient|straight line|parallel and perpendicular|linear modelling/, "Linear modelling"],
-    [/composite|inverse functions|functions introduction|evaluating functions|piecewise/, "Functions and inverse functions"],
+    [/finding the parameters of a model/, "Polynomial modelling"],
+    [/gradient|straight line|parallel and perpendicular/, "Coordinate geometry"],
+    [/linear modelling/, "Linear modelling"],
+    [/composite functions|inverse functions|functions introduction|evaluating functions|piecewise/, "Functions and inverse functions"],
     [/quadratic/, "Quadratics"],
     [/cubic/, "Cubic modelling"],
     [/direct and inverse/, "Direct and inverse variation"],
@@ -164,6 +2193,8 @@ const aiRules = {
     [/transform|sketching functions|features of graphs|asymptotes/, "Transformations"],
   ],
   3: [
+    [/angle between two lines/, "Vector lines"],
+    [/tsp practical problems/, "Graph theory"],
     [/midpoint|distance between 2 points|perpendicular bisector/, "Coordinate geometry"],
     [/trigonometry in 3d/, "3D trigonometry"],
     [/volume and surface area/, "Three-dimensional geometry"],
@@ -211,6 +2242,7 @@ const aiRules = {
     [/data|sampling|survey|reliability|average|spread|frequency table|constant changes|variance|standard deviation/, "Descriptive statistics"],
   ],
   5: [
+    [/introduction to limits/, "Differentiation rules"],
     [/phase portrait/, "Phase portraits"],
     [/coupled differential|coupled systems/, "Coupled differential equations"],
     [/second order/, "Second order differential equations"],
@@ -242,7 +2274,40 @@ for (const [course, lessons] of Object.entries(library.courses)) {
   }
 }
 
+for (const lesson of igcseLessons) {
+  placements.set(lesson.id, {
+    lesson: {
+      id: lesson.id,
+      topic: lesson.topic,
+      code: lesson.code,
+      title: lesson.title,
+      seconds: lesson.bunnyLengthSeconds,
+      curriculum: "IGCSE",
+    },
+    courses: ["IGCSE Higher"],
+  });
+}
+
+// Reserve every explicitly curated source for the first distinct lesson that
+// claims it. This prevents an earlier automatic match from consuming a
+// carefully reviewed source, while also ensuring that a duplicated override
+// is replaced for the later lesson rather than displayed twice.
+const reservedQuestionOwners = new Map();
+const reservedContentOwners = new Map();
+for (const lessonId of placements.keys()) {
+  for (const questionId of verifiedOverrides[lessonId] || []) {
+    if (!reservedQuestionOwners.has(questionId)) reservedQuestionOwners.set(questionId, lessonId);
+    const signature = selectedContentSignature(lessonId, questionId);
+    if (signature && !reservedContentOwners.has(signature)) reservedContentOwners.set(signature, lessonId);
+  }
+}
+// H_N15TZ0HL_P1_Q5 is an AI HL adaptation of the exact underlying
+// N15TZ0HL_P1_Q5 source. Reserve the original alias to the same lesson so the
+// generator cannot display that question again under its AA identifier.
+reservedQuestionOwners.set("N15TZ0HL_P1_Q5", "99a7ab79-f157-4f85-83f1-52b8368acc0f");
+
 function canonicalCourse(courses) {
+  if (courses.includes("IGCSE Higher")) return "IGCSE Higher";
   if (courses.includes("AA SL")) return "AA SL";
   if (courses.includes("AI SL")) return "AI SL";
   if (courses.includes("AA HL")) return "AA HL";
@@ -251,17 +2316,52 @@ function canonicalCourse(courses) {
 
 function ruleFor(lesson, course) {
   const normalized = normalize(lesson.title);
+  if (course === "IGCSE Higher") return igcseSubtopic(normalized);
+  if (course === "AA HL" && /binomial theorem extension/.test(normalized)) return "Binomial expansion (n ∈ ℚ)";
   if (course === "AA SL" && /roots of a polynomial/.test(normalized)) return "Quadratics";
+  if (course === "AA SL" && /system of linear equations/.test(normalized)) return "System of linear equations";
+  if (course === "AA SL" && /introduction to limits|finding a limit/.test(normalized)) return "Differentiation rules";
   if (course === "AI SL") {
     if (/roots of a polynomial/.test(normalized)) return "Quadratics";
     if (/t test/.test(normalized)) return "T-test";
     if (/differentiat|derivative|stationary|increasing and decreasing/.test(normalized)) return "Differentiation rules";
+    if (/sketching functions|features of graphs|asymptotes/.test(normalized)) return "Functions and inverse functions";
   }
+  if (course === "AI HL" && /relationship between graphs and derivatives|sketching derivatives/.test(normalized)) return "Differentiation - basic rules";
   const rules = course.startsWith("AA") ? aaRules : aiRules;
   for (const [pattern, subtopic] of rules[lesson.topic] || []) {
     if (pattern.test(normalized)) return subtopic;
   }
   return null;
+}
+
+function igcseSubtopic(title) {
+  const rules = [
+    [/algebraic fractions/, "Algebraic fractions"], [/fraction/, "Fractions"], [/recurring decimal/, "Recurring decimals"], [/prime factor|hcf|lcm/, "HCF and LCM"],
+    [/surd/, "Surds"], [/laws? of indices/, "Indices"], [/venn diagram/, "Sets and Venn diagrams"], [/^sets?$/, "Sets and Venn diagrams"],
+    [/percentage/, "Percentages"], [/direct.*inverse proportion/, "Direct and inverse proportion"], [/ratio/, "Ratio and proportion"], [/significant figures|upper.*lower bound/, "Upper and lower bounds"],
+    [/standard form/, "Standard form"], [/expanding 3 brackets/, "Expanding three brackets"], [/factorising common|difference of 2 squares/, "Basic algebra"],
+    [/factorising quadratics|quadratics.*factorising/, "Factorising quadratics"], [/completing the square/, "Completing the square"],
+    [/vector proofs/, "Vectors"], [/proof/, "Algebraic proof"], [/changing the subject|changing subject/, "Changing the subject"], [/linear equations/, "Linear equations"],
+    [/simultaneous equations.*non linear|simultaneous non linear/, "Simultaneous equations - non-linear"], [/simultaneous equations/, "Simultaneous equations - linear"],
+    [/quadratic formula|quadratics factorising|completing square solving/, "Quadratic equations"], [/shading inequalities|linear inequalities/, "Linear inequalities"],
+    [/quadratic inequalities/, "Quadratic inequalities"], [/arithmetic sequences|arithmetic series/, "Arithmetic sequences"],
+    [/functions introduction|domain.*range|composite functions|inverse functions|finding inverses/, "Functions"],
+    [/differentiation introduction|differentiation rule|diff intro|diff rule|finding the gradient|stationary points/, "Calculus - differentiation"],
+    [/midpoint|gradient of a line|parallel.*perpendicular|equation.*straight line|distance|difficult straight line/, "Coordinate geometry"],
+    // A lesson about transforming sine/cosine graphs belongs in the trig-graph
+    // bank. Test this before the generic graph-transformation rule so it cannot
+    // inherit questions about an unrelated function f(x).
+    [/trig graphs|transform.*sin.*cos/, "Trig graphs"], [/transform.*graph/, "Transformations of graphs"],
+    [/optimisation/, "Calculus - optimisation"], [/kinematics/, "Calculus - kinematics"],
+    [/density|pressure/, "Compound measures"], [/^speed$/, "Speed, distance, time"], [/circle theorem/, "Circle properties"],
+    [/pythagoras.*3d|trig.*3d|elevation.*depression/, "3D trigonometry"], [/soh cah toa|pythagoras.*theorem|pythagoras$/, "Right-angled trigonometry"],
+    [/sine rule|cosine rule|area of a triangle|area triangle/, "Non-right-angled trigonometry"], [/parallelograms|trapezia/, "Trapezia and parallelograms"],
+    [/circles.*arcs.*sectors/, "Circles, arcs and sectors"], [/surface area|volume of prisms|volume prisms|spheres.*cones|convert.*units.*area.*volume|unit conversions area.*volume/, "Volume and surface area"],
+    [/similar/, "Similar shapes"], [/vector/, "Vectors"], [/cumulative frequency/, "Cumulative frequency graphs"], [/histogram/, "Histograms"],
+    [/discrete data stats|frequency tables|grouped data/, "Statistical measures"], [/probability and.*or/, "Probability"], [/relative frequency/, "Relative frequency"], [/tree diagrams/, "Tree diagrams"],
+  ];
+  return rules.find(([pattern]) => pattern.test(title))?.[1] || null;
 }
 
 function banksOf(question) {
@@ -305,15 +2405,50 @@ function tokenSet(value) {
     if (/^permut|^combin|^arrang|^factorial/.test(token)) expanded.add("counting");
     if (/^probab/.test(token)) expanded.add("probability");
     if (/^regress|^correlat/.test(token)) expanded.add("regression");
+    if (/^standard$|^scientific$/.test(token)) expanded.add("standardform");
+    if (/^simultaneous$|^system$/.test(token)) expanded.add("simultaneous");
+    if (/^midpoint$/.test(token)) expanded.add("midpoint");
+    if (/^distance$/.test(token)) expanded.add("distance");
+    if (/^rationalis/.test(token)) expanded.add("rationalise");
+    if (/^optimis|^optimiz/.test(token)) expanded.add("optimization");
   }
   return expanded;
 }
 
 function questionText(question) {
-  // The curated title is the safest concise description of the assessed skill.
-  // Full question bodies contain generic mathematical vocabulary that can make
-  // a weak match appear relevant to a fine-grained lesson.
-  return question.title || "";
+  // Rob has approved using a relevant subpart of a larger exam question. Search
+  // the authored title and the actual prompts, while still using the title for
+  // exclusion checks that guard boundaries such as fractions/algebraic fractions.
+  return [
+    question.title,
+    question.body,
+    ...(question.parts || []).map((part) => Array.isArray(part) ? part[1] : part.prompt),
+  ].filter(Boolean).join(" ");
+}
+
+function passesCourseBoundary(question, course) {
+  // Sum/product-of-roots work is not part of either AI pathway. Keep those
+  // records available to AA, but never select them for an AI lesson even when
+  // broad bank metadata happens to include AI.
+  if (/^AI (?:SL|HL)$/.test(course)
+    && /sum (?:and|&) product of roots|sum of (?:the )?roots.*product of (?:the )?roots|product of (?:the )?roots.*sum of (?:the )?roots/.test(normalize(questionText(question)))) {
+    return false;
+  }
+  // Composite functions are an AI HL-only skill. Shared foundation lessons
+  // are selected against the AI SL boundary, so any source containing a
+  // composition is withheld there even if another part looks usable.
+  if (course === "AI SL"
+    && /[fgh]\s*\\circ|\\circ\s*[fgh]|composite function|composition|\bf\s*\(\s*g\s*\(|\bg\s*\(\s*f\s*\(/i.test(questionText(question))) {
+    return false;
+  }
+  // Reciprocal trig functions and compound-angle identities are not part of
+  // either AI pathway. Do not let broad trigonometry metadata pull them into
+  // an AI practice set. This also protects automatic fallback selections.
+  if (/^AI (?:SL|HL)$/.test(course)
+    && /\\(?:sec|csc|cot)\b|\b(?:cosec|cosecant|cotangent)\b|\bsec(?:ant)?\s*(?:x|theta|\(|\^)|compound angle|addition identity|subtraction identity/i.test(questionText(question))) {
+    return false;
+  }
+  return true;
 }
 
 function paperNumberOf(question, course) {
@@ -322,21 +2457,613 @@ function paperNumberOf(question, course) {
 
 function calculatorLabel(question, course) {
   const paper = paperNumberOf(question, course);
+  if (course === "IGCSE Higher") return "";
+  if (course === "AI HL") return "Calculator";
   if (!course.startsWith("AA")) return paper;
-  if (paper === "Paper 1") return "Paper 1 - non-calculator";
-  if (paper === "Paper 2") return "Paper 2 - calculator";
+  if (paper === "Paper 1") return "Paper 1 · Non-calculator";
+  if (paper === "Paper 2") return "Paper 2 · Calculator";
   return paper;
+}
+
+function selectedQuestionMeta(lessonId, questionId) {
+  const question = seed.find((candidate) => candidate.id === questionId);
+  const labels = practicePartOverrides[lessonId]?.[questionId];
+  if (!question || !labels?.length) return { title: question?.title || "", marks: question?.marks || "" };
+  const wanted = new Set(labels.map(String));
+  const parts = (question.parts || []).filter((part) => wanted.has(String(part[0])));
+  return {
+    title: practicePartTitles[lessonId]?.[questionId] || question.title,
+    marks: parts.reduce((total, part) => total + (Number(part[2]) || 0), 0),
+  };
+}
+
+const lessonSpecificRules = [
+  // Fine-grained distinctions that share a broad syllabus subtopic. The first
+  // matching rule wins. These checks apply to curated overrides as well as to
+  // generated candidates so a manual ID cannot bypass lesson relevance.
+  { lesson: /binomial theorem extension/, any: [/cube root|fractional power|negative fractional|non.?integer|range of validity/], none: [/single term|constant term|positive integer/] },
+  { lesson: /^partial fractions$/, any: [/express.*partial fractions|split.*partial fractions|partial fractions.*form|express.*in the form/] },
+  { lesson: /operations with complex numbers/, any: [/complex numbers.*find|real.*imaginary|solve.*z/], none: [/modulus.argument|argand|de moivre|triangle|roots?/] },
+  { lesson: /complex operations and geometric interpretation/, any: [/rotation|geometric transformation|argand diagram/] },
+  { lesson: /properties of complex conjugates/, any: [/conjugate|complex number.*show that|solve.*3.*z/] },
+  { lesson: /roots of complex numbers/, any: [/cube roots? of|fourth roots? of|fifth roots? of|sixth roots? of|find.*roots.*complex/], none: [/roots? of unity|polynomial|quadratic/] },
+  { lesson: /roots of unity/, any: [/roots? of unity|omega|z.*1/] },
+  { lesson: /binomial expansion.*intro.*full expansion/, any: [/expand/], none: [/coefficient|term independent|term in|finding.*term|find.*term/] },
+  { lesson: /factorials and arrangements/, any: [/arrang|factorial/], none: [/induction/] },
+  { lesson: /scientific notation|standard form/, any: [/standard form/, /scientific notation/] },
+  { lesson: /sigma notation/, any: [/sigma|summation|sum.*notation|write.*sum/] },
+  { lesson: /inflation/, any: [/inflation|consumer price|price index|purchasing power/] },
+  { lesson: /laws of exponents/, any: [/law.*exponent|law.*indices|indices|powers? of|exponential equation/], none: [/model|growth|decay|population|bacteria|vitamin|compound interest/] },
+  { lesson: /simple deductive proofs/, any: [/proof|prove|deduc/] },
+  { lesson: /simultaneous equations.*non ?linear/, all: [/simultaneous equation/, /non ?linear|quadratic|circle|curve/] },
+  { lesson: /system of linear equations|simultaneous equations/, any: [/simultaneous equation/, /system of (?:two |three |linear )?equations?/, /system.*matrix|matrix form|three planes|point of intersection.*planes?|boxes of mixed fruit/] },
+  { lesson: /roots of a polynomial/, any: [/polynomial.*root|roots?.*polynomial|sum and product.*roots|factor theorem/] },
+  { lesson: /dividing polynomials/, any: [/polynomial division|divide.*polynomial|factor.*cubic|product of.*linear factors?|factor theorem/] },
+  { lesson: /inverse functions introduction/, any: [/inverse function|finding.*inverse|inverse of/] },
+  { lesson: /functions introduction/, any: [/function notation|mapping diagram|domain.*range|evaluat.*function|evaluat.*\bf\b|function.*table|reading a function|\bf\s+\d/], none: [/composite|composition|chain rule|product rule|quotient rule|differentiat|derivative|integral/] },
+  { lesson: /evaluating functions/, any: [/evaluat|calculate.*\bf\s*\(|calculate.*\bg\s*\(|value of.*function|function value|\bf\s+\d/], none: [/composite|composition|chain rule|product rule|quotient rule|differentiat|derivative|integral/] },
+  { lesson: /^sketching functions$/, all: [/function|curve|f x|g x|h x/], any: [/sketch|graph|vertex.*complete.*square|complete.*square.*vertex/], none: [/transform|translat|reflect|stretch|image of|mapping|derivative|gradient/] },
+  { lesson: /^composite transformations$/, any: [/sequence of transformations|using two transformations|followed by.*translat|followed by.*reflect|followed by.*stretch|one after the other/] },
+  { lesson: /features of graphs/, any: [/intercept|asymptote|maximum|minimum|turning point|domain|range|feature.*graph/] },
+  { lesson: /quadratics 3 forms/, all: [/quadratic|parabola/, /factoris|factoriz/, /complete.*square|vertex/, /graph|intercept|vertex/] },
+  { lesson: /quadratic modelling/, all: [/quadratic|parabola|x 2|t 2/, /model|height|trajectory|projectile|rocket|ball/], none: [/complete.*square|vertex form/] },
+  { lesson: /cubic modelling/, all: [/cubic|x 3|t 3/, /model|volume|savings|reservoir|context/] },
+  { lesson: /finding the parameters of a model/, all: [/model|function|polynomial|quadratic|cubic/, /equation|point|coefficient|parameter|value of/] },
+  { lesson: /^composite functions$/, any: [/composite|f circ g|g circ f/] },
+  { lesson: /logistic modelling/, any: [/logistic|carrying capacity/] },
+  { lesson: /piecewise functions/, any: [/piecewise|cases|piece wise/] },
+  { lesson: /scaling with logs/, any: [/semi log|log 10.*y axis|logarithmic scale.*y axis|p on the x axis.*log 10 q/] },
+  { lesson: /logarithmic functions/, any: [/logarith|log model|logarithmic model/] },
+  { lesson: /solving equations using substitution/, all: [/equation|solve/, /substitut|quadratic.*disguise|hidden quadratic|quadratic in a power|let.*equal|change.*variable/], none: [/integrat|derivative/] },
+  { lesson: /solving equations with gdc/, any: [/graphical.*sol|solve.*graph|intersection|using.*graph/] },
+  { lesson: /finding inverse functions/, any: [/inverse of|find.*inverse|inverse function/], none: [/derivative of an inverse/] },
+  { lesson: /solving quadratic equations/, any: [/solve.*quadratic|quadratic equation|roots?.*quadratic|factoris.*quadratic|factoriz.*quadratic|solve.*equation|solve.*f x/] },
+  { lesson: /vectors and kinematics|vector.*kinematics/, all: [/vector/, /velocity|speed|position|particle|motion|displacement/] },
+  { lesson: /distance between (2|two) points|^distance$/, any: [/distance.*point|point.*distance|find the distance|calculate the distance|distance from|distance between|find the length of [a-z]{2}|length of [a-z]{2}|mid point and distance|coordinates.*distance/], none: [/tangent|line curve intersection/] },
+  { lesson: /midpoint/, any: [/midpoint|mid point/] },
+  { lesson: /^gradient$/, any: [/gradient/] },
+  { lesson: /parallel.*perpendicular/, any: [/parallel|perpendicular/] },
+  { lesson: /equation.*straight line/, any: [/equation.*line|line.*equation|line through|gradient.*intercept/] },
+  { lesson: /trig.*3d|pythagoras 3d/, all: [/prism|cuboid|pyramid|cube|three dimensional|3d/, /trig|angle|pythagoras|length|distance|edge|diagonal/] },
+  { lesson: /pythagoras.*theorem/, any: [/pythagoras|right.?angled triangle|diagonal/], none: [/cosine rule|sine rule/] },
+  { lesson: /elevation.*depression/, any: [/elevation|depression/] },
+  { lesson: /soh cah toa/, any: [/right.?angled triangle|right triangle|sin.*cos|cos.*sin|find.*angle.*triangle/], none: [/venn|probability|set diagram|double angle/] },
+  { lesson: /^sine rule$/, any: [/sine rule/], none: [/ambiguous|two possible triangles|two possible values/] },
+  { lesson: /^cosine rule$/, any: [/cosine rule/], none: [/right.?angled triangle|right triangle/] },
+  { lesson: /exact triangles/, any: [/30.*45|45.*30|60|120|exact.*triangle|triangle.*exact/], none: [/sinusoidal model|regression|statistics/] },
+  { lesson: /constant changes to data/, all: [/mean|variance|standard deviation|data/, /scal|multiply|add.*constant|transform|effect/] },
+  { lesson: /outliers/, any: [/outlier|interquartile range|iqr|box plot/] },
+  { lesson: /averages and spread/, any: [/mean|median|mode|range|variance|standard deviation|quartile/] },
+  { lesson: /normal distribution.*finding mean and std dev/, all: [/normal/, /mean|mu/, /standard deviation|variance|sigma/] },
+  { lesson: /variance and standard deviation of a discrete random variable/, all: [/random variable|probability distribution/, /variance|\bvar\b/] },
+  { lesson: /^variance and standard deviation$/, all: [/mean/, /variance|standard deviation/] },
+  { lesson: /continuous random variables intro/, all: [/continuous random variable|probability density function/, /constant|normalis|determine.*c|determine.*k/] },
+  { lesson: /mean of a continuous random variable/, all: [/continuous random variable|probability density function/, /expected value|mean/] },
+  { lesson: /median and mode of a discrete random variable/, any: [/median|mode/] },
+  { lesson: /variance of a continuous random variable/, all: [/continuous random variable|probability density function/, /variance|\bvar\b/] },
+  { lesson: /linear transformations of x/, all: [/random variable|probability distribution/, /variance|expected value|text e|text var/] },
+  { lesson: /relationship between graphs and derivatives|sketching derivatives/, all: [/graph|sketch/, /derivative|gradient|f prime/] },
+  { lesson: /discrete v continuous data/, any: [/discrete.*continuous|continuous.*discrete|classif.*data/] },
+  { lesson: /introduction to differentiation|differentiation introduction/, any: [/differentiat.*first principles|derivative.*first principles|differentiat.*polynomial|derivative.*polynomial|gradient function/] },
+  { lesson: /derivative at a point/, all: [/derivative|gradient/, /point|at x|evaluat/] },
+  { lesson: /differentiation.*power rule|differentiation rule|diff rule/, any: [/differentiat.*polynomial|derivative.*polynomial|differentiat.*power|derivative.*power|differentiat.*cubic|derivative.*cubic|differentiat.*quartic|derivative.*quartic/], none: [/chain rule|product rule|quotient rule|implicit/] },
+  { lesson: /integration.*power rule.*rational/, all: [/integrat/, /fractional|rational|root|sqrt|power/] , none: [/exponential|trigonometric|reverse chain|substitution/] },
+  { lesson: /integration.*power rule/, any: [/integrat.*polynomial|integrat.*power|integrat.*linear|integrat.*quadratic|integrat.*cubic|antiderivative.*polynomial/], none: [/exponential|trigonometric|reverse chain|substitution|parts/] },
+  { lesson: /^chain rule$/, any: [/chain rule|composite function/], none: [/quotient rule|product rule/] },
+  { lesson: /^product rule$/, any: [/product rule/] },
+  { lesson: /^quotient rule$/, any: [/quotient rule/] },
+  { lesson: /inverse chain rule/, any: [/reverse chain|inverse chain|substitution|integrat.*e\^|integrat.*exponential/] },
+  { lesson: /integrating e.*1 x/, any: [/integrat.*exponential|integrat.*logarith|integrat.*1 x|integrat.*e x/], none: [/reverse chain|substitution|x e/] },
+  { lesson: /integrating sin.*cos/, any: [/integrat.*sin|integrat.*cos|integrat.*trig/] },
+  { lesson: /derivative of sinx.*cosx.*lnx.*e x/, all: [/derivative|differentiat/, /\bsin\b|\bcos\b|\bln\b|exponential/] },
+  { lesson: /areas using vector product/, all: [/area/, /vector product|cross product/] },
+  { lesson: /^vector product$/, any: [/vector product|cross product/], none: [/scalar product(?!.*vector product)/] },
+  { lesson: /magnitude and unit vectors|^magnitude$/, any: [/magnitude|unit vector|length of.*vector/] },
+  { lesson: /determinant of a transformation/, all: [/determinant/, /transform|matrix/] },
+  { lesson: /nearest neighbour/, any: [/nearest neighbour|nearest neighbor/] },
+  { lesson: /kruskal/, any: [/kruskal/] },
+  { lesson: /prim s algorithm/, any: [/prim/] },
+  { lesson: /eulerian graphs/, any: [/eulerian/] },
+  { lesson: /chinese postman/, any: [/route inspection|chinese postman/] },
+  { lesson: /travelling salesman/, any: [/travelling salesman|traveling salesman/] },
+  { lesson: /hamiltonian graphs/, any: [/hamiltonian/] },
+  { lesson: /deleted vertex/, any: [/deleted vertex/] },
+  { lesson: /weighted adjacency/, any: [/weighted adjacency|adjacency table|adjacency matrix/] },
+  { lesson: /introduction to graph theory/, any: [/graph theory|vertices.*edges|degree.*vertex|adjacency/] },
+  { lesson: /upper and lower bounds/, any: [/upper bound|lower bound|bounds|error interval/] },
+  { lesson: /significant figures/, any: [/significant figure|rounding/] },
+  { lesson: /^rounding$/, any: [/round|decimal place|significant figure/] },
+  { lesson: /^loans$/, any: [/loan|repayment|borrow|debt|amort/] },
+  { lesson: /^annuities$/, any: [/annuit|regular payment|recurring payment|pension/] },
+  { lesson: /half life/, any: [/half life|radioactive|decay|remaining/] },
+  { lesson: /reverse percentages/, any: [/reverse percentage|original value|before.*percentage|percentage.*original/] },
+  { lesson: /percentage change/, any: [/percentage change|percentage increase|percentage decrease/] },
+  { lesson: /percentages increase.*decrease/, any: [/percentage increase|percentage decrease|multiplier|increase.*percent|decrease.*percent/] },
+  { lesson: /surds.*rationalis/, any: [/rationalis|rationaliz/] },
+  { lesson: /surds.*expanding/, all: [/surd/, /expand|product|bracket/] },
+  { lesson: /surds.*simplifying/, any: [/simplif.*surd|surd simplif|product involving surds|surd identity/], none: [/rationalis|rationaliz/] },
+  { lesson: /^fractions$/, any: [/fraction|mixed number/], none: [/ratio|algebraic/] },
+  { lesson: /recurring decimals/, any: [/recurring decimal/], none: [/surd|rationalis/] },
+  { lesson: /difference of 2 squares/, any: [/difference of (two|2) squares/, /difference of squares/] },
+  { lesson: /factorising common factors/, any: [/common factor|factoris.*expression|factoriz.*expression/] },
+  { lesson: /factorising quadratics/, all: [/quadratic/, /factoris|factoriz|factor form|product of two linear factors/] },
+  { lesson: /algebraic fractions/, any: [/algebraic fraction/] },
+  { lesson: /completing the square/, any: [/complet.*square|vertex form/] },
+  { lesson: /quadratic formula/, any: [/quadratic formula/] },
+  { lesson: /quadratics.*factorising|solving quadratics by factorising/, any: [/factoris.*quadratic|factoriz.*quadratic/] },
+  { lesson: /shading inequalities/, any: [/shad|region.*inequal|inequal.*region/] },
+  { lesson: /quadratic inequalities/, all: [/quadratic/, /inequal/] },
+  { lesson: /domain.*range/, any: [/domain|range/] },
+  { lesson: /composite functions/, any: [/composite/] },
+  { lesson: /finding inverses|inverse functions/, any: [/inverse function|finding.*inverse|inverse of/] },
+  { lesson: /gradient of a line/, any: [/gradient/] },
+  { lesson: /difficult straight line questions/, any: [/kite|isosceles|perpendicular bisector|line.*curve|square|trapezium|coordinate constraints/] },
+  { lesson: /^trig graphs$/, any: [/sine graph|cosine graph|trigonometric graph|sine curves/] },
+  { lesson: /transforming sin.*cos graphs/, all: [/transform|translation|shift/, /sine|cosine|trigonometric/] },
+  { lesson: /arithmetic series/, any: [/arithmetic series|sum of.*arithmetic|sum.*term|partial sum/] },
+  { lesson: /^arithmetic sequences$/, any: [/arithmetic sequence|nth term|term of.*sequence/], none: [/sum|series/] },
+  { lesson: /stationary points/, any: [/stationary|turning point|minimum|maximum/] },
+  { lesson: /optimisation|optimization/, any: [/optimis|optimiz|maximum|minimum/] },
+  { lesson: /^kinematics$|kinematics 2/, any: [/velocity|acceleration|displacement|particle|motion/] },
+  { lesson: /^density$/, any: [/density/] },
+  { lesson: /^pressure$/, any: [/pressure/] },
+  { lesson: /^speed$/, any: [/speed|distance.*time|time.*distance/] },
+  { lesson: /circle theorems?/, any: [/circle theorem|angle.*circle|circle angle|cyclic|tangent.*angle|angle.*tangent/], none: [/area|perimeter|secant|segment/] },
+  { lesson: /pythagoras.*3d/, all: [/cube|cuboid|prism|pyramid/, /distance|edge|length|pythagoras|missing/], none: [/angle/] },
+  { lesson: /trig.*3d/, all: [/cube|cuboid|prism|pyramid/, /angle|trig/] },
+  { lesson: /sinusoidal graphs/, all: [/graph|curve/, /sin|cos|sinusoidal|period|amplitude/] },
+  { lesson: /sinusoidal modelling/, any: [/sinusoidal model|sine model|cosine model|model.*sin|model.*cos|temperature|tide|seasonal/] },
+  { lesson: /^sine rule$/, any: [/sine rule/] },
+  { lesson: /^cosine rule$/, any: [/cosine rule/] },
+  { lesson: /area( of)?( a)? triangle/, any: [/area.*triangle|triangle.*area/] },
+  { lesson: /surface area/, any: [/surface area/] },
+  { lesson: /volume of prisms.*cylinders/, all: [/volume/, /prism|cylinder/] },
+  { lesson: /spheres.*cones/, any: [/sphere|cone/] },
+  { lesson: /circles.*arcs.*sectors/, any: [/arc|sector/] },
+  { lesson: /similar.*length/, any: [/similar.*length|length.*similar|scale factor/] },
+  { lesson: /similar.*area.*volume/, any: [/similar.*area|similar.*volume|area.*scale factor|volume.*scale factor/] },
+  { lesson: /vectors introduction/, any: [/column vector|vector addition|vector subtraction|coordinates.*vector|vector.*coordinates/], none: [/line|plane|intersection|kinematic|velocity|motion/] },
+  { lesson: /^operations with vectors$/, any: [/vector|position vector|in terms of/], none: [/\bangle\b|scalar product|dot product|perpendicular|unit vector|magnitude/] },
+  { lesson: /magnitude and unit vectors/, any: [/magnitude|unit vector/] },
+  { lesson: /scalar product and angle between vectors/, all: [/angle/, /scalar product|dot product|vector/] },
+  { lesson: /properties of the scalar product/, all: [/vector/, /show|deduce|comment/], none: [/volume|integral|differentiat/] },
+  { lesson: /vector equation of a line/, all: [/vector equation/, /line/] },
+  { lesson: /angle between two lines/, all: [/angle/, /line/] },
+  { lesson: /vectors and kinematics/, any: [/speed|velocity|position.*second|distance.*second|particle|airplane/] },
+  { lesson: /vector proofs/, any: [/vector proof|prove.*vector|collinear|parallel/] },
+  { lesson: /proof by induction.*de moivre/, all: [/de moivre/, /induction/] },
+  // The N18 factorial-series title contains a printed sigma symbol, which is
+  // removed by text normalization and leaves the distinctive "r(r!)" terms.
+  { lesson: /proof by induction.*(?:intro and )?series/, all: [/induction/, /sum|series|sigma|induction for r r/], none: [/inequal|divisib|multiple of|derivative|differentiat|de moivre/] },
+  { lesson: /proof by induction.*differentiation/, all: [/induction/, /derivative|differentiat/], none: [/inequal|divisib|multiple of|series|summation|sigma/] },
+  { lesson: /proof by induction.*divisibility/, all: [/induction/, /divisib|multiple of/], none: [/inequal|derivative|differentiat|series|summation|sigma/] },
+  // The N14 factorial-inequality title uses a printed >= symbol, which text
+  // normalization removes; retain its distinctive "Induction: (2n)!" form.
+  { lesson: /proof by induction.*inequal/, all: [/induction/, /inequal|induction 2n/], none: [/divisib|multiple of|derivative|differentiat|series|summation|sigma/] },
+  { lesson: /proof by contradiction.*root 2/, any: [/contradiction/] },
+  { lesson: /proof by contradiction.*infinite primes/, any: [/contradiction/] },
+  { lesson: /counting principles introduction/, any: [/counting principle|product principle|addition principle|fundamental counting/] },
+  { lesson: /factorials and arrangements/, any: [/factorial|arrangement/], none: [/selection|combination/] },
+  { lesson: /algebra of factorials/, any: [/factorial/] },
+  { lesson: /dividing polynomials/, any: [/polynomial division|divid.*polynomial/] },
+  { lesson: /graphs of polynomials/, all: [/sketch|draw/, /polynomial|cubic|quartic|x 3|x 4/], none: [/translat|reflect|stretch|transformation/] },
+  { lesson: /linear transformations of x/, any: [/linear transformation|transform.*random variable|mean.*variance.*transform/] },
+  { lesson: /continuous functions/, any: [/continuous|continuity/] },
+  { lesson: /homogenous differential equations|homogeneous differential equations/, any: [/homogeneous|homogenous/] },
+  { lesson: /separation of variables/, any: [/separation of variables|separable differential/] },
+  { lesson: /euler s identity/, any: [/euler.*identity|euler.*formula/] },
+  { lesson: /euler form/, any: [/euler form|exponential form/] },
+  { lesson: /reciprocal trig identities/, any: [/reciprocal|secant|cosecant|cosec|cotangent|\bsec\b|\bcot\b/] },
+  { lesson: /graphs of sin.*cos.*tan/, all: [/graph/, /sin|cos|tan|trig/] },
+  { lesson: /change of base/, any: [/change of base/] },
+  { lesson: /introduction to matrices/, any: [/matrix.*dimension|matrix.*order|introduction.*matri/] },
+  { lesson: /algebra of matrices/, any: [/matrix addition|matrix subtraction|scalar.*matrix|algebra.*matri/] },
+  { lesson: /multiplication of matrices/, any: [/matrix multiplication|multiply.*matri|product.*matri/] },
+  { lesson: /determinant and inverse of a matrix/, all: [/determinant/, /inverse.*matrix|matrix.*inverse/] },
+  { lesson: /identity matrix/, any: [/identity matrix/] },
+  { lesson: /powers of matrices/, any: [/power.*matri|matri.*power/] },
+  { lesson: /^translations$/, any: [/translation/] },
+  { lesson: /^enlargements$/, any: [/enlargement/] },
+  { lesson: /^rotations$/, any: [/rotation/] },
+  { lesson: /^reflections$/, any: [/reflection/] },
+  { lesson: /motion with variable velocity/, any: [/variable velocity|velocity.*function|acceleration.*velocity/] },
+  { lesson: /components of vectors/, any: [/component.*vector|vector.*component/] },
+  { lesson: /surveys and questionnaires/, any: [/survey|questionnaire/] },
+  { lesson: /reliability v validity/, any: [/reliability|validity/] },
+  { lesson: /coefficient of determination/, any: [/coefficient of determination|r squared/] },
+  { lesson: /normal distribution sampling/, any: [/sample mean|sampling distribution|central limit/] },
+  { lesson: /poisson distribution$/, any: [/poisson/], none: [/type i|type ii|hypothesis test|poisson test/] },
+  { lesson: /testing for correlation/, all: [/correlation/, /test|significance|hypothesis|critical value|p value/] },
+  { lesson: /normal errors|binomial errors/, any: [/type i|type ii|error/] },
+  { lesson: /z test one tailed/, all: [/z test/, /one tailed|one tail/] },
+  { lesson: /z test two tailed/, all: [/z test/, /two tailed|two tail/] },
+  { lesson: /^t test$/, any: [/t test/] },
+  { lesson: /more exponents/, any: [/exponent|power.*equation|laws? of.*indices/] },
+  { lesson: /compound angle identities/, all: [/sin|cos|tan/, /15|45|60|compound|sum|difference|show/] },
+  { lesson: /solving trig equations with identities/, all: [/show|equivalent|rearrang|identity|double angle/, /solve|equation/, /sin|cos|tan/], none: [/differentiat|integrat|volume/] },
+  { lesson: /^trig identities$/, all: [/sin|cos|tan/, /show|prove|simplif|identity|identities/], none: [/solve|equation|differentiat|integrat|volume/] },
+  { lesson: /cumulative frequency/, any: [/cumulative frequency/] },
+  { lesson: /histograms/, any: [/histogram|frequency density/] },
+  { lesson: /discrete data stats/, any: [/mean|median|mode|range|quartile|standard deviation/] },
+  { lesson: /frequency tables/, any: [/frequency table|frequency.*mean|mean.*frequency|unknown frequency|missing frequency/] },
+  { lesson: /grouped data/, any: [/grouped data|estimate.*mean|estimate.*median/] },
+  { lesson: /relative frequency/, any: [/relative frequency|probability from a table|expected frequency|estimat.*frequency|frequency.*probabilit|probabilit.*frequency/] },
+  { lesson: /tree diagrams/, any: [/tree diagram|probability tree/] },
+  { lesson: /probability and.*or rules/, any: [/union|intersection|addition rule|and or|complement|at least one|same.colour|independent probability|odd total|exactly two/] },
+  { lesson: /changing the subject/, any: [/change.*subject|rearrang.*formula/] },
+  { lesson: /direct and inverse proportion/, any: [/direct proportion|inverse proportion|direct variation|inverse variation/] },
+  { lesson: /arithmetic series/, any: [/arithmetic series|sum.*arithmetic/] },
+  { lesson: /soh cah toa/, any: [/right angled.*trig|right triangle|sine.*cosine.*tangent|soh|cah|toa/] },
+  { lesson: /pythagoras theorem/, any: [/pythagoras/] },
+  { lesson: /mr flynn s exact triangles/, all: [/sin|cos|tan|trig/, /exact value|exact triangle|special angle/], none: [/bacteria|growth model|exponential model|sine rule|cuboid|volume|standard form|rounding|derivative|differentiat|integral/] },
+  { lesson: /^unit circle$/, all: [/sin|cos|trig/, /unit circle|coordinates.*circle|radian/] },
+  { lesson: /cast diagram/, all: [/sin|cos|tan|trig/, /cast|quadrant|positive|negative/] },
+  { lesson: /parallelograms.*trapezia/, any: [/parallelogram|trapez/] },
+  { lesson: /converting units of area and volume/, any: [/convert.*unit|unit conversion|cubic.unit/] },
+  { lesson: /higher derivatives/, any: [/higher derivative|successive derivative|repeated derivative|nth derivative|19th derivative/] },
+  { lesson: /tangents and normals/, any: [/tangent|normal/] },
+  { lesson: /finding f x/, any: [/find.*constant|given.*derivative|integrat.*constant|recover.*function|find.*f/] },
+  { lesson: /integrating using partial fractions/, all: [/partial fraction/, /integrat|definite integral|area/] },
+  { lesson: /volume of revolution.*intro.*x.axis/, all: [/volume of revolution/, /x axis/] },
+  { lesson: /volume of revolution.*y.axis/, all: [/volume of revolution/, /y axis/] },
+  { lesson: /volume of revolution.*between 2 curves/, all: [/volume of revolution/, /between.*curve|two curves/] },
+  { lesson: /maclaurin.*substitutions.*products/, all: [/maclaurin/, /substitut|compos|product/] },
+  { lesson: /maclaurin.*binomial/, all: [/maclaurin/, /binomial|negative power|negative index/] },
+  { lesson: /maclaurin.*differentiation.*integration/, all: [/maclaurin/, /differentiat|integrat|term by term/] },
+  { lesson: /maclaurin.*sigma notation/, all: [/maclaurin/, /sigma|summation|general term/] },
+  { lesson: /maclaurin.*differential equations/, all: [/maclaurin/, /differential equation|from f/] },
+];
+
+function lessonSpecificRule(lesson) {
+  const lessonTitle = normalize(lesson.title);
+  return lessonSpecificRules.find((candidate) => candidate.lesson.test(lessonTitle));
+}
+
+function allowsCrossCourseQuestion(question, lesson, course) {
+  if (course === "IGCSE Higher" || question.sourceBank !== "ib") return false;
+  // These are universal mathematical/financial skills. Some suitable records
+  // are catalogued under only one IB pathway even though the question itself
+  // is valid practice for another pathway.
+  return /scientific notation|standard form|sigma notation|inflation|laws of exponents|roots of a polynomial|factorising quadratics|pythagoras|soh cah toa|rounding|loans|annuities|equation.*straight line|functions introduction|evaluating functions|sketching functions|change of base|complex numbers introduction|operations with complex numbers|magnitude and unit vectors|exact triangles|unit circle|cast diagram|trig identities|averages and spread|outliers|median and mode of a discrete random variable|introduction to differentiation|increasing and decreasing|differentiation.*power rule|derivative at a point|tangents and normals|chain rule|product rule|related rates|sketching derivatives|classifying stationary points|points of inflexion|integration.*power rule|integrating sin.*cos|integrating e.*1 x|inverse chain rule|area under the curve|area between curve and y axis|finding f x/.test(normalize(lesson.title));
 }
 
 function passesLessonSpecificCheck(question, lesson) {
   const lessonTitle = normalize(lesson.title);
   const questionTitle = normalize(question.title);
-  if (/z test/.test(lessonTitle)) return /z test/.test(questionTitle);
+  const rawQuestionText = questionText(question);
+  const fullQuestionText = normalize(questionText(question));
+  // IGCSE Topic 1 selections reviewed at displayed-part level. The two surd
+  // sources continue into rationalising work, but only their simplifying
+  // part (a) is rendered. The set sources are symbolic/listing questions and
+  // contain no Venn diagram despite their broader curriculum metadata.
+  if (/surds.*simplifying/.test(lessonTitle)
+    && ["4MA1_2023J_2H_Q17", "4MA1_2024N_1H_Q17"].includes(question.id)) return true;
+  if (/^sets$/.test(lessonTitle)
+    && ["4MA1_2020J_1HR_Q4", "4MA1_2019M_1HR_Q3"].includes(question.id)) return true;
+  // IGCSE bounds and Topic 2 algebra were reviewed against the exact
+  // displayed parts. These whitelists prevent broader source metadata from
+  // rejecting a correct extract or admitting a neighbouring algebra skill.
+  if (/upper and lower bounds/.test(lessonTitle)
+    && ["4MA1_2020N_2HR_Q5", "4MA1_2019J_2HR_Q17"].includes(question.id)) return true;
+  if (/factorising common factors/.test(lessonTitle)
+    && ["4MA1_2019J_1H_Q1", "4MA1_2021J_1H_Q5"].includes(question.id)) return true;
+  if (/difference of 2 squares/.test(lessonTitle)
+    && ["4MA1_2023M_1H_Q14", "4MA1_2025M_2HR_Q13"].includes(question.id)) return true;
+  if (/^factorising quadratics$/.test(lessonTitle)
+    && ["4MA1_2019M_2HR_Q5", "4MA1_2024M_1H_Q12"].includes(question.id)) return true;
+  if (/^algebraic fractions$/.test(lessonTitle)
+    && ["4MA1_2019J_1H_Q11", "4MA1_2018M_2HR_Q22"].includes(question.id)) return true;
+  if (/^changing the subject$/.test(lessonTitle)
+    && ["4MA1_2018M_2H_Q1", "4MA1_2025M_2HR_Q17"].includes(question.id)) return true;
+  if (/^solving linear equations$/.test(lessonTitle)
+    && ["4MA1_2019M_1HR_Q4", "4MA1_2023J_2H_Q13"].includes(question.id)) return true;
+  if (/solving quadratics by factorising/.test(lessonTitle)
+    && question.id === "4MA1_2021M_2H_Q9") return true;
+  if (/solving by completing the square/.test(lessonTitle)
+    && question.id === "4MA1_2018M_2HR_Q24") return true;
+  if (/^the quadratic formula$/.test(lessonTitle)
+    && ["4MA1_2018M_1H_Q11", "4MA1_2018M_1HR_Q16"].includes(question.id)) return true;
+  // IGCSE Topic 3 selections were reviewed at exact-question or displayed-
+  // part level. These preserve the boundaries between sequence and series,
+  // function evaluation, domain/range, inverse notation and line equations.
+  if (/^arithmetic sequences$/.test(lessonTitle)
+    && ["4MA1_2021M_1H_Q2", "4MA1_2019J_2HR_Q3"].includes(question.id)) return true;
+  if (/^arithmetic series$/.test(lessonTitle)
+    && ["4MA1_2020J_2H_Q25", "4MA1_2019M_1H_Q16"].includes(question.id)) return true;
+  if (/^functions introduction$/.test(lessonTitle)
+    && ["4MA1_2018M_1H_Q14", "4MA1_2019M_2H_Q24"].includes(question.id)) return true;
+  if (/^domain and range$/.test(lessonTitle)
+    && ["4MA1_2025M_2HR_Q19", "4MA1_2023M_1H_Q17", "4MA1_2020J_1HR_Q17"].includes(question.id)) return true;
+  if (/^inverse functions introduction$/.test(lessonTitle)
+    && question.id === "4MA1_2019J_1HR_Q23") return true;
+  if (/^finding inverse functions$/.test(lessonTitle)
+    && ["4MA1_2021J_1H_Q22", "4MA1_2024M_1H_Q15"].includes(question.id)) return true;
+  if (/^equation of a straight line$/.test(lessonTitle)
+    && ["4MA1_2020N_2H_Q6", "4MA1_2019M_1H_Q23"].includes(question.id)) return true;
+  if (/^distance between two points$/.test(lessonTitle)
+    && question.id === "4MA1_2022M_1H_Q10") return true;
+  if (/^differentiation rule$/.test(lessonTitle)
+    && ["4MA1_2018M_2H_Q17", "4MA1_2019J_1H_Q12"].includes(question.id)) return true;
+  if (/^finding the gradient$/.test(lessonTitle)
+    && ["4MA1_2020N_1HR_Q13", "4MA1_2023M_1H_Q11"].includes(question.id)) return true;
+  if (/^pressure$/.test(lessonTitle)
+    && ["4MA1_2018M_2HR_Q2", "4MA1_2019M_1HR_Q12"].includes(question.id)) return true;
+  if (/angles of elevation and depression/.test(lessonTitle)
+    && ["4MA1_2021J_2HR_Q13", "4MA1_2021N_1H_Q12"].includes(question.id)) return true;
+  if (/^sine rule$/.test(lessonTitle)
+    && ["4MA1_2021N_1H_Q13", "4MA1_2022J_1HR_Q22"].includes(question.id)) return true;
+  if (/^cosine rule$/.test(lessonTitle)
+    && ["4MA1_2018M_2H_Q18", "4MA1_2018M_1HR_Q18"].includes(question.id)) return true;
+  if (/^area of a triangle$/.test(lessonTitle)
+    && ["4MA1_2024M_2HR_Q15", "4MA1_2024M_1HR_Q15"].includes(question.id)) return true;
+  if (/surface area of prisms and cylinders/.test(lessonTitle)
+    && ["4MA1_2023J_1HR_Q2", "4MA1_2020N_2H_Q9"].includes(question.id)) return true;
+  if (/similar shapes area and volume/.test(lessonTitle)
+    && ["4MA1_2019J_2H_Q16", "4MA1_2022J_1H_Q17"].includes(question.id)) return true;
+  // These four part-level selections are deliberately narrow even though the
+  // full source records continue into later calculus skills.
+  if ([
+    "N12TZ0AISL_P1_Q15",
+    "M13TZ1AISL_P1_Q15",
+    "M14TZ1SL_P1_Q3",
+    "V_M24TZ2AISL_P2_Q3",
+  ].includes(question.id)) return true;
+  // The bank's broader titles do not consistently say "Z-test", so use a
+  // reviewed whitelist. Each record tests a population mean with known sigma;
+  // unknown-variance/sample-standard-deviation records belong to T-tests.
+  if (/z test one tailed/.test(lessonTitle)) {
+    return ["H_M19TZ0HL_P3S_Q3", "H_N14TZ0HL_P3S_Q5"].includes(question.id);
+  }
+  if (/z test two tailed/.test(lessonTitle)) {
+    return question.id === "H_M18TZ0HL_P3S_Q3";
+  }
+  if (/^matched pairs$/.test(lessonTitle)) {
+    return ["H_M15TZ0HL_P3S_Q2", "H_N16TZ0HL_P3S_Q1X1"].includes(question.id);
+  }
+  if (/testing for population proportion/.test(lessonTitle)) {
+    return ["W_M21TZ1AIHL_P1_Q11", "W_N23TZ0AIHL_P2_Q7"].includes(question.id);
+  }
+  // These are the two reviewed Poisson-mean hypothesis tests. Their source
+  // records also carry broader Poisson and error tags, but the displayed
+  // parts are limited to hypotheses, the test decision and its conclusion.
+  if (/test for mean using poisson distribution/.test(lessonTitle)) {
+    return ["W_N21TZ0AIHL_P2_Q7", "W_M21TZ2AIHL_P1_Q15"].includes(question.id);
+  }
+  // These extracts directly calculate unions and intersections. Their bank
+  // metadata is the broader "Probability" label, but the displayed parts are
+  // exactly the formulae lesson Rob requested.
+  if (/^probability formulae$/.test(lessonTitle)
+    && ["M11TZ1HL_P1_Q1", "M14TZ2HL_P1_Q1"].includes(question.id)) return true;
+  // Both extracts apply Y = aX + b directly to a mean and a measure of
+  // spread. Their complete source questions carry broader statistics labels,
+  // but the displayed parts are exactly this lesson's transformation rule.
+  if (/^linear transformations of x$/.test(lessonTitle)
+    && ["W_M24TZ1AIHL_P1_Q3", "M19TZ2SL_P1_Q8A"].includes(question.id)) return true;
+  // The displayed part is the finite summation calculation and its
+  // interpretation. It contains no sum-to-infinity work.
+  if (/^sigma notation$/.test(lessonTitle) && question.id === "V_M22TZ2AISL_P2_Q2") return true;
+  // Only parts (a) and (b) of this source are displayed here. They are an
+  // accessible calculator evaluation of an exponential expression; the later
+  // modelling equation is deliberately excluded.
+  if (/laws of exponents/.test(lessonTitle)
+    && ["M13TZ2AISL_P1_Q13", "M10TZ1HL_P1_Q4"].includes(question.id)) return true;
+  // These sources were reviewed at part level for the opening calculus
+  // lessons. Their complete source titles mention later follow-up work, while
+  // the displayed parts are deliberately limited to the introductory skill.
+  if (/differentiation.*power rule/.test(lessonTitle)
+    && [
+      "M14TZ1AISL_P1_Q10",
+      "N16TZ0AISL_P1_Q14",
+      "N12TZ0AISL_P1_Q15",
+      "M13TZ1AISL_P1_Q15",
+    ].includes(question.id)) return true;
+  // Final AI HL calculus and differential-equations review. These sources
+  // were checked at displayed-part level so a broader source title cannot
+  // push slope fields, vector motion or later modelling into the wrong card.
+  if (/^kinematics$/.test(lessonTitle)
+    && ["M08TZ1SL_P1_Q6", "H_M17TZ2HL_P1_Q4"].includes(question.id)) return true;
+  if (/^kinematics 2$/.test(lessonTitle)
+    && ["H_M14TZ1HL_P1_Q8", "W_N23TZ0AIHL_P3_Q1"].includes(question.id)) return true;
+  if (/setting up a differential equation/.test(lessonTitle)
+    && question.id === "W_M25TZ2AIHL_P1_Q12") return true;
+  if (/^separation of variables$/.test(lessonTitle)
+    && ["H_M13TZ2HL_P2_Q12", "W_M24TZ1AIHL_P2_Q5"].includes(question.id)) return true;
+  if (/^euler s method example$/.test(lessonTitle)
+    && ["W_M24TZ1AIHL_P1_Q4", "W_M24TZ2AIHL_P1_Q7"].includes(question.id)) return true;
+  if (/euler s method for coupled systems/.test(lessonTitle)
+    && ["W_N24TZ0AIHL_P1_Q17", "W_M25TZ3AIHL_P1_Q11"].includes(question.id)) return true;
+  if (/solutions of coupled differential equations p1/.test(lessonTitle)
+    && ["W_N21TZ0AIHL_P2_Q6", "W_SPECAIHL_P1_Q13"].includes(question.id)) return true;
+  if (/sketching phase portraits sink/.test(lessonTitle)
+    && question.id === "W_M21TZ2AIHL_P2_Q7") return true;
+  if (/sketching phase portraits spiral sink/.test(lessonTitle)
+    && question.id === "W_N24TZ0AIHL_P2_Q7") return true;
+  if (/sketching phase portraits spiral source/.test(lessonTitle)
+    && question.id === "W_M23TZ1AIHL_P2_Q6") return true;
+  if (/second order de exact solution/.test(lessonTitle)
+    && ["W_M23TZ2AIHL_P2_Q7", "W_M22TZ2AIHL_P2_Q7"].includes(question.id)) return true;
+  if (/^optimization$/.test(lessonTitle)
+    && ["N17TZ0SL_P1_Q6A", "M19TZ1AISL_P1_Q15"].includes(question.id)) return true;
+  if (/integration.*power rule/.test(lessonTitle)
+    && ["N13TZ0SL_P2_Q3", "M14TZ1SL_P1_Q3", "V_M24TZ2AISL_P2_Q3", "N18TZ0HL_P2_Q2"].includes(question.id)) return true;
+  if (/^chain rule$/.test(lessonTitle)
+    && ["M16TZ1SL_P1_Q10", "H_M18TZ1HL_P1_Q2"].includes(question.id)) return true;
+  if (/^product rule$/.test(lessonTitle)
+    && ["H_N10TZ0SL_P1_Q2", "M19TZ1SL_P2_Q3"].includes(question.id)) return true;
+  if (/related rates/.test(lessonTitle)
+    && ["M11TZ2HL_P2_Q9", "W_M23TZ2AIHL_P1_Q12"].includes(question.id)) return true;
+  if (/relationship between graphs and derivatives/.test(lessonTitle) && question.id === "N08TZ0SL_P1_Q6") return true;
+  // These have been checked at the displayed-part level for Rob's second
+  // calculus review. Their source titles are broader than the selected work:
+  // each derivative item genuinely asks for a derivative sketch, the
+  // exponential item is a direct integral, the cosine-rate part requires a
+  // cosine integral, and the inverse-chain items both have linear inners.
+  if (/sketching derivatives with gdc/.test(lessonTitle)
+    && ["M12TZ2SL_P2_Q2", "M14TZ2SL_P1_Q6"].includes(question.id)) return true;
+  if (/^sketching derivatives$/.test(lessonTitle)
+    && ["W_N21TZ0AIHL_P1_Q8", "M12TZ2HL_P1_Q7"].includes(question.id)) return true;
+  if (/classifying stationary points/.test(lessonTitle)
+    && ["N09TZ0SL_P1_Q9", "M10TZ2SL_P1_Q8"].includes(question.id)) return true;
+  if (/points of inflexion/.test(lessonTitle)
+    && ["M08TZ2HL_P2_Q6", "M11TZ1SL_P2_Q9"].includes(question.id)) return true;
+  if (/integrating e.*1 x/.test(lessonTitle) && question.id === "N20TZ0SL_P1_Q6") return true;
+  if (/integrating e.*1 x/.test(lessonTitle) && question.id === "M13TZ1SL_P1_Q6") return true;
+  if (/integrating sin.*cos/.test(lessonTitle)
+    && ["A_M23TZ1SL_P2_Q9", "H_M15TZ1SL_P1_Q7"].includes(question.id)) return true;
+  if (/inverse chain rule/.test(lessonTitle)
+    && ["N10TZ0SL_P1_Q6", "M14TZ2SL_P1_Q5", "M11TZ2SL_P2_Q7"].includes(question.id)) return true;
+  if (/^area under the curve$/.test(lessonTitle)
+    && ["M08TZ2HL_P2_Q3", "M10TZ2SL_P2_Q6"].includes(question.id)) return true;
+  if (/area between curve and y axis/.test(lessonTitle)
+    && ["H_N15TZ0HL_P2_Q5", "V_SPECAISL_P1_Q10"].includes(question.id)) return true;
+  // These final AA HL calculus sources were reviewed at the displayed-part
+  // level. Their complete source titles are broader than the selected prompt,
+  // or the relevant mathematical notation is removed by text normalization.
+  if (/volume of revolution.*intro.*x.axis/.test(lessonTitle)
+    && question.id === "M10TZ1SL_P1_Q6") return true;
+  if (/separation of variables/.test(lessonTitle)
+    && ["N12TZ0HL_P3_Q1", "N08TZ0HL_P3_Q4"].includes(question.id)) return true;
+  if (/maclaurin.*substitutions.*products/.test(lessonTitle)
+    && question.id === "N20TZ0HL_P3_Q4") return true;
+  if (/maclaurin.*differentiation.*integration/.test(lessonTitle)
+    && question.id === "A_M22TZ1HL_P1_Q12") return true;
+  if (/maclaurin.*sigma notation/.test(lessonTitle)
+    && ["N12TZ0HL_P3_Q4", "N13TZ0HL_P3_Q4"].includes(question.id)) return true;
+  // This source presents the data graphically, so the word "histogram" is
+  // supplied by its figure rather than repeated in the text extracted from
+  // the bank. Part (a) is the direct histogram-reading task Rob requested.
+  if (/histograms and cumulative frequency curves/.test(lessonTitle)
+    && ["M12TZ1SL_P2_Q8", "M17TZ1AISL_P1_Q1"].includes(question.id)) return true;
+  // These IGCSE Topic 6 questions were reviewed from their full prompts. The
+  // bank titles are intentionally concise and do not repeat the lesson label.
+  if (/probability and.*or rules/.test(lessonTitle)
+    && question.id === "4MA1_2024M_2HR_Q14") return true;
+  if (/relative frequency/.test(lessonTitle)
+    && question.id === "4MA1_2023M_1HR_Q12") return true;
+  if (/tree diagrams/.test(lessonTitle)
+    && question.id === "4MA1_2019M_2H_Q23") return true;
+  // These adjacent lessons differ only by where the quadratic appears. Check
+  // the actual displayed algebra so broad rational-function metadata cannot
+  // put the same source into both lessons again. The four manually reviewed
+  // records are whitelisted because their LaTeX contains nested braces that a
+  // deliberately conservative generic expression check will not parse.
+  if (/rational functions.*quadratic in denominator/.test(lessonTitle)) {
+    if (["M17TZ1HL_P1_Q11", "M11TZ2HL_P2_Q5"].includes(question.id)) return true;
+    if (!/\\d?frac\{[^{}]*\}\{[^{}]*(?:x\^2|x²)[^{}]*\}/i.test(rawQuestionText)) return false;
+  }
+  if (/rational functions.*quadratic in numerator/.test(lessonTitle)) {
+    if (["A_N23TZ1HL_P2_Q11", "A_N24TZ0HL_P2_Q12"].includes(question.id)) return true;
+    if (!/\\d?frac\{[^{}]*(?:x\^2|x²)[^{}]*\}\{[^{}]*\}/i.test(rawQuestionText)) return false;
+  }
+  if (/^solving inequalities$/.test(lessonTitle)) {
+    if (["A_N24TZ0HL_P1_Q6", "M14TZ1HL_P2_Q6"].includes(question.id)) return true;
+    if (/modulus|transformation/.test(fullQuestionText)) return false;
+  }
+  if (/graphs of y.*f x/.test(lessonTitle)) {
+    return ["A_SPECHL_P1_Q3", "N18TZ0HL_P2_Q8"].includes(question.id);
+  }
+  // Rob explicitly approved this existing second question for the line-angle
+  // lesson after reviewing it in the preview. Preserve it while replacing the
+  // unrelated first question with a full two-line, three-dimensional problem.
+  if (/angle between two lines/.test(lessonTitle) && question.id === "N08TZ0HL_P2_Q4") return true;
+  // Only parts (a) and (b) are displayed from this source: direct airplane
+  // speed and height calculations. Its later perpendicular-path work is not.
+  if (/vectors and kinematics/.test(lessonTitle) && question.id === "H_M14TZ2SL_P1_Q9") return true;
+  // Only the direct substitution part is displayed from each source. Later
+  // sketching, calculus and graph-feature work is deliberately omitted.
+  if (/evaluating functions/.test(lessonTitle)
+    && ["M17TZ1AISL_P2_Q3", "M11TZ1AISL_P2_Q3"].includes(question.id)) return true;
+  // AI Topic 1 has been checked at the displayed-part level. These source
+  // questions may have broader titles or later parts, but only the precise
+  // lesson-specific work listed in practicePartOverrides is shown.
+  if (/laws of logs/.test(lessonTitle)
+    && ["M11TZ2SL_P1_Q5", "W_M25TZ1AIHL_P1_Q10"].includes(question.id)) return true;
+  if (/more exponents/.test(lessonTitle)
+    && ["A_EXPQ_P1_Q1", "A_EXPQ_P1_Q2", "H_M13TZ2HL_P1_Q9", "H_N14TZ0HL_P1_Q11X1"].includes(question.id)) return true;
+  if (/operations with complex numbers/.test(lessonTitle)
+    && ["N12TZ0HL_P1_Q10", "H_M18TZ2HL_P2_Q1"].includes(question.id)) return true;
+  if (/operations and geometric interpretation/.test(lessonTitle)
+    && question.id === "W_M24TZ2AIHL_P1_Q15") return true;
+  if (/determinant and inverse of a matrix/.test(lessonTitle)
+    && ["W_M25TZ3AIHL_P1_Q8", "W_M23TZ2AIHL_P1_Q13"].includes(question.id)) return true;
+  if (/eigenvalues and eigenvectors/.test(lessonTitle)
+    && ["W_N24TZ0AIHL_P1_Q11", "W_M24TZ2AIHL_P2_Q5", "W_M22TZ1AIHL_P1_Q11"].includes(question.id)) return true;
+  if (/powers of matrices/.test(lessonTitle)
+    && ["W_M24TZ1AIHL_P1_Q17", "W_M21TZ1AIHL_P2_Q5", "W_M21TZ2AIHL_P2_Q4"].includes(question.id)) return true;
+  // AI Topic 3 has been reviewed at displayed-part level. Some source titles
+  // describe a broader exam question or rely on the diagram to show the
+  // right angle, so the selected prompt itself is the authoritative check.
+  if (/^soh cah toa$/.test(lessonTitle)
+    && ["M16TZ1AISL_P1_Q2", "V_N24TZ1AISL_P1_Q1"].includes(question.id)) return true;
+  if (/^cosine rule$/.test(lessonTitle)
+    && ["V_N21TZ0AISL_P1_Q2", "M14TZ1SL_P2_Q1"].includes(question.id)) return true;
+  if (/arcs and sectors with radians/.test(lessonTitle)
+    && question.id === "M13TZ1HL_P2_Q5") return true;
+  if (/^enlargements$/.test(lessonTitle)
+    && question.id === "W_M22TZ1AIHL_P2_Q7") return true;
+  if (/^reflections$/.test(lessonTitle)
+    && question.id === "W_N23TZ0AIHL_P2_Q6") return true;
+  if (/composite matrix transformations/.test(lessonTitle)
+    && ["W_N24TZ0AIHL_P2_Q6", "W_M21TZ2AIHL_P1_Q14"].includes(question.id)) return true;
+  if (/determinant of a transformation matrix/.test(lessonTitle)
+    && ["W_M22TZ2AIHL_P1_Q15", "W_N22TZ0AIHL_P1_Q9"].includes(question.id)) return true;
+  // AI HL vector and graph-theory sources were checked against their selected
+  // subparts. These exact whitelists stop broad source titles from overriding
+  // the much narrower prompt displayed in the lesson.
+  if (/^operations with vectors$/.test(lessonTitle)
+    && ["M13TZ1SL_P1_Q1", "M11TZ2SL_P1_Q3"].includes(question.id)) return true;
+  if (/magnitude and unit vectors/.test(lessonTitle)
+    && ["N17TZ0SL_P2_Q3", "M10TZ2SL_P1_Q2"].includes(question.id)) return true;
+  if (/motion with variable velocity/.test(lessonTitle)
+    && ["W_N22TZ0AIHL_P2_Q7", "W_M25TZ3AIHL_P1_Q14"].includes(question.id)) return true;
+  if (/vector product$/.test(lessonTitle) && question.id === "W_SPECAIHL_P1_Q11") return true;
+  if (/areas using (?:the )?vector product/.test(lessonTitle)
+    && ["W_M23TZ1AIHL_P1_Q7", "W_M24TZ2AIHL_P1_Q8"].includes(question.id)) return true;
+  if (/weighted adjacency tables/.test(lessonTitle) && question.id === "W_N22TZ0AIHL_P2_Q4") return true;
+  if (/graph routes/.test(lessonTitle) && question.id === "W_M21TZ2AIHL_P1_Q11") return true;
+  if (/kruskal/.test(lessonTitle)
+    && ["W_M22TZ2AIHL_P3_Q2", "W_M23TZ2AIHL_P2_Q4"].includes(question.id)) return true;
+  if (/^prim s algorithm$/.test(lessonTitle) && question.id === "W_M21TZ1AIHL_P1_Q10") return true;
+  if (/prim s algorithm with adjacency table/.test(lessonTitle)
+    && question.id === "W_M25TZ2AIHL_P2_Q4") return true;
+  if (/eulerian graphs/.test(lessonTitle) && question.id === "W_M23TZ1AIHL_P2_Q4") return true;
+  if (/chinese postman/.test(lessonTitle)
+    && ["W_M24TZ1AIHL_P1_Q8", "W_N23TZ0AIHL_P2_Q5"].includes(question.id)) return true;
+  if (/hamiltonian graphs/.test(lessonTitle) && question.id === "W_N21TZ0AIHL_P3_Q1") return true;
+  if (/^the travelling salesman problem$/.test(lessonTitle) && question.id === "W_N24TZ0AIHL_P3_Q1") return true;
+  if (/tsp practical|travelling salesman problem practical/.test(lessonTitle) && question.id === "W_M24TZ2AIHL_P2_Q4") return true;
+  if (/nearest neighbour algorithm/.test(lessonTitle)
+    && ["W_M23TZ1AIHL_P1_Q3", "V_N24TZ1AISL_P2_Q1"].includes(question.id)) return true;
+  if (/deleted vertex algorithm/.test(lessonTitle)
+    && ["W_M25TZ3AIHL_P2_Q4", "W_SPECAIHL_P2_Q5"].includes(question.id)) return true;
+  // Only part (b) is displayed: a direct probability calculation for the
+  // mean of five independent observations from a stated normal population.
+  if (/normal distribution sampling/.test(lessonTitle)
+    && question.id === "W_M22TZ1AIHL_P1_Q9") return true;
+  if (/confidence intervals known variance/.test(lessonTitle)) {
+    return ["H_N15TZ0HL_P3S_Q1X1", "H_M15TZ0HL_P3S_Q3"].includes(question.id);
+  }
+  if (/confidence intervals unknown variance/.test(lessonTitle)) {
+    return ["W_SPECAIHL_P1_Q9", "W_M21TZ2AIHL_P1_Q10"].includes(question.id);
+  }
+  const rule = lessonSpecificRule(lesson);
+  if (rule) {
+    // Positive matches may come from a relevant subpart of a larger question.
+    // Exclusions stay title-based so a question whose main skill is explicitly
+    // a different lesson (for example algebraic fractions) remains blocked.
+    if (rule.all && !rule.all.every((pattern) => pattern.test(fullQuestionText))) return false;
+    if (rule.any && !rule.any.some((pattern) => pattern.test(fullQuestionText))) return false;
+    if (rule.none && rule.none.some((pattern) => pattern.test(questionTitle))) return false;
+  }
+  if (/vectors and kinematics/.test(lessonTitle)) {
+    return /vector/.test(fullQuestionText)
+      && /velocity|speed|position|particle|motion|displacement/.test(fullQuestionText);
+  }
   if (/t test/.test(lessonTitle)) return /t test/.test(questionTitle);
-  if (/inverse chain rule/.test(lessonTitle)) return /reverse chain|inverse chain/.test(questionTitle);
-  if (/continuous functions/.test(lessonTitle)) return /continuous/.test(questionTitle);
+  if (/inverse chain rule/.test(lessonTitle)) return /reverse chain|inverse chain|substitution|integrat/.test(questionTitle);
+  if (/continuous functions/.test(lessonTitle)) return /continuous|limit|l hopital|first principles/.test(questionTitle);
   if (/linear combination.*normal random variables/.test(lessonTitle)) return /normal/.test(questionTitle);
-  return true;
+  return rule ? true : relevance(question, lesson) > 0;
 }
 
 const usage = new Map();
@@ -356,8 +3083,11 @@ function scoreQuestion(question, lesson, course, subtopic, position) {
   const partPenalty = Math.max(0, (question.parts?.length || 0) - 3) * 2;
   const phrase = normalize(lesson.title);
   const phraseBonus = phrase.length > 7 && candidateText.includes(phrase) ? 15 : 0;
+  const questionTopics = topicsOf(question, course);
+  const exactSubtopicBonus = questionTopics.some((topic) => topic.sub === subtopic) ? 12 : 0;
+  const focusedSubtopicBonus = questionTopics.length > 0 && questionTopics.every((topic) => topic.sub === subtopic) ? 6 : 0;
   const reusePenalty = (usage.get(question.id) || 0) * 4;
-  return overlap * 5 + difficultyBonus + markBonus + phraseBonus - reusePenalty - partPenalty;
+  return overlap * 5 + difficultyBonus + markBonus + phraseBonus + exactSubtopicBonus + focusedSubtopicBonus - reusePenalty - partPenalty;
 }
 
 function relevance(question, lesson) {
@@ -371,42 +3101,323 @@ function relevance(question, lesson) {
 function candidateQuestions(lesson, course, subtopic) {
   return seed.filter((question) => {
     if (!question.id || !question.markscheme || question.offSyllabus || question.provisional) return false;
+    if (course === "IGCSE Higher" && question.sourceBank !== "igcse") return false;
+    if (course !== "IGCSE Higher" && question.sourceBank !== "ib") return false;
+    if (!passesCourseBoundary(question, course)) return false;
     if (!banksOf(question).includes(course)) return false;
     return topicsOf(question, course).some((topic) => topic.sub === subtopic);
   });
 }
 
-function pickQuestions(lesson, course, subtopic) {
-  const relevant = candidateQuestions(lesson, course, subtopic)
-    .filter((question) => relevance(question, lesson) > 0)
-    .filter((question) => passesLessonSpecificCheck(question, lesson));
-  const short = relevant.filter((question) => Number(question.marks) <= 8);
-  const candidates = short.length >= 2 ? short : relevant;
-  if (candidates.length < 2) return [];
-  const first = [...candidates].sort((a, b) => scoreQuestion(b, lesson, course, subtopic, 0) - scoreQuestion(a, lesson, course, subtopic, 0))[0];
-  const second = candidates
-    .filter((candidate) => candidate.id !== first.id)
-    .sort((a, b) => scoreQuestion(b, lesson, course, subtopic, 1) - scoreQuestion(a, lesson, course, subtopic, 1))[0];
+function exactCandidateQuestions(lesson, course, subtopic) {
+  return seed.filter((question) => {
+    if (!question.id || !question.markscheme || question.offSyllabus || question.provisional) return false;
+    if (course === "IGCSE Higher" && question.sourceBank !== "igcse") return false;
+    if (course !== "IGCSE Higher" && question.sourceBank !== "ib") return false;
+    if (!passesCourseBoundary(question, course)) return false;
+    if (!banksOf(question).includes(course)) return false;
+    // A wording match is not enough to move a question between curriculum
+    // subtopics. This prevents, for example, algebraic fractions being used
+    // for the earlier numerical-fractions lesson.
+    if (!topicsOf(question, course).some((topic) => topic.sub === subtopic)) return false;
+    return passesLessonSpecificCheck(question, lesson);
+  });
+}
+
+function broaderProfileQuestions(lesson, course, subtopic) {
+  if (!lessonSpecificRule(lesson)) return [];
+  return seed.filter((question) => {
+    if (!question.id || !question.markscheme || question.offSyllabus || question.provisional) return false;
+    if (course === "IGCSE Higher" && question.sourceBank !== "igcse") return false;
+    if (course !== "IGCSE Higher" && question.sourceBank !== "ib") return false;
+    if (!passesCourseBoundary(question, course)) return false;
+    if (!banksOf(question).includes(course) && !allowsCrossCourseQuestion(question, lesson, course)) return false;
+    if (banksOf(question).includes(course) && topicsOf(question, course).some((topic) => topic.sub === subtopic)) return false;
+    return passesLessonSpecificCheck(question, lesson);
+  });
+}
+
+function pairPassesLessonCheck(questions, lesson) {
+  const lessonTitle = normalize(lesson.title);
+  const titles = questions.map((question) => normalize(question.title));
+  const combined = titles.join(" | ");
+  if (/spheres.*cones/.test(lessonTitle)) {
+    return titles.some((title) => /sphere/.test(title)) && titles.some((title) => /cone/.test(title));
+  }
+  if (/integrating e.*1 x/.test(lessonTitle)) {
+    if (questions.some((question) => question.id === "N20TZ0SL_P1_Q6")
+      && questions.some((question) => question.id === "A_M22TZ2SL_P2_Q2")) return true;
+    return titles.some((title) => /exponential|e x/.test(title))
+      && titles.some((title) => /logarith|1 x/.test(title));
+  }
+  if (/derivative of sinx.*cosx.*lnx.*e x/.test(lessonTitle)) {
+    const families = [/\bsin\b/, /\bcos\b/, /\bln\b|logarith/, /exponential/]
+      .filter((pattern) => pattern.test(combined)).length;
+    return families >= 2;
+  }
+  if (/probability and.*or rules/.test(lessonTitle)) {
+    const hasAndCase = titles.some((title) => /same.colour|independent probability|exactly two/.test(title));
+    const hasOrCase = titles.some((title) => /at least one|odd total|union|addition rule|complement/.test(title));
+    return hasAndCase && hasOrCase;
+  }
+  if (/relative frequency/.test(lessonTitle)) {
+    const hasObservedProbability = titles.some((title) => /probability from a table|relative frequency/.test(title));
+    const hasFrequencyEstimate = titles.some((title) => /expected frequency|estimat.*frequency|frequency.*probabilit|probabilit.*frequency/.test(title));
+    return hasObservedProbability && hasFrequencyEstimate;
+  }
+  return true;
+}
+
+function pickQuestions(lessonId, lesson, course, subtopic, exclusions = {}, desiredCount = 2) {
+  const excludedIds = exclusions.ids || new Set();
+  const excludedSignatures = exclusions.signatures || new Set();
+  const exactSubtopic = exactCandidateQuestions(lesson, course, subtopic);
+  // Prefer questions whose curriculum metadata is focused entirely on this
+  // lesson's subtopic. Mixed-topic questions remain a fallback only when the
+  // bank does not contain two focused alternatives.
+  const focusedSubtopic = exactSubtopic.filter((question) => {
+    const topics = topicsOf(question, course);
+    return topics.length > 0 && topics.every((topic) => topic.sub === subtopic);
+  });
+  // passesLessonSpecificCheck already requires either a fine-grained semantic
+  // profile or meaningful title overlap. Do not add a second token gate that
+  // would discard valid synonyms such as a prism question for a 3D lesson.
+  const preferredExact = focusedSubtopic.length >= 2 ? focusedSubtopic : exactSubtopic;
+  const broader = broaderProfileQuestions(lesson, course, subtopic);
+  const relevant = [...preferredExact, ...broader]
+    .filter((question) => !excludedIds.has(question.id))
+    .filter((question) => !excludedSignatures.has(selectedContentSignature(lessonId, question.id)))
+    .filter((question, index, all) => all.findIndex((candidate) => candidate.id === question.id) === index);
+  // Prefer the short questions Rob requested. If a lesson still has fewer than
+  // two, allow a larger multipart question up to 16 marks when a relevant part
+  // clearly assesses the lesson skill.
+  const shortCandidates = relevant.filter((question) => Number(question.marks) <= 10);
+  const candidates = shortCandidates.length >= 2
+    ? shortCandidates
+    : relevant.filter((question) => Number(question.marks) <= 16);
+  const selectSingle = () => {
+    if (!candidates.length) return [];
+    const [best] = [...candidates].sort((left, right) => (
+      scoreQuestion(right, lesson, course, subtopic, 0) - scoreQuestion(left, lesson, course, subtopic, 0)
+    ));
+    usage.set(best.id, (usage.get(best.id) || 0) + 1);
+    return [best.id];
+  };
+  if (desiredCount === 1 || candidates.length < 2) return selectSingle();
+  const pairs = [];
+  for (let firstIndex = 0; firstIndex < candidates.length; firstIndex += 1) {
+    for (let secondIndex = firstIndex + 1; secondIndex < candidates.length; secondIndex += 1) {
+      const pair = [candidates[firstIndex], candidates[secondIndex]];
+      if (!pairPassesLessonCheck(pair, lesson)) continue;
+      const forward = scoreQuestion(pair[0], lesson, course, subtopic, 0) + scoreQuestion(pair[1], lesson, course, subtopic, 1);
+      const reverse = scoreQuestion(pair[1], lesson, course, subtopic, 0) + scoreQuestion(pair[0], lesson, course, subtopic, 1);
+      pairs.push({ pair: reverse > forward ? [pair[1], pair[0]] : pair, score: Math.max(forward, reverse) });
+    }
+  }
+  if (!pairs.length) return selectSingle();
+  pairs.sort((a, b) => b.score - a.score);
+  const [first, second] = pairs[0].pair;
   for (const question of [first, second]) usage.set(question.id, (usage.get(question.id) || 0) + 1);
   return [first.id, second.id];
 }
 
 const lessons = {};
 const audit = [];
+const claimedQuestionIds = new Map();
+const claimedContentSignatures = new Map();
+
+function allowsApprovedSourceSplit(lessonId, questionId) {
+  // Rob explicitly permits splitting a larger source question when its parts
+  // belong cleanly to different lessons. Sampling uses only part (c) of this
+  // source; the discrete median/mode lesson uses only part (a). No prompt is
+  // displayed twice, and the selected-content duplicate check still applies.
+  return (lessonId === "2f5766d2-e280-4aff-ac80-36b91b5218b7"
+      && questionId === "A_M25TZ3HL_P2_Q3")
+    // Part (a) is used only for unbiased estimates in 4.14.4; part (b) is
+    // used only for the matched-pairs test in 4.18.4.
+    || (lessonId === "a05dc6dd-60a5-4987-9191-16ba898b9cca"
+      && questionId === "H_M15TZ0HL_P3S_Q2");
+}
+
+function exclusionsForLesson(lessonId, additionalIds = []) {
+  const ids = new Set([...claimedQuestionIds.keys(), ...additionalIds]);
+  const signatures = new Set(claimedContentSignatures.keys());
+  for (const [questionId, ownerId] of reservedQuestionOwners) {
+    if (ownerId !== lessonId) ids.add(questionId);
+  }
+  for (const [signature, ownerId] of reservedContentOwners) {
+    if (ownerId !== lessonId) signatures.add(signature);
+  }
+  for (const questionId of additionalIds) {
+    const signature = selectedContentSignature(lessonId, questionId);
+    if (signature) signatures.add(signature);
+  }
+  return { ids, signatures };
+}
 
 for (const [id, placement] of placements) {
   const course = canonicalCourse(placement.courses);
   const subtopic = ruleFor(placement.lesson, course);
-  const questionIds = pilotOverrides[id] || (subtopic ? pickQuestions(placement.lesson, course, subtopic) : []);
-  const mapped = questionIds.length === 2;
-  if (mapped) {
+  const deliberatelyWithoutPractice = intentionallyWithoutPractice.has(id);
+  const deliberatelySinglePractice = intentionallySinglePractice.has(id);
+  const incompleteSingle = incompleteSinglePractice.has(id);
+  const deliberatelyTriplePractice = intentionallyTriplePractice.has(id);
+  const requestedCuratedIds = deliberatelyWithoutPractice || needsManualQuestionReview.has(id) ? null : verifiedOverrides[id];
+  let curatedIds = requestedCuratedIds;
+  if (requestedCuratedIds) {
+    if (requestedCuratedIds.length < 1 || requestedCuratedIds.length > 3 || new Set(requestedCuratedIds).size !== requestedCuratedIds.length) {
+      throw new Error(`Curated practice for ${placement.lesson.code} ${placement.lesson.title} must contain one to three distinct questions`);
+    }
+    for (const questionId of requestedCuratedIds) {
+      const question = seed.find((candidate) => candidate.id === questionId);
+      if (!question || !question.markscheme || question.offSyllabus || question.provisional) {
+        throw new Error(`Curated practice question ${questionId} is not an approved complete bank record`);
+      }
+      if (!passesCourseBoundary(question, course)) {
+        console.warn(`REJECTED CURATION ${placement.lesson.code} ${placement.lesson.title}: ${questionId} is outside the ${course} syllabus boundary`);
+        curatedIds = null;
+      }
+      if (!banksOf(question).includes(course) && !allowsCrossCourseQuestion(question, placement.lesson, course)) {
+        console.warn(`REJECTED CURATION ${placement.lesson.code} ${placement.lesson.title}: ${questionId} is not available in the ${course} bank`);
+        curatedIds = null;
+      }
+      if (subtopic && !topicsOf(question, course).some((topic) => topic.sub === subtopic)) {
+        console.warn(`CROSS-SUBTOPIC CURATION ${placement.lesson.code} ${placement.lesson.title}: ${questionId} retained because its actual question content passes the lesson-specific check`);
+      }
+      if (!passesLessonSpecificCheck(question, placement.lesson)) {
+        console.warn(`REJECTED CURATION ${placement.lesson.code} ${placement.lesson.title}: ${questionId} does not assess the precise lesson skill`);
+        curatedIds = null;
+      }
+    }
+    if (curatedIds && curatedIds.length > 1) {
+      const curatedQuestions = curatedIds.map((questionId) => seed.find((question) => question.id === questionId));
+      if (!pairPassesLessonCheck(curatedQuestions, placement.lesson)) {
+        console.warn(`REJECTED CURATION ${placement.lesson.code} ${placement.lesson.title}: the pair does not cover the lesson's required skill range`);
+        curatedIds = null;
+      }
+    }
+  }
+  let uniquenessAdjusted = false;
+  if (curatedIds) {
+    const uniqueCuratedIds = curatedIds.filter((questionId) => {
+      const ownerId = reservedQuestionOwners.get(questionId);
+      const signature = selectedContentSignature(id, questionId);
+      const contentOwnerId = signature ? reservedContentOwners.get(signature) : null;
+      const approvedSourceSplit = allowsApprovedSourceSplit(id, questionId);
+      return (approvedSourceSplit || !claimedQuestionIds.has(questionId))
+        && (!signature || !claimedContentSignatures.has(signature))
+        && (approvedSourceSplit || !ownerId || ownerId === id)
+        && (!contentOwnerId || contentOwnerId === id);
+    });
+    uniquenessAdjusted = uniqueCuratedIds.length !== curatedIds.length;
+    curatedIds = uniqueCuratedIds;
+  }
+  const exactCandidates = subtopic
+    ? exactCandidateQuestions(placement.lesson, course, subtopic)
+      .filter((question) => Number(question.marks) <= 10)
+    : [];
+  let questionIds = [];
+  if (!deliberatelyWithoutPractice && !needsManualQuestionReview.has(id)) {
+    const desiredCount = deliberatelySinglePractice || incompleteSingle ? 1 : deliberatelyTriplePractice ? 3 : 2;
+    if (curatedIds) {
+      questionIds = [...curatedIds].slice(0, desiredCount);
+      if (subtopic && questionIds.length < desiredCount) {
+        const replacements = pickQuestions(
+          id,
+          placement.lesson,
+          course,
+          subtopic,
+          exclusionsForLesson(id, questionIds),
+          desiredCount - questionIds.length,
+        );
+        questionIds.push(...replacements.slice(0, desiredCount - questionIds.length));
+        uniquenessAdjusted = uniquenessAdjusted || replacements.length > 0;
+      }
+      if (questionIds.length > 1) {
+        const selectedQuestions = questionIds.map((questionId) => seed.find((question) => question.id === questionId));
+        if (!pairPassesLessonCheck(selectedQuestions, placement.lesson)) {
+          const replacementPair = pickQuestions(
+            id,
+            placement.lesson,
+            course,
+            subtopic,
+            exclusionsForLesson(id),
+            desiredCount,
+          );
+          if (replacementPair.length === desiredCount) {
+            questionIds = replacementPair;
+            uniquenessAdjusted = true;
+          } else {
+            questionIds = questionIds.slice(0, 1);
+          }
+        }
+      }
+    } else if (subtopic) {
+      questionIds = pickQuestions(
+        id,
+        placement.lesson,
+        course,
+        subtopic,
+        exclusionsForLesson(id),
+        desiredCount,
+      );
+    }
+  }
+  for (const questionId of questionIds) {
+    const previousLessonId = claimedQuestionIds.get(questionId);
+    if (previousLessonId && previousLessonId !== id && !allowsApprovedSourceSplit(id, questionId)) {
+      throw new Error(`Practice question ${questionId} is attached to both ${previousLessonId} and ${id}`);
+    }
+    if (!previousLessonId) claimedQuestionIds.set(questionId, id);
+    const signature = selectedContentSignature(id, questionId);
+    const previousContentLessonId = signature ? claimedContentSignatures.get(signature) : null;
+    if (previousContentLessonId && previousContentLessonId !== id) {
+      throw new Error(`The same practice content is attached to both ${previousContentLessonId} and ${id}`);
+    }
+    if (signature) claimedContentSignatures.set(signature, id);
+  }
+  const displayable = questionIds.length > 0;
+  const expectedCount = deliberatelySinglePractice ? 1 : deliberatelyTriplePractice ? 3 : 2;
+  const practiceComplete = questionIds.length === expectedCount;
+  const approvedSingle = deliberatelySinglePractice && questionIds.length === 1;
+  const reviewReason = practiceComplete
+    ? ""
+    : approvedSingle
+      ? "approved-single-question"
+    : deliberatelyWithoutPractice
+      ? "intentionally-no-practice"
+    : questionIds.length === 1
+      ? "only-one-exact-question"
+    : needsManualQuestionReview.has(id)
+      ? "withheld-for-manual-review"
+      : !subtopic
+        ? "no-precise-bank-subtopic"
+        : requestedCuratedIds && !curatedIds
+          ? "previous-curation-rejected"
+          : "no-exact-short-match";
+  const matchMethod = deliberatelyWithoutPractice
+    ? "not-applicable"
+    : !displayable
+    ? "needs-review"
+    : curatedIds
+      ? uniquenessAdjusted ? "verified-curated-unique" : "verified-curated"
+      : questionIds.every((questionId) => relevance(seed.find((question) => question.id === questionId), placement.lesson) > 0)
+        ? "verified-specific"
+        : "verified-profile";
+  if (displayable) {
     lessons[id] = {
       lesson: `${placement.lesson.code} ${placement.lesson.title}`,
       course,
       subtopic,
+      bankPath: course === "IGCSE Higher" ? "igcse-bank.html" : "ib-bank.html",
       questionIds,
+      questionParts: practicePartOverrides[id] || undefined,
+      questionPartTitles: practicePartTitles[id] || undefined,
+      questionBodies: practiceBodyOverrides[id] || undefined,
     };
   }
+  const quickMeta = questionIds[0] ? selectedQuestionMeta(id, questionIds[0]) : { title: "", marks: "" };
+  const examMeta = questionIds[1] ? selectedQuestionMeta(id, questionIds[1]) : { title: "", marks: "" };
   audit.push({
     id,
     courses: placement.courses.join(" + "),
@@ -414,24 +3425,30 @@ for (const [id, placement] of placements) {
     title: placement.lesson.title,
     bank: course,
     subtopic: subtopic || "",
-    status: mapped ? "mapped" : "needs-review",
+    status: approvedSingle ? "approved-single" : practiceComplete ? "complete" : deliberatelyWithoutPractice ? "not-applicable" : "needs-review",
+    matchMethod,
+    reviewReason,
+    selectedCount: questionIds.length,
+    exactCandidateCount: exactCandidates.length,
     quickCheck: questionIds[0] || "",
-    quickTitle: questionIds[0] ? seed.find((question) => question.id === questionIds[0])?.title || "" : "",
-    quickMarks: questionIds[0] ? seed.find((question) => question.id === questionIds[0])?.marks || "" : "",
+    quickTitle: quickMeta.title,
+    quickMarks: quickMeta.marks,
     quickPaper: questionIds[0] ? calculatorLabel(seed.find((question) => question.id === questionIds[0]), course) : "",
     examPractice: questionIds[1] || "",
-    examTitle: questionIds[1] ? seed.find((question) => question.id === questionIds[1])?.title || "" : "",
-    examMarks: questionIds[1] ? seed.find((question) => question.id === questionIds[1])?.marks || "" : "",
+    examTitle: examMeta.title,
+    examMarks: examMeta.marks,
     examPaper: questionIds[1] ? calculatorLabel(seed.find((question) => question.id === questionIds[1]), course) : "",
   });
 }
 
 const payload = {
   generatedAt: new Date().toISOString(),
-  format: "Quick check + Exam practice",
+  format: "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   lessonCount: Object.keys(lessons).length,
-  questionCount: Object.keys(lessons).length * 2,
-  selectionPolicy: "Short exact bank questions; AA paper and calculator rules are shown on every question",
+  completeLessonCount: audit.filter((row) => row.status === "complete").length,
+  approvedSingleLessonCount: audit.filter((row) => row.status === "approved-single").length,
+  questionCount: Object.values(lessons).reduce((total, lesson) => total + lesson.questionIds.length, 0),
+  selectionPolicy: "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   lessons,
 };
 
@@ -442,11 +3459,39 @@ function csvCell(value) {
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
-const columns = ["id", "courses", "code", "title", "bank", "subtopic", "status", "quickCheck", "quickTitle", "quickMarks", "quickPaper", "examPractice", "examTitle", "examMarks", "examPaper"];
+const columns = ["id", "courses", "code", "title", "bank", "subtopic", "status", "matchMethod", "reviewReason", "selectedCount", "exactCandidateCount", "quickCheck", "quickTitle", "quickMarks", "quickPaper", "examPractice", "examTitle", "examMarks", "examPaper"];
 fs.writeFileSync(auditPath, `${columns.join(",")}\n${audit.map((row) => columns.map((column) => csvCell(row[column])).join(",")).join("\n")}\n`);
 
-const mapped = audit.filter((row) => row.status === "mapped");
-const review = audit.filter((row) => row.status !== "mapped");
-console.log(`Mapped ${mapped.length} of ${audit.length} unique lesson videos to ${mapped.length * 2} exact question-bank records.`);
-console.log(`Left ${review.length} lessons for review rather than forcing a weak match.`);
+const complete = audit.filter((row) => row.status === "complete");
+const review = audit.filter((row) => row.status === "needs-review");
+const intentionallyBlank = audit.filter((row) => row.status === "not-applicable");
+const intentionallySingle = audit.filter((row) => row.status === "approved-single");
+const selectedQuestions = Object.entries(lessons)
+  .flatMap(([lessonId, lesson]) => lesson.questionIds.map((questionId) => selectedQuestionMeta(lessonId, questionId).marks))
+  .filter(Boolean)
+  .map(Number);
+const shortQuestions = selectedQuestions.filter((marks) => marks <= 8).length;
+const longerQuestions = selectedQuestions.length - shortQuestions;
+const methodCounts = audit.filter((row) => row.selectedCount > 0).reduce((counts, row) => {
+  counts[row.matchMethod] = (counts[row.matchMethod] || 0) + 1;
+  return counts;
+}, {});
+console.log(`Completed intended practice sets for ${complete.length} of ${audit.length} unique lesson videos; ${selectedQuestions.length} verified question-bank records are currently displayed.`);
+console.log(`${shortQuestions} placements are eight marks or fewer; ${longerQuestions} are longer.`);
+console.log(`Selection methods: ${Object.entries(methodCounts).map(([method, count]) => `${method}=${count}`).join(", ")}.`);
+console.log(`Left ${review.length} lessons unmapped.`);
+console.log(`${intentionallyBlank.length} lessons are intentionally published without practice.`);
+console.log(`${intentionallySingle.length} lessons have an explicitly approved single-question practice set.`);
 for (const row of review) console.log(`REVIEW ${row.courses} ${row.code} ${row.title}`);
+
+if (process.argv.includes("--review-candidates")) {
+  for (const row of review) {
+    const placement = placements.get(row.id);
+    const options = candidateQuestions(placement.lesson, row.bank, row.subtopic)
+      .sort((a, b) => (Number(a.marks) || 0) - (Number(b.marks) || 0));
+    console.log(`\nCANDIDATES ${row.id} | ${row.courses} | ${row.code} ${row.title} | ${row.subtopic}`);
+    for (const question of options) {
+      console.log(`${question.id} | ${question.marks} marks | ${question.title}`);
+    }
+  }
+}
