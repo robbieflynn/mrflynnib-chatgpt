@@ -311,3 +311,28 @@ AI HL,2026-10-20,3.9.4,Rotations,approved,W_M25TZ1AIHL_P1_Q13|W_N21TZ0AIHL_P2_Q4
 AI HL,2026-10-20,3.9.5,Reflections,awaiting-recheck,W_N23TZ0AIHL_P2_Q6|MF_AIHL_T3_MATRIX_REFLECTION,Kept the approved reflection and added a second reflection-matrix question
 AI HL,2026-10-20,3.9.6,Composite matrix transformations,awaiting-recheck,W_N24TZ0AIHL_P2_Q6|W_M23TZ2AIHL_P1_Q13,Kept question 1 and replaced question 2 with a genuine sequence of transformations
 AI HL,2026-10-20,3.9.7,Determinant of a transformation matrix,approved,W_M22TZ2AIHL_P1_Q15|W_N22TZ0AIHL_P1_Q9,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.10.1,Vectors introduction,approved-no-practice,,Rob asked to leave the introduction blank
+AI HL,2026-10-20,3.10.2,Operations with vectors,approved,M11TZ2SL_P1_Q3|H_N18TZ0SL_P1_Q5,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.10.3,Magnitude and unit vectors,awaiting-recheck,N17TZ0SL_P2_Q3|MF_AIHL_T3_UNIT_VECTOR,Kept approved question 1 and replaced the angle question with direct magnitude and unit-vector work
+AI HL,2026-10-20,3.11,Vector equation of a line,awaiting-recheck,MF_AIHL_T3_VECTOR_LINE_3D_POINTS|MF_AIHL_T3_VECTOR_LINE_3D_DIRECTION,Replaced both questions with direct vector equations of lines in three dimensions
+AI HL,2026-10-20,3.12.1,Vectors and kinematics,awaiting-recheck,MF_AIHL_T3_VECTOR_KINEMATICS_3D|MF_AIHL_T3_VECTOR_KINEMATICS_MEETING,Replaced both questions with distinct three-dimensional vector-motion examples
+AI HL,2026-10-20,3.13.1,Scalar product and angle between vectors,approved,M15TZ2SL_P2_Q2|M17TZ1SL_P2_Q2,Kept approved question 1 and restored the existing direct angle-between-vectors question as question 2
+AI HL,2026-10-20,3.13.2,Angle between two lines,approved,H_M09TZ1HL_P2_Q5|W_N22TZ0AIHL_P1_Q8,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.13.3,Vector product,awaiting-recheck,W_SPECAIHL_P1_Q11|MF_AIHL_T3_VECTOR_PRODUCT,Kept the approved question and added a second direct vector-product calculation
+AI HL,2026-10-20,3.13.4,Areas using vector product,approved,W_M23TZ1AIHL_P1_Q7|W_M24TZ2AIHL_P1_Q8,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.13.5,Components of vectors,awaiting-recheck,MF_AIHL_T3_VECTOR_COMPONENT,Added a direct parallel and perpendicular vector-components question
+AI HL,2026-10-20,3.14,Introduction to graph theory,approved-no-practice,,Rob asked to leave the introduction blank
+AI HL,2026-10-20,3.15.1,Adjacency matrices,approved,W_M22TZ2AIHL_P1_Q6|W_M25TZ2AIHL_P1_Q8,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.15.2,Weighted adjacency tables,awaiting-recheck,W_N22TZ0AIHL_P2_Q4|MF_AIHL_T3_WEIGHTED_ADJACENCY,Kept the approved source and added a second weighted-adjacency-table construction
+AI HL,2026-10-20,3.15.3,Walks,approved,W_N22TZ0AIHL_P1_Q4|W_M23TZ2AIHL_P1_Q8,Verified the two approved sources are distinct
+AI HL,2026-10-20,3.16.1,Graph routes,approved,W_M21TZ2AIHL_P1_Q11,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.16.2,Kruskal's algorithm,approved,W_M22TZ2AIHL_P3_Q2|W_M23TZ2AIHL_P2_Q4,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.16.3,Prim's algorithm,awaiting-recheck,W_M21TZ1AIHL_P1_Q10|MF_AIHL_T3_PRIM_GRAPH,Kept the approved source and added a second Prim's algorithm question
+AI HL,2026-10-20,3.16.4,Prim's algorithm with adjacency table,approved,W_M25TZ2AIHL_P2_Q4,Rob approved one question here
+AI HL,2026-10-20,3.16.5,Eulerian graphs,awaiting-recheck,W_M23TZ1AIHL_P2_Q4|MF_AIHL_T3_EULERIAN,Kept the approved source and added a second Eulerian classification question
+AI HL,2026-10-20,3.16.6,Chinese postman problem,awaiting-recheck,W_M24TZ1AIHL_P1_Q8|MF_AIHL_T3_CHINESE_POSTMAN,Kept question 1 and replaced question 2 with a distinct route-inspection problem
+AI HL,2026-10-20,3.16.7,Hamiltonian graphs,awaiting-recheck,W_N21TZ0AIHL_P3_Q1|MF_AIHL_T3_HAMILTONIAN,Kept the approved source and added a second Hamiltonian-cycle question
+AI HL,2026-10-20,3.16.8,Travelling salesman problem,awaiting-recheck,W_N24TZ0AIHL_P3_Q1|MF_AIHL_T3_TSP_BOUNDS,Kept the approved source and added a second bounds question
+AI HL,2026-10-20,3.16.9,TSP practical problems,awaiting-recheck,W_M24TZ2AIHL_P2_Q4|MF_AIHL_T3_TSP_PRACTICAL,Kept the approved source and added a second practical travelling-salesman interpretation
+AI HL,2026-10-20,3.16.10,Nearest neighbour algorithm,awaiting-recheck,MF_AIHL_T3_NEAREST_NEIGHBOUR_1|MF_AIHL_T3_NEAREST_NEIGHBOUR_2,Replaced both Voronoi nearest-site questions with graph-theory nearest-neighbour tours
+AI HL,2026-10-20,3.16.11,Deleted vertex algorithm,approved,W_M25TZ3AIHL_P2_Q4|W_SPECAIHL_P2_Q5,Locked from Rob's AI Topic 3 review

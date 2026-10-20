@@ -13,6 +13,26 @@ const outputPath = path.join(distDir, "practice-data.js");
 const auditPath = path.join(rootDir, "course-platform-pilot/practice-audit.csv");
 const authoredPracticePath = path.join(rootDir, "public/question-bank/authored-practice-data.js");
 
+function authoredAiHlQuestion({ id, qnum, marks, difficulty, title, sub, body, parts, markscheme }) {
+  return {
+    id,
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum,
+    marks,
+    authored: true,
+    difficulty: { "AI HL": difficulty },
+    title,
+    topics: [{ main: "Geometry and Trigonometry", sub }],
+    body,
+    parts,
+    markscheme,
+  };
+}
+
 function loadWindowValue(filePath, key) {
   const sandbox = { window: {} };
   vm.runInNewContext(fs.readFileSync(filePath, "utf8"), sandbox);
@@ -168,6 +188,182 @@ const aiHlTopic3Practice = [
     parts: [["a", "Write down the matrix for reflection in the line \\(y=\\sqrt3x\\).", 2], ["b", "Hence find the image of \\(P(2,0)\\).", 2]],
     markscheme: [["a", [["\\(\\theta=\\dfrac{\\pi}{3}\\)", "M1"], ["\\(R=\\begin{pmatrix}-\\frac12&\\frac{\\sqrt3}{2}\\\\\\frac{\\sqrt3}{2}&\\frac12\\end{pmatrix}\\)", "A1"]]], ["b", [["matrix multiplication", "M1"], ["\\(P'(-1,\\sqrt3)\\)", "A1"]]]],
   },
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_UNIT_VECTOR",
+    qnum: 8,
+    marks: 4,
+    difficulty: "Medium",
+    title: "Find a unit vector in three dimensions",
+    sub: "Vectors",
+    body: "The vector \\(\\boldsymbol{a}=\\begin{pmatrix}4\\\\-4\\\\7\\end{pmatrix}\\).",
+    parts: [["a", "Find \\(\\lvert\\boldsymbol{a}\\rvert\\).", 1], ["b", "Find the unit vector in the direction opposite to \\(\\boldsymbol{a}\\).", 3]],
+    markscheme: [["a", [["\\(\\lvert\\boldsymbol{a}\\rvert=\\sqrt{4^2+(-4)^2+7^2}=9\\)", "A1"]]], ["b", [["uses \\(-\\boldsymbol{a}/\\lvert\\boldsymbol{a}\\rvert\\)", "M1"], ["\\(\\begin{pmatrix}-4/9\\\\4/9\\\\-7/9\\end{pmatrix}\\)", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_VECTOR_LINE_3D_POINTS",
+    qnum: 9,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Find a vector equation of a line in three dimensions",
+    sub: "Vector equations of lines",
+    body: "The line \\(L\\) passes through \\(A(2,-1,4)\\) and \\(B(5,3,-2)\\).",
+    parts: [["", "Find a vector equation of \\(L\\).", 4]],
+    markscheme: [["", [["\\(\\overrightarrow{AB}=\\begin{pmatrix}3\\\\4\\\\-6\\end{pmatrix}\\)", "M1A1"], ["\\(\\boldsymbol r=\\begin{pmatrix}2\\\\-1\\\\4\\end{pmatrix}+t\\begin{pmatrix}3\\\\4\\\\-6\\end{pmatrix},\\ t\\in\\mathbb R\\)", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_VECTOR_LINE_3D_DIRECTION",
+    qnum: 10,
+    marks: 4,
+    difficulty: "Medium",
+    title: "Find a second vector equation in three dimensions",
+    sub: "Vector equations of lines",
+    body: "A line \\(M\\) passes through \\(P(-1,2,5)\\) and is parallel to the line joining \\(Q(2,0,-1)\\) to \\(R(5,4,1)\\).",
+    parts: [["", "Find a vector equation of \\(M\\).", 4]],
+    markscheme: [["", [["\\(\\overrightarrow{QR}=\\begin{pmatrix}3\\\\4\\\\2\\end{pmatrix}\\)", "M1A1"], ["\\(\\boldsymbol r=\\begin{pmatrix}-1\\\\2\\\\5\\end{pmatrix}+t\\begin{pmatrix}3\\\\4\\\\2\\end{pmatrix},\\ t\\in\\mathbb R\\)", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_VECTOR_KINEMATICS_3D",
+    qnum: 11,
+    marks: 6,
+    difficulty: "Easy",
+    title: "Use a three-dimensional position vector",
+    sub: "Vector kinematics",
+    body: "The position vector of a particle at time \\(t\\) seconds is \\(\\boldsymbol r(t)=\\begin{pmatrix}2t+1\\\\t^2-3\\\\6-t\\end{pmatrix}\\) metres.",
+    parts: [["a", "Find the velocity vector at time \\(t\\).", 2], ["b", "Find the speed of the particle when \\(t=2\\).", 2], ["c", "Find the position of the particle when \\(t=2\\).", 2]],
+    markscheme: [["a", [["\\(\\boldsymbol v(t)=\\begin{pmatrix}2\\\\2t\\\\-1\\end{pmatrix}\\)", "A2"]]], ["b", [["\\(\\lvert\\boldsymbol v(2)\\rvert=\\sqrt{2^2+4^2+(-1)^2}=\\sqrt{21}\\)", "M1A1"]]], ["c", [["\\(\\boldsymbol r(2)=\\begin{pmatrix}5\\\\1\\\\4\\end{pmatrix}\\)", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_VECTOR_KINEMATICS_MEETING",
+    qnum: 12,
+    marks: 6,
+    difficulty: "Medium",
+    title: "Determine whether two moving objects meet",
+    sub: "Vector kinematics",
+    body: "Two drones have position vectors \\(\\boldsymbol r_A(t)=\\begin{pmatrix}1+2t\\\\4-t\\\\3+t\\end{pmatrix}\\) and \\(\\boldsymbol r_B(t)=\\begin{pmatrix}7-t\\\\1+\\tfrac12t\\\\9-2t\\end{pmatrix}\\), where distances are in kilometres and \\(t\\) is in hours.",
+    parts: [["a", "Write down the velocity vector of each drone.", 2], ["b", "Determine whether the drones meet. Justify your answer.", 4]],
+    markscheme: [["a", [["\\(\\boldsymbol v_A=\\begin{pmatrix}2\\\\-1\\\\1\\end{pmatrix}\\), \\(\\boldsymbol v_B=\\begin{pmatrix}-1\\\\1/2\\\\-2\\end{pmatrix}\\)", "A2"]]], ["b", [["equating first coordinates gives \\(t=2\\)", "M1"], ["second coordinates are both \\(2\\) at \\(t=2\\)", "A1"], ["third coordinates are \\(5\\) and \\(5\\)", "A1"], ["the drones meet at \\(t=2\\), at \\((5,2,5)\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_VECTOR_PRODUCT",
+    qnum: 14,
+    marks: 4,
+    difficulty: "Medium",
+    title: "Calculate a vector product",
+    sub: "Vector product",
+    body: "Let \\(\\boldsymbol p=\\begin{pmatrix}1\\\\2\\\\-1\\end{pmatrix}\\) and \\(\\boldsymbol q=\\begin{pmatrix}3\\\\0\\\\4\\end{pmatrix}\\).",
+    parts: [["a", "Find \\(\\boldsymbol p\\times\\boldsymbol q\\).", 3], ["b", "Verify that your answer is perpendicular to \\(\\boldsymbol p\\).", 1]],
+    markscheme: [["a", [["correct determinant or component method", "M1"], ["\\(\\boldsymbol p\\times\\boldsymbol q=\\begin{pmatrix}8\\\\-7\\\\-6\\end{pmatrix}\\)", "A2"]]], ["b", [["\\(\\begin{pmatrix}8\\\\-7\\\\-6\\end{pmatrix}\\cdot\\begin{pmatrix}1\\\\2\\\\-1\\end{pmatrix}=0\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_VECTOR_COMPONENT",
+    qnum: 15,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Resolve a vector into parallel and perpendicular components",
+    sub: "Components of vectors",
+    body: "The vector \\(\\boldsymbol a=\\begin{pmatrix}5\\\\1\\\\4\\end{pmatrix}\\) is resolved into a component parallel to \\(\\boldsymbol b=\\begin{pmatrix}2\\\\-1\\\\2\\end{pmatrix}\\) and a component perpendicular to \\(\\boldsymbol b\\).",
+    parts: [["a", "Find the vector component of \\(\\boldsymbol a\\) parallel to \\(\\boldsymbol b\\).", 3], ["b", "Hence find the component perpendicular to \\(\\boldsymbol b\\).", 2]],
+    markscheme: [["a", [["uses \\(\\operatorname{proj}_{\\boldsymbol b}\\boldsymbol a=\\dfrac{\\boldsymbol a\\cdot\\boldsymbol b}{\\boldsymbol b\\cdot\\boldsymbol b}\\boldsymbol b\\)", "M1"], ["coefficient \\(17/9\\)", "A1"], ["\\(\\begin{pmatrix}34/9\\\\-17/9\\\\34/9\\end{pmatrix}\\)", "A1"]]], ["b", [["subtracts the parallel component from \\(\\boldsymbol a\\)", "M1"], ["\\(\\begin{pmatrix}11/9\\\\26/9\\\\2/9\\end{pmatrix}\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_WEIGHTED_ADJACENCY",
+    qnum: 16,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Complete a weighted adjacency table",
+    sub: "Graph theory",
+    body: "An undirected weighted graph has vertices \\(A,B,C,D\\) and edges \\(AB=7\\), \\(AC=4\\), \\(BC=6\\), \\(BD=3\\) and \\(CD=5\\). There is no edge joining \\(A\\) to \\(D\\).",
+    parts: [["", "Construct the weighted adjacency table for the graph, using a dash for a missing edge.", 5]],
+    markscheme: [["", [["symmetric table with zero or blank diagonal", "M1"], ["correct entries \\(AB=7, AC=4, BC=6, BD=3, CD=5\\)", "A3"], ["no \\(AD\\) edge shown", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_PRIM_GRAPH",
+    qnum: 17,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Apply Prim's algorithm to a weighted graph",
+    sub: "Graph algorithms",
+    body: "A connected weighted graph has edges \\(AB=3\\), \\(AC=6\\), \\(BC=2\\), \\(BD=5\\), \\(CD=4\\), \\(CE=7\\) and \\(DE=1\\).",
+    parts: [["a", "Starting at \\(A\\), list the edges selected by Prim's algorithm, in order.", 3], ["b", "Find the total weight of the minimum spanning tree.", 2]],
+    markscheme: [["a", [["selects \\(AB\\), then \\(BC\\)", "A1"], ["then \\(CD\\)", "A1"], ["then \\(DE\\)", "A1"]]], ["b", [["\\(3+2+4+1\\)", "M1"], ["total weight \\(10\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_EULERIAN",
+    qnum: 18,
+    marks: 4,
+    difficulty: "Medium",
+    title: "Classify an Eulerian graph",
+    sub: "Graph routes",
+    body: "A connected graph has vertices \\(P,Q,R,S,T\\) with degrees \\(3,2,4,3,2\\), respectively.",
+    parts: [["a", "Determine whether the graph has an Eulerian circuit, an Eulerian trail but no circuit, or neither.", 2], ["b", "State the possible starting and finishing vertices of an Eulerian trail.", 2]],
+    markscheme: [["a", [["exactly two vertices have odd degree", "R1"], ["Eulerian trail but no Eulerian circuit", "A1"]]], ["b", [["the trail must start at one of \\(P,S\\) and finish at the other", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_CHINESE_POSTMAN",
+    qnum: 19,
+    marks: 6,
+    difficulty: "Medium",
+    title: "Solve a Chinese postman problem",
+    sub: "Route inspection",
+    body: "A connected network has total edge weight \\(46\\). Its only odd vertices are \\(A,B,C,D\\). The shortest-path weights are \\(AB=6\\), \\(AC=5\\), \\(AD=9\\), \\(BC=7\\), \\(BD=4\\) and \\(CD=8\\).",
+    parts: [["a", "Find the minimum total weight of paths that must be repeated.", 4], ["b", "Hence find the length of a shortest closed route that traverses every edge.", 2]],
+    markscheme: [["a", [["compares pairings: \\(AB+CD=14\\), \\(AC+BD=9\\), \\(AD+BC=16\\)", "M2A1"], ["minimum repeated weight \\(9\\)", "A1"]]], ["b", [["\\(46+9\\)", "M1"], ["\\(55\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_HAMILTONIAN",
+    qnum: 20,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Find a Hamiltonian cycle",
+    sub: "Hamiltonian graphs",
+    body: "A graph has vertices \\(A,B,C,D,E\\). Its edges are \\(AB,AC,BC,BD,CE,DE,EA\\).",
+    parts: [["a", "Write down a Hamiltonian cycle that starts and ends at \\(A\\).", 2], ["b", "Explain why \\(A-B-C-A\\) is not a Hamiltonian cycle of this graph.", 2]],
+    markscheme: [["a", [["for example \\(A-B-D-E-C-A\\)", "A2"]]], ["b", [["it does not visit every vertex", "R1"], ["vertices \\(D\\) and \\(E\\) are omitted", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_TSP_BOUNDS",
+    qnum: 21,
+    marks: 6,
+    difficulty: "Medium",
+    title: "Find bounds for a travelling-salesman route",
+    sub: "Travelling salesman problem",
+    body: "For a complete weighted graph, a nearest-neighbour tour has weight \\(64\\). Deleting vertex \\(C\\) gives a minimum spanning tree of weight \\(39\\); the two least incident edges at \\(C\\) have weights \\(7\\) and \\(9\\).",
+    parts: [["a", "State an upper bound for the optimal travelling-salesman tour.", 1], ["b", "Use the deleted-vertex method to find a lower bound.", 3], ["c", "Hence state an interval containing the optimal tour weight.", 2]],
+    markscheme: [["a", [["upper bound \\(64\\)", "A1"]]], ["b", [["\\(39+7+9\\)", "M1A1"], ["lower bound \\(55\\)", "A1"]]], ["c", [["\\(55\\leq W\\leq64\\)", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_TSP_PRACTICAL",
+    qnum: 22,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Interpret travelling-salesman bounds in context",
+    sub: "Travelling salesman problem",
+    body: "A maintenance engineer must leave a depot, visit each of six pumping stations exactly once, and return to the depot. A heuristic produces a route of \\(128\\) km, while a lower-bound calculation gives \\(119\\) km.",
+    parts: [["a", "Explain why \\(128\\) km is an upper bound and \\(119\\) km is a lower bound for the shortest route.", 3], ["b", "Find the greatest possible amount by which the heuristic route exceeds the optimal route.", 2]],
+    markscheme: [["a", [["the \\(128\\) km route is feasible, so the optimum cannot be longer", "R1"], ["no valid tour can be shorter than the proven lower bound", "R1"], ["correct contextual interpretation", "A1"]]], ["b", [["\\(128-119\\)", "M1"], ["\\(9\\) km", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_NEAREST_NEIGHBOUR_1",
+    qnum: 23,
+    marks: 5,
+    difficulty: "Easy",
+    title: "Apply the nearest-neighbour algorithm",
+    sub: "Graph algorithms",
+    body: "In a complete weighted graph on vertices \\(A,B,C,D\\), the edge weights are \\(AB=4\\), \\(AC=7\\), \\(AD=6\\), \\(BC=5\\), \\(BD=8\\) and \\(CD=3\\).",
+    parts: [["a", "Starting at \\(A\\), use the nearest-neighbour algorithm to find a tour.", 3], ["b", "Find the weight of this tour.", 2]],
+    markscheme: [["a", [["\\(A\\to B\\to C\\to D\\to A\\)", "A3"]]], ["b", [["\\(4+5+3+6\\)", "M1"], ["\\(18\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T3_NEAREST_NEIGHBOUR_2",
+    qnum: 24,
+    marks: 6,
+    difficulty: "Medium",
+    title: "Compare nearest-neighbour tours",
+    sub: "Graph algorithms",
+    body: "A complete weighted graph has vertices \\(P,Q,R,S\\) and edge weights \\(PQ=5\\), \\(PR=4\\), \\(PS=9\\), \\(QR=7\\), \\(QS=3\\) and \\(RS=6\\).",
+    parts: [["a", "Use the nearest-neighbour algorithm starting at \\(P\\) to find a tour and its weight.", 3], ["b", "Repeat the algorithm starting at \\(Q\\).", 3]],
+    markscheme: [["a", [["\\(P\\to R\\to S\\to Q\\to P\\)", "A2"], ["weight \\(18\\)", "A1"]]], ["b", [["\\(Q\\to S\\to R\\to P\\to Q\\)", "A2"], ["weight \\(18\\)", "A1"]]]],
+  }),
 ];
 const seed = [...ibSeed, ...igcseSeed, ...aiHlTopic3Practice.map((question) => ({ ...question, sourceBank: "authored" }))];
 fs.writeFileSync(
@@ -435,24 +631,21 @@ const verifiedOverrides = {
   // speed, position and distance parts of the Paper 2 toy-airplane problem;
   // its later angle-between-flight-paths part is deliberately omitted.
   "f9b565e2-2c78-4c12-a55a-827d39233645": ["N08TZ0SL_P1_Q2", "M10TZ2SL_P2_Q9"],
-  // Use a distinct AI HL airplane source here so the same archived particle
-  // question is not repeated under the AA HL kinematics lesson.
-  "1a185d48-f767-4296-99b1-17ef882d64f4": ["H_M14TZ2SL_P1_Q9", "N20TZ0SL_P1_Q7"],
-
   // AI HL vector foundations. Keep the introduction empty, use only direct
   // vector arithmetic in 3.10.2, and separate magnitude/unit-vector work from
   // scalar products and angles. Variable-velocity practice must contain an
   // actual time-dependent velocity vector.
   "d852b265-6804-4467-99e9-953af805fb72": ["M13TZ1SL_P1_Q1", "M11TZ2SL_P1_Q3"],
-  "babb8fbc-b24b-44e2-b524-908650017797": ["N17TZ0SL_P2_Q3", "M10TZ2SL_P1_Q2"],
+  "babb8fbc-b24b-44e2-b524-908650017797": ["N17TZ0SL_P2_Q3", "MF_AIHL_T3_UNIT_VECTOR"],
+  "d7e6581c-56fa-4955-b789-d8af2a4fa05f": ["MF_AIHL_T3_VECTOR_LINE_3D_POINTS", "MF_AIHL_T3_VECTOR_LINE_3D_DIRECTION"],
+  "1a185d48-f767-4296-99b1-17ef882d64f4": ["MF_AIHL_T3_VECTOR_KINEMATICS_3D", "MF_AIHL_T3_VECTOR_KINEMATICS_MEETING"],
   "ec7a9d6b-aacf-40ee-a175-9ff973312441": ["W_N22TZ0AIHL_P2_Q7", "W_M25TZ3AIHL_P1_Q14"],
-  // Rob approved the first scalar-product question and rejected the second.
-  "352a19bb-f72d-42ef-a85e-c45467041f8e": ["M15TZ2SL_P2_Q2"],
   // The vector-product lesson shows the product calculation only. The two
   // separate area sources prevent the same shade-sail question appearing in
   // both adjacent lessons.
-  "1855d971-48f6-4e25-9790-e4671cd9748e": ["W_SPECAIHL_P1_Q11"],
+  "1855d971-48f6-4e25-9790-e4671cd9748e": ["W_SPECAIHL_P1_Q11", "MF_AIHL_T3_VECTOR_PRODUCT"],
   "3f7dbc9d-77f5-4aa4-85f3-5eccf69f41c6": ["W_M23TZ1AIHL_P1_Q7", "W_M24TZ2AIHL_P1_Q8"],
+  "c699f91b-43d0-4d3f-af5b-05a042516032": ["MF_AIHL_T3_VECTOR_COMPONENT"],
 
   // AA HL trigonometry and vectors correction pass. Each mapping respects the
   // precise lesson boundary and avoids borrowing a later vector skill.
@@ -904,17 +1097,19 @@ const verifiedOverrides = {
   // algorithm is kept distinct. Kruskal, Prim, nearest neighbour, route
   // inspection and deleted vertex are not interchangeable merely because the
   // source question is tagged broadly as graph theory.
-  "d889f97c-0abb-4fa0-8bd3-eee6927e5b7b": ["W_N22TZ0AIHL_P2_Q4"],
+  "d889f97c-0abb-4fa0-8bd3-eee6927e5b7b": ["W_N22TZ0AIHL_P2_Q4", "MF_AIHL_T3_WEIGHTED_ADJACENCY"],
   "4ca8f2d8-76d2-4e10-a48e-04d8a8d4eca3": ["W_M21TZ2AIHL_P1_Q11"],
   "4a729d86-d2a5-475e-8194-1c24c98aa196": ["W_M22TZ2AIHL_P3_Q2", "W_M23TZ2AIHL_P2_Q4"],
-  "265ad472-09ff-46ba-bfba-1ee1ebe11cf5": ["W_M21TZ1AIHL_P1_Q10"],
+  "265ad472-09ff-46ba-bfba-1ee1ebe11cf5": ["W_M21TZ1AIHL_P1_Q10", "MF_AIHL_T3_PRIM_GRAPH"],
   "3cffb57c-653d-45a2-9983-68b1016b23e4": ["W_M25TZ2AIHL_P2_Q4"],
-  "4ea42a07-b2d6-46c6-bd79-0987f8c97236": ["W_M23TZ1AIHL_P2_Q4"],
-  "a90ee76e-0a72-4a15-bf3d-1a3094677f44": ["W_M24TZ1AIHL_P1_Q8", "W_N23TZ0AIHL_P2_Q5"],
-  "06dade6e-621a-4427-ad7c-1aa749bb8fa0": ["W_N21TZ0AIHL_P3_Q1"],
-  "c693e0c1-aeb5-4651-bc41-6791b5024408": ["W_N24TZ0AIHL_P3_Q1"],
-  "e64a4cac-d435-4860-a028-f9f0b8266165": ["W_M24TZ2AIHL_P2_Q4"],
-  "9252d878-0d2c-4c3a-9bc8-985d928387fb": ["W_M23TZ1AIHL_P1_Q3", "V_N24TZ1AISL_P2_Q1"],
+  "4ea42a07-b2d6-46c6-bd79-0987f8c97236": ["W_M23TZ1AIHL_P2_Q4", "MF_AIHL_T3_EULERIAN"],
+  "a90ee76e-0a72-4a15-bf3d-1a3094677f44": ["W_M24TZ1AIHL_P1_Q8", "MF_AIHL_T3_CHINESE_POSTMAN"],
+  "06dade6e-621a-4427-ad7c-1aa749bb8fa0": ["W_N21TZ0AIHL_P3_Q1", "MF_AIHL_T3_HAMILTONIAN"],
+  "c693e0c1-aeb5-4651-bc41-6791b5024408": ["W_N24TZ0AIHL_P3_Q1", "MF_AIHL_T3_TSP_BOUNDS"],
+  "e64a4cac-d435-4860-a028-f9f0b8266165": ["W_M24TZ2AIHL_P2_Q4", "MF_AIHL_T3_TSP_PRACTICAL"],
+  // Nearest-neighbour here means the graph-theory tour algorithm, not the
+  // nearest-site rule used with Voronoi diagrams.
+  "9252d878-0d2c-4c3a-9bc8-985d928387fb": ["MF_AIHL_T3_NEAREST_NEIGHBOUR_1", "MF_AIHL_T3_NEAREST_NEIGHBOUR_2"],
   "0a593676-5299-4966-95ee-c58e7e4ccba9": ["W_M25TZ3AIHL_P2_Q4", "W_SPECAIHL_P2_Q5"],
 
   // AI Topic 4 correction pass. Each source below was checked at part level
@@ -989,7 +1184,6 @@ const verifiedOverrides = {
 // Keeping them blank is preferable to reusing a broadly related pair that
 // teaches or assesses a different skill.
 const needsManualQuestionReview = new Set([
-  "c699f91b-43d0-4d3f-af5b-05a042516032", // Components of vectors: no genuine projection source yet
   "d477bd69-e3be-4201-b8f0-2ba436cc3f6e", // Phase portrait: source
   "e8505773-3b8b-41cc-84b3-d2e106e5533f", // Phase portrait: centre
 ]);
@@ -1071,16 +1265,8 @@ const intentionallySinglePractice = new Set([
   "f40d55e2-0669-40a7-b7d9-fcc477ef23d4", // AI HL: Phase portrait spiral sink
   "6194b7ab-4cd6-4c43-9a54-288397647d66", // AI HL: Phase portrait spiral source
   "0e81f809-f846-4459-bcca-fb84c32fb263", // AI HL: one direct non-vector trig-equation source
-  "1855d971-48f6-4e25-9790-e4671cd9748e", // AI HL: Vector product
-  "352a19bb-f72d-42ef-a85e-c45467041f8e", // AI HL: Scalar product and angle
-  "d889f97c-0abb-4fa0-8bd3-eee6927e5b7b", // AI HL: Weighted adjacency tables
   "4ca8f2d8-76d2-4e10-a48e-04d8a8d4eca3", // AI HL: Graph routes
-  "265ad472-09ff-46ba-bfba-1ee1ebe11cf5", // AI HL: Prim's algorithm
   "3cffb57c-653d-45a2-9983-68b1016b23e4", // AI HL: Prim's algorithm with adjacency table
-  "4ea42a07-b2d6-46c6-bd79-0987f8c97236", // AI HL: Eulerian graphs
-  "06dade6e-621a-4427-ad7c-1aa749bb8fa0", // AI HL: Hamiltonian graphs
-  "c693e0c1-aeb5-4651-bc41-6791b5024408", // AI HL: Travelling salesman problem
-  "e64a4cac-d435-4860-a028-f9f0b8266165", // AI HL: Travelling salesman practical problem
   "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb", // AI HL: Coefficient of determination
   "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d", // AI HL: Chi-squared categorising data
   "36efc894-0227-4bab-99f6-2f85cd8c9706", // AI HL: Z-test two tailed (one exact known-variance source)
@@ -3783,29 +3969,41 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/^operations with vectors$/.test(lessonTitle)
     && ["M10TZ2HL_P1_Q3", "M13TZ1SL_P1_Q1", "M11TZ2SL_P1_Q3"].includes(question.id)) return true;
   if (/magnitude and unit vectors/.test(lessonTitle)
-    && ["N17TZ0SL_P2_Q3", "M10TZ2SL_P1_Q2"].includes(question.id)) return true;
+    && ["N17TZ0SL_P2_Q3", "M10TZ2SL_P1_Q2", "MF_AIHL_T3_UNIT_VECTOR"].includes(question.id)) return true;
+  if (/^vector equation of a line$/.test(lessonTitle)
+    && ["MF_AIHL_T3_VECTOR_LINE_3D_POINTS", "MF_AIHL_T3_VECTOR_LINE_3D_DIRECTION"].includes(question.id)) return true;
+  if (/^vectors and kinematics$/.test(lessonTitle)
+    && ["MF_AIHL_T3_VECTOR_KINEMATICS_3D", "MF_AIHL_T3_VECTOR_KINEMATICS_MEETING"].includes(question.id)) return true;
   if (/distance between a point and a line/.test(lessonTitle)
     && question.id === "W_N23TZ0AIHL_P1_Q14") return true;
   if (/motion with variable velocity/.test(lessonTitle)
     && ["W_N22TZ0AIHL_P2_Q7", "W_M25TZ3AIHL_P1_Q14"].includes(question.id)) return true;
-  if (/vector product$/.test(lessonTitle) && question.id === "W_SPECAIHL_P1_Q11") return true;
+  if (/vector product$/.test(lessonTitle)
+    && ["W_SPECAIHL_P1_Q11", "MF_AIHL_T3_VECTOR_PRODUCT"].includes(question.id)) return true;
   if (/areas using (?:the )?vector product/.test(lessonTitle)
     && ["W_M23TZ1AIHL_P1_Q7", "W_M24TZ2AIHL_P1_Q8"].includes(question.id)) return true;
-  if (/weighted adjacency tables/.test(lessonTitle) && question.id === "W_N22TZ0AIHL_P2_Q4") return true;
+  if (/components of vectors/.test(lessonTitle) && question.id === "MF_AIHL_T3_VECTOR_COMPONENT") return true;
+  if (/weighted adjacency tables/.test(lessonTitle)
+    && ["W_N22TZ0AIHL_P2_Q4", "MF_AIHL_T3_WEIGHTED_ADJACENCY"].includes(question.id)) return true;
   if (/graph routes/.test(lessonTitle) && question.id === "W_M21TZ2AIHL_P1_Q11") return true;
   if (/kruskal/.test(lessonTitle)
     && ["W_M22TZ2AIHL_P3_Q2", "W_M23TZ2AIHL_P2_Q4"].includes(question.id)) return true;
-  if (/^prim s algorithm$/.test(lessonTitle) && question.id === "W_M21TZ1AIHL_P1_Q10") return true;
+  if (/^prim s algorithm$/.test(lessonTitle)
+    && ["W_M21TZ1AIHL_P1_Q10", "MF_AIHL_T3_PRIM_GRAPH"].includes(question.id)) return true;
   if (/prim s algorithm with adjacency table/.test(lessonTitle)
     && question.id === "W_M25TZ2AIHL_P2_Q4") return true;
-  if (/eulerian graphs/.test(lessonTitle) && question.id === "W_M23TZ1AIHL_P2_Q4") return true;
+  if (/eulerian graphs/.test(lessonTitle)
+    && ["W_M23TZ1AIHL_P2_Q4", "MF_AIHL_T3_EULERIAN"].includes(question.id)) return true;
   if (/chinese postman/.test(lessonTitle)
-    && ["W_M24TZ1AIHL_P1_Q8", "W_N23TZ0AIHL_P2_Q5"].includes(question.id)) return true;
-  if (/hamiltonian graphs/.test(lessonTitle) && question.id === "W_N21TZ0AIHL_P3_Q1") return true;
-  if (/^the travelling salesman problem$/.test(lessonTitle) && question.id === "W_N24TZ0AIHL_P3_Q1") return true;
-  if (/tsp practical|travelling salesman problem practical/.test(lessonTitle) && question.id === "W_M24TZ2AIHL_P2_Q4") return true;
+    && ["W_M24TZ1AIHL_P1_Q8", "W_N23TZ0AIHL_P2_Q5", "MF_AIHL_T3_CHINESE_POSTMAN"].includes(question.id)) return true;
+  if (/hamiltonian graphs/.test(lessonTitle)
+    && ["W_N21TZ0AIHL_P3_Q1", "MF_AIHL_T3_HAMILTONIAN"].includes(question.id)) return true;
+  if (/^the travelling salesman problem$/.test(lessonTitle)
+    && ["W_N24TZ0AIHL_P3_Q1", "MF_AIHL_T3_TSP_BOUNDS"].includes(question.id)) return true;
+  if (/tsp practical|travelling salesman problem practical/.test(lessonTitle)
+    && ["W_M24TZ2AIHL_P2_Q4", "MF_AIHL_T3_TSP_PRACTICAL"].includes(question.id)) return true;
   if (/nearest neighbour algorithm/.test(lessonTitle)
-    && ["W_M23TZ1AIHL_P1_Q3", "V_N24TZ1AISL_P2_Q1"].includes(question.id)) return true;
+    && ["MF_AIHL_T3_NEAREST_NEIGHBOUR_1", "MF_AIHL_T3_NEAREST_NEIGHBOUR_2"].includes(question.id)) return true;
   if (/deleted vertex algorithm/.test(lessonTitle)
     && ["W_M25TZ3AIHL_P2_Q4", "W_SPECAIHL_P2_Q5"].includes(question.id)) return true;
   // Only part (b) is displayed: a direct probability calculation for the

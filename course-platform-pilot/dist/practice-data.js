@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T17:39:33.429Z",
+  "generatedAt": "2026-10-20T17:52:17.115Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 481,
-  "completeLessonCount": 437,
-  "approvedSingleLessonCount": 35,
-  "questionCount": 928,
+  "lessonCount": 482,
+  "completeLessonCount": 445,
+  "approvedSingleLessonCount": 27,
+  "questionCount": 937,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -4671,7 +4671,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N17TZ0SL_P2_Q3",
-        "H_M19TZ1SL_P1_Q6"
+        "MF_AIHL_T3_UNIT_VECTOR"
       ],
       "questionParts": {
         "N17TZ0SL_P2_Q3": [
@@ -4692,8 +4692,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vector lines",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N19TZ0SL_P2_Q2",
-        "M14TZ2SL_P1_Q4"
+        "MF_AIHL_T3_VECTOR_LINE_3D_POINTS",
+        "MF_AIHL_T3_VECTOR_LINE_3D_DIRECTION"
       ]
     },
     "1a185d48-f767-4296-99b1-17ef882d64f4": {
@@ -4702,8 +4702,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vector kinematics",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "H_M14TZ2SL_P1_Q9",
-        "N20TZ0SL_P1_Q7"
+        "MF_AIHL_T3_VECTOR_KINEMATICS_3D",
+        "MF_AIHL_T3_VECTOR_KINEMATICS_MEETING"
       ],
       "questionParts": {
         "H_M14TZ2SL_P1_Q9": [
@@ -4743,7 +4743,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M15TZ2SL_P2_Q2"
+        "M15TZ2SL_P2_Q2",
+        "M17TZ1SL_P2_Q2"
       ]
     },
     "a24199d9-9569-42bb-93b7-1058ce35a65e": {
@@ -4762,7 +4763,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vector product and area",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_SPECAIHL_P1_Q11"
+        "W_SPECAIHL_P1_Q11",
+        "MF_AIHL_T3_VECTOR_PRODUCT"
       ],
       "questionParts": {
         "W_SPECAIHL_P1_Q11": [
@@ -4796,6 +4798,15 @@ window.MR_FLYNN_PRACTICE = {
         "W_M24TZ2AIHL_P1_Q8": "Find a triangle's area in three dimensions"
       }
     },
+    "c699f91b-43d0-4d3f-af5b-05a042516032": {
+      "lesson": "3.13.5 Components of vectors",
+      "course": "AI HL",
+      "subtopic": "Vectors",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T3_VECTOR_COMPONENT"
+      ]
+    },
     "752f518f-e2bf-4781-b9aa-51367b8b0c05": {
       "lesson": "3.15.1 Adjacency matrices",
       "course": "AI HL",
@@ -4812,7 +4823,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graph theory",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N22TZ0AIHL_P2_Q4"
+        "W_N22TZ0AIHL_P2_Q4",
+        "MF_AIHL_T3_WEIGHTED_ADJACENCY"
       ],
       "questionParts": {
         "W_N22TZ0AIHL_P2_Q4": [
@@ -4870,7 +4882,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graph theory",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M21TZ1AIHL_P1_Q10"
+        "W_M21TZ1AIHL_P1_Q10",
+        "MF_AIHL_T3_PRIM_GRAPH"
       ],
       "questionParts": {
         "W_M21TZ1AIHL_P1_Q10": [
@@ -4904,7 +4917,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graph theory",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M23TZ1AIHL_P2_Q4"
+        "W_M23TZ1AIHL_P2_Q4",
+        "MF_AIHL_T3_EULERIAN"
       ],
       "questionParts": {
         "W_M23TZ1AIHL_P2_Q4": [
@@ -4922,7 +4936,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "W_M24TZ1AIHL_P1_Q8",
-        "W_N23TZ0AIHL_P2_Q5"
+        "MF_AIHL_T3_CHINESE_POSTMAN"
       ],
       "questionParts": {
         "W_N23TZ0AIHL_P2_Q5": [
@@ -4939,7 +4953,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graph theory",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N21TZ0AIHL_P3_Q1"
+        "W_N21TZ0AIHL_P3_Q1",
+        "MF_AIHL_T3_HAMILTONIAN"
       ],
       "questionParts": {
         "W_N21TZ0AIHL_P3_Q1": [
@@ -4956,7 +4971,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graph theory",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N24TZ0AIHL_P3_Q1"
+        "W_N24TZ0AIHL_P3_Q1",
+        "MF_AIHL_T3_TSP_BOUNDS"
       ],
       "questionParts": {
         "W_N24TZ0AIHL_P3_Q1": [
@@ -4974,7 +4990,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graph theory",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M24TZ2AIHL_P2_Q4"
+        "W_M24TZ2AIHL_P2_Q4",
+        "MF_AIHL_T3_TSP_PRACTICAL"
       ],
       "questionParts": {
         "W_M24TZ2AIHL_P2_Q4": [
@@ -4993,8 +5010,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graph theory",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M23TZ1AIHL_P1_Q3",
-        "V_N24TZ1AISL_P2_Q1"
+        "MF_AIHL_T3_NEAREST_NEIGHBOUR_1",
+        "MF_AIHL_T3_NEAREST_NEIGHBOUR_2"
       ]
     },
     "0a593676-5299-4966-95ee-c58e7e4ccba9": {
