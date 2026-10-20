@@ -1,5 +1,5 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T13:08:25.664Z",
+  "generatedAt": "2026-10-20T13:26:10.845Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 481,
   "completeLessonCount": 433,
@@ -1860,17 +1860,17 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Rational functions with quadratics",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M17TZ1HL_P1_Q11",
-        "M11TZ2HL_P2_Q5"
+        "A_M22TZ2HL_P1_Q11",
+        "N10TZ0HL_P2_Q8"
       ],
       "questionParts": {
-        "M17TZ1HL_P1_Q11": [
-          "a",
-          "b"
+        "A_M22TZ2HL_P1_Q11": [
+          "a"
         ]
       },
       "questionPartTitles": {
-        "M17TZ1HL_P1_Q11": "Factorise a quadratic denominator and sketch its reciprocal"
+        "A_M22TZ2HL_P1_Q11": "Sketch the reciprocal of a quadratic",
+        "N10TZ0HL_P2_Q8": "Sketch a line divided by a quadratic"
       }
     },
     "54f53e20-a14f-447a-a43f-c865e7eb424e": {
@@ -1880,7 +1880,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A_N23TZ1HL_P2_Q11",
-        "A_N24TZ0HL_P2_Q12"
+        "A_N21TZ0HL_P2_Q10"
       ],
       "questionParts": {
         "A_N23TZ1HL_P2_Q11": [
@@ -1889,15 +1889,16 @@ window.MR_FLYNN_PRACTICE = {
           "c",
           "d"
         ],
-        "A_N24TZ0HL_P2_Q12": [
+        "A_N21TZ0HL_P2_Q10": [
+          "a",
+          "b",
           "c",
-          "d",
-          "f"
+          "d"
         ]
       },
       "questionPartTitles": {
         "A_N23TZ1HL_P2_Q11": "Asymptotes, intercepts and sketch of a quadratic-over-linear function",
-        "A_N24TZ0HL_P2_Q12": "Asymptotes and sketch of a quadratic-over-linear function"
+        "A_N21TZ0HL_P2_Q10": "Sketch a second quadratic-over-linear function"
       }
     },
     "1ca31836-1394-43f7-8a9a-42198705f209": {
@@ -1917,19 +1918,16 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A_N24TZ0HL_P1_Q6",
-        "M14TZ1HL_P2_Q6"
+        "M10TZ1HL_P2_Q9"
       ],
       "questionParts": {
         "A_N24TZ0HL_P1_Q6": [
-          "a"
-        ],
-        "M14TZ1HL_P2_Q6": [
           "a"
         ]
       },
       "questionPartTitles": {
         "A_N24TZ0HL_P1_Q6": "Solve 4x² − 11x − 3 < 0",
-        "M14TZ1HL_P2_Q6": "Solve x(x + 2)⁶ > x"
+        "M10TZ1HL_P2_Q9": "Solve a rational inequality with a restricted domain"
       }
     },
     "990b6aba-3d06-489d-81e6-70a683d4f23a": {
@@ -1938,16 +1936,20 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Modulus and further transformations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M18TZ2HL_P1_Q2",
-        "A_N22TZ0HL_P1_Q10"
+        "M08TZ1HL_P2_Q2",
+        "A_N25TZ3HL_P1_Q5"
       ],
       "questionParts": {
-        "A_N22TZ0HL_P1_Q10": [
-          "c"
+        "M08TZ1HL_P2_Q2": [
+          "a"
+        ],
+        "A_N25TZ3HL_P1_Q5": [
+          "a"
         ]
       },
       "questionPartTitles": {
-        "A_N22TZ0HL_P1_Q10": "Sketch the modulus of a nonlinear trigonometric function"
+        "M08TZ1HL_P2_Q2": "Sketch a trigonometric modulus function",
+        "A_N25TZ3HL_P1_Q5": "Sketch f(|x|) and |f(x)|"
       }
     },
     "5c188648-60b0-48f6-83a1-9d5c18235dac": {
@@ -1957,10 +1959,11 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N10TZ0HL_P1_Q1",
-        "A_M23TZ1HL_P1_Q8"
+        "M14TZ2HL_P1_Q5"
       ],
       "questionPartTitles": {
-        "N10TZ0HL_P1_Q1": "Solve |x − 1| > |2x − 1|"
+        "N10TZ0HL_P1_Q1": "Solve |x − 1| > |2x − 1|",
+        "M14TZ2HL_P1_Q5": "Sketch a modulus function and solve an equation"
       }
     },
     "75958ce6-0c3e-4c88-82e8-3db6f8392e1f": {

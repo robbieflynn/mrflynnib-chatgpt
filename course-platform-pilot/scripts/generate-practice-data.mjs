@@ -421,21 +421,24 @@ const verifiedOverrides = {
   // Both sum/product questions were approved; medium precedes difficult.
   "5776410f-820d-49e1-97f0-5261d9bb438d": ["M15TZ1HL_P1_Q7", "A_M21TZ2HL_P1_Q7"],
   // Keep the two neighbouring rational-function lessons algebraically exact
-  // and completely separate. The first pair has a genuine quadratic in the
-  // denominator; the second pair has a quadratic numerator over a linear
-  // denominator. No source is shared between the lessons.
-  "f8918c12-e985-4e26-bea3-c93f245655f1": ["M17TZ1HL_P1_Q11", "M11TZ2HL_P2_Q5"],
-  "54f53e20-a14f-447a-a43f-c865e7eb424e": ["A_N23TZ1HL_P2_Q11", "A_N24TZ0HL_P2_Q12"],
-  // Pure inequality practice only. Display the direct inequality part from
-  // each source and omit its unrelated inverse-function/integration follow-up.
-  // In particular, do not use modulus or transformation questions here.
-  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": ["A_N24TZ0HL_P1_Q6", "M14TZ1HL_P2_Q6"],
-  // One linear and one genuinely nonlinear modulus graph. Use only the
-  // graph-sketching part of the trigonometric source question.
-  "990b6aba-3d06-489d-81e6-70a683d4f23a": ["M18TZ2HL_P1_Q2", "A_N22TZ0HL_P1_Q10"],
-  // Direct modulus equation/inequality practice. Keep Rob's approved second
-  // question, but replace the mixed graph-and-square inequality source.
-  "5c188648-60b0-48f6-83a1-9d5c18235dac": ["N10TZ0HL_P1_Q1", "A_M23TZ1HL_P1_Q8"],
+  // and completely separate. The denominator lesson now uses only clean
+  // graph work with a genuine quadratic denominator. The numerator lesson
+  // uses two quadratic-over-linear questions and hides the later integration.
+  "f8918c12-e985-4e26-bea3-c93f245655f1": ["A_M22TZ2HL_P1_Q11", "N10TZ0HL_P2_Q8"],
+  "54f53e20-a14f-447a-a43f-c865e7eb424e": ["A_N23TZ1HL_P2_Q11", "A_N21TZ0HL_P2_Q10"],
+  // Rob approved both even/odd questions during the final Topic 2 pass.
+  "1ca31836-1394-43f7-8a9a-42198705f209": ["M15TZ1HL_P1_Q5", "A_M22TZ1HL_P2_Q6"],
+  // Retain the approved direct quadratic inequality, then use a harder
+  // calculator inequality with a restricted domain and vertical asymptote.
+  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": ["A_N24TZ0HL_P1_Q6", "M10TZ1HL_P2_Q9"],
+  // Two strong modulus-graph questions: a direct trigonometric modulus graph,
+  // then both f(|x|) and |f(x)| from a supplied function graph.
+  "990b6aba-3d06-489d-81e6-70a683d4f23a": ["M08TZ1HL_P2_Q2", "A_N25TZ3HL_P1_Q5"],
+  // Keep the approved direct modulus inequality first. The second question
+  // now requires a modulus graph and then uses that graph to solve an equation.
+  "5c188648-60b0-48f6-83a1-9d5c18235dac": ["N10TZ0HL_P1_Q1", "M14TZ2HL_P1_Q5"],
+  // Rob approved both reciprocal-transformation questions unchanged.
+  "75958ce6-0c3e-4c88-82e8-3db6f8392e1f": ["A2_M25TZ3HL_P1_Q6", "A3_M25TZ3HL_P1_Q6"],
   "c8ce5b5c-f78f-40a9-a8aa-2c5065925d0f": ["A_M23TZ1SL_P1_Q5", "A_M24TZ2HL_P1_Q2"],
   // Right-angled-triangle ratios only. Select the direct SOHCAHTOA part from
   // each source and never allow probability/Venn content to fill this lesson.
@@ -1294,18 +1297,18 @@ const practicePartOverrides = {
     "M17TZ2HL_P2_Q11": ["a", "b", "c"],
   },
   "f8918c12-e985-4e26-bea3-c93f245655f1": {
-    "M17TZ1HL_P1_Q11": ["a", "b"],
+    "A_M22TZ2HL_P1_Q11": ["a"],
   },
   "54f53e20-a14f-447a-a43f-c865e7eb424e": {
     "A_N23TZ1HL_P2_Q11": ["a", "b", "c", "d"],
-    "A_N24TZ0HL_P2_Q12": ["c", "d", "f"],
+    "A_N21TZ0HL_P2_Q10": ["a", "b", "c", "d"],
   },
   "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
     "A_N24TZ0HL_P1_Q6": ["a"],
-    "M14TZ1HL_P2_Q6": ["a"],
   },
   "990b6aba-3d06-489d-81e6-70a683d4f23a": {
-    "A_N22TZ0HL_P1_Q10": ["c"],
+    "M08TZ1HL_P2_Q2": ["a"],
+    "A_N25TZ3HL_P1_Q5": ["a"],
   },
   "73d396dd-da8e-46da-8548-2ae1cf533440": {
     "M14TZ2HL_P2_Q1": ["a"],
@@ -1930,21 +1933,24 @@ const practicePartTitles = {
     "M17TZ2HL_P2_Q11": "Factorise and sketch a polynomial graph",
   },
   "f8918c12-e985-4e26-bea3-c93f245655f1": {
-    "M17TZ1HL_P1_Q11": "Factorise a quadratic denominator and sketch its reciprocal",
+    "A_M22TZ2HL_P1_Q11": "Sketch the reciprocal of a quadratic",
+    "N10TZ0HL_P2_Q8": "Sketch a line divided by a quadratic",
   },
   "54f53e20-a14f-447a-a43f-c865e7eb424e": {
     "A_N23TZ1HL_P2_Q11": "Asymptotes, intercepts and sketch of a quadratic-over-linear function",
-    "A_N24TZ0HL_P2_Q12": "Asymptotes and sketch of a quadratic-over-linear function",
+    "A_N21TZ0HL_P2_Q10": "Sketch a second quadratic-over-linear function",
   },
   "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
     "A_N24TZ0HL_P1_Q6": "Solve 4x² − 11x − 3 < 0",
-    "M14TZ1HL_P2_Q6": "Solve x(x + 2)⁶ > x",
+    "M10TZ1HL_P2_Q9": "Solve a rational inequality with a restricted domain",
   },
   "990b6aba-3d06-489d-81e6-70a683d4f23a": {
-    "A_N22TZ0HL_P1_Q10": "Sketch the modulus of a nonlinear trigonometric function",
+    "M08TZ1HL_P2_Q2": "Sketch a trigonometric modulus function",
+    "A_N25TZ3HL_P1_Q5": "Sketch f(|x|) and |f(x)|",
   },
   "5c188648-60b0-48f6-83a1-9d5c18235dac": {
     "N10TZ0HL_P1_Q1": "Solve |x − 1| > |2x − 1|",
+    "M14TZ2HL_P1_Q5": "Sketch a modulus function and solve an equation",
   },
   "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": {
     "A_SPECHL_P1_Q3": "Sketch y = (f(x))² + 1 from the graph of f",
@@ -2890,6 +2896,20 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["M16TZ1SL_P2_Q2", "M15TZ2SL_P2_Q8X1"].includes(question.id)) return true;
   if (/^composite transformations$/.test(lessonTitle)
     && ["N09TZ0SL_P1_Q4", "M14TZ2HL_P1_Q8S"].includes(question.id)) return true;
+  // AA HL Topic 2 final review uses these exact displayed parts. Each source
+  // is deliberately cropped before neighbouring calculus, inverse-function
+  // or inequality work, so relevance must be judged from the rendered extract
+  // rather than the broader source title.
+  if (/rational functions.*quadratic in denominator/.test(lessonTitle)
+    && ["A_M22TZ2HL_P1_Q11", "N10TZ0HL_P2_Q8"].includes(question.id)) return true;
+  if (/rational functions.*quadratic in numerator/.test(lessonTitle)
+    && ["A_N23TZ1HL_P2_Q11", "A_N21TZ0HL_P2_Q10"].includes(question.id)) return true;
+  if (/^solving inequalities$/.test(lessonTitle)
+    && ["A_N24TZ0HL_P1_Q6", "M10TZ1HL_P2_Q9"].includes(question.id)) return true;
+  if (/^graphs of modulus functions$/.test(lessonTitle)
+    && ["M08TZ1HL_P2_Q2", "A_N25TZ3HL_P1_Q5"].includes(question.id)) return true;
+  if (/^modulus equations and inequalities$/.test(lessonTitle)
+    && ["N10TZ0HL_P1_Q1", "M14TZ2HL_P1_Q5"].includes(question.id)) return true;
   // IGCSE Topic 1 selections reviewed at displayed-part level. The two surd
   // sources continue into rationalising work, but only their simplifying
   // part (a) is rendered. The set sources are symbolic/listing questions and
