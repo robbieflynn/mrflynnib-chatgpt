@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T15:20:37.499Z",
+  "generatedAt": "2026-10-20T15:39:10.612Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 477,
-  "completeLessonCount": 429,
+  "lessonCount": 476,
+  "completeLessonCount": 428,
   "approvedSingleLessonCount": 40,
-  "questionCount": 914,
+  "questionCount": 912,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -816,6 +816,9 @@ window.MR_FLYNN_PRACTICE = {
       },
       "questionBodies": {
         "A_M25TZ3HL_P2_Q3": ""
+      },
+      "questionDifficulties": {
+        "A_M25TZ3HL_P2_Q3": "Easy"
       }
     },
     "45a2dc30-ca7b-47a2-a2b1-a1c2ef8d15c8": {
@@ -899,15 +902,15 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M14TZ1HL_P1_Q2",
-        "A_N25TZ1HL_P2_Q5"
+        "M19TZ1HL_P2_Q3"
       ],
       "questionParts": {
-        "A_N25TZ1HL_P2_Q5": [
+        "M19TZ1HL_P2_Q3": [
           "a"
         ]
       },
       "questionPartTitles": {
-        "A_N25TZ1HL_P2_Q5": "Estimate the mean and standard deviation from grouped data"
+        "M19TZ1HL_P2_Q3": "Find the mean and standard deviation of raw data"
       }
     },
     "b72ba350-4d39-46a6-9d8d-c1cb50da99c8": {
@@ -930,16 +933,6 @@ window.MR_FLYNN_PRACTICE = {
         "M16TZ2SL_P1_Q2"
       ]
     },
-    "eb522dd3-1eb3-4ee0-9e63-824dccc4ea9c": {
-      "lesson": "4.3.4 Variance and Standard Deviation by hand",
-      "course": "AA SL",
-      "subtopic": "Descriptive statistics",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "N10TZ0SL_P2_Q1",
-        "M10TZ1SL_P2_Q4"
-      ]
-    },
     "125a9218-3aed-48c9-b96b-3cf08968de9c": {
       "lesson": "4.4 Linear regression and correlation",
       "course": "AA SL",
@@ -947,8 +940,25 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A_M23TZ2SL_P2_Q1",
-        "M14TZ1SL_P2_Q3"
-      ]
+        "W_M23TZ1AIHL_P2_Q1"
+      ],
+      "questionParts": {
+        "W_M23TZ1AIHL_P2_Q1": [
+          "a",
+          "b",
+          "e"
+        ]
+      },
+      "questionPartLabels": {
+        "W_M23TZ1AIHL_P2_Q1": {
+          "a": "a",
+          "b": "b",
+          "e": "c"
+        }
+      },
+      "questionPartTitles": {
+        "W_M23TZ1AIHL_P2_Q1": "Interpret a model gradient, then find a regression line and correlation"
+      }
     },
     "ca2285a6-c9cc-4eac-adc1-8c6479e9b21e": {
       "lesson": "4.5 Probability formulae",

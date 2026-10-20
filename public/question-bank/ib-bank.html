@@ -550471,6 +550471,7 @@ function diagramN11TZ0P2Q1grid(){
   var REQUESTED_PART_LABELS = practiceMap('partLabels');
   var REQUESTED_PART_TITLES = practiceMap('partTitles');
   var REQUESTED_BODIES = practiceMap('bodies');
+  var REQUESTED_DIFFICULTIES = practiceMap('difficulties');
   var SHOW_SOLUTIONS = EMBED_PARAMS.get('solutions') !== '0';
   var requestedFiltersApplied = false;
   function reportEmbeddedHeight(){
@@ -550546,8 +550547,9 @@ function diagramN11TZ0P2Q1grid(){
     var labelOverrides = REQUESTED_PART_LABELS[id];
     var hasTitle = Object.prototype.hasOwnProperty.call(REQUESTED_PART_TITLES, id);
     var hasBody = Object.prototype.hasOwnProperty.call(REQUESTED_BODIES, id);
+    var hasDifficulty = Object.prototype.hasOwnProperty.call(REQUESTED_DIFFICULTIES, id);
     var hasLabelOverrides = labelOverrides && typeof labelOverrides === 'object' && !Array.isArray(labelOverrides);
-    if(!Array.isArray(labels) && !hasLabelOverrides && !hasTitle && !hasBody) return q;
+    if(!Array.isArray(labels) && !hasLabelOverrides && !hasTitle && !hasBody && !hasDifficulty) return q;
 
     var copy = Object.assign({}, q);
     if(Array.isArray(labels) && labels.length){
@@ -550576,6 +550578,12 @@ function diagramN11TZ0P2Q1grid(){
     }
     if(hasTitle) copy.title = REQUESTED_PART_TITLES[id];
     if(hasBody) copy.body = REQUESTED_BODIES[id];
+    if(hasDifficulty && typeof REQUESTED_DIFFICULTIES[id] === 'string'){
+      copy.difficulty = Object.assign({}, q.difficulty || {});
+      ['AA SL', 'AA HL', 'AI SL', 'AI HL'].forEach(function(course){
+        copy.difficulty[course] = REQUESTED_DIFFICULTIES[id];
+      });
+    }
     return copy;
   }
 

@@ -499,6 +499,9 @@ function renderLessonPractice(lesson) {
   if (practice.questionBodies) {
     url.searchParams.set("bodies", JSON.stringify(practice.questionBodies));
   }
+  if (practice.questionDifficulties) {
+    url.searchParams.set("difficulties", JSON.stringify(practice.questionDifficulties));
+  }
   url.searchParams.set("solutions", "1");
   if (frame.src !== url.href) {
     document.getElementById("practiceFrameWrap").style.height = "660px";

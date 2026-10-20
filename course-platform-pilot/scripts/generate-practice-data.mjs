@@ -393,9 +393,14 @@ const verifiedOverrides = {
   // lesson on two distinct non-outlier box-plot tasks.
   "8ea2af96-360e-4ae0-a160-43a031e64cba": ["M12TZ1HL_P2_Q5", "N12TZ0SL_P1_Q8"],
   "be563c56-3e2f-437f-8e41-0fd0d83dc7c0": ["N15TZ0SL_P1_Q1", "A_M24TZ1SL_P2_Q1"],
-  "160cf57c-42a3-457c-877f-923a11a0b623": ["M14TZ1HL_P1_Q2", "A_N25TZ1HL_P2_Q5"],
+  // Keep the approved first question, then use raw marks rather than a
+  // frequency table for the second averages-and-spread example.
+  "160cf57c-42a3-457c-877f-923a11a0b623": ["M14TZ1HL_P1_Q2", "M19TZ1HL_P2_Q3"],
   "5dceb9a5-425e-4698-bd9b-67f54caf1ee9": ["M18TZ2SL_P1_Q3", "M16TZ2SL_P1_Q2"],
-  "125a9218-3aed-48c9-b96b-3cf08968de9c": ["A_M23TZ2SL_P2_Q1", "M14TZ1SL_P2_Q3"],
+  // Retain the approved beam question. The second question now includes an
+  // interpretation of a model parameter in context before finding the
+  // least-squares regression line and correlation coefficient.
+  "125a9218-3aed-48c9-b96b-3cf08968de9c": ["A_M23TZ2SL_P2_Q1", "W_M23TZ1AIHL_P2_Q1"],
   "ca2285a6-c9cc-4eac-adc1-8c6479e9b21e": ["A_SPECTZ0HL_P1_Q1", "A_N23TZ2HL_P1_Q2", "A_N24TZ0HL_P1_Q2"],
   "f924ec98-3f94-4b6e-b485-50d9a7cb0959": ["M08TZ1SL_P2_Q6", "M15TZ1HL_P2_Q3", "M18TZ2HL_P2_Q8"],
   "7cc0076e-c776-4fe4-8a63-43da44f92820": ["A_M23TZ1SL_P2_Q4", "A_SPECTZ0HL_P2_Q4"],
@@ -829,6 +834,8 @@ const intentionallyWithoutPractice = new Set([
   "e568bd0c-1738-4d97-b72e-0b1d2d0d9eea", // AA SL + AA HL: Introduction to differentiation/calculus
   "d5e2d2ef-dd8a-41a2-8d2b-5846523f4ff8", // AA SL + AA HL: Introduction to limits
   "35488928-8daf-4e41-9e34-60c9153b0b8c", // AA SL + AA HL: The number e
+  "fa1451ac-3210-497e-880b-debeadc19909", // AA SL + AA HL: Discrete v continuous data
+  "eb522dd3-1eb3-4ee0-9e63-824dccc4ea9c", // AA SL + AA HL: Variance and standard deviation by hand
   "24e9be00-6958-4b90-a7a3-5ba5ad8c16f9", // AA SL + AA HL: System of linear equations
   "6d2ca245-7a2a-45ec-ae5c-5e6b7ac692eb", // AA SL + AA HL: Roots of a polynomial
   "f304a68a-2b24-482f-b9c7-91a2a7c8eb64", // AA SL + AA HL: SOHCAHTOA
@@ -1270,7 +1277,10 @@ const practicePartOverrides = {
     "V_M22TZ2AISL_P1_Q7": ["b"],
   },
   "160cf57c-42a3-457c-877f-923a11a0b623": {
-    "A_N25TZ1HL_P2_Q5": ["a"],
+    "M19TZ1HL_P2_Q3": ["a"],
+  },
+  "125a9218-3aed-48c9-b96b-3cf08968de9c": {
+    "W_M23TZ1AIHL_P2_Q1": ["a", "b", "e"],
   },
   "7cc0076e-c776-4fe4-8a63-43da44f92820": {
     "A_M23TZ1SL_P2_Q4": ["b"],
@@ -1571,6 +1581,9 @@ const practicePartOverrides = {
 const practicePartLabelOverrides = {
   "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
     "M10TZ1HL_P2_Q11": { a: "a", d: "b" },
+  },
+  "125a9218-3aed-48c9-b96b-3cf08968de9c": {
+    "W_M23TZ1AIHL_P2_Q1": { a: "a", b: "b", e: "c" },
   },
 };
 
@@ -1940,7 +1953,10 @@ const practicePartTitles = {
     "V_M22TZ2AISL_P1_Q7": "Compare the centre and spread of two box plots",
   },
   "160cf57c-42a3-457c-877f-923a11a0b623": {
-    "A_N25TZ1HL_P2_Q5": "Estimate the mean and standard deviation from grouped data",
+    "M19TZ1HL_P2_Q3": "Find the mean and standard deviation of raw data",
+  },
+  "125a9218-3aed-48c9-b96b-3cf08968de9c": {
+    "W_M23TZ1AIHL_P2_Q1": "Interpret a model gradient, then find a regression line and correlation",
   },
   "7cc0076e-c776-4fe4-8a63-43da44f92820": {
     "A_M23TZ1SL_P2_Q4": "Find the regression line of x on y",
@@ -2318,6 +2334,16 @@ const practiceBodyOverrides = {
   // deliberately removed from the practice card.
   "f40d55e2-0669-40a7-b7d9-fcc477ef23d4": {
     "W_N24TZ0AIHL_P2_Q7": "Spring 2 is modelled by \\(\\dfrac{dx}{dt}=y\\) and \\(\\dfrac{dy}{dt}=-40x-4y\\). Its eigenvalues are \\(-2\\pm6i\\). At \\(t=0\\), \\(x=4\\) and \\(y=3\\).",
+  },
+};
+
+// These presentation-only grades apply to the cropped lesson extract, not to
+// the complete source question in the question bank. Part (c) of this source
+// is a one-mark sampling-method identification, so the course card should be
+// green even though later source parts are harder.
+const practiceDifficultyOverrides = {
+  "26a92a94-1132-4e90-9b26-63b98ffffc26": {
+    "A_M25TZ3HL_P2_Q3": "Easy",
   },
 };
 
@@ -3762,6 +3788,7 @@ for (const [id, placement] of placements) {
       questionPartLabels: practicePartLabelOverrides[id] || undefined,
       questionPartTitles: practicePartTitles[id] || undefined,
       questionBodies: practiceBodyOverrides[id] || undefined,
+      questionDifficulties: practiceDifficultyOverrides[id] || undefined,
     };
   }
   const quickMeta = questionIds[0] ? selectedQuestionMeta(id, questionIds[0]) : { title: "", marks: "" };

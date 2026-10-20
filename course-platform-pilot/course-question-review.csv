@@ -129,3 +129,19 @@ AA HL,2026-10-20,3.18.2,Intersection between two planes,approved,N11TZ0HL_P2_Q13
 AA HL,2026-10-20,3.18.3,Intersection of 3 planes,awaiting-recheck,M14TZ2HL_P1_Q3|M08TZ1HL_P2_Q5,Both rejected two-plane questions replaced with genuine three-plane intersection questions
 AA HL,2026-10-20,3.18.4,Angle between a line and a plane,awaiting-recheck,M10TZ1HL_P2_Q11|M12TZ2HL_P2_Q11,Approved question 1 retained with displayed parts relabelled A and B; added a second direct line-plane angle question
 AA HL,2026-10-20,3.18.5,Angle between two planes,awaiting-recheck,M10TZ1HL_P1_Q3|N14TZ0HL_P2_Q1,Approved question 1 retained; question 2 replaced with a direct angle-between-two-planes calculation
+AA HL,2026-10-20,4.1.1,Discrete v continuous data,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AA HL,2026-10-20,4.1.2,Sampling techniques,approved,W_SPECAIHL_P1_Q1|A_M25TZ3HL_P2_Q3,Locked from Rob's Topic 4 review; the cropped one-mark systematic-sampling extract is displayed green in the course only
+AA HL,2026-10-20,4.2.1,Histograms and cumulative frequency curves,approved,M12TZ1SL_P2_Q8|M12TZ2SL_P1_Q1,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.2.2,Box and whisker diagram,approved,M12TZ1HL_P2_Q5|N12TZ0SL_P1_Q8,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.2.3,Interpreting box plots,approved,N15TZ0SL_P1_Q1|A_M24TZ1SL_P2_Q1,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.2.4,Outliers,approved,V_M23TZ2AISL_P1_Q3|M18TZ1SL_P1_Q2,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.3.1,Averages and spread,awaiting-recheck,M14TZ1HL_P1_Q2|M19TZ1HL_P2_Q3,Approved question 1 retained; frequency-table question replaced with a raw-data mean and standard-deviation calculation
+AA HL,2026-10-20,4.3.2,Frequency tables,approved,A_M22TZ1SL_P2_Q2|M13TZ1HL_P2_Q1,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.3.3,Constant changes to data,approved,M18TZ2SL_P1_Q3|M16TZ2SL_P1_Q2,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.3.4,Variance and standard deviation by hand,approved-no-practice,,Rob explicitly requested that this lesson remain blank
+AA HL,2026-10-20,4.4,Linear regression and correlation,awaiting-recheck,A_M23TZ2SL_P2_Q1|W_M23TZ1AIHL_P2_Q1,Approved beam question retained; second question now interprets a model gradient in context before finding the regression line and correlation coefficient
+AA HL,2026-10-20,4.5,Probability formulae,approved,A_SPECTZ0HL_P1_Q1|A_N23TZ2HL_P1_Q2|A_N24TZ0HL_P1_Q2,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.6.1,Venn diagrams,approved,M11TZ2SL_P1_Q2|M09TZ2HL_P2_Q1,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.6.2,Tree diagrams,approved,M15TZ2SL_P1_Q1|M12TZ2HL_P1_Q3,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.7,Discrete random variables,approved,N13TZ0HL_P1_Q2S|N16TZ0HL_P1_Q2,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.8,Binomial distribution,approved,M08TZ1SL_P2_Q6|M15TZ1HL_P2_Q3|M18TZ2HL_P2_Q8,Locked from Rob's Topic 4 review
