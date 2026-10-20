@@ -208,14 +208,25 @@ const verifiedOverrides = {
   "06ed664b-cac7-4315-a715-6232e8170d41": ["M11TZ1HL_P1_Q13", "M15TZ1HL_P2_Q12"],
   "127d3689-f30e-47ea-bbe3-98c8dccf4967": ["M08TZ2SL_P2_Q2", "M10TZ2SL_P2_Q4"],
   "24e9be00-6958-4b90-a7a3-5ba5ad8c16f9": ["A_M21TZ1SL_P1_Q3", "M16TZ1HL_P1_Q1"],
-  // These larger function questions both begin with a simple evaluation task.
-  // Rob has approved using a relevant subpart where the bank has no clean
-  // standalone introductory question.
-  "17cbf90f-7617-48fa-855d-dc6b1013a2d4": ["N18TZ0SL_P1_Q2", "N16TZ0SL_P2_Q1"],
-  "f4b4002a-6087-473d-991e-559ff2b54108": ["N16TZ0SL_P2_Q1", "N18TZ0SL_P1_Q2"],
-  // Direct graph sketching only. Do not use questions that ask students to
-  // translate, reflect, stretch or otherwise transform an existing graph.
-  "eeb308ea-e4a0-44da-8932-705b5cb24c2f": ["M12TZ1SL_P2_Q2", "N17TZ0SL_P2_Q2"],
+  // AA Topic 2 final review. The two introductory function lessons display
+  // only direct substitution/evaluation parts: no inverse or composite work.
+  "17cbf90f-7617-48fa-855d-dc6b1013a2d4": ["N18TZ0SL_P1_Q2", "M16TZ1SL_P1_Q1"],
+  "f4b4002a-6087-473d-991e-559ff2b54108": ["N16TZ0SL_P2_Q1", "M18TZ1SL_P1_Q1"],
+  // Preserve Rob's approved first inverse-introduction question and move the
+  // graph-reading inverse question here from 2.5.2, where it was too indirect.
+  "e62cb90d-32c9-4dc7-b508-15e458124e56": ["W_SPECAIHL_P1_Q2", "M18TZ1SL_P1_Q3"],
+  // Direct graph sketching only. Keep the approved second question and use
+  // the quadratic sketch (parts a-b only) first; omit its later inequality
+  // and logarithmic-composition work.
+  "eeb308ea-e4a0-44da-8932-705b5cb24c2f": ["A_M25TZ1HL_P1_Q10", "N17TZ0SL_P2_Q2"],
+  // Features must be identified from graphs, including range and labelled
+  // local extrema. The second source is displayed only as its sketching part.
+  "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": ["A_M25TZ2HL_P1_Q1", "A_M23TZ1SL_P2_Q3"],
+  // Two ordinary composite-function questions with no inverse-function work.
+  "b56f0294-fa11-4d42-b07f-2888907509c7": ["N14TZ0SL_P2_Q1", "A_N23TZ1SL_P1_Q2"],
+  // Start with a normal algebraic inverse, then retain Rob's approved harder
+  // inverse question as question 2.
+  "48b621fa-d972-43fd-8d91-5ace017b5d48": ["N15TZ0SL_P1_Q5", "N16TZ0HL_P2_Q10X2"],
   // Connect factorised form, intercepts/graph features and completed-square
   // form. The second is the longer multi-stage question Rob recalled.
   "c985a287-ffe1-4d77-a163-30d4d61621f5": ["A_N21TZ0SL_P1_Q1", "A_M21TZ1SL_P1_Q7"],
@@ -370,11 +381,10 @@ const verifiedOverrides = {
 
   // Deep-review pass: each pair below was checked against the specific lesson
   // skill, not only the bank's broader subtopic label.
-  "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": ["A_M25TZ2HL_P1_Q1", "M17TZ2SL_P2_Q3"],
   // A_N21TZ0SL_P1_Q1 belongs to the three-forms lesson above. Keep this
   // neighbouring lesson on factorisation itself; show only part (a) of the
   // first source so its later binomial-expansion work is not included.
-  "46e2372a-66cb-477e-96c7-fba7ae61c41d": ["M11TZ1HL_P2_Q5", "M13TZ1AISL_P1_Q9"],
+  "46e2372a-66cb-477e-96c7-fba7ae61c41d": ["N08TZ0SL_P2_Q1", "M13TZ1AISL_P1_Q9"],
   // Straight equation solving first: display only the part solved by graph or
   // quadratic formula. Retain the second source because it can also be solved
   // with the quadratic formula without teaching sum/product of roots.
@@ -751,7 +761,6 @@ const intentionallyWithoutPractice = new Set([
   "35488928-8daf-4e41-9e34-60c9153b0b8c", // AA SL + AA HL: The number e
   "24e9be00-6958-4b90-a7a3-5ba5ad8c16f9", // AA SL + AA HL: System of linear equations
   "6d2ca245-7a2a-45ec-ae5c-5e6b7ac692eb", // AA SL + AA HL: Roots of a polynomial
-  "4be6b3ed-84bd-4d5c-a9d3-67362859ef39", // AA SL + AA HL: Features of graphs
   "8a070f53-2a65-41ca-bd23-3feb183f79ab", // AA HL: Algebra of factorials
   "00c950c1-60b5-4ff0-904d-b8c3f226c7f5", // AA HL: Proof by contradiction (infinite primes)
   "ed461415-103f-4b7c-a993-691440c18e53", // AA HL: Use of counter example
@@ -1222,11 +1231,25 @@ const practicePartOverrides = {
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
     "A_M24TZ1HL_P1_Q11": ["a", "b"],
   },
-  "46e2372a-66cb-477e-96c7-fba7ae61c41d": {
-    "M11TZ1HL_P2_Q5": ["a"],
+  "17cbf90f-7617-48fa-855d-dc6b1013a2d4": {
+    "N18TZ0SL_P1_Q2": ["a"],
+    "M16TZ1SL_P1_Q1": ["a"],
+  },
+  "f4b4002a-6087-473d-991e-559ff2b54108": {
+    "N16TZ0SL_P2_Q1": ["a"],
+    "M18TZ1SL_P1_Q1": ["a"],
   },
   "eeb308ea-e4a0-44da-8932-705b5cb24c2f": {
-    "M12TZ1SL_P2_Q2": ["a", "b"],
+    "A_M25TZ1HL_P1_Q10": ["a", "b"],
+  },
+  "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": {
+    "A_M23TZ1SL_P2_Q3": ["b"],
+  },
+  "48b621fa-d972-43fd-8d91-5ace017b5d48": {
+    "N15TZ0SL_P1_Q5": ["a"],
+  },
+  "46e2372a-66cb-477e-96c7-fba7ae61c41d": {
+    "N08TZ0SL_P2_Q1": ["c"],
   },
   "88162068-c195-41a3-ae20-004900917331": {
     "N14TZ0SL_P1_Q1": ["b"],
@@ -1833,11 +1856,25 @@ const practicePartTitles = {
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
     "A_M24TZ1HL_P1_Q11": "Verify a root, divide and factorise a cubic",
   },
-  "46e2372a-66cb-477e-96c7-fba7ae61c41d": {
-    "M11TZ1HL_P2_Q5": "Factorise a quadratic into two linear factors",
+  "17cbf90f-7617-48fa-855d-dc6b1013a2d4": {
+    "N18TZ0SL_P1_Q2": "Read a function value from a table",
+    "M16TZ1SL_P1_Q1": "Evaluate g(2)",
+  },
+  "f4b4002a-6087-473d-991e-559ff2b54108": {
+    "N16TZ0SL_P2_Q1": "Evaluate f(8)",
+    "M18TZ1SL_P1_Q1": "Evaluate f(14)",
   },
   "eeb308ea-e4a0-44da-8932-705b5cb24c2f": {
-    "M12TZ1SL_P2_Q2": "Vertex, completed-square form and roots of a quadratic",
+    "A_M25TZ1HL_P1_Q10": "Complete the square and sketch a quadratic",
+  },
+  "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": {
+    "A_M23TZ1SL_P2_Q3": "Sketch a graph and label its local maximum and minimum",
+  },
+  "48b621fa-d972-43fd-8d91-5ace017b5d48": {
+    "N15TZ0SL_P1_Q5": "Find the inverse of a cubic function",
+  },
+  "46e2372a-66cb-477e-96c7-fba7ae61c41d": {
+    "N08TZ0SL_P2_Q1": "Factorise a non-monic quadratic",
   },
   "88162068-c195-41a3-ae20-004900917331": {
     "N14TZ0SL_P1_Q1": "Solve x² + x − 6 = 0",
@@ -2796,6 +2833,17 @@ function passesLessonSpecificCheck(question, lesson) {
   const questionTitle = normalize(question.title);
   const rawQuestionText = questionText(question);
   const fullQuestionText = normalize(questionText(question));
+  // AA Topic 2 is reviewed at displayed-part level. These four sources have
+  // later composite/inverse parts, but only their direct evaluation part (a)
+  // is shown in 2.2.1 and 2.2.2.
+  if (/^functions introduction$/.test(lessonTitle)
+    && ["N18TZ0SL_P1_Q2", "M16TZ1SL_P1_Q1"].includes(question.id)) return true;
+  if (/^evaluating functions$/.test(lessonTitle)
+    && ["N16TZ0SL_P2_Q1", "M18TZ1SL_P1_Q1"].includes(question.id)) return true;
+  if (/^finding inverse functions$/.test(lessonTitle)
+    && question.id === "N15TZ0SL_P1_Q5") return true;
+  if (/^factorising quadratics$/.test(lessonTitle)
+    && question.id === "N08TZ0SL_P2_Q1") return true;
   // IGCSE Topic 1 selections reviewed at displayed-part level. The two surd
   // sources continue into rationalising work, but only their simplifying
   // part (a) is rendered. The set sources are symbolic/listing questions and

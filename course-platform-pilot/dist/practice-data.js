@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T04:53:09.969Z",
+  "generatedAt": "2026-10-20T11:06:44.601Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 480,
-  "completeLessonCount": 434,
+  "lessonCount": 481,
+  "completeLessonCount": 435,
   "approvedSingleLessonCount": 38,
-  "questionCount": 922,
+  "questionCount": 924,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -236,8 +236,20 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N18TZ0SL_P1_Q2",
-        "N16TZ0SL_P2_Q1"
-      ]
+        "M16TZ1SL_P1_Q1"
+      ],
+      "questionParts": {
+        "N18TZ0SL_P1_Q2": [
+          "a"
+        ],
+        "M16TZ1SL_P1_Q1": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "N18TZ0SL_P1_Q2": "Read a function value from a table",
+        "M16TZ1SL_P1_Q1": "Evaluate g(2)"
+      }
     },
     "f4b4002a-6087-473d-991e-559ff2b54108": {
       "lesson": "2.2.2 Evaluating functions",
@@ -245,9 +257,21 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Composite functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N09TZ0SL_P1_Q1",
-        "M13TZ1SL_P1_Q5"
-      ]
+        "N16TZ0SL_P2_Q1",
+        "M18TZ1SL_P1_Q1"
+      ],
+      "questionParts": {
+        "N16TZ0SL_P2_Q1": [
+          "a"
+        ],
+        "M18TZ1SL_P1_Q1": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "N16TZ0SL_P2_Q1": "Evaluate f(8)",
+        "M18TZ1SL_P1_Q1": "Evaluate f(14)"
+      }
     },
     "e62cb90d-32c9-4dc7-b508-15e458124e56": {
       "lesson": "2.2.3 Inverse functions",
@@ -256,7 +280,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "W_SPECAIHL_P1_Q2",
-        "A_M25TZ3HL_P1_Q2"
+        "M18TZ1SL_P1_Q3"
       ]
     },
     "eeb308ea-e4a0-44da-8932-705b5cb24c2f": {
@@ -265,17 +289,35 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Transformations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M12TZ1SL_P2_Q2",
+        "A_M25TZ1HL_P1_Q10",
         "N17TZ0SL_P2_Q2"
       ],
       "questionParts": {
-        "M12TZ1SL_P2_Q2": [
+        "A_M25TZ1HL_P1_Q10": [
           "a",
           "b"
         ]
       },
       "questionPartTitles": {
-        "M12TZ1SL_P2_Q2": "Vertex, completed-square form and roots of a quadratic"
+        "A_M25TZ1HL_P1_Q10": "Complete the square and sketch a quadratic"
+      }
+    },
+    "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": {
+      "lesson": "2.4.1 Features of graphs",
+      "course": "AA SL",
+      "subtopic": "Transformations",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "A_M25TZ2HL_P1_Q1",
+        "A_M23TZ1SL_P2_Q3"
+      ],
+      "questionParts": {
+        "A_M23TZ1SL_P2_Q3": [
+          "b"
+        ]
+      },
+      "questionPartTitles": {
+        "A_M23TZ1SL_P2_Q3": "Sketch a graph and label its local maximum and minimum"
       }
     },
     "3a2525b8-80c0-4c5b-867f-82a6e3ac0f94": {
@@ -294,8 +336,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Composite functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_N23TZ2HL_P1_Q1",
-        "N15TZ0HL_P2_Q12S"
+        "N14TZ0SL_P2_Q1",
+        "A_N23TZ1SL_P1_Q2"
       ]
     },
     "48b621fa-d972-43fd-8d91-5ace017b5d48": {
@@ -304,9 +346,17 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Inverse functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M18TZ1SL_P1_Q3",
+        "N15TZ0SL_P1_Q5",
         "N16TZ0HL_P2_Q10X2"
-      ]
+      ],
+      "questionParts": {
+        "N15TZ0SL_P1_Q5": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "N15TZ0SL_P1_Q5": "Find the inverse of a cubic function"
+      }
     },
     "c985a287-ffe1-4d77-a163-30d4d61621f5": {
       "lesson": "2.6.1 Quadratics 3 forms",
@@ -324,16 +374,16 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Quadratics",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M11TZ1HL_P2_Q5",
+        "N08TZ0SL_P2_Q1",
         "M13TZ1AISL_P1_Q9"
       ],
       "questionParts": {
-        "M11TZ1HL_P2_Q5": [
-          "a"
+        "N08TZ0SL_P2_Q1": [
+          "c"
         ]
       },
       "questionPartTitles": {
-        "M11TZ1HL_P2_Q5": "Factorise a quadratic into two linear factors"
+        "N08TZ0SL_P2_Q1": "Factorise a non-monic quadratic"
       }
     },
     "f6cfdfea-d917-4385-aa62-7604bad73e59": {
@@ -1664,16 +1714,6 @@ window.MR_FLYNN_PRACTICE = {
         "A_M25TZ1HL_P1_Q8"
       ]
     },
-    "9507603b-0920-44ad-9e26-43451e801166": {
-      "lesson": "1.15.6 Proof by contradiction (intro)",
-      "course": "AA HL",
-      "subtopic": "Proof by contradiction",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "A_N25TZ3HL_P2_Q9",
-        "A_M22TZ2HL_P1_Q9"
-      ]
-    },
     "d5c720d9-4540-4c45-b822-a0c84764b619": {
       "lesson": "1.15.5 Proof by induction (De Moivre)",
       "course": "AA HL",
@@ -1690,6 +1730,16 @@ window.MR_FLYNN_PRACTICE = {
       "questionPartTitles": {
         "M14TZ2HL_P2_Q13": "Prove De Moivre's theorem by induction"
       }
+    },
+    "9507603b-0920-44ad-9e26-43451e801166": {
+      "lesson": "1.15.6 Proof by contradiction (intro)",
+      "course": "AA HL",
+      "subtopic": "Proof by contradiction",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "A_N25TZ3HL_P2_Q9",
+        "A_M22TZ2HL_P1_Q9"
+      ]
     },
     "4db3af16-4287-4ae9-9cca-5bba5fff7ee3": {
       "lesson": "1.15.7 Proof by contradiction (root 2)",
@@ -3995,8 +4045,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Functions and inverse functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N14TZ0SL_P2_Q1",
-        "N10TZ0SL_P1_Q9"
+        "N10TZ0SL_P1_Q9",
+        "N13TZ0SL_P1_Q8X1"
       ],
       "questionParts": {
         "N10TZ0SL_P1_Q9": [
