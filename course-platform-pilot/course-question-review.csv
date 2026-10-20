@@ -157,3 +157,29 @@ AA HL,2026-10-20,4.14.5,Median and mode of a discrete random variable,awaiting-r
 AA HL,2026-10-20,4.14.6,Median and mode of continuous random variable,approved,M12TZ1HL_P2_Q2|M08TZ2HL_P2_Q4,Locked from Rob's final Topic 4 review
 AA HL,2026-10-20,4.14.7,Variance of a continuous random variable,awaiting-recheck,M17TZ2HL_P2_Q10|M15TZ1HL_P2_Q11,Approved question 1 retained; unusual symmetric-density question replaced with a direct two-piece-density variance calculation
 AA HL,2026-10-20,4.14.8,Linear transformations of X,approved,A_N25TZ3HL_P1_Q7|A_SPECTZ0HL_P2_Q6,Locked from Rob's final Topic 4 review
+AA HL,2026-10-20,5.1.1,Introduction to differentiation,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AA HL,2026-10-20,5.1.2,Introduction to limits,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AA HL,2026-10-20,5.2.1,Increasing and decreasing functions,approved,N20TZ0AISL_P1_Q11|N17TZ0AISL_P2_Q5,Locked from Rob's calculus review
+AA HL,2026-10-20,5.3.1,Differentiation (the power rule),awaiting-recheck,M14TZ1AISL_P1_Q10|V_N23TZ2AISL_P1_Q3,Approved easy derivative retained; second question now includes a negative power
+AA HL,2026-10-20,5.3.2,Derivative at a point,approved,N12TZ0SL_P1_Q4|M18TZ2AISL_P1_Q14,Locked from Rob's calculus review
+AA HL,2026-10-20,5.4,Tangents and normals,awaiting-recheck,N18TZ0AISL_P1_Q11|N09TZ0SL_P1_Q10X1,Approved normal question retained; product-rule tangent replaced with a power-rule tangent
+AA HL,2026-10-20,5.5.1,Integration power rule,approved,A_M21TZ1SL_P2_Q1|N13TZ0SL_P2_Q3,Locked from Rob's calculus review
+AA HL,2026-10-20,5.5.2,Finding f(x),approved,A_N21TZ0SL_P1_Q2|M19TZ1SL_P1_Q5,Locked from Rob's calculus review
+AA HL,2026-10-20,5.5.3,Definite integration,awaiting-recheck,A_M22TZ1HL_P1_Q1|N13TZ0SL_P1_Q4,Both mixed-rule questions replaced with a direct power-rule definite integral and a clean definite-integral properties question
+AA HL,2026-10-20,5.5.4,Area under the curve,awaiting-recheck,A_N22TZ0SL_P2_Q3|W_N23TZ0AIHL_P1_Q11,Approved single-curve area retained; area-between-two-curves question replaced with a direct curve-to-axis area
+AA HL,2026-10-20,5.5.5,Finding a limit,approved-single,M14TZ1SL_P1_Q6,Approved first question retained alone because no second clean source avoids later integration rules
+AA HL,2026-10-20,5.6.1,"Derivative of sinx, cosx, lnx, e^x",awaiting-recheck,N16TZ0SL_P1_Q10X1|M18TZ1SL_P2_Q1|M15TZ1HL_P2_Q6,Replaced mixed-rule and optimization work with three direct questions covering the sine-cosine cycle logarithms and exponentials
+AA HL,2026-10-20,5.6.2,Chain rule,awaiting-recheck,M19TZ2SL_P1_Q10|M16TZ1SL_P1_Q10,Approved question 2 retained; non-chain question replaced with a direct composite-power derivative
+AA HL,2026-10-20,5.6.3,Product rule,approved,M17TZ2SL_P1_Q6|N10TZ0SL_P1_Q2,Locked from Rob's calculus review
+AA HL,2026-10-20,5.6.4,Quotient rule,approved,M11TZ2SL_P1_Q4|M12TZ2SL_P1_Q10X1,Locked from Rob's calculus review
+AA HL,2026-10-20,5.7.1,Relationship between graphs and derivatives,approved,N08TZ0SL_P1_Q6|M10TZ2SL_P1_Q7,Locked from Rob's calculus review
+AA HL,2026-10-20,5.7.2,Sketching derivatives,awaiting-recheck,M14TZ2SL_P1_Q6,Uses the non-calculator graph-to-derivative sketch moved from the GDC lesson
+AA HL,2026-10-20,5.7.3,Sketching derivatives with gdc,awaiting-recheck,M10TZ1SL_P2_Q3|M12TZ2SL_P2_Q2,Uses the two calculator derivative-sketch questions moved into the GDC lesson
+AA HL,2026-10-20,5.8.1,Classifying stationary points,approved,M11TZ1HL_P1_Q12X1|N13TZ0HL_P1_Q10X1,Locked from Rob's calculus review
+AA HL,2026-10-20,5.8.2,Points of inflexion,approved-after-ordering,M16TZ1HL_P2_Q11X1|N10TZ0SL_P2_Q7,Same approved pair reordered easy before harder
+AA HL,2026-10-20,5.8.3,Optimization,approved,M16TZ2SL_P1_Q9|N09TZ0SL_P2_Q7,Locked from Rob's calculus review
+AA HL,2026-10-20,5.9,Kinematics,approved-after-ordering,M12TZ2SL_P2_Q5|M16TZ1HL_P2_Q3,Same approved pair reordered easy before harder
+AA HL,2026-10-20,5.10.1,Integrating e^x and 1/x,approved,N20TZ0SL_P1_Q6|A_M22TZ2SL_P2_Q2,Locked from Rob's calculus review
+AA HL,2026-10-20,5.10.2,Integrating sin and cos,awaiting-recheck,N08TZ0SL_P1_Q9|M10TZ2SL_P1_Q10,Replaced optimization and substitution with direct cosine and sine integration extracts
+AA HL,2026-10-20,5.10.3,Inverse chain rule,approved,N10TZ0SL_P1_Q6|M14TZ2SL_P1_Q5,Locked from Rob's calculus review
+AA HL,2026-10-20,5.10.4,Integration by substitution,awaiting-recheck,M17TZ1SL_P1_Q5|A_N22TZ0SL_P1_Q5,Both harder HL substitutions replaced with accessible SL substitutions of the form f'(x)g(f(x))

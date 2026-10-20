@@ -521,43 +521,62 @@ const verifiedOverrides = {
   // it teaches and avoid stationary points, optimisation or mixed rules until
   // their later dedicated lessons.
   "03a83b7a-4df5-4d2c-a669-cfcf7b50787e": ["N20TZ0AISL_P1_Q11", "N17TZ0AISL_P2_Q5"],
-  "4ec4c4a2-a2de-4e61-9903-55f280bf9ab6": ["M14TZ1AISL_P1_Q10", "N16TZ0AISL_P1_Q14"],
+  // Begin with the approved x^4 derivative, then introduce a reciprocal term
+  // so students also practise rewriting and differentiating a negative power.
+  "4ec4c4a2-a2de-4e61-9903-55f280bf9ab6": ["M14TZ1AISL_P1_Q10", "V_N23TZ2AISL_P1_Q3"],
   "db4f51b7-b4c5-41ad-bb94-b0bd53f9bee3": ["N12TZ0SL_P1_Q4", "M18TZ2AISL_P1_Q14"],
-  "e884d9fa-1e59-4ccc-a67d-2c63d5140908": ["M19TZ1HL_P2_Q1", "N09TZ0SL_P1_Q10X1"],
+  // The first source uses only the power rule before forming a tangent. The
+  // approved square-root normal remains second; no product rule appears.
+  "e884d9fa-1e59-4ccc-a67d-2c63d5140908": ["N18TZ0AISL_P1_Q11", "N09TZ0SL_P1_Q10X1"],
   "f4aa813d-a3e2-480a-9f8d-49d2b31a7a04": ["A_M21TZ1SL_P2_Q1", "N13TZ0SL_P2_Q3"],
-  "76f62a43-8fbd-46d5-aff6-c74b0488675a": ["A_M22TZ1SL_P1_Q2", "M13TZ2HL_P1_Q1"],
-  "20b8ec75-0605-426a-abec-066ca4c4f9d2": ["A_N22TZ0SL_P2_Q3", "A_M25TZ1HL_P1_Q3"],
-  "d336ee8b-277b-4f7d-90f8-c309a50d1d4c": ["M14TZ1SL_P1_Q6", "A_M23TZ2SL_P1_Q5"],
-  "9d0fc44f-c26e-4a61-9d6a-9d84d022c372": ["A_M22TZ2SL_P1_Q1", "M16TZ1SL_P1_Q10"],
+  // Definite integration stays on the power rule: first a linear integrand,
+  // then a surd quotient that rewrites as a negative fractional power.
+  "76f62a43-8fbd-46d5-aff6-c74b0488675a": ["A_M22TZ1HL_P1_Q1", "N13TZ0SL_P1_Q4"],
+  // Keep the approved calculator area first. The replacement second card is
+  // a direct area between one curve and the x-axis, not between two curves.
+  "20b8ec75-0605-426a-abec-066ca4c4f9d2": ["A_N22TZ0SL_P2_Q3", "W_N23TZ0AIHL_P1_Q11"],
+  // Only the approved clean upper-limit question remains. A second source is
+  // withheld rather than introducing integration rules taught later.
+  "d336ee8b-277b-4f7d-90f8-c309a50d1d4c": ["M14TZ1SL_P1_Q6"],
+  // Direct applications of the new derivatives: logarithm first, then an
+  // exponential. Neither selected prompt needs product or chain rule.
+  "16efb219-7953-40cb-b8ca-8b0e956f9e39": ["N16TZ0SL_P1_Q10X1", "M18TZ1SL_P2_Q1", "M15TZ1HL_P2_Q6"],
+  // Replace the composite-function table with an actual chain-rule
+  // derivative; keep the approved square-root question second.
+  "9d0fc44f-c26e-4a61-9d6a-9d84d022c372": ["M19TZ2SL_P1_Q10", "M16TZ1SL_P1_Q10"],
   "2ece54f8-dd4e-445e-8f8a-23858053df10": ["N08TZ0SL_P1_Q6", "M10TZ2SL_P1_Q7"],
-  "7c1d0df9-3f50-4bfb-ae45-b669c1405895": ["M10TZ1SL_P2_Q3", "M17TZ1SL_P1_Q6"],
+  // Non-calculator sketching uses the Paper 1 graph-only prompt. The two
+  // Paper 2 derivative sketches move to the following GDC lesson.
+  "7c1d0df9-3f50-4bfb-ae45-b669c1405895": ["M14TZ2SL_P1_Q6"],
   "c4802e2e-45bf-4825-a2af-9aaa7724cd53": ["A_N21TZ0SL_P1_Q2", "M19TZ1SL_P1_Q5"],
   // Both questions finish by sketching a derivative. The previous pair only
   // interpreted derivative graphs and therefore belongs in 5.7.1 instead.
-  "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": ["M12TZ2SL_P2_Q2", "M14TZ2SL_P1_Q6"],
+  "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": ["M10TZ1SL_P2_Q3", "M12TZ2SL_P2_Q2"],
   // Keep Rob's approved first question, then explicitly prove that the second
   // stationary point is a maximum by using the second derivative.
   "92c1b8b1-b956-4724-bd03-de85fb5d4f09": ["M11TZ1HL_P1_Q12X1", "N13TZ0HL_P1_Q10X1"],
+  // Same approved pair, reordered from the more direct quartic calculation
+  // to the less routine conceptual inflexion question.
+  "7e8ea035-b815-464f-b498-ed4116f2e6b0": ["M16TZ1HL_P2_Q11X1", "N10TZ0SL_P2_Q7"],
   // A substantial three-dimensional cuboid problem first, followed by the
   // approved fencing-cost optimization problem.
   "0922ca4f-d53f-4299-b9c9-eafe6d17caf1": ["M16TZ2SL_P1_Q9", "N09TZ0SL_P2_Q7"],
   // One displacement model and one velocity model. Both are SL-accessible;
   // the second is calculator practice and neither needs integration by parts.
-  "350494a1-e44b-4ddb-86db-72e19e69d525": ["M16TZ1HL_P2_Q3", "M12TZ2SL_P2_Q5"],
+  "350494a1-e44b-4ddb-86db-72e19e69d525": ["M12TZ2SL_P2_Q5", "M16TZ1HL_P2_Q3"],
   // Direct exponential integration paired with the approved logarithmic
   // integral. Integration by parts is not part of this SL lesson.
   "6d504905-61e3-40cb-972c-13ff1691ffbd": ["N20TZ0SL_P1_Q6", "A_M22TZ2SL_P2_Q2"],
-  // Remove the sin-squared question. Retain Rob's approved integral first,
-  // then use a distinct applied cosine integration question.
-  "5c83085a-0fc2-4199-89b3-34ce0cf5539b": ["M09TZ1HL_P2_Q6", "A_M23TZ1SL_P2_Q9"],
+  // The verified archive has no clean standalone indefinite sin/cos question.
+  // Use the one direct sine-area part rather than padding this lesson with
+  // optimization, substitution or a rate-model question.
+  "5c83085a-0fc2-4199-89b3-34ce0cf5539b": ["N08TZ0SL_P1_Q9", "M10TZ2SL_P1_Q10"],
   // Reverse-chain work here is limited to a linear inner function. Nonlinear
   // substitutions belong in the next lesson.
   "190dd207-d2d9-4de5-b374-aaa9e4f951de": ["N10TZ0SL_P1_Q6", "M14TZ2SL_P1_Q5"],
-  // Both substitution questions were approved. Put the more accessible
-  // trigonometric substitution before the logarithmic one.
-  // Keep this pair distinct from the AI HL adaptation of the November 2015
-  // source: Rob does not want the same underlying question in two lessons.
-  "924417ae-de6f-4e30-9f97-46ac0d001d4a": ["N12TZ0HL_P2_Q8", "N14TZ0HL_P1_Q6"],
+  // SL substitution only: each integrand has the form f'(x)g(f(x)). The
+  // trigonometric substitutions rejected here remain available for 5.16.1.
+  "924417ae-de6f-4e30-9f97-46ac0d001d4a": ["M17TZ1SL_P1_Q5", "A_N22TZ0SL_P1_Q5"],
   "4fde506e-3b33-485d-9259-284f5f86bcd3": ["M09TZ2HL_P2_Q8", "M17TZ1HL_P1_Q4"],
   "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": ["A_SPECHL_P1_Q3", "N18TZ0HL_P2_Q8"],
 
@@ -932,6 +951,8 @@ const intentionallySinglePractice = new Set([
   "918840eb-bf55-4e83-8939-40af339f1d94", // AI HL: Integrating sin and cos (one clean unused source)
   "d9d11f09-511a-436a-9792-f66fc8ceeac5", // AI HL: Integrating e^x and 1/x (one direct logarithmic source)
   "99a7ab79-f157-4f85-83f1-52b8368acc0f", // AI HL: Inverse chain rule (one clean linear-inner source)
+  "d336ee8b-277b-4f7d-90f8-c309a50d1d4c", // AA SL + AA HL: Finding a limit (one clean pre-later-rules source)
+  "7c1d0df9-3f50-4bfb-ae45-b669c1405895", // AA SL + AA HL: non-calculator derivative sketch
   "20b25248-b2b7-4f5b-b270-d68567b564d7", // IGCSE: ordinary frequency tables
 ]);
 
@@ -951,6 +972,7 @@ const incompleteSinglePractice = new Set([
 const intentionallyTriplePractice = new Set([
   "ca2285a6-c9cc-4eac-adc1-8c6479e9b21e", // AA SL + AA HL: Probability formulae
   "f924ec98-3f94-4b6e-b485-50d9a7cb0959", // AA SL + AA HL: Binomial distribution
+  "16efb219-7953-40cb-b8ca-8b0e956f9e39", // AA SL + AA HL: direct sin/cos, ln and exponential derivatives
   "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f", // AI HL: Eigenvalues and eigenvectors
   "79bbc962-e946-49f0-a89e-5bd386389248", // AI HL: Powers of matrices
   "d084246b-aa0a-4a8b-a962-db8032c3bbcf", // IGCSE: Domain and Range
@@ -1197,36 +1219,45 @@ const practicePartOverrides = {
   },
   "4ec4c4a2-a2de-4e61-9903-55f280bf9ab6": {
     "M14TZ1AISL_P1_Q10": ["a"],
-    "N16TZ0AISL_P1_Q14": ["a"],
+    "V_N23TZ2AISL_P1_Q3": ["b"],
   },
   "db4f51b7-b4c5-41ad-bb94-b0bd53f9bee3": {
     "M18TZ2AISL_P1_Q14": ["a", "b"],
   },
   "e884d9fa-1e59-4ccc-a67d-2c63d5140908": {
+    "N18TZ0AISL_P1_Q11": ["a", "b", "c"],
     "N09TZ0SL_P1_Q10X1": ["a"],
   },
   "f4aa813d-a3e2-480a-9f8d-49d2b31a7a04": {
     "N13TZ0SL_P2_Q3": ["b"],
   },
-  "76f62a43-8fbd-46d5-aff6-c74b0488675a": {
-    "A_M22TZ1SL_P1_Q2": ["a", "b"],
-  },
   "20b8ec75-0605-426a-abec-066ca4c4f9d2": {
     "A_N22TZ0SL_P2_Q3": ["c"],
+    "W_N23TZ0AIHL_P1_Q11": ["a"],
+  },
+  "16efb219-7953-40cb-b8ca-8b0e956f9e39": {
+    "M18TZ1SL_P2_Q1": ["a", "b"],
   },
   "9d0fc44f-c26e-4a61-9d6a-9d84d022c372": {
+    "M19TZ2SL_P1_Q10": ["a"],
     "M16TZ1SL_P1_Q10": ["a"],
   },
-  "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": {
-    "M12TZ2SL_P2_Q2": ["a", "b"],
+  "7c1d0df9-3f50-4bfb-ae45-b669c1405895": {
     "M14TZ2SL_P1_Q6": ["a"],
+  },
+  "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": {
+    "M10TZ1SL_P2_Q3": ["a", "b"],
+    "M12TZ2SL_P2_Q2": ["a", "b"],
   },
   "92c1b8b1-b956-4724-bd03-de85fb5d4f09": {
     "N13TZ0HL_P1_Q10X1": ["a", "b"],
   },
   "5c83085a-0fc2-4199-89b3-34ce0cf5539b": {
-    "M09TZ1HL_P2_Q6": ["a"],
-    "A_M23TZ1SL_P2_Q9": ["c"],
+    "N08TZ0SL_P1_Q9": ["b"],
+    "M10TZ2SL_P1_Q10": ["c"],
+  },
+  "924417ae-de6f-4e30-9f97-46ac0d001d4a": {
+    "M17TZ1SL_P1_Q5": ["a"],
   },
   "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": {
     "M10TZ2HL_P2_Q3": ["a"],
@@ -1856,35 +1887,44 @@ const practicePartTitles = {
   },
   "4ec4c4a2-a2de-4e61-9903-55f280bf9ab6": {
     "M14TZ1AISL_P1_Q10": "Differentiate x⁴ using the power rule",
-    "N16TZ0AISL_P1_Q14": "Differentiate a polynomial using the power rule",
+    "V_N23TZ2AISL_P1_Q3": "Differentiate a function containing a negative power",
   },
   "db4f51b7-b4c5-41ad-bb94-b0bd53f9bee3": {
     "M18TZ2AISL_P1_Q14": "Differentiate and find the gradient at a point",
   },
   "e884d9fa-1e59-4ccc-a67d-2c63d5140908": {
+    "N18TZ0AISL_P1_Q11": "Find the equation of a tangent using the power rule",
     "N09TZ0SL_P1_Q10X1": "Find the equation of the normal to y = √x",
   },
   "f4aa813d-a3e2-480a-9f8d-49d2b31a7a04": {
     "N13TZ0SL_P2_Q3": "Integrate a fractional power using the power rule",
   },
   "76f62a43-8fbd-46d5-aff6-c74b0488675a": {
-    "A_M22TZ1SL_P1_Q2": "Evaluate a definite integral using the power rule",
+    "A_M22TZ1HL_P1_Q1": "Evaluate a definite integral containing a fractional power",
+    "N13TZ0SL_P1_Q4": "Use the properties of a definite integral",
   },
   "20b8ec75-0605-426a-abec-066ca4c4f9d2": {
     "A_N22TZ0SL_P2_Q3": "Find the total area between a graph and the x-axis",
+    "W_N23TZ0AIHL_P1_Q11": "Find the area between a cubic curve and the x-axis",
+  },
+  "16efb219-7953-40cb-b8ca-8b0e956f9e39": {
+    "N16TZ0SL_P1_Q10X1": "Differentiate cos x repeatedly to see the sine-cosine cycle",
+    "M18TZ1SL_P2_Q1": "Differentiate a function containing ln x",
+    "M15TZ1HL_P2_Q6": "Differentiate a polynomial and eˣ",
   },
   "9d0fc44f-c26e-4a61-9d6a-9d84d022c372": {
+    "M19TZ2SL_P1_Q10": "Differentiate a composite power using the chain rule",
     "M16TZ1SL_P1_Q10": "Use the chain rule to find a derivative at a point",
   },
   "2ece54f8-dd4e-445e-8f8a-23858053df10": {
     "N08TZ0SL_P1_Q6": "Read extrema and inflexion from the graph of f′",
   },
   "7c1d0df9-3f50-4bfb-ae45-b669c1405895": {
-    "M10TZ1SL_P2_Q3": "Differentiate a function and sketch its derivative",
+    "M14TZ2SL_P1_Q6": "Sketch f′ from the graph of f without a calculator",
   },
   "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": {
+    "M10TZ1SL_P2_Q3": "Differentiate a function and sketch its derivative with a GDC",
     "M12TZ2SL_P2_Q2": "Differentiate cos(eˣ) and sketch f′ using a GDC",
-    "M14TZ2SL_P1_Q6": "Sketch f′ from the graph of f",
   },
   "92c1b8b1-b956-4724-bd03-de85fb5d4f09": {
     "N13TZ0HL_P1_Q10X1": "Find a stationary point and prove that it is a maximum",
@@ -1902,12 +1942,16 @@ const practicePartTitles = {
     "A_M22TZ2SL_P2_Q2": "Integrate a function containing 1/x",
   },
   "5c83085a-0fc2-4199-89b3-34ce0cf5539b": {
-    "M09TZ1HL_P2_Q6": "Integrate a trigonometric expression",
-    "A_M23TZ1SL_P2_Q9": "Integrate a cosine rate model",
+    "N08TZ0SL_P1_Q9": "Integrate a cosine term to recover velocity",
+    "M10TZ2SL_P1_Q10": "Integrate 6 + 6sin x to find an area",
   },
   "190dd207-d2d9-4de5-b374-aaa9e4f951de": {
     "N10TZ0SL_P1_Q6": "Integrate sin(2x − 3) by the inverse chain rule",
     "M14TZ2SL_P1_Q5": "Integrate 4cos(2x) by the inverse chain rule",
+  },
+  "924417ae-de6f-4e30-9f97-46ac0d001d4a": {
+    "M17TZ1SL_P1_Q5": "Integrate xe^(x² − 1) using substitution",
+    "A_N22TZ0SL_P1_Q5": "Recover a function by substituting u = x²",
   },
   "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": {
     "M10TZ2HL_P2_Q3": "Use z = (x − μ)/σ to find the standard deviation",
@@ -3037,7 +3081,7 @@ function allowsCrossCourseQuestion(question, lesson, course) {
   // These are universal mathematical/financial skills. Some suitable records
   // are catalogued under only one IB pathway even though the question itself
   // is valid practice for another pathway.
-  return /scientific notation|standard form|sigma notation|inflation|laws of exponents|roots of a polynomial|factorising quadratics|pythagoras|soh cah toa|rounding|loans|annuities|equation.*straight line|functions introduction|evaluating functions|sketching functions|change of base|complex numbers introduction|operations with complex numbers|magnitude and unit vectors|exact triangles|unit circle|cast diagram|trig identities|solving trig equations|averages and spread|outliers|median and mode of a discrete random variable|introduction to differentiation|increasing and decreasing|differentiation.*power rule|derivative at a point|tangents and normals|chain rule|product rule|related rates|sketching derivatives|classifying stationary points|points of inflexion|integration.*power rule|integrating sin.*cos|integrating e.*1 x|inverse chain rule|area under the curve|area between curve and y axis|finding f x/.test(normalize(lesson.title));
+  return /scientific notation|standard form|sigma notation|inflation|laws of exponents|roots of a polynomial|factorising quadratics|pythagoras|soh cah toa|rounding|loans|annuities|equation.*straight line|functions introduction|evaluating functions|sketching functions|change of base|complex numbers introduction|operations with complex numbers|magnitude and unit vectors|exact triangles|unit circle|cast diagram|trig identities|solving trig equations|averages and spread|outliers|median and mode of a discrete random variable|introduction to differentiation|increasing and decreasing|differentiation.*power rule|derivative at a point|tangents and normals|definite integration|chain rule|product rule|related rates|sketching derivatives|classifying stationary points|points of inflexion|integration.*power rule|integrating sin.*cos|integrating e.*1 x|inverse chain rule|area under the curve|area between curve and y axis|finding f x/.test(normalize(lesson.title));
 }
 
 function passesLessonSpecificCheck(question, lesson) {
@@ -3259,10 +3303,18 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/differentiation.*power rule/.test(lessonTitle)
     && [
       "M14TZ1AISL_P1_Q10",
-      "N16TZ0AISL_P1_Q14",
+      "V_N23TZ2AISL_P1_Q3",
       "N12TZ0AISL_P1_Q15",
       "M13TZ1AISL_P1_Q15",
     ].includes(question.id)) return true;
+  if (/tangents and normals/.test(lessonTitle)
+    && ["N18TZ0AISL_P1_Q11", "N09TZ0SL_P1_Q10X1"].includes(question.id)) return true;
+  if (/definite integration/.test(lessonTitle)
+    && ["A_M22TZ1HL_P1_Q1", "N13TZ0SL_P1_Q4"].includes(question.id)) return true;
+  if (/^area under the curve$/.test(lessonTitle)
+    && ["A_N22TZ0SL_P2_Q3", "W_N23TZ0AIHL_P1_Q11"].includes(question.id)) return true;
+  if (/derivative of sine.*cosine|derivative of sin.*cos.*ln.*e/.test(lessonTitle)
+    && ["N16TZ0SL_P1_Q10X1", "M18TZ1SL_P2_Q1", "M15TZ1HL_P2_Q6"].includes(question.id)) return true;
   // Final AI HL calculus and differential-equations review. These sources
   // were checked at displayed-part level so a broader source title cannot
   // push slope fields, vector motion or later modelling into the wrong card.
@@ -3293,7 +3345,7 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/integration.*power rule/.test(lessonTitle)
     && ["N13TZ0SL_P2_Q3", "M14TZ1SL_P1_Q3", "V_M24TZ2AISL_P2_Q3", "N18TZ0HL_P2_Q2"].includes(question.id)) return true;
   if (/^chain rule$/.test(lessonTitle)
-    && ["M16TZ1SL_P1_Q10", "H_M18TZ1HL_P1_Q2"].includes(question.id)) return true;
+    && ["M19TZ2SL_P1_Q10", "M16TZ1SL_P1_Q10", "H_M18TZ1HL_P1_Q2"].includes(question.id)) return true;
   if (/^product rule$/.test(lessonTitle)
     && ["H_N10TZ0SL_P1_Q2", "M19TZ1SL_P2_Q3"].includes(question.id)) return true;
   if (/related rates/.test(lessonTitle)
@@ -3305,9 +3357,9 @@ function passesLessonSpecificCheck(question, lesson) {
   // exponential item is a direct integral, the cosine-rate part requires a
   // cosine integral, and the inverse-chain items both have linear inners.
   if (/sketching derivatives with gdc/.test(lessonTitle)
-    && ["M12TZ2SL_P2_Q2", "M14TZ2SL_P1_Q6"].includes(question.id)) return true;
+    && ["M10TZ1SL_P2_Q3", "M12TZ2SL_P2_Q2"].includes(question.id)) return true;
   if (/^sketching derivatives$/.test(lessonTitle)
-    && ["W_N21TZ0AIHL_P1_Q8", "M12TZ2HL_P1_Q7"].includes(question.id)) return true;
+    && ["M14TZ2SL_P1_Q6", "W_N21TZ0AIHL_P1_Q8", "M12TZ2HL_P1_Q7"].includes(question.id)) return true;
   if (/classifying stationary points/.test(lessonTitle)
     && ["N09TZ0SL_P1_Q9", "M10TZ2SL_P1_Q8"].includes(question.id)) return true;
   if (/points of inflexion/.test(lessonTitle)
@@ -3315,7 +3367,9 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/integrating e.*1 x/.test(lessonTitle) && question.id === "N20TZ0SL_P1_Q6") return true;
   if (/integrating e.*1 x/.test(lessonTitle) && question.id === "M13TZ1SL_P1_Q6") return true;
   if (/integrating sin.*cos/.test(lessonTitle)
-    && ["A_M23TZ1SL_P2_Q9", "H_M15TZ1SL_P1_Q7"].includes(question.id)) return true;
+    && ["N08TZ0SL_P1_Q9", "M10TZ2SL_P1_Q10", "A_M23TZ1SL_P2_Q9", "H_M15TZ1SL_P1_Q7"].includes(question.id)) return true;
+  if (/^integration by substitution$/.test(lessonTitle)
+    && ["M17TZ1SL_P1_Q5", "A_N22TZ0SL_P1_Q5"].includes(question.id)) return true;
   if (/inverse chain rule/.test(lessonTitle)
     && ["N10TZ0SL_P1_Q6", "M14TZ2SL_P1_Q5", "M11TZ2SL_P2_Q7"].includes(question.id)) return true;
   if (/^area under the curve$/.test(lessonTitle)

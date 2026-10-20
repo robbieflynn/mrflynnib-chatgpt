@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T15:54:03.603Z",
+  "generatedAt": "2026-10-20T16:13:28.099Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 476,
-  "completeLessonCount": 428,
-  "approvedSingleLessonCount": 40,
-  "questionCount": 912,
+  "completeLessonCount": 426,
+  "approvedSingleLessonCount": 42,
+  "questionCount": 911,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -1102,19 +1102,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M14TZ1AISL_P1_Q10",
-        "N16TZ0AISL_P1_Q14"
+        "V_N23TZ2AISL_P1_Q3"
       ],
       "questionParts": {
         "M14TZ1AISL_P1_Q10": [
           "a"
         ],
-        "N16TZ0AISL_P1_Q14": [
-          "a"
+        "V_N23TZ2AISL_P1_Q3": [
+          "b"
         ]
       },
       "questionPartTitles": {
         "M14TZ1AISL_P1_Q10": "Differentiate x⁴ using the power rule",
-        "N16TZ0AISL_P1_Q14": "Differentiate a polynomial using the power rule"
+        "V_N23TZ2AISL_P1_Q3": "Differentiate a function containing a negative power"
       }
     },
     "db4f51b7-b4c5-41ad-bb94-b0bd53f9bee3": {
@@ -1142,15 +1142,21 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Tangents and normals",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M19TZ1HL_P2_Q1",
+        "N18TZ0AISL_P1_Q11",
         "N09TZ0SL_P1_Q10X1"
       ],
       "questionParts": {
+        "N18TZ0AISL_P1_Q11": [
+          "a",
+          "b",
+          "c"
+        ],
         "N09TZ0SL_P1_Q10X1": [
           "a"
         ]
       },
       "questionPartTitles": {
+        "N18TZ0AISL_P1_Q11": "Find the equation of a tangent using the power rule",
         "N09TZ0SL_P1_Q10X1": "Find the equation of the normal to y = √x"
       }
     },
@@ -1188,17 +1194,12 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M13TZ2HL_P1_Q1",
-        "M15TZ1HL_P1_Q3S"
+        "A_M22TZ1HL_P1_Q1",
+        "N13TZ0SL_P1_Q4"
       ],
-      "questionParts": {
-        "A_M22TZ1SL_P1_Q2": [
-          "a",
-          "b"
-        ]
-      },
       "questionPartTitles": {
-        "A_M22TZ1SL_P1_Q2": "Evaluate a definite integral using the power rule"
+        "A_M22TZ1HL_P1_Q1": "Evaluate a definite integral containing a fractional power",
+        "N13TZ0SL_P1_Q4": "Use the properties of a definite integral"
       }
     },
     "20b8ec75-0605-426a-abec-066ca4c4f9d2": {
@@ -1208,15 +1209,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A_N22TZ0SL_P2_Q3",
-        "A_M25TZ1HL_P1_Q3"
+        "W_N23TZ0AIHL_P1_Q11"
       ],
       "questionParts": {
         "A_N22TZ0SL_P2_Q3": [
           "c"
+        ],
+        "W_N23TZ0AIHL_P1_Q11": [
+          "a"
         ]
       },
       "questionPartTitles": {
-        "A_N22TZ0SL_P2_Q3": "Find the total area between a graph and the x-axis"
+        "A_N22TZ0SL_P2_Q3": "Find the total area between a graph and the x-axis",
+        "W_N23TZ0AIHL_P1_Q11": "Find the area between a cubic curve and the x-axis"
       }
     },
     "d336ee8b-277b-4f7d-90f8-c309a50d1d4c": {
@@ -1225,8 +1230,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Differentiation rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M14TZ1SL_P1_Q6",
-        "A_M23TZ2SL_P1_Q5"
+        "M14TZ1SL_P1_Q6"
       ]
     },
     "16efb219-7953-40cb-b8ca-8b0e956f9e39": {
@@ -1235,9 +1239,21 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Differentiation rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N09TZ0SL_P2_Q2",
-        "M09TZ1SL_P1_Q8"
-      ]
+        "N16TZ0SL_P1_Q10X1",
+        "M18TZ1SL_P2_Q1",
+        "M15TZ1HL_P2_Q6"
+      ],
+      "questionParts": {
+        "M18TZ1SL_P2_Q1": [
+          "a",
+          "b"
+        ]
+      },
+      "questionPartTitles": {
+        "N16TZ0SL_P1_Q10X1": "Differentiate cos x repeatedly to see the sine-cosine cycle",
+        "M18TZ1SL_P2_Q1": "Differentiate a function containing ln x",
+        "M15TZ1HL_P2_Q6": "Differentiate a polynomial and eˣ"
+      }
     },
     "9d0fc44f-c26e-4a61-9d6a-9d84d022c372": {
       "lesson": "5.6.2 Chain rule",
@@ -1245,15 +1261,19 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Differentiation rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M22TZ2SL_P1_Q1",
+        "M19TZ2SL_P1_Q10",
         "M16TZ1SL_P1_Q10"
       ],
       "questionParts": {
+        "M19TZ2SL_P1_Q10": [
+          "a"
+        ],
         "M16TZ1SL_P1_Q10": [
           "a"
         ]
       },
       "questionPartTitles": {
+        "M19TZ2SL_P1_Q10": "Differentiate a composite power using the chain rule",
         "M16TZ1SL_P1_Q10": "Use the chain rule to find a derivative at a point"
       }
     },
@@ -1264,7 +1284,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M17TZ2SL_P1_Q6",
-        "N10TZ0SL_P1_Q2"
+        "N09TZ0SL_P2_Q2"
       ]
     },
     "6b4acb2b-3242-40a3-b616-228c878585f8": {
@@ -1296,11 +1316,15 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graphs of derivatives",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M10TZ1SL_P2_Q3",
-        "M17TZ1SL_P1_Q6"
+        "M14TZ2SL_P1_Q6"
       ],
+      "questionParts": {
+        "M14TZ2SL_P1_Q6": [
+          "a"
+        ]
+      },
       "questionPartTitles": {
-        "M10TZ1SL_P2_Q3": "Differentiate a function and sketch its derivative"
+        "M14TZ2SL_P1_Q6": "Sketch f′ from the graph of f without a calculator"
       }
     },
     "3dc1e1bd-8ead-4e5a-b489-9f02f48d7892": {
@@ -1309,21 +1333,22 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graphs of derivatives",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M12TZ2SL_P2_Q2",
-        "M14TZ2SL_P1_Q6"
+        "M10TZ1SL_P2_Q3",
+        "M12TZ2SL_P2_Q2"
       ],
       "questionParts": {
-        "M12TZ2SL_P2_Q2": [
+        "M10TZ1SL_P2_Q3": [
           "a",
           "b"
         ],
-        "M14TZ2SL_P1_Q6": [
-          "a"
+        "M12TZ2SL_P2_Q2": [
+          "a",
+          "b"
         ]
       },
       "questionPartTitles": {
-        "M12TZ2SL_P2_Q2": "Differentiate cos(eˣ) and sketch f′ using a GDC",
-        "M14TZ2SL_P1_Q6": "Sketch f′ from the graph of f"
+        "M10TZ1SL_P2_Q3": "Differentiate a function and sketch its derivative with a GDC",
+        "M12TZ2SL_P2_Q2": "Differentiate cos(eˣ) and sketch f′ using a GDC"
       }
     },
     "92c1b8b1-b956-4724-bd03-de85fb5d4f09": {
@@ -1351,8 +1376,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Stationary points and points of inflexion",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N10TZ0SL_P2_Q7",
-        "M16TZ1HL_P2_Q11X1"
+        "M16TZ1HL_P2_Q11X1",
+        "N10TZ0SL_P2_Q7"
       ]
     },
     "0922ca4f-d53f-4299-b9c9-eafe6d17caf1": {
@@ -1375,8 +1400,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Kinematics",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M16TZ1HL_P2_Q3",
-        "M12TZ2SL_P2_Q5"
+        "M12TZ2SL_P2_Q5",
+        "M16TZ1HL_P2_Q3"
       ],
       "questionPartTitles": {
         "M16TZ1HL_P2_Q3": "Find velocity and acceleration from a displacement model",
@@ -1403,20 +1428,20 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M09TZ1HL_P2_Q6",
-        "A_M23TZ1SL_P2_Q9"
+        "N08TZ0SL_P1_Q9",
+        "M10TZ2SL_P1_Q10"
       ],
       "questionParts": {
-        "M09TZ1HL_P2_Q6": [
-          "a"
+        "N08TZ0SL_P1_Q9": [
+          "b"
         ],
-        "A_M23TZ1SL_P2_Q9": [
+        "M10TZ2SL_P1_Q10": [
           "c"
         ]
       },
       "questionPartTitles": {
-        "M09TZ1HL_P2_Q6": "Integrate a trigonometric expression",
-        "A_M23TZ1SL_P2_Q9": "Integrate a cosine rate model"
+        "N08TZ0SL_P1_Q9": "Integrate a cosine term to recover velocity",
+        "M10TZ2SL_P1_Q10": "Integrate 6 + 6sin x to find an area"
       }
     },
     "190dd207-d2d9-4de5-b374-aaa9e4f951de": {
@@ -1439,9 +1464,18 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration by substitution",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N12TZ0HL_P2_Q8",
-        "N14TZ0HL_P1_Q6"
-      ]
+        "M17TZ1SL_P1_Q5",
+        "A_N22TZ0SL_P1_Q5"
+      ],
+      "questionParts": {
+        "M17TZ1SL_P1_Q5": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M17TZ1SL_P1_Q5": "Integrate xe^(x² − 1) using substitution",
+        "A_N22TZ0SL_P1_Q5": "Recover a function by substituting u = x²"
+      }
     },
     "2f6505bd-9272-4e5b-b5ed-f6c596aff877": {
       "lesson": "5.11 Area between two curves",
@@ -1449,8 +1483,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Area under the curve",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M24TZ2HL_P2_Q1",
-        "M14TZ2HL_P2_Q3"
+        "M14TZ2HL_P2_Q3",
+        "A_M25TZ1HL_P1_Q3"
       ]
     },
     "1f072e71-5da3-475f-9b54-e809a68a893d": {
@@ -2540,7 +2574,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M15TZ2SL_P1_Q5",
-        "N16TZ0SL_P1_Q10"
+        "N19TZ0HL_P1_Q6"
       ],
       "questionParts": {
         "N16TZ0SL_P1_Q10": [
@@ -5329,7 +5363,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "H_N15TZ0HL_P1_Q5",
-        "M19TZ2HL_P1_Q4"
+        "M09TZ1HL_P2_Q6"
       ]
     },
     "baf50754-d084-4bea-84e4-6d755bc624c6": {
