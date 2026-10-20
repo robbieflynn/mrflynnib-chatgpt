@@ -481,7 +481,7 @@ function renderLessonPractice(lesson) {
   const frame = document.getElementById("practiceFrame");
   const bankFile = practice.bankPath || "ib-bank.html";
   const url = new URL(`/public/question-bank/${bankFile}`, window.location.href);
-  url.searchParams.set("renderer", "20261018-13");
+  url.searchParams.set("renderer", "20261020-1");
   url.searchParams.set("embedded", "1");
   url.searchParams.set("practice", "1");
   url.searchParams.set("course", practice.course);

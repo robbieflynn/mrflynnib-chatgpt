@@ -227,6 +227,9 @@ const verifiedOverrides = {
   // Start with a normal algebraic inverse, then retain Rob's approved harder
   // inverse question as question 2.
   "48b621fa-d972-43fd-8d91-5ace017b5d48": ["N15TZ0SL_P1_Q5", "N16TZ0HL_P2_Q10X2"],
+  // Rob approved both vertex-form questions and both direct quadratic-solving
+  // questions. Pin them so later matching cannot reshuffle the reviewed pair.
+  "f6cfdfea-d917-4385-aa62-7604bad73e59": ["M14TZ1SL_P1_Q1", "M16TZ2SL_P1_Q1"],
   // Connect factorised form, intercepts/graph features and completed-square
   // form. The second is the longer multi-stage question Rob recalled.
   "c985a287-ffe1-4d77-a163-30d4d61621f5": ["A_N21TZ0SL_P1_Q1", "A_M21TZ1SL_P1_Q7"],
@@ -237,7 +240,7 @@ const verifiedOverrides = {
   "b8e1f841-d49c-4325-8d04-a78b335eb89b": ["M13TZ1HL_P2_Q2", "M14TZ1HL_P2_Q4"],
   // Cubic factorisation through the factor theorem and polynomial division.
   // Show only the polynomial parts of the longer first source.
-  "6468821a-a955-4837-b591-7e8bdf3705ca": ["A_M24TZ1HL_P1_Q11", "N17TZ0HL_P1_Q3"],
+  "6468821a-a955-4837-b591-7e8bdf3705ca": ["M18TZ1HL_P2_Q5", "N17TZ0HL_P1_Q3"],
   // Coordinate-distance formula practice only. The first source includes the
   // midpoint as the short setup for the required distance calculation; the
   // second selected part is a standalone distance between two locations.
@@ -389,17 +392,34 @@ const verifiedOverrides = {
   // quadratic formula. Retain the second source because it can also be solved
   // with the quadratic formula without teaching sum/product of roots.
   "88162068-c195-41a3-ae20-004900917331": ["N14TZ0SL_P1_Q1", "N17TZ0HL_P2_Q7"],
-  // N14TZ0SL_P1_Q1 now supplies the direct quadratic equation above. Use a
-  // different numerical intersection question for GDC solving.
-  "ac5e0aa4-64bb-4cbb-86aa-8d7f9315c0ac": ["M16TZ1SL_P2_Q2", "M09TZ1HL_P2_Q12X1"],
-  // Composite transformations must apply multiple transformations to one
-  // graph in sequence. The previous cubic-roots source presented two separate
-  // one-step transformations, so it did not assess this lesson's actual skill.
-  "2a607da2-7e6a-4dc8-b483-2819907798e0": ["M09TZ1SL_P1_Q5", "M10TZ2HL_P1_Q2"],
-  // Direct polynomial graphing only: first a cubic with its local minimum,
-  // then a quartic with its roots. Translation-only and indirect complex-root
-  // questions do not assess the graph-sketching skill taught here.
-  "916aa44f-5240-4926-9cb6-12800d012e0c": ["N16TZ0SL_P2_Q2", "N14TZ0SL_P2_Q4"],
+  // Use only the direct inequality in part (a); the unrelated triangle is
+  // omitted. One exact question is better than padding the lesson with logs,
+  // inverse functions or other mixed topics.
+  "908747f1-8799-4ca2-8f63-ba376beff0ab": ["M17TZ2HL_P2_Q4"],
+  // Preserve the approved first discriminant question and replace the
+  // calculus-based second item with a direct no-real-roots condition.
+  "7041af84-c272-4165-8680-f53bf1b92554": ["M15TZ1SL_P1_Q6", "N20TZ0SL_P1_Q5"],
+  // A conventional linear-over-linear sketch comes before the approved
+  // second rational-function question; no inverse-function work is included.
+  "bd083b0d-a7b1-44cc-9980-47cce4046c0d": ["A_M24TZ1SL_P1_Q8", "A_M22TZ2SL_P1_Q4"],
+  // Pin the modelling and substitution lessons Rob approved.
+  "ffb4c343-0db5-45dd-b9b5-5289dba0484b": ["W_N24TZ0AIHL_P1_Q2", "W_M21TZ1AIHL_P1_Q4"],
+  "0ab637d2-648c-4ff8-a5da-b78b5971d4e1": ["W_M25TZ3AIHL_P1_Q2", "N20TZ0SL_P1_Q4"],
+  "c8ce5b5c-f78f-40a9-a8aa-2c5065925d0f": ["A_M23TZ1SL_P1_Q5", "A_M24TZ2HL_P1_Q2"],
+  // Keep the approved first GDC equation and replace the trigonometric source
+  // with a numerical polynomial intersection.
+  "ac5e0aa4-64bb-4cbb-86aa-8d7f9315c0ac": ["M16TZ1SL_P2_Q2", "M15TZ2SL_P2_Q8X1"],
+  // Single transformations only: one reflection in the x-axis and one in the
+  // y-axis. Their later multi-step parts are deliberately hidden.
+  "885f3694-d90b-4734-becb-dc9360b09ec7": ["M08TZ2SL_P1_Q5", "M12TZ2SL_P1_Q5"],
+  // Move the two previously displayed multi-step questions into the composite
+  // lesson, ordering the easier source first.
+  "2a607da2-7e6a-4dc8-b483-2819907798e0": ["N09TZ0SL_P1_Q4", "M14TZ2HL_P1_Q8S"],
+  // Factorise first and then sketch the polynomial. The later horizontal-line
+  // extension is omitted so the task stays on polynomial graphs.
+  "916aa44f-5240-4926-9cb6-12800d012e0c": ["M17TZ2HL_P2_Q11"],
+  // Both sum/product questions were approved; medium precedes difficult.
+  "5776410f-820d-49e1-97f0-5261d9bb438d": ["M15TZ1HL_P1_Q7", "A_M21TZ2HL_P1_Q7"],
   // Keep the two neighbouring rational-function lessons algebraically exact
   // and completely separate. The first pair has a genuine quadratic in the
   // denominator; the second pair has a quadratic numerator over a linear
@@ -805,6 +825,8 @@ const intentionallySinglePractice = new Set([
   "d5c720d9-4540-4c45-b822-a0c84764b619", // AA HL: Prove De Moivre by induction
   "35a8aee0-4d48-4084-883f-fc23b5be9039", // AA HL: Vector equation of a plane
   "40c21470-dbef-42f5-acfb-ba9658d8f02e", // AA HL: Angle between a line and a plane
+  "908747f1-8799-4ca2-8f63-ba376beff0ab", // AA SL + AA HL: direct quadratic inequality only
+  "916aa44f-5240-4926-9cb6-12800d012e0c", // AA HL: one coherent polynomial factorise-and-sketch task
   "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
   "5e60b54a-6bf2-4cf5-be78-4f13509448fd", // AI SL + AI HL: Rounding
   "316a9cc6-d140-4513-8713-266476d64627", // AI HL: Euler form
@@ -1229,7 +1251,7 @@ const practicePartOverrides = {
     "N08TZ0SL_P1_Q7": ["a"],
   },
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
-    "A_M24TZ1HL_P1_Q11": ["a", "b"],
+    "M18TZ1HL_P2_Q5": ["a"],
   },
   "17cbf90f-7617-48fa-855d-dc6b1013a2d4": {
     "N18TZ0SL_P1_Q2": ["a"],
@@ -1256,12 +1278,20 @@ const practicePartOverrides = {
   },
   "ac5e0aa4-64bb-4cbb-86aa-8d7f9315c0ac": {
     "M16TZ1SL_P2_Q2": ["a"],
+    "M15TZ2SL_P2_Q8X1": ["a"],
   },
-  "2a607da2-7e6a-4dc8-b483-2819907798e0": {
-    "M09TZ1SL_P1_Q5": ["a"],
+  "bd083b0d-a7b1-44cc-9980-47cce4046c0d": {
+    "A_M24TZ1SL_P1_Q8": ["a"],
+  },
+  "908747f1-8799-4ca2-8f63-ba376beff0ab": {
+    "M17TZ2HL_P2_Q4": ["a"],
+  },
+  "885f3694-d90b-4734-becb-dc9360b09ec7": {
+    "M08TZ2SL_P1_Q5": ["a"],
+    "M12TZ2SL_P1_Q5": ["a"],
   },
   "916aa44f-5240-4926-9cb6-12800d012e0c": {
-    "N14TZ0SL_P2_Q4": ["a", "b"],
+    "M17TZ2HL_P2_Q11": ["a", "b", "c"],
   },
   "f8918c12-e985-4e26-bea3-c93f245655f1": {
     "M17TZ1HL_P1_Q11": ["a", "b"],
@@ -1854,7 +1884,7 @@ const practicePartTitles = {
     "N08TZ0SL_P1_Q7": "Simplify a trigonometric expression to sin x",
   },
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
-    "A_M24TZ1HL_P1_Q11": "Verify a root, divide and factorise a cubic",
+    "M18TZ1HL_P2_Q5": "Rewrite a cubic by polynomial division",
   },
   "17cbf90f-7617-48fa-855d-dc6b1013a2d4": {
     "N18TZ0SL_P1_Q2": "Read a function value from a table",
@@ -1881,13 +1911,23 @@ const practicePartTitles = {
   },
   "ac5e0aa4-64bb-4cbb-86aa-8d7f9315c0ac": {
     "M16TZ1SL_P2_Q2": "Use a GDC to solve x² = 3 ln(x + 1)",
+    "M15TZ2SL_P2_Q8X1": "Use a GDC to find where two graphs intersect",
+  },
+  "bd083b0d-a7b1-44cc-9980-47cce4046c0d": {
+    "A_M24TZ1SL_P1_Q8": "Sketch a rational function with its intercepts and asymptotes",
+  },
+  "908747f1-8799-4ca2-8f63-ba376beff0ab": {
+    "M17TZ2HL_P2_Q4": "Solve k² − k − 12 < 0",
+  },
+  "885f3694-d90b-4734-becb-dc9360b09ec7": {
+    "M08TZ2SL_P1_Q5": "Reflect a graph in the x-axis",
+    "M12TZ2SL_P1_Q5": "Reflect a graph in the y-axis",
   },
   "2a607da2-7e6a-4dc8-b483-2819907798e0": {
     "M09TZ1SL_P1_Q5": "Vertical stretch followed by a horizontal translation",
   },
   "916aa44f-5240-4926-9cb6-12800d012e0c": {
-    "N16TZ0SL_P2_Q2": "Find the local minimum and sketch a cubic",
-    "N14TZ0SL_P2_Q4": "Sketch a quartic and find its roots",
+    "M17TZ2HL_P2_Q11": "Factorise and sketch a polynomial graph",
   },
   "f8918c12-e985-4e26-bea3-c93f245655f1": {
     "M17TZ1HL_P1_Q11": "Factorise a quadratic denominator and sketch its reciprocal",
@@ -2844,6 +2884,12 @@ function passesLessonSpecificCheck(question, lesson) {
     && question.id === "N15TZ0SL_P1_Q5") return true;
   if (/^factorising quadratics$/.test(lessonTitle)
     && question.id === "N08TZ0SL_P2_Q1") return true;
+  if (/^rational functions$/.test(lessonTitle)
+    && question.id === "A_M24TZ1SL_P1_Q8") return true;
+  if (/^solving equations with gdc$/.test(lessonTitle)
+    && ["M16TZ1SL_P2_Q2", "M15TZ2SL_P2_Q8X1"].includes(question.id)) return true;
+  if (/^composite transformations$/.test(lessonTitle)
+    && ["N09TZ0SL_P1_Q4", "M14TZ2HL_P1_Q8S"].includes(question.id)) return true;
   // IGCSE Topic 1 selections reviewed at displayed-part level. The two surd
   // sources continue into rationalising work, but only their simplifying
   // part (a) is rendered. The set sources are symbolic/listing questions and

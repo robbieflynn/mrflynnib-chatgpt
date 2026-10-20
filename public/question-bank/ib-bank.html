@@ -153586,6 +153586,7 @@ function diagramN11TZ0P2Q1grid(){
       }
     ],
     "diagram": "m17tz2p2q4",
+    "diagramPart": "b",
     "diagramCaption": "Triangle ABC with AC = 4 and BC = 2. Diagram not to scale.",
     "banks": [
       "AA SL",
@@ -550456,6 +550457,19 @@ function diagramN11TZ0P2Q1grid(){
   var REQUESTED_SUBTOPIC = EMBED_PARAMS.get('subtopic') || '';
   var REQUESTED_ID_LIST = (EMBED_PARAMS.get('ids') || '').split(',').filter(Boolean);
   var REQUESTED_IDS = new Set(REQUESTED_ID_LIST);
+  function practiceMap(name){
+    var raw = EMBED_PARAMS.get(name);
+    if(!raw) return {};
+    try {
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch(e){
+      return {};
+    }
+  }
+  var REQUESTED_PARTS = practiceMap('parts');
+  var REQUESTED_PART_TITLES = practiceMap('partTitles');
+  var REQUESTED_BODIES = practiceMap('bodies');
   var SHOW_SOLUTIONS = EMBED_PARAMS.get('solutions') !== '0';
   var requestedFiltersApplied = false;
   function reportEmbeddedHeight(){
@@ -550524,11 +550538,35 @@ function diagramN11TZ0P2Q1grid(){
   //
   // The bank on disk is authoritative. Storage is now written, never read back
   // into the list.
+  function practiceVariant(q){
+    if(!IS_PRACTICE) return q;
+    var id = String(q.id);
+    var labels = REQUESTED_PARTS[id];
+    var hasTitle = Object.prototype.hasOwnProperty.call(REQUESTED_PART_TITLES, id);
+    var hasBody = Object.prototype.hasOwnProperty.call(REQUESTED_BODIES, id);
+    if(!Array.isArray(labels) && !hasTitle && !hasBody) return q;
+
+    var copy = Object.assign({}, q);
+    if(Array.isArray(labels) && labels.length){
+      var wanted = new Set(labels.map(String));
+      copy.parts = (q.parts || []).filter(function(part){ return wanted.has(String(part[0])); });
+      copy.markscheme = (q.markscheme || []).filter(function(group){ return wanted.has(String(group[0])); });
+      copy.marks = copy.parts.reduce(function(total, part){
+        var marks = parseInt(part[2], 10);
+        return total + (isNaN(marks) ? 0 : marks);
+      }, 0);
+      copy._practiceParts = labels.map(String);
+    }
+    if(hasTitle) copy.title = REQUESTED_PART_TITLES[id];
+    if(hasBody) copy.body = REQUESTED_BODIES[id];
+    return copy;
+  }
+
   function mergeAndSort(stored){
     var byId = {};
-    SEED.forEach(function(q){ byId[q.id] = q; });
+    var merged = SEED.map(practiceVariant);
+    merged.forEach(function(q){ byId[q.id] = q; });
     var addedAny = (stored || []).length !== SEED.length;
-    var merged = SEED.slice();
     merged.sort(function(a,b){
       var ba = bankOf(a), bb = bankOf(b);
       var ca = COURSE_ORDER.indexOf(ba), cb = COURSE_ORDER.indexOf(bb);
@@ -550686,14 +550724,15 @@ function diagramN11TZ0P2Q1grid(){
 
   // The worked solution: numbered steps, each with a title, an explanation in
   // words and the working. Same content as the answers booklets.
-  function solutionHTML(data){
+  function solutionHTML(data, q){
     var sol = data && data.s;
     if(!sol) return '';
     var figs = data.f || {};
     function solutionFig(q, pi, si){ return figs[pi + '.' + si] || ''; }
-    var q = null;
+    var wantedParts = q && q._practiceParts ? new Set(q._practiceParts.map(String)) : null;
     var out = [];
     (sol.solution || []).forEach(function(part, pi){
+      if(wantedParts && !wantedParts.has(String(part.part || ''))) return;
       if(part.part) out.push('<div class="qb-sol-part">(' + part.part + ')</div>');
       (part.steps || []).forEach(function(st, i){
         var fig = solutionFig(q, pi, i);
@@ -551443,7 +551482,7 @@ function diagramN11TZ0P2Q1grid(){
             sPanel.innerHTML = '<div class="qb-sol-loading">Loading the worked solution\u2026</div>';
             loadSolution(sq, function(data){
               sPanel.removeAttribute('data-loading');
-              sPanel.innerHTML = solutionHTML(data); typeset(sPanel);
+              sPanel.innerHTML = solutionHTML(data, sq); typeset(sPanel);
               sPanel.setAttribute('data-built','1');
             }, function(){
               sPanel.removeAttribute('data-loading');

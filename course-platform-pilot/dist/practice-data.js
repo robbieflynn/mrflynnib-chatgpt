@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T11:06:44.601Z",
+  "generatedAt": "2026-10-20T13:08:25.664Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 481,
-  "completeLessonCount": 435,
-  "approvedSingleLessonCount": 38,
-  "questionCount": 924,
+  "completeLessonCount": 433,
+  "approvedSingleLessonCount": 40,
+  "questionCount": 922,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -420,9 +420,16 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Quadratics",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M17TZ2HL_P2_Q4",
-        "M18TZ1HL_P1_Q5"
-      ]
+        "M17TZ2HL_P2_Q4"
+      ],
+      "questionParts": {
+        "M17TZ2HL_P2_Q4": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M17TZ2HL_P2_Q4": "Solve k² − k − 12 < 0"
+      }
     },
     "7041af84-c272-4165-8680-f53bf1b92554": {
       "lesson": "2.7.3 The discriminant",
@@ -431,7 +438,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M15TZ1SL_P1_Q6",
-        "N19TZ0SL_P1_Q5"
+        "N20TZ0SL_P1_Q5"
       ]
     },
     "bd083b0d-a7b1-44cc-9980-47cce4046c0d": {
@@ -440,9 +447,17 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Rational functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M23TZ1SL_P1_Q2",
+        "A_M24TZ1SL_P1_Q8",
         "A_M22TZ2SL_P1_Q4"
-      ]
+      ],
+      "questionParts": {
+        "A_M24TZ1SL_P1_Q8": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "A_M24TZ1SL_P1_Q8": "Sketch a rational function with its intercepts and asymptotes"
+      }
     },
     "ffb4c343-0db5-45dd-b9b5-5289dba0484b": {
       "lesson": "2.9.1 Exponential modelling",
@@ -481,15 +496,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M16TZ1SL_P2_Q2",
-        "M09TZ1HL_P2_Q12X1"
+        "M15TZ2SL_P2_Q8X1"
       ],
       "questionParts": {
         "M16TZ1SL_P2_Q2": [
           "a"
+        ],
+        "M15TZ2SL_P2_Q8X1": [
+          "a"
         ]
       },
       "questionPartTitles": {
-        "M16TZ1SL_P2_Q2": "Use a GDC to solve x² = 3 ln(x + 1)"
+        "M16TZ1SL_P2_Q2": "Use a GDC to solve x² = 3 ln(x + 1)",
+        "M15TZ2SL_P2_Q8X1": "Use a GDC to find where two graphs intersect"
       }
     },
     "885f3694-d90b-4734-becb-dc9360b09ec7": {
@@ -498,9 +517,21 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Transformations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M14TZ2HL_P1_Q8S",
-        "N09TZ0SL_P1_Q4"
-      ]
+        "M08TZ2SL_P1_Q5",
+        "M12TZ2SL_P1_Q5"
+      ],
+      "questionParts": {
+        "M08TZ2SL_P1_Q5": [
+          "a"
+        ],
+        "M12TZ2SL_P1_Q5": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M08TZ2SL_P1_Q5": "Reflect a graph in the x-axis",
+        "M12TZ2SL_P1_Q5": "Reflect a graph in the y-axis"
+      }
     },
     "2a607da2-7e6a-4dc8-b483-2819907798e0": {
       "lesson": "2.11.2 Composite transformations",
@@ -508,14 +539,9 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Transformations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M09TZ1SL_P1_Q5",
-        "M10TZ2HL_P1_Q2"
+        "N09TZ0SL_P1_Q4",
+        "M14TZ2HL_P1_Q8S"
       ],
-      "questionParts": {
-        "M09TZ1SL_P1_Q5": [
-          "a"
-        ]
-      },
       "questionPartTitles": {
         "M09TZ1SL_P1_Q5": "Vertical stretch followed by a horizontal translation"
       }
@@ -1777,17 +1803,16 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Polynomial functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M24TZ1HL_P1_Q11",
+        "M18TZ1HL_P2_Q5",
         "N17TZ0HL_P1_Q3"
       ],
       "questionParts": {
-        "A_M24TZ1HL_P1_Q11": [
-          "a",
-          "b"
+        "M18TZ1HL_P2_Q5": [
+          "a"
         ]
       },
       "questionPartTitles": {
-        "A_M24TZ1HL_P1_Q11": "Verify a root, divide and factorise a cubic"
+        "M18TZ1HL_P2_Q5": "Rewrite a cubic by polynomial division"
       }
     },
     "529c9f56-5b88-4226-a374-0b54c32fcd15": {
@@ -1806,18 +1831,17 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Polynomial functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N16TZ0SL_P2_Q2",
-        "N14TZ0SL_P2_Q4"
+        "M17TZ2HL_P2_Q11"
       ],
       "questionParts": {
-        "N14TZ0SL_P2_Q4": [
+        "M17TZ2HL_P2_Q11": [
           "a",
-          "b"
+          "b",
+          "c"
         ]
       },
       "questionPartTitles": {
-        "N16TZ0SL_P2_Q2": "Find the local minimum and sketch a cubic",
-        "N14TZ0SL_P2_Q4": "Sketch a quartic and find its roots"
+        "M17TZ2HL_P2_Q11": "Factorise and sketch a polynomial graph"
       }
     },
     "5776410f-820d-49e1-97f0-5261d9bb438d": {
@@ -1826,8 +1850,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Polynomial functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M21TZ2HL_P1_Q7",
-        "M15TZ1HL_P1_Q7"
+        "M15TZ1HL_P1_Q7",
+        "A_M21TZ2HL_P1_Q7"
       ]
     },
     "f8918c12-e985-4e26-bea3-c93f245655f1": {
