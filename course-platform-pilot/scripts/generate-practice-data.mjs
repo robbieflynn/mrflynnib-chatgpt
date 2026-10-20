@@ -272,7 +272,6 @@ const verifiedOverrides = {
   // Function features only. Keep the first approved source and replace the
   // repeated sketching source with a distinct graph-features question.
   "c3c9cf1a-a9bc-4064-855b-9d526eed986d": ["N20TZ0AISL_P1_Q4", "N11TZ0AISL_P2_Q4"],
-  "87739b31-e9ec-48da-b45d-23f1265de2be": ["M16TZ2AISL_P1_Q8", "M18TZ2AISL_P1_Q11"],
   // Keep the two estimator examples focused on estimation only. The first
   // source's later paired-test part is displayed separately in 4.18.4.
   "cf3e3632-d731-4df7-a800-ac8be01cdd5a": ["H_M15TZ0HL_P3S_Q2", "H_N18TZ0HL_P3S_Q2"],
@@ -687,7 +686,9 @@ const verifiedOverrides = {
   // models for 2.5.1 Linear modelling.
   "f5f90981-cc11-4c17-a3bd-1361bcc350ac": ["M17TZ2AISL_P1_Q4", "M15TZ2AISL_P1_Q3"],
   "0c2d1242-eb4f-4dfe-9d0c-9fe06effad62": ["M11TZ2AISL_P1_Q5", "M11TZ1AISL_P1_Q10"],
-  "27660280-9a9e-4cb2-a00e-710c9722cca0": ["N12TZ0AISL_P1_Q8", "V_SPECAISL_P1_Q7"],
+  // Keep the approved parallel-lines question, then use a direct
+  // perpendicular-line calculation with no diagram.
+  "27660280-9a9e-4cb2-a00e-710c9722cca0": ["N12TZ0AISL_P1_Q8", "M16TZ1AISL_P1_Q7"],
   // Shared AI SL/HL function foundations must not use composite functions.
   // Composite-function practice belongs only in the later AI HL lesson.
   "bddfca14-6aee-440f-8b2c-0cb50d8d21f5": ["V_M25TZ2AISL_P1_Q9", "V_SPECAISL_P1_Q4"],
@@ -697,13 +698,17 @@ const verifiedOverrides = {
   // Parameter fitting solves simultaneous equations for unknown polynomial
   // coefficients. Composite functions and composite graph transformations
   // remain separate skills. Semi-log practice logs only the dependent axis.
-  "ae67a312-31d7-4658-9ece-e427fd0eab34": ["V_M22TZ2AISL_P1_Q9", "V_M21TZ2AISL_P2_Q5"],
+  "87739b31-e9ec-48da-b45d-23f1265de2be": ["M18TZ2AISL_P1_Q11", "M12TZ2AISL_P1_Q12"],
+  "ae67a312-31d7-4658-9ece-e427fd0eab34": ["V_M22TZ2AISL_P1_Q9", "W_M22TZ2AIHL_P1_Q5"],
+  // The second sinusoidal-model question is the parameter-fitting section of
+  // a Ferris-wheel context. Later geometry follow-ups are deliberately hidden.
+  "3c314627-da30-4ce3-b16f-c80816aaec14": ["M13TZ1AISL_P1_Q13", "N11TZ0AISL_P2_Q5"],
   "4ddbe716-9ced-46ce-9569-b54880c76cfe": ["V_N23TZ1AISL_P1_Q7", "V_N25TZ1AISL_P2_Q4"],
-  "ac21b892-10cf-4fcc-b343-061386c5f8d5": ["N14TZ0SL_P2_Q1", "N10TZ0SL_P1_Q9"],
+  "ac21b892-10cf-4fcc-b343-061386c5f8d5": ["N10TZ0SL_P1_Q9", "W_M25TZ1AIHL_P1_Q6"],
   "cb268ace-1b45-47b1-b745-aaa2bc0fad62": ["N12TZ0SL_P2_Q9", "M08TZ1SL_P1_Q9"],
   "10f9809d-0a3e-4e5c-83ea-738988915052": ["M19TZ2SL_P2_Q5", "W_N24TZ0AIHL_P1_Q13"],
-  "72a5f616-843a-4be5-875c-6e57afe3d730": ["W_N24TZ0AIHL_P1_Q6"],
-  "97dfa2ea-0da3-4f3e-a95f-1841d36df813": ["W_N22TZ0AIHL_P1_Q13"],
+  "72a5f616-843a-4be5-875c-6e57afe3d730": ["W_N24TZ0AIHL_P1_Q6", "W_N23TZ0AIHL_P1_Q2"],
+  "97dfa2ea-0da3-4f3e-a95f-1841d36df813": ["W_N22TZ0AIHL_P1_Q13", "W_M22TZ2AIHL_P2_Q4"],
   "90c27b46-f7e6-4c9e-90b6-1b781189a4a0": ["V_M21TZ1AISL_P1_Q2", "M19TZ1AISL_P1_Q2"],
   "9631b700-3bd6-464c-a695-04888981de48": ["N11TZ0SL_P1_Q4A", "V_M25TZ3AISL_P1_Q9"],
   // Keep the accessible rectangle example and replace the unusually demanding
@@ -926,8 +931,6 @@ const intentionallySinglePractice = new Set([
   "916aa44f-5240-4926-9cb6-12800d012e0c", // AA HL: one coherent polynomial factorise-and-sketch task
   "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
   "5e60b54a-6bf2-4cf5-be78-4f13509448fd", // AI SL + AI HL: Rounding
-  "72a5f616-843a-4be5-875c-6e57afe3d730", // AI HL: Piecewise functions
-  "97dfa2ea-0da3-4f3e-a95f-1841d36df813", // AI HL: Scaling with logs (semi-log)
   "9af63d1a-407b-4f90-ae78-30c8291fcd59", // AI HL: Setting up a differential equation
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f", // AI HL: Phase portrait sink
   "f40d55e2-0669-40a7-b7d9-fcc477ef23d4", // AI HL: Phase portrait spiral sink
@@ -1194,7 +1197,10 @@ const practicePartOverrides = {
     "N11TZ0AISL_P2_Q4": ["a"],
   },
   "ae67a312-31d7-4658-9ece-e427fd0eab34": {
-    "V_M21TZ2AISL_P2_Q5": ["a", "b"],
+    "W_M22TZ2AIHL_P1_Q5": ["a", "b", "c"],
+  },
+  "3c314627-da30-4ce3-b16f-c80816aaec14": {
+    "N11TZ0AISL_P2_Q5": ["d"],
   },
   "4ddbe716-9ced-46ce-9569-b54880c76cfe": {
     "V_N23TZ1AISL_P1_Q7": ["a", "b"],
@@ -1209,6 +1215,10 @@ const practicePartOverrides = {
   },
   "97dfa2ea-0da3-4f3e-a95f-1841d36df813": {
     "W_N22TZ0AIHL_P1_Q13": ["a"],
+    "W_M22TZ2AIHL_P2_Q4": ["c", "d", "e"],
+  },
+  "72a5f616-843a-4be5-875c-6e57afe3d730": {
+    "W_N23TZ0AIHL_P1_Q2": ["a"],
   },
   "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
     "W_M22TZ2AIHL_P2_Q1": ["d"],
@@ -1662,6 +1672,15 @@ const practicePartLabelOverrides = {
   "d10601dc-f866-4925-93d7-dc05b9316429": {
     "M17TZ1HL_P1_Q11": { c: "a", d: "b" },
   },
+  "3c314627-da30-4ce3-b16f-c80816aaec14": {
+    "N11TZ0AISL_P2_Q5": { d: "" },
+  },
+  "72a5f616-843a-4be5-875c-6e57afe3d730": {
+    "W_N23TZ0AIHL_P1_Q2": { a: "" },
+  },
+  "97dfa2ea-0da3-4f3e-a95f-1841d36df813": {
+    "W_M22TZ2AIHL_P2_Q4": { c: "a", d: "b", e: "c" },
+  },
 };
 
 // Some useful standalone extracts still refer to their original position in a
@@ -1906,7 +1925,10 @@ const practicePartTitles = {
     "N11TZ0AISL_P2_Q4": "Identify an asymptote, a zero and a local minimum",
   },
   "ae67a312-31d7-4658-9ece-e427fd0eab34": {
-    "V_M21TZ2AISL_P2_Q5": "Build a cubic volume model for a storage tin",
+    "W_M22TZ2AIHL_P1_Q5": "Fit and use a cubic savings model",
+  },
+  "3c314627-da30-4ce3-b16f-c80816aaec14": {
+    "N11TZ0AISL_P2_Q5": "Find the parameters of a Ferris-wheel model",
   },
   "4ddbe716-9ced-46ce-9569-b54880c76cfe": {
     "V_N23TZ1AISL_P1_Q7": "Find a quadratic water-jet model from three points",
@@ -1914,6 +1936,7 @@ const practicePartTitles = {
   },
   "ac21b892-10cf-4fcc-b343-061386c5f8d5": {
     "N10TZ0SL_P1_Q9": "Form a composite quadratic function",
+    "W_M25TZ1AIHL_P1_Q6": "Compare two composite discount functions",
   },
   "cb268ace-1b45-47b1-b745-aaa2bc0fad62": {
     "N12TZ0SL_P2_Q9": "Reflect and then translate a quadratic graph",
@@ -1921,6 +1944,10 @@ const practicePartTitles = {
   },
   "97dfa2ea-0da3-4f3e-a95f-1841d36df813": {
     "W_N22TZ0AIHL_P1_Q13": "Recover an exponential relationship from a semi-log graph",
+    "W_M22TZ2AIHL_P2_Q4": "Use a semi-log graph to estimate model parameters",
+  },
+  "72a5f616-843a-4be5-875c-6e57afe3d730": {
+    "W_N23TZ0AIHL_P1_Q2": "Evaluate a piecewise function from its graph",
   },
   "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
     "W_M22TZ2AIHL_P2_Q1": "Evaluate and interpret a finite sum in sigma notation",
@@ -3131,6 +3158,11 @@ function lessonSpecificRule(lesson) {
 
 function allowsCrossCourseQuestion(question, lesson, course) {
   if (course === "IGCSE Higher" || question.sourceBank !== "ib") return false;
+  // This authored cubic-model question is fully within the shared AI SL/HL
+  // modelling syllabus even though its bank metadata was originally AI HL.
+  if (course === "AI SL"
+    && /^cubic modelling$/.test(normalize(lesson.title))
+    && question.id === "W_M22TZ2AIHL_P1_Q5") return true;
   // This Paper 1 AI HL source is a direct closest-point calculation in the
   // shared vector syllabus and is used here specifically to avoid a second
   // origin-based, calculator-only example.
@@ -3148,6 +3180,21 @@ function passesLessonSpecificCheck(question, lesson) {
   const questionTitle = normalize(question.title);
   const rawQuestionText = questionText(question);
   const fullQuestionText = normalize(questionText(question));
+  // AI Topic 2 replacements were checked at the exact displayed-part level.
+  // Their original source titles can describe a broader question, so these
+  // selected records are pinned to the narrower lesson they actually serve.
+  if (/^asymptotes$/.test(lessonTitle)
+    && ["M18TZ2AISL_P1_Q11", "M12TZ2AISL_P1_Q12"].includes(question.id)) return true;
+  if (/^cubic modelling$/.test(lessonTitle)
+    && ["V_M22TZ2AISL_P1_Q9", "W_M22TZ2AIHL_P1_Q5"].includes(question.id)) return true;
+  if (/^creating a sinusoidal model$/.test(lessonTitle)
+    && ["M13TZ1AISL_P1_Q13", "N11TZ0AISL_P2_Q5"].includes(question.id)) return true;
+  if (/^composite functions$/.test(lessonTitle)
+    && ["N10TZ0SL_P1_Q9", "W_M25TZ1AIHL_P1_Q6"].includes(question.id)) return true;
+  if (/^piecewise functions$/.test(lessonTitle)
+    && ["W_N24TZ0AIHL_P1_Q6", "W_N23TZ0AIHL_P1_Q2"].includes(question.id)) return true;
+  if (/^scaling with logs$/.test(lessonTitle)
+    && ["W_N22TZ0AIHL_P1_Q13", "W_M22TZ2AIHL_P2_Q4"].includes(question.id)) return true;
   // Final AI Topic 1 review: these exact rendered extracts were selected for
   // the named lesson after checking their displayed parts. Several come from
   // longer source questions whose broad source title spans neighbouring skills.

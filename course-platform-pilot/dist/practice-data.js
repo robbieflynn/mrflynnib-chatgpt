@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T17:03:04.801Z",
+  "generatedAt": "2026-10-20T17:19:21.183Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 477,
-  "completeLessonCount": 430,
-  "approvedSingleLessonCount": 40,
-  "questionCount": 915,
+  "completeLessonCount": 433,
+  "approvedSingleLessonCount": 38,
+  "questionCount": 918,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -3196,7 +3196,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N12TZ0AISL_P1_Q8",
-        "V_SPECAISL_P1_Q7"
+        "M16TZ1AISL_P1_Q7"
       ]
     },
     "bddfca14-6aee-440f-8b2c-0cb50d8d21f5": {
@@ -3293,7 +3293,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Functions and inverse functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M18TZ2AISL_P1_Q11"
+        "M18TZ2AISL_P1_Q11",
+        "M12TZ2AISL_P1_Q12"
       ]
     },
     "39b509e6-16f6-4da7-9a21-62456340101c": {
@@ -3353,16 +3354,17 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "V_M22TZ2AISL_P1_Q9",
-        "V_M21TZ2AISL_P2_Q5"
+        "W_M22TZ2AIHL_P1_Q5"
       ],
       "questionParts": {
-        "V_M21TZ2AISL_P2_Q5": [
+        "W_M22TZ2AIHL_P1_Q5": [
           "a",
-          "b"
+          "b",
+          "c"
         ]
       },
       "questionPartTitles": {
-        "V_M21TZ2AISL_P2_Q5": "Build a cubic volume model for a storage tin"
+        "W_M22TZ2AIHL_P1_Q5": "Fit and use a cubic savings model"
       }
     },
     "1d047580-07df-4879-85e1-1231a8b67fcd": {
@@ -3382,8 +3384,21 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M13TZ1AISL_P1_Q13",
-        "V_N22TZ0AISL_P1_Q12"
-      ]
+        "N11TZ0AISL_P2_Q5"
+      ],
+      "questionParts": {
+        "N11TZ0AISL_P2_Q5": [
+          "d"
+        ]
+      },
+      "questionPartLabels": {
+        "N11TZ0AISL_P2_Q5": {
+          "d": ""
+        }
+      },
+      "questionPartTitles": {
+        "N11TZ0AISL_P2_Q5": "Find the parameters of a Ferris-wheel model"
+      }
     },
     "4ddbe716-9ced-46ce-9569-b54880c76cfe": {
       "lesson": "2.6 Finding the parameters of a model",
@@ -4248,7 +4263,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N10TZ0SL_P1_Q9",
-        "N13TZ0SL_P1_Q8X1"
+        "W_M25TZ1AIHL_P1_Q6"
       ],
       "questionParts": {
         "N10TZ0SL_P1_Q9": [
@@ -4256,7 +4271,8 @@ window.MR_FLYNN_PRACTICE = {
         ]
       },
       "questionPartTitles": {
-        "N10TZ0SL_P1_Q9": "Form a composite quadratic function"
+        "N10TZ0SL_P1_Q9": "Form a composite quadratic function",
+        "W_M25TZ1AIHL_P1_Q6": "Compare two composite discount functions"
       }
     },
     "c256cd3f-fb8c-4ffd-876d-12d5f4933980": {
@@ -4337,8 +4353,22 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Functions and inverse functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N24TZ0AIHL_P1_Q6"
-      ]
+        "W_N24TZ0AIHL_P1_Q6",
+        "W_N23TZ0AIHL_P1_Q2"
+      ],
+      "questionParts": {
+        "W_N23TZ0AIHL_P1_Q2": [
+          "a"
+        ]
+      },
+      "questionPartLabels": {
+        "W_N23TZ0AIHL_P1_Q2": {
+          "a": ""
+        }
+      },
+      "questionPartTitles": {
+        "W_N23TZ0AIHL_P1_Q2": "Evaluate a piecewise function from its graph"
+      }
     },
     "97dfa2ea-0da3-4f3e-a95f-1841d36df813": {
       "lesson": "2.10.1 Scaling with logs",
@@ -4346,15 +4376,29 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Semi-log and log-log graphs",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N22TZ0AIHL_P1_Q13"
+        "W_N22TZ0AIHL_P1_Q13",
+        "W_M22TZ2AIHL_P2_Q4"
       ],
       "questionParts": {
         "W_N22TZ0AIHL_P1_Q13": [
           "a"
+        ],
+        "W_M22TZ2AIHL_P2_Q4": [
+          "c",
+          "d",
+          "e"
         ]
       },
+      "questionPartLabels": {
+        "W_M22TZ2AIHL_P2_Q4": {
+          "c": "a",
+          "d": "b",
+          "e": "c"
+        }
+      },
       "questionPartTitles": {
-        "W_N22TZ0AIHL_P1_Q13": "Recover an exponential relationship from a semi-log graph"
+        "W_N22TZ0AIHL_P1_Q13": "Recover an exponential relationship from a semi-log graph",
+        "W_M22TZ2AIHL_P2_Q4": "Use a semi-log graph to estimate model parameters"
       }
     },
     "a4c501e1-8967-49c6-b9b2-6542e6ea09ec": {
