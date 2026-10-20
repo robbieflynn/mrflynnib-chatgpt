@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T15:09:05.453Z",
+  "generatedAt": "2026-10-20T15:20:37.499Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 477,
-  "completeLessonCount": 428,
-  "approvedSingleLessonCount": 41,
-  "questionCount": 913,
+  "completeLessonCount": 429,
+  "approvedSingleLessonCount": 40,
+  "questionCount": 914,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -2309,9 +2309,13 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors: planes and cross product",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M12TZ1HL_P2_Q4",
-        "A_M23TZ2HL_P2_Q6"
-      ]
+        "M14TZ2HL_P1_Q3",
+        "M08TZ1HL_P2_Q5"
+      ],
+      "questionPartTitles": {
+        "M14TZ2HL_P1_Q3": "Find the line of intersection of three planes",
+        "M08TZ1HL_P2_Q5": "Find a vector equation for the line where three planes intersect"
+      }
     },
     "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
       "lesson": "3.18.4 Angle between a line and a plane",
@@ -2319,16 +2323,30 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors: planes and cross product",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M10TZ1HL_P2_Q11"
+        "M10TZ1HL_P2_Q11",
+        "M12TZ2HL_P2_Q11"
       ],
       "questionParts": {
         "M10TZ1HL_P2_Q11": [
           "a",
           "d"
+        ],
+        "M12TZ2HL_P2_Q11": [
+          "e"
         ]
       },
+      "questionPartLabels": {
+        "M10TZ1HL_P2_Q11": {
+          "a": "a",
+          "d": "b"
+        }
+      },
       "questionPartTitles": {
-        "M10TZ1HL_P2_Q11": "Find the angle between a plane and the x-axis"
+        "M10TZ1HL_P2_Q11": "Find the angle between a plane and the x-axis",
+        "M12TZ2HL_P2_Q11": "Find the angle between a line and a plane"
+      },
+      "questionBodies": {
+        "M12TZ2HL_P2_Q11": "The plane \\(\\Pi\\) has Cartesian equation \\(16x+24y-11z=64\\)."
       }
     },
     "0766515e-903e-4598-9f61-215b9c8cb925": {
@@ -2338,8 +2356,11 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M10TZ1HL_P1_Q3",
-        "M08TZ2HL_P1_Q10"
-      ]
+        "N14TZ0HL_P2_Q1"
+      ],
+      "questionPartTitles": {
+        "N14TZ0HL_P2_Q1": "Find the angle between two planes"
+      }
     },
     "7d042474-1a70-4a83-a40b-9f2faf794ebf": {
       "lesson": "4.13 Bayes' theorem",

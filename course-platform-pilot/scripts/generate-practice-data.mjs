@@ -374,13 +374,15 @@ const verifiedOverrides = {
   // Both selected parts ask for the line in which two Cartesian planes meet.
   // Angle-between-planes questions belong in 3.18.5.
   "f6806af5-6f99-4c11-856b-e678d5fe533a": ["N11TZ0HL_P2_Q13", "A_M22TZ1HL_P1_Q11"],
-  "9282b2e6-3873-4ca7-9556-99f00cd43a0d": ["M12TZ1HL_P2_Q4", "A_M23TZ2HL_P2_Q6"],
-  // Replace the two parameter-heavy angle questions with the clearest
-  // available direct examples in the verified bank.
-  "40c21470-dbef-42f5-acfb-ba9658d8f02e": ["M10TZ1HL_P2_Q11"],
-  // Preserve the approved final angle-between-planes lesson exactly as Rob
-  // reviewed it; moving adjacent questions must not trigger a reshuffle.
-  "0766515e-903e-4598-9f61-215b9c8cb925": ["M10TZ1HL_P1_Q3", "M08TZ2HL_P1_Q10"],
+  // Both questions explicitly use three planes and find their common line;
+  // two-plane intersection questions belong in 3.18.2.
+  "9282b2e6-3873-4ca7-9556-99f00cd43a0d": ["M14TZ2HL_P1_Q3", "M08TZ1HL_P2_Q5"],
+  // Keep Rob's approved first source, relabel its displayed (d) as (b), then
+  // add a second direct calculation of the angle between a line and a plane.
+  "40c21470-dbef-42f5-acfb-ba9658d8f02e": ["M10TZ1HL_P2_Q11", "M12TZ2HL_P2_Q11"],
+  // Keep the approved first question and replace the scalar-product identity
+  // with a direct angle-between-two-planes calculation.
+  "0766515e-903e-4598-9f61-215b9c8cb925": ["M10TZ1HL_P1_Q3", "N14TZ0HL_P2_Q1"],
 
   // AA Topic 4 correction pass. Preserve the questions Rob approved, isolate
   // only the relevant subparts from longer sources, and keep every source
@@ -877,7 +879,6 @@ const intentionallySinglePractice = new Set([
   "d5c720d9-4540-4c45-b822-a0c84764b619", // AA HL: Prove De Moivre by induction
   "35a8aee0-4d48-4084-883f-fc23b5be9039", // AA HL: Vector equation of a plane
   "ed2cce38-614a-4256-b943-ab8c4856fa14", // AA HL: Angle between two lines
-  "40c21470-dbef-42f5-acfb-ba9658d8f02e", // AA HL: Angle between a line and a plane
   "908747f1-8799-4ca2-8f63-ba376beff0ab", // AA SL + AA HL: direct quadratic inequality only
   "916aa44f-5240-4926-9cb6-12800d012e0c", // AA HL: one coherent polynomial factorise-and-sketch task
   "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
@@ -1444,6 +1445,7 @@ const practicePartOverrides = {
   },
   "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
     "M10TZ1HL_P2_Q11": ["a", "d"],
+    "M12TZ2HL_P2_Q11": ["e"],
   },
   "134931eb-dd12-49c0-847c-973b34aebd07": {
     "N16TZ0SL_P1_Q10": ["a"],
@@ -1561,6 +1563,14 @@ const practicePartOverrides = {
   "b31ff22b-38f1-489b-a9ce-209fa91d73e6": {
     "M14TZ1SL_P1_Q3": ["a"],
     "V_M24TZ2AISL_P2_Q3": ["b"],
+  },
+};
+
+// Preserve the original source labels for filtering and markscheme matching,
+// then make extracted non-consecutive parts read naturally in course practice.
+const practicePartLabelOverrides = {
+  "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
+    "M10TZ1HL_P2_Q11": { a: "a", d: "b" },
   },
 };
 
@@ -2075,8 +2085,16 @@ const practicePartTitles = {
     "N11TZ0HL_P2_Q13": "Find the vector equation of the line where two planes intersect",
     "A_M22TZ1HL_P1_Q11": "Determine the line of intersection of two planes",
   },
+  "9282b2e6-3873-4ca7-9556-99f00cd43a0d": {
+    "M14TZ2HL_P1_Q3": "Find the line of intersection of three planes",
+    "M08TZ1HL_P2_Q5": "Find a vector equation for the line where three planes intersect",
+  },
   "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
     "M10TZ1HL_P2_Q11": "Find the angle between a plane and the x-axis",
+    "M12TZ2HL_P2_Q11": "Find the angle between a line and a plane",
+  },
+  "0766515e-903e-4598-9f61-215b9c8cb925": {
+    "N14TZ0HL_P2_Q1": "Find the angle between two planes",
   },
   "134931eb-dd12-49c0-847c-973b34aebd07": {
     "N16TZ0SL_P1_Q10": "Find successive and higher derivatives",
@@ -2289,6 +2307,11 @@ const practiceBodyOverrides = {
   },
   "3047e664-8bf6-4140-8c0c-cabd97cd06b5": {
     "W_M22TZ2AIHL_P1_Q15": "",
+  },
+  // Part (e) only needs the plane equation established earlier in the source.
+  // Restate it so this displayed extract is a self-contained line-plane angle.
+  "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
+    "M12TZ2HL_P2_Q11": "The plane \\(\\Pi\\) has Cartesian equation \\(16x+24y-11z=64\\).",
   },
   // Part (d) is the exact spiral-sink task. Restate the Spring 2 system and
   // initial point so it remains self-contained after the Spring 1 parts are
@@ -3027,6 +3050,12 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["M18TZ2HL_P1_Q1", "N08TZ0HL_P2_Q4"].includes(question.id)) return true;
   if (/^distance between a point and a line$/.test(lessonTitle)
     && ["N13TZ0HL_P2_Q9", "W_N23TZ0AIHL_P1_Q14"].includes(question.id)) return true;
+  if (/^intersection of 3 planes$/.test(lessonTitle)
+    && ["M14TZ2HL_P1_Q3", "M08TZ1HL_P2_Q5"].includes(question.id)) return true;
+  if (/^angle between a line and a plane$/.test(lessonTitle)
+    && ["M10TZ1HL_P2_Q11", "M12TZ2HL_P2_Q11"].includes(question.id)) return true;
+  if (/^angle between two planes$/.test(lessonTitle)
+    && ["M10TZ1HL_P1_Q3", "N14TZ0HL_P2_Q1"].includes(question.id)) return true;
   // Final AA trigonometry review. These are exact displayed extracts: the
   // first replacement solves a quadratic trigonometric equation directly,
   // while the second uses arctan and arcsin without any differentiation.
@@ -3730,6 +3759,7 @@ for (const [id, placement] of placements) {
       bankPath: course === "IGCSE Higher" ? "igcse-bank.html" : "ib-bank.html",
       questionIds,
       questionParts: practicePartOverrides[id] || undefined,
+      questionPartLabels: practicePartLabelOverrides[id] || undefined,
       questionPartTitles: practicePartTitles[id] || undefined,
       questionBodies: practiceBodyOverrides[id] || undefined,
     };

@@ -490,6 +490,9 @@ function renderLessonPractice(lesson) {
   if (practice.questionParts) {
     url.searchParams.set("parts", JSON.stringify(practice.questionParts));
   }
+  if (practice.questionPartLabels) {
+    url.searchParams.set("partLabels", JSON.stringify(practice.questionPartLabels));
+  }
   if (practice.questionPartTitles) {
     url.searchParams.set("partTitles", JSON.stringify(practice.questionPartTitles));
   }

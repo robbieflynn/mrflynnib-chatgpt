@@ -126,3 +126,6 @@ AA HL,2026-10-20,3.17.1,Vector equation of a plane,approved-single,A_N25TZ1HL_P2
 AA HL,2026-10-20,3.17.2,Cartesian equation of a plane,approved,M17TZ1HL_P2_Q7|M15TZ2HL_P2_Q5,Locked from Rob's Topic 3 vector review
 AA HL,2026-10-20,3.18.1,Intersection between a line and a plane,approved,M08TZ1HL_P2_Q3|N10TZ0HL_P1_Q7,Locked from Rob's Topic 3 vector review
 AA HL,2026-10-20,3.18.2,Intersection between two planes,approved,N11TZ0HL_P2_Q13|A_M22TZ1HL_P1_Q11,Locked from Rob's Topic 3 vector review; lone extracted-part labels are hidden
+AA HL,2026-10-20,3.18.3,Intersection of 3 planes,awaiting-recheck,M14TZ2HL_P1_Q3|M08TZ1HL_P2_Q5,Both rejected two-plane questions replaced with genuine three-plane intersection questions
+AA HL,2026-10-20,3.18.4,Angle between a line and a plane,awaiting-recheck,M10TZ1HL_P2_Q11|M12TZ2HL_P2_Q11,Approved question 1 retained with displayed parts relabelled A and B; added a second direct line-plane angle question
+AA HL,2026-10-20,3.18.5,Angle between two planes,awaiting-recheck,M10TZ1HL_P1_Q3|N14TZ0HL_P2_Q1,Approved question 1 retained; question 2 replaced with a direct angle-between-two-planes calculation

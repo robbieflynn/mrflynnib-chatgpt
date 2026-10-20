@@ -550468,6 +550468,7 @@ function diagramN11TZ0P2Q1grid(){
     }
   }
   var REQUESTED_PARTS = practiceMap('parts');
+  var REQUESTED_PART_LABELS = practiceMap('partLabels');
   var REQUESTED_PART_TITLES = practiceMap('partTitles');
   var REQUESTED_BODIES = practiceMap('bodies');
   var SHOW_SOLUTIONS = EMBED_PARAMS.get('solutions') !== '0';
@@ -550542,9 +550543,11 @@ function diagramN11TZ0P2Q1grid(){
     if(!IS_PRACTICE) return q;
     var id = String(q.id);
     var labels = REQUESTED_PARTS[id];
+    var labelOverrides = REQUESTED_PART_LABELS[id];
     var hasTitle = Object.prototype.hasOwnProperty.call(REQUESTED_PART_TITLES, id);
     var hasBody = Object.prototype.hasOwnProperty.call(REQUESTED_BODIES, id);
-    if(!Array.isArray(labels) && !hasTitle && !hasBody) return q;
+    var hasLabelOverrides = labelOverrides && typeof labelOverrides === 'object' && !Array.isArray(labelOverrides);
+    if(!Array.isArray(labels) && !hasLabelOverrides && !hasTitle && !hasBody) return q;
 
     var copy = Object.assign({}, q);
     if(Array.isArray(labels) && labels.length){
@@ -550556,6 +550559,20 @@ function diagramN11TZ0P2Q1grid(){
         return total + (isNaN(marks) ? 0 : marks);
       }, 0);
       copy._practiceParts = labels.map(String);
+    }
+    if(hasLabelOverrides){
+      copy.parts = (copy.parts || []).map(function(part){
+        var updated = part.slice();
+        var original = String(updated[0]);
+        if(Object.prototype.hasOwnProperty.call(labelOverrides, original)) updated[0] = String(labelOverrides[original]);
+        return updated;
+      });
+      copy.markscheme = (copy.markscheme || []).map(function(group){
+        var updated = group.slice();
+        var original = String(updated[0]);
+        if(Object.prototype.hasOwnProperty.call(labelOverrides, original)) updated[0] = String(labelOverrides[original]);
+        return updated;
+      });
     }
     if(hasTitle) copy.title = REQUESTED_PART_TITLES[id];
     if(hasBody) copy.body = REQUESTED_BODIES[id];
