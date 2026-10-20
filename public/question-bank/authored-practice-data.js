@@ -1420,5 +1420,1143 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
         ]
       ]
     ]
+  },
+  {
+    "id": "MF_AIHL_T4_CHI_SQUARED_DF",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 25,
+    "marks": 3,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Degrees of freedom after estimating normal parameters",
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Chi-squared test – Goodness of fit"
+      }
+    ],
+    "body": "A chi-squared goodness-of-fit test compares observed data with a normal distribution. After any necessary grouping, there are five categories. Both the population mean and the population standard deviation are estimated from the sample.",
+    "parts": [
+      [
+        "a",
+        "State the number of parameters estimated from the sample.",
+        1
+      ],
+      [
+        "b",
+        "Hence find the number of degrees of freedom for the test.",
+        2
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "two parameters",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(5-1-2\\)",
+            "M1"
+          ],
+          [
+            "\\(2\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T4_ONE_SAMPLE_T_TEST",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 26,
+    "marks": 6,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "A one-sample t-test for a population mean",
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "T-test and Z-test"
+      }
+    ],
+    "body": "A manufacturer claims that the mean lifetime of a rechargeable battery is \\(500\\) charging cycles. A random sample of \\(12\\) batteries has mean lifetime \\(487\\) cycles and sample standard deviation \\(s_{n-1}=22\\) cycles. Battery lifetimes may be assumed to be normally distributed.",
+    "parts": [
+      [
+        "a",
+        "State suitable hypotheses to test whether the population mean lifetime is less than the manufacturer's claim.",
+        2
+      ],
+      [
+        "b",
+        "Carry out the test at the \\(5\\%\\) significance level and state your conclusion in context.",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(H_0:\\mu=500\\)",
+            "A1"
+          ],
+          [
+            "\\(H_1:\\mu<500\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "uses a one-sample \\(t\\)-test",
+            "M1"
+          ],
+          [
+            "\\(t=-2.05\\) and \\(p\\approx0.0326\\)",
+            "A1A1"
+          ],
+          [
+            "reject \\(H_0\\); there is evidence that the population mean lifetime is less than \\(500\\) cycles",
+            "R1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_BASIC_DERIVATIVES_1",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 27,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Differentiate sine, cosine, exponential and logarithmic terms",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Differentiation - basic rules"
+      }
+    ],
+    "body": "Let \\(f(x)=3\\sin x-2\\cos x+4e^x+5\\ln x\\), where \\(x>0\\).",
+    "parts": [
+      [
+        "",
+        "Find \\(f'(x)\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(f'(x)=3\\cos x+2\\sin x+4e^x+\\dfrac5x\\)",
+            "A4"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_BASIC_DERIVATIVES_2",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 28,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Find a gradient using the basic transcendental derivatives",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Differentiation - basic rules"
+      }
+    ],
+    "body": "The curve \\(C\\) has equation \\(y=2e^x+3\\ln x-\\sin x\\), where \\(x>0\\).",
+    "parts": [
+      [
+        "a",
+        "Find \\(\\dfrac{dy}{dx}\\).",
+        3
+      ],
+      [
+        "b",
+        "Find the gradient of \\(C\\) when \\(x=1\\).",
+        1
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\dfrac{dy}{dx}=2e^x+\\dfrac3x-\\cos x\\)",
+            "A3"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(2e+3-\\cos1\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_RATIONAL_DERIVATIVES_1",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 29,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Differentiate rational powers",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Differentiation - basic rules"
+      }
+    ],
+    "body": "Let \\(f(x)=4x^{1/2}-3x^{-1/2}\\), where \\(x>0\\).",
+    "parts": [
+      [
+        "",
+        "Find \\(f'(x)\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(f'(x)=2x^{-1/2}+\\dfrac32x^{-3/2}\\)",
+            "A4"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_RATIONAL_DERIVATIVES_2",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 30,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Differentiate positive and negative fractional powers",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Differentiation - basic rules"
+      }
+    ],
+    "body": "The function \\(g\\) is defined by \\(g(x)=6x^{2/3}+2x^{-3/2}\\), where \\(x>0\\).",
+    "parts": [
+      [
+        "a",
+        "Find \\(g'(x)\\).",
+        4
+      ],
+      [
+        "b",
+        "Find \\(g'(8)\\).",
+        1
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(g'(x)=4x^{-1/3}-3x^{-5/2}\\)",
+            "A4"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(2-\\dfrac{3}{64\\sqrt8}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_CHAIN_RULE",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 31,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Use the chain rule",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Differentiation - product, quotient and chain rule"
+      }
+    ],
+    "body": "Let \\(f(x)=e^{3x+1}+\\sin(2x)\\).",
+    "parts": [
+      [
+        "",
+        "Find \\(f'(x)\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(f'(x)=3e^{3x+1}+2\\cos(2x)\\)",
+            "A4"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_RATIONAL_POWER_INTEGRATION",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 32,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Integrate rational powers",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration rules"
+      }
+    ],
+    "body": "Let \\(x>0\\).",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int\\left(3x^{1/2}-2x^{-1/2}\\right)\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(2x^{3/2}-4x^{1/2}+C\\)",
+            "A4"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_SIN_COS_INTEGRATION_1",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 33,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Integrate sine and cosine directly",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration rules"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int(4\\sin x-3\\cos x)\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(-4\\cos x-3\\sin x+C\\)",
+            "A4"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_SIN_COS_INTEGRATION_2",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 34,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Evaluate a definite sine and cosine integral",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration rules"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Evaluate \\(\\displaystyle\\int_0^{\\pi/2}(3\\sin x+2\\cos x)\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "antiderivative \\(-3\\cos x+2\\sin x\\)",
+            "M1A1"
+          ],
+          [
+            "value \\(5\\)",
+            "A2"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_SUBSTITUTION_1",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 35,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Integrate a function of a function",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration by substitution"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int 2x(x^2+1)^4\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "uses \\(u=x^2+1\\), so \\(du=2x\\,dx\\)",
+            "M1"
+          ],
+          [
+            "\\(\\dfrac{(x^2+1)^5}{5}+C\\)",
+            "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_SUBSTITUTION_2",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 36,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Use substitution in a definite integral",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration by substitution"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Evaluate \\(\\displaystyle\\int_0^2 3x^2\\sqrt{x^3+1}\\,dx\\).",
+        5
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "uses \\(u=x^3+1\\), so \\(du=3x^2\\,dx\\)",
+            "M1"
+          ],
+          [
+            "changes the limits to \\(1\\) and \\(9\\)",
+            "A1"
+          ],
+          [
+            "\\(\\left[\\dfrac23u^{3/2}\\right]_1^9=\\dfrac{52}{3}\\)",
+            "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_KINEMATICS_2",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 37,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Acceleration from a velocity-displacement model",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Kinematics"
+      }
+    ],
+    "body": "A particle moves in a straight line. Its velocity \\(v\\text{ m s}^{-1}\\) is related to its displacement \\(s\\text{ m}\\) by \\(v=s^2+2s\\), where \\(s>0\\).",
+    "parts": [
+      [
+        "a",
+        "Using \\(a=v\\dfrac{dv}{ds}\\), find the acceleration in terms of \\(s\\).",
+        3
+      ],
+      [
+        "b",
+        "Find the acceleration when \\(s=1\\).",
+        2
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\dfrac{dv}{ds}=2s+2\\)",
+            "A1"
+          ],
+          [
+            "\\(a=(s^2+2s)(2s+2)\\)",
+            "M1A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(a=3\\times4=12\\text{ m s}^{-2}\\)",
+            "M1A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 38,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Form a differential equation from a cooling model",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Differential equations"
+      }
+    ],
+    "body": "The temperature \\(T\\ ^\\circ\\text{C}\\) of a drink \\(t\\) minutes after it is poured changes at a rate proportional to the difference between \\(T\\) and the room temperature of \\(20^\\circ\\text{C}\\). The drink is cooling.",
+    "parts": [
+      [
+        "a",
+        "Write down a differential equation for this model, using a positive constant \\(k\\).",
+        2
+      ],
+      [
+        "b",
+        "State the sign of \\(\\dfrac{dT}{dt}\\) while \\(T>20\\), and explain why it is consistent with your equation.",
+        2
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\dfrac{dT}{dt}=-k(T-20)\\), \\(k>0\\)",
+            "A2"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "negative",
+            "A1"
+          ],
+          [
+            "both \\(k\\) and \\(T-20\\) are positive, so the leading minus sign makes the rate negative",
+            "R1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_SEPARATION",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 39,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Solve a differential equation by separating variables",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Differential equations"
+      }
+    ],
+    "body": "The variables \\(x\\) and \\(y\\) satisfy \\(\\dfrac{dy}{dx}=\\dfrac{3x^2}{y}\\), where \\(y>0\\), and \\(y=2\\) when \\(x=0\\).",
+    "parts": [
+      [
+        "",
+        "Find \\(y\\) in terms of \\(x\\).",
+        5
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(y\\,dy=3x^2\\,dx\\)",
+            "M1"
+          ],
+          [
+            "\\(\\dfrac12y^2=x^3+C\\)",
+            "A1"
+          ],
+          [
+            "\\(C=2\\)",
+            "A1"
+          ],
+          [
+            "\\(y=\\sqrt{2x^3+4}\\)",
+            "A2"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_PHASE_SOURCE",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 40,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Sketch a source phase portrait",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Phase portraits"
+      }
+    ],
+    "body": "Consider the coupled system \\(\\dfrac{dx}{dt}=2x\\), \\(\\dfrac{dy}{dt}=y\\).",
+    "parts": [
+      [
+        "a",
+        "State the two eigenvalues and classify the equilibrium point at the origin.",
+        2
+      ],
+      [
+        "b",
+        "Sketch the phase portrait, showing the direction of motion.",
+        3
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "eigenvalues \\(2\\) and \\(1\\)",
+            "A1"
+          ],
+          [
+            "the origin is a source",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "correct outward direction",
+            "A1"
+          ],
+          [
+            "eigenvector axes shown as straight-line solutions",
+            "A1"
+          ],
+          [
+            "representative curved trajectories drawn",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_PHASE_CENTRE",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 41,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Sketch a centre phase portrait",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Phase portraits"
+      }
+    ],
+    "body": "Consider the coupled system \\(\\dfrac{dx}{dt}=-y\\), \\(\\dfrac{dy}{dt}=x\\).",
+    "parts": [
+      [
+        "a",
+        "Find the eigenvalues and classify the equilibrium point at the origin.",
+        2
+      ],
+      [
+        "b",
+        "Sketch the phase portrait, showing the direction of motion.",
+        3
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "eigenvalues \\(\\pm i\\)",
+            "A1"
+          ],
+          [
+            "the origin is a centre",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "closed trajectories centred at the origin",
+            "A1"
+          ],
+          [
+            "counterclockwise direction, for example from \\((1,0)\\) the velocity is upward",
+            "A2"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_IGCSE_T2_FACTORISE_SOLVE_NON_MONIC",
+    "course": "IGCSE Higher",
+    "banks": [
+      "IGCSE Higher"
+    ],
+    "paper": "Mr Flynn IGCSE Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 101,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "IGCSE Higher": "Medium"
+    },
+    "title": "Factorise and solve a non-monic quadratic",
+    "topics": [
+      {
+        "main": "IGCSE",
+        "sub": "Quadratic equations"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "a",
+        "Factorise \\(6x^2+x-2\\).",
+        2
+      ],
+      [
+        "b",
+        "Hence solve \\(6x^2+x-2=0\\).",
+        2
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\((3x+2)(2x-1)\\)",
+            "A2"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(x=-\\dfrac23\\) or \\(x=\\dfrac12\\)",
+            "A2"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_IGCSE_T3_DISTANCE",
+    "course": "IGCSE Higher",
+    "banks": [
+      "IGCSE Higher"
+    ],
+    "paper": "Mr Flynn IGCSE Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 102,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "IGCSE Higher": "Medium"
+    },
+    "title": "Calculate the distance between two points",
+    "topics": [
+      {
+        "main": "IGCSE",
+        "sub": "Coordinate geometry"
+      }
+    ],
+    "body": "The points \\(A(-3,4)\\) and \\(B(5,-2)\\) lie on a coordinate grid.",
+    "parts": [
+      [
+        "",
+        "Calculate the distance \\(AB\\). Give your answer in exact form.",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(AB=\\sqrt{(5+3)^2+(-2-4)^2}\\)",
+            "M2"
+          ],
+          [
+            "\\(AB=10\\)",
+            "A2"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_IGCSE_T4_COSINE_RULE_SIDE",
+    "course": "IGCSE Higher",
+    "banks": [
+      "IGCSE Higher"
+    ],
+    "paper": "Mr Flynn IGCSE Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 103,
+    "marks": 3,
+    "authored": true,
+    "difficulty": {
+      "IGCSE Higher": "Easy"
+    },
+    "title": "Find a side using the cosine rule",
+    "topics": [
+      {
+        "main": "IGCSE",
+        "sub": "Trigonometry"
+      }
+    ],
+    "body": "In triangle \\(ABC\\), \\(AB=8\\text{ cm}\\), \\(AC=11\\text{ cm}\\) and \\(\\angle BAC=60^\\circ\\).",
+    "parts": [
+      [
+        "",
+        "Calculate the length of \\(BC\\). Give your answer correct to three significant figures.",
+        3
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(BC^2=8^2+11^2-2(8)(11)\\cos60^\\circ\\)",
+            "M1"
+          ],
+          [
+            "\\(BC=\\sqrt{97}=9.85\\text{ cm}\\) to three significant figures",
+            "A2"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_IGCSE_T1_EXPAND_SURDS",
+    "course": "IGCSE Higher",
+    "banks": [
+      "IGCSE Higher"
+    ],
+    "paper": "Mr Flynn IGCSE Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 104,
+    "marks": 3,
+    "authored": true,
+    "difficulty": {
+      "IGCSE Higher": "Easy"
+    },
+    "title": "Expand and simplify surd brackets",
+    "topics": [
+      {
+        "main": "IGCSE",
+        "sub": "Surds"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Expand and simplify \\( (2+\\sqrt3)(5-\\sqrt3) \\).",
+        3
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "\\(10-2\\sqrt3+5\\sqrt3-3\\)",
+            "M1"
+          ],
+          [
+            "\\(7+3\\sqrt3\\)",
+            "A2"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_IGCSE_T3_INVERSE_NOTATION",
+    "course": "IGCSE Higher",
+    "banks": [
+      "IGCSE Higher"
+    ],
+    "paper": "Mr Flynn IGCSE Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 105,
+    "marks": 3,
+    "authored": true,
+    "difficulty": {
+      "IGCSE Higher": "Easy"
+    },
+    "title": "Interpret inverse-function notation",
+    "topics": [
+      {
+        "main": "IGCSE",
+        "sub": "Functions"
+      }
+    ],
+    "body": "The function \\(f\\) is defined by \\(f(x)=3x-5\\).",
+    "parts": [
+      [
+        "",
+        "Find \\(f^{-1}(7)\\) without first finding a formula for \\(f^{-1}(x)\\).",
+        3
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "solves \\(3x-5=7\\)",
+            "M1"
+          ],
+          [
+            "\\(f^{-1}(7)=4\\)",
+            "A2"
+          ]
+        ]
+      ]
+    ]
   }
 ];

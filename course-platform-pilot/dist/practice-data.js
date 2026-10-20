@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T17:52:17.115Z",
+  "generatedAt": "2026-10-20T18:13:07.346Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 482,
-  "completeLessonCount": 445,
+  "lessonCount": 487,
+  "completeLessonCount": 455,
   "approvedSingleLessonCount": 27,
-  "questionCount": 937,
+  "questionCount": 952,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -3764,8 +3764,13 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M17TZ1SL_P1_Q4",
-        "M19TZ1SL_P2_Q5"
-      ]
+        "M14TZ2SL_P2_Q3"
+      ],
+      "questionParts": {
+        "M14TZ2SL_P2_Q3": [
+          "a"
+        ]
+      }
     },
     "a9ba5e52-d70c-45b8-822c-f80312ea5c9a": {
       "lesson": "4.5 Probability formulae",
@@ -3928,8 +3933,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Differentiation rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "V_M22TZ2AISL_P1_Q11",
-        "V_N24TZ2AISL_P1_Q12"
+        "V_N24TZ2AISL_P1_Q12",
+        "V_M22TZ2AISL_P1_Q11"
       ],
       "questionParts": {
         "V_M22TZ2AISL_P1_Q11": [
@@ -4008,8 +4013,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Differentiation rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M14TZ1AISL_P1_Q15",
-        "N13TZ0AISL_P1_Q9"
+        "N13TZ0AISL_P1_Q9",
+        "M14TZ1AISL_P1_Q15"
       ],
       "questionPartTitles": {
         "M14TZ1AISL_P1_Q15": "Find a local minimum",
@@ -5054,6 +5059,15 @@ window.MR_FLYNN_PRACTICE = {
         "W_M23TZ1AIHL_P2_Q5": "Identify low expected frequencies before a chi-squared test"
       }
     },
+    "53bbfe46-4d98-4159-b2df-eeea60362499": {
+      "lesson": "4.12.4 Chi squared (degrees of freedom)",
+      "course": "AI HL",
+      "subtopic": "Chi-squared test – Independence",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T4_CHI_SQUARED_DF"
+      ]
+    },
     "5da6d7d3-b205-4517-84f0-ab24321a3be3": {
       "lesson": "4.13.1 Non linear regression",
       "course": "AI HL",
@@ -5070,8 +5084,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Sum of square residuals and R²",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M23TZ1AIHL_P1_Q16",
-        "W_SPECAIHL_P1_Q12"
+        "W_SPECAIHL_P1_Q12",
+        "W_M23TZ1AIHL_P1_Q16"
       ]
     },
     "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": {
@@ -5292,7 +5306,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "T-test and Z-test",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M15TZ1HL_P1_Q2",
+        "MF_AIHL_T4_ONE_SAMPLE_T_TEST",
         "W_N24TZ0AIHL_P1_Q9X1"
       ]
     },
@@ -5436,8 +5450,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Markov chains and transition matrices",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M25TZ3AIHL_P1_Q15",
-        "W_M23TZ2AIHL_P2_Q5"
+        "W_M23TZ2AIHL_P2_Q5",
+        "W_M25TZ3AIHL_P1_Q15"
       ],
       "questionParts": {
         "W_M23TZ2AIHL_P2_Q5": [
@@ -5449,12 +5463,33 @@ window.MR_FLYNN_PRACTICE = {
         "W_M23TZ2AIHL_P2_Q5": "Find and interpret a steady-state population vector"
       }
     },
+    "40507693-613d-4de0-9c6a-f1c4f620cb50": {
+      "lesson": "5.9.1 Derivative of sinx,cosx,lnx,e^x",
+      "course": "AI HL",
+      "subtopic": "Differentiation - basic rules",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T5_BASIC_DERIVATIVES_1",
+        "MF_AIHL_T5_BASIC_DERIVATIVES_2"
+      ]
+    },
+    "a78266c3-8c07-4517-b09a-c67ae8c4345e": {
+      "lesson": "5.9.2 Differentiation (rational exponents)",
+      "course": "AI HL",
+      "subtopic": "Differentiation - basic rules",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T5_RATIONAL_DERIVATIVES_1",
+        "MF_AIHL_T5_RATIONAL_DERIVATIVES_2"
+      ]
+    },
     "4100b350-f26f-44e3-bb90-7a03158e7b95": {
       "lesson": "5.9.3 Chain rule",
       "course": "AI HL",
       "subtopic": "Differentiation - product, quotient and chain rule",
       "bankPath": "ib-bank.html",
       "questionIds": [
+        "MF_AIHL_T5_CHAIN_RULE",
         "H_M18TZ1HL_P1_Q2"
       ],
       "questionParts": {
@@ -5500,8 +5535,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Related rates of change",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M11TZ2HL_P2_Q9",
-        "W_M23TZ2AIHL_P1_Q12"
+        "W_M23TZ2AIHL_P1_Q12",
+        "M11TZ2HL_P2_Q9"
       ]
     },
     "a490ac5c-828a-4b25-a5e0-3cde3293071c": {
@@ -5554,8 +5589,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Stationary points and points of inflexion",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M08TZ2HL_P2_Q6",
-        "M11TZ1SL_P2_Q9"
+        "M11TZ1SL_P2_Q9",
+        "M08TZ2HL_P2_Q6"
       ],
       "questionParts": {
         "M11TZ1SL_P2_Q9": [
@@ -5573,6 +5608,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
+        "MF_AIHL_T5_RATIONAL_POWER_INTEGRATION",
         "N18TZ0HL_P2_Q2"
       ]
     },
@@ -5582,7 +5618,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "H_M15TZ1SL_P1_Q7"
+        "MF_AIHL_T5_SIN_COS_INTEGRATION_1",
+        "MF_AIHL_T5_SIN_COS_INTEGRATION_2"
       ]
     },
     "d9d11f09-511a-436a-9792-f66fc8ceeac5": {
@@ -5609,8 +5646,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration by substitution",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "H_N15TZ0HL_P1_Q5",
-        "M09TZ1HL_P2_Q6"
+        "MF_AIHL_T5_SUBSTITUTION_1",
+        "MF_AIHL_T5_SUBSTITUTION_2"
       ]
     },
     "baf50754-d084-4bea-84e4-6d755bc624c6": {
@@ -5637,8 +5674,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Area under the curve",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "H_N15TZ0HL_P2_Q5",
-        "V_SPECAISL_P1_Q10"
+        "V_SPECAISL_P1_Q10",
+        "H_N15TZ0HL_P2_Q5"
       ],
       "questionParts": {
         "H_N15TZ0HL_P2_Q5": [
@@ -5670,8 +5707,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Volume of revolution",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M19TZ1HL_P2_Q7",
-        "W_N22TZ0AIHL_P2_Q5"
+        "W_N22TZ0AIHL_P2_Q5",
+        "M19TZ1HL_P2_Q7"
       ]
     },
     "326ef6f4-cdc3-461c-b121-527fef739c83": {
@@ -5694,8 +5731,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Kinematics",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "H_M14TZ1HL_P1_Q8",
-        "W_N23TZ0AIHL_P3_Q1"
+        "MF_AIHL_T5_KINEMATICS_2",
+        "H_M14TZ1HL_P1_Q8"
       ],
       "questionParts": {
         "W_N23TZ0AIHL_P3_Q1": [
@@ -5713,6 +5750,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Differential equations",
       "bankPath": "ib-bank.html",
       "questionIds": [
+        "MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION",
         "W_M25TZ2AIHL_P1_Q12"
       ],
       "questionParts": {
@@ -5730,7 +5768,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Differential equations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "H_M13TZ2HL_P2_Q12",
+        "MF_AIHL_T5_SEPARATION",
         "W_M24TZ1AIHL_P2_Q5"
       ],
       "questionParts": {
@@ -5776,8 +5814,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Coupled differential equations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N24TZ0AIHL_P1_Q17",
-        "W_M25TZ3AIHL_P1_Q11"
+        "W_M25TZ3AIHL_P1_Q11",
+        "W_N24TZ0AIHL_P1_Q17"
       ],
       "questionParts": {
         "W_N24TZ0AIHL_P1_Q17": [
@@ -5798,8 +5836,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Phase portraits",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_SPECAIHL_P1_Q15X1",
-        "W_N22TZ0AIHL_P1_Q12"
+        "W_N22TZ0AIHL_P1_Q12",
+        "W_SPECAIHL_P1_Q15X1"
       ]
     },
     "a916a502-98ff-4105-8574-80aac522eda7": {
@@ -5829,6 +5867,15 @@ window.MR_FLYNN_PRACTICE = {
       "questionIds": [
         "W_M24TZ2AIHL_P2_Q7X1",
         "W_M24TZ2AIHL_P2_Q7X2"
+      ]
+    },
+    "d477bd69-e3be-4201-b8f0-2ba436cc3f6e": {
+      "lesson": "5.17.5 Sketching phase portraits (source)",
+      "course": "AI HL",
+      "subtopic": "Phase portraits",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T5_PHASE_SOURCE"
       ]
     },
     "de2388f1-fbf3-49c0-883b-1eff70b9cf7f": {
@@ -5890,6 +5937,15 @@ window.MR_FLYNN_PRACTICE = {
       "questionPartTitles": {
         "W_M23TZ1AIHL_P2_Q6": "Sketch a spiral source from eigenvalues 0.08 ± 0.4i"
       }
+    },
+    "e8505773-3b8b-41cc-84b3-d2e106e5533f": {
+      "lesson": "5.17.9 Sketching phase portraits (centre)",
+      "course": "AI HL",
+      "subtopic": "Phase portraits",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T5_PHASE_CENTRE"
+      ]
     },
     "50213f97-6048-4c8b-8c63-802b6e6ab881": {
       "lesson": "5.18.1 Second order DE (Euler's method)",
@@ -5984,6 +6040,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Surds",
       "bankPath": "igcse-bank.html",
       "questionIds": [
+        "MF_IGCSE_T1_EXPAND_SURDS",
         "4MA1_2022J_2HR_Q13"
       ]
     },
@@ -6279,7 +6336,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Factorising quadratics",
       "bankPath": "igcse-bank.html",
       "questionIds": [
-        "4MA1_2021M_2H_Q9"
+        "4MA1_2021M_2H_Q9",
+        "MF_IGCSE_T2_FACTORISE_SOLVE_NON_MONIC"
       ]
     },
     "1394e37c-0c0e-4f7c-856f-aacff695cbda": {
@@ -6379,8 +6437,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Arithmetic sequences",
       "bankPath": "igcse-bank.html",
       "questionIds": [
-        "4MA1_2020J_2H_Q25",
-        "4MA1_2019M_1H_Q16"
+        "4MA1_2019M_1H_Q16",
+        "4MA1_2020J_2H_Q25"
       ]
     },
     "ae16b3bf-a089-42b8-97c6-23e995688cc3": {
@@ -6448,6 +6506,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Functions",
       "bankPath": "igcse-bank.html",
       "questionIds": [
+        "MF_IGCSE_T3_INVERSE_NOTATION",
         "4MA1_2019J_1HR_Q23"
       ],
       "questionParts": {
@@ -6465,8 +6524,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Functions",
       "bankPath": "igcse-bank.html",
       "questionIds": [
-        "4MA1_2021J_1H_Q22",
-        "4MA1_2024M_1H_Q15"
+        "4MA1_2024M_1H_Q15",
+        "4MA1_2021J_1H_Q22"
       ],
       "questionParts": {
         "4MA1_2024M_1H_Q15": [
@@ -6523,7 +6582,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Coordinate geometry",
       "bankPath": "igcse-bank.html",
       "questionIds": [
-        "4MA1_2022M_1H_Q10"
+        "4MA1_2022M_1H_Q10",
+        "MF_IGCSE_T3_DISTANCE"
       ],
       "questionParts": {
         "4MA1_2022M_1H_Q10": [
@@ -6560,8 +6620,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Transformations of graphs",
       "bankPath": "igcse-bank.html",
       "questionIds": [
-        "4MA1_2019J_1H_Q18",
-        "4MA1_2023M_1H_Q21"
+        "4MA1_2023M_1H_Q21",
+        "4MA1_2019J_1H_Q18"
       ]
     },
     "cab6908e-979a-49ed-abef-418987a2bb21": {
@@ -6636,8 +6696,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Calculus - kinematics",
       "bankPath": "igcse-bank.html",
       "questionIds": [
-        "4MA1_2019M_1H_Q24",
-        "4MA1_2019M_1HR_Q16"
+        "4MA1_2019M_1HR_Q16",
+        "4MA1_2019M_1H_Q24"
       ]
     },
     "50901aa7-90df-480f-80c7-decbbb15c3bb": {
@@ -6776,7 +6836,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Non-right-angled trigonometry",
       "bankPath": "igcse-bank.html",
       "questionIds": [
-        "4MA1_2018M_2H_Q18",
+        "MF_IGCSE_T4_COSINE_RULE_SIDE",
         "4MA1_2018M_1HR_Q18"
       ]
     },
@@ -6896,8 +6956,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors",
       "bankPath": "igcse-bank.html",
       "questionIds": [
-        "4MA1_2020N_2H_Q19",
-        "4MA1_2018M_1H_Q17"
+        "4MA1_2018M_1H_Q17",
+        "4MA1_2020N_2H_Q19"
       ]
     },
     "8f8c22d1-2f1a-4389-812d-84c7aa42a190": {

@@ -13,7 +13,7 @@ const outputPath = path.join(distDir, "practice-data.js");
 const auditPath = path.join(rootDir, "course-platform-pilot/practice-audit.csv");
 const authoredPracticePath = path.join(rootDir, "public/question-bank/authored-practice-data.js");
 
-function authoredAiHlQuestion({ id, qnum, marks, difficulty, title, sub, body, parts, markscheme }) {
+function authoredAiHlQuestion({ id, qnum, marks, difficulty, title, main = "Geometry and Trigonometry", sub, body, parts, markscheme }) {
   return {
     id,
     course: "AI HL",
@@ -26,7 +26,27 @@ function authoredAiHlQuestion({ id, qnum, marks, difficulty, title, sub, body, p
     authored: true,
     difficulty: { "AI HL": difficulty },
     title,
-    topics: [{ main: "Geometry and Trigonometry", sub }],
+    topics: [{ main, sub }],
+    body,
+    parts,
+    markscheme,
+  };
+}
+
+function authoredIgcseQuestion({ id, qnum, marks, difficulty, title, sub, body, parts, markscheme }) {
+  return {
+    id,
+    course: "IGCSE Higher",
+    banks: ["IGCSE Higher"],
+    paper: "Mr Flynn IGCSE Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum,
+    marks,
+    authored: true,
+    difficulty: { "IGCSE Higher": difficulty },
+    title,
+    topics: [{ main: "IGCSE", sub }],
     body,
     parts,
     markscheme,
@@ -68,7 +88,7 @@ const igcseSeed = parseSeed(fs.readFileSync(igcseBankPath, "utf8")).map((questio
 // A few AI HL syllabus skills have no clean standalone source in the verified
 // archive. These short Mr Flynn practice questions fill those exact gaps
 // without mislabelling them as past-paper questions or borrowing a later skill.
-const aiHlTopic3Practice = [
+const authoredPractice = [
   {
     id: "MF_AIHL_T3_TRIG_GRAPH_TAN",
     course: "AI HL",
@@ -364,11 +384,270 @@ const aiHlTopic3Practice = [
     parts: [["a", "Use the nearest-neighbour algorithm starting at \\(P\\) to find a tour and its weight.", 3], ["b", "Repeat the algorithm starting at \\(Q\\).", 3]],
     markscheme: [["a", [["\\(P\\to R\\to S\\to Q\\to P\\)", "A2"], ["weight \\(18\\)", "A1"]]], ["b", [["\\(Q\\to S\\to R\\to P\\to Q\\)", "A2"], ["weight \\(18\\)", "A1"]]]],
   }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T4_CHI_SQUARED_DF",
+    qnum: 25,
+    marks: 3,
+    difficulty: "Medium",
+    title: "Degrees of freedom after estimating normal parameters",
+    main: "Statistics and Probability",
+    sub: "Chi-squared test – Goodness of fit",
+    body: "A chi-squared goodness-of-fit test compares observed data with a normal distribution. After any necessary grouping, there are five categories. Both the population mean and the population standard deviation are estimated from the sample.",
+    parts: [["a", "State the number of parameters estimated from the sample.", 1], ["b", "Hence find the number of degrees of freedom for the test.", 2]],
+    markscheme: [["a", [["two parameters", "A1"]]], ["b", [["\\(5-1-2\\)", "M1"], ["\\(2\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T4_ONE_SAMPLE_T_TEST",
+    qnum: 26,
+    marks: 6,
+    difficulty: "Medium",
+    title: "A one-sample t-test for a population mean",
+    main: "Statistics and Probability",
+    sub: "T-test and Z-test",
+    body: "A manufacturer claims that the mean lifetime of a rechargeable battery is \\(500\\) charging cycles. A random sample of \\(12\\) batteries has mean lifetime \\(487\\) cycles and sample standard deviation \\(s_{n-1}=22\\) cycles. Battery lifetimes may be assumed to be normally distributed.",
+    parts: [["a", "State suitable hypotheses to test whether the population mean lifetime is less than the manufacturer's claim.", 2], ["b", "Carry out the test at the \\(5\\%\\) significance level and state your conclusion in context.", 4]],
+    markscheme: [["a", [["\\(H_0:\\mu=500\\)", "A1"], ["\\(H_1:\\mu<500\\)", "A1"]]], ["b", [["uses a one-sample \\(t\\)-test", "M1"], ["\\(t=-2.05\\) and \\(p\\approx0.0326\\)", "A1A1"], ["reject \\(H_0\\); there is evidence that the population mean lifetime is less than \\(500\\) cycles", "R1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_BASIC_DERIVATIVES_1",
+    qnum: 27,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Differentiate sine, cosine, exponential and logarithmic terms",
+    main: "Calculus",
+    sub: "Differentiation - basic rules",
+    body: "Let \\(f(x)=3\\sin x-2\\cos x+4e^x+5\\ln x\\), where \\(x>0\\).",
+    parts: [["", "Find \\(f'(x)\\).", 4]],
+    markscheme: [["", [["\\(f'(x)=3\\cos x+2\\sin x+4e^x+\\dfrac5x\\)", "A4"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_BASIC_DERIVATIVES_2",
+    qnum: 28,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Find a gradient using the basic transcendental derivatives",
+    main: "Calculus",
+    sub: "Differentiation - basic rules",
+    body: "The curve \\(C\\) has equation \\(y=2e^x+3\\ln x-\\sin x\\), where \\(x>0\\).",
+    parts: [["a", "Find \\(\\dfrac{dy}{dx}\\).", 3], ["b", "Find the gradient of \\(C\\) when \\(x=1\\).", 1]],
+    markscheme: [["a", [["\\(\\dfrac{dy}{dx}=2e^x+\\dfrac3x-\\cos x\\)", "A3"]]], ["b", [["\\(2e+3-\\cos1\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_RATIONAL_DERIVATIVES_1",
+    qnum: 29,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Differentiate rational powers",
+    main: "Calculus",
+    sub: "Differentiation - basic rules",
+    body: "Let \\(f(x)=4x^{1/2}-3x^{-1/2}\\), where \\(x>0\\).",
+    parts: [["", "Find \\(f'(x)\\).", 4]],
+    markscheme: [["", [["\\(f'(x)=2x^{-1/2}+\\dfrac32x^{-3/2}\\)", "A4"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_RATIONAL_DERIVATIVES_2",
+    qnum: 30,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Differentiate positive and negative fractional powers",
+    main: "Calculus",
+    sub: "Differentiation - basic rules",
+    body: "The function \\(g\\) is defined by \\(g(x)=6x^{2/3}+2x^{-3/2}\\), where \\(x>0\\).",
+    parts: [["a", "Find \\(g'(x)\\).", 4], ["b", "Find \\(g'(8)\\).", 1]],
+    markscheme: [["a", [["\\(g'(x)=4x^{-1/3}-3x^{-5/2}\\)", "A4"]]], ["b", [["\\(2-\\dfrac{3}{64\\sqrt8}\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_CHAIN_RULE",
+    qnum: 31,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Use the chain rule",
+    main: "Calculus",
+    sub: "Differentiation - product, quotient and chain rule",
+    body: "Let \\(f(x)=e^{3x+1}+\\sin(2x)\\).",
+    parts: [["", "Find \\(f'(x)\\).", 4]],
+    markscheme: [["", [["\\(f'(x)=3e^{3x+1}+2\\cos(2x)\\)", "A4"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_RATIONAL_POWER_INTEGRATION",
+    qnum: 32,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Integrate rational powers",
+    main: "Calculus",
+    sub: "Integration rules",
+    body: "Let \\(x>0\\).",
+    parts: [["", "Find \\(\\displaystyle\\int\\left(3x^{1/2}-2x^{-1/2}\\right)\\,dx\\).", 4]],
+    markscheme: [["", [["\\(2x^{3/2}-4x^{1/2}+C\\)", "A4"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_SIN_COS_INTEGRATION_1",
+    qnum: 33,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Integrate sine and cosine directly",
+    main: "Calculus",
+    sub: "Integration rules",
+    body: "",
+    parts: [["", "Find \\(\\displaystyle\\int(4\\sin x-3\\cos x)\\,dx\\).", 4]],
+    markscheme: [["", [["\\(-4\\cos x-3\\sin x+C\\)", "A4"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_SIN_COS_INTEGRATION_2",
+    qnum: 34,
+    marks: 4,
+    difficulty: "Medium",
+    title: "Evaluate a definite sine and cosine integral",
+    main: "Calculus",
+    sub: "Integration rules",
+    body: "",
+    parts: [["", "Evaluate \\(\\displaystyle\\int_0^{\\pi/2}(3\\sin x+2\\cos x)\\,dx\\).", 4]],
+    markscheme: [["", [["antiderivative \\(-3\\cos x+2\\sin x\\)", "M1A1"], ["value \\(5\\)", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_SUBSTITUTION_1",
+    qnum: 35,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Integrate a function of a function",
+    main: "Calculus",
+    sub: "Integration by substitution",
+    body: "",
+    parts: [["", "Find \\(\\displaystyle\\int 2x(x^2+1)^4\\,dx\\).", 4]],
+    markscheme: [["", [["uses \\(u=x^2+1\\), so \\(du=2x\\,dx\\)", "M1"], ["\\(\\dfrac{(x^2+1)^5}{5}+C\\)", "A3"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_SUBSTITUTION_2",
+    qnum: 36,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Use substitution in a definite integral",
+    main: "Calculus",
+    sub: "Integration by substitution",
+    body: "",
+    parts: [["", "Evaluate \\(\\displaystyle\\int_0^2 3x^2\\sqrt{x^3+1}\\,dx\\).", 5]],
+    markscheme: [["", [["uses \\(u=x^3+1\\), so \\(du=3x^2\\,dx\\)", "M1"], ["changes the limits to \\(1\\) and \\(9\\)", "A1"], ["\\(\\left[\\dfrac23u^{3/2}\\right]_1^9=\\dfrac{52}{3}\\)", "A3"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_KINEMATICS_2",
+    qnum: 37,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Acceleration from a velocity-displacement model",
+    main: "Calculus",
+    sub: "Kinematics",
+    body: "A particle moves in a straight line. Its velocity \\(v\\text{ m s}^{-1}\\) is related to its displacement \\(s\\text{ m}\\) by \\(v=s^2+2s\\), where \\(s>0\\).",
+    parts: [["a", "Using \\(a=v\\dfrac{dv}{ds}\\), find the acceleration in terms of \\(s\\).", 3], ["b", "Find the acceleration when \\(s=1\\).", 2]],
+    markscheme: [["a", [["\\(\\dfrac{dv}{ds}=2s+2\\)", "A1"], ["\\(a=(s^2+2s)(2s+2)\\)", "M1A1"]]], ["b", [["\\(a=3\\times4=12\\text{ m s}^{-2}\\)", "M1A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION",
+    qnum: 38,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Form a differential equation from a cooling model",
+    main: "Calculus",
+    sub: "Differential equations",
+    body: "The temperature \\(T\\ ^\\circ\\text{C}\\) of a drink \\(t\\) minutes after it is poured changes at a rate proportional to the difference between \\(T\\) and the room temperature of \\(20^\\circ\\text{C}\\). The drink is cooling.",
+    parts: [["a", "Write down a differential equation for this model, using a positive constant \\(k\\).", 2], ["b", "State the sign of \\(\\dfrac{dT}{dt}\\) while \\(T>20\\), and explain why it is consistent with your equation.", 2]],
+    markscheme: [["a", [["\\(\\dfrac{dT}{dt}=-k(T-20)\\), \\(k>0\\)", "A2"]]], ["b", [["negative", "A1"], ["both \\(k\\) and \\(T-20\\) are positive, so the leading minus sign makes the rate negative", "R1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_SEPARATION",
+    qnum: 39,
+    marks: 5,
+    difficulty: "Easy",
+    title: "Solve a differential equation by separating variables",
+    main: "Calculus",
+    sub: "Differential equations",
+    body: "The variables \\(x\\) and \\(y\\) satisfy \\(\\dfrac{dy}{dx}=\\dfrac{3x^2}{y}\\), where \\(y>0\\), and \\(y=2\\) when \\(x=0\\).",
+    parts: [["", "Find \\(y\\) in terms of \\(x\\).", 5]],
+    markscheme: [["", [["\\(y\\,dy=3x^2\\,dx\\)", "M1"], ["\\(\\dfrac12y^2=x^3+C\\)", "A1"], ["\\(C=2\\)", "A1"], ["\\(y=\\sqrt{2x^3+4}\\)", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_PHASE_SOURCE",
+    qnum: 40,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Sketch a source phase portrait",
+    main: "Calculus",
+    sub: "Phase portraits",
+    body: "Consider the coupled system \\(\\dfrac{dx}{dt}=2x\\), \\(\\dfrac{dy}{dt}=y\\).",
+    parts: [["a", "State the two eigenvalues and classify the equilibrium point at the origin.", 2], ["b", "Sketch the phase portrait, showing the direction of motion.", 3]],
+    markscheme: [["a", [["eigenvalues \\(2\\) and \\(1\\)", "A1"], ["the origin is a source", "A1"]]], ["b", [["correct outward direction", "A1"], ["eigenvector axes shown as straight-line solutions", "A1"], ["representative curved trajectories drawn", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_PHASE_CENTRE",
+    qnum: 41,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Sketch a centre phase portrait",
+    main: "Calculus",
+    sub: "Phase portraits",
+    body: "Consider the coupled system \\(\\dfrac{dx}{dt}=-y\\), \\(\\dfrac{dy}{dt}=x\\).",
+    parts: [["a", "Find the eigenvalues and classify the equilibrium point at the origin.", 2], ["b", "Sketch the phase portrait, showing the direction of motion.", 3]],
+    markscheme: [["a", [["eigenvalues \\(\\pm i\\)", "A1"], ["the origin is a centre", "A1"]]], ["b", [["closed trajectories centred at the origin", "A1"], ["counterclockwise direction, for example from \\((1,0)\\) the velocity is upward", "A2"]]]],
+  }),
+  authoredIgcseQuestion({
+    id: "MF_IGCSE_T2_FACTORISE_SOLVE_NON_MONIC",
+    qnum: 101,
+    marks: 4,
+    difficulty: "Medium",
+    title: "Factorise and solve a non-monic quadratic",
+    sub: "Quadratic equations",
+    body: "",
+    parts: [["a", "Factorise \\(6x^2+x-2\\).", 2], ["b", "Hence solve \\(6x^2+x-2=0\\).", 2]],
+    markscheme: [["a", [["\\((3x+2)(2x-1)\\)", "A2"]]], ["b", [["\\(x=-\\dfrac23\\) or \\(x=\\dfrac12\\)", "A2"]]]],
+  }),
+  authoredIgcseQuestion({
+    id: "MF_IGCSE_T3_DISTANCE",
+    qnum: 102,
+    marks: 4,
+    difficulty: "Medium",
+    title: "Calculate the distance between two points",
+    sub: "Coordinate geometry",
+    body: "The points \\(A(-3,4)\\) and \\(B(5,-2)\\) lie on a coordinate grid.",
+    parts: [["", "Calculate the distance \\(AB\\). Give your answer in exact form.", 4]],
+    markscheme: [["", [["\\(AB=\\sqrt{(5+3)^2+(-2-4)^2}\\)", "M2"], ["\\(AB=10\\)", "A2"]]]],
+  }),
+  authoredIgcseQuestion({
+    id: "MF_IGCSE_T4_COSINE_RULE_SIDE",
+    qnum: 103,
+    marks: 3,
+    difficulty: "Easy",
+    title: "Find a side using the cosine rule",
+    sub: "Trigonometry",
+    body: "In triangle \\(ABC\\), \\(AB=8\\text{ cm}\\), \\(AC=11\\text{ cm}\\) and \\(\\angle BAC=60^\\circ\\).",
+    parts: [["", "Calculate the length of \\(BC\\). Give your answer correct to three significant figures.", 3]],
+    markscheme: [["", [["\\(BC^2=8^2+11^2-2(8)(11)\\cos60^\\circ\\)", "M1"], ["\\(BC=\\sqrt{97}=9.85\\text{ cm}\\) to three significant figures", "A2"]]]],
+  }),
+  authoredIgcseQuestion({
+    id: "MF_IGCSE_T1_EXPAND_SURDS",
+    qnum: 104,
+    marks: 3,
+    difficulty: "Easy",
+    title: "Expand and simplify surd brackets",
+    sub: "Surds",
+    body: "",
+    parts: [["", "Expand and simplify \\( (2+\\sqrt3)(5-\\sqrt3) \\).", 3]],
+    markscheme: [["", [["\\(10-2\\sqrt3+5\\sqrt3-3\\)", "M1"], ["\\(7+3\\sqrt3\\)", "A2"]]]],
+  }),
+  authoredIgcseQuestion({
+    id: "MF_IGCSE_T3_INVERSE_NOTATION",
+    qnum: 105,
+    marks: 3,
+    difficulty: "Easy",
+    title: "Interpret inverse-function notation",
+    sub: "Functions",
+    body: "The function \\(f\\) is defined by \\(f(x)=3x-5\\).",
+    parts: [["", "Find \\(f^{-1}(7)\\) without first finding a formula for \\(f^{-1}(x)\\).", 3]],
+    markscheme: [["", [["solves \\(3x-5=7\\)", "M1"], ["\\(f^{-1}(7)=4\\)", "A2"]]]],
+  }),
 ];
-const seed = [...ibSeed, ...igcseSeed, ...aiHlTopic3Practice.map((question) => ({ ...question, sourceBank: "authored" }))];
+const seed = [...ibSeed, ...igcseSeed, ...authoredPractice.map((question) => ({ ...question, sourceBank: "authored" }))];
 fs.writeFileSync(
   authoredPracticePath,
-  `window.MR_FLYNN_AUTHORED_PRACTICE = ${JSON.stringify(aiHlTopic3Practice, null, 2)};\n`,
+  `window.MR_FLYNN_AUTHORED_PRACTICE = ${JSON.stringify(authoredPractice, null, 2)};\n`,
 );
 const igcseLessons = JSON.parse(fs.readFileSync(igcseLessonsPath, "utf8"));
 
@@ -405,10 +684,11 @@ const verifiedOverrides = {
   "19a71d14-30c0-4bec-9be1-a1e978c703d9": ["4MA1_2019M_2HR_Q5", "4MA1_2024M_1H_Q12"],
   "0cdedfbf-26ea-489e-b9ce-f8166c7ddbbc": ["4MA1_2019J_1H_Q11", "4MA1_2018M_2HR_Q22"],
   "b262d7f9-4cba-4080-8aee-588b2b1b5569": ["4MA1_2018M_2H_Q1", "4MA1_2025M_2HR_Q17"],
+  "cbc83cb9-d117-46ea-ac62-bb7ac362394d": ["MF_IGCSE_T1_EXPAND_SURDS", "4MA1_2022J_2HR_Q13"],
   "2933b84a-2edd-4f9e-a768-e79a27aeeae7": ["4MA1_2019M_1HR_Q4", "4MA1_2023J_2H_Q13"],
   // The verified bank has no non-monic factorise-then-solve prompt. Keep the
   // approved direct example alone rather than substituting factorisation only.
-  "7e85609d-7df5-4a52-a399-17b82dd85721": ["4MA1_2021M_2H_Q9"],
+  "7e85609d-7df5-4a52-a399-17b82dd85721": ["4MA1_2021M_2H_Q9", "MF_IGCSE_T2_FACTORISE_SOLVE_NON_MONIC"],
   // One exact source writes a quadratic in completed-square form and then
   // uses that form to solve. The previous two sources did not solve at all.
   "79235cf6-1de4-4626-930e-42e9ca9ecd2d": ["4MA1_2018M_2HR_Q24"],
@@ -419,16 +699,19 @@ const verifiedOverrides = {
   // function introduction to direct substitution, and separate interpreting
   // inverse notation from deriving an inverse-function formula.
   "d0b8c40e-aef7-4945-bd5c-6045c5074475": ["4MA1_2021M_1H_Q2", "4MA1_2019J_2HR_Q3"],
-  "737ba3b2-f984-48ba-a0c0-2a6947f22e2c": ["4MA1_2020J_2H_Q25", "4MA1_2019M_1H_Q16"],
+  "737ba3b2-f984-48ba-a0c0-2a6947f22e2c": ["4MA1_2019M_1H_Q16", "4MA1_2020J_2H_Q25"],
   "ae16b3bf-a089-42b8-97c6-23e995688cc3": ["4MA1_2018M_1H_Q14", "4MA1_2019M_2H_Q24"],
   "d084246b-aa0a-4a8b-a962-db8032c3bbcf": ["4MA1_2025M_2HR_Q19", "4MA1_2023M_1H_Q17", "4MA1_2020J_1HR_Q17"],
-  "fb79ddd5-ef05-48a7-a489-311620a88c6b": ["4MA1_2019J_1HR_Q23"],
-  "a99a4255-6920-4e01-9d11-9a0ce6d2f491": ["4MA1_2021J_1H_Q22", "4MA1_2024M_1H_Q15"],
+  "fb79ddd5-ef05-48a7-a489-311620a88c6b": ["MF_IGCSE_T3_INVERSE_NOTATION", "4MA1_2019J_1HR_Q23"],
+  "a99a4255-6920-4e01-9d11-9a0ce6d2f491": ["4MA1_2024M_1H_Q15", "4MA1_2021J_1H_Q22"],
+  "d2fd015e-ce64-4e43-b528-d9f2da7e5a82": ["4MA1_2023M_1H_Q21", "4MA1_2019J_1H_Q18"],
+  "576bcefb-105f-44c2-ace1-ab9537aed17b": ["4MA1_2019M_1HR_Q16", "4MA1_2019M_1H_Q24"],
+  "c9936059-0955-4a3d-981e-64c4ca741e51": ["4MA1_2018M_1H_Q17", "4MA1_2020N_2H_Q19"],
   "1ec9f03e-2faf-4349-b0ee-96686806c30b": ["4MA1_2020N_2H_Q6", "4MA1_2019M_1H_Q23"],
   // There is only one clean standalone coordinate-distance source in the
   // verified archive. Do not pad it with the rejected triangle/trigonometry
   // question or with a later tangent/simultaneous-equations problem.
-  "c03ceb67-bb68-4fe8-a30e-922281449d50": ["4MA1_2022M_1H_Q10"],
+  "c03ceb67-bb68-4fe8-a30e-922281449d50": ["4MA1_2022M_1H_Q10", "MF_IGCSE_T3_DISTANCE"],
   // Direct power-rule differentiation only, cropped before each source moves
   // on to negative gradients. The next lesson then applies differentiation
   // to locate points having a specified gradient.
@@ -443,7 +726,7 @@ const verifiedOverrides = {
   // includes a direct request to calculate an area, not two inverse uses of
   // an area already supplied in the prompt.
   "04d5888d-ec67-4dc2-9b59-1a4ffa18a286": ["4MA1_2021N_1H_Q13", "4MA1_2022J_1HR_Q22"],
-  "ad2901e0-2e0e-4037-85d4-7eae92f2f194": ["4MA1_2018M_2H_Q18", "4MA1_2018M_1HR_Q18"],
+  "ad2901e0-2e0e-4037-85d4-7eae92f2f194": ["MF_IGCSE_T4_COSINE_RULE_SIDE", "4MA1_2018M_1HR_Q18"],
   "bc1ded39-4c6f-44cc-aa12-9685d8b20bc4": ["4MA1_2024M_2HR_Q15", "4MA1_2024M_1HR_Q15"],
   // Pair one prism with one cylinder in surface-area practice, and vary the
   // similar-solids work with a difference-between-volumes problem.
@@ -617,7 +900,7 @@ const verifiedOverrides = {
   // assessed skill and, where necessary, only the relevant subpart is shown.
   "4100b350-f26f-44e3-bb90-7a03158e7b95": ["H_M18TZ1HL_P1_Q2"],
   "b1ffb4f0-65d2-4031-aec4-acbdb5f97b7a": ["H_N10TZ0SL_P1_Q2", "M19TZ1SL_P2_Q3"],
-  "c6d7188a-fc5c-4552-a901-11ee186d96c1": ["M11TZ2HL_P2_Q9", "W_M23TZ2AIHL_P1_Q12"],
+  "c6d7188a-fc5c-4552-a901-11ee186d96c1": ["W_M23TZ2AIHL_P1_Q12", "M11TZ2HL_P2_Q9"],
   "a490ac5c-828a-4b25-a5e0-3cde3293071c": ["W_N21TZ0AIHL_P1_Q8", "M12TZ2HL_P1_Q7"],
   "91d05699-bfeb-4a89-9666-ab1c9e0223cb": ["N09TZ0SL_P1_Q9", "M10TZ2SL_P1_Q8"],
   "442602d9-44ec-4d6b-b6f8-1ae775349771": ["M08TZ2HL_P2_Q6", "M11TZ1SL_P2_Q9"],
@@ -1000,10 +1283,10 @@ const verifiedOverrides = {
   "79bbc962-e946-49f0-a89e-5bd386389248": ["W_N24TZ0AIHL_P1_Q11", "W_M21TZ1AIHL_P2_Q5"],
   // Move the two phase-portrait questions out of eigenvalue/eigenvector
   // practice and into the phase-portrait lessons where they belong.
-  "522e01c2-0046-41ec-b4cd-1b9a7e89e70b": ["W_SPECAIHL_P1_Q15X1", "W_N22TZ0AIHL_P1_Q12"],
+  "522e01c2-0046-41ec-b4cd-1b9a7e89e70b": ["W_N22TZ0AIHL_P1_Q12", "W_SPECAIHL_P1_Q15X1"],
   // Free the explicit D^n question for Powers of matrices and keep the steady
   // state lesson focused on solving for and interpreting a long-run state.
-  "aacabb23-fe64-4316-bbf5-d1737b8fbad8": ["W_M25TZ3AIHL_P1_Q15", "W_M23TZ2AIHL_P2_Q5"],
+  "aacabb23-fe64-4316-bbf5-d1737b8fbad8": ["W_M23TZ2AIHL_P2_Q5", "W_M25TZ3AIHL_P1_Q15"],
 
   "120456b0-8e18-4d3b-9fcc-9765286afe78": ["N13TZ0AISL_P1_Q13", "V_M25TZ3AISL_P1_Q11"],
   "35b51817-4a71-4b1b-9c57-056e58fe4a94": ["V_M24TZ1AISL_P1_Q5", "V_N24TZ1AISL_P1_Q10"],
@@ -1046,10 +1329,10 @@ const verifiedOverrides = {
   // local maximum/minimum work. No HL-only derivative-graph questions appear.
   "e98579d2-83b7-4dab-ab62-427fd2e8165e": ["V_N23TZ1AISL_P1_Q3", "V_M25TZ1AISL_P1_Q8"],
   "741c0b0c-17ef-46e5-894c-c62447c47172": ["N12TZ0AISL_P1_Q15", "M13TZ1AISL_P1_Q15"],
-  "f06c971e-bbd7-4cb2-8db5-e3abbe338077": ["V_M22TZ2AISL_P1_Q11", "V_N24TZ2AISL_P1_Q12"],
+  "f06c971e-bbd7-4cb2-8db5-e3abbe338077": ["V_N24TZ2AISL_P1_Q12", "V_M22TZ2AISL_P1_Q11"],
   "97a1a371-61a6-4585-971e-9fa6c167f39c": ["V_N24TZ1AISL_P1_Q12", "V_M23TZ1AISL_P1_Q5"],
   "b31ff22b-38f1-489b-a9ce-209fa91d73e6": ["M14TZ1SL_P1_Q3", "V_M24TZ2AISL_P2_Q3"],
-  "0512477b-d893-4805-9d2e-2f597b8c8673": ["M14TZ1AISL_P1_Q15", "N13TZ0AISL_P1_Q9"],
+  "0512477b-d893-4805-9d2e-2f597b8c8673": ["N13TZ0AISL_P1_Q9", "M14TZ1AISL_P1_Q15"],
   "0f9fa92d-3b9f-4348-8368-4940114b9592": ["M11TZ2AISL_P1_Q14", "N11TZ0SL_P2_Q6"],
   // AI Topic 3 precision pass. These use only the prompt parts that assess
   // the named lesson; later skills and unrelated follow-up work are hidden.
@@ -1120,16 +1403,20 @@ const verifiedOverrides = {
   // Direct use of P(A ∪ B) and P(A ∩ B), without padding this lesson
   // with a context question whose probability formula is only incidental.
   "a9ba5e52-d70c-45b8-822c-f80312ea5c9a": ["M11TZ1HL_P1_Q1", "M14TZ2HL_P1_Q1"],
+  // Pair a straightforward regression calculation with a second question
+  // that explicitly interprets the gradient in context.
+  "6280cb5e-91bd-4761-b655-6b88addc1345": ["M17TZ1SL_P1_Q4", "M14TZ2SL_P2_Q3"],
   // This exact extract explicitly explains why low expected frequencies must
   // be combined before a chi-squared goodness-of-fit test. The other exact
   // source in the archive is not an approved active-bank record, so one
   // verified question is better than padding this lesson with the wrong task.
   "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d": ["W_M23TZ1AIHL_P2_Q5"],
+  "53bbfe46-4d98-4159-b2df-eeea60362499": ["MF_AIHL_T4_CHI_SQUARED_DF"],
   // These two current mappings already satisfy Rob's newer feedback: the
   // second regression is a power model, and the second residual question
   // calculates and compares SSR for two models. Pin them to prevent reshuffle.
   "5da6d7d3-b205-4517-84f0-ab24321a3be3": ["W_N22TZ0AIHL_P1_Q11", "W_N23TZ0AIHL_P1_Q10"],
-  "876ad43a-c778-48f2-8c79-8a3d409cfd41": ["W_M23TZ1AIHL_P1_Q16", "W_SPECAIHL_P1_Q12"],
+  "876ad43a-c778-48f2-8c79-8a3d409cfd41": ["W_SPECAIHL_P1_Q12", "W_M23TZ1AIHL_P1_Q16"],
   // The verified bank has one exact calculation-and-interpretation R² item.
   "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": ["W_M23TZ2AIHL_P1_Q9"],
   // Keep transformations of one variable separate from combinations of
@@ -1150,6 +1437,7 @@ const verifiedOverrides = {
   // by distribution. Preserve the approved transition-matrix questions and
   // replace the repeated long-run example without changing Question 2.
   "9675baa1-851f-4710-bceb-15dd0c01fdad": ["W_N21TZ0AIHL_P2_Q7", "W_M21TZ2AIHL_P1_Q15"],
+  "7cda7fca-b390-4c4e-87bd-93f53f721caa": ["MF_AIHL_T4_ONE_SAMPLE_T_TEST", "W_N24TZ0AIHL_P1_Q9X1"],
   "54fe02b9-8323-484e-af4e-b3b32efceeb8": ["H_N14TZ0HL_P3S_Q3X1", "W_M23TZ1AIHL_P1_Q8"],
   "73e1e90c-6be8-463a-bc7b-bc43361419d6": ["W_M22TZ2AIHL_P1_Q12", "H_N16TZ0HL_P3S_Q2"],
   "d68a3166-c653-4016-aa50-424a21748ac7": ["W_SPECAIHL_P1_Q16", "W_M22TZ1AIHL_P1_Q15"],
@@ -1160,14 +1448,23 @@ const verifiedOverrides = {
   // differential-equation card asks only for the model to be formed, while
   // separation shows only actual separation work and omits slope fields.
   "326ef6f4-cdc3-461c-b121-527fef739c83": ["M08TZ1SL_P1_Q6", "H_M17TZ2HL_P1_Q4"],
-  "54333f98-7d7a-4d6a-b3cf-347122e184bc": ["H_M14TZ1HL_P1_Q8", "W_N23TZ0AIHL_P3_Q1"],
-  "9af63d1a-407b-4f90-ae78-30c8291fcd59": ["W_M25TZ2AIHL_P1_Q12"],
-  "660e272a-8a71-4422-8450-61a7ea1d58cf": ["H_M13TZ2HL_P2_Q12", "W_M24TZ1AIHL_P2_Q5"],
+  "40507693-613d-4de0-9c6a-f1c4f620cb50": ["MF_AIHL_T5_BASIC_DERIVATIVES_1", "MF_AIHL_T5_BASIC_DERIVATIVES_2"],
+  "a78266c3-8c07-4517-b09a-c67ae8c4345e": ["MF_AIHL_T5_RATIONAL_DERIVATIVES_1", "MF_AIHL_T5_RATIONAL_DERIVATIVES_2"],
+  "4100b350-f26f-44e3-bb90-7a03158e7b95": ["MF_AIHL_T5_CHAIN_RULE", "H_M18TZ1HL_P1_Q2"],
+  "442602d9-44ec-4d6b-b6f8-1ae775349771": ["M11TZ1SL_P2_Q9", "M08TZ2HL_P2_Q6"],
+  "97665ecc-2be3-414c-9944-564bf6fa8645": ["MF_AIHL_T5_RATIONAL_POWER_INTEGRATION", "N18TZ0HL_P2_Q2"],
+  "918840eb-bf55-4e83-8939-40af339f1d94": ["MF_AIHL_T5_SIN_COS_INTEGRATION_1", "MF_AIHL_T5_SIN_COS_INTEGRATION_2"],
+  "f9365360-bc13-4c36-bd90-a494ae34a5ad": ["MF_AIHL_T5_SUBSTITUTION_1", "MF_AIHL_T5_SUBSTITUTION_2"],
+  "0c4f3b43-0879-4243-9e14-d8322f9f011c": ["V_SPECAISL_P1_Q10", "H_N15TZ0HL_P2_Q5"],
+  "811ba56d-a33e-46e8-9889-e3c15e2b8230": ["W_N22TZ0AIHL_P2_Q5", "M19TZ1HL_P2_Q7"],
+  "54333f98-7d7a-4d6a-b3cf-347122e184bc": ["MF_AIHL_T5_KINEMATICS_2", "H_M14TZ1HL_P1_Q8"],
+  "9af63d1a-407b-4f90-ae78-30c8291fcd59": ["MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION", "W_M25TZ2AIHL_P1_Q12"],
+  "660e272a-8a71-4422-8450-61a7ea1d58cf": ["MF_AIHL_T5_SEPARATION", "W_M24TZ1AIHL_P2_Q5"],
   // The conceptual Euler lesson stays blank; its two worked examples live in
   // the following lesson. Coupled Euler practice is limited to the numerical
   // Euler calculation, not the later interpretation or eigenvalue work.
   "49e6c7ea-110b-4ab4-a0d5-97a2c9fe4b11": ["W_M24TZ1AIHL_P1_Q4", "W_M24TZ2AIHL_P1_Q7"],
-  "1310ef79-c234-4d20-9054-53eb85ef7749": ["W_N24TZ0AIHL_P1_Q17", "W_M25TZ3AIHL_P1_Q11"],
+  "1310ef79-c234-4d20-9054-53eb85ef7749": ["W_M25TZ3AIHL_P1_Q11", "W_N24TZ0AIHL_P1_Q17"],
   "a916a502-98ff-4105-8574-80aac522eda7": ["W_N21TZ0AIHL_P2_Q6", "W_SPECAIHL_P1_Q13"],
   "ed654692-df93-4fbf-8bc5-a998e0897920": ["W_M24TZ2AIHL_P2_Q7X1", "W_M24TZ2AIHL_P2_Q7X2"],
   // Exact phase-type examples. Source and centre remain blank until the bank
@@ -1175,18 +1472,17 @@ const verifiedOverrides = {
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f": ["W_M21TZ2AIHL_P2_Q7"],
   "f40d55e2-0669-40a7-b7d9-fcc477ef23d4": ["W_N24TZ0AIHL_P2_Q7"],
   "6194b7ab-4cd6-4c43-9a54-288397647d66": ["W_M23TZ1AIHL_P2_Q6"],
+  "d477bd69-e3be-4201-b8f0-2ba436cc3f6e": ["MF_AIHL_T5_PHASE_SOURCE"],
+  "e8505773-3b8b-41cc-84b3-d2e106e5533f": ["MF_AIHL_T5_PHASE_CENTRE"],
   // The first source explicitly requests the eigenvector-form solution Rob
   // named; the second is the approved exact second-order solution.
   "ceabfc5c-e18c-45d3-9ccd-2e3dcdf6ac5f": ["W_M23TZ2AIHL_P2_Q7", "W_M22TZ2AIHL_P2_Q7"],
 };
 
-// These lessons need finer-grained questions than the current bank offers.
-// Keeping them blank is preferable to reusing a broadly related pair that
-// teaches or assesses a different skill.
-const needsManualQuestionReview = new Set([
-  "d477bd69-e3be-4201-b8f0-2ba436cc3f6e", // Phase portrait: source
-  "e8505773-3b8b-41cc-84b3-d2e106e5533f", // Phase portrait: centre
-]);
+// Lessons are held here only when no precise bank or authored question is
+// ready to display. The formerly missing source and centre phase portraits
+// now have focused Mr Flynn practice, so this set is currently empty.
+const needsManualQuestionReview = new Set([]);
 
 // Rob has explicitly decided that this short conceptual lesson does not need
 // attached exam practice. Keep both pathway copies intentionally blank so the
@@ -1236,16 +1532,12 @@ const intentionallyWithoutPractice = new Set([
   "f90e3723-409e-4424-ad98-4684075dc4c5", // AI SL + AI HL: Chi-squared introduction
   "8a686732-f574-43ed-891e-8e2fe01e29a5", // AI SL + AI HL: Introduction to differentiation
   "1411cdc4-fc40-4c0c-8994-99b37500f165", // AI SL + AI HL: Introduction to limits
-  "40507693-613d-4de0-9c6a-f1c4f620cb50", // AI HL: direct sin/cos/ln/e derivatives (no clean unused non-chain source)
-  "a78266c3-8c07-4517-b09a-c67ae8c4345e", // AI HL: rational-exponent differentiation (no clean direct x^(1/2)-style source)
+  "9099c37b-0a4f-4e00-a57d-77702f80a974", // IGCSE: Differentiation introduction
   "c140dbc4-5bd3-48a7-834e-dfb032927422", // AI HL: relationship between graphs and derivatives
   "eaa9adcd-5d3d-4fac-8b59-173980d36047", // AI HL: Euler's method (examples belong in the following lesson)
   "1532c139-e18e-4daf-a429-15a50f300444", // AI HL: Sketching phase portraits introduction
   "f5321b22-6b45-40ca-a705-57ee519bba5a", // AI HL: Surveys and questionnaires
   "b5304489-6978-49c9-af8b-059e251c5754", // AI HL: Reliability versus validity
-  // No verified bank source currently assesses the precise normal-fit rule
-  // Rob specified: k - 1 - 2 after estimating both mean and standard deviation.
-  "53bbfe46-4d98-4159-b2df-eeea60362499", // AI HL: Chi-squared degrees of freedom
 ]);
 
 // These are deliberate one-question lessons approved by Rob. They should not
@@ -1260,7 +1552,6 @@ const intentionallySinglePractice = new Set([
   "916aa44f-5240-4926-9cb6-12800d012e0c", // AA HL: one coherent polynomial factorise-and-sketch task
   "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
   "5e60b54a-6bf2-4cf5-be78-4f13509448fd", // AI SL + AI HL: Rounding
-  "9af63d1a-407b-4f90-ae78-30c8291fcd59", // AI HL: Setting up a differential equation
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f", // AI HL: Phase portrait sink
   "f40d55e2-0669-40a7-b7d9-fcc477ef23d4", // AI HL: Phase portrait spiral sink
   "6194b7ab-4cd6-4c43-9a54-288397647d66", // AI HL: Phase portrait spiral source
@@ -1269,16 +1560,17 @@ const intentionallySinglePractice = new Set([
   "3cffb57c-653d-45a2-9983-68b1016b23e4", // AI HL: Prim's algorithm with adjacency table
   "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb", // AI HL: Coefficient of determination
   "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d", // AI HL: Chi-squared categorising data
+  "53bbfe46-4d98-4159-b2df-eeea60362499", // AI HL: Chi-squared degrees of freedom
   "36efc894-0227-4bab-99f6-2f85cd8c9706", // AI HL: Z-test two tailed (one exact known-variance source)
   "fb36af72-faa4-4e66-bf8d-099bc54e766a", // AI HL: Binomial errors (one source containing both error types)
-  "4100b350-f26f-44e3-bb90-7a03158e7b95", // AI HL: Chain rule (one clean, accessible source)
-  "97665ecc-2be3-414c-9944-564bf6fa8645", // AI HL: Rational-power integration (one exact source)
-  "918840eb-bf55-4e83-8939-40af339f1d94", // AI HL: Integrating sin and cos (one clean unused source)
+  "d477bd69-e3be-4201-b8f0-2ba436cc3f6e", // AI HL: Phase portrait source
+  "e8505773-3b8b-41cc-84b3-d2e106e5533f", // AI HL: Phase portrait centre
   "d9d11f09-511a-436a-9792-f66fc8ceeac5", // AI HL: Integrating e^x and 1/x (one direct logarithmic source)
   "99a7ab79-f157-4f85-83f1-52b8368acc0f", // AI HL: Inverse chain rule (one clean linear-inner source)
   "d336ee8b-277b-4f7d-90f8-c309a50d1d4c", // AA SL + AA HL: Finding a limit (one clean pre-later-rules source)
   "7c1d0df9-3f50-4bfb-ae45-b669c1405895", // AA SL + AA HL: non-calculator derivative sketch
   "20b25248-b2b7-4f5b-b270-d68567b564d7", // IGCSE: ordinary frequency tables
+  "79235cf6-1de4-4626-930e-42e9ca9ecd2d", // IGCSE: completing the square and solving (one coherent source)
 ]);
 
 // These lessons currently have one exact verified source, but Rob has not
@@ -1288,10 +1580,6 @@ const incompleteSinglePractice = new Set([
   "41d1e966-9bb1-4436-976e-d02187f32932", // AI SL + AI HL: exact perpendicular-bisector equation
   "562cf78f-2adf-4021-abac-bb7b80049618", // AI HL: horizontal stretch matrix
   "4f023b2b-b628-425a-a005-e96d992f7a32", // AI HL: translation by vector addition
-  "7e85609d-7df5-4a52-a399-17b82dd85721", // IGCSE: solving quadratics by factorising
-  "79235cf6-1de4-4626-930e-42e9ca9ecd2d", // IGCSE: solving by completing the square
-  "fb79ddd5-ef05-48a7-a489-311620a88c6b", // IGCSE: inverse-functions introduction
-  "c03ceb67-bb68-4fe8-a30e-922281449d50", // IGCSE: distance between two points
 ]);
 
 // Rob explicitly approved three-question progressions for these two Topic 4
@@ -1311,6 +1599,11 @@ const intentionallyTriplePractice = new Set([
 ]);
 
 const practicePartOverrides = {
+  "6280cb5e-91bd-4761-b655-6b88addc1345": {
+    // The second source asks what the gradient represents in context. Keep
+    // that focused part and omit its later prediction follow-up.
+    "M14TZ2SL_P2_Q3": ["a"],
+  },
   "41d1e966-9bb1-4436-976e-d02187f32932": {
     "V_M21TZ2AISL_P1_Q6": ["a"],
   },
@@ -3172,6 +3465,24 @@ function difficultyOf(question, course) {
   return question.difficulty?.[course] || question.difficulty?.[question.course] || "Medium";
 }
 
+function displayDifficultyOverrides(course, questionIds, explicitOverrides = {}) {
+  const overrides = {};
+  if (/ HL$/.test(course)) {
+    for (const questionId of questionIds) {
+      const question = seed.find((candidate) => candidate.id === questionId);
+      if (!question || question.difficulty?.[course]) continue;
+      // A difficult SL question is a medium step in the corresponding HL
+      // pathway. This keeps the same source question while grading the card
+      // relative to the course in which the student sees it.
+      if (/ SL$/.test(question.course || "") && difficultyOf(question, question.course) === "Difficult") {
+        overrides[questionId] = "Medium";
+      }
+    }
+  }
+  Object.assign(overrides, explicitOverrides);
+  return Object.keys(overrides).length ? overrides : undefined;
+}
+
 function normalize(value) {
   return String(value || "")
     .toLowerCase()
@@ -3796,7 +4107,13 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/^area under the curve$/.test(lessonTitle)
     && ["A_N22TZ0SL_P2_Q3", "W_N23TZ0AIHL_P1_Q11"].includes(question.id)) return true;
   if (/derivative of sine.*cosine|derivative of sin.*cos.*ln.*e/.test(lessonTitle)
-    && ["N16TZ0SL_P1_Q10X1", "M18TZ1SL_P2_Q1", "M15TZ1HL_P2_Q6"].includes(question.id)) return true;
+    && [
+      "N16TZ0SL_P1_Q10X1",
+      "M18TZ1SL_P2_Q1",
+      "M15TZ1HL_P2_Q6",
+      "MF_AIHL_T5_BASIC_DERIVATIVES_1",
+      "MF_AIHL_T5_BASIC_DERIVATIVES_2",
+    ].includes(question.id)) return true;
   // Final AI HL calculus and differential-equations review. These sources
   // were checked at displayed-part level so a broader source title cannot
   // push slope fields, vector motion or later modelling into the wrong card.
@@ -3807,7 +4124,7 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/setting up a differential equation/.test(lessonTitle)
     && question.id === "W_M25TZ2AIHL_P1_Q12") return true;
   if (/^separation of variables$/.test(lessonTitle)
-    && ["H_M13TZ2HL_P2_Q12", "W_M24TZ1AIHL_P2_Q5"].includes(question.id)) return true;
+    && ["H_M13TZ2HL_P2_Q12", "W_M24TZ1AIHL_P2_Q5", "MF_AIHL_T5_SEPARATION"].includes(question.id)) return true;
   if (/^euler s method example$/.test(lessonTitle)
     && ["W_M24TZ1AIHL_P1_Q4", "W_M24TZ2AIHL_P1_Q7"].includes(question.id)) return true;
   if (/euler s method for coupled systems/.test(lessonTitle)
@@ -3849,7 +4166,14 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/integrating e.*1 x/.test(lessonTitle) && question.id === "N20TZ0SL_P1_Q6") return true;
   if (/integrating e.*1 x/.test(lessonTitle) && question.id === "M13TZ1SL_P1_Q6") return true;
   if (/integrating sin.*cos/.test(lessonTitle)
-    && ["N08TZ0SL_P1_Q9", "M10TZ2SL_P1_Q10", "A_M23TZ1SL_P2_Q9", "H_M15TZ1SL_P1_Q7"].includes(question.id)) return true;
+    && [
+      "N08TZ0SL_P1_Q9",
+      "M10TZ2SL_P1_Q10",
+      "A_M23TZ1SL_P2_Q9",
+      "H_M15TZ1SL_P1_Q7",
+      "MF_AIHL_T5_SIN_COS_INTEGRATION_1",
+      "MF_AIHL_T5_SIN_COS_INTEGRATION_2",
+    ].includes(question.id)) return true;
   if (/^integration by substitution$/.test(lessonTitle)
     && ["M17TZ1SL_P1_Q5", "A_N22TZ0SL_P1_Q5"].includes(question.id)) return true;
   if (/inverse chain rule/.test(lessonTitle)
@@ -4386,7 +4710,7 @@ for (const [id, placement] of placements) {
       questionPartTexts: practicePartTextOverrides[id] || undefined,
       questionPartTitles: practicePartTitles[id] || undefined,
       questionBodies: practiceBodyOverrides[id] || undefined,
-      questionDifficulties: practiceDifficultyOverrides[id] || undefined,
+      questionDifficulties: displayDifficultyOverrides(course, questionIds, practiceDifficultyOverrides[id]),
     };
   }
   const quickMeta = questionIds[0] ? selectedQuestionMeta(id, questionIds[0]) : { title: "", marks: "" };

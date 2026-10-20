@@ -457,6 +457,7 @@
 
 </div>
 
+<script src="authored-practice-data.js?v=20261020-2"></script>
 <script>
 (function(){
 
@@ -176456,6 +176457,14 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     "diagram2": "diagram4ma1_2025m_2hr_q26b"
   }
 ];
+
+  // Merge the clearly labelled Mr Flynn practice cards used to fill exact
+  // lesson gaps where the verified IGCSE archive has no suitable standalone
+  // question. Course links can then open them in this renderer like any other
+  // practice item.
+  SEED.push.apply(SEED, (window.MR_FLYNN_AUTHORED_PRACTICE || []).filter(function(question){
+    return question.course === "IGCSE Higher";
+  }));
 
   // ---------- Persistence: merge seed into stored data without duplicating ----------
   var state = { all: [], filtered: [], rendered: 0, byId: {}, course: '' };

@@ -336,3 +336,39 @@ AI HL,2026-10-20,3.16.8,Travelling salesman problem,awaiting-recheck,W_N24TZ0AIH
 AI HL,2026-10-20,3.16.9,TSP practical problems,awaiting-recheck,W_M24TZ2AIHL_P2_Q4|MF_AIHL_T3_TSP_PRACTICAL,Kept the approved source and added a second practical travelling-salesman interpretation
 AI HL,2026-10-20,3.16.10,Nearest neighbour algorithm,awaiting-recheck,MF_AIHL_T3_NEAREST_NEIGHBOUR_1|MF_AIHL_T3_NEAREST_NEIGHBOUR_2,Replaced both Voronoi nearest-site questions with graph-theory nearest-neighbour tours
 AI HL,2026-10-20,3.16.11,Deleted vertex algorithm,approved,W_M25TZ3AIHL_P2_Q4|W_SPECAIHL_P2_Q5,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,4.4,Linear regression and correlation,awaiting-recheck,M17TZ1SL_P1_Q4|M14TZ2SL_P2_Q3,Added a focused interpretation of the regression gradient in context
+AI HL,2026-10-20,4.12.4,Chi squared (degrees of freedom),awaiting-recheck,MF_AIHL_T4_CHI_SQUARED_DF,Added the exact k minus 1 minus 2 calculation after estimating mean and standard deviation
+AI HL,2026-10-20,4.13.2,Sum of square residuals,awaiting-recheck,W_SPECAIHL_P1_Q12|W_M23TZ1AIHL_P1_Q16,Reordered the medium question before the difficult question
+AI HL,2026-10-20,4.18.3,T-test,awaiting-recheck,MF_AIHL_T4_ONE_SAMPLE_T_TEST|W_N24TZ0AIHL_P1_Q9X1,Replaced the unrelated mean and median card with a genuine one-sample t-test
+AI HL,2026-10-20,4.19.3,Steady state and long term probabilities,awaiting-recheck,W_M23TZ2AIHL_P2_Q5|W_M25TZ3AIHL_P1_Q15,Reordered the medium question before the difficult question
+AI HL,2026-10-20,5.3.2,Derivative at a point,awaiting-recheck,V_N24TZ2AISL_P1_Q12|V_M22TZ2AISL_P1_Q11,Reordered the accessible gradient question before the harder one
+AI HL,2026-10-20,5.6,Stationary points,awaiting-recheck,N13TZ0AISL_P1_Q9|M14TZ1AISL_P1_Q15,Reordered the easier stationary-point calculation first
+AI HL,2026-10-20,5.9.1,"Derivative of sinx,cosx,lnx,e^x",awaiting-recheck,MF_AIHL_T5_BASIC_DERIVATIVES_1|MF_AIHL_T5_BASIC_DERIVATIVES_2,Added two direct derivatives without later rules
+AI HL,2026-10-20,5.9.2,Differentiation (rational exponents),awaiting-recheck,MF_AIHL_T5_RATIONAL_DERIVATIVES_1|MF_AIHL_T5_RATIONAL_DERIVATIVES_2,Added direct positive and negative fractional-power differentiation
+AI HL,2026-10-20,5.9.3,Chain rule,awaiting-recheck,MF_AIHL_T5_CHAIN_RULE|H_M18TZ1HL_P1_Q2,Added a straightforward chain-rule question before the exam extract
+AI HL,2026-10-20,5.9.6,Related rates of change,awaiting-recheck,W_M23TZ2AIHL_P1_Q12|M11TZ2HL_P2_Q9,Reordered the medium shape question before the difficult rocket question
+AI HL,2026-10-20,5.10.4,Points of inflexion,awaiting-recheck,M11TZ1SL_P2_Q9|M08TZ2HL_P2_Q6,Reordered easy before medium
+AI HL,2026-10-20,5.11.1,Integration power rule (rational power),awaiting-recheck,MF_AIHL_T5_RATIONAL_POWER_INTEGRATION|N18TZ0HL_P2_Q2,Added a direct rational-power integral before the existing example
+AI HL,2026-10-20,5.11.2,Integrating sin and cos,awaiting-recheck,MF_AIHL_T5_SIN_COS_INTEGRATION_1|MF_AIHL_T5_SIN_COS_INTEGRATION_2,Replaced later-technique questions with direct indefinite and definite trigonometric integrals
+AI HL,2026-10-20,5.11.5,Integration by substitution,awaiting-recheck,MF_AIHL_T5_SUBSTITUTION_1|MF_AIHL_T5_SUBSTITUTION_2,Replaced inappropriate examples with the accessible SL substitution pattern
+AI HL,2026-10-20,5.12.2,Area between curve and y-axis,awaiting-recheck,V_SPECAISL_P1_Q10|H_N15TZ0HL_P2_Q5,Reordered easy before medium
+AI HL,2026-10-20,5.12.4,Volume of revolution about y-axis,awaiting-recheck,W_N22TZ0AIHL_P2_Q5|M19TZ1HL_P2_Q7,Kept only genuine y-axis rotations and ordered medium before difficult
+AI HL,2026-10-20,5.13.2,Kinematics 2,awaiting-recheck,MF_AIHL_T5_KINEMATICS_2|H_M14TZ1HL_P1_Q8,Replaced the overgrown capsule problem with direct use of a equals v dv by ds
+AI HL,2026-10-20,5.14.1,Setting up a differential equation,awaiting-recheck,MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION|W_M25TZ2AIHL_P1_Q12,Added a short formation question before the exam extract
+AI HL,2026-10-20,5.14.2,Separation of variables,awaiting-recheck,MF_AIHL_T5_SEPARATION|W_M24TZ1AIHL_P2_Q5,Added a direct separation question before the harder source
+AI HL,2026-10-20,5.16.3,Euler's method for coupled systems,awaiting-recheck,W_M25TZ3AIHL_P1_Q11|W_N24TZ0AIHL_P1_Q17,Reordered medium before difficult
+AI HL,2026-10-20,5.17.1,Phase portraits intro,awaiting-recheck,W_N22TZ0AIHL_P1_Q12|W_SPECAIHL_P1_Q15X1,Reordered medium before difficult
+AI HL,2026-10-20,5.17.5,Sketching phase portraits (source),awaiting-recheck,MF_AIHL_T5_PHASE_SOURCE,Added a clean source with two positive real eigenvalues
+AI HL,2026-10-20,5.17.9,Sketching phase portraits (centre),awaiting-recheck,MF_AIHL_T5_PHASE_CENTRE,Added a clean centre with purely imaginary eigenvalues
+IGCSE Higher,2026-10-20,1.4.3,Surds (Expanding Brackets),awaiting-recheck,MF_IGCSE_T1_EXPAND_SURDS|4MA1_2022J_2HR_Q13,Added a direct accessible surd-brackets question
+IGCSE Higher,2026-10-20,2.7.1,Solving Quadratics by Factorising,awaiting-recheck,4MA1_2021M_2H_Q9|MF_IGCSE_T2_FACTORISE_SOLVE_NON_MONIC,Added the requested non-monic factorise-and-solve progression
+IGCSE Higher,2026-10-20,2.7.2,Solving by Completing the Square,approved-single,4MA1_2018M_2HR_Q24,Kept the one honest source that completes the square and then solves
+IGCSE Higher,2026-10-20,3.1.3,Arithmetic Series,awaiting-recheck,4MA1_2019M_1H_Q16|4MA1_2020J_2H_Q25,Reordered medium before difficult
+IGCSE Higher,2026-10-20,3.2.4,Inverse Functions Introduction,awaiting-recheck,MF_IGCSE_T3_INVERSE_NOTATION|4MA1_2019J_1HR_Q23,Added direct inverse notation without first deriving an inverse formula
+IGCSE Higher,2026-10-20,3.2.5,Finding Inverse Functions,awaiting-recheck,4MA1_2024M_1H_Q15|4MA1_2021J_1H_Q22,Reordered medium before difficult
+IGCSE Higher,2026-10-20,3.3.7,Distance Between Two Points,awaiting-recheck,4MA1_2022M_1H_Q10|MF_IGCSE_T3_DISTANCE,Added a second straightforward coordinate-distance question
+IGCSE Higher,2026-10-20,3.3.10,Transformations of Graphs,awaiting-recheck,4MA1_2023M_1H_Q21|4MA1_2019J_1H_Q18,Reordered medium before difficult
+IGCSE Higher,2026-10-20,3.4.1,Differentiation Introduction,approved-no-practice,,Left this conceptual introduction blank
+IGCSE Higher,2026-10-20,3.4.6,Kinematics,awaiting-recheck,4MA1_2019M_1HR_Q16|4MA1_2019M_1H_Q24,Reordered medium before difficult
+IGCSE Higher,2026-10-20,4.8.7,Cosine Rule,awaiting-recheck,MF_IGCSE_T4_COSINE_RULE_SIDE|4MA1_2018M_1HR_Q18,Added an accessible find-the-side question before the difficult quadrilateral
+IGCSE Higher,2026-10-20,5.1.3,Vector proofs,awaiting-recheck,4MA1_2018M_1H_Q17|4MA1_2020N_2H_Q19,Reordered medium before difficult
