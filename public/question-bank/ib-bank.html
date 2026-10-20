@@ -485,6 +485,7 @@
 
 </div>
 
+<script src="authored-practice-data.js?v=20261020-1"></script>
 <script>
 (function(){
 
@@ -550439,6 +550440,10 @@ function diagramN11TZ0P2Q1grid(){
     }
   }
 ];
+  // Small, lesson-specific Mr Flynn practice cards are generated separately
+  // from the verified archive and labelled clearly in the UI. Merge them into
+  // the same renderer so course links can open them exactly like bank items.
+  SEED.push.apply(SEED, window.MR_FLYNN_AUTHORED_PRACTICE || []);
 
   // ---------- Persistence: merge seed into stored data without duplicating ----------
   var state = { all: [], filtered: [], rendered: 0, byId: {}, course: '' };

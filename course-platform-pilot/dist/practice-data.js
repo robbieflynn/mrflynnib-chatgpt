@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T17:19:21.183Z",
+  "generatedAt": "2026-10-20T17:39:33.429Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 477,
-  "completeLessonCount": 433,
-  "approvedSingleLessonCount": 38,
-  "questionCount": 918,
+  "lessonCount": 481,
+  "completeLessonCount": 437,
+  "approvedSingleLessonCount": 35,
+  "questionCount": 928,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -3612,9 +3612,21 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Coordinate geometry",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M11TZ1AISL_P1_Q13",
-        "M19TZ2AISL_P1_Q8"
-      ]
+        "V_M21TZ2AISL_P1_Q6"
+      ],
+      "questionParts": {
+        "V_M21TZ2AISL_P1_Q6": [
+          "a"
+        ]
+      },
+      "questionPartLabels": {
+        "V_M21TZ2AISL_P1_Q6": {
+          "a": ""
+        }
+      },
+      "questionPartTitles": {
+        "V_M21TZ2AISL_P1_Q6": "Find the exact equation of a perpendicular bisector"
+      }
     },
     "5b93e2db-6972-4037-ad50-d913af48e762": {
       "lesson": "3.6.1 Voronoi diagrams intro",
@@ -4196,6 +4208,29 @@ window.MR_FLYNN_PRACTICE = {
         "W_SPECAIHL_P1_Q15": "Plot successive powers on an Argand diagram"
       }
     },
+    "795817a0-1f56-45f4-b103-3b8936c00858": {
+      "lesson": "1.14.7 System of linear equations",
+      "course": "AI HL",
+      "subtopic": "System of linear equations",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "W_M21TZ2AIHL_P1_Q14",
+        "V_N24TZ2AISL_P1_Q3"
+      ],
+      "questionParts": {
+        "W_M21TZ2AIHL_P1_Q14": [
+          "b"
+        ]
+      },
+      "questionPartLabels": {
+        "W_M21TZ2AIHL_P1_Q14": {
+          "b": ""
+        }
+      },
+      "questionPartTitles": {
+        "W_M21TZ2AIHL_P1_Q14": "Form and solve a pair of simultaneous equations"
+      }
+    },
     "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": {
       "lesson": "1.15.1 Eigenvalues and eigenvectors",
       "course": "AI HL",
@@ -4411,24 +4446,34 @@ window.MR_FLYNN_PRACTICE = {
         "W_M23TZ1AIHL_P1_Q14"
       ]
     },
-    "1dab411c-5ce9-4532-9461-94d1b7817a7e": {
-      "lesson": "3.7.1 Radians",
-      "course": "AI HL",
-      "subtopic": "Arcs and sectors",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "N15TZ0SL_P2_Q1",
-        "N14TZ0SL_P2_Q3"
-      ]
-    },
     "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae": {
       "lesson": "3.7.2 Arcs and sectors with radians",
       "course": "AI HL",
       "subtopic": "Arcs and sectors",
       "bankPath": "ib-bank.html",
       "questionIds": [
+        "N15TZ0SL_P2_Q1",
+        "N14TZ0SL_P2_Q3",
         "M13TZ1HL_P2_Q5"
       ]
+    },
+    "b4268179-f1d2-41ac-8573-6fd93c172880": {
+      "lesson": "3.8.4 Graphs of sin, cos and tan",
+      "course": "AI HL",
+      "subtopic": "Trig equations and identities",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "N15TZ0SL_P1_Q4",
+        "M10TZ1AISL_P1_Q11",
+        "MF_AIHL_T3_TRIG_GRAPH_TAN"
+      ],
+      "questionParts": {
+        "M10TZ1AISL_P1_Q11": [
+          "a",
+          "b",
+          "c"
+        ]
+      }
     },
     "4b64fec7-8aa3-4d58-b2ac-2bb28ceefb67": {
       "lesson": "3.8.5 Sine rule (ambiguous case)",
@@ -4440,13 +4485,54 @@ window.MR_FLYNN_PRACTICE = {
         "M12TZ2HL_P2_Q3"
       ]
     },
+    "f9f1e45b-75b0-42ea-8228-b4f06345c516": {
+      "lesson": "3.8.6 Trig identities",
+      "course": "AI HL",
+      "subtopic": "Trig equations and identities",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T3_TRIG_IDENTITY_1",
+        "MF_AIHL_T3_TRIG_IDENTITY_2"
+      ]
+    },
     "0e81f809-f846-4459-bcca-fb84c32fb263": {
       "lesson": "3.8.7 Solving Trigonometric Equations",
       "course": "AI HL",
       "subtopic": "Trig equations and identities",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "H_M08TZ1HL_P1_Q4"
+        "M08TZ1SL_P2_Q4"
+      ],
+      "questionParts": {
+        "M08TZ1SL_P2_Q4": [
+          "b"
+        ]
+      },
+      "questionPartLabels": {
+        "M08TZ1SL_P2_Q4": {
+          "b": ""
+        }
+      },
+      "questionPartTitles": {
+        "M08TZ1SL_P2_Q4": "Solve a trigonometric equation from its graph"
+      }
+    },
+    "562cf78f-2adf-4021-abac-bb7b80049618": {
+      "lesson": "3.9.1 Matrix transformations (intro and stretches)",
+      "course": "AI HL",
+      "subtopic": "Matrix transformations",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T3_MATRIX_STRETCH"
+      ]
+    },
+    "4f023b2b-b628-425a-a005-e96d992f7a32": {
+      "lesson": "3.9.2 Translations",
+      "course": "AI HL",
+      "subtopic": "Matrix transformations",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "MF_AIHL_T3_MATRIX_TRANSLATION"
       ]
     },
     "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": {
@@ -4455,7 +4541,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Matrix transformations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M22TZ1AIHL_P2_Q7"
+        "W_M22TZ1AIHL_P2_Q7",
+        "MF_AIHL_T3_MATRIX_ENLARGEMENT"
       ],
       "questionParts": {
         "W_M22TZ1AIHL_P2_Q7": [
@@ -4482,7 +4569,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Matrix transformations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N23TZ0AIHL_P2_Q6"
+        "W_N23TZ0AIHL_P2_Q6",
+        "MF_AIHL_T3_MATRIX_REFLECTION"
       ],
       "questionParts": {
         "W_N23TZ0AIHL_P2_Q6": [
@@ -4503,15 +4591,27 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "W_N24TZ0AIHL_P2_Q6",
-        "W_M21TZ2AIHL_P1_Q14"
+        "W_M23TZ2AIHL_P1_Q13"
       ],
       "questionParts": {
         "W_N24TZ0AIHL_P2_Q6": [
           "d"
+        ],
+        "W_M23TZ2AIHL_P1_Q13": [
+          "a"
         ]
       },
+      "questionPartLabels": {
+        "W_N24TZ0AIHL_P2_Q6": {
+          "d": ""
+        },
+        "W_M23TZ2AIHL_P1_Q13": {
+          "a": ""
+        }
+      },
       "questionPartTitles": {
-        "W_N24TZ0AIHL_P2_Q6": "Combine a rotation and enlargement into one matrix"
+        "W_N24TZ0AIHL_P2_Q6": "Combine a rotation and enlargement into one matrix",
+        "W_M23TZ2AIHL_P1_Q13": "Undo two successive matrix transformations"
       },
       "questionBodies": {
         "W_N24TZ0AIHL_P2_Q6": "The matrix \\(A=\\begin{pmatrix}\\cos24^\\circ&-\\sin24^\\circ\\\\[3pt]\\sin24^\\circ&\\cos24^\\circ\\end{pmatrix}\\) represents a rotation about the origin. The matrix \\(B=\\begin{pmatrix}1.04&0\\\\0&1.04\\end{pmatrix}\\) represents an enlargement about the origin. Nia creates a composite transformation using \\(C=AB\\)."

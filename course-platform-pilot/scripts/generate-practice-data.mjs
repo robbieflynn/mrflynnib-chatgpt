@@ -11,6 +11,7 @@ const igcseBankPath = path.join(rootDir, "public/question-bank/igcse-bank.html")
 const igcseLessonsPath = path.join(rootDir, "course-platform-pilot/igcse-lessons.json");
 const outputPath = path.join(distDir, "practice-data.js");
 const auditPath = path.join(rootDir, "course-platform-pilot/practice-audit.csv");
+const authoredPracticePath = path.join(rootDir, "public/question-bank/authored-practice-data.js");
 
 function loadWindowValue(filePath, key) {
   const sandbox = { window: {} };
@@ -44,7 +45,135 @@ function parseSeed(html) {
 const library = loadWindowValue(path.join(distDir, "library-data.js"), "MR_FLYNN_LIBRARY");
 const ibSeed = parseSeed(fs.readFileSync(ibBankPath, "utf8")).map((question) => ({ ...question, sourceBank: "ib" }));
 const igcseSeed = parseSeed(fs.readFileSync(igcseBankPath, "utf8")).map((question) => ({ ...question, sourceBank: "igcse" }));
-const seed = [...ibSeed, ...igcseSeed];
+// A few AI HL syllabus skills have no clean standalone source in the verified
+// archive. These short Mr Flynn practice questions fill those exact gaps
+// without mislabelling them as past-paper questions or borrowing a later skill.
+const aiHlTopic3Practice = [
+  {
+    id: "MF_AIHL_T3_TRIG_GRAPH_TAN",
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 1,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI HL": "Medium" },
+    title: "Sketch a tangent graph",
+    topics: [{ main: "Geometry and Trigonometry", sub: "Trigonometric graphs" }],
+    body: "Let \\(f(x)=2\\tan x\\), for \\(-\\dfrac{\\pi}{2}<x<\\dfrac{\\pi}{2}\\).",
+    parts: [["", "Sketch the graph of \\(y=f(x)\\), clearly showing the intercept and the equations of any vertical asymptotes.", 4]],
+    markscheme: [["", [["vertical asymptotes \\(x=-\\dfrac{\\pi}{2}\\) and \\(x=\\dfrac{\\pi}{2}\\)", "A1"], ["intercept \\((0,0)\\)", "A1"], ["correct increasing tangent shape", "A1"], ["correct vertical scale, for example passing through \\(\\left(\\dfrac{\\pi}{4},2\\right)\\)", "A1"]]]],
+  },
+  {
+    id: "MF_AIHL_T3_TRIG_IDENTITY_1",
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 2,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI HL": "Easy" },
+    title: "Use the two AI trigonometric identities",
+    topics: [{ main: "Geometry and Trigonometry", sub: "Trigonometric identities" }],
+    body: "The angle \\(\\theta\\) is acute and \\(\\sin\\theta=\\dfrac{5}{13}\\).",
+    parts: [["a", "Use \\(\\sin^2\\theta+\\cos^2\\theta=1\\) to find \\(\\cos\\theta\\).", 2], ["b", "Hence use \\(\\tan\\theta=\\dfrac{\\sin\\theta}{\\cos\\theta}\\) to find \\(\\tan\\theta\\).", 2]],
+    markscheme: [["a", [["\\(\\cos^2\\theta=1-\\left(\\dfrac5{13}\\right)^2=\\dfrac{144}{169}\\)", "M1"], ["\\(\\cos\\theta=\\dfrac{12}{13}\\)", "A1"]]], ["b", [["\\(\\tan\\theta=\\dfrac{5/13}{12/13}\\)", "M1"], ["\\(\\tan\\theta=\\dfrac5{12}\\)", "A1"]]]],
+  },
+  {
+    id: "MF_AIHL_T3_TRIG_IDENTITY_2",
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 3,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI HL": "Medium" },
+    title: "Simplify using the two AI trigonometric identities",
+    topics: [{ main: "Geometry and Trigonometry", sub: "Trigonometric identities" }],
+    body: "Let \\(0<\\theta<\\dfrac{\\pi}{2}\\).",
+    parts: [["a", "Show that \\(\\dfrac{1-\\sin^2\\theta}{\\cos\\theta}=\\cos\\theta\\).", 2], ["b", "Hence simplify \\(\\dfrac{1-\\sin^2\\theta}{\\sin\\theta\\cos\\theta}\\).", 2]],
+    markscheme: [["a", [["\\(1-\\sin^2\\theta=\\cos^2\\theta\\)", "M1"], ["\\(\\dfrac{\\cos^2\\theta}{\\cos\\theta}=\\cos\\theta\\)", "A1"]]], ["b", [["\\(\\dfrac{\\cos^2\\theta}{\\sin\\theta\\cos\\theta}=\\dfrac{\\cos\\theta}{\\sin\\theta}\\)", "M1"], ["\\(\\dfrac1{\\tan\\theta}\\)", "A1"]]]],
+  },
+  {
+    id: "MF_AIHL_T3_MATRIX_STRETCH",
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 4,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI HL": "Easy" },
+    title: "Apply a horizontal stretch matrix",
+    topics: [{ main: "Geometry and Trigonometry", sub: "Matrix transformations" }],
+    body: "The matrix \\(S=\\begin{pmatrix}3&0\\\\0&1\\end{pmatrix}\\) represents a transformation of the plane.",
+    parts: [["a", "Describe the transformation represented by \\(S\\).", 2], ["b", "Find the image of the point \\(P(-2,5)\\) under this transformation.", 2]],
+    markscheme: [["a", [["horizontal stretch", "A1"], ["scale factor 3, centre the origin", "A1"]]], ["b", [["\\(S\\begin{pmatrix}-2\\\\5\\end{pmatrix}=\\begin{pmatrix}-6\\\\5\\end{pmatrix}\\)", "M1A1"]]]],
+  },
+  {
+    id: "MF_AIHL_T3_MATRIX_TRANSLATION",
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 5,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI HL": "Easy" },
+    title: "Apply a translation vector",
+    topics: [{ main: "Geometry and Trigonometry", sub: "Matrix transformations" }],
+    body: "A translation maps a point with position vector \\(r\\) to \\(r'=r+\\begin{pmatrix}-4\\\\3\\end{pmatrix}\\).",
+    parts: [["a", "Find the image of the point \\(A(6,-1)\\).", 2], ["b", "The point \\(B'(-3,8)\\) is the image of \\(B\\). Find the coordinates of \\(B\\).", 2]],
+    markscheme: [["a", [["\\(\\begin{pmatrix}6\\\\-1\\end{pmatrix}+\\begin{pmatrix}-4\\\\3\\end{pmatrix}=\\begin{pmatrix}2\\\\2\\end{pmatrix}\\)", "M1A1"]]], ["b", [["\\(\\begin{pmatrix}-3\\\\8\\end{pmatrix}-\\begin{pmatrix}-4\\\\3\\end{pmatrix}=\\begin{pmatrix}1\\\\5\\end{pmatrix}\\)", "M1A1"]]]],
+  },
+  {
+    id: "MF_AIHL_T3_MATRIX_ENLARGEMENT",
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 6,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI HL": "Medium" },
+    title: "Find and apply an enlargement matrix",
+    topics: [{ main: "Geometry and Trigonometry", sub: "Matrix transformations" }],
+    body: "An enlargement with centre the origin maps \\(P(6,-9)\\) to \\(P'(2,-3)\\).",
+    parts: [["a", "Find the scale factor of the enlargement.", 1], ["b", "Write down the matrix representing the enlargement.", 1], ["c", "Find the image of \\(Q(-12,15)\\).", 2]],
+    markscheme: [["a", [["scale factor \\(\\dfrac13\\)", "A1"]]], ["b", [["\\(\\begin{pmatrix}\\frac13&0\\\\0&\\frac13\\end{pmatrix}\\)", "A1"]]], ["c", [["matrix multiplication or multiplying both coordinates by \\(\\dfrac13\\)", "M1"], ["\\(Q'(-4,5)\\)", "A1"]]]],
+  },
+  {
+    id: "MF_AIHL_T3_MATRIX_REFLECTION",
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 7,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI HL": "Medium" },
+    title: "Use the general reflection matrix",
+    topics: [{ main: "Geometry and Trigonometry", sub: "Matrix transformations" }],
+    body: "The matrix \\(R=\\begin{pmatrix}\\cos 2\\theta&\\sin 2\\theta\\\\\\sin 2\\theta&-\\cos 2\\theta\\end{pmatrix}\\) represents reflection in the line \\(y=(\\tan\\theta)x\\).",
+    parts: [["a", "Write down the matrix for reflection in the line \\(y=\\sqrt3x\\).", 2], ["b", "Hence find the image of \\(P(2,0)\\).", 2]],
+    markscheme: [["a", [["\\(\\theta=\\dfrac{\\pi}{3}\\)", "M1"], ["\\(R=\\begin{pmatrix}-\\frac12&\\frac{\\sqrt3}{2}\\\\\\frac{\\sqrt3}{2}&\\frac12\\end{pmatrix}\\)", "A1"]]], ["b", [["matrix multiplication", "M1"], ["\\(P'(-1,\\sqrt3)\\)", "A1"]]]],
+  },
+];
+const seed = [...ibSeed, ...igcseSeed, ...aiHlTopic3Practice.map((question) => ({ ...question, sourceBank: "authored" }))];
+fs.writeFileSync(
+  authoredPracticePath,
+  `window.MR_FLYNN_AUTHORED_PRACTICE = ${JSON.stringify(aiHlTopic3Practice, null, 2)};\n`,
+);
 const igcseLessons = JSON.parse(fs.readFileSync(igcseLessonsPath, "utf8"));
 
 const verifiedOverrides = {
@@ -671,6 +800,10 @@ const verifiedOverrides = {
   // Eigenvalues are kept as direct matrix work; powers keeps the two examples
   // Rob identified, without transition-matrix padding.
   "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": ["W_M22TZ1AIHL_P1_Q11", "W_M22TZ2AIHL_P2_Q5"],
+  // This is the simultaneous-equations part Rob identified in the former
+  // composite-transformation card. Keep only that part in the matrix systems
+  // lesson; the determinant and general transformation follow-ups stay out.
+  "795817a0-1f56-45f4-b103-3b8936c00858": ["W_M21TZ2AIHL_P1_Q14"],
   "79bbc962-e946-49f0-a89e-5bd386389248": ["W_N24TZ0AIHL_P1_Q11", "W_M21TZ1AIHL_P2_Q5"],
   // Move the two phase-portrait questions out of eigenvalue/eigenvector
   // practice and into the phase-portrait lessons where they belong.
@@ -725,9 +858,9 @@ const verifiedOverrides = {
   "b31ff22b-38f1-489b-a9ce-209fa91d73e6": ["M14TZ1SL_P1_Q3", "V_M24TZ2AISL_P2_Q3"],
   "0512477b-d893-4805-9d2e-2f597b8c8673": ["M14TZ1AISL_P1_Q15", "N13TZ0AISL_P1_Q9"],
   "0f9fa92d-3b9f-4348-8368-4940114b9592": ["M11TZ2AISL_P1_Q14", "N11TZ0SL_P2_Q6"],
-  "1dab411c-5ce9-4532-9461-94d1b7817a7e": ["N15TZ0SL_P2_Q1", "N14TZ0SL_P2_Q3"],
   // AI Topic 3 precision pass. These use only the prompt parts that assess
   // the named lesson; later skills and unrelated follow-up work are hidden.
+  "41d1e966-9bb1-4436-976e-d02187f32932": ["V_M21TZ2AISL_P1_Q6"],
   "657e5ac0-f7a7-4e5b-9940-b0999e263643": ["M12TZ1AISL_P1_Q2", "M15TZ2AISL_P1_Q1"],
   "74b278eb-4d1f-4ff7-b35a-0bf29c49fb62": ["M15TZ2AISL_P1_Q12", "N19TZ0SL_P2_Q6D"],
   "1900d762-9513-4e7c-9549-f40a2adf084d": ["N13TZ0AISL_P1_Q5", "M11TZ1AISL_P1_Q7"],
@@ -735,14 +868,18 @@ const verifiedOverrides = {
   "4c20491d-5660-48b6-80eb-943004d1f8b0": ["V_N21TZ0AISL_P1_Q2", "M14TZ1SL_P2_Q1"],
   "7d695de0-122e-4717-93d9-c147c6ecf959": ["M12TZ2SL_P2_Q1", "M18TZ2AISL_P1_Q8"],
   "fc7bb062-c872-4524-9e57-e3a60793c557": ["V_M23TZ1AISL_P1_Q2", "V_N24TZ2AISL_P1_Q1"],
-  "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae": ["M13TZ1HL_P2_Q5"],
-  // AI HL contains only sin²θ + cos²θ = 1 and tanθ = sinθ/cosθ as identities.
-  // The current bank has no clean, unused question restricted to those two
-  // identities, so the identity lesson remains blank rather than using an
-  // unrelated vector, calculus, reciprocal or compound-angle question.
-  "0e81f809-f846-4459-bcca-fb84c32fb263": ["H_M08TZ1HL_P1_Q4"],
-  "890be651-35da-4ac2-ae19-017b48ecb19e": ["H_N15TZ0HL_P1_Q9", "H_M12TZ2HL_P1_Q2"],
-  "4bd0bcf2-4678-47bb-b0b2-44b6477227e1": ["H_N15TZ0HL_P1_Q9", "M08TZ1SL_P2_Q4"],
+  // Radians itself is now conceptual and blank. Move its two applications
+  // beside the existing radians arc/sector question, as Rob requested.
+  "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae": ["N15TZ0SL_P2_Q1", "N14TZ0SL_P2_Q3", "M13TZ1HL_P2_Q5"],
+  // Direct graph-reading/sketching practice for sine, cosine and tangent.
+  // The tangent item is explicitly authored and labelled as Mr Flynn practice
+  // because the archive has no clean standalone tangent-graph source.
+  "b4268179-f1d2-41ac-8573-6fd93c172880": ["N15TZ0SL_P1_Q4", "M10TZ1AISL_P1_Q11", "MF_AIHL_T3_TRIG_GRAPH_TAN"],
+  // AI HL contains only sin²θ + cos²θ = 1 and tanθ = sinθ/cosθ here.
+  "f9f1e45b-75b0-42ea-8228-b4f06345c516": ["MF_AIHL_T3_TRIG_IDENTITY_1", "MF_AIHL_T3_TRIG_IDENTITY_2"],
+  // Replace the sine-rule/double-angle source with a direct graphical trig
+  // equation that contains no vectors or out-of-syllabus identities.
+  "0e81f809-f846-4459-bcca-fb84c32fb263": ["M08TZ1SL_P2_Q4"],
   // AI SL/HL Topic 4 descriptive-statistics correction pass. Sampling now
   // has two direct identification tasks, and the grouped-data lesson pairs a
   // real histogram with a cumulative-frequency curve. Box-plot construction
@@ -753,13 +890,15 @@ const verifiedOverrides = {
   "ceae5e0d-9738-456a-89e4-0312f721d52d": ["M19TZ1SL_P2_Q1", "M19TZ2AISL_P1_Q6"],
   "aae0e405-1bd3-4357-a328-727f097360e4": ["V_M22TZ2AISL_P1_Q7", "M11TZ2SL_P1_Q6"],
 
-  // Matrix-transformation lessons use exact operation-specific sources. Do
-  // not let the broad matrix-transformations bank tag mix determinants,
-  // enlargements, reflections and composite affine transformations.
-  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": ["W_M22TZ1AIHL_P2_Q7"],
+  // Matrix-transformation lessons use exact operation-specific sources. The
+  // authored cards are clearly labelled Mr Flynn practice and fill skills for
+  // which the archive has no clean standalone question.
+  "562cf78f-2adf-4021-abac-bb7b80049618": ["MF_AIHL_T3_MATRIX_STRETCH"],
+  "4f023b2b-b628-425a-a005-e96d992f7a32": ["MF_AIHL_T3_MATRIX_TRANSLATION"],
+  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": ["W_M22TZ1AIHL_P2_Q7", "MF_AIHL_T3_MATRIX_ENLARGEMENT"],
   "7cb7f42a-7cfc-4b3d-95ba-cbb1297c215b": ["W_M25TZ1AIHL_P1_Q13", "W_N21TZ0AIHL_P2_Q4"],
-  "4ba2895d-48f5-439d-b0df-57c25ae1c824": ["W_N23TZ0AIHL_P2_Q6"],
-  "80522e92-56ee-4aa2-ae07-9e105b2efdf0": ["W_N24TZ0AIHL_P2_Q6", "W_M21TZ2AIHL_P1_Q14"],
+  "4ba2895d-48f5-439d-b0df-57c25ae1c824": ["W_N23TZ0AIHL_P2_Q6", "MF_AIHL_T3_MATRIX_REFLECTION"],
+  "80522e92-56ee-4aa2-ae07-9e105b2efdf0": ["W_N24TZ0AIHL_P2_Q6", "W_M23TZ2AIHL_P1_Q13"],
   "3047e664-8bf6-4140-8c0c-cabd97cd06b5": ["W_M22TZ2AIHL_P1_Q15", "W_N22TZ0AIHL_P1_Q9"],
   // AI HL graph theory: each source is used in only one lesson, and each
   // algorithm is kept distinct. Kruskal, Prim, nearest neighbour, route
@@ -891,14 +1030,10 @@ const intentionallyWithoutPractice = new Set([
   "8f3c2a60-3f50-484f-a867-7a7efeb61959", // AI HL: Identity matrix (no clean standalone source)
   "d1156dcb-e3cc-4bdd-8985-b4729eacc0c0", // AI HL: Properties of matrices
   "e9c828e5-d1fc-4459-8e16-4f893814d04e", // AI HL: Determinant and inverse (transformation sources rejected)
-  "795817a0-1f56-45f4-b103-3b8936c00858", // AI HL: System of linear equations
+  "1dab411c-5ce9-4532-9461-94d1b7817a7e", // AI HL: Radians (applications moved to arcs and sectors with radians)
   "deba74b6-f5bc-4bf7-ad18-5918b6302196", // AI HL: Mr. Flynn's exact triangles
   "890be651-35da-4ac2-ae19-017b48ecb19e", // AI HL: Unit circle
   "4bd0bcf2-4678-47bb-b0b2-44b6477227e1", // AI HL: CAST diagram
-  "b4268179-f1d2-41ac-8573-6fd93c172880", // AI HL: Graphs of sin, cos and tan
-  "f9f1e45b-75b0-42ea-8228-b4f06345c516", // AI HL: Trig identities (no exact two-identity source yet)
-  "562cf78f-2adf-4021-abac-bb7b80049618", // AI HL: Matrix transformations intro/stretch (no exact stretch source)
-  "4f023b2b-b628-425a-a005-e96d992f7a32", // AI HL: Translations (no clean affine-translation source)
   "58df1bd7-1084-430e-8512-ebfe2fdb1bb3", // AI HL: Vectors introduction
   "347ec5b7-ccd1-4cee-a7f7-39315f5cb273", // AI HL: Introduction to graph theory
   "c80a9dab-081b-418e-b719-31a425da82d8", // AI HL: Type I and Type II errors introduction
@@ -935,10 +1070,7 @@ const intentionallySinglePractice = new Set([
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f", // AI HL: Phase portrait sink
   "f40d55e2-0669-40a7-b7d9-fcc477ef23d4", // AI HL: Phase portrait spiral sink
   "6194b7ab-4cd6-4c43-9a54-288397647d66", // AI HL: Phase portrait spiral source
-  "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae", // AI HL: Arcs and sectors with radians
-  "0e81f809-f846-4459-bcca-fb84c32fb263", // AI HL: Solving trig equations (approved non-vector source)
-  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b", // AI HL: Enlargements
-  "4ba2895d-48f5-439d-b0df-57c25ae1c824", // AI HL: Reflections
+  "0e81f809-f846-4459-bcca-fb84c32fb263", // AI HL: one direct non-vector trig-equation source
   "1855d971-48f6-4e25-9790-e4671cd9748e", // AI HL: Vector product
   "352a19bb-f72d-42ef-a85e-c45467041f8e", // AI HL: Scalar product and angle
   "d889f97c-0abb-4fa0-8bd3-eee6927e5b7b", // AI HL: Weighted adjacency tables
@@ -967,6 +1099,9 @@ const intentionallySinglePractice = new Set([
 // approved them as permanent one-question exceptions. Show the good question,
 // do not auto-fill a wrong second one, and keep the audit status as needs-review.
 const incompleteSinglePractice = new Set([
+  "41d1e966-9bb1-4436-976e-d02187f32932", // AI SL + AI HL: exact perpendicular-bisector equation
+  "562cf78f-2adf-4021-abac-bb7b80049618", // AI HL: horizontal stretch matrix
+  "4f023b2b-b628-425a-a005-e96d992f7a32", // AI HL: translation by vector addition
   "7e85609d-7df5-4a52-a399-17b82dd85721", // IGCSE: solving quadratics by factorising
   "79235cf6-1de4-4626-930e-42e9ca9ecd2d", // IGCSE: solving by completing the square
   "fb79ddd5-ef05-48a7-a489-311620a88c6b", // IGCSE: inverse-functions introduction
@@ -985,9 +1120,14 @@ const intentionallyTriplePractice = new Set([
   "2d8c3008-d9cc-456e-a1a7-05999fc917ed", // IGCSE: Grouped Data
   "1a51ff2e-8cdc-4a3d-9f0b-85cf3f65e853", // IGCSE: Probability And/Or Rules
   "949eaf81-334d-4578-a811-551fc53c7e3d", // IGCSE: Relative Frequency
+  "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae", // AI HL: Arcs and sectors with radians
+  "b4268179-f1d2-41ac-8573-6fd93c172880", // AI HL: Graphs of sin, cos and tan
 ]);
 
 const practicePartOverrides = {
+  "41d1e966-9bb1-4436-976e-d02187f32932": {
+    "V_M21TZ2AISL_P1_Q6": ["a"],
+  },
   "fbd320cc-1282-4830-a9ba-15241df8dd87": {
     "4MA1_2019J_2HR_Q17": ["a"],
   },
@@ -1164,6 +1304,15 @@ const practicePartOverrides = {
   "fc7bb062-c872-4524-9e57-e3a60793c557": {
     "V_N24TZ2AISL_P1_Q1": ["a", "b"],
   },
+  "b4268179-f1d2-41ac-8573-6fd93c172880": {
+    "M10TZ1AISL_P1_Q11": ["a", "b", "c"],
+  },
+  "0e81f809-f846-4459-bcca-fb84c32fb263": {
+    "M08TZ1SL_P2_Q4": ["b"],
+  },
+  "795817a0-1f56-45f4-b103-3b8936c00858": {
+    "W_M21TZ2AIHL_P1_Q14": ["b"],
+  },
   "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": {
     "W_M22TZ1AIHL_P2_Q7": ["b"],
   },
@@ -1172,6 +1321,7 @@ const practicePartOverrides = {
   },
   "80522e92-56ee-4aa2-ae07-9e105b2efdf0": {
     "W_N24TZ0AIHL_P2_Q6": ["d"],
+    "W_M23TZ2AIHL_P1_Q13": ["a"],
   },
   "3047e664-8bf6-4140-8c0c-cabd97cd06b5": {
     "W_M22TZ2AIHL_P1_Q15": ["b"],
@@ -1681,6 +1831,19 @@ const practicePartLabelOverrides = {
   "97dfa2ea-0da3-4f3e-a95f-1841d36df813": {
     "W_M22TZ2AIHL_P2_Q4": { c: "a", d: "b", e: "c" },
   },
+  "0e81f809-f846-4459-bcca-fb84c32fb263": {
+    "M08TZ1SL_P2_Q4": { b: "" },
+  },
+  "41d1e966-9bb1-4436-976e-d02187f32932": {
+    "V_M21TZ2AISL_P1_Q6": { a: "" },
+  },
+  "795817a0-1f56-45f4-b103-3b8936c00858": {
+    "W_M21TZ2AIHL_P1_Q14": { b: "" },
+  },
+  "80522e92-56ee-4aa2-ae07-9e105b2efdf0": {
+    "W_N24TZ0AIHL_P2_Q6": { d: "" },
+    "W_M23TZ2AIHL_P1_Q13": { a: "" },
+  },
 };
 
 // Some useful standalone extracts still refer to their original position in a
@@ -1892,6 +2055,15 @@ const practicePartTitles = {
   "fc7bb062-c872-4524-9e57-e3a60793c557": {
     "V_N24TZ2AISL_P1_Q1": "Angle of elevation: find the vertical rise",
   },
+  "0e81f809-f846-4459-bcca-fb84c32fb263": {
+    "M08TZ1SL_P2_Q4": "Solve a trigonometric equation from its graph",
+  },
+  "41d1e966-9bb1-4436-976e-d02187f32932": {
+    "V_M21TZ2AISL_P1_Q6": "Find the exact equation of a perpendicular bisector",
+  },
+  "795817a0-1f56-45f4-b103-3b8936c00858": {
+    "W_M21TZ2AIHL_P1_Q14": "Form and solve a pair of simultaneous equations",
+  },
   "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": {
     "W_M22TZ1AIHL_P2_Q7": "Write the matrix for an enlargement with a given scale factor",
   },
@@ -1900,6 +2072,7 @@ const practicePartTitles = {
   },
   "80522e92-56ee-4aa2-ae07-9e105b2efdf0": {
     "W_N24TZ0AIHL_P2_Q6": "Combine a rotation and enlargement into one matrix",
+    "W_M23TZ2AIHL_P1_Q13": "Undo two successive matrix transformations",
   },
   "3047e664-8bf6-4140-8c0c-cabd97cd06b5": {
     "W_M22TZ2AIHL_P1_Q15": "Calculate the determinant of a transformation matrix",
@@ -3573,6 +3746,8 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["W_N24TZ0AIHL_P1_Q11", "W_M24TZ2AIHL_P2_Q5", "W_M22TZ1AIHL_P1_Q11"].includes(question.id)) return true;
   if (/powers of matrices/.test(lessonTitle)
     && ["W_M24TZ1AIHL_P1_Q17", "W_M21TZ1AIHL_P2_Q5", "W_M21TZ2AIHL_P2_Q4"].includes(question.id)) return true;
+  if (/^system of linear equations$/.test(lessonTitle)
+    && question.id === "W_M21TZ2AIHL_P1_Q14") return true;
   // AI Topic 3 has been reviewed at displayed-part level. Some source titles
   // describe a broader exam question or rely on the diagram to show the
   // right angle, so the selected prompt itself is the authoritative check.
@@ -3582,12 +3757,24 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["V_N21TZ0AISL_P1_Q2", "M14TZ1SL_P2_Q1"].includes(question.id)) return true;
   if (/arcs and sectors with radians/.test(lessonTitle)
     && question.id === "M13TZ1HL_P2_Q5") return true;
+  if (/perpendicular bisectors/.test(lessonTitle)
+    && question.id === "V_M21TZ2AISL_P1_Q6") return true;
+  if (/graphs of sin, cos and tan/.test(lessonTitle)
+    && ["N15TZ0SL_P1_Q4", "M10TZ1AISL_P1_Q11", "MF_AIHL_T3_TRIG_GRAPH_TAN"].includes(question.id)) return true;
+  if (/^trig identities$/.test(lessonTitle)
+    && ["MF_AIHL_T3_TRIG_IDENTITY_1", "MF_AIHL_T3_TRIG_IDENTITY_2"].includes(question.id)) return true;
+  if (/^solving trigonometric equations$/.test(lessonTitle)
+    && question.id === "M08TZ1SL_P2_Q4") return true;
+  if (/matrix transformations.*intro.*stretches/.test(lessonTitle)
+    && question.id === "MF_AIHL_T3_MATRIX_STRETCH") return true;
+  if (/^translations$/.test(lessonTitle)
+    && question.id === "MF_AIHL_T3_MATRIX_TRANSLATION") return true;
   if (/^enlargements$/.test(lessonTitle)
-    && question.id === "W_M22TZ1AIHL_P2_Q7") return true;
+    && ["W_M22TZ1AIHL_P2_Q7", "MF_AIHL_T3_MATRIX_ENLARGEMENT"].includes(question.id)) return true;
   if (/^reflections$/.test(lessonTitle)
-    && question.id === "W_N23TZ0AIHL_P2_Q6") return true;
+    && ["W_N23TZ0AIHL_P2_Q6", "MF_AIHL_T3_MATRIX_REFLECTION"].includes(question.id)) return true;
   if (/composite matrix transformations/.test(lessonTitle)
-    && ["W_N24TZ0AIHL_P2_Q6", "W_M21TZ2AIHL_P1_Q14"].includes(question.id)) return true;
+    && ["W_N24TZ0AIHL_P2_Q6", "W_M23TZ2AIHL_P1_Q13"].includes(question.id)) return true;
   if (/determinant of a transformation matrix/.test(lessonTitle)
     && ["W_M22TZ2AIHL_P1_Q15", "W_N22TZ0AIHL_P1_Q9"].includes(question.id)) return true;
   // AI HL vector and graph-theory sources were checked against their selected

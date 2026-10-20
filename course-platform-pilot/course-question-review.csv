@@ -249,7 +249,7 @@ AI HL,2026-10-20,1.14.3,Multiplication of matrices,approved-no-practice,,No clea
 AI HL,2026-10-20,1.14.4,Identity matrix,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
 AI HL,2026-10-20,1.14.5,Properties of matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
 AI HL,2026-10-20,1.14.6,Determinant and inverse of a matrix,approved-no-practice,,Removed the rejected transformation questions; no clean replacement exists in the current bank
-AI HL,2026-10-20,1.14.7,System of linear equations,approved-no-practice,,No clean standalone matrix-system source exists in the current bank; left blank as Rob allowed
+AI HL,2026-10-20,1.14.7,System of linear equations,awaiting-recheck,W_M21TZ2AIHL_P1_Q14,Added the simultaneous-equations part Rob identified from the previous composite-transformation question
 AI HL,2026-10-20,1.15.1,Eigenvalues and eigenvectors,awaiting-recheck,,Removed phase and transition follow-ups; now contains two direct eigenvalue and eigenvector tasks
 AI HL,2026-10-20,1.15.2,Powers of matrices,awaiting-recheck,,Moved the requested diagonalisation question here and retained the approved powers question
 AI HL,2026-10-20,2.1.1,Gradient of a line,approved,M17TZ2AISL_P1_Q4|M15TZ2AISL_P1_Q3,Locked from Rob's AI Topic 2 review
@@ -280,3 +280,34 @@ AI HL,2026-10-20,2.9.3,Logistic modelling,approved,M19TZ2SL_P2_Q5|W_N24TZ0AIHL_P
 AI HL,2026-10-20,2.9.4,Piecewise functions,awaiting-recheck,,Kept question 1 and added a second direct piecewise-function evaluation from a graph
 AI HL,2026-10-20,2.10.1,Scaling with logs,awaiting-recheck,,Kept question 1 and added a second semi-log parameter-estimation question
 AI HL,2026-10-20,2.10.2,Log-log graphs,approved,W_N21TZ0AIHL_P1_Q12|W_M23TZ1AIHL_P1_Q14,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,3.1.1,Midpoint of a line segment,approved,V_M21TZ2AISL_P1_Q2|N17TZ0AISL_P1_Q2,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.1.2,Distance between 2 points,approved,M12TZ1AISL_P1_Q2|M15TZ2AISL_P1_Q1,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.1.3,Volume and surface area,approved,V_M23TZ2AISL_P1_Q8|N12TZ0AISL_P1_Q4,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.1.4,Trigonometry in 3d,approved,M15TZ2AISL_P1_Q12|N19TZ0SL_P2_Q6D,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.1,Pythagoras' theorem,approved,M11TZ1AISL_P1_Q7|M16TZ2AISL_P1_Q3,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.2,Soh cah toa,approved,M16TZ1AISL_P1_Q2|V_N24TZ1AISL_P1_Q1,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.3,Sine rule,approved,M12TZ1AISL_P1_Q13|M16TZ2SL_P2_Q2D,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.4,Cosine rule,approved,V_N21TZ0AISL_P1_Q2|M14TZ1SL_P2_Q1,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.5,Area of a triangle,approved,M12TZ2SL_P2_Q1|M18TZ2AISL_P1_Q8,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.3.1,Bearings,approved,V_N23TZ1AISL_P1_Q5|N08TZ0SL_P2_Q6,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.3.2,Angles of elevation and depression,approved,V_M23TZ1AISL_P1_Q2|V_N24TZ2AISL_P1_Q1,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.4,Arcs and Sectors,approved,N19TZ0HL_P2_Q4D|V_M25TZ1AISL_P1_Q6,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.5,Perpendicular bisectors,awaiting-recheck,V_M21TZ2AISL_P1_Q6,Replaced the perpendicular-line questions with an exact perpendicular-bisector equation
+AI HL,2026-10-20,3.6.1,Voronoi diagrams intro,approved,V_M21TZ1AISL_P1_Q5|V_M25TZ3AISL_P1_Q5,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.6.2,Voronoi examples,approved,V_M24TZ1AISL_P1_Q6|V_N21TZ0AISL_P1_Q7,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.7.1,Radians,approved-no-practice,,Rob asked to leave ordinary radians blank and move its applications to the following lesson
+AI HL,2026-10-20,3.7.2,Arcs and sectors with radians,awaiting-recheck,N15TZ0SL_P2_Q1|N14TZ0SL_P2_Q3|M13TZ1HL_P2_Q5,Moved the two radians applications here beside the existing arc-and-sector question
+AI HL,2026-10-20,3.8.1,Mr. Flynn's exact triangles,approved-no-practice,,Rob asked to leave this lesson blank
+AI HL,2026-10-20,3.8.2,Unit circle,approved-no-practice,,Rob asked to leave this lesson blank
+AI HL,2026-10-20,3.8.3,The CAST diagram,approved-no-practice,,Rob asked to leave this lesson blank
+AI HL,2026-10-20,3.8.4,Graphs of sin cos and tan,awaiting-recheck,N15TZ0SL_P1_Q4|M10TZ1AISL_P1_Q11|MF_AIHL_T3_TRIG_GRAPH_TAN,Added direct sine cosine and tangent graph practice
+AI HL,2026-10-20,3.8.5,Sine rule ambiguous case,approved,N10TZ0HL_P2_Q1|M12TZ2HL_P2_Q3,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.8.6,Trig identities,awaiting-recheck,MF_AIHL_T3_TRIG_IDENTITY_1|MF_AIHL_T3_TRIG_IDENTITY_2,Added practice using only sin squared plus cos squared equals one and tan equals sin over cos
+AI HL,2026-10-20,3.8.7,Solving Trigonometric Equations,awaiting-recheck,M08TZ1SL_P2_Q4,Replaced the rejected example with a direct trigonometric-equation solution
+AI HL,2026-10-20,3.9.1,Matrix transformations intro and stretches,awaiting-recheck,MF_AIHL_T3_MATRIX_STRETCH,Added a direct horizontal-stretch matrix question
+AI HL,2026-10-20,3.9.2,Translations,awaiting-recheck,MF_AIHL_T3_MATRIX_TRANSLATION,Added a direct translation-by-vector question
+AI HL,2026-10-20,3.9.3,Enlargements,awaiting-recheck,W_M22TZ1AIHL_P2_Q7|MF_AIHL_T3_MATRIX_ENLARGEMENT,Kept the approved enlargement and added a second centre-origin enlargement
+AI HL,2026-10-20,3.9.4,Rotations,approved,W_M25TZ1AIHL_P1_Q13|W_N21TZ0AIHL_P2_Q4,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.9.5,Reflections,awaiting-recheck,W_N23TZ0AIHL_P2_Q6|MF_AIHL_T3_MATRIX_REFLECTION,Kept the approved reflection and added a second reflection-matrix question
+AI HL,2026-10-20,3.9.6,Composite matrix transformations,awaiting-recheck,W_N24TZ0AIHL_P2_Q6|W_M23TZ2AIHL_P1_Q13,Kept question 1 and replaced question 2 with a genuine sequence of transformations
+AI HL,2026-10-20,3.9.7,Determinant of a transformation matrix,approved,W_M22TZ2AIHL_P1_Q15|W_N22TZ0AIHL_P1_Q9,Locked from Rob's AI Topic 3 review
