@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T16:13:28.099Z",
+  "generatedAt": "2026-10-20T16:28:58.199Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 476,
-  "completeLessonCount": 426,
+  "completeLessonCount": 427,
   "approvedSingleLessonCount": 42,
-  "questionCount": 911,
+  "questionCount": 913,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -2603,7 +2603,10 @@ window.MR_FLYNN_PRACTICE = {
       "questionIds": [
         "M17TZ1HL_P2_Q2",
         "M08TZ1HL_P2_Q6"
-      ]
+      ],
+      "questionDifficulties": {
+        "M17TZ1HL_P2_Q2": "Medium"
+      }
     },
     "5637bf1d-3809-4388-bce0-6c903c2c779b": {
       "lesson": "5.14.2 Related rates of change",
@@ -2635,6 +2638,9 @@ window.MR_FLYNN_PRACTICE = {
       "questionPartTitles": {
         "N08TZ0HL_P2_Q12": "Differentiate an expression containing arcsin",
         "A_M21TZ2HL_P2_Q12": "Differentiate an inverse-sine function"
+      },
+      "questionBodies": {
+        "N08TZ0HL_P2_Q12": "The function \\(f\\) is defined by \\(f(x)=x\\sqrt{9-x^2}+2\\arcsin\\left(\\dfrac{x}{3}\\right)\\)."
       }
     },
     "57c2580c-3193-417f-be6c-0332c78845ca": {
@@ -2662,8 +2668,27 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M09TZ2HL_P1_Q4"
-      ]
+        "M09TZ2HL_P1_Q4",
+        "M17TZ1HL_P1_Q11"
+      ],
+      "questionParts": {
+        "M17TZ1HL_P1_Q11": [
+          "c",
+          "d"
+        ]
+      },
+      "questionPartLabels": {
+        "M17TZ1HL_P1_Q11": {
+          "c": "a",
+          "d": "b"
+        }
+      },
+      "questionPartTitles": {
+        "M17TZ1HL_P1_Q11": "Decompose into partial fractions and integrate"
+      },
+      "questionBodies": {
+        "M17TZ1HL_P1_Q11": "Let \\(f(x)=\\dfrac{1}{x^2+3x+2}\\), where \\(x\\ne-2,-1\\)."
+      }
     },
     "c243c099-8009-4c45-b936-7ba9a05ef501": {
       "lesson": "5.16.1 Integration by substitution (HL only)",
@@ -2671,8 +2696,9 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration by substitution",
       "bankPath": "ib-bank.html",
       "questionIds": [
+        "M15TZ1HL_P1_Q8",
         "M09TZ2HL_P2_Q9",
-        "M15TZ1HL_P1_Q8"
+        "N12TZ0HL_P2_Q8"
       ]
     },
     "2cf30a58-a31b-47c7-a9c2-fd9bd7a49ca8": {
@@ -2746,7 +2772,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Volume of revolution",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M19TZ2SL_P2_Q2",
+        "M13TZ1HL_P2_Q4",
         "A_N25TZ3HL_P2_Q5"
       ]
     },

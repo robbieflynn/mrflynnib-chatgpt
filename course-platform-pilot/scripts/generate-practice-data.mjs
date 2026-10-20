@@ -595,9 +595,13 @@ const verifiedOverrides = {
   // arctangent antiderivative, rather than ordinary SL product/chain work.
   "dd3009b8-25ed-4425-b4a5-611cc3ba1665": ["N08TZ0HL_P2_Q12", "A_M21TZ2HL_P2_Q12"],
   "57c2580c-3193-417f-be6c-0332c78845ca": ["M15TZ1HL_P1_Q3", "M16TZ2HL_P1_Q3"],
+  // Keep the approved first example, then add a second source that explicitly
+  // establishes a partial-fractions decomposition and uses it to integrate.
+  "d10601dc-f866-4925-93d7-dc05b9316429": ["M09TZ2HL_P1_Q4", "M17TZ1HL_P1_Q11"],
   // A trigonometric substitution provides the requested trick substitution;
-  // retain the approved arctangent substitution second.
-  "c243c099-8009-4c45-b936-7ba9a05ef501": ["M09TZ2HL_P2_Q9", "M15TZ1HL_P1_Q8"],
+  // retain the approved arctangent substitution second, then restore one of
+  // the harder substitutions moved out of the SL substitution lesson.
+  "c243c099-8009-4c45-b936-7ba9a05ef501": ["M15TZ1HL_P1_Q8", "M09TZ2HL_P2_Q9", "N12TZ0HL_P2_Q8"],
   "2cf30a58-a31b-47c7-a9c2-fd9bd7a49ca8": ["N15TZ0HL_P1_Q2", "M19TZ1HL_P2_Q5"],
   // Both questions genuinely require integration by parts twice; the first
   // is the requested exponential-times-sine example whose integral is moved
@@ -608,7 +612,9 @@ const verifiedOverrides = {
   "feb99f1f-879d-4a54-a584-3978511b3cf1": ["N19TZ0HL_P2_Q11", "W_M24TZ1AIHL_P1_Q9"],
   // Calculator then non-calculator volume-about-the-x-axis practice.
   "1768c593-44ef-481a-a01b-5ad58562ce78": ["M15TZ1HL_P2_Q1", "M10TZ1SL_P1_Q6"],
-  "02f1bcd1-ff23-446b-974b-fcda8bf55cad": ["M19TZ2SL_P2_Q2", "A_N25TZ3HL_P2_Q5"],
+  // Both examples genuinely rotate a region about the y-axis. The earlier
+  // x-axis volume has been removed from this lesson.
+  "02f1bcd1-ff23-446b-974b-fcda8bf55cad": ["M13TZ1HL_P2_Q4", "A_N25TZ3HL_P2_Q5"],
   // Retain the approved first question; the second now finds the intersection
   // of two curves and uses their enclosed region for a volume of revolution.
   "79541e13-1ab3-4f25-84fd-e42aab742b4c": ["A_N25TZ1HL_P2_Q8", "W_M23TZ2AIHL_P1_Q16"],
@@ -844,12 +850,6 @@ const needsManualQuestionReview = new Set([
   "c699f91b-43d0-4d3f-af5b-05a042516032", // Components of vectors: no genuine projection source yet
   "d477bd69-e3be-4201-b8f0-2ba436cc3f6e", // Phase portrait: source
   "e8505773-3b8b-41cc-84b3-d2e106e5533f", // Phase portrait: centre
-  // The only exact continuity sources are already assigned to other lessons,
-  // and the bank has no clean differentiability question. Leave both blank
-  // rather than duplicating a source or showing probability/first-principles
-  // questions that assess different skills.
-  "8bf9bb39-798f-4d37-aed8-fa1a2da85e61", // Continuous functions
-  "0b4fe42d-e0c8-419b-a8bc-10d6b71359c7", // Differentiable functions
 ]);
 
 // Rob has explicitly decided that this short conceptual lesson does not need
@@ -875,6 +875,8 @@ const intentionallyWithoutPractice = new Set([
   "8a070f53-2a65-41ca-bd23-3feb183f79ab", // AA HL: Algebra of factorials
   "00c950c1-60b5-4ff0-904d-b8c3f226c7f5", // AA HL: Proof by contradiction (infinite primes)
   "ed461415-103f-4b7c-a993-691440c18e53", // AA HL: Use of counter example
+  "8bf9bb39-798f-4d37-aed8-fa1a2da85e61", // AA HL: Continuous functions
+  "0b4fe42d-e0c8-419b-a8bc-10d6b71359c7", // AA HL: Differentiable functions
   "20867969-afe8-4c4f-8594-32ab84af1c17", // AA HL: Differential equations introduction
   "44ad6968-438e-4f55-bb2e-6f97a1a44b69", // AA HL: Maclaurin series introduction
   "46c63018-b709-4eab-a3ed-851044ddae8a", // AA HL: Euler's identity
@@ -973,6 +975,7 @@ const intentionallyTriplePractice = new Set([
   "ca2285a6-c9cc-4eac-adc1-8c6479e9b21e", // AA SL + AA HL: Probability formulae
   "f924ec98-3f94-4b6e-b485-50d9a7cb0959", // AA SL + AA HL: Binomial distribution
   "16efb219-7953-40cb-b8ca-8b0e956f9e39", // AA SL + AA HL: direct sin/cos, ln and exponential derivatives
+  "c243c099-8009-4c45-b936-7ba9a05ef501", // AA HL: HL-only substitution progression
   "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f", // AI HL: Eigenvalues and eigenvectors
   "79bbc962-e946-49f0-a89e-5bd386389248", // AI HL: Powers of matrices
   "d084246b-aa0a-4a8b-a962-db8032c3bbcf", // IGCSE: Domain and Range
@@ -1511,6 +1514,9 @@ const practicePartOverrides = {
     "N08TZ0HL_P2_Q12": ["c"],
     "A_M21TZ2HL_P2_Q12": ["c"],
   },
+  "d10601dc-f866-4925-93d7-dc05b9316429": {
+    "M17TZ1HL_P1_Q11": ["c", "d"],
+  },
   "57c2580c-3193-417f-be6c-0332c78845ca": {
     "M16TZ2HL_P1_Q3": ["a", "b"],
   },
@@ -1632,9 +1638,15 @@ const practicePartLabelOverrides = {
   "125a9218-3aed-48c9-b96b-3cf08968de9c": {
     "W_M23TZ1AIHL_P2_Q1": { a: "a", b: "b", e: "c" },
   },
+  "d10601dc-f866-4925-93d7-dc05b9316429": {
+    "M17TZ1HL_P1_Q11": { c: "a", d: "b" },
+  },
 };
 
 const practicePartTitles = {
+  "d10601dc-f866-4925-93d7-dc05b9316429": {
+    "M17TZ1HL_P1_Q11": "Decompose into partial fractions and integrate",
+  },
   "fbd320cc-1282-4830-a9ba-15241df8dd87": {
     "4MA1_2019J_2HR_Q17": "Find a lower bound for a product",
   },
@@ -2351,6 +2363,16 @@ const practicePartTitles = {
 // the practice card really shows "part C only" rather than carrying a stray
 // table from the original multi-part question.
 const practiceBodyOverrides = {
+  // Part (c) asks for f' but the definition of f appeared in part (a) of the
+  // source. Restate it so the extracted derivative question is complete.
+  "dd3009b8-25ed-4425-b4a5-611cc3ba1665": {
+    "N08TZ0HL_P2_Q12": "The function \\(f\\) is defined by \\(f(x)=x\\sqrt{9-x^2}+2\\arcsin\\left(\\dfrac{x}{3}\\right)\\).",
+  },
+  // Parts (c) and (d) form a coherent partial-fractions integration task once
+  // the rational function from the earlier graphing part is stated here.
+  "d10601dc-f866-4925-93d7-dc05b9316429": {
+    "M17TZ1HL_P1_Q11": "Let \\(f(x)=\\dfrac{1}{x^2+3x+2}\\), where \\(x\\ne-2,-1\\).",
+  },
   // Part (e) is the exact known-sigma mean Z-test. Restate the sample mean
   // established earlier in the source while omitting unrelated estimation.
   "c19965b9-5b04-4711-b5ff-b440ca6eba03": {
@@ -2410,6 +2432,9 @@ const practiceBodyOverrides = {
 const practiceDifficultyOverrides = {
   "26a92a94-1132-4e90-9b26-63b98ffffc26": {
     "A_M25TZ3HL_P2_Q3": "Easy",
+  },
+  "068bee2e-fece-4b97-b0e8-8f244222a8c2": {
+    "M17TZ1HL_P2_Q2": "Medium",
   },
 };
 
