@@ -550724,6 +550724,13 @@ function diagramN11TZ0P2Q1grid(){
 
   // The worked solution: numbered steps, each with a title, an explanation in
   // words and the working. Same content as the answers booklets.
+  // When practice displays one extracted part from a longer exam question, it
+  // is presented as the whole exercise. Showing a lone "(a)" or "(b)" implies
+  // missing material and was confusing in the course review.
+  function hidePracticePartLabel(q){
+    return !!(IS_PRACTICE && q && q._practiceParts && q._practiceParts.length === 1
+      && q.parts && q.parts.length === 1);
+  }
   function solutionHTML(data, q){
     var sol = data && data.s;
     if(!sol) return '';
@@ -550733,7 +550740,7 @@ function diagramN11TZ0P2Q1grid(){
     var out = [];
     (sol.solution || []).forEach(function(part, pi){
       if(wantedParts && !wantedParts.has(String(part.part || ''))) return;
-      if(part.part) out.push('<div class="qb-sol-part">(' + part.part + ')</div>');
+      if(part.part && !hidePracticePartLabel(q)) out.push('<div class="qb-sol-part">(' + part.part + ')</div>');
       (part.steps || []).forEach(function(st, i){
         var fig = solutionFig(q, pi, i);
         out.push('<div class="qb-sol-step"><div class="qb-sol-num">Step ' + (i + 1) + '</div>' +
@@ -550761,7 +550768,7 @@ function diagramN11TZ0P2Q1grid(){
         '</div>';
     }
     return ansDiag + '<div class="qb-ms-groups">' + q.markscheme.map(function(grp){
-      var label = grp[0] ? '<div class="qb-ms-label">'+partLabel(grp[0])+'</div>' : '';
+      var label = grp[0] && !hidePracticePartLabel(q) ? '<div class="qb-ms-label">'+partLabel(grp[0])+'</div>' : '';
       var linesHtml = '<ol class="qb-ms-lines">' + grp[1].map(function(ln){
         return '<li><span class="qb-ms-text">'+safeHTML(ln[0])+'</span><span class="qb-ms-tag">'+safeHTML(ln[1])+'</span></li>';
       }).join('') + '</ol>';
@@ -550882,7 +550889,8 @@ function diagramN11TZ0P2Q1grid(){
         } else {
           inner = paras(stackSubParts(raw));
         }
-        return '<li><b>'+partLabel(p[0])+'</b><div class="qb-part-text">'+inner+'<span class="qb-marks-tag">['+p[2]+' '+(p[2]==1?'mark':'marks')+']</span></div></li>';
+        var label = hidePracticePartLabel(q) ? '' : '<b>'+partLabel(p[0])+'</b>';
+        return '<li>'+label+'<div class="qb-part-text">'+inner+'<span class="qb-marks-tag">['+p[2]+' '+(p[2]==1?'mark':'marks')+']</span></div></li>';
       }).join('') + '</ul>';
     }
     var diagHtml = '';

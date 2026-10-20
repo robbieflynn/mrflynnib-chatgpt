@@ -329,17 +329,32 @@ const verifiedOverrides = {
   // AA HL trigonometry and vectors correction pass. Each mapping respects the
   // precise lesson boundary and avoids borrowing a later vector skill.
   "2242b24b-b800-4f2c-bb5a-16bd04201870": ["M16TZ1HL_P1_Q5", "M10TZ2HL_P1_Q6"],
-  "646c6ce7-f4cb-47fb-b4c6-2a28e5029596": ["N13TZ0SL_P1_Q1", "N15TZ0SL_P1_Q2"],
-  "5a64332d-45ba-4535-bb8e-2a1fd52289e2": ["N09TZ0SL_P1_Q2", "M16TZ2SL_P1_Q7"],
+  // The two geometric vector-language questions introduce the notation. The
+  // following lesson then starts with the moved component-equation question
+  // and a clean vector-addition calculation.
+  "8ba412e0-db90-424c-a2c4-eb6c9ce59794": ["N13TZ0SL_P1_Q1", "N15TZ0SL_P1_Q2"],
+  "646c6ce7-f4cb-47fb-b4c6-2a28e5029596": ["M10TZ2HL_P1_Q3", "M13TZ1SL_P1_Q1"],
+  // Keep the approved unit-vector question and replace the dot-product source
+  // with a direct unit-vector calculation only.
+  "5a64332d-45ba-4535-bb8e-2a1fd52289e2": ["M10TZ2SL_P1_Q2", "M16TZ2SL_P1_Q7"],
+  // Question 2 is explicitly about the angle between two vectors, not lines.
+  "d59efdcc-103a-44e4-b2c9-827c1a7ef6f7": ["M18TZ2HL_P1_Q1", "N08TZ0HL_P2_Q4"],
   "352a19bb-f72d-42ef-a85e-c45467041f8e": ["M15TZ2SL_P2_Q2", "M17TZ1SL_P2_Q2"],
   "b70c2e32-c750-4851-a572-8587162396f0": ["M10TZ1HL_P1_Q6", "M10TZ2HL_P1_Q12"],
   "1847f7c2-9f5a-48f5-a40e-12ef76b0cc9e": ["M18TZ2SL_P1_Q1", "N16TZ0SL_P1_Q4"],
-  "ed2cce38-614a-4256-b943-ab8c4856fa14": ["M11TZ2SL_P2_Q8", "N08TZ0HL_P2_Q4"],
+  "51cbc187-e8a5-442d-9784-731d2fd7d4b7": ["A_M25TZ2HL_P1_Q2", "M09TZ1HL_P2_Q5"],
+  // The former second question belongs under angle between vectors. Rob chose
+  // to keep this lesson as one exact line-angle question.
+  "ed2cce38-614a-4256-b943-ab8c4856fa14": ["M11TZ2SL_P2_Q8"],
+  "f9b565e2-2c78-4c12-a55a-827d39233645": ["N08TZ0SL_P1_Q2", "M10TZ2SL_P2_Q9"],
+  "7d370dfd-aa5f-4827-b5dc-876de8a11ab3": ["N16TZ0HL_P1_Q8", "A_M25TZ1HL_P1_Q6"],
 
   // AA HL vectors: shortest-distance, cross-product and plane work must stay
   // within the exact operation named by the lesson. Broadly related vector
   // questions are not substitutes for the required calculation.
-  "f25aaf3c-7579-43af-9f0c-c82485651278": ["N13TZ0HL_P2_Q9", "A_N24TZ0HL_P2_Q11"],
+  // Keep the approved calculator example, then add a Paper 1 closest-point
+  // problem whose fixed point is not the origin.
+  "f25aaf3c-7579-43af-9f0c-c82485651278": ["N13TZ0HL_P2_Q9", "W_N23TZ0AIHL_P1_Q14"],
   // Keep Rob's approved first example and make the second a direct product
   // calculation only; its triangle-area follow-up belongs in 3.16.3.
   "b67a9adf-10a0-466a-b35f-41187f507502": ["W_M21TZ1AIHL_P1_Q5", "M16TZ1HL_P2_Q1"],
@@ -355,6 +370,7 @@ const verifiedOverrides = {
   // newly freed sources above cannot make the automatic selector reshuffle
   // this neighbouring lesson.
   "504e0150-4027-4a1b-890d-ad172dae61a7": ["M17TZ1HL_P2_Q7", "M15TZ2HL_P2_Q5"],
+  "f6528144-7204-4fd1-8a4b-cb91ed5a16b7": ["M08TZ1HL_P2_Q3", "N10TZ0HL_P1_Q7"],
   // Both selected parts ask for the line in which two Cartesian planes meet.
   // Angle-between-planes questions belong in 3.18.5.
   "f6806af5-6f99-4c11-856b-e678d5fe533a": ["N11TZ0HL_P2_Q13", "A_M22TZ1HL_P1_Q11"],
@@ -860,6 +876,7 @@ const intentionallySinglePractice = new Set([
   "b3fee6ec-1511-47bf-9c1b-222d719357f4", // AA HL: Complex numbers introduction
   "d5c720d9-4540-4c45-b822-a0c84764b619", // AA HL: Prove De Moivre by induction
   "35a8aee0-4d48-4084-883f-fc23b5be9039", // AA HL: Vector equation of a plane
+  "ed2cce38-614a-4256-b943-ab8c4856fa14", // AA HL: Angle between two lines
   "40c21470-dbef-42f5-acfb-ba9658d8f02e", // AA HL: Angle between a line and a plane
   "908747f1-8799-4ca2-8f63-ba376beff0ab", // AA SL + AA HL: direct quadratic inequality only
   "916aa44f-5240-4926-9cb6-12800d012e0c", // AA HL: one coherent polynomial factorise-and-sketch task
@@ -1260,6 +1277,12 @@ const practicePartOverrides = {
   "2242b24b-b800-4f2c-bb5a-16bd04201870": {
     "M16TZ1HL_P1_Q5": ["b"],
   },
+  "646c6ce7-f4cb-47fb-b4c6-2a28e5029596": {
+    "M13TZ1SL_P1_Q1": ["b"],
+  },
+  "5a64332d-45ba-4535-bb8e-2a1fd52289e2": {
+    "M10TZ2SL_P1_Q2": ["b"],
+  },
   "b70c2e32-c750-4851-a572-8587162396f0": {
     "M10TZ2HL_P1_Q12": ["b"],
   },
@@ -1404,7 +1427,7 @@ const practicePartOverrides = {
   },
   "f25aaf3c-7579-43af-9f0c-c82485651278": {
     "N13TZ0HL_P2_Q9": ["b"],
-    "A_N24TZ0HL_P2_Q11": ["b"],
+    "W_N23TZ0AIHL_P1_Q14": ["a"],
   },
   "b67a9adf-10a0-466a-b35f-41187f507502": {
     "M16TZ1HL_P2_Q1": ["a"],
@@ -1649,6 +1672,17 @@ const practicePartTitles = {
   "73e1e90c-6be8-463a-bc7b-bc43361419d6": {
     "W_M22TZ2AIHL_P1_Q12": "Find Type I and Type II errors for two normal models",
     "H_N16TZ0HL_P3S_Q2": "Find a Type II error using a normal approximation",
+  },
+  "646c6ce7-f4cb-47fb-b4c6-2a28e5029596": {
+    "M10TZ2HL_P1_Q3": "Solve a vector equation using components",
+    "M13TZ1SL_P1_Q1": "Use vector addition to find an unknown vector",
+  },
+  "5a64332d-45ba-4535-bb8e-2a1fd52289e2": {
+    "M10TZ2SL_P1_Q2": "Find a unit vector in a given direction",
+  },
+  "d59efdcc-103a-44e4-b2c9-827c1a7ef6f7": {
+    "M18TZ2HL_P1_Q1": "Find the angle between two vectors",
+    "N08TZ0HL_P2_Q4": "Use the angle between two vectors to find a parameter",
   },
   "d852b265-6804-4467-99e9-953af805fb72": {
     "M13TZ1SL_P1_Q1": "Use vector addition to find an unknown vector",
@@ -2026,7 +2060,7 @@ const practicePartTitles = {
   },
   "f25aaf3c-7579-43af-9f0c-c82485651278": {
     "N13TZ0HL_P2_Q9": "Shortest distance from the origin to a line",
-    "A_N24TZ0HL_P2_Q11": "Smallest distance from the origin to a line",
+    "W_N23TZ0AIHL_P1_Q14": "Find the closest point on a line to a given point",
   },
   "b67a9adf-10a0-466a-b35f-41187f507502": {
     "M16TZ1HL_P2_Q1": "Calculate a vector product in component form",
@@ -2923,6 +2957,12 @@ function lessonSpecificRule(lesson) {
 
 function allowsCrossCourseQuestion(question, lesson, course) {
   if (course === "IGCSE Higher" || question.sourceBank !== "ib") return false;
+  // This Paper 1 AI HL source is a direct closest-point calculation in the
+  // shared vector syllabus and is used here specifically to avoid a second
+  // origin-based, calculator-only example.
+  if (course === "AA HL"
+    && /^distance between a point and a line$/.test(normalize(lesson.title))
+    && question.id === "W_N23TZ0AIHL_P1_Q14") return true;
   // These are universal mathematical/financial skills. Some suitable records
   // are catalogued under only one IB pathway even though the question itself
   // is valid practice for another pathway.
@@ -2977,6 +3017,16 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["M15TZ2HL_P2_Q1", "A_N23TZ2HL_P1_Q4"].includes(question.id)) return true;
   if (/^mr flynn s exact triangles$/.test(lessonTitle)
     && ["M17TZ1SL_P1_Q3", "M15TZ2AISL_P1_Q2"].includes(question.id)) return true;
+  if (/^vectors introduction$/.test(lessonTitle)
+    && ["N13TZ0SL_P1_Q1", "N15TZ0SL_P1_Q2"].includes(question.id)) return true;
+  if (/^operations with vectors$/.test(lessonTitle)
+    && ["M10TZ2HL_P1_Q3", "M13TZ1SL_P1_Q1"].includes(question.id)) return true;
+  if (/^magnitude and unit vectors$/.test(lessonTitle)
+    && ["M10TZ2SL_P1_Q2", "M16TZ2SL_P1_Q7"].includes(question.id)) return true;
+  if (/^scalar product and angle between vectors$/.test(lessonTitle)
+    && ["M18TZ2HL_P1_Q1", "N08TZ0HL_P2_Q4"].includes(question.id)) return true;
+  if (/^distance between a point and a line$/.test(lessonTitle)
+    && ["N13TZ0HL_P2_Q9", "W_N23TZ0AIHL_P1_Q14"].includes(question.id)) return true;
   // Final AA trigonometry review. These are exact displayed extracts: the
   // first replacement solves a quadratic trigonometric equation directly,
   // while the second uses arctan and arcsin without any differentiation.
@@ -3277,9 +3327,11 @@ function passesLessonSpecificCheck(question, lesson) {
   // subparts. These exact whitelists stop broad source titles from overriding
   // the much narrower prompt displayed in the lesson.
   if (/^operations with vectors$/.test(lessonTitle)
-    && ["M13TZ1SL_P1_Q1", "M11TZ2SL_P1_Q3"].includes(question.id)) return true;
+    && ["M10TZ2HL_P1_Q3", "M13TZ1SL_P1_Q1", "M11TZ2SL_P1_Q3"].includes(question.id)) return true;
   if (/magnitude and unit vectors/.test(lessonTitle)
     && ["N17TZ0SL_P2_Q3", "M10TZ2SL_P1_Q2"].includes(question.id)) return true;
+  if (/distance between a point and a line/.test(lessonTitle)
+    && question.id === "W_N23TZ0AIHL_P1_Q14") return true;
   if (/motion with variable velocity/.test(lessonTitle)
     && ["W_N22TZ0AIHL_P2_Q7", "W_M25TZ3AIHL_P1_Q14"].includes(question.id)) return true;
   if (/vector product$/.test(lessonTitle) && question.id === "W_SPECAIHL_P1_Q11") return true;

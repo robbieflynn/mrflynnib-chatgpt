@@ -108,3 +108,21 @@ AA HL,2026-10-20,3.8.2,Solving trig equations with identities,approved,A_M21TZ2S
 AA HL,2026-10-20,3.9.1,Reciprocal trig identities,approved,A_M21TZ1HL_P1_Q6|M11TZ1HL_P1_Q5,Locked from Rob's Topic 3 review
 AA HL,2026-10-20,3.9.2,Inverse trigonometric functions,awaiting-recheck,M09TZ2HL_P2_Q3|N11TZ0HL_P2_Q4,Approved question 1 retained; differentiation question replaced with a direct arctan and arcsin equation
 AA HL,2026-10-20,3.10,Compound angle identities,approved,M16TZ1HL_P1_Q5|M10TZ2HL_P1_Q6,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.12.1,Vectors introduction,awaiting-recheck,N13TZ0SL_P1_Q1|N15TZ0SL_P1_Q2,Moved the two vector-notation questions here from operations with vectors as requested
+AA HL,2026-10-20,3.12.2,Operations with vectors,awaiting-recheck,M10TZ2HL_P1_Q3|M13TZ1SL_P1_Q1,Moved the former introduction question here and added a direct vector-addition question
+AA HL,2026-10-20,3.12.3,Magnitude and unit vectors,awaiting-recheck,M10TZ2SL_P1_Q2|M16TZ2SL_P1_Q7,Approved question 2 retained; dot-product question replaced with a direct unit-vector calculation
+AA HL,2026-10-20,3.13.1,Scalar product and angle between vectors,awaiting-recheck,M18TZ2HL_P1_Q1|N08TZ0HL_P2_Q4,Approved question 1 retained; question 2 moved here because it finds the angle between vectors rather than lines
+AA HL,2026-10-20,3.13.2,Properties of the scalar product,approved,M10TZ1HL_P1_Q6|M10TZ2HL_P1_Q12,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.14.1,Vector equation of a line,approved,M18TZ2SL_P1_Q1|N16TZ0SL_P1_Q4,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.14.2,Parametric form and cartesian equations of a line,approved,A_M25TZ2HL_P1_Q2|M09TZ1HL_P2_Q5,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.14.3,Angle between two lines,approved-single,M11TZ2SL_P2_Q8,Approved line-angle question retained alone after moving the vector-angle question
+AA HL,2026-10-20,3.14.4,Vectors and kinematics,approved,N08TZ0SL_P1_Q2|M10TZ2SL_P2_Q9,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.15.1,Intersecting lines,approved,N16TZ0HL_P1_Q8|A_M25TZ1HL_P1_Q6,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.15.2,Distance between a point and a line,awaiting-recheck,N13TZ0HL_P2_Q9|W_N23TZ0AIHL_P1_Q14,Approved calculator example retained; added a Paper 1 closest-point question whose fixed point is not the origin
+AA HL,2026-10-20,3.16.1,Vector product,approved,W_M21TZ1AIHL_P1_Q5|M16TZ1HL_P2_Q1,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.16.2,Properties of the vector product,approved,A_M21TZ2HL_P1_Q5|A_M24TZ1HL_P2_Q12,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.16.3,Areas using vector product,approved,M13TZ1HL_P1_Q2|A_N23TZ2HL_P2_Q8,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.17.1,Vector equation of a plane,approved-single,A_N25TZ1HL_P2_Q12,Rob explicitly approved keeping the one exact vector-form plane question on its own
+AA HL,2026-10-20,3.17.2,Cartesian equation of a plane,approved,M17TZ1HL_P2_Q7|M15TZ2HL_P2_Q5,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.18.1,Intersection between a line and a plane,approved,M08TZ1HL_P2_Q3|N10TZ0HL_P1_Q7,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.18.2,Intersection between two planes,approved,N11TZ0HL_P2_Q13|A_M22TZ1HL_P1_Q11,Locked from Rob's Topic 3 vector review; lone extracted-part labels are hidden

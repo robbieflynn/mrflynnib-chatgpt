@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T14:55:58.476Z",
+  "generatedAt": "2026-10-20T15:09:05.453Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 477,
-  "completeLessonCount": 429,
-  "approvedSingleLessonCount": 40,
-  "questionCount": 914,
+  "completeLessonCount": 428,
+  "approvedSingleLessonCount": 41,
+  "questionCount": 913,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -2027,8 +2027,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors: lines and dot product",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M10TZ2HL_P1_Q3",
-        "N12TZ0HL_P1_Q9"
+        "N13TZ0SL_P1_Q1",
+        "N15TZ0SL_P1_Q2"
       ]
     },
     "646c6ce7-f4cb-47fb-b4c6-2a28e5029596": {
@@ -2037,9 +2037,18 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors: lines and dot product",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N13TZ0SL_P1_Q1",
-        "N15TZ0SL_P1_Q2"
-      ]
+        "M10TZ2HL_P1_Q3",
+        "M13TZ1SL_P1_Q1"
+      ],
+      "questionParts": {
+        "M13TZ1SL_P1_Q1": [
+          "b"
+        ]
+      },
+      "questionPartTitles": {
+        "M10TZ2HL_P1_Q3": "Solve a vector equation using components",
+        "M13TZ1SL_P1_Q1": "Use vector addition to find an unknown vector"
+      }
     },
     "5a64332d-45ba-4535-bb8e-2a1fd52289e2": {
       "lesson": "3.12.3 Magnitude and unit vectors",
@@ -2047,9 +2056,17 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors: lines and dot product",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N09TZ0SL_P1_Q2",
+        "M10TZ2SL_P1_Q2",
         "M16TZ2SL_P1_Q7"
-      ]
+      ],
+      "questionParts": {
+        "M10TZ2SL_P1_Q2": [
+          "b"
+        ]
+      },
+      "questionPartTitles": {
+        "M10TZ2SL_P1_Q2": "Find a unit vector in a given direction"
+      }
     },
     "d59efdcc-103a-44e4-b2c9-827c1a7ef6f7": {
       "lesson": "3.13.1 Scalar product and angle between vectors",
@@ -2058,8 +2075,12 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M18TZ2HL_P1_Q1",
-        "M11TZ2HL_P1_Q6"
-      ]
+        "N08TZ0HL_P2_Q4"
+      ],
+      "questionPartTitles": {
+        "M18TZ2HL_P1_Q1": "Find the angle between two vectors",
+        "N08TZ0HL_P2_Q4": "Use the angle between two vectors to find a parameter"
+      }
     },
     "b70c2e32-c750-4851-a572-8587162396f0": {
       "lesson": "3.13.2 Properties of the scalar product",
@@ -2113,8 +2134,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors: lines and dot product",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M11TZ2SL_P2_Q8",
-        "N08TZ0HL_P2_Q4"
+        "M11TZ2SL_P2_Q8"
       ],
       "questionParts": {
         "M11TZ2SL_P2_Q8": [
@@ -2163,19 +2183,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N13TZ0HL_P2_Q9",
-        "A_N24TZ0HL_P2_Q11"
+        "W_N23TZ0AIHL_P1_Q14"
       ],
       "questionParts": {
         "N13TZ0HL_P2_Q9": [
           "b"
         ],
-        "A_N24TZ0HL_P2_Q11": [
-          "b"
+        "W_N23TZ0AIHL_P1_Q14": [
+          "a"
         ]
       },
       "questionPartTitles": {
         "N13TZ0HL_P2_Q9": "Shortest distance from the origin to a line",
-        "A_N24TZ0HL_P2_Q11": "Smallest distance from the origin to a line"
+        "W_N23TZ0AIHL_P1_Q14": "Find the closest point on a line to a given point"
       }
     },
     "b67a9adf-10a0-466a-b35f-41187f507502": {
@@ -4317,8 +4337,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Vectors",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M13TZ1SL_P1_Q1",
-        "M11TZ2SL_P1_Q3"
+        "M11TZ2SL_P1_Q3",
+        "H_N18TZ0SL_P1_Q5"
       ],
       "questionParts": {
         "M13TZ1SL_P1_Q1": [
@@ -4340,7 +4360,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N17TZ0SL_P2_Q3",
-        "M10TZ2SL_P1_Q2"
+        "H_M19TZ1SL_P1_Q6"
       ],
       "questionParts": {
         "N17TZ0SL_P2_Q3": [
