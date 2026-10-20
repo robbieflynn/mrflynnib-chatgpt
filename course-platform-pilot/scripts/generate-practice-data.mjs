@@ -462,11 +462,25 @@ const verifiedOverrides = {
   // Both questions require the cosine rule in a non-right-angled triangle.
   // Keep the shared identities lesson on manipulation and proof only. Solving
   // equations belongs in 3.8, and calculus/volume work is excluded entirely.
+  // Rob approved both ambiguous-case questions unchanged.
+  "57d96684-963a-444c-a9fd-440ea8547e6a": ["N11TZ0SL_P2_Q4", "N08TZ0HL_P2_Q1"],
   "c5f358f0-e49c-4fc1-a20a-296f64992376": ["M19TZ1HL_P1_Q9S", "N08TZ0SL_P1_Q7"],
+  // Rob approved both sinusoidal graph and both modelling questions unchanged.
+  "20f0c2aa-2e23-4888-a50d-6c248e8bb3ee": ["A_M25TZ1HL_P2_Q2", "M08TZ1SL_P1_Q4"],
+  "b49b3fd5-a955-4ba5-a569-77ec56466fe8": ["W_N22TZ0AIHL_P1_Q6", "A_M21TZ1SL_P2_Q4"],
+  // Retain the approved direct tangent equation first. The replacement second
+  // card now asks students to solve a trigonometric equation, rather than only
+  // verify that a supplied value works.
+  "e92f65c0-af14-4e82-90de-28a2f004b677": ["A_M24TZ2HL_P1_Q1", "M13TZ2HL_P2_Q6"],
   // Both questions explicitly require an identity to rewrite a trigonometric
   // equation and then solve it. They are distinct from the direct equation
   // sources used in 3.8.1 and from the identity-only work in 3.6.
   "a3b2933d-3e55-4244-b150-e467cf161e11": ["A_M21TZ2SL_P1_Q3", "A_M23TZ1SL_P1_Q4"],
+  // Rob approved both reciprocal-identity questions. In the following lesson,
+  // keep the approved first card and replace the derivative proof with a clean
+  // arctan/arcsin equation containing no differentiation.
+  "0e58ea85-617a-4737-a56c-14f499dfa30f": ["A_M21TZ1HL_P1_Q6", "M11TZ1HL_P1_Q5"],
+  "241d1270-d8fd-4d87-8e6c-b6e1a1d79a30": ["M09TZ2HL_P2_Q3", "N11TZ0HL_P2_Q4"],
   "0afbd775-a826-4a73-9c51-bd57c458c850": ["N15TZ0HL_P1_Q1", "M15TZ1SL_P1_Q2"],
   "ff814b89-cfb0-4cc9-be09-fc3a9e6bb0e8": ["M18TZ1SL_P1_Q2", "A_M22TZ2SL_P2_Q5"],
   // AA SL/HL introductory calculus pass. Keep each lesson on the first skill
@@ -1280,6 +1294,9 @@ const practicePartOverrides = {
   "c5f358f0-e49c-4fc1-a20a-296f64992376": {
     "N08TZ0SL_P1_Q7": ["a"],
   },
+  "e92f65c0-af14-4e82-90de-28a2f004b677": {
+    "M13TZ2HL_P2_Q6": ["a"],
+  },
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
     "M18TZ1HL_P2_Q5": ["a"],
   },
@@ -1920,6 +1937,9 @@ const practicePartTitles = {
   },
   "c5f358f0-e49c-4fc1-a20a-296f64992376": {
     "N08TZ0SL_P1_Q7": "Simplify a trigonometric expression to sin x",
+  },
+  "e92f65c0-af14-4e82-90de-28a2f004b677": {
+    "M13TZ2HL_P2_Q6": "Solve 3cos²x − 8cos x + 4 = 0",
   },
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
     "M18TZ1HL_P2_Q5": "Rewrite a cubic by polynomial division",
@@ -2906,7 +2926,7 @@ function allowsCrossCourseQuestion(question, lesson, course) {
   // These are universal mathematical/financial skills. Some suitable records
   // are catalogued under only one IB pathway even though the question itself
   // is valid practice for another pathway.
-  return /scientific notation|standard form|sigma notation|inflation|laws of exponents|roots of a polynomial|factorising quadratics|pythagoras|soh cah toa|rounding|loans|annuities|equation.*straight line|functions introduction|evaluating functions|sketching functions|change of base|complex numbers introduction|operations with complex numbers|magnitude and unit vectors|exact triangles|unit circle|cast diagram|trig identities|averages and spread|outliers|median and mode of a discrete random variable|introduction to differentiation|increasing and decreasing|differentiation.*power rule|derivative at a point|tangents and normals|chain rule|product rule|related rates|sketching derivatives|classifying stationary points|points of inflexion|integration.*power rule|integrating sin.*cos|integrating e.*1 x|inverse chain rule|area under the curve|area between curve and y axis|finding f x/.test(normalize(lesson.title));
+  return /scientific notation|standard form|sigma notation|inflation|laws of exponents|roots of a polynomial|factorising quadratics|pythagoras|soh cah toa|rounding|loans|annuities|equation.*straight line|functions introduction|evaluating functions|sketching functions|change of base|complex numbers introduction|operations with complex numbers|magnitude and unit vectors|exact triangles|unit circle|cast diagram|trig identities|solving trig equations|averages and spread|outliers|median and mode of a discrete random variable|introduction to differentiation|increasing and decreasing|differentiation.*power rule|derivative at a point|tangents and normals|chain rule|product rule|related rates|sketching derivatives|classifying stationary points|points of inflexion|integration.*power rule|integrating sin.*cos|integrating e.*1 x|inverse chain rule|area under the curve|area between curve and y axis|finding f x/.test(normalize(lesson.title));
 }
 
 function passesLessonSpecificCheck(question, lesson) {
@@ -2957,6 +2977,13 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["M15TZ2HL_P2_Q1", "A_N23TZ2HL_P1_Q4"].includes(question.id)) return true;
   if (/^mr flynn s exact triangles$/.test(lessonTitle)
     && ["M17TZ1SL_P1_Q3", "M15TZ2AISL_P1_Q2"].includes(question.id)) return true;
+  // Final AA trigonometry review. These are exact displayed extracts: the
+  // first replacement solves a quadratic trigonometric equation directly,
+  // while the second uses arctan and arcsin without any differentiation.
+  if (/^solving trig equations$/.test(lessonTitle)
+    && ["A_M24TZ2HL_P1_Q1", "M13TZ2HL_P2_Q6"].includes(question.id)) return true;
+  if (/^inverse trigonometric functions$/.test(lessonTitle)
+    && ["M09TZ2HL_P2_Q3", "N11TZ0HL_P2_Q4"].includes(question.id)) return true;
   // IGCSE Topic 1 selections reviewed at displayed-part level. The two surd
   // sources continue into rationalising work, but only their simplifying
   // part (a) is rendered. The set sources are symbolic/listing questions and

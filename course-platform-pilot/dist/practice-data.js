@@ -1,5 +1,5 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T14:43:24.974Z",
+  "generatedAt": "2026-10-20T14:55:58.476Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 477,
   "completeLessonCount": 429,
@@ -776,8 +776,16 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A_M24TZ2HL_P1_Q1",
-        "M16TZ2HL_P1_Q9S"
-      ]
+        "M13TZ2HL_P2_Q6"
+      ],
+      "questionParts": {
+        "M13TZ2HL_P2_Q6": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M13TZ2HL_P2_Q6": "Solve 3cos²x − 8cos x + 4 = 0"
+      }
     },
     "a3b2933d-3e55-4244-b150-e467cf161e11": {
       "lesson": "3.8.2 Solving trig equations with identities",
@@ -1992,7 +2000,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M09TZ2HL_P2_Q3",
-        "N08TZ0HL_P1_Q7"
+        "N11TZ0HL_P2_Q4"
       ]
     },
     "2242b24b-b800-4f2c-bb5a-16bd04201870": {
