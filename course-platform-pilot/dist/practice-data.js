@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T16:28:58.199Z",
+  "generatedAt": "2026-10-20T17:03:04.801Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 476,
-  "completeLessonCount": 427,
-  "approvedSingleLessonCount": 42,
-  "questionCount": 913,
+  "lessonCount": 477,
+  "completeLessonCount": 430,
+  "approvedSingleLessonCount": 40,
+  "questionCount": 915,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -2972,18 +2972,39 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Arithmetic sequences",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M13TZ2HL_P2_Q11X1",
+        "W_M22TZ2AIHL_P2_Q1",
         "V_M22TZ2AISL_P2_Q2"
       ],
       "questionParts": {
+        "W_M22TZ2AIHL_P2_Q1": [
+          "d"
+        ],
         "V_M22TZ2AISL_P2_Q2": [
           "d"
         ]
       },
+      "questionPartLabels": {
+        "W_M22TZ2AIHL_P2_Q1": {
+          "d": ""
+        },
+        "V_M22TZ2AISL_P2_Q2": {
+          "d": ""
+        }
+      },
+      "questionPartTexts": {
+        "W_M22TZ2AIHL_P2_Q1": {
+          "d": "(i) Calculate the value of \\(\\displaystyle\\sum_{n=1}^{12}\\left(425\\times1.095^{\\,n-1}\\right)\\).<br>(ii) Describe what your answer represents in this context."
+        },
+        "V_M22TZ2AISL_P2_Q2": {
+          "d": "(i) Calculate the value of \\(\\displaystyle\\sum_{n=1}^{12}\\left(340\\times1.058^{\\,n-1}\\right)\\).<br>(ii) Interpret your answer in this context."
+        }
+      },
       "questionPartTitles": {
+        "W_M22TZ2AIHL_P2_Q1": "Evaluate and interpret a finite sum in sigma notation",
         "V_M22TZ2AISL_P2_Q2": "Evaluate and interpret a finite sum in sigma notation"
       },
       "questionBodies": {
+        "W_M22TZ2AIHL_P2_Q1": "In 2022 Amara spent \\(\\$425\\) on wood pellets. She expects that amount to increase at an annual rate of \\(9.5\\,\\%\\). In the sum below, \\(n=1\\) corresponds to 2022.",
         "V_M22TZ2AISL_P2_Q2": "In 2022 Marek spent \\(\\$340\\) on chicken feed. He expects that amount to increase at an annual rate of \\(5.8\\,\\%\\)."
       }
     },
@@ -3017,24 +3038,38 @@ window.MR_FLYNN_PRACTICE = {
         "M19TZ1AISL_P1_Q14"
       ]
     },
+    "abf38c68-e758-43ec-955d-624ad834d69a": {
+      "lesson": "1.4.3 Inflation",
+      "course": "AI SL",
+      "subtopic": "Finance",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "W_SPECAIHL_P2_Q3",
+        "V_M22TZ2AISL_P1_Q13"
+      ],
+      "questionParts": {
+        "W_SPECAIHL_P2_Q3": [
+          "d"
+        ]
+      },
+      "questionPartLabels": {
+        "W_SPECAIHL_P2_Q3": {
+          "d": ""
+        }
+      },
+      "questionPartTitles": {
+        "W_SPECAIHL_P2_Q3": "Calculate the real value after allowing for inflation"
+      }
+    },
     "7038e65e-6cf6-4f3e-b9d5-666683bb9f97": {
       "lesson": "1.5.1 Laws of exponents",
       "course": "AI SL",
       "subtopic": "Exponents and logarithms",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M13TZ2AISL_P1_Q13",
-        "M15TZ1SL_P1_Q3"
-      ],
-      "questionParts": {
-        "M13TZ2AISL_P1_Q13": [
-          "a",
-          "b"
-        ]
-      },
-      "questionPartTitles": {
-        "M13TZ2AISL_P1_Q13": "Evaluate a straightforward exponential expression"
-      }
+        "M15TZ1SL_P1_Q3",
+        "N16TZ0HL_P1_Q7"
+      ]
     },
     "d4bab5f4-84db-4cdd-8a36-845c777c7077": {
       "lesson": "1.5.2 Introduction to logs",
@@ -4013,16 +4048,8 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "H_M13TZ2HL_P1_Q9",
-        "H_N14TZ0HL_P1_Q11X1"
-      ],
-      "questionParts": {
-        "H_N14TZ0HL_P1_Q11X1": [
-          "a"
-        ]
-      },
-      "questionPartTitles": {
-        "H_N14TZ0HL_P1_Q11X1": "Find the inverse of an exponential function"
-      }
+        "M14TZ2HL_P1_Q2"
+      ]
     },
     "26e9596d-27ce-4962-b4e6-b64b50ba0a76": {
       "lesson": "1.11 Sum of an infinite geometric sequence",
@@ -4040,21 +4067,39 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Complex numbers",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N12TZ0HL_P1_Q10",
-        "H_M18TZ2HL_P2_Q1"
+        "H_M18TZ2HL_P2_Q1",
+        "W_M21TZ1AIHL_P1_Q9"
       ],
       "questionParts": {
-        "N12TZ0HL_P1_Q10": [
+        "W_M21TZ1AIHL_P1_Q9": [
           "a"
         ],
         "H_M18TZ2HL_P2_Q1": [
           "a"
         ]
       },
+      "questionPartLabels": {
+        "W_M21TZ1AIHL_P1_Q9": {
+          "a": ""
+        },
+        "H_M18TZ2HL_P2_Q1": {
+          "a": ""
+        }
+      },
       "questionPartTitles": {
-        "N12TZ0HL_P1_Q10": "Add complex numbers in Cartesian form",
+        "W_M21TZ1AIHL_P1_Q9": "Evaluate a simple complex-number expression",
         "H_M18TZ2HL_P2_Q1": "Divide complex numbers in Cartesian form"
       }
+    },
+    "0d899f02-1cb7-4081-9ece-616f4d0c9efd": {
+      "lesson": "1.12.3 Complex solutions to polynomial equations",
+      "course": "AI HL",
+      "subtopic": "Complex numbers",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "M09TZ1HL_P2_Q2",
+        "A_N23TZ2HL_P1_Q7"
+      ]
     },
     "d933ce96-0e2d-4a95-831c-cecdaea40b47": {
       "lesson": "1.13.1 Modulus-argument form",
@@ -4072,15 +4117,28 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Complex numbers",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N21TZ0AIHL_P2_Q5"
+        "W_N21TZ0AIHL_P2_Q5",
+        "W_M21TZ2AIHL_P1_Q12"
       ],
       "questionParts": {
         "W_N21TZ0AIHL_P2_Q5": [
           "a"
+        ],
+        "W_M21TZ2AIHL_P1_Q12": [
+          "a"
         ]
       },
+      "questionPartLabels": {
+        "W_N21TZ0AIHL_P2_Q5": {
+          "a": ""
+        },
+        "W_M21TZ2AIHL_P1_Q12": {
+          "a": ""
+        }
+      },
       "questionPartTitles": {
-        "W_N21TZ0AIHL_P2_Q5": "Write a complex number in Euler form"
+        "W_N21TZ0AIHL_P2_Q5": "Write a complex number in Euler form",
+        "W_M21TZ2AIHL_P1_Q12": "Calculate with complex numbers in Euler form"
       }
     },
     "c131934d-cc0f-424c-88c1-bd51fffac1f6": {
@@ -4099,33 +4157,28 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Complex numbers",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M24TZ2AIHL_P1_Q15"
+        "W_M24TZ2AIHL_P1_Q15",
+        "W_SPECAIHL_P1_Q15"
       ],
       "questionParts": {
         "W_M24TZ2AIHL_P1_Q15": [
           "b"
-        ]
-      },
-      "questionPartTitles": {
-        "W_M24TZ2AIHL_P1_Q15": "Interpret complex multiplication as rotation and enlargement"
-      }
-    },
-    "e9c828e5-d1fc-4459-8e16-4f893814d04e": {
-      "lesson": "1.14.6 Determinant and inverse of a matrix",
-      "course": "AI HL",
-      "subtopic": "Matrices and powers of matrices",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "W_M25TZ3AIHL_P1_Q8",
-        "W_M23TZ2AIHL_P1_Q13"
-      ],
-      "questionParts": {
-        "W_M23TZ2AIHL_P1_Q13": [
+        ],
+        "W_SPECAIHL_P1_Q15": [
           "a"
         ]
       },
+      "questionPartLabels": {
+        "W_M24TZ2AIHL_P1_Q15": {
+          "b": ""
+        },
+        "W_SPECAIHL_P1_Q15": {
+          "a": ""
+        }
+      },
       "questionPartTitles": {
-        "W_M23TZ2AIHL_P1_Q13": "Use an inverse matrix to undo two transformations"
+        "W_M24TZ2AIHL_P1_Q15": "Interpret complex multiplication as rotation and enlargement",
+        "W_SPECAIHL_P1_Q15": "Plot successive powers on an Argand diagram"
       }
     },
     "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": {
@@ -4134,22 +4187,33 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Eigenvalues and eigenvectors",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N24TZ0AIHL_P1_Q11",
-        "W_M24TZ2AIHL_P2_Q5",
-        "W_M22TZ1AIHL_P1_Q11"
+        "W_M22TZ1AIHL_P1_Q11",
+        "W_M22TZ2AIHL_P2_Q5"
       ],
       "questionParts": {
-        "W_M24TZ2AIHL_P2_Q5": [
-          "c",
-          "d"
-        ],
         "W_M22TZ1AIHL_P1_Q11": [
           "a"
+        ],
+        "W_M22TZ2AIHL_P2_Q5": [
+          "b",
+          "c"
         ]
       },
+      "questionPartLabels": {
+        "W_M22TZ1AIHL_P1_Q11": {
+          "a": ""
+        },
+        "W_M22TZ2AIHL_P2_Q5": {
+          "b": "a",
+          "c": "b"
+        }
+      },
       "questionPartTitles": {
-        "W_M24TZ2AIHL_P2_Q5": "Find a characteristic polynomial and eigenvectors",
-        "W_M22TZ1AIHL_P1_Q11": "Find an eigenvector for a given eigenvalue"
+        "W_M22TZ1AIHL_P1_Q11": "Find an eigenvector for a given eigenvalue",
+        "W_M22TZ2AIHL_P2_Q5": "Find the eigenvalues and eigenvectors of a 2 × 2 matrix"
+      },
+      "questionBodies": {
+        "W_M22TZ2AIHL_P2_Q5": "Let \\(M=\\begin{pmatrix}0.76&0.16\\\\0.24&0.84\\end{pmatrix}\\)."
       }
     },
     "79bbc962-e946-49f0-a89e-5bd386389248": {
@@ -4158,27 +4222,23 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Matrices and powers of matrices",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M24TZ1AIHL_P1_Q17",
-        "W_M21TZ1AIHL_P2_Q5",
-        "W_M21TZ2AIHL_P2_Q4"
+        "W_N24TZ0AIHL_P1_Q11",
+        "W_M21TZ1AIHL_P2_Q5"
       ],
       "questionParts": {
-        "W_M24TZ1AIHL_P1_Q17": [
-          "b",
-          "c"
-        ],
         "W_M21TZ1AIHL_P2_Q5": [
           "c",
           "d"
-        ],
-        "W_M21TZ2AIHL_P2_Q4": [
-          "e"
         ]
       },
+      "questionPartLabels": {
+        "W_M21TZ1AIHL_P2_Q5": {
+          "c": "a",
+          "d": "b"
+        }
+      },
       "questionPartTitles": {
-        "W_M24TZ1AIHL_P1_Q17": "Use Dⁿ to model repeated matrix transformations",
-        "W_M21TZ1AIHL_P2_Q5": "Use diagonalisation to find a long-run matrix power",
-        "W_M21TZ2AIHL_P2_Q4": "Use PDP⁻¹ to determine long-term behaviour"
+        "W_M21TZ1AIHL_P2_Q5": "Use diagonalisation to find a long-run matrix power"
       }
     },
     "ac21b892-10cf-4fcc-b343-061386c5f8d5": {

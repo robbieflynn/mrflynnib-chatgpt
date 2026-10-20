@@ -550469,9 +550469,11 @@ function diagramN11TZ0P2Q1grid(){
   }
   var REQUESTED_PARTS = practiceMap('parts');
   var REQUESTED_PART_LABELS = practiceMap('partLabels');
+  var REQUESTED_PART_TEXTS = practiceMap('partTexts');
   var REQUESTED_PART_TITLES = practiceMap('partTitles');
   var REQUESTED_BODIES = practiceMap('bodies');
   var REQUESTED_DIFFICULTIES = practiceMap('difficulties');
+  var HIDE_PAPER = EMBED_PARAMS.get('hidePaper') === '1';
   var SHOW_SOLUTIONS = EMBED_PARAMS.get('solutions') !== '0';
   var requestedFiltersApplied = false;
   function reportEmbeddedHeight(){
@@ -550545,11 +550547,13 @@ function diagramN11TZ0P2Q1grid(){
     var id = String(q.id);
     var labels = REQUESTED_PARTS[id];
     var labelOverrides = REQUESTED_PART_LABELS[id];
+    var textOverrides = REQUESTED_PART_TEXTS[id];
     var hasTitle = Object.prototype.hasOwnProperty.call(REQUESTED_PART_TITLES, id);
     var hasBody = Object.prototype.hasOwnProperty.call(REQUESTED_BODIES, id);
     var hasDifficulty = Object.prototype.hasOwnProperty.call(REQUESTED_DIFFICULTIES, id);
     var hasLabelOverrides = labelOverrides && typeof labelOverrides === 'object' && !Array.isArray(labelOverrides);
-    if(!Array.isArray(labels) && !hasLabelOverrides && !hasTitle && !hasBody && !hasDifficulty) return q;
+    var hasTextOverrides = textOverrides && typeof textOverrides === 'object' && !Array.isArray(textOverrides);
+    if(!Array.isArray(labels) && !hasLabelOverrides && !hasTextOverrides && !hasTitle && !hasBody && !hasDifficulty) return q;
 
     var copy = Object.assign({}, q);
     if(Array.isArray(labels) && labels.length){
@@ -550561,6 +550565,14 @@ function diagramN11TZ0P2Q1grid(){
         return total + (isNaN(marks) ? 0 : marks);
       }, 0);
       copy._practiceParts = labels.map(String);
+    }
+    if(hasTextOverrides){
+      copy.parts = (copy.parts || []).map(function(part){
+        var updated = part.slice();
+        var original = String(updated[0]);
+        if(Object.prototype.hasOwnProperty.call(textOverrides, original)) updated[1] = String(textOverrides[original]);
+        return updated;
+      });
     }
     if(hasLabelOverrides){
       copy.parts = (copy.parts || []).map(function(part){
@@ -550642,7 +550654,7 @@ function diagramN11TZ0P2Q1grid(){
     var d = q.difficulty;
     if(typeof d === 'string') return d;            // tolerate older stored data
     if(!d) return 'Medium';
-    return d[state.course] || d['AA HL'] || d['AA SL'] || 'Medium';
+    return d[state.course] || d[q.course] || d['AI HL'] || d['AI SL'] || d['AA HL'] || d['AA SL'] || 'Medium';
   }
 
   // Paper number means a DIFFERENT thing in each course. In AA, Paper 1 is the
@@ -550940,7 +550952,7 @@ function diagramN11TZ0P2Q1grid(){
     // Show the current Paper 1 / Paper 2 classification without exposing the
     // source session or time-zone provenance stored with the question.
     var qPaperNum = paperNumberOf(q);
-    var showPaperNum = HAS_PAPERS && (qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2');
+    var showPaperNum = !HIDE_PAPER && HAS_PAPERS && (qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2');
     var paperLabel = qPaperNum;
     if(state.course.indexOf('AA ') === 0){
       if(qPaperNum === 'Paper 1') paperLabel += ' &middot; Non-calculator';

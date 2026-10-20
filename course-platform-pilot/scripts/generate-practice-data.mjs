@@ -639,15 +639,16 @@ const verifiedOverrides = {
   // Both questions derive a Maclaurin series from a differential equation.
   "091d13b9-cc8e-45ab-a0d0-8b81d01ed3ce": ["M18TZ0HL_P3_Q4", "N15TZ0HL_P3_Q2"],
 
-  // AI SL + HL Topic 1 review. Sigma notation stays finite: sum to infinity
-  // is not part of the shared SL content. The laws lesson starts with an
-  // accessible calculator evaluation before the approved powers equation.
+  // AI SL + HL Topic 1 review. Sigma notation stays finite and both cards
+  // visibly use summation notation. Inflation uses two real-value finance
+  // questions. Exponent laws remain algebraic rather than becoming modelling.
   // Quadratic modelling must remain modelling: retain the approved golf-ball
   // context and replace the completed-square exercise with a water-rocket
   // model that asks students to interpret and use the quadratic.
   "00344a26-55c4-47cb-8a6f-6ce16079c81a": ["V_N22TZ0AISL_P1_Q3", "V_M23TZ2AISL_P1_Q10"],
-  "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": ["M13TZ2HL_P2_Q11X1", "V_M22TZ2AISL_P2_Q2"],
-  "7038e65e-6cf6-4f3e-b9d5-666683bb9f97": ["M13TZ2AISL_P1_Q13", "M15TZ1SL_P1_Q3"],
+  "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": ["W_M22TZ2AIHL_P2_Q1", "V_M22TZ2AISL_P2_Q2"],
+  "abf38c68-e758-43ec-955d-624ad834d69a": ["W_SPECAIHL_P2_Q3", "V_M22TZ2AISL_P1_Q13"],
+  "7038e65e-6cf6-4f3e-b9d5-666683bb9f97": ["M15TZ1SL_P1_Q3", "N16TZ0HL_P1_Q7"],
   "8cb13923-f306-4a16-bbc5-93a1f15caa63": ["V_N21TZ0AISL_P1_Q3"],
   "5e60b54a-6bf2-4cf5-be78-4f13509448fd": ["N16TZ0AISL_P1_Q1"],
   // Keep the single approved AI HL change-of-base lesson. Its first question
@@ -659,17 +660,19 @@ const verifiedOverrides = {
   // boundary; use selected source parts when a longer exam question continues
   // into a neighbouring topic.
   "e0ae88fb-c9b0-4df3-94e5-0a6880f03068": ["M11TZ2SL_P1_Q5", "W_M25TZ1AIHL_P1_Q10"],
-  "9c656814-2fbe-4d15-a9ca-c05d1317ee37": ["H_M13TZ2HL_P1_Q9", "H_N14TZ0HL_P1_Q11X1"],
-  "f4f5804f-1998-41e3-8b43-5ba7d7ca2b40": ["N12TZ0HL_P1_Q10", "H_M18TZ2HL_P2_Q1"],
-  // One clean Cartesian-to-Euler conversion is preferable to padding the
-  // lesson with phasor or sinusoidal-modelling follow-up work.
-  "316a9cc6-d140-4513-8713-266476d64627": ["W_N21TZ0AIHL_P2_Q5"],
-  // This selected part explicitly interprets z -> z² as a rotation and an
-  // enlargement on the Argand diagram.
-  "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7": ["W_M24TZ2AIHL_P1_Q15"],
-  "e9c828e5-d1fc-4459-8e16-4f893814d04e": ["W_M25TZ3AIHL_P1_Q8", "W_M23TZ2AIHL_P1_Q13"],
-  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": ["W_N24TZ0AIHL_P1_Q11", "W_M24TZ2AIHL_P2_Q5", "W_M22TZ1AIHL_P1_Q11"],
-  "79bbc962-e946-49f0-a89e-5bd386389248": ["W_M24TZ1AIHL_P1_Q17", "W_M21TZ1AIHL_P2_Q5", "W_M21TZ2AIHL_P2_Q4"],
+  "9c656814-2fbe-4d15-a9ca-c05d1317ee37": ["H_M13TZ2HL_P1_Q9", "M14TZ2HL_P1_Q2"],
+  "f4f5804f-1998-41e3-8b43-5ba7d7ca2b40": ["H_M18TZ2HL_P2_Q1", "W_M21TZ1AIHL_P1_Q9"],
+  "0d899f02-1cb7-4081-9ece-616f4d0c9efd": ["M09TZ1HL_P2_Q2", "A_N23TZ2HL_P1_Q7"],
+  "316a9cc6-d140-4513-8713-266476d64627": ["W_N21TZ0AIHL_P2_Q5", "W_M21TZ2AIHL_P1_Q12"],
+  // Both selected questions show the geometric effect of complex
+  // multiplication on an Argand diagram.
+  "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7": ["W_M24TZ2AIHL_P1_Q15", "W_SPECAIHL_P1_Q15"],
+  // No clean standalone determinant/inverse question exists in the current
+  // archive. Do not substitute matrix-transformation questions here.
+  // Eigenvalues are kept as direct matrix work; powers keeps the two examples
+  // Rob identified, without transition-matrix padding.
+  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": ["W_M22TZ1AIHL_P1_Q11", "W_M22TZ2AIHL_P2_Q5"],
+  "79bbc962-e946-49f0-a89e-5bd386389248": ["W_N24TZ0AIHL_P1_Q11", "W_M21TZ1AIHL_P2_Q5"],
   // Move the two phase-portrait questions out of eigenvalue/eigenvector
   // practice and into the phase-portrait lessons where they belong.
   "522e01c2-0046-41ec-b4cd-1b9a7e89e70b": ["W_SPECAIHL_P1_Q15X1", "W_N22TZ0AIHL_P1_Q12"],
@@ -842,11 +845,6 @@ const verifiedOverrides = {
 // Keeping them blank is preferable to reusing a broadly related pair that
 // teaches or assesses a different skill.
 const needsManualQuestionReview = new Set([
-  "26b43b60-35b9-45bf-94fc-90939a61e58c", // Complex numbers introduction
-  "0d899f02-1cb7-4081-9ece-616f4d0c9efd", // Complex solutions to polynomial equations
-  "11cf3ed5-0f7e-436b-9817-4c4e5386982a", // Introduction to matrices
-  "ea54bb0f-76bc-47a6-9220-190faf9677c1", // Algebra of matrices
-  "35b31ab2-691d-480d-8664-e77d13f2b7cc", // Multiplication of matrices
   "c699f91b-43d0-4d3f-af5b-05a042516032", // Components of vectors: no genuine projection source yet
   "d477bd69-e3be-4201-b8f0-2ba436cc3f6e", // Phase portrait: source
   "e8505773-3b8b-41cc-84b3-d2e106e5533f", // Phase portrait: centre
@@ -881,7 +879,13 @@ const intentionallyWithoutPractice = new Set([
   "44ad6968-438e-4f55-bb2e-6f97a1a44b69", // AA HL: Maclaurin series introduction
   "46c63018-b709-4eab-a3ed-851044ddae8a", // AA HL: Euler's identity
   "f004ff36-17a1-4061-bc14-1520f48f7bb7", // AI SL + AI HL: Roots of a polynomial
+  "26b43b60-35b9-45bf-94fc-90939a61e58c", // AI HL: Complex numbers introduction
+  "11cf3ed5-0f7e-436b-9817-4c4e5386982a", // AI HL: Introduction to matrices (no clean standalone source)
+  "ea54bb0f-76bc-47a6-9220-190faf9677c1", // AI HL: Algebra of matrices (no clean standalone source)
+  "35b31ab2-691d-480d-8664-e77d13f2b7cc", // AI HL: Multiplication of matrices (no clean standalone source)
+  "8f3c2a60-3f50-484f-a867-7a7efeb61959", // AI HL: Identity matrix (no clean standalone source)
   "d1156dcb-e3cc-4bdd-8985-b4729eacc0c0", // AI HL: Properties of matrices
+  "e9c828e5-d1fc-4459-8e16-4f893814d04e", // AI HL: Determinant and inverse (transformation sources rejected)
   "795817a0-1f56-45f4-b103-3b8936c00858", // AI HL: System of linear equations
   "deba74b6-f5bc-4bf7-ad18-5918b6302196", // AI HL: Mr. Flynn's exact triangles
   "890be651-35da-4ac2-ae19-017b48ecb19e", // AI HL: Unit circle
@@ -922,8 +926,6 @@ const intentionallySinglePractice = new Set([
   "916aa44f-5240-4926-9cb6-12800d012e0c", // AA HL: one coherent polynomial factorise-and-sketch task
   "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
   "5e60b54a-6bf2-4cf5-be78-4f13509448fd", // AI SL + AI HL: Rounding
-  "316a9cc6-d140-4513-8713-266476d64627", // AI HL: Euler form
-  "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7", // AI HL: Operations and geometric interpretation
   "72a5f616-843a-4be5-875c-6e57afe3d730", // AI HL: Piecewise functions
   "97dfa2ea-0da3-4f3e-a95f-1841d36df813", // AI HL: Scaling with logs (semi-log)
   "9af63d1a-407b-4f90-ae78-30c8291fcd59", // AI HL: Setting up a differential equation
@@ -976,8 +978,6 @@ const intentionallyTriplePractice = new Set([
   "f924ec98-3f94-4b6e-b485-50d9a7cb0959", // AA SL + AA HL: Binomial distribution
   "16efb219-7953-40cb-b8ca-8b0e956f9e39", // AA SL + AA HL: direct sin/cos, ln and exponential derivatives
   "c243c099-8009-4c45-b936-7ba9a05ef501", // AA HL: HL-only substitution progression
-  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f", // AI HL: Eigenvalues and eigenvectors
-  "79bbc962-e946-49f0-a89e-5bd386389248", // AI HL: Powers of matrices
   "d084246b-aa0a-4a8b-a962-db8032c3bbcf", // IGCSE: Domain and Range
   "2d8c3008-d9cc-456e-a1a7-05999fc917ed", // IGCSE: Grouped Data
   "1a51ff2e-8cdc-4a3d-9f0b-85cf3f65e853", // IGCSE: Probability And/Or Rules
@@ -1211,10 +1211,11 @@ const practicePartOverrides = {
     "W_N22TZ0AIHL_P1_Q13": ["a"],
   },
   "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
+    "W_M22TZ2AIHL_P2_Q1": ["d"],
     "V_M22TZ2AISL_P2_Q2": ["d"],
   },
-  "7038e65e-6cf6-4f3e-b9d5-666683bb9f97": {
-    "M13TZ2AISL_P1_Q13": ["a", "b"],
+  "abf38c68-e758-43ec-955d-624ad834d69a": {
+    "W_SPECAIHL_P2_Q3": ["d"],
   },
   "03a83b7a-4df5-4d2c-a669-cfcf7b50787e": {
     "N20TZ0AISL_P1_Q11": ["c"],
@@ -1548,30 +1549,24 @@ const practicePartOverrides = {
     "M11TZ2SL_P1_Q5": ["a"],
     "W_M25TZ1AIHL_P1_Q10": ["a"],
   },
-  "9c656814-2fbe-4d15-a9ca-c05d1317ee37": {
-    "H_N14TZ0HL_P1_Q11X1": ["a"],
-  },
   "f4f5804f-1998-41e3-8b43-5ba7d7ca2b40": {
-    "N12TZ0HL_P1_Q10": ["a"],
+    "W_M21TZ1AIHL_P1_Q9": ["a"],
     "H_M18TZ2HL_P2_Q1": ["a"],
   },
   "316a9cc6-d140-4513-8713-266476d64627": {
     "W_N21TZ0AIHL_P2_Q5": ["a"],
+    "W_M21TZ2AIHL_P1_Q12": ["a"],
   },
   "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7": {
     "W_M24TZ2AIHL_P1_Q15": ["b"],
-  },
-  "e9c828e5-d1fc-4459-8e16-4f893814d04e": {
-    "W_M23TZ2AIHL_P1_Q13": ["a"],
+    "W_SPECAIHL_P1_Q15": ["a"],
   },
   "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": {
-    "W_M24TZ2AIHL_P2_Q5": ["c", "d"],
     "W_M22TZ1AIHL_P1_Q11": ["a"],
+    "W_M22TZ2AIHL_P2_Q5": ["b", "c"],
   },
   "79bbc962-e946-49f0-a89e-5bd386389248": {
-    "W_M24TZ1AIHL_P1_Q17": ["b", "c"],
     "W_M21TZ1AIHL_P2_Q5": ["c", "d"],
-    "W_M21TZ2AIHL_P2_Q4": ["e"],
   },
   "54333f98-7d7a-4d6a-b3cf-347122e184bc": {
     "W_N23TZ0AIHL_P3_Q1": ["a"],
@@ -1632,6 +1627,32 @@ const practicePartOverrides = {
 // Preserve the original source labels for filtering and markscheme matching,
 // then make extracted non-consecutive parts read naturally in course practice.
 const practicePartLabelOverrides = {
+  "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
+    "W_M22TZ2AIHL_P2_Q1": { d: "" },
+    "V_M22TZ2AISL_P2_Q2": { d: "" },
+  },
+  "abf38c68-e758-43ec-955d-624ad834d69a": {
+    "W_SPECAIHL_P2_Q3": { d: "" },
+  },
+  "f4f5804f-1998-41e3-8b43-5ba7d7ca2b40": {
+    "W_M21TZ1AIHL_P1_Q9": { a: "" },
+    "H_M18TZ2HL_P2_Q1": { a: "" },
+  },
+  "316a9cc6-d140-4513-8713-266476d64627": {
+    "W_N21TZ0AIHL_P2_Q5": { a: "" },
+    "W_M21TZ2AIHL_P1_Q12": { a: "" },
+  },
+  "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7": {
+    "W_M24TZ2AIHL_P1_Q15": { b: "" },
+    "W_SPECAIHL_P1_Q15": { a: "" },
+  },
+  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": {
+    "W_M22TZ1AIHL_P1_Q11": { a: "" },
+    "W_M22TZ2AIHL_P2_Q5": { b: "a", c: "b" },
+  },
+  "79bbc962-e946-49f0-a89e-5bd386389248": {
+    "W_M21TZ1AIHL_P2_Q5": { c: "a", d: "b" },
+  },
   "40c21470-dbef-42f5-acfb-ba9658d8f02e": {
     "M10TZ1HL_P2_Q11": { a: "a", d: "b" },
   },
@@ -1640,6 +1661,20 @@ const practicePartLabelOverrides = {
   },
   "d10601dc-f866-4925-93d7-dc05b9316429": {
     "M17TZ1HL_P1_Q11": { c: "a", d: "b" },
+  },
+};
+
+// Some useful standalone extracts still refer to their original position in a
+// longer question (for example, "part (d)(i)"). Replace only the displayed
+// wording; the original source labels are retained for markscheme matching.
+const practicePartTextOverrides = {
+  "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
+    "W_M22TZ2AIHL_P2_Q1": {
+      d: "(i) Calculate the value of \\(\\displaystyle\\sum_{n=1}^{12}\\left(425\\times1.095^{\\,n-1}\\right)\\).<br>(ii) Describe what your answer represents in this context.",
+    },
+    "V_M22TZ2AISL_P2_Q2": {
+      d: "(i) Calculate the value of \\(\\displaystyle\\sum_{n=1}^{12}\\left(340\\times1.058^{\\,n-1}\\right)\\).<br>(ii) Interpret your answer in this context.",
+    },
   },
 };
 
@@ -1888,10 +1923,11 @@ const practicePartTitles = {
     "W_N22TZ0AIHL_P1_Q13": "Recover an exponential relationship from a semi-log graph",
   },
   "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
+    "W_M22TZ2AIHL_P2_Q1": "Evaluate and interpret a finite sum in sigma notation",
     "V_M22TZ2AISL_P2_Q2": "Evaluate and interpret a finite sum in sigma notation",
   },
-  "7038e65e-6cf6-4f3e-b9d5-666683bb9f97": {
-    "M13TZ2AISL_P1_Q13": "Evaluate a straightforward exponential expression",
+  "abf38c68-e758-43ec-955d-624ad834d69a": {
+    "W_SPECAIHL_P2_Q3": "Calculate the real value after allowing for inflation",
   },
   "03a83b7a-4df5-4d2c-a669-cfcf7b50787e": {
     "N20TZ0AISL_P1_Q11": "Read where a function is decreasing from its graph",
@@ -2227,30 +2263,24 @@ const practicePartTitles = {
     "M11TZ2SL_P1_Q5": "Apply a logarithm law to simplify an expression",
     "W_M25TZ1AIHL_P1_Q10": "Combine logarithms into a single logarithm",
   },
-  "9c656814-2fbe-4d15-a9ca-c05d1317ee37": {
-    "H_N14TZ0HL_P1_Q11X1": "Find the inverse of an exponential function",
-  },
   "f4f5804f-1998-41e3-8b43-5ba7d7ca2b40": {
-    "N12TZ0HL_P1_Q10": "Add complex numbers in Cartesian form",
+    "W_M21TZ1AIHL_P1_Q9": "Evaluate a simple complex-number expression",
     "H_M18TZ2HL_P2_Q1": "Divide complex numbers in Cartesian form",
   },
   "316a9cc6-d140-4513-8713-266476d64627": {
     "W_N21TZ0AIHL_P2_Q5": "Write a complex number in Euler form",
+    "W_M21TZ2AIHL_P1_Q12": "Calculate with complex numbers in Euler form",
   },
   "eba4dbd1-cfe5-4f48-8656-cdeceafce0c7": {
     "W_M24TZ2AIHL_P1_Q15": "Interpret complex multiplication as rotation and enlargement",
-  },
-  "e9c828e5-d1fc-4459-8e16-4f893814d04e": {
-    "W_M23TZ2AIHL_P1_Q13": "Use an inverse matrix to undo two transformations",
+    "W_SPECAIHL_P1_Q15": "Plot successive powers on an Argand diagram",
   },
   "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": {
-    "W_M24TZ2AIHL_P2_Q5": "Find a characteristic polynomial and eigenvectors",
     "W_M22TZ1AIHL_P1_Q11": "Find an eigenvector for a given eigenvalue",
+    "W_M22TZ2AIHL_P2_Q5": "Find the eigenvalues and eigenvectors of a 2 × 2 matrix",
   },
   "79bbc962-e946-49f0-a89e-5bd386389248": {
-    "W_M24TZ1AIHL_P1_Q17": "Use Dⁿ to model repeated matrix transformations",
     "W_M21TZ1AIHL_P2_Q5": "Use diagonalisation to find a long-run matrix power",
-    "W_M21TZ2AIHL_P2_Q4": "Use PDP⁻¹ to determine long-term behaviour",
   },
   "326ef6f4-cdc3-461c-b121-527fef739c83": {
     "M08TZ1SL_P1_Q6": "Find displacement from a velocity function",
@@ -2390,7 +2420,11 @@ const practiceBodyOverrides = {
   // before it. Restate that information while omitting the unrelated earlier
   // arithmetic-sequence work from the source question.
   "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
+    "W_M22TZ2AIHL_P2_Q1": "In 2022 Amara spent \\(\\$425\\) on wood pellets. She expects that amount to increase at an annual rate of \\(9.5\\,\\%\\). In the sum below, \\(n=1\\) corresponds to 2022.",
     "V_M22TZ2AISL_P2_Q2": "In 2022 Marek spent \\(\\$340\\) on chicken feed. He expects that amount to increase at an annual rate of \\(5.8\\,\\%\\).",
+  },
+  "54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f": {
+    "W_M22TZ2AIHL_P2_Q5": "Let \\(M=\\begin{pmatrix}0.76&0.16\\\\0.24&0.84\\end{pmatrix}\\).",
   },
   // Parts (b) and (c) are a clean, self-contained mean-and-variance exercise
   // once the constants established in part (a) are stated in the stem.
@@ -3106,7 +3140,7 @@ function allowsCrossCourseQuestion(question, lesson, course) {
   // These are universal mathematical/financial skills. Some suitable records
   // are catalogued under only one IB pathway even though the question itself
   // is valid practice for another pathway.
-  return /scientific notation|standard form|sigma notation|inflation|laws of exponents|roots of a polynomial|factorising quadratics|pythagoras|soh cah toa|rounding|loans|annuities|equation.*straight line|functions introduction|evaluating functions|sketching functions|change of base|complex numbers introduction|operations with complex numbers|magnitude and unit vectors|exact triangles|unit circle|cast diagram|trig identities|solving trig equations|averages and spread|outliers|median and mode of a discrete random variable|introduction to differentiation|increasing and decreasing|differentiation.*power rule|derivative at a point|tangents and normals|definite integration|chain rule|product rule|related rates|sketching derivatives|classifying stationary points|points of inflexion|integration.*power rule|integrating sin.*cos|integrating e.*1 x|inverse chain rule|area under the curve|area between curve and y axis|finding f x/.test(normalize(lesson.title));
+  return /scientific notation|standard form|sigma notation|inflation|laws of exponents|more exponents|roots of a polynomial|factorising quadratics|pythagoras|soh cah toa|rounding|loans|annuities|equation.*straight line|functions introduction|evaluating functions|sketching functions|change of base|complex numbers introduction|operations with complex numbers|complex solutions|euler form|geometric interpretation|magnitude and unit vectors|exact triangles|unit circle|cast diagram|trig identities|solving trig equations|averages and spread|outliers|median and mode of a discrete random variable|introduction to differentiation|increasing and decreasing|differentiation.*power rule|derivative at a point|tangents and normals|definite integration|chain rule|product rule|related rates|sketching derivatives|classifying stationary points|points of inflexion|integration.*power rule|integrating sin.*cos|integrating e.*1 x|inverse chain rule|area under the curve|area between curve and y axis|finding f x/.test(normalize(lesson.title));
 }
 
 function passesLessonSpecificCheck(question, lesson) {
@@ -3114,6 +3148,23 @@ function passesLessonSpecificCheck(question, lesson) {
   const questionTitle = normalize(question.title);
   const rawQuestionText = questionText(question);
   const fullQuestionText = normalize(questionText(question));
+  // Final AI Topic 1 review: these exact rendered extracts were selected for
+  // the named lesson after checking their displayed parts. Several come from
+  // longer source questions whose broad source title spans neighbouring skills.
+  if (/^sigma notation$/.test(lessonTitle)
+    && question.id === "W_M22TZ2AIHL_P2_Q1") return true;
+  if (/^inflation$/.test(lessonTitle)
+    && ["W_SPECAIHL_P2_Q3", "V_M22TZ2AISL_P1_Q13"].includes(question.id)) return true;
+  if (/^laws of exponents$/.test(lessonTitle)
+    && question.id === "N16TZ0HL_P1_Q7") return true;
+  if (/^operations with complex numbers$/.test(lessonTitle)
+    && question.id === "W_M21TZ1AIHL_P1_Q9") return true;
+  if (/^euler form$/.test(lessonTitle)
+    && question.id === "W_M21TZ2AIHL_P1_Q12") return true;
+  if (/^operations and geometric interpretation$/.test(lessonTitle)
+    && question.id === "W_SPECAIHL_P1_Q15") return true;
+  if (/^powers of matrices$/.test(lessonTitle)
+    && question.id === "W_N24TZ0AIHL_P1_Q11") return true;
   // AA Topic 2 is reviewed at displayed-part level. These four sources have
   // later composite/inverse parts, but only their direct evaluation part (a)
   // is shown in 2.2.1 and 2.2.2.
@@ -3900,6 +3951,7 @@ for (const [id, placement] of placements) {
       questionIds,
       questionParts: practicePartOverrides[id] || undefined,
       questionPartLabels: practicePartLabelOverrides[id] || undefined,
+      questionPartTexts: practicePartTextOverrides[id] || undefined,
       questionPartTitles: practicePartTitles[id] || undefined,
       questionBodies: practiceBodyOverrides[id] || undefined,
       questionDifficulties: practiceDifficultyOverrides[id] || undefined,

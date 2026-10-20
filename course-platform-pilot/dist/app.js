@@ -490,12 +490,20 @@ function renderLessonPractice(lesson) {
   // from red in SL to orange in HL.
   url.searchParams.set("course", bankFile === "ib-bank.html" ? currentCourse.code : practice.course);
   url.searchParams.set("displayCourse", currentCourse.code);
+  // Every AI paper permits a calculator, so paper-number badges add no useful
+  // revision information there. AA keeps its paper/calculator labels.
+  if (currentCourse.code.startsWith("AI ")) {
+    url.searchParams.set("hidePaper", "1");
+  }
   url.searchParams.set("ids", practice.questionIds.join(","));
   if (practice.questionParts) {
     url.searchParams.set("parts", JSON.stringify(practice.questionParts));
   }
   if (practice.questionPartLabels) {
     url.searchParams.set("partLabels", JSON.stringify(practice.questionPartLabels));
+  }
+  if (practice.questionPartTexts) {
+    url.searchParams.set("partTexts", JSON.stringify(practice.questionPartTexts));
   }
   if (practice.questionPartTitles) {
     url.searchParams.set("partTitles", JSON.stringify(practice.questionPartTitles));
