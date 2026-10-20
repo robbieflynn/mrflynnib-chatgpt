@@ -1,5 +1,5 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T15:39:10.612Z",
+  "generatedAt": "2026-10-20T15:54:03.603Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 476,
   "completeLessonCount": 428,
@@ -1028,16 +1028,16 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Linear regression",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M23TZ1SL_P2_Q4",
+        "A_M24TZ1SL_P2_Q6",
         "A_SPECTZ0HL_P2_Q4"
       ],
       "questionParts": {
-        "A_M23TZ1SL_P2_Q4": [
-          "b"
+        "A_M24TZ1SL_P2_Q6": [
+          "c"
         ]
       },
       "questionPartTitles": {
-        "A_M23TZ1SL_P2_Q4": "Find the regression line of x on y"
+        "A_M24TZ1SL_P2_Q6": "Use the regression line of x on y"
       }
     },
     "7fc00d7d-e4bc-4cbf-b955-5bcfaa2e7893": {
@@ -1057,15 +1057,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M10TZ2HL_P2_Q3",
-        "M14TZ1HL_P2_Q2"
+        "M11TZ1HL_P2_Q12"
       ],
       "questionParts": {
         "M10TZ2HL_P2_Q3": [
           "a"
+        ],
+        "M11TZ1HL_P2_Q12": [
+          "a"
         ]
       },
       "questionPartTitles": {
-        "M10TZ2HL_P2_Q3": "Use z = (x − μ)/σ to find the standard deviation"
+        "M10TZ2HL_P2_Q3": "Use z = (x − μ)/σ to find the standard deviation",
+        "M11TZ1HL_P2_Q12": "Find the mean and standard deviation from two percentiles"
       }
     },
     "03a83b7a-4df5-4d2c-a669-cfcf7b50787e": {
@@ -2431,8 +2435,16 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M12TZ2HL_P2_Q7",
-        "M12TZ1HL_P2_Q2"
-      ]
+        "A_N24TZ0HL_P2_Q6"
+      ],
+      "questionParts": {
+        "A_N24TZ0HL_P2_Q6": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "A_N24TZ0HL_P2_Q6": "Find the mean of a two-piece continuous distribution"
+      }
     },
     "2f5766d2-e280-4aff-ac80-36b91b5218b7": {
       "lesson": "4.14.5 Median and mode of a discrete random variable",
@@ -2441,20 +2453,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A_M25TZ3HL_P2_Q3",
-        "V_N25TZ3AISL_P1_Q1"
+        "M08TZ1SL_P2_Q1"
       ],
       "questionParts": {
         "A_M25TZ3HL_P2_Q3": [
           "a"
         ],
-        "V_N25TZ3AISL_P1_Q1": [
-          "a",
+        "M08TZ1SL_P2_Q1": [
           "b"
         ]
       },
       "questionPartTitles": {
         "A_M25TZ3HL_P2_Q3": "Complete a discrete distribution and identify its mode",
-        "V_N25TZ3AISL_P1_Q1": "Find the mode and median of discrete data"
+        "M08TZ1SL_P2_Q1": "Find the median from a discrete frequency table"
       }
     },
     "6aebf73e-a755-432a-b6a3-870f5d7c3269": {
@@ -2463,7 +2474,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Continuous random variables",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N13TZ0HL_P2_Q11",
+        "M12TZ1HL_P2_Q2",
         "M08TZ2HL_P2_Q4"
       ]
     },
@@ -2474,19 +2485,24 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M17TZ2HL_P2_Q10",
-        "A_M23TZ2HL_P1_Q6"
+        "M15TZ1HL_P2_Q11"
       ],
       "questionParts": {
         "M17TZ2HL_P2_Q10": [
           "b",
           "c"
+        ],
+        "M15TZ1HL_P2_Q11": [
+          "f"
         ]
       },
       "questionPartTitles": {
-        "M17TZ2HL_P2_Q10": "Find the mean and variance of a continuous random variable"
+        "M17TZ2HL_P2_Q10": "Find the mean and variance of a continuous random variable",
+        "M15TZ1HL_P2_Q11": "Find the variance of a two-piece continuous distribution"
       },
       "questionBodies": {
-        "M17TZ2HL_P2_Q10": "A continuous random variable \\(X\\) has probability density function \\(f\\) given by \\[f(x)=\\begin{cases}\\dfrac{x^2}{32}+\\dfrac{1}{12}, & 0\\le x\\le4,\\\\[5pt]0, & \\text{otherwise.}\\end{cases}\\]"
+        "M17TZ2HL_P2_Q10": "A continuous random variable \\(X\\) has probability density function \\(f\\) given by \\[f(x)=\\begin{cases}\\dfrac{x^2}{32}+\\dfrac{1}{12}, & 0\\le x\\le4,\\\\[5pt]0, & \\text{otherwise.}\\end{cases}\\]",
+        "M15TZ1HL_P2_Q11": "A continuous random variable \\(X\\) has probability density function \\[f(x)=\\begin{cases}\\dfrac{\\sin x}{4}, & 0\\le x\\le\\pi,\\\\[5pt]\\dfrac{x-\\pi}{\\pi^2}, & \\pi<x\\le2\\pi,\\\\[5pt]0, & \\text{otherwise.}\\end{cases}\\] Its mean is \\(\\mathrm{E}(X)=\\dfrac{13\\pi}{12}\\)."
       }
     },
     "23301c56-b9aa-4101-ade8-1e2c41b65e54": {

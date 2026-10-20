@@ -403,25 +403,36 @@ const verifiedOverrides = {
   "125a9218-3aed-48c9-b96b-3cf08968de9c": ["A_M23TZ2SL_P2_Q1", "W_M23TZ1AIHL_P2_Q1"],
   "ca2285a6-c9cc-4eac-adc1-8c6479e9b21e": ["A_SPECTZ0HL_P1_Q1", "A_N23TZ2HL_P1_Q2", "A_N24TZ0HL_P1_Q2"],
   "f924ec98-3f94-4b6e-b485-50d9a7cb0959": ["M08TZ1SL_P2_Q6", "M15TZ1HL_P2_Q3", "M18TZ2HL_P2_Q8"],
-  "7cc0076e-c776-4fe4-8a63-43da44f92820": ["A_M23TZ1SL_P2_Q4", "A_SPECTZ0HL_P2_Q4"],
+  // Keep the approved specimen example. Replace the quadratic-model source
+  // with a second question that genuinely requires the regression of x on y.
+  "7cc0076e-c776-4fe4-8a63-43da44f92820": ["A_M24TZ1SL_P2_Q6", "A_SPECTZ0HL_P2_Q4"],
 
   // AA HL Topic 4 probability-distribution correction pass. These choices
   // follow the mathematical skill Rob specified for each individual video,
   // rather than treating every question with a broad statistics label as
   // interchangeable.
-  "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": ["M10TZ2HL_P2_Q3", "M14TZ1HL_P2_Q2"],
+  // Retain the approved standard-deviation question, then add an example in
+  // which both the mean and standard deviation must be recovered.
+  "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": ["M10TZ2HL_P2_Q3", "M11TZ1HL_P2_Q12"],
   // Bayes' theorem (4.13) was explicitly approved and is intentionally left
   // on its existing two questions.
   "2153e754-5338-4e7e-aca4-6f0e2090c038": ["A_M25TZ2HL_P2_Q8", "M10TZ1HL_P1_Q10"],
   "200f6314-6efb-426a-8767-c91323c22db3": ["M10TZ2HL_P2_Q2", "N16TZ0HL_P2_Q1"],
   "4fa5e51a-f4dd-477e-b393-54f1be7266ec": ["M10TZ2HL_P1_Q1", "A_M22TZ1HL_P1_Q7"],
-  "76e8e8b2-11d1-4c5f-919c-8d18c85df672": ["M12TZ2HL_P2_Q7", "M12TZ1HL_P2_Q2"],
+  // Keep the approved first mean question. The second now uses two distinct
+  // non-zero pieces of one probability density function.
+  "76e8e8b2-11d1-4c5f-919c-8d18c85df672": ["M12TZ2HL_P2_Q7", "A_N24TZ0HL_P2_Q6"],
   // The AA bank contains one exact probability-table mode question. Pair it
   // with a short discrete-data median/mode question rather than padding this
   // lesson with another expectation-only source.
-  "2f5766d2-e280-4aff-ac80-36b91b5218b7": ["A_M25TZ3HL_P2_Q3", "V_N25TZ3AISL_P1_Q1"],
+  // Keep the approved probability-table mode question, then use another
+  // table-based discrete-data question that asks directly for the median.
+  "2f5766d2-e280-4aff-ac80-36b91b5218b7": ["A_M25TZ3HL_P2_Q3", "M08TZ1SL_P2_Q1"],
   // 4.14.6 was explicitly approved and therefore remains untouched.
-  "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": ["M17TZ2HL_P2_Q10", "A_M23TZ2HL_P1_Q6"],
+  // Keep the approved first example. The second is a direct variance
+  // calculation for a two-piece density, with earlier established constants
+  // restated below so the cropped card is self-contained.
+  "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": ["M17TZ2HL_P2_Q10", "M15TZ1HL_P2_Q11"],
   "23301c56-b9aa-4101-ade8-1e2c41b65e54": ["A_N25TZ3HL_P1_Q7", "A_SPECTZ0HL_P2_Q6"],
 
   // Deep-review pass: each pair below was checked against the specific lesson
@@ -1219,6 +1230,7 @@ const practicePartOverrides = {
   },
   "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": {
     "M10TZ2HL_P2_Q3": ["a"],
+    "M11TZ1HL_P2_Q12": ["a"],
   },
   "4fa5e51a-f4dd-477e-b393-54f1be7266ec": {
     "M10TZ2HL_P1_Q1": ["a"],
@@ -1226,10 +1238,14 @@ const practicePartOverrides = {
   },
   "2f5766d2-e280-4aff-ac80-36b91b5218b7": {
     "A_M25TZ3HL_P2_Q3": ["a"],
-    "V_N25TZ3AISL_P1_Q1": ["a", "b"],
+    "M08TZ1SL_P2_Q1": ["b"],
+  },
+  "76e8e8b2-11d1-4c5f-919c-8d18c85df672": {
+    "A_N24TZ0HL_P2_Q6": ["a"],
   },
   "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": {
     "M17TZ2HL_P2_Q10": ["b", "c"],
+    "M15TZ1HL_P2_Q11": ["f"],
   },
   "23301c56-b9aa-4101-ade8-1e2c41b65e54": {
     "A_N25TZ3HL_P1_Q7": ["b"],
@@ -1283,7 +1299,7 @@ const practicePartOverrides = {
     "W_M23TZ1AIHL_P2_Q1": ["a", "b", "e"],
   },
   "7cc0076e-c776-4fe4-8a63-43da44f92820": {
-    "A_M23TZ1SL_P2_Q4": ["b"],
+    "A_M24TZ1SL_P2_Q6": ["c"],
   },
   "2242b24b-b800-4f2c-bb5a-16bd04201870": {
     "M16TZ1HL_P1_Q5": ["b"],
@@ -1895,6 +1911,7 @@ const practicePartTitles = {
   },
   "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": {
     "M10TZ2HL_P2_Q3": "Use z = (x − μ)/σ to find the standard deviation",
+    "M11TZ1HL_P2_Q12": "Find the mean and standard deviation from two percentiles",
   },
   "4fa5e51a-f4dd-477e-b393-54f1be7266ec": {
     "M10TZ2HL_P1_Q1": "Normalise a continuous probability density",
@@ -1902,10 +1919,14 @@ const practicePartTitles = {
   },
   "2f5766d2-e280-4aff-ac80-36b91b5218b7": {
     "A_M25TZ3HL_P2_Q3": "Complete a discrete distribution and identify its mode",
-    "V_N25TZ3AISL_P1_Q1": "Find the mode and median of discrete data",
+    "M08TZ1SL_P2_Q1": "Find the median from a discrete frequency table",
+  },
+  "76e8e8b2-11d1-4c5f-919c-8d18c85df672": {
+    "A_N24TZ0HL_P2_Q6": "Find the mean of a two-piece continuous distribution",
   },
   "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": {
     "M17TZ2HL_P2_Q10": "Find the mean and variance of a continuous random variable",
+    "M15TZ1HL_P2_Q11": "Find the variance of a two-piece continuous distribution",
   },
   "23301c56-b9aa-4101-ade8-1e2c41b65e54": {
     "A_N25TZ3HL_P1_Q7": "Find the variance of a linear transformation",
@@ -1959,7 +1980,7 @@ const practicePartTitles = {
     "W_M23TZ1AIHL_P2_Q1": "Interpret a model gradient, then find a regression line and correlation",
   },
   "7cc0076e-c776-4fe4-8a63-43da44f92820": {
-    "A_M23TZ1SL_P2_Q4": "Find the regression line of x on y",
+    "A_M24TZ1SL_P2_Q6": "Use the regression line of x on y",
   },
   "2242b24b-b800-4f2c-bb5a-16bd04201870": {
     "M16TZ1HL_P1_Q5": "Use cos(60° − 45°) to find cos 15° exactly",
@@ -2309,6 +2330,7 @@ const practiceBodyOverrides = {
   // once the constants established in part (a) are stated in the stem.
   "a2a7b4c3-adc2-4ae1-9263-e50c671da0dd": {
     "M17TZ2HL_P2_Q10": "A continuous random variable \\(X\\) has probability density function \\(f\\) given by \\[f(x)=\\begin{cases}\\dfrac{x^2}{32}+\\dfrac{1}{12}, & 0\\le x\\le4,\\\\[5pt]0, & \\text{otherwise.}\\end{cases}\\]",
+    "M15TZ1HL_P2_Q11": "A continuous random variable \\(X\\) has probability density function \\[f(x)=\\begin{cases}\\dfrac{\\sin x}{4}, & 0\\le x\\le\\pi,\\\\[5pt]\\dfrac{x-\\pi}{\\pi^2}, & \\pi<x\\le2\\pi,\\\\[5pt]0, & \\text{otherwise.}\\end{cases}\\] Its mean is \\(\\mathrm{E}(X)=\\dfrac{13\\pi}{12}\\).",
   },
   "26a92a94-1132-4e90-9b26-63b98ffffc26": {
     "A_M25TZ3HL_P2_Q3": "",
@@ -3082,6 +3104,19 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["M10TZ1HL_P2_Q11", "M12TZ2HL_P2_Q11"].includes(question.id)) return true;
   if (/^angle between two planes$/.test(lessonTitle)
     && ["M10TZ1HL_P1_Q3", "N14TZ0HL_P2_Q1"].includes(question.id)) return true;
+  // AA Topic 4 final review uses these exact displayed parts. Each extract is
+  // cropped to the requested statistical skill even when the broader source
+  // title describes a longer, mixed-skill question.
+  if (/^regression line of x on y$/.test(lessonTitle)
+    && question.id === "A_M24TZ1SL_P2_Q6") return true;
+  if (/normal distribution.*finding mean and std dev/.test(lessonTitle)
+    && question.id === "M11TZ1HL_P2_Q12") return true;
+  if (/mean of a continuous random variable/.test(lessonTitle)
+    && question.id === "A_N24TZ0HL_P2_Q6") return true;
+  if (/median and mode of a discrete random variable/.test(lessonTitle)
+    && question.id === "M08TZ1SL_P2_Q1") return true;
+  if (/variance of a continuous random variable/.test(lessonTitle)
+    && question.id === "M15TZ1HL_P2_Q11") return true;
   // Final AA trigonometry review. These are exact displayed extracts: the
   // first replacement solves a quadratic trigonometric equation directly,
   // while the second uses arctan and arcsin without any differentiation.

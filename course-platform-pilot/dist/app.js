@@ -484,7 +484,11 @@ function renderLessonPractice(lesson) {
   url.searchParams.set("renderer", "20261020-1");
   url.searchParams.set("embedded", "1");
   url.searchParams.set("practice", "1");
-  url.searchParams.set("course", practice.course);
+  // Shared SL-and-HL lessons reuse the same question IDs, but each bank
+  // carries course-specific difficulty grades. Always render IB practice in
+  // the course currently being reviewed so an SL question can correctly move
+  // from red in SL to orange in HL.
+  url.searchParams.set("course", bankFile === "ib-bank.html" ? currentCourse.code : practice.course);
   url.searchParams.set("displayCourse", currentCourse.code);
   url.searchParams.set("ids", practice.questionIds.join(","));
   if (practice.questionParts) {
