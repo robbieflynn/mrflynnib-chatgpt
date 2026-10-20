@@ -1395,19 +1395,19 @@ window.MR_FLYNN_LIBRARY = {
         "scope": "HL extension"
       },
       {
-        "id": "9507603b-0920-44ad-9e26-43451e801166",
+        "id": "d5c720d9-4540-4c45-b822-a0c84764b619",
         "code": "1.15.5",
-        "title": "Proof by contradiction (intro)",
-        "seconds": 628,
+        "title": "Proof by induction (De Moivre)",
+        "seconds": 719,
         "status": 4,
         "topic": 1,
         "scope": "HL extension"
       },
       {
-        "id": "d5c720d9-4540-4c45-b822-a0c84764b619",
+        "id": "9507603b-0920-44ad-9e26-43451e801166",
         "code": "1.15.6",
-        "title": "Proof by induction (De Moivre)",
-        "seconds": 719,
+        "title": "Proof by contradiction (intro)",
+        "seconds": 628,
         "status": 4,
         "topic": 1,
         "scope": "HL extension"
@@ -6399,17 +6399,17 @@ window.MR_FLYNN_LIBRARY = {
         "status": 4
       },
       {
-        "id": "9507603b-0920-44ad-9e26-43451e801166",
+        "id": "d5c720d9-4540-4c45-b822-a0c84764b619",
         "code": "1.15.5",
-        "title": "Proof by contradiction (intro)",
-        "seconds": 628,
+        "title": "Proof by induction (De Moivre)",
+        "seconds": 719,
         "status": 4
       },
       {
-        "id": "d5c720d9-4540-4c45-b822-a0c84764b619",
+        "id": "9507603b-0920-44ad-9e26-43451e801166",
         "code": "1.15.6",
-        "title": "Proof by induction (De Moivre)",
-        "seconds": 719,
+        "title": "Proof by contradiction (intro)",
+        "seconds": 628,
         "status": 4
       },
       {

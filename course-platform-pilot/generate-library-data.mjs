@@ -19,7 +19,8 @@ const suppressedExpectedLessons = new Set([
 // source titles unchanged in the audit evidence, but present the corrected
 // curriculum sequence in the course interface.
 const presentationOverrides = new Map([
-  ["d5c720d9-4540-4c45-b822-a0c84764b619", { code: "1.15.6" }],
+  ["d5c720d9-4540-4c45-b822-a0c84764b619", { code: "1.15.5" }],
+  ["9507603b-0920-44ad-9e26-43451e801166", { code: "1.15.6" }],
   ["c4db88f7-5d17-4e3e-acf2-8b714152fe0f", { title: "Graphs of y = [f(x)]²" }],
   ["54b5b92d-2f8a-4bbf-bf64-a9db0aa7622f", { title: "Eigenvalues and eigenvectors" }],
   ["ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae", { title: "Arcs and sectors with radians" }],

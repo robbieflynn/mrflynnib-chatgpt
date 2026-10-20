@@ -133,22 +133,27 @@ const verifiedOverrides = {
   "949eaf81-334d-4578-a811-551fc53c7e3d": ["4MA1_2020N_2HR_Q1", "4MA1_2019M_2HR_Q6", "4MA1_2023M_1HR_Q12"],
   "aa04feb7-a185-4620-88e0-500455ab7d9e": ["4MA1_2023M_1HR_Q13", "4MA1_2019M_2H_Q23"],
   "e533a89a-2e12-47b6-a54c-534a461dcb04": ["N09TZ0HL_P1_Q11X1", "M10TZ2HL_P2_Q1"],
-  "6c582652-bd66-470e-9511-48be5574a322": ["M12TZ2SL_P2_Q3", "N18TZ0HL_P2_Q1"],
+  // Both cards visibly use finite sigma notation. Keep sum-to-infinity work
+  // in the later 1.8.1 lesson.
+  "73d396dd-da8e-46da-8548-2ae1cf533440": ["M14TZ2HL_P2_Q1", "W_M24TZ2AIHL_P2_Q6"],
+  // Finite geometric-sequence/series work only; neither card uses S_infinity.
+  "6c582652-bd66-470e-9511-48be5574a322": ["N08TZ0HL_P2_Q2", "N13TZ0HL_P1_Q7"],
   "e6cca689-8f8c-4d4d-8566-7dff6e20a096": ["A_M22TZ1SL_P2_Q1", "A_SPECSL_P2_Q3"],
   "b3abcb64-544d-4926-bdc3-3861a2725078": ["A_M23TZ1SL_P2_Q2", "A_M24TZ1SL_P2_Q2"],
-  "7096456c-bd06-4c4f-9ac3-f2314a2fa334": ["M10TZ1HL_P1_Q4", "M14TZ2HL_P1_Q2"],
+  "7096456c-bd06-4c4f-9ac3-f2314a2fa334": ["M10TZ1HL_P1_Q4", "A_N21TZ0SL_P2_Q2"],
   "9f18b254-9055-436f-bbc8-4761ca34d5b7": ["M13TZ2SL_P1_Q3", "N08TZ0HL_P1_Q2"],
-  // Pure exponent and index manipulation only. The former automatic choices
-  // were a differentiation question and a logarithms question, neither of
-  // which belongs in this shared AA SL/HL lesson.
-  "4e377a7a-be35-4b76-bcbc-3684974dfaf9": ["A_EXPQ_P1_Q1", "A_EXPQ_P1_Q2"],
+  // Pure fractional-index and exponent work only. These are verified bank
+  // questions, replacing two stale supplementary IDs that rendered no cards.
+  "4e377a7a-be35-4b76-bcbc-3684974dfaf9": ["A_M22TZ1SL_P1_Q2", "A_N21TZ0SL_P1_Q8"],
   "111f8aa4-20e2-41a1-8665-a1252556f0a0": ["A_M21TZ2HL_P1_Q1", "A_N24TZ0HL_P1_Q3"],
-  "cf573eb5-7cdc-4534-a90b-faa307f6e5ff": ["M16TZ2SL_P1_Q3", "N14TZ0SL_P1_Q4"],
+  // Keep Rob's approved first card and replace the change-of-base-style
+  // second card with a direct application of the logarithm laws.
+  "cf573eb5-7cdc-4534-a90b-faa307f6e5ff": ["M16TZ2SL_P1_Q3", "M17TZ1HL_P1_Q1"],
   // Keep the shared AA lesson distinct from AI HL 1.9.2 so no question is
   // repeated across two different lesson videos. Both questions must remain
   // pure logarithm/change-of-base work: the rejected specimen question turned
   // its second part into a trigonometric equation.
-  "64faaf0b-493f-4916-bbde-7ef666e2e7b4": ["A_N25TZ3HL_P1_Q4", "A_N21TZ0HL_P1_Q3"],
+  "64faaf0b-493f-4916-bbde-7ef666e2e7b4": ["A_N21TZ0HL_P1_Q3", "A_N25TZ3HL_P1_Q4"],
   "b492d0cc-b491-46aa-ba1e-48cf199ff207": ["M08TZ2HL_P1_Q12X1", "M12TZ1HL_P1_Q1"],
   // Full-expansion practice only. The neighbouring 1.9.2 lesson already
   // covers finding a particular term or coefficient.
@@ -157,12 +162,16 @@ const verifiedOverrides = {
   // negative fractional exponent. Positive-integer term questions belong in
   // the preceding binomial lessons.
   "044da60a-f4cd-46c6-a71f-95b0087e3bb5": ["A_BINQ_P1_Q1", "A_BINQ_P1_Q2"],
-  // Display only the direct decomposition parts of these source questions.
-  // Their later integration work belongs in the calculus course section.
-  "636981ff-833c-4f52-8c70-23ab18592831": ["A2_M24TZ1HL_P1_Q11", "A_M21TZ1HL_P2_Q12"],
+  // Display only the direct decomposition parts. No integration or
+  // differential-equation prompt is exposed in this lesson.
+  "636981ff-833c-4f52-8c70-23ab18592831": ["A2_M24TZ1HL_P1_Q11", "M15TZ1HL_P1_Q6"],
   // Keep this lesson on Cartesian arithmetic and equating real/imaginary
   // parts. Modulus-argument form and Argand geometry are taught later.
-  "3aef226f-98dc-4ddd-8ad2-8d1bb8402444": ["M09TZ1HL_P1_Q1", "M11TZ1HL_P1_Q2"],
+  "3aef226f-98dc-4ddd-8ad2-8d1bb8402444": ["M11TZ1HL_P1_Q2", "M12TZ2HL_P1_Q6"],
+  // Rob approved the existing second card as the sole introductory example.
+  "b3fee6ec-1511-47bf-9c1b-222d719357f4": ["M17TZ2HL_P1_Q5"],
+  // Same approved Euler-form pair, reordered from accessible to harder.
+  "bdd9d434-97b2-498c-9c44-0cf0da40134b": ["W_N23TZ0AIHL_P1_Q8", "A_M25TZ3HL_P1_Q8"],
   // Geometric meaning of complex multiplication: first multiplication by i,
   // then interpreting a power as a rotation on the Argand diagram.
   "6deba641-23f1-40d0-ae72-a3a41880b1a6": ["W_N24TZ0AIHL_P1_Q9", "A_M23TZ1HL_P2_Q6"],
@@ -171,15 +180,15 @@ const verifiedOverrides = {
   "c3a6691b-3913-41ee-a041-c85daac52f12": ["M12TZ2HL_P1_Q12", "N20TZ0HL_P1_Q4"],
   // Direct complex-root equations only. Polynomial roots and roots of unity
   // are taught in the neighbouring lessons.
-  "921a99b5-a673-423c-aeed-402fec0952e0": ["N08TZ0HL_P1_Q13", "N11TZ0HL_P1_Q2"],
+  "921a99b5-a673-423c-aeed-402fec0952e0": ["N08TZ0HL_P1_Q13", "N15TZ0HL_P1_Q11"],
   // Roots of unity only: listing the seventh roots of z^7 = 1, followed by
   // the standard omega^3 = 1 and 1 + omega + omega^2 = 0 identities.
   "bbe01c0e-9af6-47fc-845c-f2259ff05024": ["M16TZ2HL_P1_Q12", "M10TZ2HL_P1_Q13"],
   // Keep the four mathematical-induction lessons in separate skill lanes.
   // Series identities must not borrow inequality, divisibility or derivative
   // proofs, and the same separation applies in the other three directions.
-  "bed60b96-c57b-4275-a68a-a2ebce000861": ["N18TZ0HL_P1_Q6", "M19TZ2HL_P2_Q7"],
-  "d64c1739-a831-456a-89de-118b14b8a694": ["N11TZ0HL_P1_Q6", "N19TZ0HL_P1_Q6"],
+  "bed60b96-c57b-4275-a68a-a2ebce000861": ["N18TZ0HL_P1_Q6", "M18TZ1HL_P1_Q6"],
+  "d64c1739-a831-456a-89de-118b14b8a694": ["N11TZ0HL_P1_Q6", "N15TZ0HL_P1_Q8"],
   "dd4b59f8-91ac-4b8e-ba57-9d8abc2c3e8d": ["M14TZ1HL_P2_Q7", "A_N23TZ2HL_P1_Q6"],
   // Start with the familiar 2^(n+1) > n^2 proof (including its short setup),
   // then retain the more sophisticated logarithmic induction proof second.
@@ -188,10 +197,15 @@ const verifiedOverrides = {
   // induction. Publish that part alone rather than padding the lesson with
   // ordinary De Moivre calculations.
   "d5c720d9-4540-4c45-b822-a0c84764b619": ["M14TZ2HL_P2_Q13"],
-  // Rob wants the simplest available factorial arrangement here. One clear
-  // books-on-a-shelf question is preferable to padding the lesson with a
-  // second question involving several restrictions.
-  "8c904f89-d4d6-4859-8403-9b64187f211b": ["M10TZ1HL_P2_Q7"],
+  // Begin with the approved books-on-a-shelf arrangement, then add a second
+  // factorial arrangement while excluding its later combinations part.
+  "8c904f89-d4d6-4859-8403-9b64187f211b": ["M10TZ1HL_P2_Q7", "M12TZ2HL_P2_Q4"],
+  // Introductory product/counting rule: appoint three named roles, then fill
+  // the remaining team places.
+  "1f072e71-5da3-475f-9b54-e809a68a893d": ["A_N22TZ0HL_P1_Q11"],
+  // Ordinary applications of De Moivre's theorem; the proof by induction is
+  // retained separately at 1.15.5.
+  "06ed664b-cac7-4315-a715-6232e8170d41": ["M11TZ1HL_P1_Q13", "M15TZ1HL_P2_Q12"],
   "127d3689-f30e-47ea-bbe3-98c8dccf4967": ["M08TZ2SL_P2_Q2", "M10TZ2SL_P2_Q4"],
   "24e9be00-6958-4b90-a7a3-5ba5ad8c16f9": ["A_M21TZ1SL_P1_Q3", "M16TZ1HL_P1_Q1"],
   // These larger function questions both begin with a simple evaluation task.
@@ -208,7 +222,7 @@ const verifiedOverrides = {
   // Keep the first systems lesson as straightforward calculator solving. The
   // second then develops the distinct parameter/non-unique-solution skill.
   // No source question is shared between the two lessons.
-  "8a506d7d-a1aa-4133-87cd-1f6099c2a544": ["N15TZ0HL_P2_Q2", "N17TZ0HL_P2_Q1"],
+  "8a506d7d-a1aa-4133-87cd-1f6099c2a544": ["N15TZ0HL_P2_Q2", "N18TZ0HL_P1_Q4"],
   "b8e1f841-d49c-4325-8d04-a78b335eb89b": ["M13TZ1HL_P2_Q2", "M14TZ1HL_P2_Q4"],
   // Cubic factorisation through the factor theorem and polynomial division.
   // Show only the polynomial parts of the longer first source.
@@ -778,7 +792,7 @@ const intentionallyWithoutPractice = new Set([
 // reappear in the unresolved-gap audit merely because the general house style
 // uses two questions elsewhere.
 const intentionallySinglePractice = new Set([
-  "8c904f89-d4d6-4859-8403-9b64187f211b", // AA HL: Factorials and arrangements
+  "b3fee6ec-1511-47bf-9c1b-222d719357f4", // AA HL: Complex numbers introduction
   "d5c720d9-4540-4c45-b822-a0c84764b619", // AA HL: Prove De Moivre by induction
   "35a8aee0-4d48-4084-883f-fc23b5be9039", // AA HL: Vector equation of a plane
   "40c21470-dbef-42f5-acfb-ba9658d8f02e", // AA HL: Angle between a line and a plane
@@ -1205,10 +1219,6 @@ const practicePartOverrides = {
   "c5f358f0-e49c-4fc1-a20a-296f64992376": {
     "N08TZ0SL_P1_Q7": ["a"],
   },
-  "636981ff-833c-4f52-8c70-23ab18592831": {
-    "A2_M24TZ1HL_P1_Q11": ["a"],
-    "A_M21TZ1HL_P2_Q12": ["a"],
-  },
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
     "A_M24TZ1HL_P1_Q11": ["a", "b"],
   },
@@ -1244,6 +1254,34 @@ const practicePartOverrides = {
   "990b6aba-3d06-489d-81e6-70a683d4f23a": {
     "A_N22TZ0HL_P1_Q10": ["c"],
   },
+  "73d396dd-da8e-46da-8548-2ae1cf533440": {
+    "M14TZ2HL_P2_Q1": ["a"],
+    "W_M24TZ2AIHL_P2_Q6": ["a"],
+  },
+  "7096456c-bd06-4c4f-9ac3-f2314a2fa334": {
+    "A_N21TZ0SL_P2_Q2": ["a"],
+  },
+  "4e377a7a-be35-4b76-bcbc-3684974dfaf9": {
+    "A_M22TZ1SL_P1_Q2": ["a"],
+    "A_N21TZ0SL_P1_Q8": ["a"],
+  },
+  "8c904f89-d4d6-4859-8403-9b64187f211b": {
+    "M12TZ2HL_P2_Q4": ["a"],
+  },
+  "1f072e71-5da3-475f-9b54-e809a68a893d": {
+    "A_N22TZ0HL_P1_Q11": ["a"],
+  },
+  "636981ff-833c-4f52-8c70-23ab18592831": {
+    "A2_M24TZ1HL_P1_Q11": ["a"],
+    "M15TZ1HL_P1_Q6": ["b"],
+  },
+  "3aef226f-98dc-4ddd-8ad2-8d1bb8402444": {
+    "M12TZ2HL_P1_Q6": ["a"],
+  },
+  "06ed664b-cac7-4315-a715-6232e8170d41": {
+    "M11TZ1HL_P1_Q13": ["a", "b", "c"],
+    "M15TZ1HL_P2_Q12": ["a"],
+  },
   "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": {
     "N18TZ0HL_P2_Q8": ["a"],
   },
@@ -1255,6 +1293,7 @@ const practicePartOverrides = {
   },
   "921a99b5-a673-423c-aeed-402fec0952e0": {
     "N08TZ0HL_P1_Q13": ["a"],
+    "N15TZ0HL_P1_Q11": ["a"],
   },
   "bbe01c0e-9af6-47fc-845c-f2259ff05024": {
     "M16TZ2HL_P1_Q12": ["c"],
@@ -1791,10 +1830,6 @@ const practicePartTitles = {
   "c5f358f0-e49c-4fc1-a20a-296f64992376": {
     "N08TZ0SL_P1_Q7": "Simplify a trigonometric expression to sin x",
   },
-  "636981ff-833c-4f52-8c70-23ab18592831": {
-    "A2_M24TZ1HL_P1_Q11": "Partial fractions decomposition",
-    "A_M21TZ1HL_P2_Q12": "Partial fractions decomposition",
-  },
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
     "A_M24TZ1HL_P1_Q11": "Verify a root, divide and factorise a cubic",
   },
@@ -1843,9 +1878,6 @@ const practicePartTitles = {
   },
   "c3a6691b-3913-41ee-a041-c85daac52f12": {
     "M12TZ2HL_P1_Q12": "A property of complex conjugates",
-  },
-  "921a99b5-a673-423c-aeed-402fec0952e0": {
-    "N08TZ0HL_P1_Q13": "Solve z⁴ = 1 − i",
   },
   "bbe01c0e-9af6-47fc-845c-f2259ff05024": {
     "M16TZ2HL_P1_Q12": "The seven roots of z⁷ = 1",
@@ -2008,6 +2040,38 @@ const practicePartTitles = {
   "0512477b-d893-4805-9d2e-2f597b8c8673": {
     "M14TZ1AISL_P1_Q15": "Find a local minimum",
     "N13TZ0AISL_P1_Q9": "Find the local minimum of a polynomial",
+  },
+  "73d396dd-da8e-46da-8548-2ae1cf533440": {
+    "M14TZ2HL_P2_Q1": "Write a finite arithmetic sum using sigma notation",
+    "W_M24TZ2AIHL_P2_Q6": "Evaluate a triangle number written in sigma notation",
+  },
+  "7096456c-bd06-4c4f-9ac3-f2314a2fa334": {
+    "A_N21TZ0SL_P2_Q2": "Solve an exponential equation",
+  },
+  "4e377a7a-be35-4b76-bcbc-3684974dfaf9": {
+    "A_M22TZ1SL_P1_Q2": "Rewrite a cube-root quotient using a fractional index",
+    "A_N21TZ0SL_P1_Q8": "Find an exponential base from a fractional index",
+  },
+  "8c904f89-d4d6-4859-8403-9b64187f211b": {
+    "M12TZ2HL_P2_Q4": "Arrange boys and girls in two groups",
+  },
+  "1f072e71-5da3-475f-9b54-e809a68a893d": {
+    "A_N22TZ0HL_P1_Q11": "Count possible three-digit settings using the product rule",
+  },
+  "636981ff-833c-4f52-8c70-23ab18592831": {
+    "A2_M24TZ1HL_P1_Q11": "Decompose a rational expression into partial fractions",
+    "M15TZ1HL_P1_Q6": "Find the constants in a partial-fractions decomposition",
+  },
+  "3aef226f-98dc-4ddd-8ad2-8d1bb8402444": {
+    "M12TZ2HL_P1_Q6": "Equate real and imaginary parts",
+  },
+  "06ed664b-cac7-4315-a715-6232e8170d41": {
+    "M11TZ1HL_P1_Q13": "Use De Moivre's theorem to derive multiple-angle identities",
+    "M15TZ1HL_P2_Q12": "Apply De Moivre's theorem to a fifth power",
+  },
+  "921a99b5-a673-423c-aeed-402fec0952e0": {
+    "N08TZ0HL_P1_Q13": "Solve z⁴ = 1 − i",
+    "N15TZ0HL_P1_Q11": "Solve z³ = 8i in polar and Cartesian form",
   },
 };
 
@@ -2841,12 +2905,26 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["W_M24TZ1AIHL_P1_Q3", "M19TZ2SL_P1_Q8A"].includes(question.id)) return true;
   // The displayed part is the finite summation calculation and its
   // interpretation. It contains no sum-to-infinity work.
-  if (/^sigma notation$/.test(lessonTitle) && question.id === "V_M22TZ2AISL_P2_Q2") return true;
+  if (/^sigma notation$/.test(lessonTitle)
+    && ["V_M22TZ2AISL_P2_Q2", "M14TZ2HL_P2_Q1", "W_M24TZ2AIHL_P2_Q6"].includes(question.id)) return true;
   // Only parts (a) and (b) of this source are displayed here. They are an
   // accessible calculator evaluation of an exponential expression; the later
   // modelling equation is deliberately excluded.
   if (/laws of exponents/.test(lessonTitle)
-    && ["M13TZ2AISL_P1_Q13", "M10TZ1HL_P1_Q4"].includes(question.id)) return true;
+    && ["M13TZ2AISL_P1_Q13", "M10TZ1HL_P1_Q4", "A_N21TZ0SL_P2_Q2"].includes(question.id)) return true;
+  // AA HL Topic 1 final review: these are exact displayed extracts selected
+  // for the named lesson. Broader source metadata must not move them into an
+  // adjacent logarithm, calculus or complex-number lesson.
+  if (/^more exponents$/.test(lessonTitle)
+    && ["A_M22TZ1SL_P1_Q2", "A_N21TZ0SL_P1_Q8"].includes(question.id)) return true;
+  if (/^laws of logarithms$/.test(lessonTitle)
+    && ["M16TZ2SL_P1_Q3", "M17TZ1HL_P1_Q1"].includes(question.id)) return true;
+  if (/^partial fractions$/.test(lessonTitle)
+    && ["A2_M24TZ1HL_P1_Q11", "M15TZ1HL_P1_Q6"].includes(question.id)) return true;
+  if (/^operations with complex numbers$/.test(lessonTitle)
+    && ["M11TZ1HL_P1_Q2", "M12TZ2HL_P1_Q6"].includes(question.id)) return true;
+  if (/counting principles introduction/.test(lessonTitle)
+    && question.id === "A_N22TZ0HL_P1_Q11") return true;
   // These sources were reviewed at part level for the opening calculus
   // lessons. Their complete source titles mention later follow-up work, while
   // the displayed parts are deliberately limited to the introductory skill.

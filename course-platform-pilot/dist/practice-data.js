@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-18T12:14:59.171Z",
+  "generatedAt": "2026-10-20T04:53:09.969Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 478,
-  "completeLessonCount": 433,
+  "lessonCount": 480,
+  "completeLessonCount": 434,
   "approvedSingleLessonCount": 38,
-  "questionCount": 919,
+  "questionCount": 922,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -33,9 +33,21 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Arithmetic sequences",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M10TZ1SL_P2_Q2",
-        "M14TZ2HL_P2_Q1"
-      ]
+        "M14TZ2HL_P2_Q1",
+        "W_M24TZ2AIHL_P2_Q6"
+      ],
+      "questionParts": {
+        "M14TZ2HL_P2_Q1": [
+          "a"
+        ],
+        "W_M24TZ2AIHL_P2_Q6": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M14TZ2HL_P2_Q1": "Write a finite arithmetic sum using sigma notation",
+        "W_M24TZ2AIHL_P2_Q6": "Evaluate a triangle number written in sigma notation"
+      }
     },
     "6c582652-bd66-470e-9511-48be5574a322": {
       "lesson": "1.3 Geometric sequences and series",
@@ -43,8 +55,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Geometric sequences",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M12TZ2SL_P2_Q3",
-        "N18TZ0HL_P2_Q1"
+        "N08TZ0HL_P2_Q2",
+        "N13TZ0HL_P1_Q7"
       ]
     },
     "e6cca689-8f8c-4d4d-8566-7dff6e20a096": {
@@ -84,8 +96,16 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M10TZ1HL_P1_Q4",
-        "M14TZ2HL_P1_Q2"
-      ]
+        "A_N21TZ0SL_P2_Q2"
+      ],
+      "questionParts": {
+        "A_N21TZ0SL_P2_Q2": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "A_N21TZ0SL_P2_Q2": "Solve an exponential equation"
+      }
     },
     "9f18b254-9055-436f-bbc8-4761ca34d5b7": {
       "lesson": "1.5.2 Introduction to logs",
@@ -113,9 +133,21 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Exponents and logarithms",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_EXPQ_P1_Q1",
-        "A_EXPQ_P1_Q2"
-      ]
+        "A_M22TZ1SL_P1_Q2",
+        "A_N21TZ0SL_P1_Q8"
+      ],
+      "questionParts": {
+        "A_M22TZ1SL_P1_Q2": [
+          "a"
+        ],
+        "A_N21TZ0SL_P1_Q8": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "A_M22TZ1SL_P1_Q2": "Rewrite a cube-root quotient using a fractional index",
+        "A_N21TZ0SL_P1_Q8": "Find an exponential base from a fractional index"
+      }
     },
     "cf573eb5-7cdc-4534-a90b-faa307f6e5ff": {
       "lesson": "1.7.2 Laws of logarithms",
@@ -123,8 +155,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Exponents and logarithms",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M17TZ1HL_P1_Q1",
-        "A_M24TZ1SL_P1_Q3"
+        "M16TZ2SL_P1_Q3",
+        "M17TZ1HL_P1_Q1"
       ]
     },
     "64faaf0b-493f-4916-bbde-7ef666e2e7b4": {
@@ -133,8 +165,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Exponents and logarithms",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_N25TZ3HL_P1_Q4",
-        "A_N21TZ0HL_P1_Q3"
+        "A_N21TZ0HL_P1_Q3",
+        "A_N25TZ3HL_P1_Q4"
       ]
     },
     "b492d0cc-b491-46aa-ba1e-48cf199ff207": {
@@ -368,8 +400,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Exponential and logarithmic functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_N21TZ0SL_P2_Q2",
-        "W_N24TZ0AIHL_P1_Q2"
+        "W_N24TZ0AIHL_P1_Q2",
+        "W_M21TZ1AIHL_P1_Q4"
       ]
     },
     "0ab637d2-648c-4ff8-a5da-b78b5971d4e1": {
@@ -1078,8 +1110,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M22TZ1SL_P1_Q2",
-        "M13TZ2HL_P1_Q1"
+        "M13TZ2HL_P1_Q1",
+        "M15TZ1HL_P1_Q3S"
       ],
       "questionParts": {
         "A_M22TZ1SL_P1_Q2": [
@@ -1343,14 +1375,40 @@ window.MR_FLYNN_PRACTICE = {
         "M14TZ2HL_P2_Q3"
       ]
     },
+    "1f072e71-5da3-475f-9b54-e809a68a893d": {
+      "lesson": "1.10.1 Counting principles introduction (product and addition principles)",
+      "course": "AA HL",
+      "subtopic": "Counting principles",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "A_N22TZ0HL_P1_Q11"
+      ],
+      "questionParts": {
+        "A_N22TZ0HL_P1_Q11": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "A_N22TZ0HL_P1_Q11": "Count possible three-digit settings using the product rule"
+      }
+    },
     "8c904f89-d4d6-4859-8403-9b64187f211b": {
       "lesson": "1.10.2 Factorials and arrangements",
       "course": "AA HL",
       "subtopic": "Counting principles",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M10TZ1HL_P2_Q7"
-      ]
+        "M10TZ1HL_P2_Q7",
+        "M12TZ2HL_P2_Q4"
+      ],
+      "questionParts": {
+        "M12TZ2HL_P2_Q4": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M12TZ2HL_P2_Q4": "Arrange boys and girls in two groups"
+      }
     },
     "26586a7a-192a-4dfd-8a06-6d5faed63e15": {
       "lesson": "1.10.4 Combinations and permutations",
@@ -1389,19 +1447,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A2_M24TZ1HL_P1_Q11",
-        "A_M21TZ1HL_P2_Q12"
+        "M15TZ1HL_P1_Q6"
       ],
       "questionParts": {
         "A2_M24TZ1HL_P1_Q11": [
           "a"
         ],
-        "A_M21TZ1HL_P2_Q12": [
-          "a"
+        "M15TZ1HL_P1_Q6": [
+          "b"
         ]
       },
       "questionPartTitles": {
-        "A2_M24TZ1HL_P1_Q11": "Partial fractions decomposition",
-        "A_M21TZ1HL_P2_Q12": "Partial fractions decomposition"
+        "A2_M24TZ1HL_P1_Q11": "Decompose a rational expression into partial fractions",
+        "M15TZ1HL_P1_Q6": "Find the constants in a partial-fractions decomposition"
       }
     },
     "b3fee6ec-1511-47bf-9c1b-222d719357f4": {
@@ -1410,7 +1468,6 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Complex numbers",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M14TZ1HL_P2_Q1",
         "M17TZ2HL_P1_Q5"
       ]
     },
@@ -1420,9 +1477,17 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Complex numbers",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M09TZ1HL_P1_Q1",
-        "M11TZ1HL_P1_Q2"
-      ]
+        "M11TZ1HL_P1_Q2",
+        "M12TZ2HL_P1_Q6"
+      ],
+      "questionParts": {
+        "M12TZ2HL_P1_Q6": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M12TZ2HL_P1_Q6": "Equate real and imaginary parts"
+      }
     },
     "b8656f5f-2c31-4f52-987c-d802dad6c70f": {
       "lesson": "1.13.1 Modulus-argument form",
@@ -1440,8 +1505,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Complex numbers",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M25TZ3HL_P1_Q8",
-        "W_N23TZ0AIHL_P1_Q8"
+        "W_N23TZ0AIHL_P1_Q8",
+        "A_M25TZ3HL_P1_Q8"
       ]
     },
     "6deba641-23f1-40d0-ae72-a3a41880b1a6": {
@@ -1487,9 +1552,33 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Complex numbers",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M09TZ1HL_P2_Q2",
+        "M14TZ1HL_P2_Q1",
         "N10TZ0HL_P2_Q6"
       ]
+    },
+    "06ed664b-cac7-4315-a715-6232e8170d41": {
+      "lesson": "1.14.2 De Moivre's Theorem",
+      "course": "AA HL",
+      "subtopic": "Complex numbers",
+      "bankPath": "ib-bank.html",
+      "questionIds": [
+        "M11TZ1HL_P1_Q13",
+        "M15TZ1HL_P2_Q12"
+      ],
+      "questionParts": {
+        "M11TZ1HL_P1_Q13": [
+          "a",
+          "b",
+          "c"
+        ],
+        "M15TZ1HL_P2_Q12": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M11TZ1HL_P1_Q13": "Use De Moivre's theorem to derive multiple-angle identities",
+        "M15TZ1HL_P2_Q12": "Apply De Moivre's theorem to a fifth power"
+      }
     },
     "921a99b5-a673-423c-aeed-402fec0952e0": {
       "lesson": "1.14.3 Roots of complex numbers",
@@ -1498,15 +1587,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N08TZ0HL_P1_Q13",
-        "N11TZ0HL_P1_Q2"
+        "N15TZ0HL_P1_Q11"
       ],
       "questionParts": {
         "N08TZ0HL_P1_Q13": [
           "a"
+        ],
+        "N15TZ0HL_P1_Q11": [
+          "a"
         ]
       },
       "questionPartTitles": {
-        "N08TZ0HL_P1_Q13": "Solve z⁴ = 1 − i"
+        "N08TZ0HL_P1_Q13": "Solve z⁴ = 1 − i",
+        "N15TZ0HL_P1_Q11": "Solve z³ = 8i in polar and Cartesian form"
       }
     },
     "bbe01c0e-9af6-47fc-845c-f2259ff05024": {
@@ -1538,7 +1631,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N18TZ0HL_P1_Q6",
-        "M19TZ2HL_P2_Q7"
+        "M18TZ1HL_P1_Q6"
       ]
     },
     "d64c1739-a831-456a-89de-118b14b8a694": {
@@ -1548,7 +1641,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N11TZ0HL_P1_Q6",
-        "N19TZ0HL_P1_Q6"
+        "N15TZ0HL_P1_Q8"
       ]
     },
     "dd4b59f8-91ac-4b8e-ba57-9d8abc2c3e8d": {
@@ -1572,7 +1665,7 @@ window.MR_FLYNN_PRACTICE = {
       ]
     },
     "9507603b-0920-44ad-9e26-43451e801166": {
-      "lesson": "1.15.5 Proof by contradiction (intro)",
+      "lesson": "1.15.6 Proof by contradiction (intro)",
       "course": "AA HL",
       "subtopic": "Proof by contradiction",
       "bankPath": "ib-bank.html",
@@ -1582,7 +1675,7 @@ window.MR_FLYNN_PRACTICE = {
       ]
     },
     "d5c720d9-4540-4c45-b822-a0c84764b619": {
-      "lesson": "1.15.6 Proof by induction (De Moivre)",
+      "lesson": "1.15.5 Proof by induction (De Moivre)",
       "course": "AA HL",
       "subtopic": "Proof by induction",
       "bankPath": "ib-bank.html",
@@ -1615,7 +1708,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N15TZ0HL_P2_Q2",
-        "N17TZ0HL_P2_Q1"
+        "N18TZ0HL_P1_Q4"
       ]
     },
     "b8e1f841-d49c-4325-8d04-a78b335eb89b": {
