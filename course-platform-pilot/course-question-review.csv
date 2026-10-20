@@ -252,3 +252,5 @@ AI HL,2026-10-20,1.14.6,Determinant and inverse of a matrix,approved-no-practice
 AI HL,2026-10-20,1.14.7,System of linear equations,approved-no-practice,,No clean standalone matrix-system source exists in the current bank; left blank as Rob allowed
 AI HL,2026-10-20,1.15.1,Eigenvalues and eigenvectors,awaiting-recheck,,Removed phase and transition follow-ups; now contains two direct eigenvalue and eigenvector tasks
 AI HL,2026-10-20,1.15.2,Powers of matrices,awaiting-recheck,,Moved the requested diagonalisation question here and retained the approved powers question
+AI HL,2026-10-20,2.1.1,Gradient of a line,approved,M17TZ2AISL_P1_Q4|M15TZ2AISL_P1_Q3,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.1.2,Equation of a straight line,approved,M11TZ2AISL_P1_Q5|M11TZ1AISL_P1_Q10,Locked from Rob's AI Topic 2 review
