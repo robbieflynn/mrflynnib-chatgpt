@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T13:26:10.845Z",
+  "generatedAt": "2026-10-20T14:43:24.974Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 481,
-  "completeLessonCount": 433,
+  "lessonCount": 477,
+  "completeLessonCount": 429,
   "approvedSingleLessonCount": 40,
-  "questionCount": 922,
+  "questionCount": 914,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -563,20 +563,20 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N16TZ0AISL_P2_Q3",
-        "V_N25TZ3AISL_P2_Q3"
+        "N14TZ0AISL_P1_Q2"
       ],
       "questionParts": {
         "N16TZ0AISL_P2_Q3": [
           "b",
           "c"
         ],
-        "V_N25TZ3AISL_P2_Q3": [
-          "b"
+        "N14TZ0AISL_P1_Q2": [
+          "a"
         ]
       },
       "questionPartTitles": {
         "N16TZ0AISL_P2_Q3": "Find the midpoint and then the distance AC",
-        "V_N25TZ3AISL_P2_Q3": "Distance between two points from east/north coordinates"
+        "N14TZ0AISL_P1_Q2": "Calculate the distance between two coordinate points"
       }
     },
     "55df295f-1796-4d4c-ae4e-81db5af14b86": {
@@ -606,29 +606,15 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M16TZ2HL_P2_Q1",
-        "A_N22TZ0HL_P1_Q3"
-      ]
-    },
-    "f304a68a-2b24-482f-b9c7-91a2a7c8eb64": {
-      "lesson": "3.2.2 Soh cah toa",
-      "course": "AA SL",
-      "subtopic": "Triangles",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "M14TZ2SL_P1_Q1",
-        "N19TZ0SL_P2_Q4"
+        "N13TZ0AISL_P1_Q5"
       ],
       "questionParts": {
-        "M14TZ2SL_P1_Q1": [
-          "a"
-        ],
-        "N19TZ0SL_P2_Q4": [
+        "N13TZ0AISL_P1_Q5": [
           "a"
         ]
       },
       "questionPartTitles": {
-        "M14TZ2SL_P1_Q1": "Use a right triangle to find cos A from sin A",
-        "N19TZ0SL_P2_Q4": "Find an angle in a 6–8–10 right triangle"
+        "N13TZ0AISL_P1_Q5": "Use Pythagoras' theorem to find a missing side"
       }
     },
     "40ed3424-3856-4e10-9202-06ee73c4d10e": {
@@ -638,8 +624,16 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M15TZ2SL_P2_Q1",
-        "A_M25TZ3HL_P2_Q1"
-      ]
+        "N17TZ0SL_P2_Q1"
+      ],
+      "questionParts": {
+        "N17TZ0SL_P2_Q1": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "N17TZ0SL_P2_Q1": "Use the sine rule to find a missing side"
+      }
     },
     "e6560ee5-07fb-4933-8b76-0526087ff441": {
       "lesson": "3.2.4 Cosine rule",
@@ -657,9 +651,17 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Triangles",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_N23TZ2HL_P1_Q4",
-        "A_M21TZ2SL_P1_Q6"
-      ]
+        "M15TZ2HL_P2_Q1",
+        "A_N23TZ2HL_P1_Q4"
+      ],
+      "questionParts": {
+        "M15TZ2HL_P2_Q1": [
+          "a"
+        ]
+      },
+      "questionPartTitles": {
+        "M15TZ2HL_P2_Q1": "Find an area using 1/2 ab sin C"
+      }
     },
     "f9a4c2c4-94f2-4e33-8df8-77da36b42839": {
       "lesson": "3.3.1 Bearings",
@@ -681,16 +683,6 @@ window.MR_FLYNN_PRACTICE = {
         "N17TZ0HL_P2_Q5"
       ]
     },
-    "0afbd775-a826-4a73-9c51-bd57c458c850": {
-      "lesson": "3.4.1 Radians",
-      "course": "AA SL",
-      "subtopic": "Arcs and sectors",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "N15TZ0HL_P1_Q1",
-        "M15TZ1SL_P1_Q2"
-      ]
-    },
     "588719f5-78e2-44da-9132-970cf1ce2ebe": {
       "lesson": "3.4.2 Arcs and sectors",
       "course": "AA SL",
@@ -708,28 +700,16 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M17TZ1SL_P1_Q3",
-        "A_N22TZ0SL_P1_Q4"
-      ]
-    },
-    "058018d6-9bc1-4e12-9dac-71d3f40251dc": {
-      "lesson": "3.5.2 Unit circle",
-      "course": "AA SL",
-      "subtopic": "Sinusoidal functions",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "A_M23TZ1SL_P1_Q6",
-        "M13TZ2HL_P2_Q1"
-      ]
-    },
-    "7844ace7-4914-49c1-a289-a3ec0f68d04e": {
-      "lesson": "3.5.3 The CAST diagram",
-      "course": "AA SL",
-      "subtopic": "Sinusoidal functions",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "A_N23TZ1SL_P1_Q1",
-        "M16TZ1HL_P1_Q3"
-      ]
+        "M15TZ2AISL_P1_Q2"
+      ],
+      "questionParts": {
+        "M15TZ2AISL_P1_Q2": [
+          "b"
+        ]
+      },
+      "questionPartTitles": {
+        "M15TZ2AISL_P1_Q2": "Use an exact 30° triangle to find a distance"
+      }
     },
     "82710e65-5b95-4aca-bf72-c37ff08f1380": {
       "lesson": "3.5.4 Graphs of sin, cos and tan",
@@ -3313,8 +3293,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Sine rule, cosine rule and area of a triangle",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N13TZ0AISL_P1_Q5",
-        "M11TZ1AISL_P1_Q7"
+        "M11TZ1AISL_P1_Q7",
+        "M16TZ2AISL_P1_Q3"
       ],
       "questionParts": {
         "N13TZ0AISL_P1_Q5": [

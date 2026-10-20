@@ -241,13 +241,32 @@ const verifiedOverrides = {
   // Cubic factorisation through the factor theorem and polynomial division.
   // Show only the polynomial parts of the longer first source.
   "6468821a-a955-4837-b591-7e8bdf3705ca": ["M18TZ1HL_P2_Q5", "N17TZ0HL_P1_Q3"],
-  // Coordinate-distance formula practice only. The first source includes the
-  // midpoint as the short setup for the required distance calculation; the
-  // second selected part is a standalone distance between two locations.
-  "03d4a492-8fd9-4ab0-ab11-383f62d354d6": ["N16TZ0AISL_P2_Q3", "V_N25TZ3AISL_P2_Q3"],
-  // Exact special-angle triangles: 30°/45° in the first source and the exact
-  // 60° values (through its supplementary 120° angle) in the second.
-  "a71764ed-7e1e-4316-aa1c-b70aacab2437": ["M17TZ1SL_P1_Q3", "A_N22TZ0SL_P1_Q4"],
+  // AA Topic 3 review. Approved pairs are pinned; rejected cards are replaced
+  // by the exact displayed parts below so later generation cannot reshuffle
+  // them. Shared AA SL/HL videos deliberately use the same locked questions.
+  "457f6445-3b12-478f-a33c-4ee18d21f1f4": ["M18TZ1AISL_P1_Q5", "M14TZ1AISL_P1_Q9"],
+  // Retain Rob's approved midpoint-then-distance question, then use only the
+  // direct distance part of a coordinate-kite question.
+  "03d4a492-8fd9-4ab0-ab11-383f62d354d6": ["N16TZ0AISL_P2_Q3", "N14TZ0AISL_P1_Q2"],
+  "55df295f-1796-4d4c-ae4e-81db5af14b86": ["A_M25TZ3SL_P2_Q1", "W_N21TZ0AIHL_P2_Q1"],
+  "df52c2e1-4c6c-431c-a58c-a4febe7cb661": ["W_N22TZ0AIHL_P1_Q3", "V_M25TZ3AISL_P1_Q1"],
+  // Keep the approved first question, then show only a normal two-mark
+  // Pythagoras calculation from the replacement source.
+  "0e6af994-0fb9-417e-a642-c90363b0ca1f": ["M16TZ2HL_P2_Q1", "N13TZ0AISL_P1_Q5"],
+  // Keep the approved first sine-rule card. The replacement second card uses
+  // the sine rule immediately and stops before its later area calculation.
+  "40ed3424-3856-4e10-9202-06ee73c4d10e": ["M15TZ2SL_P2_Q1", "N17TZ0SL_P2_Q1"],
+  "e6560ee5-07fb-4933-8b76-0526087ff441": ["W_N24TZ0AIHL_P1_Q1", "N17TZ0SL_P1_Q4"],
+  // Start the area lesson with a direct two-mark use of 1/2 ab sin C, then
+  // retain the cleaner of Rob's two approved harder exact-area questions.
+  "96c1a533-e89a-4f3e-8fd5-e769d94087e3": ["M15TZ2HL_P2_Q1", "A_N23TZ2HL_P1_Q4"],
+  "f9a4c2c4-94f2-4e33-8df8-77da36b42839": ["V_N23TZ2AISL_P1_Q5", "V_M23TZ1AISL_P1_Q13"],
+  "93e82273-cbdf-4c22-903f-d23a531ca019": ["W_M22TZ2AIHL_P1_Q2", "N17TZ0HL_P2_Q5"],
+  "588719f5-78e2-44da-9132-970cf1ce2ebe": ["N16TZ0SL_P2_Q3", "N17TZ0HL_P2_Q3"],
+  // Exact special-angle triangles: preserve the approved 30°/45° question,
+  // then use the 30° right-triangle calculation only (no percentage error).
+  "a71764ed-7e1e-4316-aa1c-b70aacab2437": ["M17TZ1SL_P1_Q3", "M15TZ2AISL_P1_Q2"],
+  "82710e65-5b95-4aca-bf72-c37ff08f1380": ["M15TZ2SL_P1_Q2", "M10TZ1HL_P2_Q1"],
   "d5e2d2ef-dd8a-41a2-8d2b-5846523f4ff8": ["N17TZ0SL_P1_Q5", "M15TZ1SL_P2_Q4"],
   "84a0811a-9a01-4f18-ab5f-bf7d28f0ca9c": ["M16TZ2AISL_P1_Q8", "N13TZ0AISL_P1_Q10"],
   // Function features only. Keep the first approved source and replace the
@@ -440,11 +459,7 @@ const verifiedOverrides = {
   // Rob approved both reciprocal-transformation questions unchanged.
   "75958ce6-0c3e-4c88-82e8-3db6f8392e1f": ["A2_M25TZ3HL_P1_Q6", "A3_M25TZ3HL_P1_Q6"],
   "c8ce5b5c-f78f-40a9-a8aa-2c5065925d0f": ["A_M23TZ1SL_P1_Q5", "A_M24TZ2HL_P1_Q2"],
-  // Right-angled-triangle ratios only. Select the direct SOHCAHTOA part from
-  // each source and never allow probability/Venn content to fill this lesson.
-  "f304a68a-2b24-482f-b9c7-91a2a7c8eb64": ["M14TZ2SL_P1_Q1", "N19TZ0SL_P2_Q4"],
   // Both questions require the cosine rule in a non-right-angled triangle.
-  "e6560ee5-07fb-4933-8b76-0526087ff441": ["W_N24TZ0AIHL_P1_Q1", "N17TZ0SL_P1_Q4"],
   // Keep the shared identities lesson on manipulation and proof only. Solving
   // equations belongs in 3.8, and calculus/volume work is excluded entirely.
   "c5f358f0-e49c-4fc1-a20a-296f64992376": ["M19TZ1HL_P1_Q9S", "N08TZ0SL_P1_Q7"],
@@ -784,6 +799,10 @@ const intentionallyWithoutPractice = new Set([
   "35488928-8daf-4e41-9e34-60c9153b0b8c", // AA SL + AA HL: The number e
   "24e9be00-6958-4b90-a7a3-5ba5ad8c16f9", // AA SL + AA HL: System of linear equations
   "6d2ca245-7a2a-45ec-ae5c-5e6b7ac692eb", // AA SL + AA HL: Roots of a polynomial
+  "f304a68a-2b24-482f-b9c7-91a2a7c8eb64", // AA SL + AA HL: SOHCAHTOA
+  "0afbd775-a826-4a73-9c51-bd57c458c850", // AA SL + AA HL: Radians
+  "058018d6-9bc1-4e12-9dac-71d3f40251dc", // AA SL + AA HL: Unit circle
+  "7844ace7-4914-49c1-a289-a3ec0f68d04e", // AA SL + AA HL: CAST diagram
   "8a070f53-2a65-41ca-bd23-3feb183f79ab", // AA HL: Algebra of factorials
   "00c950c1-60b5-4ff0-904d-b8c3f226c7f5", // AA HL: Proof by contradiction (infinite primes)
   "ed461415-103f-4b7c-a993-691440c18e53", // AA HL: Use of counter example
@@ -1244,11 +1263,19 @@ const practicePartOverrides = {
   },
   "03d4a492-8fd9-4ab0-ab11-383f62d354d6": {
     "N16TZ0AISL_P2_Q3": ["b", "c"],
-    "V_N25TZ3AISL_P2_Q3": ["b"],
+    "N14TZ0AISL_P1_Q2": ["a"],
   },
-  "f304a68a-2b24-482f-b9c7-91a2a7c8eb64": {
-    "M14TZ2SL_P1_Q1": ["a"],
-    "N19TZ0SL_P2_Q4": ["a"],
+  "0e6af994-0fb9-417e-a642-c90363b0ca1f": {
+    "N13TZ0AISL_P1_Q5": ["a"],
+  },
+  "40ed3424-3856-4e10-9202-06ee73c4d10e": {
+    "N17TZ0SL_P2_Q1": ["a"],
+  },
+  "96c1a533-e89a-4f3e-8fd5-e769d94087e3": {
+    "M15TZ2HL_P2_Q1": ["a"],
+  },
+  "a71764ed-7e1e-4316-aa1c-b70aacab2437": {
+    "M15TZ2AISL_P1_Q2": ["b"],
   },
   "c5f358f0-e49c-4fc1-a20a-296f64992376": {
     "N08TZ0SL_P1_Q7": ["a"],
@@ -1877,11 +1904,19 @@ const practicePartTitles = {
   },
   "03d4a492-8fd9-4ab0-ab11-383f62d354d6": {
     "N16TZ0AISL_P2_Q3": "Find the midpoint and then the distance AC",
-    "V_N25TZ3AISL_P2_Q3": "Distance between two points from east/north coordinates",
+    "N14TZ0AISL_P1_Q2": "Calculate the distance between two coordinate points",
   },
-  "f304a68a-2b24-482f-b9c7-91a2a7c8eb64": {
-    "M14TZ2SL_P1_Q1": "Use a right triangle to find cos A from sin A",
-    "N19TZ0SL_P2_Q4": "Find an angle in a 6–8–10 right triangle",
+  "0e6af994-0fb9-417e-a642-c90363b0ca1f": {
+    "N13TZ0AISL_P1_Q5": "Use Pythagoras' theorem to find a missing side",
+  },
+  "40ed3424-3856-4e10-9202-06ee73c4d10e": {
+    "N17TZ0SL_P2_Q1": "Use the sine rule to find a missing side",
+  },
+  "96c1a533-e89a-4f3e-8fd5-e769d94087e3": {
+    "M15TZ2HL_P2_Q1": "Find an area using 1/2 ab sin C",
+  },
+  "a71764ed-7e1e-4316-aa1c-b70aacab2437": {
+    "M15TZ2AISL_P1_Q2": "Use an exact 30° triangle to find a distance",
   },
   "c5f358f0-e49c-4fc1-a20a-296f64992376": {
     "N08TZ0SL_P1_Q7": "Simplify a trigonometric expression to sin x",
@@ -2910,6 +2945,18 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["M08TZ1HL_P2_Q2", "A_N25TZ3HL_P1_Q5"].includes(question.id)) return true;
   if (/^modulus equations and inequalities$/.test(lessonTitle)
     && ["N10TZ0HL_P1_Q1", "M14TZ2HL_P1_Q5"].includes(question.id)) return true;
+  // AA Topic 3 reviewed extracts. These mixed-source records are cropped to
+  // the exact requested skill before their later area or percentage parts.
+  if (/^distance between 2 points$/.test(lessonTitle)
+    && ["N16TZ0AISL_P2_Q3", "N14TZ0AISL_P1_Q2"].includes(question.id)) return true;
+  if (/^pythagoras' theorem$/.test(lessonTitle)
+    && ["M16TZ2HL_P2_Q1", "N13TZ0AISL_P1_Q5"].includes(question.id)) return true;
+  if (/^sine rule$/.test(lessonTitle)
+    && ["M15TZ2SL_P2_Q1", "N17TZ0SL_P2_Q1"].includes(question.id)) return true;
+  if (/^area of a triangle$/.test(lessonTitle)
+    && ["M15TZ2HL_P2_Q1", "A_N23TZ2HL_P1_Q4"].includes(question.id)) return true;
+  if (/^mr flynn s exact triangles$/.test(lessonTitle)
+    && ["M17TZ1SL_P1_Q3", "M15TZ2AISL_P1_Q2"].includes(question.id)) return true;
   // IGCSE Topic 1 selections reviewed at displayed-part level. The two surd
   // sources continue into rationalising work, but only their simplifying
   // part (a) is rendered. The set sources are symbolic/listing questions and
