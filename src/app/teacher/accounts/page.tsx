@@ -37,7 +37,7 @@ export default async function TeacherAccountsPage({ searchParams }: { searchPara
         <div className="dashboard-section-heading"><div><p className="eyebrow">Account directory</p><h2>All teacher registrations</h2></div><p className="muted">{confirmedCount} of {accounts.length} have confirmed their email address. Times are shown in Dubai time.</p></div>
         {error ? <p className="form-message form-error">Teacher accounts could not be loaded just now. Please reload the page.</p> : null}
         {!error ? <TeacherAccountDirectory accounts={accounts} /> : null}
-        <div><Link className="button button-secondary button-small" href="/teacher">Back to teacher dashboard</Link></div>
+        <div className="cluster"><Link className="button button-secondary button-small" href="/teacher">Back to teacher dashboard</Link><Link className="button button-secondary button-small" href="/teacher/students">View student accounts</Link></div>
       </Container>
     </section>
   </>;
