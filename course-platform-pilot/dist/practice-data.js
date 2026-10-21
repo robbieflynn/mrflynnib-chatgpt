@@ -1,5 +1,5 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T08:01:33.690Z",
+  "generatedAt": "2026-10-21T08:22:25.988Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
   "completeLessonCount": 459,
@@ -5712,7 +5712,7 @@ window.MR_FLYNN_PRACTICE = {
         "H_M10TZ1HL_P1_Q8"
       ]
     },
-    "811ba56d-a33e-46e8-9889-e3c15e2b8230": {
+    "0c3a7c7b-1b80-4833-a1b1-bc8aeb38cce4": {
       "lesson": "5.12.4 Volume of revolution about y-axis",
       "course": "AI HL",
       "subtopic": "Volume of revolution",

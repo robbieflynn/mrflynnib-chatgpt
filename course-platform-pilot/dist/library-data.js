@@ -5593,10 +5593,10 @@ window.MR_FLYNN_LIBRARY = {
         "scope": "HL extension"
       },
       {
-        "id": "811ba56d-a33e-46e8-9889-e3c15e2b8230",
+        "id": "0c3a7c7b-1b80-4833-a1b1-bc8aeb38cce4",
         "code": "5.12.4",
         "title": "Volume of revolution about y-axis",
-        "seconds": 759,
+        "seconds": 231,
         "status": 4,
         "topic": 5,
         "scope": "HL extension"
@@ -6576,10 +6576,10 @@ window.MR_FLYNN_LIBRARY = {
         "status": 4
       },
       {
-        "id": "811ba56d-a33e-46e8-9889-e3c15e2b8230",
+        "id": "0c3a7c7b-1b80-4833-a1b1-bc8aeb38cce4",
         "code": "5.12.4",
         "title": "Volume of revolution about y-axis",
-        "seconds": 759,
+        "seconds": 231,
         "status": 4
       },
       {

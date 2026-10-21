@@ -26,12 +26,15 @@ const presentationOverrides = new Map([
   ["ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae", { title: "Arcs and sectors with radians" }],
 ]);
 
-// These are intentionally not student-facing. The two older edits have verified
+// These are intentionally not student-facing. The older edits have verified
 // replacements, while AA HL 3.11 was explicitly held back by Rob on 15 Oct 2026.
 const suppressedVideoIds = new Set([
   "797e99ea-089e-4f25-84fd-e42aab742b4c",
   "7d82c17b-122c-4344-8640-28d5be087fa0",
   "b9adda93-c11b-4d8a-b61a-20e86f21e04b",
+  // Replaced by Rob's shorter AI-specific edit, which removes the
+  // integration-by-parts material that is outside the AI syllabus.
+  "811ba56d-a33e-46e8-9889-e3c15e2b8230",
 ]);
 
 const cleanTitle = (title) => String(title || "").replace(/\.(mov|m4v|mp4|avi|mkv|webm)$/i, "").trim();
