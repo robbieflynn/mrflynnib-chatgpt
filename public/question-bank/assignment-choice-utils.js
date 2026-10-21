@@ -1116,6 +1116,17 @@
         if (rowCoordinates.length) return [rowCoordinates[rowCoordinates.length - 1]];
       }
     }
+    if (/\b[xy]-intercept\b/i.test(finalInstruction)) {
+      for (var interceptRowIndex = creditedRows.length - 1; interceptRowIndex >= 0; interceptRowIndex -= 1) {
+        var interceptCoordinates = [];
+        mathFragments(String(creditedRows[interceptRowIndex][0] || "")).forEach(function (fragment) {
+          coordinateTuples(clean(latexToPlain(fragment))).forEach(function (tuple) {
+            if (!interceptCoordinates.some(function (existing) { return equivalent(existing, tuple); })) interceptCoordinates.push(tuple);
+          });
+        });
+        if (interceptCoordinates.length) return [interceptCoordinates[interceptCoordinates.length - 1]];
+      }
+    }
     if (/\b(?:set|range) of values\b|\bvalues?\s+of\s+[A-Za-z]\b/i.test(finalInstruction)) {
       for (var inequalityRowIndex = creditedRows.length - 1; inequalityRowIndex >= 0; inequalityRowIndex -= 1) {
         var inequalityFragments = mathFragments(String(creditedRows[inequalityRowIndex][0] || ""));
@@ -1317,6 +1328,51 @@
       });
       if (rootConclusions.length >= 2) return [rootConclusions.join("; ")];
     }
+    var rawFunctionInstruction = String(prompt || "");
+    var rawFunctionInstructionMatches = [];
+    var rawFunctionInstructionPattern = /\b(?:find|calculate|work out|write down|state|determine|evaluate|give)\b/gi;
+    var rawFunctionInstructionMatch;
+    while ((rawFunctionInstructionMatch = rawFunctionInstructionPattern.exec(rawFunctionInstruction))) {
+      rawFunctionInstructionMatches.push(rawFunctionInstructionMatch.index);
+    }
+    if (rawFunctionInstructionMatches.length) {
+      rawFunctionInstruction = rawFunctionInstruction.slice(rawFunctionInstructionMatches[rawFunctionInstructionMatches.length - 1]);
+    }
+    var requestedFunctionEvaluations = mathFragments(rawFunctionInstruction).map(function (fragment) {
+      return clean(latexToPlain(fragment));
+    }).filter(function (fragment) {
+      return /^[A-Za-z](?:\^-?1)?\([\s\S]+\)$/.test(fragment)
+        && !/^P\(/.test(fragment)
+        && !/[=<>≤≥]/.test(fragment);
+    }).filter(function (fragment, index, fragments) {
+      return fragments.slice(0, index).every(function (existing) { return canonical(existing) !== canonical(fragment); });
+    });
+    if (requestedFunctionEvaluations.length) {
+      var evaluatedFunctionAnswers = [];
+      requestedFunctionEvaluations.forEach(function (target) {
+        var foundFunctionAnswer = "";
+        for (var evaluationRowIndex = creditedRows.length - 1; evaluationRowIndex >= 0 && !foundFunctionAnswer; evaluationRowIndex -= 1) {
+          var evaluationFragments = mathFragments(String(creditedRows[evaluationRowIndex][0] || ""));
+          for (var evaluationFragmentIndex = evaluationFragments.length - 1; evaluationFragmentIndex >= 0; evaluationFragmentIndex -= 1) {
+            var evaluationPiece = clean(latexToPlain(evaluationFragments[evaluationFragmentIndex]));
+            var evaluationChain = evaluationPiece.split("=").map(clean).filter(Boolean);
+            if (evaluationChain.length < 2 || canonical(evaluationChain[0]) !== canonical(target)) continue;
+            var finalEvaluationValue = evaluationChain[evaluationChain.length - 1]
+              .replace(/\s*\(\s*=\s*[-+]?\d+(?:\.\d+)?(?:…|\.\.\.)?\s*\)\s*$/, "")
+              .replace(/\((π|[A-Za-z])\)\s*\//g, "$1/")
+              .trim();
+            var completeEvaluation = target + "=" + finalEvaluationValue;
+            if (finalEvaluationValue && isChoiceTextSafe(completeEvaluation)) foundFunctionAnswer = completeEvaluation;
+            if (foundFunctionAnswer) break;
+          }
+        }
+        if (foundFunctionAnswer) evaluatedFunctionAnswers.push(foundFunctionAnswer);
+      });
+      if (evaluatedFunctionAnswers.length === requestedFunctionEvaluations.length) {
+        var completeFunctionEvaluationAnswer = evaluatedFunctionAnswers.join("; ");
+        if (isChoiceTextSafe(completeFunctionEvaluationAnswer)) return [completeFunctionEvaluationAnswer];
+      }
+    }
     var requestedFunction = completePrompt.match(/\b(?:find|write down|state|determine|give)\s+(?:an?\s+expression\s+for\s+)?([A-Za-z](?:\^-?1)?\([^)]*\))/i);
     if (requestedFunction) {
       var functionTarget = requestedFunction[1].replace(/\s+/g, "");
@@ -1325,7 +1381,9 @@
         var functionPattern = new RegExp(functionTarget.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*=\\s*([^=⇒;,]+)", "ig");
         var functionMatches = Array.from(functionText.matchAll(functionPattern));
         if (!functionMatches.length) continue;
-        var functionAnswer = functionTarget + "=" + clean(functionMatches[functionMatches.length - 1][1]);
+        var functionAssignment = clean(functionText.slice(functionMatches[functionMatches.length - 1].index));
+        var functionChain = functionAssignment.split("=").map(clean).filter(Boolean);
+        var functionAnswer = functionTarget + "=" + clean(functionChain[functionChain.length - 1]);
         if (isChoiceTextSafe(functionAnswer)) return [functionAnswer];
       }
     }
@@ -3415,6 +3473,43 @@
     addCandidate(list, "2*(" + match[1] + " " + match[2] + ")");
   }
 
+  function functionEvaluationResultCandidates(correct, list) {
+    var expression = clean(correct);
+    var separatorPositions = topLevelPositions(expression, function (character) { return character === ";"; });
+    var parts = [];
+    var start = 0;
+    separatorPositions.forEach(function (position) {
+      parts.push(expression.slice(start, position).trim());
+      start = position + 1;
+    });
+    parts.push(expression.slice(start).trim());
+    var parsed = parts.map(function (part) {
+      var relations = topLevelPositions(part, function (character) { return character === "="; });
+      if (relations.length !== 1) return null;
+      var left = part.slice(0, relations[0]).trim();
+      var right = part.slice(relations[0] + 1).trim();
+      if (!/^[A-Za-z](?:\^-?1)?\([\s\S]+\)$/.test(left) || /^P\(/.test(left) || !right) return null;
+      var replacements = [];
+      mutateNumberTokens(right, replacements);
+      fractionCandidates(right, replacements);
+      simpleNumberCandidates(right, replacements);
+      radicalCandidates(right, replacements);
+      symbolicExpressionCandidates(right, replacements);
+      return { left: left, right: right, replacements: replacements.slice(0, 6) };
+    });
+    if (!parsed.length || parsed.some(function (part) { return !part; })) return;
+    for (var replacementIndex = 0; replacementIndex < 6 && list.length < 8; replacementIndex += 1) {
+      parsed.forEach(function (part, partIndex) {
+        if (!part.replacements[replacementIndex]) return;
+        var changed = parsed.map(function (candidate, candidateIndex) {
+          var value = candidateIndex === partIndex ? part.replacements[replacementIndex] : candidate.right;
+          return candidate.left + "=" + value;
+        });
+        addCandidate(list, changed.join("; "));
+      });
+    }
+  }
+
   function dimensionCandidates(correct, list) {
     var match = clean(correct).match(/^(.*?)(-?\d+(?:\.\d+)?)\s*cm\s+by\s+(-?\d+(?:\.\d+)?)\s*cm\s*\(\s*(-?\d+(?:\.\d+)?)\s*mm\s+by\s+(-?\d+(?:\.\d+)?)\s*mm\s*\)(.*)$/i);
     if (!match) return;
@@ -3542,6 +3637,44 @@
     addCandidate(list, expression.replace(/\[$/, "]"));
     addCandidate(list, expression.replace(/∞/g, "0"));
     addCandidate(list, expression.replace(/∞/g, "1"));
+  }
+
+  function domainRangeMembershipCandidates(correct, prompt, list) {
+    var instruction = finalInstructionText(prompt);
+    if (!/\b(?:domain|range)\b/i.test(instruction)) return;
+    var expression = clean(correct);
+    var match = expression.match(/^(.+?)∈blackboard\(([RQCZN])\)$/i);
+    if (!match || match[2].toUpperCase() !== "R") return;
+    var subject = match[1].trim();
+    var alternatives = /\brange\b/i.test(instruction)
+      ? [subject + "≥0", subject + ">0", subject + "≤0", "-1≤" + subject + "≤1"]
+      : [subject + ">0", subject + "≥0", subject + "≠0", subject + "≤0"];
+    alternatives.forEach(function (alternative) { addCandidate(list, alternative); });
+  }
+
+  function interceptCoordinateCandidates(correct, prompt, list) {
+    var instruction = finalInstructionText(prompt);
+    var axis = instruction.match(/\b([xy])-intercept\b/i);
+    if (!axis) return;
+    var tuples = coordinateTuples(clean(correct));
+    if (tuples.length !== 1) return;
+    var inner = tuples[0].slice(1, -1);
+    var commas = topLevelPositions(inner, function (character) { return character === ","; });
+    if (commas.length !== 1) return;
+    var coordinates = [inner.slice(0, commas[0]).trim(), inner.slice(commas[0] + 1).trim()];
+    var varyingIndex = axis[1].toLowerCase() === "y" ? 1 : 0;
+    var fixedIndex = varyingIndex === 1 ? 0 : 1;
+    if (numericValue(coordinates[fixedIndex]) !== 0) return;
+    var valueCandidates = [];
+    fractionCandidates(coordinates[varyingIndex], valueCandidates);
+    simpleNumberCandidates(coordinates[varyingIndex], valueCandidates);
+    radicalCandidates(coordinates[varyingIndex], valueCandidates);
+    mutateNumberTokens(coordinates[varyingIndex], valueCandidates);
+    valueCandidates.forEach(function (candidate) {
+      var changed = coordinates.slice();
+      changed[varyingIndex] = candidate;
+      addCandidate(list, "(" + changed.join(",") + ")");
+    });
   }
 
   function setMembershipCandidates(correct, list) {
@@ -3762,6 +3895,8 @@
     if (/\b(?:null\s+and\s+alternative\s+hypotheses|hypotheses)\b/i.test(finalInstruction)
       && !/;/.test(correct)) return null;
     var candidates = [];
+    functionEvaluationResultCandidates(correct, candidates);
+    interceptCoordinateCandidates(correct, prompt, candidates);
     fractionCandidates(correct, candidates);
     simpleNumberCandidates(correct, candidates);
     radicalCandidates(correct, candidates);
@@ -3782,6 +3917,7 @@
     mutateNumberTokens(correct, candidates);
     relationMutationCandidates(correct, candidates);
     intervalCandidates(correct, candidates);
+    domainRangeMembershipCandidates(correct, prompt, candidates);
     setMembershipCandidates(correct, candidates);
     setExpressionCandidates(correct, candidates);
     symbolicCandidates(correct, candidates);
