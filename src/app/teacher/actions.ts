@@ -431,6 +431,47 @@ export async function updateAssignmentFeedbackMode(formData: FormData) {
   redirect(messagePath(`/teacher/assignments/${assignmentId}`, "success", "The student feedback setting has been updated."));
 }
 
+export async function returnAssignmentToStudent(formData: FormData) {
+  const { supabase, user } = await requireTeacher();
+  const assignmentId = String(formData.get("assignmentId") || "");
+  const studentId = String(formData.get("studentId") || "");
+  const returnPath = `/teacher/assignments/${assignmentId}/students/${studentId}`;
+
+  if (!assignmentId || !studentId) {
+    redirect(messagePath("/teacher", "error", "The assignment or student could not be found."));
+  }
+
+  const { data: assignment } = await supabase
+    .from("assignments")
+    .select("id,class_id")
+    .eq("id", assignmentId)
+    .eq("teacher_id", user.id)
+    .maybeSingle();
+  if (!assignment) redirect(messagePath("/teacher", "error", "The assignment could not be found."));
+
+  const { data: membership } = await supabase
+    .from("class_memberships")
+    .select("student_id")
+    .eq("class_id", assignment.class_id)
+    .eq("student_id", studentId)
+    .maybeSingle();
+  if (!membership) redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "The student could not be found in this class."));
+
+  const { error } = await supabase.rpc("return_assignment_to_student", {
+    assignment_uuid: assignmentId,
+    student_uuid: studentId,
+  });
+  if (error) redirect(messagePath(returnPath, "error", "The assignment could not be returned. Please try again."));
+
+  revalidatePath(returnPath);
+  revalidatePath(`/teacher/assignments/${assignmentId}`);
+  revalidatePath(`/teacher/classes/${assignment.class_id}`);
+  revalidatePath("/account");
+  revalidatePath("/igcse/account");
+  revalidatePath(`/assignments/${assignmentId}`);
+  redirect(messagePath(returnPath, "success", "Assignment returned. The student can continue their work and submit it again."));
+}
+
 export async function reviewTeacherApplication(formData: FormData) {
   const { supabase, user } = await requireAdmin();
   const applicantId = String(formData.get("applicantId") || "");
