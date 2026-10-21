@@ -395,6 +395,12 @@ assert.equal(choices.isDisplaySafe("(a)(x))"), false);
 assert.equal(choices.toLatex("2*x"), String.raw`2\times x`);
 assert.equal(choices.toLatex("y - x"), "y-x");
 assert.equal(choices.toLatex("ln x"), String.raw`\ln\left(x\right)`);
+assert.equal(choices.latexToPlain(String.raw`\cos\varphi`), "cos(φ)");
+assert.equal(choices.toLatex("sqrt(181 - 180cos(φ))"), String.raw`\sqrt{181-180\cos\left(\varphi \right)}`);
+assert.equal(
+  choices.toLatex("Since n > 1, n^2+n+1 > 2n+1 and n^2+n+1 > n^2-1"),
+  String.raw`\text{Since }n>1,\ n^{2}+n+1>2n+1\text{ and }n^{2}+n+1>n^{2}-1`,
+);
 assert.equal(choices.toLatex("(n(n^2-15n+8))/6"), String.raw`\frac{\left(n\left(n^{2}-15n+8\right)\right)}{6}`);
 assert.equal(choices.toLatex("C(0)=3.0 ppm"), String.raw`C(0)=3.0\,\mathrm{ppm}`);
 assert.equal(choices.toLatex("1+1/2 x^2+3/8 x^4"), String.raw`1+\left(\frac{1}{2}\right)\times x^{2}+\left(\frac{3}{8}\right)\times x^{4}`);
