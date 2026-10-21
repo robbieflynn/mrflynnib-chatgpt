@@ -1,0 +1,62 @@
+Course(s),Lesson code,Lesson title,Questions approved,Exact candidates found,Current approved question 1,Current approved question 2,Why incomplete,Lesson / video ID
+AA SL + AA HL,1.4.3,Inflation,1,0,An investment planned in real terms (Paper 1 · Non-calculator),,"Only one strong, exact-match question is approved",c88c6fdf-8038-45e4-9598-7eeed57f8f6f
+AA HL,1.10.1,Counting principles introduction (product and addition principles),0,0,,,No sufficiently exact short-question match found,1f072e71-5da3-475f-9b54-e809a68a893d
+AA HL,1.10.3,Algebra of factorials,1,0,Induction proof of a factorial summation identity (Paper 1 · Non-calculator),,"Only one strong, exact-match question is approved",8a070f53-2a65-41ca-bd23-3feb183f79ab
+AA HL,1.15.9,Use of counter example,1,1,Prove a quartic identity and use it to build a quadratic with reciprocal fourth powers of the roots (Paper 2 · Calculator),,"Only one strong, exact-match question is approved",ed461415-103f-4b7c-a993-691440c18e53
+AA HL,2.12.1,Dividing polynomials,1,0,Polynomial division then integrate a rational function (Paper 2 · Calculator),,"Only one strong, exact-match question is approved",6468821a-a955-4837-b591-7e8bdf3705ca
+AA SL + AA HL,3.2.1,Pythagoras' theorem,1,0,"Ladder against a wall: sketch, Pythagoras and the obtuse angle with the ground (Paper 1 · Non-calculator)",,"Only one strong, exact-match question is approved",0e6af994-0fb9-417e-a642-c90363b0ca1f
+AA SL + AA HL,4.1.1,Discrete v continuous data,0,0,,,No sufficiently exact short-question match found,fa1451ac-3210-497e-880b-debeadc19909
+AA SL + AA HL,5.1.2,Introduction to limits,0,0,,,Earlier selection was rejected during the stricter relevance check,d5e2d2ef-dd8a-41a2-8d2b-5846523f4ff8
+AA SL + AA HL,5.5.1,Integration power rule,1,1,Integrating a linear expression and finding the constant of integration (Paper 2 · Calculator),,"Only one strong, exact-match question is approved",f4aa813d-a3e2-480a-9f8d-49d2b31a7a04
+AA SL + AA HL,5.5.5,Finding a limit,0,0,,,Earlier selection was rejected during the stricter relevance check,d336ee8b-277b-4f7d-90f8-c309a50d1d4c
+AA HL,5.19.3,Maclaurin series (substitutions and products),1,1,"Maclaurin series of a composed sine, its square, and a hence product (Paper 1 · Non-calculator)",,"Only one strong, exact-match question is approved",c379f1fc-7f63-4fa1-98dc-a7d4aff4d8e9
+AA HL,5.19.8,Euler's identity,0,0,,,No sufficiently exact short-question match found,46c63018-b709-4eab-a3ed-851044ddae8a
+AI SL + AI HL,1.4.3,Inflation,1,0,An investment planned in real terms (Paper 1),,"Only one strong, exact-match question is approved",abf38c68-e758-43ec-955d-624ad834d69a
+AI HL,1.12.1,Complex numbers introduction,0,13,,,"Candidates exist, but the pair needs a careful manual decision",26b43b60-35b9-45bf-94fc-90939a61e58c
+AI HL,1.12.3,Complex solutions to polynomial equations,0,13,,,"Candidates exist, but the pair needs a careful manual decision",0d899f02-1cb7-4081-9ece-616f4d0c9efd
+AI HL,1.14.1,Introduction to matrices,0,2,,,"Candidates exist, but the pair needs a careful manual decision",11cf3ed5-0f7e-436b-9817-4c4e5386982a
+AI HL,1.14.2,Algebra of matrices,0,0,,,"Candidates exist, but the pair needs a careful manual decision",ea54bb0f-76bc-47a6-9220-190faf9677c1
+AI HL,1.14.3,Multiplication of matrices,0,0,,,"Candidates exist, but the pair needs a careful manual decision",35b31ab2-691d-480d-8664-e77d13f2b7cc
+AI HL,1.14.4,Identity matrix,0,0,,,No sufficiently exact short-question match found,8f3c2a60-3f50-484f-a867-7a7efeb61959
+AI HL,1.14.6,Determinant and inverse of a matrix,0,0,,,"Candidates exist, but the pair needs a careful manual decision",e9c828e5-d1fc-4459-8e16-4f893814d04e
+AI HL,1.15.2,Powers of matrices,0,0,,,No sufficiently exact short-question match found,79bbc962-e946-49f0-a89e-5bd386389248
+AI SL + AI HL,2.4.2,Asymptotes,1,1,Graph of f(x) = 3/x − 2: the two asymptotes and the x-intercept (Paper 1),,"Only one strong, exact-match question is approved",87739b31-e9ec-48da-b45d-23f1265de2be
+AI SL + AI HL,3.2.1,Pythagoras' theorem,1,0,"Ladder against a wall: sketch, Pythagoras and the obtuse angle with the ground (Paper 1)",,"Only one strong, exact-match question is approved",1900d762-9513-4e7c-9549-f40a2adf084d
+AI HL,3.8.2,Unit circle,0,0,,,"Candidates exist, but the pair needs a careful manual decision",890be651-35da-4ac2-ae19-017b48ecb19e
+AI HL,3.8.3,The CAST diagram,0,0,,,"Candidates exist, but the pair needs a careful manual decision",4bd0bcf2-4678-47bb-b0b2-44b6477227e1
+AI HL,3.9.3,Enlargements,1,0,Cubic regression for a leaf outline and correcting for an enlargement (Paper 1),,"Only one strong, exact-match question is approved",cfa1dc1e-f80b-4e63-8275-6269cbe7f12b
+AI HL,3.9.7,Determinant of a transformation matrix,0,0,,,No sufficiently exact short-question match found,3047e664-8bf6-4140-8c0c-cabd97cd06b5
+AI HL,3.12.2,Motion with variable velocity,0,1,,,"Candidates exist, but the pair needs a careful manual decision",ec7a9d6b-aacf-40ee-a175-9ff973312441
+AI HL,3.13.3,Vector product,1,1,The area of a triangular canopy found with a vector product (Paper 1),,"Only one strong, exact-match question is approved",1855d971-48f6-4e25-9790-e4671cd9748e
+AI HL,3.13.4,Areas using vector product,1,1,The area of a triangular canopy found with a vector product (Paper 1),,"Only one strong, exact-match question is approved",3f7dbc9d-77f5-4aa4-85f3-5eccf69f41c6
+AI HL,3.13.5,Components of vectors,0,0,,,No sufficiently exact short-question match found,c699f91b-43d0-4d3f-af5b-05a042516032
+AI HL,3.15.2,Weighted adjacency tables,0,3,,,"Candidates exist, but the pair needs a careful manual decision",d889f97c-0abb-4fa0-8bd3-eee6927e5b7b
+AI HL,3.16.2,Kruskal's algorithm,0,0,,,Earlier selection was rejected during the stricter relevance check,4a729d86-d2a5-475e-8194-1c24c98aa196
+AI HL,3.16.4,Prim's algorithm with adjacency table,0,0,,,"Candidates exist, but the pair needs a careful manual decision",3cffb57c-653d-45a2-9983-68b1016b23e4
+AI HL,3.16.5,Eulerian graphs,0,0,,,No sufficiently exact short-question match found,4ea42a07-b2d6-46c6-bd79-0987f8c97236
+AI HL,3.16.6,Chinese postman problem,1,1,Route inspection with an unknown edge weight (Paper 1),,"Only one strong, exact-match question is approved",a90ee76e-0a72-4a15-bf3d-1a3094677f44
+AI HL,3.16.7,Hamiltonian graphs,0,0,,,Earlier selection was rejected during the stricter relevance check,06dade6e-621a-4427-ad7c-1aa749bb8fa0
+AI HL,3.16.9,TSP practical problems,0,0,,,Earlier selection was rejected during the stricter relevance check,e64a4cac-d435-4860-a028-f9f0b8266165
+AI HL,3.16.10,Nearest neighbour algorithm,0,0,,,No sufficiently exact short-question match found,9252d878-0d2c-4c3a-9bc8-985d928387fb
+AI HL,3.16.11,Deleted vertex algorithm,0,0,,,Earlier selection was rejected during the stricter relevance check,0a593676-5299-4966-95ee-c58e7e4ccba9
+AI SL + AI HL,4.1.2,Sampling techniques,1,1,"Gym visits frequency table: discrete or continuous, find k from the mean, name the sampling method (Paper 1)",,"Only one strong, exact-match question is approved",ae20100b-d4f8-47b7-94cb-274153bd96da
+AI HL,4.13.3,The coefficient of determination,0,0,,,No sufficiently exact short-question match found,5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb
+AI HL,4.14.1,Linear transformations of X,0,0,,,No sufficiently exact short-question match found,bb113001-688d-4876-91d0-208f1fdaa532
+AI HL,4.18.1,Z-test one tailed,0,0,,,Earlier selection was rejected during the stricter relevance check,c19965b9-5b04-4711-b5ff-b440ca6eba03
+AI HL,4.18.2,Z-test two tailed,0,0,,,Earlier selection was rejected during the stricter relevance check,36efc894-0227-4bab-99f6-2f85cd8c9706
+AI HL,4.18.9,Normal errors,0,4,,,"Candidates exist, but the pair needs a careful manual decision",73e1e90c-6be8-463a-bc7b-bc43361419d6
+AI HL,4.18.11,Binomial errors,0,4,,,"Candidates exist, but the pair needs a careful manual decision",fb36af72-faa4-4e66-bf8d-099bc54e766a
+AI SL + AI HL,5.1.2,Introduction to limits,0,0,,,Earlier selection was rejected during the stricter relevance check,1411cdc4-fc40-4c0c-8994-99b37500f165
+AI SL + AI HL,5.5.1,Integration (power rule),1,0,Integrating a linear expression and finding the constant of integration (Paper 2),,"Only one strong, exact-match question is approved",b31ff22b-38f1-489b-a9ce-209fa91d73e6
+AI HL,5.11.1,Integration power rule (rational power),1,0,Polynomial division then integrate a rational function (Paper 2),,"Only one strong, exact-match question is approved",97665ecc-2be3-414c-9944-564bf6fa8645
+AI HL,5.14.2,Separation of variables,1,0,Identifying and solving a separable differential equation (Paper 2),,"Only one strong, exact-match question is approved",660e272a-8a71-4422-8450-61a7ea1d58cf
+AI HL,5.17.5,Sketching phase portraits (source),0,2,,,"Candidates exist, but the pair needs a careful manual decision",d477bd69-e3be-4201-b8f0-2ba436cc3f6e
+AI HL,5.17.6,Sketching phase portraits (sink),0,2,,,"Candidates exist, but the pair needs a careful manual decision",de2388f1-fbf3-49c0-883b-1eff70b9cf7f
+AI HL,5.17.7,Sketching phase portraits (spiral sink),0,2,,,"Candidates exist, but the pair needs a careful manual decision",f40d55e2-0669-40a7-b7d9-fcc477ef23d4
+AI HL,5.17.8,Sketching phase portraits (spiral source),0,2,,,"Candidates exist, but the pair needs a careful manual decision",6194b7ab-4cd6-4c43-9a54-288397647d66
+AI HL,5.17.9,Sketching phase portraits (centre),0,2,,,"Candidates exist, but the pair needs a careful manual decision",e8505773-3b8b-41cc-84b3-d2e106e5533f
+IGCSE Higher,1.4.3,Surds (Expanding Brackets),1,1,Product involving surds (paper not recorded),,"Only one strong, exact-match question is approved",cbc83cb9-d117-46ea-ac62-bb7ac362394d
+IGCSE Higher,2.2.3,Difference of 2 Squares,1,0,Fully factorising a difference of squares (paper not recorded),,"Only one strong, exact-match question is approved",a517d3ce-4597-4559-bb22-f7a591d92bb3
+IGCSE Higher,2.7.3,The Quadratic Formula,0,0,,,No sufficiently exact short-question match found,1394e37c-0c0e-4f7c-856f-aacff695cbda
+IGCSE Higher,3.4.1,Differentiation Introduction,0,0,,,No sufficiently exact short-question match found,9099c37b-0a4f-4e00-a57d-77702f80a974
+IGCSE Higher,3.4.2,Differentiation Rule,0,0,,,No sufficiently exact short-question match found,498da047-40c6-4199-b592-da279e244583

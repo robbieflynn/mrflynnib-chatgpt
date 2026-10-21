@@ -44,6 +44,18 @@
   }
   #qbank-root *{ box-sizing: border-box; }
 
+  html.qb-embedded body{ margin:0; background:transparent; }
+  html.qb-embedded #qbank-root{ border:0; border-radius:0; background:transparent; }
+  html.qb-embedded .qb-header,
+  html.qb-embedded .qb-controls,
+  html.qb-embedded .qb-gate{ display:none !important; }
+  html.qb-embedded .qb-list{ padding:14px; }
+  html.qb-embedded .qb-card{ box-shadow:none; }
+  html.qb-embedded .qb-card-source,
+  html.qb-embedded .qb-card-crosslist,
+  html.qb-embedded .qb-badge.course{ display:none; }
+  html.qb-embedded.qb-practice .qb-badge.course{ display:inline-flex; }
+
   /* The deep navy band from the site's own "free syllabus checklists" section,
      with the same eyebrow motif: a short blue rule, then small tracked caps.
      A first attempt made this a plain cream strip with one line of text in it;
@@ -408,7 +420,7 @@
   .qb-more-msg{ text-align:center; padding:14px 0 2px; font-size:12px; color:var(--ink-soft); }
 </style>
 
-<link rel="stylesheet" href="/question-bank/whiteboard.css?v=15">
+<link rel="stylesheet" href="whiteboard.css?v=15">
 <style>
 /* Keep long worked equations inside their panel on narrow screens. */
 .qb-question-workspace { grid-template-columns: minmax(0, 1fr); }
@@ -473,6 +485,7 @@
 
 </div>
 
+<script src="authored-practice-data.js?v=20261021-1"></script>
 <script>
 (function(){
 
@@ -153574,6 +153587,7 @@ function diagramN11TZ0P2Q1grid(){
       }
     ],
     "diagram": "m17tz2p2q4",
+    "diagramPart": "b",
     "diagramCaption": "Triangle ABC with AC = 4 and BC = 2. Diagram not to scale.",
     "banks": [
       "AA SL",
@@ -550426,6 +550440,10 @@ function diagramN11TZ0P2Q1grid(){
     }
   }
 ];
+  // Small, lesson-specific Mr Flynn practice cards are generated separately
+  // from the verified archive and labelled clearly in the UI. Merge them into
+  // the same renderer so course links can open them exactly like bank items.
+  SEED.push.apply(SEED, window.MR_FLYNN_AUTHORED_PRACTICE || []);
 
   // ---------- Persistence: merge seed into stored data without duplicating ----------
   var state = { all: [], filtered: [], rendered: 0, byId: {}, course: '' };
@@ -550441,10 +550459,30 @@ function diagramN11TZ0P2Q1grid(){
   // When hosted inside the main website, the parent page owns the scrollbar.
   var EMBED_PARAMS = new URLSearchParams(window.location.search);
   var IS_EMBEDDED = EMBED_PARAMS.get('embedded') === '1';
+  var IS_PRACTICE = EMBED_PARAMS.get('practice') === '1';
   var REQUESTED_COURSE = EMBED_PARAMS.get('course') || '';
   var REQUESTED_TOPIC = EMBED_PARAMS.get('topic') || '';
   var REQUESTED_SUBTOPIC = EMBED_PARAMS.get('subtopic') || '';
-  var REQUESTED_IDS = new Set((EMBED_PARAMS.get('ids') || '').split(',').filter(Boolean));
+  var REQUESTED_ID_LIST = (EMBED_PARAMS.get('ids') || '').split(',').filter(Boolean);
+  var REQUESTED_IDS = new Set(REQUESTED_ID_LIST);
+  function practiceMap(name){
+    var raw = EMBED_PARAMS.get(name);
+    if(!raw) return {};
+    try {
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch(e){
+      return {};
+    }
+  }
+  var REQUESTED_PARTS = practiceMap('parts');
+  var REQUESTED_PART_LABELS = practiceMap('partLabels');
+  var REQUESTED_PART_TEXTS = practiceMap('partTexts');
+  var REQUESTED_PART_TITLES = practiceMap('partTitles');
+  var REQUESTED_BODIES = practiceMap('bodies');
+  var REQUESTED_DIFFICULTIES = practiceMap('difficulties');
+  var REQUESTED_HIDDEN_DIAGRAMS = new Set((EMBED_PARAMS.get('hideDiagrams') || '').split(',').filter(Boolean));
+  var HIDE_PAPER = EMBED_PARAMS.get('hidePaper') === '1';
   var SHOW_SOLUTIONS = EMBED_PARAMS.get('solutions') !== '0';
   var requestedFiltersApplied = false;
   function reportEmbeddedHeight(){
@@ -550459,6 +550497,8 @@ function diagramN11TZ0P2Q1grid(){
     }, window.location.origin);
   }
   if(IS_EMBEDDED){
+    document.documentElement.classList.add('qb-embedded');
+    if(IS_PRACTICE) document.documentElement.classList.add('qb-practice');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     if(typeof ResizeObserver !== 'undefined'){
@@ -550511,11 +550551,75 @@ function diagramN11TZ0P2Q1grid(){
   //
   // The bank on disk is authoritative. Storage is now written, never read back
   // into the list.
+  function practiceVariant(q){
+    if(!IS_PRACTICE) return q;
+    var id = String(q.id);
+    var labels = REQUESTED_PARTS[id];
+    var labelOverrides = REQUESTED_PART_LABELS[id];
+    var textOverrides = REQUESTED_PART_TEXTS[id];
+    var hasTitle = Object.prototype.hasOwnProperty.call(REQUESTED_PART_TITLES, id);
+    var hasBody = Object.prototype.hasOwnProperty.call(REQUESTED_BODIES, id);
+    var hasDifficulty = Object.prototype.hasOwnProperty.call(REQUESTED_DIFFICULTIES, id);
+    var hideDiagram = REQUESTED_HIDDEN_DIAGRAMS.has(id);
+    var hasLabelOverrides = labelOverrides && typeof labelOverrides === 'object' && !Array.isArray(labelOverrides);
+    var hasTextOverrides = textOverrides && typeof textOverrides === 'object' && !Array.isArray(textOverrides);
+    if(!Array.isArray(labels) && !hasLabelOverrides && !hasTextOverrides && !hasTitle && !hasBody && !hasDifficulty && !hideDiagram) return q;
+
+    var copy = Object.assign({}, q);
+    if(Array.isArray(labels) && labels.length){
+      var wanted = new Set(labels.map(String));
+      copy.parts = (q.parts || []).filter(function(part){ return wanted.has(String(part[0])); });
+      copy.markscheme = (q.markscheme || []).filter(function(group){ return wanted.has(String(group[0])); });
+      copy.marks = copy.parts.reduce(function(total, part){
+        var marks = parseInt(part[2], 10);
+        return total + (isNaN(marks) ? 0 : marks);
+      }, 0);
+      copy._practiceParts = labels.map(String);
+    }
+    if(hasTextOverrides){
+      copy.parts = (copy.parts || []).map(function(part){
+        var updated = part.slice();
+        var original = String(updated[0]);
+        if(Object.prototype.hasOwnProperty.call(textOverrides, original)) updated[1] = String(textOverrides[original]);
+        return updated;
+      });
+    }
+    if(hasLabelOverrides){
+      copy.parts = (copy.parts || []).map(function(part){
+        var updated = part.slice();
+        var original = String(updated[0]);
+        if(Object.prototype.hasOwnProperty.call(labelOverrides, original)) updated[0] = String(labelOverrides[original]);
+        return updated;
+      });
+      copy.markscheme = (copy.markscheme || []).map(function(group){
+        var updated = group.slice();
+        var original = String(updated[0]);
+        if(Object.prototype.hasOwnProperty.call(labelOverrides, original)) updated[0] = String(labelOverrides[original]);
+        return updated;
+      });
+    }
+    if(hasTitle) copy.title = REQUESTED_PART_TITLES[id];
+    if(hasBody) copy.body = REQUESTED_BODIES[id];
+    if(hideDiagram){
+      delete copy.diagram;
+      delete copy.diagram2;
+      delete copy.diagram3;
+      delete copy.diagram4;
+    }
+    if(hasDifficulty && typeof REQUESTED_DIFFICULTIES[id] === 'string'){
+      copy.difficulty = Object.assign({}, q.difficulty || {});
+      ['AA SL', 'AA HL', 'AI SL', 'AI HL'].forEach(function(course){
+        copy.difficulty[course] = REQUESTED_DIFFICULTIES[id];
+      });
+    }
+    return copy;
+  }
+
   function mergeAndSort(stored){
     var byId = {};
-    SEED.forEach(function(q){ byId[q.id] = q; });
+    var merged = SEED.map(practiceVariant);
+    merged.forEach(function(q){ byId[q.id] = q; });
     var addedAny = (stored || []).length !== SEED.length;
-    var merged = SEED.slice();
     merged.sort(function(a,b){
       var ba = bankOf(a), bb = bankOf(b);
       var ca = COURSE_ORDER.indexOf(ba), cb = COURSE_ORDER.indexOf(bb);
@@ -550566,7 +550670,7 @@ function diagramN11TZ0P2Q1grid(){
     var d = q.difficulty;
     if(typeof d === 'string') return d;            // tolerate older stored data
     if(!d) return 'Medium';
-    return d[state.course] || d['AA HL'] || d['AA SL'] || 'Medium';
+    return d[state.course] || d[q.course] || d['AI HL'] || d['AI SL'] || d['AA HL'] || d['AA SL'] || 'Medium';
   }
 
   // Paper number means a DIFFERENT thing in each course. In AA, Paper 1 is the
@@ -550673,15 +550777,23 @@ function diagramN11TZ0P2Q1grid(){
 
   // The worked solution: numbered steps, each with a title, an explanation in
   // words and the working. Same content as the answers booklets.
-  function solutionHTML(data){
+  // When practice displays one extracted part from a longer exam question, it
+  // is presented as the whole exercise. Showing a lone "(a)" or "(b)" implies
+  // missing material and was confusing in the course review.
+  function hidePracticePartLabel(q){
+    return !!(IS_PRACTICE && q && q._practiceParts && q._practiceParts.length === 1
+      && q.parts && q.parts.length === 1);
+  }
+  function solutionHTML(data, q){
     var sol = data && data.s;
     if(!sol) return '';
     var figs = data.f || {};
     function solutionFig(q, pi, si){ return figs[pi + '.' + si] || ''; }
-    var q = null;
+    var wantedParts = q && q._practiceParts ? new Set(q._practiceParts.map(String)) : null;
     var out = [];
     (sol.solution || []).forEach(function(part, pi){
-      if(part.part) out.push('<div class="qb-sol-part">(' + part.part + ')</div>');
+      if(wantedParts && !wantedParts.has(String(part.part || ''))) return;
+      if(part.part && !hidePracticePartLabel(q)) out.push('<div class="qb-sol-part">(' + part.part + ')</div>');
       (part.steps || []).forEach(function(st, i){
         var fig = solutionFig(q, pi, i);
         out.push('<div class="qb-sol-step"><div class="qb-sol-num">Step ' + (i + 1) + '</div>' +
@@ -550709,7 +550821,7 @@ function diagramN11TZ0P2Q1grid(){
         '</div>';
     }
     return ansDiag + '<div class="qb-ms-groups">' + q.markscheme.map(function(grp){
-      var label = grp[0] ? '<div class="qb-ms-label">'+partLabel(grp[0])+'</div>' : '';
+      var label = grp[0] && !hidePracticePartLabel(q) ? '<div class="qb-ms-label">'+partLabel(grp[0])+'</div>' : '';
       var linesHtml = '<ol class="qb-ms-lines">' + grp[1].map(function(ln){
         return '<li><span class="qb-ms-text">'+safeHTML(ln[0])+'</span><span class="qb-ms-tag">'+safeHTML(ln[1])+'</span></li>';
       }).join('') + '</ol>';
@@ -550830,7 +550942,8 @@ function diagramN11TZ0P2Q1grid(){
         } else {
           inner = paras(stackSubParts(raw));
         }
-        return '<li><b>'+partLabel(p[0])+'</b><div class="qb-part-text">'+inner+'<span class="qb-marks-tag">['+p[2]+' '+(p[2]==1?'mark':'marks')+']</span></div></li>';
+        var label = hidePracticePartLabel(q) ? '' : '<b>'+partLabel(p[0])+'</b>';
+        return '<li>'+label+'<div class="qb-part-text">'+inner+'<span class="qb-marks-tag">['+p[2]+' '+(p[2]==1?'mark':'marks')+']</span></div></li>';
       }).join('') + '</ul>';
     }
     var diagHtml = '';
@@ -550855,8 +550968,13 @@ function diagramN11TZ0P2Q1grid(){
     // Show the current Paper 1 / Paper 2 classification without exposing the
     // source session or time-zone provenance stored with the question.
     var qPaperNum = paperNumberOf(q);
-    var showPaperNum = HAS_PAPERS && (qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2');
-    var courseTag = showPaperNum ? '<span class="qb-badge course">'+qPaperNum+'</span>' : '';
+    var showPaperNum = !HIDE_PAPER && HAS_PAPERS && (qPaperNum === 'Paper 1' || qPaperNum === 'Paper 2');
+    var paperLabel = qPaperNum;
+    if(state.course.indexOf('AA ') === 0){
+      if(qPaperNum === 'Paper 1') paperLabel += ' &middot; Non-calculator';
+      if(qPaperNum === 'Paper 2') paperLabel += ' &middot; Calculator';
+    }
+    var courseTag = showPaperNum ? '<span class="qb-badge course">'+paperLabel+'</span>' : '';
     // Provenance notes ("on an AA SL paper but the content is AA HL only",
     // "extract: part (a) of a longer question") were removed on Rob's
     // instruction: they are bookkeeping for us, not information a student
@@ -551258,6 +551376,7 @@ function diagramN11TZ0P2Q1grid(){
     var showOff = false, showProv = false, showHeld = false;
 
     var out = state.all.filter(function(item){
+      if(REQUESTED_IDS.size && !REQUESTED_IDS.has(String(item.id))) return false;
       // A direct ID list is an assignment snapshot. Keep those questions
       // available even if a later bank update moves them out of the public
       // course, off syllabus, or into a provisional holding state.
@@ -551320,13 +551439,17 @@ function diagramN11TZ0P2Q1grid(){
       if(!subtopic) return 0;
       return topicsOf(q).some(function(t){ return t.sub !== subtopic; }) ? 1 : 0;
     }
-    out.sort(function(a, b){
-      var d = rankOf(a) - rankOf(b);
-      if(d) return d;
-      d = nudgeOf(a) - nudgeOf(b);
-      if(d) return d;
-      return mixedOf(a) - mixedOf(b);
-    });
+    if(REQUESTED_ID_LIST.length){
+      out.sort(function(a, b){ return REQUESTED_ID_LIST.indexOf(String(a.id)) - REQUESTED_ID_LIST.indexOf(String(b.id)); });
+    } else {
+      out.sort(function(a, b){
+        var d = rankOf(a) - rankOf(b);
+        if(d) return d;
+        d = nudgeOf(a) - nudgeOf(b);
+        if(d) return d;
+        return mixedOf(a) - mixedOf(b);
+      });
+    }
 
     document.getElementById('qb-count-num').textContent = out.length;
     var list = document.getElementById('qb-list');
@@ -551420,7 +551543,7 @@ function diagramN11TZ0P2Q1grid(){
             sPanel.innerHTML = '<div class="qb-sol-loading">Loading the worked solution\u2026</div>';
             loadSolution(sq, function(data){
               sPanel.removeAttribute('data-loading');
-              sPanel.innerHTML = solutionHTML(data); typeset(sPanel);
+              sPanel.innerHTML = solutionHTML(data, sq); typeset(sPanel);
               sPanel.setAttribute('data-built','1');
             }, function(){
               sPanel.removeAttribute('data-loading');
@@ -551487,7 +551610,7 @@ function diagramN11TZ0P2Q1grid(){
 </script>
 
 <script src="/question-bank/progress.js?v=2"></script>
-<script src="/question-bank/whiteboard.js?v=19"></script>
+<script src="whiteboard.js?v=19"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=17"></script>
 <script src="/question-bank/assignment-selector.js?v=28"></script>
 <script src="/question-bank/test-selector.js?v=11"></script>

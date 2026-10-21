@@ -1,0 +1,464 @@
+course,review_date,lesson_code,lesson_title,status,locked_question_ids,review_note
+AA HL,2026-10-20,1.1,Scientific notation,approved,A_M21TZ1SL_P1_Q2|N20TZ0AISL_P1_Q1,Locked from Rob's review
+AA HL,2026-10-20,1.2.1,Arithmetic sequences and series,approved,N09TZ0HL_P1_Q11X1|M10TZ2HL_P2_Q1,Locked from Rob's review
+AA HL,2026-10-21,1.2.2,Sigma notation,approved,M14TZ2HL_P2_Q1|W_M24TZ2AIHL_P2_Q6,Approved by Rob after recheck
+AA HL,2026-10-21,1.3,Geometric sequences and series,approved,N08TZ0HL_P2_Q2|N13TZ0HL_P1_Q7,Approved by Rob after recheck
+AA HL,2026-10-20,1.4.1,Compound interest,approved,A_M22TZ1SL_P2_Q1|A_SPECSL_P2_Q3,Locked from Rob's review
+AA HL,2026-10-20,1.4.2,Depreciation,approved,A_M23TZ1SL_P2_Q2|W_M23TZ2AIHL_P1_Q4,Locked from Rob's review
+AA HL,2026-10-20,1.4.3,Inflation,approved,A_M25TZ2HL_P2_Q4|W_M22TZ2AIHL_P1_Q11,Locked from Rob's review
+AA HL,2026-10-21,1.5.1,Laws of exponents,approved,M10TZ1HL_P1_Q4|A_N21TZ0SL_P2_Q2,Approved by Rob after recheck
+AA HL,2026-10-20,1.5.2,Introduction to logs,approved,M13TZ2SL_P1_Q3|N08TZ0HL_P1_Q2,Locked from Rob's review
+AA HL,2026-10-20,1.5.3,The number e,approved-no-practice,,Intentionally blank
+AA HL,2026-10-20,1.6,Simple deductive proofs,approved,A_M21TZ2HL_P1_Q1|A_N24TZ0HL_P1_Q3,Locked from Rob's review
+AA HL,2026-10-21,1.7.1,More exponents,approved,A_M22TZ1SL_P1_Q2|A_N21TZ0SL_P1_Q8,Approved by Rob after recheck
+AA HL,2026-10-21,1.7.2,Laws of logarithms,approved,M16TZ2SL_P1_Q3|M17TZ1HL_P1_Q1,Approved by Rob after recheck
+AA HL,2026-10-20,1.7.3,Change of base law,approved-after-ordering,A_N21TZ0HL_P1_Q3|A_N25TZ3HL_P1_Q4,Same approved pair reordered easy before harder
+AA HL,2026-10-20,1.8.1,Sum of an infinite geometric sequence,approved,M08TZ2HL_P1_Q12X1|M12TZ1HL_P1_Q1,Locked from Rob's review
+AA HL,2026-10-20,1.8.2,System of linear equations,approved-no-practice,,Intentionally blank
+AA HL,2026-10-20,1.8.3,Roots of a polynomial,approved-no-practice,,Intentionally blank
+AA HL,2026-10-20,1.9.1,Binomial expansion intro and full expansion,approved,M09TZ2HL_P1_Q12X2|N10TZ0HL_P1_Q3,Locked from Rob's review
+AA HL,2026-10-20,1.9.2,Binomial expansion finding a term,approved,M08TZ2SL_P2_Q2|M10TZ2SL_P2_Q4,Locked from Rob's review
+AA HL,2026-10-21,1.10.1,Counting principles introduction,approved-single,A_N22TZ0HL_P1_Q11,Question 1 approved; unrelated integration question removed
+AA HL,2026-10-21,1.10.2,Factorials and arrangements,approved,M10TZ1HL_P2_Q7|M12TZ2HL_P2_Q4,Approved by Rob after recheck
+AA HL,2026-10-20,1.10.3,Algebra of factorials,approved-no-practice,,Intentionally blank
+AA HL,2026-10-20,1.10.4,Combinations and permutations,approved,M14TZ1HL_P2_Q3|A_N25TZ1HL_P2_Q2,Locked from Rob's review
+AA HL,2026-10-20,1.10.5,Keeping objects together or separated,approved,A_N23TZ2HL_P2_Q7|M13TZ1HL_P2_Q8,Locked from Rob's review
+AA HL,2026-10-20,1.10.6,Binomial theorem extension,approved,A_BINQ_P1_Q1|A_BINQ_P1_Q2,Locked from Rob's review
+AA HL,2026-10-21,1.11,Partial fractions,approved,A2_M24TZ1HL_P1_Q11|M15TZ1HL_P1_Q6,Approved by Rob after recheck
+AA HL,2026-10-20,1.12.1,Complex numbers introduction,approved-after-removal,M17TZ2HL_P1_Q5,Removed question 1 and retained only the approved former question 2
+AA HL,2026-10-21,1.12.2,Operations with complex numbers,approved,M11TZ1HL_P1_Q2|M12TZ2HL_P1_Q6,Approved by Rob after recheck
+AA HL,2026-10-20,1.13.1,Modulus-argument form,approved,M13TZ1HL_P1_Q1|M17TZ1HL_P1_Q2,Locked from Rob's review
+AA HL,2026-10-20,1.13.2,Euler form,approved-after-ordering,W_N23TZ0AIHL_P1_Q8|A_M25TZ3HL_P1_Q8,Same approved pair reordered easy before harder
+AA HL,2026-10-20,1.13.3,Complex operations and geometric interpretation,approved,W_N24TZ0AIHL_P1_Q9|A_M23TZ1HL_P2_Q6,Locked from Rob's review
+AA HL,2026-10-20,1.13.4,Properties of complex conjugates,approved,M12TZ2HL_P1_Q12|N20TZ0HL_P1_Q4,Locked from Rob's review
+AA HL,2026-10-20,1.14.1,Complex solutions to polynomial equations,approved,M09TZ1HL_P1_Q1|N10TZ0HL_P2_Q6,Locked from Rob's review
+AA HL,2026-10-21,1.14.2,De Moivre's Theorem,approved,M11TZ1HL_P1_Q13|M15TZ1HL_P2_Q12,Approved by Rob after recheck
+AA HL,2026-10-21,1.14.3,Roots of complex numbers,approved,N08TZ0HL_P1_Q13|N15TZ0HL_P1_Q11,Approved by Rob after recheck
+AA HL,2026-10-20,1.14.4,Roots of unity,approved,M16TZ2HL_P1_Q12|M10TZ2HL_P1_Q13,Locked from Rob's review
+AA HL,2026-10-21,1.15.1,Proof by induction intro and series,approved,N18TZ0HL_P1_Q6|M18TZ1HL_P1_Q6,Approved by Rob after recheck
+AA HL,2026-10-21,1.15.2,Proof by induction differentiation,approved,N11TZ0HL_P1_Q6|N15TZ0HL_P1_Q8,Approved by Rob after recheck
+AA HL,2026-10-20,1.15.3,Proof by induction divisibility,approved,M14TZ1HL_P2_Q7|A_N23TZ2HL_P1_Q6,Locked from Rob's review
+AA HL,2026-10-20,1.15.4,Proof by induction inequalities,approved,M19TZ1HL_P2_Q8|A_M25TZ1HL_P1_Q8,Locked from Rob's review
+AA HL,2026-10-20,1.15.5,Proof by induction De Moivre,approved,M14TZ2HL_P2_Q13,Renumbered from 1.15.6 and exact proof retained
+AA HL,2026-10-20,1.15.6,Proof by contradiction intro,approved,A_N25TZ3HL_P2_Q9|A_M22TZ2HL_P1_Q9,Renumbered from 1.15.5
+AA HL,2026-10-20,1.15.7,Proof by contradiction root 2,approved,A2_M22TZ2HL_P1_Q9|A2_N25TZ3HL_P2_Q9,Locked from Rob's review
+AA HL,2026-10-20,1.15.8,Proof by contradiction infinite primes,approved-no-practice,,Intentionally blank
+AA HL,2026-10-20,1.15.9,Use of counter example,approved-no-practice,,Intentionally blank
+AA HL,2026-10-21,1.16.1,System of linear equations HL only,approved,N15TZ0HL_P2_Q2|N18TZ0HL_P1_Q4,Approved by Rob after recheck
+AA HL,2026-10-20,1.16.2,System of linear equations part 2,approved,M13TZ1HL_P2_Q2|M14TZ1HL_P2_Q4,Locked from Rob's review
+AA HL,2026-10-20,2.1.1,Gradient of a line,approved,M12TZ1AISL_P1_Q9|N18TZ0AISL_P1_Q12,Locked from Rob's second review
+AA HL,2026-10-20,2.1.2,Equation of a straight line,approved,M15TZ1AISL_P1_Q3|A_M24TZ2HL_P1_Q3,Locked from Rob's second review
+AA HL,2026-10-20,2.1.3,Parallel and perpendicular lines,approved,M18TZ2AISL_P1_Q6|M16TZ2AISL_P1_Q12,Locked from Rob's second review
+AA HL,2026-10-21,2.2.1,Functions introduction,approved,N18TZ0SL_P1_Q2|M16TZ1SL_P1_Q1,Approved by Rob after final recheck
+AA HL,2026-10-21,2.2.2,Evaluating functions,approved,N16TZ0SL_P2_Q1|M18TZ1SL_P1_Q1,Approved by Rob after final recheck
+AA HL,2026-10-21,2.2.3,Inverse functions introduction,approved,W_SPECAIHL_P1_Q2|M18TZ1SL_P1_Q3,Approved by Rob after final recheck
+AA HL,2026-10-21,2.3,Sketching functions,approved,M08TZ2SL_P2_Q3|N17TZ0SL_P2_Q2,Approved by Rob after final recheck
+AA HL,2026-10-21,2.4.1,Features of graphs,approved,A_M25TZ2HL_P1_Q1|A_M23TZ1SL_P2_Q3,Approved by Rob after recheck
+AA HL,2026-10-20,2.4.2,Asymptotes,approved,A_M23TZ2SL_P1_Q3|A_N21TZ0SL_P1_Q3,Locked from Rob's second review
+AA HL,2026-10-21,2.5.1,Composite functions,approved,N14TZ0SL_P2_Q1|A_N23TZ1SL_P1_Q2,Approved by Rob after recheck
+AA HL,2026-10-21,2.5.2,Finding inverse functions,approved,N15TZ0SL_P1_Q5|N16TZ0HL_P2_Q10X2,Approved by Rob after recheck
+AA HL,2026-10-20,2.6.1,Quadratics three forms,approved,A_N21TZ0SL_P1_Q1|A_M21TZ1SL_P1_Q7,Locked from Rob's second review
+AA HL,2026-10-21,2.6.2,Factorising quadratics,approved,N08TZ0SL_P2_Q1|M13TZ1AISL_P1_Q9,Approved by Rob after recheck
+AA HL,2026-10-20,2.6.3,Vertex form,approved,M14TZ1SL_P1_Q1|M16TZ2SL_P1_Q1,Locked from Rob's second review
+AA HL,2026-10-20,2.7.1,Solving quadratic equations,approved,N14TZ0SL_P1_Q1|N17TZ0HL_P2_Q7,Locked from Rob's second review
+AA HL,2026-10-21,2.7.2,Quadratic inequalities,approved-single,M17TZ2HL_P2_Q4,Approved by Rob as a one-question lesson
+AA HL,2026-10-21,2.7.3,The discriminant,approved,M15TZ1SL_P1_Q6|N20TZ0SL_P1_Q5,Approved by Rob after recheck
+AA HL,2026-10-21,2.8,Rational functions,approved,A_M24TZ1SL_P1_Q8|A_M22TZ2SL_P1_Q4,Approved by Rob after recheck
+AA HL,2026-10-20,2.9.1,Exponential modelling,approved,W_N24TZ0AIHL_P1_Q2|W_M21TZ1AIHL_P1_Q4,Locked from Rob's second review
+AA HL,2026-10-20,2.9.2,Logarithmic modelling,approved,W_M25TZ3AIHL_P1_Q2|N20TZ0SL_P1_Q4,Locked from Rob's second review
+AA HL,2026-10-20,2.10.1,Solving equations using substitution,approved,A_M23TZ1SL_P1_Q5|A_M24TZ2HL_P1_Q2,Locked from Rob's second review
+AA HL,2026-10-21,2.10.2,Solving equations with GDC,approved,M16TZ1SL_P2_Q2|M15TZ2SL_P2_Q8X1,Approved by Rob after recheck
+AA HL,2026-10-21,2.11.1,Transformations,approved,M08TZ2SL_P1_Q5|M12TZ2SL_P1_Q5,Approved by Rob after recheck
+AA HL,2026-10-21,2.11.2,Composite transformations,approved,N09TZ0SL_P1_Q4|M14TZ2HL_P1_Q8S,Approved by Rob after recheck
+AA HL,2026-10-21,2.12.1,Dividing polynomials,approved-after-ordering,N17TZ0HL_P1_Q3|M10TZ1HL_P1_Q1,Approved pair reordered with the easier question first
+AA HL,2026-10-20,2.12.2,Factor and remainder theorems,approved,N13TZ0HL_P1_Q1|A_M25TZ3HL_P2_Q2,Locked from Rob's second review
+AA HL,2026-10-21,2.12.3,Graphs of polynomials,approved-single,M17TZ2HL_P2_Q11,Approved by Rob as a one-question lesson
+AA HL,2026-10-20,2.12.4,Sum and product of roots,approved-after-ordering,M15TZ1HL_P1_Q7|A_M21TZ2HL_P1_Q7,Same approved pair reordered medium before difficult
+AA HL,2026-10-21,2.13.1,Rational functions quadratic in denominator,approved,A_M22TZ2HL_P1_Q11|N10TZ0HL_P2_Q8|N19TZ0HL_P1_Q10,Approved by Rob after final recheck
+AA HL,2026-10-21,2.13.2,Rational functions quadratic in numerator,approved,A_N23TZ1HL_P2_Q11|A_N21TZ0HL_P2_Q10,Approved by Rob after recheck
+AA HL,2026-10-20,2.14,Even and odd functions,approved,M15TZ1HL_P1_Q5|A_M22TZ1HL_P2_Q6,Locked from Rob's final Topic 2 review
+AA HL,2026-10-21,2.15,Solving inequalities,approved,M15TZ1HL_P2_Q10|M10TZ1HL_P2_Q9,Approved by Rob after the final recheck
+AA HL,2026-10-21,2.16.1,Graphs of modulus functions,approved,M08TZ1HL_P2_Q2|A_N25TZ3HL_P1_Q5,Approved by Rob after recheck
+AA HL,2026-10-21,2.16.2,Modulus equations and inequalities,approved,N10TZ0HL_P1_Q1|M16TZ1HL_P1_Q7,Approved by Rob after the final recheck
+AA HL,2026-10-20,2.16.3,Reciprocal transformations,approved,A2_M25TZ3HL_P1_Q6|A3_M25TZ3HL_P1_Q6,Locked from Rob's final Topic 2 review
+AA HL,2026-10-20,2.16.4,Graphs of y = [f(x)]²,approved,A_SPECHL_P1_Q3|N18TZ0HL_P2_Q8,Locked from Rob's final Topic 2 review
+AA HL,2026-10-20,3.1.1,Midpoint of a line segment,approved,M18TZ1AISL_P1_Q5|M14TZ1AISL_P1_Q9,Locked from Rob's Topic 3 review
+AA HL,2026-10-21,3.1.2,Distance between 2 points,approved,N16TZ0AISL_P2_Q3|N14TZ0AISL_P1_Q2,Approved by Rob after recheck
+AA HL,2026-10-20,3.1.3,Volume and surface area,approved,A_M25TZ3SL_P2_Q1|W_N21TZ0AIHL_P2_Q1,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.1.4,Trigonometry in 3D,approved,W_N22TZ0AIHL_P1_Q3|V_M25TZ3AISL_P1_Q1,Locked from Rob's Topic 3 review
+AA HL,2026-10-21,3.2.1,Pythagoras' theorem,approved,M16TZ2HL_P2_Q1|N13TZ0AISL_P1_Q5,Approved by Rob after recheck
+AA HL,2026-10-20,3.2.2,SOHCAHTOA,approved-no-practice,,Rob explicitly approved this lesson with no attached practice
+AA HL,2026-10-21,3.2.3,Sine rule,approved,M15TZ2SL_P2_Q1|N17TZ0SL_P2_Q1,Approved by Rob after recheck
+AA HL,2026-10-20,3.2.4,Cosine rule,approved,W_N24TZ0AIHL_P1_Q1|N17TZ0SL_P1_Q4,Locked from Rob's Topic 3 review
+AA HL,2026-10-21,3.2.5,Area of a triangle,approved,M15TZ2HL_P2_Q1|A_N23TZ2HL_P1_Q4,Approved by Rob after recheck
+AA HL,2026-10-20,3.3.1,Bearings,approved,V_N23TZ2AISL_P1_Q5|V_M23TZ1AISL_P1_Q13,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.3.2,Angles of elevation and depression,approved,W_M22TZ2AIHL_P1_Q2|N17TZ0HL_P2_Q5,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.4.1,Radians,approved-no-practice,,Rob explicitly approved this lesson with no attached practice
+AA HL,2026-10-20,3.4.2,Arcs and sectors,approved,N16TZ0SL_P2_Q3|N17TZ0HL_P2_Q3,Locked from Rob's Topic 3 review
+AA HL,2026-10-21,3.5.1,Mr. Flynn's exact triangles,approved,M17TZ1SL_P1_Q3|M15TZ2AISL_P1_Q2,Approved by Rob after recheck
+AA HL,2026-10-20,3.5.2,Unit circle,approved-no-practice,,Rob explicitly approved this lesson with no attached practice
+AA HL,2026-10-20,3.5.3,The CAST diagram,approved-no-practice,,Rob explicitly approved this lesson with no attached practice
+AA HL,2026-10-20,3.5.4,"Graphs of sin, cos and tan",approved,M15TZ2SL_P1_Q2|M10TZ1HL_P2_Q1,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.5.5,Sine rule (ambiguous case),approved,N11TZ0SL_P2_Q4|N08TZ0HL_P2_Q1,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.6,Trig identities,approved,M19TZ1HL_P1_Q9S|N08TZ0SL_P1_Q7,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.7.1,Sinusoidal graphs,approved,A_M25TZ1HL_P2_Q2|M08TZ1SL_P1_Q4,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.7.2,Sinusoidal modelling,approved,W_N22TZ0AIHL_P1_Q6|A_M21TZ1SL_P2_Q4,Locked from Rob's Topic 3 review
+AA HL,2026-10-21,3.8.1,Solving trig equations,approved,A_M24TZ2HL_P1_Q1|M13TZ2HL_P2_Q6,Approved by Rob after recheck
+AA HL,2026-10-20,3.8.2,Solving trig equations with identities,approved,A_M21TZ2SL_P1_Q3|A_M23TZ1SL_P1_Q4,Locked from Rob's Topic 3 review
+AA HL,2026-10-20,3.9.1,Reciprocal trig identities,approved,A_M21TZ1HL_P1_Q6|M11TZ1HL_P1_Q5,Locked from Rob's Topic 3 review
+AA HL,2026-10-21,3.9.2,Inverse trigonometric functions,approved,M09TZ2HL_P2_Q3|N11TZ0HL_P2_Q4,Approved by Rob after final recheck
+AA HL,2026-10-20,3.10,Compound angle identities,approved,M16TZ1HL_P1_Q5|M10TZ2HL_P1_Q6,Locked from Rob's Topic 3 review
+AA HL,2026-10-21,3.12.1,Vectors introduction,approved,N13TZ0SL_P1_Q1|N15TZ0SL_P1_Q2,Approved by Rob after recheck
+AA HL,2026-10-21,3.12.2,Operations with vectors,approved,M10TZ2HL_P1_Q3|M13TZ1SL_P1_Q1,Approved by Rob after recheck
+AA HL,2026-10-21,3.12.3,Magnitude and unit vectors,approved,M10TZ2SL_P1_Q2|M16TZ2SL_P1_Q7,Approved by Rob after recheck
+AA HL,2026-10-21,3.13.1,Scalar product and angle between vectors,approved,M18TZ2HL_P1_Q1|N08TZ0HL_P2_Q4,Approved by Rob after recheck
+AA HL,2026-10-20,3.13.2,Properties of the scalar product,approved,M10TZ1HL_P1_Q6|M10TZ2HL_P1_Q12,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.14.1,Vector equation of a line,approved,M18TZ2SL_P1_Q1|N16TZ0SL_P1_Q4,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.14.2,Parametric form and cartesian equations of a line,approved,A_M25TZ2HL_P1_Q2|M09TZ1HL_P2_Q5,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.14.3,Angle between two lines,approved-single,M11TZ2SL_P2_Q8,Approved line-angle question retained alone after moving the vector-angle question
+AA HL,2026-10-20,3.14.4,Vectors and kinematics,approved,N08TZ0SL_P1_Q2|M10TZ2SL_P2_Q9,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.15.1,Intersecting lines,approved,N16TZ0HL_P1_Q8|A_M25TZ1HL_P1_Q6,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-21,3.15.2,Distance between a point and a line,approved,N13TZ0HL_P2_Q9|W_N23TZ0AIHL_P1_Q14,Approved by Rob after recheck
+AA HL,2026-10-20,3.16.1,Vector product,approved,W_M21TZ1AIHL_P1_Q5|M16TZ1HL_P2_Q1,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.16.2,Properties of the vector product,approved,A_M21TZ2HL_P1_Q5|A_M24TZ1HL_P2_Q12,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.16.3,Areas using vector product,approved,M13TZ1HL_P1_Q2|A_N23TZ2HL_P2_Q8,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.17.1,Vector equation of a plane,approved-single,A_N25TZ1HL_P2_Q12,Rob explicitly approved keeping the one exact vector-form plane question on its own
+AA HL,2026-10-20,3.17.2,Cartesian equation of a plane,approved,M17TZ1HL_P2_Q7|M15TZ2HL_P2_Q5,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.18.1,Intersection between a line and a plane,approved,M08TZ1HL_P2_Q3|N10TZ0HL_P1_Q7,Locked from Rob's Topic 3 vector review
+AA HL,2026-10-20,3.18.2,Intersection between two planes,approved,N11TZ0HL_P2_Q13|A_M22TZ1HL_P1_Q11,Locked from Rob's Topic 3 vector review; lone extracted-part labels are hidden
+AA HL,2026-10-21,3.18.3,Intersection of 3 planes,approved,M14TZ2HL_P1_Q3|M08TZ1HL_P2_Q5,Approved by Rob after recheck
+AA HL,2026-10-21,3.18.4,Angle between a line and a plane,approved,M10TZ1HL_P2_Q11|M12TZ2HL_P2_Q11,Approved by Rob after recheck
+AA HL,2026-10-21,3.18.5,Angle between two planes,approved,M10TZ1HL_P1_Q3|N14TZ0HL_P2_Q1,Approved by Rob after recheck
+AA HL,2026-10-20,4.1.1,Discrete v continuous data,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AA HL,2026-10-20,4.1.2,Sampling techniques,approved,W_SPECAIHL_P1_Q1|A_M25TZ3HL_P2_Q3,Locked from Rob's Topic 4 review; the cropped one-mark systematic-sampling extract is displayed green in the course only
+AA HL,2026-10-20,4.2.1,Histograms and cumulative frequency curves,approved,M12TZ1SL_P2_Q8|M12TZ2SL_P1_Q1,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.2.2,Box and whisker diagram,approved,M12TZ1HL_P2_Q5|N12TZ0SL_P1_Q8,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.2.3,Interpreting box plots,approved,N15TZ0SL_P1_Q1|A_M24TZ1SL_P2_Q1,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.2.4,Outliers,approved,V_M23TZ2AISL_P1_Q3|M18TZ1SL_P1_Q2,Locked from Rob's Topic 4 review
+AA HL,2026-10-21,4.3.1,Averages and spread,approved,M14TZ1HL_P1_Q2|M19TZ1HL_P2_Q3,Approved by Rob after recheck
+AA HL,2026-10-20,4.3.2,Frequency tables,approved,A_M22TZ1SL_P2_Q2|M13TZ1HL_P2_Q1,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.3.3,Constant changes to data,approved,M18TZ2SL_P1_Q3|M16TZ2SL_P1_Q2,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.3.4,Variance and standard deviation by hand,approved-no-practice,,Rob explicitly requested that this lesson remain blank
+AA HL,2026-10-21,4.4,Linear regression and correlation,approved,A_M23TZ2SL_P2_Q1|W_M23TZ1AIHL_P2_Q1,Approved by Rob after recheck
+AA HL,2026-10-20,4.5,Probability formulae,approved,A_SPECTZ0HL_P1_Q1|A_N23TZ2HL_P1_Q2|A_N24TZ0HL_P1_Q2,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.6.1,Venn diagrams,approved,M11TZ2SL_P1_Q2|M09TZ2HL_P2_Q1,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.6.2,Tree diagrams,approved,M15TZ2SL_P1_Q1|M12TZ2HL_P1_Q3,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.7,Discrete random variables,approved,N13TZ0HL_P1_Q2S|N16TZ0HL_P1_Q2,Locked from Rob's Topic 4 review
+AA HL,2026-10-20,4.8,Binomial distribution,approved,M08TZ1SL_P2_Q6|M15TZ1HL_P2_Q3|M18TZ2HL_P2_Q8,Locked from Rob's Topic 4 review
+AA HL,2026-10-21,4.9,Normal distribution,approved,N09TZ0SL_P1_Q3|M15TZ1HL_P2_Q2,Approved by Rob during Topic 4 recheck
+AA HL,2026-10-21,4.10,Regression line of x on y,approved,A_M24TZ1SL_P2_Q6|A_SPECTZ0HL_P2_Q4,Approved by Rob after final recheck
+AA HL,2026-10-20,4.11,Testing for independence,approved,M15TZ2HL_P1_Q1|A_N21TZ0SL_P1_Q4,Locked from Rob's final Topic 4 review
+AA HL,2026-10-21,4.12,Normal distribution (finding mean and std. dev.),approved,M10TZ2HL_P2_Q3|M11TZ1HL_P2_Q12,Approved by Rob after recheck
+AA HL,2026-10-20,4.13,Bayes' theorem,approved,N11TZ0HL_P1_Q3|M08TZ1HL_P2_Q8,Locked from Rob's final Topic 4 review
+AA HL,2026-10-20,4.14.1,Variance and standard deviation,approved,A_M25TZ2HL_P2_Q8|M10TZ1HL_P1_Q10,Locked from Rob's final Topic 4 review
+AA HL,2026-10-20,4.14.2,Variance and standard deviation of a discrete random variable,approved,M10TZ2HL_P2_Q2|N16TZ0HL_P2_Q1,Locked from Rob's final Topic 4 review
+AA HL,2026-10-20,4.14.3,Continuous random variables intro,approved,M10TZ2HL_P1_Q1|A_M22TZ1HL_P1_Q7,Locked from Rob's final Topic 4 review
+AA HL,2026-10-21,4.14.4,Mean of a continuous random variable,approved,M12TZ2HL_P2_Q7|A_N24TZ0HL_P2_Q6,Approved by Rob after recheck
+AA HL,2026-10-21,4.14.5,Median and mode of a discrete random variable,approved,A_M25TZ3HL_P2_Q3|MF_AAHL_T4_DISCRETE_MEDIAN,Approved by Rob after final recheck
+AA HL,2026-10-20,4.14.6,Median and mode of continuous random variable,approved,M12TZ1HL_P2_Q2|M08TZ2HL_P2_Q4,Locked from Rob's final Topic 4 review
+AA HL,2026-10-21,4.14.7,Variance of a continuous random variable,approved,M17TZ2HL_P2_Q10|M15TZ1HL_P2_Q11,Approved by Rob after recheck
+AA HL,2026-10-20,4.14.8,Linear transformations of X,approved,A_N25TZ3HL_P1_Q7|A_SPECTZ0HL_P2_Q6,Locked from Rob's final Topic 4 review
+AA HL,2026-10-20,5.1.1,Introduction to differentiation,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AA HL,2026-10-20,5.1.2,Introduction to limits,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AA HL,2026-10-20,5.2.1,Increasing and decreasing functions,approved,N20TZ0AISL_P1_Q11|N17TZ0AISL_P2_Q5,Locked from Rob's calculus review
+AA HL,2026-10-21,5.3.1,Differentiation (the power rule),approved,M14TZ1AISL_P1_Q10|V_N23TZ2AISL_P1_Q3,Rob approved both questions in the Topic 5 confirmation pass
+AA HL,2026-10-20,5.3.2,Derivative at a point,approved,N12TZ0SL_P1_Q4|M18TZ2AISL_P1_Q14,Locked from Rob's calculus review
+AA HL,2026-10-21,5.4,Tangents and normals,approved,N18TZ0AISL_P1_Q11|N09TZ0SL_P1_Q10X1,Rob approved both questions in the Topic 5 confirmation pass
+AA HL,2026-10-20,5.5.1,Integration power rule,approved,A_M21TZ1SL_P2_Q1|N13TZ0SL_P2_Q3,Locked from Rob's calculus review
+AA HL,2026-10-20,5.5.2,Finding f(x),approved,A_N21TZ0SL_P1_Q2|M19TZ1SL_P1_Q5,Locked from Rob's calculus review
+AA HL,2026-10-21,5.5.3,Definite integration,approved,A_M22TZ1HL_P1_Q1|N13TZ0SL_P1_Q4,Rob approved both questions in the Topic 5 confirmation pass
+AA HL,2026-10-21,5.5.4,Area under the curve,approved,A_N22TZ0SL_P2_Q3|W_N23TZ0AIHL_P1_Q11,Approved by Rob after final recheck
+AA HL,2026-10-20,5.5.5,Finding a limit,approved-single,M14TZ1SL_P1_Q6,Approved first question retained alone because no second clean source avoids later integration rules
+AA HL,2026-10-21,5.6.1,"Derivative of sinx, cosx, lnx, e^x",approved,N16TZ0SL_P1_Q10X1|M18TZ1SL_P2_Q1|M15TZ1HL_P2_Q6,Rob approved all questions in the Topic 5 confirmation pass
+AA HL,2026-10-21,5.6.2,Chain rule,approved,M19TZ2SL_P1_Q10|M16TZ1SL_P1_Q10,Rob approved both questions in the Topic 5 confirmation pass
+AA HL,2026-10-20,5.6.3,Product rule,approved,M17TZ2SL_P1_Q6|N10TZ0SL_P1_Q2,Locked from Rob's calculus review
+AA HL,2026-10-20,5.6.4,Quotient rule,approved,M11TZ2SL_P1_Q4|M12TZ2SL_P1_Q10X1,Locked from Rob's calculus review
+AA HL,2026-10-20,5.7.1,Relationship between graphs and derivatives,approved,N08TZ0SL_P1_Q6|M10TZ2SL_P1_Q7,Locked from Rob's calculus review
+AA HL,2026-10-21,5.7.2,Sketching derivatives,approved,M14TZ2SL_P1_Q6,Rob approved the question; both axes now lie directly on the grid lines
+AA HL,2026-10-21,5.7.3,Sketching derivatives with gdc,approved,M10TZ1SL_P2_Q3|M12TZ2SL_P2_Q2,Rob approved both questions in the Topic 5 confirmation pass
+AA HL,2026-10-20,5.8.1,Classifying stationary points,approved,M11TZ1HL_P1_Q12X1|N13TZ0HL_P1_Q10X1,Locked from Rob's calculus review
+AA HL,2026-10-20,5.8.2,Points of inflexion,approved-after-ordering,M16TZ1HL_P2_Q11X1|N10TZ0SL_P2_Q7,Same approved pair reordered easy before harder
+AA HL,2026-10-20,5.8.3,Optimization,approved,M16TZ2SL_P1_Q9|N09TZ0SL_P2_Q7,Locked from Rob's calculus review
+AA HL,2026-10-20,5.9,Kinematics,approved-after-ordering,M12TZ2SL_P2_Q5|M16TZ1HL_P2_Q3,Same approved pair reordered easy before harder
+AA HL,2026-10-20,5.10.1,Integrating e^x and 1/x,approved,N20TZ0SL_P1_Q6|A_M22TZ2SL_P2_Q2,Locked from Rob's calculus review
+AA HL,2026-10-21,5.10.2,Integrating sin and cos,approved-single,M10TZ2SL_P1_Q10,Rob approved leaving the direct sine-integration question on its own
+AA HL,2026-10-20,5.10.3,Inverse chain rule,approved,N10TZ0SL_P1_Q6|M14TZ2SL_P1_Q5,Locked from Rob's calculus review
+AA HL,2026-10-21,5.10.4,Integration by substitution,approved,M17TZ1SL_P1_Q5|N20TZ0SL_P2_Q10,Approved by Rob after final recheck
+AA HL,2026-10-20,5.11,Area between two curves,approved,M14TZ2HL_P2_Q3|A_M25TZ1HL_P1_Q3,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.12.1,Continuous functions,approved-no-practice,,Rob approved this lesson with no attached practice
+AA HL,2026-10-20,5.12.2,Differentiable functions,approved-no-practice,,Rob approved this lesson with no attached practice
+AA HL,2026-10-20,5.12.3,Differentiation from first principles,approved,M15TZ1HL_P1_Q4|N18TZ0HL_P2_Q5,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.12.4,Higher derivatives,approved,M15TZ2SL_P1_Q5|N16TZ0SL_P1_Q10,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.13,l'Hopital's rule,approved,A_M21TZ1HL_P1_Q8|A_M24TZ2HL_P1_Q8,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.14.1,Implicit differentiation,approved-after-difficulty,M17TZ1HL_P2_Q2|M08TZ1HL_P2_Q6,Same approved pair with question 1 corrected from green to orange
+AA HL,2026-10-20,5.14.2,Related rates of change,approved,M14TZ2HL_P2_Q9|M09TZ2HL_P2_Q10,Locked from Rob's final Topic 5 review
+AA HL,2026-10-21,5.15.1,More derivative rules,approved,N08TZ0HL_P2_Q12|M18TZ1HL_P1_Q7,Approved by Rob after final recheck
+AA HL,2026-10-20,5.15.2,More integration rules,approved,M15TZ1HL_P1_Q3|M16TZ2HL_P1_Q3,Locked from Rob's final Topic 5 review
+AA HL,2026-10-21,5.15.3,Integrating using partial fractions,approved,M09TZ2HL_P1_Q4|M17TZ1HL_P1_Q11,Approved by Rob after final recheck
+AA HL,2026-10-21,5.16.1,Integration by substitution (HL only),approved,M15TZ1HL_P1_Q8|M09TZ2HL_P2_Q9|N12TZ0HL_P2_Q8,Rob approved all three questions in the Topic 5 confirmation pass
+AA HL,2026-10-20,5.16.2,Integration by parts,approved,N15TZ0HL_P1_Q2|M19TZ1HL_P2_Q5,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.16.3,Repeated integration by parts,approved,M11TZ2HL_P2_Q13B|N18TZ0HL_P1_Q10,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.17.1,Area between curve and y-axis,approved,N19TZ0HL_P2_Q11|W_M24TZ1AIHL_P1_Q9,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.17.2,Volume of revolution intro and x-axis,approved,M15TZ1HL_P2_Q1|M10TZ1SL_P1_Q6,Locked from Rob's final Topic 5 review
+AA HL,2026-10-21,5.17.3,Volume of revolution about y-axis,approved,M13TZ1HL_P2_Q4|A_N25TZ3HL_P2_Q5,Rob approved both questions in the Topic 5 confirmation pass
+AA HL,2026-10-20,5.17.4,Volume of revolution between 2 curves,approved,A_N25TZ1HL_P2_Q8|W_M23TZ2AIHL_P1_Q16,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.18.1,Differential equations introduction,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AA HL,2026-10-20,5.18.2,Separation of variables,approved,N12TZ0HL_P3_Q1|N08TZ0HL_P3_Q4,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.18.3,Euler's method introduction,approved,N12TZ0HL_P3_Q2|A_M25TZ1HL_P2_Q9,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.18.4,Euler's method example,approved,M10TZ0HL_P3_Q1|M11TZ0HL_P3_Q2,Locked as two distinct questions from Rob's final Topic 5 review
+AA HL,2026-10-20,5.18.5,Homogenous differential equations,approved,A_M25TZ1HL_P1_Q9|M10TZ0HL_P3_Q3,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.18.6,Integrating factor,approved,A_M24TZ1HL_P2_Q7|N17TZ0HL_P3_Q2,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.19.1,Maclaurin series introduction,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AA HL,2026-10-20,5.19.2,Maclaurin series,approved,N19TZ0HL_P3_Q3|M11TZ0HL_P3_Q1,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.19.3,Maclaurin series (substitutions and products),approved,N20TZ0HL_P3_Q4|A_M24TZ1HL_P1_Q8,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.19.4,Maclaurin series (binomial series),approved,A_M21TZ2HL_P2_Q9|A_N25TZ1HL_P1_Q5,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.19.5,Maclaurin series differentiation and integration,approved,N10TZ0HL_P3_Q3|A_M22TZ1HL_P1_Q12,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.19.6,Maclaurin series sigma notation,approved,N12TZ0HL_P3_Q4|N13TZ0HL_P3_Q4,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.19.7,Maclaurin series differential equations,approved,M18TZ0HL_P3_Q4|N15TZ0HL_P3_Q2,Locked from Rob's final Topic 5 review
+AA HL,2026-10-20,5.19.8,Euler's identity,approved-no-practice,,Rob approved this lesson with no attached practice
+AI HL,2026-10-20,1.1,Scientific notation,approved,M12TZ2AISL_P1_Q1|V_M23TZ1AISL_P1_Q8,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.2.1,Arithmetic sequences and series,approved,N18TZ0SL_P1_Q3A|N09TZ0HL_P1_Q11X1A,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-21,1.2.2,Sigma notation,approved,W_M22TZ2AIHL_P2_Q1|V_M22TZ2AISL_P2_Q2,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-20,1.3,Geometric sequences and series,approved,V_N25TZ1AISL_P1_Q1|V_M24TZ1AISL_P1_Q3,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.4.1,Compound interest,approved,V_M23TZ2AISL_P1_Q2|N20TZ0AISL_P1_Q8,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.4.2,Depreciation,approved,N15TZ0AISL_P1_Q11|M19TZ1AISL_P1_Q14,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-21,1.4.3,Inflation,approved,W_SPECAIHL_P2_Q3|V_M22TZ2AISL_P1_Q13,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-21,1.5.1,Laws of exponents,approved,M15TZ1SL_P1_Q3|N16TZ0HL_P1_Q7,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-20,1.5.2,Introduction to logs,approved,V_M22TZ2AISL_P1_Q4|V_SPECAISL_P1_Q8,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.5.3,The number e,approved,V_N21TZ0AISL_P1_Q3,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.6.1,Rounding,approved,N16TZ0AISL_P1_Q1,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.6.2,Upper and lower bounds,approved,V_N23TZ1AISL_P1_Q2|V_N23TZ2AISL_P1_Q2,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.6.3,Percentage error,approved,V_M21TZ1AISL_P1_Q1|M15TZ1AISL_P1_Q1,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.7.1,Loans,approved,N13TZ0AISL_P1_Q13|V_M25TZ3AISL_P1_Q11,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.7.2,Annuities,approved,W_M24TZ1AIHL_P1_Q1|V_M24TZ1AISL_P1_Q5,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.8.1,System of linear equations,approved,V_N24TZ1AISL_P1_Q3|V_M25TZ1AISL_P1_Q3,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.8.2,Roots of a polynomial,approved-no-practice,,Rob approved this lesson with no attached practice
+AI HL,2026-10-20,1.9.1,Laws of logs,approved,M11TZ2SL_P1_Q5|W_M25TZ1AIHL_P1_Q10,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.9.2,Change of base,approved,A_M25TZ3HL_P1_Q1|M16TZ1HL_P1_Q6,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-21,1.10,More exponents,approved,H_M13TZ2HL_P1_Q9|M14TZ2HL_P1_Q2,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-20,1.11,Sum of an infinite geometric sequence,approved,H_N18TZ0SL_P2_Q5|W_M22TZ2AIHL_P1_Q7,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-20,1.12.1,Complex numbers introduction,approved-no-practice,,Rob approved this introductory lesson with no attached practice
+AI HL,2026-10-21,1.12.2,Operations with complex numbers,approved,H_M18TZ2HL_P2_Q1|W_M21TZ1AIHL_P1_Q9,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-21,1.12.3,Complex solutions to polynomial equations,approved,M09TZ1HL_P2_Q2|A_N23TZ2HL_P1_Q7,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-20,1.13.1,Modulus-argument form,approved,H_M13TZ1HL_P1_Q1|H_M17TZ1HL_P1_Q2,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-21,1.13.2,Euler form,approved,W_N21TZ0AIHL_P2_Q5|W_M21TZ2AIHL_P1_Q12,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-20,1.13.3,Adding sinusoidal functions,approved,W_M22TZ2AIHL_P1_Q13|W_M25TZ1AIHL_P1_Q14,Locked from Rob's AI Topic 1 review
+AI HL,2026-10-21,1.13.4,Operations and geometric interpretation,approved,W_M24TZ2AIHL_P1_Q15|W_SPECAIHL_P1_Q15,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-20,1.14.1,Introduction to matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
+AI HL,2026-10-20,1.14.2,Algebra of matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
+AI HL,2026-10-20,1.14.3,Multiplication of matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
+AI HL,2026-10-20,1.14.4,Identity matrix,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
+AI HL,2026-10-20,1.14.5,Properties of matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
+AI HL,2026-10-20,1.14.6,Determinant and inverse of a matrix,approved-no-practice,,Removed the rejected transformation questions; no clean replacement exists in the current bank
+AI HL,2026-10-21,1.14.7,System of linear equations,approved-single-question,W_M21TZ2AIHL_P1_Q14,Rob approved question 1 and requested question 2 be removed
+AI HL,2026-10-21,1.15.1,Eigenvalues and eigenvectors,approved,W_M22TZ1AIHL_P1_Q11|W_M22TZ2AIHL_P2_Q5,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-21,1.15.2,Powers of matrices,approved,W_N24TZ0AIHL_P1_Q11|W_M21TZ1AIHL_P2_Q5,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-20,2.1.1,Gradient of a line,approved,M17TZ2AISL_P1_Q4|M15TZ2AISL_P1_Q3,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.1.2,Equation of a straight line,approved,M11TZ2AISL_P1_Q5|M11TZ1AISL_P1_Q10,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.1.3,Parallel and perpendicular lines,awaiting-recheck,,Replaced question 2 with a direct perpendicular-line problem with no diagram
+AI HL,2026-10-20,2.2.1,Functions introduction,approved,V_M25TZ2AISL_P1_Q9|V_SPECAISL_P1_Q4,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.2.2,Evaluating functions,approved,M17TZ1AISL_P2_Q3|M11TZ1AISL_P2_Q3,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.2.3,Inverse functions,approved,V_N23TZ1AISL_P1_Q6|V_N21TZ0AISL_P1_Q5,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.3,Sketching functions,approved,M16TZ2AISL_P1_Q8|N13TZ0AISL_P1_Q10,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.4.1,Features of graphs,approved,N20TZ0AISL_P1_Q4|N11TZ0AISL_P2_Q4,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.4.2,Asymptotes,awaiting-recheck,,Kept question 1 and added a distinct exponential-graph asymptote question
+AI HL,2026-10-20,2.5.1,Linear modelling,approved,N19TZ0AISL_P1_Q2|M12TZ2AISL_P1_Q6,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.5.2,Quadratic functions,approved,M10TZ2SL_P1_Q1A|M17TZ2AISL_P1_Q15,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.5.3,Quadratic modelling,approved,V_N22TZ0AISL_P1_Q3|V_M23TZ2AISL_P1_Q10,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.5.4,Exponential modelling,approved,V_N24TZ1AISL_P1_Q6|N20TZ0AISL_P1_Q12,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.5.5,Direct and inverse variation,approved,V_M23TZ1AISL_P1_Q6|V_M24TZ2AISL_P1_Q4,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.5.6,Cubic modelling,awaiting-recheck,,Kept question 1 and replaced the optimization task with a genuine cubic savings model
+AI HL,2026-10-20,2.5.7,Sinusoidal graphs,approved,M10TZ1HL_P2_Q1D|N13TZ0AISL_P1_Q14,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.5.8,Creating a sinusoidal model,awaiting-recheck,,Kept question 1 and replaced question 2 with a Ferris-wheel parameter model
+AI HL,2026-10-20,2.6,Finding the parameters of a model,approved,V_N23TZ1AISL_P1_Q7|V_N25TZ1AISL_P2_Q4,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.7.1,Composite functions,awaiting-recheck,,Kept question 1 and replaced the inverse-function task with direct composition in context
+AI HL,2026-10-20,2.7.2,Finding inverse functions,approved,M09TZ2SL_P1_Q1|M16TZ2HL_P2_Q5,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.8.1,Transformations,approved,M13TZ1SL_P2_Q6|M12TZ1HL_P2_Q6,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.8.2,Composite transformations,approved,N12TZ0SL_P2_Q9|M08TZ1SL_P1_Q9,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.9.1,Half-life,approved,M11TZ2AISL_P1_Q14|M16TZ2AISL_P1_Q13,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.9.2,Logarithmic functions,approved,V_M25TZ3AISL_P1_Q7|W_M22TZ2AIHL_P1_Q10,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.9.3,Logistic modelling,approved,M19TZ2SL_P2_Q5|W_N24TZ0AIHL_P1_Q13,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,2.9.4,Piecewise functions,awaiting-recheck,,Kept question 1 and added a second direct piecewise-function evaluation from a graph
+AI HL,2026-10-20,2.10.1,Scaling with logs,awaiting-recheck,,Kept question 1 and added a second semi-log parameter-estimation question
+AI HL,2026-10-20,2.10.2,Log-log graphs,approved,W_N21TZ0AIHL_P1_Q12|W_M23TZ1AIHL_P1_Q14,Locked from Rob's AI Topic 2 review
+AI HL,2026-10-20,3.1.1,Midpoint of a line segment,approved,V_M21TZ2AISL_P1_Q2|N17TZ0AISL_P1_Q2,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.1.2,Distance between 2 points,approved,M12TZ1AISL_P1_Q2|M15TZ2AISL_P1_Q1,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.1.3,Volume and surface area,approved,V_M23TZ2AISL_P1_Q8|N12TZ0AISL_P1_Q4,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.1.4,Trigonometry in 3d,approved,M15TZ2AISL_P1_Q12|N19TZ0SL_P2_Q6D,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.1,Pythagoras' theorem,approved,M11TZ1AISL_P1_Q7|M16TZ2AISL_P1_Q3,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.2,Soh cah toa,approved,M16TZ1AISL_P1_Q2|V_N24TZ1AISL_P1_Q1,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.3,Sine rule,approved,M12TZ1AISL_P1_Q13|M16TZ2SL_P2_Q2D,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.4,Cosine rule,approved,V_N21TZ0AISL_P1_Q2|M14TZ1SL_P2_Q1,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.2.5,Area of a triangle,approved,M12TZ2SL_P2_Q1|M18TZ2AISL_P1_Q8,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.3.1,Bearings,approved,V_N23TZ1AISL_P1_Q5|N08TZ0SL_P2_Q6,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.3.2,Angles of elevation and depression,approved,V_M23TZ1AISL_P1_Q2|V_N24TZ2AISL_P1_Q1,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.4,Arcs and Sectors,approved,N19TZ0HL_P2_Q4D|V_M25TZ1AISL_P1_Q6,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.5,Perpendicular bisectors,awaiting-recheck,V_M21TZ2AISL_P1_Q6,Replaced the perpendicular-line questions with an exact perpendicular-bisector equation
+AI HL,2026-10-20,3.6.1,Voronoi diagrams intro,approved,V_M21TZ1AISL_P1_Q5|V_M25TZ3AISL_P1_Q5,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.6.2,Voronoi examples,approved,V_M24TZ1AISL_P1_Q6|V_N21TZ0AISL_P1_Q7,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.7.1,Radians,approved-no-practice,,Rob asked to leave ordinary radians blank and move its applications to the following lesson
+AI HL,2026-10-20,3.7.2,Arcs and sectors with radians,awaiting-recheck,N15TZ0SL_P2_Q1|N14TZ0SL_P2_Q3|M13TZ1HL_P2_Q5,Moved the two radians applications here beside the existing arc-and-sector question
+AI HL,2026-10-20,3.8.1,Mr. Flynn's exact triangles,approved-no-practice,,Rob asked to leave this lesson blank
+AI HL,2026-10-20,3.8.2,Unit circle,approved-no-practice,,Rob asked to leave this lesson blank
+AI HL,2026-10-20,3.8.3,The CAST diagram,approved-no-practice,,Rob asked to leave this lesson blank
+AI HL,2026-10-20,3.8.4,Graphs of sin cos and tan,awaiting-recheck,N15TZ0SL_P1_Q4|M10TZ1AISL_P1_Q11|MF_AIHL_T3_TRIG_GRAPH_TAN,Added direct sine cosine and tangent graph practice
+AI HL,2026-10-20,3.8.5,Sine rule ambiguous case,approved,N10TZ0HL_P2_Q1|M12TZ2HL_P2_Q3,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.8.6,Trig identities,awaiting-recheck,MF_AIHL_T3_TRIG_IDENTITY_1|MF_AIHL_T3_TRIG_IDENTITY_2,Added practice using only sin squared plus cos squared equals one and tan equals sin over cos
+AI HL,2026-10-20,3.8.7,Solving Trigonometric Equations,awaiting-recheck,M08TZ1SL_P2_Q4,Replaced the rejected example with a direct trigonometric-equation solution
+AI HL,2026-10-20,3.9.1,Matrix transformations intro and stretches,awaiting-recheck,MF_AIHL_T3_MATRIX_STRETCH,Added a direct horizontal-stretch matrix question
+AI HL,2026-10-20,3.9.2,Translations,awaiting-recheck,MF_AIHL_T3_MATRIX_TRANSLATION,Added a direct translation-by-vector question
+AI HL,2026-10-20,3.9.3,Enlargements,awaiting-recheck,W_M22TZ1AIHL_P2_Q7|MF_AIHL_T3_MATRIX_ENLARGEMENT,Kept the approved enlargement and added a second centre-origin enlargement
+AI HL,2026-10-20,3.9.4,Rotations,approved,W_M25TZ1AIHL_P1_Q13|W_N21TZ0AIHL_P2_Q4,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.9.5,Reflections,awaiting-recheck,W_N23TZ0AIHL_P2_Q6|MF_AIHL_T3_MATRIX_REFLECTION,Kept the approved reflection and added a second reflection-matrix question
+AI HL,2026-10-20,3.9.6,Composite matrix transformations,awaiting-recheck,W_N24TZ0AIHL_P2_Q6|W_M23TZ2AIHL_P1_Q13,Kept question 1 and replaced question 2 with a genuine sequence of transformations
+AI HL,2026-10-20,3.9.7,Determinant of a transformation matrix,approved,W_M22TZ2AIHL_P1_Q15|W_N22TZ0AIHL_P1_Q9,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.10.1,Vectors introduction,approved-no-practice,,Rob asked to leave the introduction blank
+AI HL,2026-10-20,3.10.2,Operations with vectors,approved,M11TZ2SL_P1_Q3|H_N18TZ0SL_P1_Q5,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.10.3,Magnitude and unit vectors,awaiting-recheck,N17TZ0SL_P2_Q3|MF_AIHL_T3_UNIT_VECTOR,Kept approved question 1 and replaced the angle question with direct magnitude and unit-vector work
+AI HL,2026-10-20,3.11,Vector equation of a line,awaiting-recheck,MF_AIHL_T3_VECTOR_LINE_3D_POINTS|MF_AIHL_T3_VECTOR_LINE_3D_DIRECTION,Replaced both questions with direct vector equations of lines in three dimensions
+AI HL,2026-10-20,3.12.1,Vectors and kinematics,awaiting-recheck,MF_AIHL_T3_VECTOR_KINEMATICS_3D|MF_AIHL_T3_VECTOR_KINEMATICS_MEETING,Replaced both questions with distinct three-dimensional vector-motion examples
+AI HL,2026-10-20,3.13.1,Scalar product and angle between vectors,approved,M15TZ2SL_P2_Q2|M17TZ1SL_P2_Q2,Kept approved question 1 and restored the existing direct angle-between-vectors question as question 2
+AI HL,2026-10-20,3.13.2,Angle between two lines,approved,H_M09TZ1HL_P2_Q5|W_N22TZ0AIHL_P1_Q8,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.13.3,Vector product,awaiting-recheck,W_SPECAIHL_P1_Q11|MF_AIHL_T3_VECTOR_PRODUCT,Kept the approved question and added a second direct vector-product calculation
+AI HL,2026-10-20,3.13.4,Areas using vector product,approved,W_M23TZ1AIHL_P1_Q7|W_M24TZ2AIHL_P1_Q8,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.13.5,Components of vectors,awaiting-recheck,MF_AIHL_T3_VECTOR_COMPONENT,Added a direct parallel and perpendicular vector-components question
+AI HL,2026-10-20,3.14,Introduction to graph theory,approved-no-practice,,Rob asked to leave the introduction blank
+AI HL,2026-10-20,3.15.1,Adjacency matrices,approved,W_M22TZ2AIHL_P1_Q6|W_M25TZ2AIHL_P1_Q8,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.15.2,Weighted adjacency tables,awaiting-recheck,W_N22TZ0AIHL_P2_Q4|MF_AIHL_T3_WEIGHTED_ADJACENCY,Kept the approved source and added a second weighted-adjacency-table construction
+AI HL,2026-10-20,3.15.3,Walks,approved,W_N22TZ0AIHL_P1_Q4|W_M23TZ2AIHL_P1_Q8,Verified the two approved sources are distinct
+AI HL,2026-10-20,3.16.1,Graph routes,approved,W_M21TZ2AIHL_P1_Q11,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.16.2,Kruskal's algorithm,approved,W_M22TZ2AIHL_P3_Q2|W_M23TZ2AIHL_P2_Q4,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-20,3.16.3,Prim's algorithm,awaiting-recheck,W_M21TZ1AIHL_P1_Q10|MF_AIHL_T3_PRIM_GRAPH,Kept the approved source and added a second Prim's algorithm question
+AI HL,2026-10-20,3.16.4,Prim's algorithm with adjacency table,approved,W_M25TZ2AIHL_P2_Q4,Rob approved one question here
+AI HL,2026-10-20,3.16.5,Eulerian graphs,awaiting-recheck,W_M23TZ1AIHL_P2_Q4|MF_AIHL_T3_EULERIAN,Kept the approved source and added a second Eulerian classification question
+AI HL,2026-10-20,3.16.6,Chinese postman problem,awaiting-recheck,W_M24TZ1AIHL_P1_Q8|MF_AIHL_T3_CHINESE_POSTMAN,Kept question 1 and replaced question 2 with a distinct route-inspection problem
+AI HL,2026-10-20,3.16.7,Hamiltonian graphs,awaiting-recheck,W_N21TZ0AIHL_P3_Q1|MF_AIHL_T3_HAMILTONIAN,Kept the approved source and added a second Hamiltonian-cycle question
+AI HL,2026-10-20,3.16.8,Travelling salesman problem,awaiting-recheck,W_N24TZ0AIHL_P3_Q1|MF_AIHL_T3_TSP_BOUNDS,Kept the approved source and added a second bounds question
+AI HL,2026-10-20,3.16.9,TSP practical problems,awaiting-recheck,W_M24TZ2AIHL_P2_Q4|MF_AIHL_T3_TSP_PRACTICAL,Kept the approved source and added a second practical travelling-salesman interpretation
+AI HL,2026-10-20,3.16.10,Nearest neighbour algorithm,awaiting-recheck,MF_AIHL_T3_NEAREST_NEIGHBOUR_1|MF_AIHL_T3_NEAREST_NEIGHBOUR_2,Replaced both Voronoi nearest-site questions with graph-theory nearest-neighbour tours
+AI HL,2026-10-20,3.16.11,Deleted vertex algorithm,approved,W_M25TZ3AIHL_P2_Q4|W_SPECAIHL_P2_Q5,Locked from Rob's AI Topic 3 review
+AI HL,2026-10-21,4.1.1,Discrete v continuous data,approved,N13TZ0AISL_P1_Q1|N14TZ0AISL_P1_Q3,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.1.2,Sampling techniques,approved,V_SPECAISL_P1_Q3|V_M21TZ1AISL_P2_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.2.1,Histograms and cumulative frequency curves,approved,M17TZ1AISL_P1_Q1|M19TZ2AISL_P1_Q12,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.2.2,Box and whisker diagrams,approved,M19TZ1SL_P2_Q1|M19TZ2AISL_P1_Q6,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.2.3,Interpreting box plots,approved,V_M22TZ2AISL_P1_Q7|M11TZ2SL_P1_Q6,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.2.4,Outliers,approved,V_M23TZ2AISL_P1_Q3|M18TZ1SL_P1_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.3.1,Averages and spread,approved,V_M21TZ1AISL_P1_Q2|M19TZ1AISL_P1_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.3.2,Frequency tables,approved,V_M23TZ2AISL_P1_Q5|M17TZ2AISL_P1_Q7,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.3.3,Constant changes to data,approved,V_M24TZ1AISL_P1_Q8|V_M24TZ2AISL_P1_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.3.4,Variance and standard deviation by hand,approved-no-practice,,Rob confirmed that this lesson should remain blank
+AI HL,2026-10-21,4.4,Linear regression and correlation,awaiting-recheck,M17TZ1SL_P1_Q4|N14TZ0SL_P2_Q2,Question 2 now explicitly calculates the correlation coefficient before finding the regression line and making a prediction
+AI HL,2026-10-21,4.5,Probability formulae,approved,M11TZ1HL_P1_Q1|M14TZ2HL_P1_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.6.1,Venn diagrams,approved,M16TZ1SL_P1_Q2A|M10TZ1SL_P1_Q5,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.6.2,Tree Diagrams,approved,N17TZ0SL_P1_Q1|M13TZ2HL_P1_Q4,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.7,Discrete random variables,approved,N12TZ0SL_P1_Q2A|N20TZ0HL_P1_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.8,Binomial distribution,approved,V_M25TZ1AISL_P1_Q7|M12TZ2HL_P2_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.9,Normal distribution,approved,M13TZ2SL_P2_Q2|M13TZ2HL_P2_Q3,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.10,Spearman's rank correlation coefficient,approved,V_M23TZ1AISL_P1_Q1|V_M25TZ2AISL_P1_Q10,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.11.1,Chi squared intro,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,4.11.2,Chi squared test for independence,approved,V_M24TZ2AISL_P1_Q3|V_M23TZ2AISL_P1_Q6,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.11.3,Chi squared goodness of fit,approved,V_M22TZ1AISL_P1_Q7|V_M21TZ2AISL_P1_Q11,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.11.4,T-test,approved,V_M21TZ2AISL_P1_Q8|V_M21TZ1AISL_P1_Q6,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.12.1,Surveys and questionnaires,approved-no-practice,,Rob confirmed this lesson should remain blank
+AI HL,2026-10-21,4.12.2,Reliability v validity,approved-no-practice,,Rob confirmed this lesson should remain blank
+AI HL,2026-10-21,4.12.3,Chi squared (categorising data),awaiting-recheck,W_N22TZ0AIHL_P3_Q1,Replaced the Poisson question with a chi-squared goodness-of-fit test that combines categories
+AI HL,2026-10-21,4.12.4,Chi squared (degrees of freedom),awaiting-recheck,MF_AIHL_T4_CHI_SQUARED_DF|MF_AIHL_T4_NORMAL_GOF_DF,Kept question 1 and added a normal goodness-of-fit question with mean and standard deviation estimated
+AI HL,2026-10-21,4.13.1,Non linear regression,approved,W_N22TZ0AIHL_P1_Q11|W_N23TZ0AIHL_P1_Q10,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.13.2,Sum of square residuals,approved,W_SPECAIHL_P1_Q12|W_M23TZ1AIHL_P1_Q16,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.13.3,The coefficient of determination,awaiting-recheck,MF_AIHL_T4_COEFFICIENT_DETERMINATION|W_M23TZ2AIHL_P1_Q9,Added a direct coefficient-of-determination calculation and interpretation question
+AI HL,2026-10-21,4.14.1,Linear transformations of X,approved,W_M24TZ1AIHL_P1_Q3|M19TZ2SL_P1_Q8A,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.14.2,Linear combinations of n random variables,approved,H_N18TZ0HL_P3S_Q1|W_M23TZ1AIHL_P1_Q11,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.14.3,Unbiased estimates for the mean and variance,approved,H_N17TZ0HL_P3S_Q2|H_M17TZ0HL_P3S_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.14.4,Unbiased estimates example questions,approved,H_M15TZ0HL_P3S_Q2|H_N18TZ0HL_P3S_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.15.1,Linear combination of n independent normal random variables,approved,H_M19TZ0HL_P3S_Q2X1|W_N24TZ0AIHL_P1_Q15,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.15.2,Normal distribution sampling,approved,H_M17TZ0HL_P3S_Q2X1|W_M22TZ1AIHL_P1_Q9,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.15.3,The central limit theorem,awaiting-recheck,H_N19TZ0HL_P3S_Q3|W_M24TZ1AIHL_P2_Q6,Removed part C about errors from question 1 and retained the central-limit parts only
+AI HL,2026-10-21,4.16.1,Confidence intervals (known variance),approved,H_N15TZ0HL_P3S_Q1X1|H_M15TZ0HL_P3S_Q3,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.16.2,Confidence intervals (unknown variance),awaiting-recheck,W_SPECAIHL_P1_Q9|W_M23TZ2AIHL_P1_Q15,Replaced question 2 with a confidence interval calculated from eight raw data values
+AI HL,2026-10-21,4.17,Poisson distribution,approved,W_M21TZ1AIHL_P1_Q1|W_M24TZ2AIHL_P1_Q9,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.1,Z-test one tailed,approved,H_M19TZ0HL_P3S_Q3|H_N14TZ0HL_P3S_Q5,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.2,Z-test two tailed,approved-single,H_M18TZ0HL_P3S_Q3,Rob approved the one exact two-tailed Z-test
+AI HL,2026-10-21,4.18.3,T-test,approved,MF_AIHL_T4_ONE_SAMPLE_T_TEST|W_N24TZ0AIHL_P1_Q9X1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.4,Matched pairs,approved,H_M15TZ0HL_P3S_Q2|H_N16TZ0HL_P3S_Q1X1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.5,Testing for population proportion,approved,W_M21TZ1AIHL_P1_Q11|W_N23TZ0AIHL_P2_Q7,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.6,Test for mean using Poisson distribution,approved,W_N21TZ0AIHL_P2_Q7|W_M21TZ2AIHL_P1_Q15,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.7,Testing for correlation,approved,H_N14TZ0HL_P3S_Q3X1|W_M23TZ1AIHL_P1_Q8,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.8,Type I an II errors Intro,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,4.18.9,Normal errors,approved,W_M22TZ2AIHL_P1_Q12|H_N16TZ0HL_P3S_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.10,Poisson errors,approved,W_SPECAIHL_P1_Q16|W_M22TZ1AIHL_P1_Q15,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.11,Binomial errors,approved-single,W_N22TZ0AIHL_P1_Q16,Rob approved question 1 and allowed this lesson to remain a single-question set
+AI HL,2026-10-21,4.19.1,Markov chains introduction,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,4.19.2,Transition matrices,approved,W_N21TZ0AIHL_P1_Q9|W_N23TZ0AIHL_P1_Q15,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.19.3,Steady state and long term probabilities,awaiting-recheck,W_M23TZ2AIHL_P2_Q5|MF_AIHL_T4_LONG_TERM_PROBABILITY,Kept question 1 and replaced question 2 with a direct numerical long-term probability question
+AI HL,2026-10-21,5.1.1,Introduction to differentiation,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,5.1.2,Introduction to limits,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,5.2,Increasing and decreasing functions,approved,V_N23TZ1AISL_P1_Q3|V_M25TZ1AISL_P1_Q8,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.3.1,Power rule,approved,N12TZ0AISL_P1_Q15|M13TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.3.2,Derivative at a point,approved,V_N24TZ2AISL_P1_Q12|V_M22TZ2AISL_P1_Q11,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.4,Tangents and normals,approved,V_N24TZ1AISL_P1_Q12|V_M23TZ1AISL_P1_Q5,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.5.1,Integration power rule,awaiting-recheck,MF_AI_T5_POWER_RULE_INTEGRATION|V_M24TZ2AISL_P2_Q3,Replaced the limits-based first question with direct polynomial integration
+AI HL,2026-10-21,5.5.2,Finding f of x,approved,N11TZ0SL_P1_Q4A|V_M25TZ3AISL_P1_Q9,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.5.3,Area under the curve,approved,M18TZ2SL_P1_Q2A|V_M22TZ2AISL_P1_Q6,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.6,Stationary points,approved,N13TZ0AISL_P1_Q9|M14TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.7,Optimization,approved,N17TZ0SL_P1_Q6A|M19TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.8,Trapezoidal rule,approved,V_N21TZ0AISL_P1_Q6|V_M22TZ1AISL_P1_Q6,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.1,"Derivative of sinx,cosx,lnx,e^x",approved,MF_AIHL_T5_BASIC_DERIVATIVES_1|MF_AIHL_T5_BASIC_DERIVATIVES_2,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.2,Differentiation (rational exponents),awaiting-recheck,MF_AIHL_T5_RATIONAL_DERIVATIVES_1|MF_AIHL_T5_RATIONAL_DERIVATIVES_2,Kept both approved questions and changed fractional powers to stacked fraction notation
+AI HL,2026-10-21,5.9.3,Chain rule,approved,MF_AIHL_T5_CHAIN_RULE|H_M18TZ1HL_P1_Q2,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.4,Product rule,approved,H_N10TZ0SL_P1_Q2|M19TZ1SL_P2_Q3,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.5,Quotient rule,approved,H_M11TZ2SL_P1_Q4|M16TZ2HL_P2_Q12X2,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.6,Related rates of change,approved,W_M23TZ2AIHL_P1_Q12|M11TZ2HL_P2_Q9,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.10.1,Relationship between graphs and derivatives,approved-no-practice,,Rob accepted the lesson in its current blank state
+AI HL,2026-10-21,5.10.2,Sketching derivatives,awaiting-recheck,W_N21TZ0AIHL_P1_Q8|M12TZ2HL_P1_Q7,Kept both approved questions and added coordinate axes to question 2
+AI HL,2026-10-21,5.10.3,Classifying stationary points,approved,N09TZ0SL_P1_Q9|M10TZ2SL_P1_Q8,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.10.4,Points of inflexion,approved,M11TZ1SL_P2_Q9|M08TZ2HL_P2_Q6,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.11.1,Integration power rule (rational power),approved,MF_AIHL_T5_RATIONAL_POWER_INTEGRATION|N18TZ0HL_P2_Q2,Locked from Rob's Topic 5 review
+AI HL,2026-10-20,5.11.2,Integrating sin and cos,awaiting-recheck,MF_AIHL_T5_SIN_COS_INTEGRATION_1|MF_AIHL_T5_SIN_COS_INTEGRATION_2,Replaced later-technique questions with direct indefinite and definite trigonometric integrals
+AI HL,2026-10-20,5.11.5,Integration by substitution,awaiting-recheck,MF_AIHL_T5_SUBSTITUTION_1|MF_AIHL_T5_SUBSTITUTION_2,Replaced inappropriate examples with the accessible SL substitution pattern
+AI HL,2026-10-20,5.12.2,Area between curve and y-axis,awaiting-recheck,V_SPECAISL_P1_Q10|H_N15TZ0HL_P2_Q5,Reordered easy before medium
+AI HL,2026-10-20,5.12.4,Volume of revolution about y-axis,awaiting-recheck,W_N22TZ0AIHL_P2_Q5|M19TZ1HL_P2_Q7,Kept only genuine y-axis rotations and ordered medium before difficult
+AI HL,2026-10-20,5.13.2,Kinematics 2,awaiting-recheck,MF_AIHL_T5_KINEMATICS_2|H_M14TZ1HL_P1_Q8,Replaced the overgrown capsule problem with direct use of a equals v dv by ds
+AI HL,2026-10-20,5.14.1,Setting up a differential equation,awaiting-recheck,MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION|W_M25TZ2AIHL_P1_Q12,Added a short formation question before the exam extract
+AI HL,2026-10-20,5.14.2,Separation of variables,awaiting-recheck,MF_AIHL_T5_SEPARATION|W_M24TZ1AIHL_P2_Q5,Added a direct separation question before the harder source
+AI HL,2026-10-20,5.16.3,Euler's method for coupled systems,awaiting-recheck,W_M25TZ3AIHL_P1_Q11|W_N24TZ0AIHL_P1_Q17,Reordered medium before difficult
+AI HL,2026-10-20,5.17.1,Phase portraits intro,awaiting-recheck,W_N22TZ0AIHL_P1_Q12|W_SPECAIHL_P1_Q15X1,Reordered medium before difficult
+AI HL,2026-10-20,5.17.5,Sketching phase portraits (source),awaiting-recheck,MF_AIHL_T5_PHASE_SOURCE,Added a clean source with two positive real eigenvalues
+AI HL,2026-10-20,5.17.9,Sketching phase portraits (centre),awaiting-recheck,MF_AIHL_T5_PHASE_CENTRE,Added a clean centre with purely imaginary eigenvalues
+AI HL,2026-10-21,5.11.2,Integrating sin and cos,approved,MF_AIHL_T5_SIN_COS_INTEGRATION_1|MF_AIHL_T5_SIN_COS_INTEGRATION_2,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.11.3,Integrating e^x and 1/x,awaiting-recheck,MF_AIHL_T5_DIRECT_EXP_INTEGRATION|MF_AIHL_T5_DIRECT_LOG_INTEGRATION,Replaced the chain-rule source with direct e^x and reciprocal integrations
+AI HL,2026-10-21,5.11.4,Inverse chain rule,awaiting-recheck,MF_AIHL_T5_INVERSE_CHAIN_EXP|M11TZ2SL_P2_Q7|MF_AIHL_T5_INVERSE_CHAIN_TRIG,Retained the approved source and added direct exponential and trigonometric examples
+AI HL,2026-10-21,5.11.5,Integration by substitution,awaiting-recheck,MF_AIHL_T5_SUBSTITUTION_1|MF_AIHL_T5_SUBSTITUTION_2|MF_AIHL_T5_SUBSTITUTION_LOG,Retained both approved questions and added a fraction that integrates to a logarithm
+AI HL,2026-10-21,5.12.1,Area under the curve,approved,M08TZ2HL_P2_Q3|M10TZ2SL_P2_Q6,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.12.2,Area between curve and y-axis,awaiting-recheck,MF_AIHL_T5_AREA_Y_AXIS|H_N15TZ0HL_P2_Q5,Replaced the x-axis question with a direct area against the y-axis
+AI HL,2026-10-21,5.12.3,Volume of revolution,approved,M12TZ1SL_P2_Q4|H_M10TZ1HL_P1_Q8,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.12.4,Volume of revolution about y-axis,awaiting-recheck,W_N22TZ0AIHL_P2_Q5|M12TZ1HL_P2_Q8,Retained question 1 and replaced the similar second source with a distinct cone rotation about the y-axis
+AI HL,2026-10-21,5.13.1,Kinematics,approved,M08TZ1SL_P1_Q6|H_M17TZ2HL_P1_Q4,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.13.2,Kinematics 2,approved,MF_AIHL_T5_KINEMATICS_2|H_M14TZ1HL_P1_Q8,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.14.1,Setting up a differential equation,approved,MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION|W_M25TZ2AIHL_P1_Q12,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.14.2,Separation of variables,awaiting-recheck,MF_AIHL_T5_SEPARATION|W_M24TZ1AIHL_P2_Q5,Retained both approved questions but removed the slope-field part from question 2
+AI HL,2026-10-21,5.15,Slope fields,approved,W_M23TZ1AIHL_P1_Q12|W_N21TZ0AIHL_P1_Q14,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.16.2,Euler's method example,approved,W_M24TZ1AIHL_P1_Q4|W_M24TZ2AIHL_P1_Q7,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.16.3,Euler's method for coupled systems,approved,W_M25TZ3AIHL_P1_Q11|W_N24TZ0AIHL_P1_Q17,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.1,Phase portraits intro,approved-no-practice,,Intentionally blank; examples may be reused only in later exact lessons
+AI HL,2026-10-21,5.17.2,Solutions of coupled differential equations p1,awaiting-recheck,W_N21TZ0AIHL_P2_Q6|MF_AIHL_T5_COUPLED_EXACT_1,Retained question 1 and replaced question 2 with the requested eigenvector-form exact solution
+AI HL,2026-10-21,5.17.3,Solutions of coupled differential equations p2,awaiting-recheck,W_M23TZ2AIHL_P2_Q7|MF_AIHL_T5_COUPLED_EXACT_2,Replaced both questions with exact solutions in eigenvalue-eigenvector form
+AI HL,2026-10-21,5.17.4,Sketching phase portraits introduction,approved-no-practice,,Intentionally blank
+AI HL,2026-10-21,5.17.5,Sketching phase portraits (source),approved-single,MF_AIHL_T5_PHASE_SOURCE,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.6,Sketching phase portraits (sink),approved-single,W_M21TZ2AIHL_P2_Q7,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.7,Sketching phase portraits (spiral sink),approved-single,W_N24TZ0AIHL_P2_Q7,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.8,Sketching phase portraits (spiral source),approved-single,W_M23TZ1AIHL_P2_Q6,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.9,Sketching phase portraits (centre),approved-single,MF_AIHL_T5_PHASE_CENTRE,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.18.1,Second order Euler's method,approved,W_M23TZ2AIHL_P2_Q5|W_N22TZ0AIHL_P2_Q8,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.18.2,Second order DE exact solution,approved,W_M23TZ2AIHL_P2_Q7|W_M22TZ2AIHL_P2_Q7,Locked from Rob's final Topic 5 review
+IGCSE Higher,2026-10-20,1.4.3,Surds (Expanding Brackets),awaiting-recheck,MF_IGCSE_T1_EXPAND_SURDS|4MA1_2022J_2HR_Q13,Added a direct accessible surd-brackets question
+IGCSE Higher,2026-10-20,2.7.1,Solving Quadratics by Factorising,awaiting-recheck,4MA1_2021M_2H_Q9|MF_IGCSE_T2_FACTORISE_SOLVE_NON_MONIC,Added the requested non-monic factorise-and-solve progression
+IGCSE Higher,2026-10-20,2.7.2,Solving by Completing the Square,approved-single,4MA1_2018M_2HR_Q24,Kept the one honest source that completes the square and then solves
+IGCSE Higher,2026-10-20,3.1.3,Arithmetic Series,awaiting-recheck,4MA1_2019M_1H_Q16|4MA1_2020J_2H_Q25,Reordered medium before difficult
+IGCSE Higher,2026-10-20,3.2.4,Inverse Functions Introduction,awaiting-recheck,MF_IGCSE_T3_INVERSE_NOTATION|4MA1_2019J_1HR_Q23,Added direct inverse notation without first deriving an inverse formula
+IGCSE Higher,2026-10-20,3.2.5,Finding Inverse Functions,awaiting-recheck,4MA1_2024M_1H_Q15|4MA1_2021J_1H_Q22,Reordered medium before difficult
+IGCSE Higher,2026-10-20,3.3.7,Distance Between Two Points,awaiting-recheck,4MA1_2022M_1H_Q10|MF_IGCSE_T3_DISTANCE,Added a second straightforward coordinate-distance question
+IGCSE Higher,2026-10-20,3.3.10,Transformations of Graphs,awaiting-recheck,4MA1_2023M_1H_Q21|4MA1_2019J_1H_Q18,Reordered medium before difficult
+IGCSE Higher,2026-10-20,3.4.1,Differentiation Introduction,approved-no-practice,,Left this conceptual introduction blank
+IGCSE Higher,2026-10-20,3.4.6,Kinematics,awaiting-recheck,4MA1_2019M_1HR_Q16|4MA1_2019M_1H_Q24,Reordered medium before difficult
+IGCSE Higher,2026-10-20,4.8.7,Cosine Rule,awaiting-recheck,MF_IGCSE_T4_COSINE_RULE_SIDE|4MA1_2018M_1HR_Q18,Added an accessible find-the-side question before the difficult quadrilateral
+IGCSE Higher,2026-10-20,5.1.3,Vector proofs,awaiting-recheck,4MA1_2018M_1H_Q17|4MA1_2020N_2H_Q19,Reordered medium before difficult
