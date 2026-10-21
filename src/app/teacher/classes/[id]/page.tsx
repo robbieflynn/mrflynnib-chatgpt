@@ -27,7 +27,7 @@ type ClassAssignmentSubmission = {
 
 type PerformanceResult = {
   percentage: number | null;
-  status: "not-started" | "in-progress" | "submitted" | "review";
+  status: "not-assigned" | "not-started" | "in-progress" | "submitted" | "review";
   detail: string;
 };
 
@@ -56,8 +56,9 @@ function performanceTone(percentage: number) {
   return "attention";
 }
 
-export default async function TeacherClassPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function TeacherClassPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; success?: string }> }) {
   const { id } = await params;
+  const message = await searchParams;
   const { supabase, user } = await requireTeacher();
   const { data: classRecord } = await supabase.from("classes").select("id,name,course,join_code").eq("id", id).eq("teacher_id", user.id).maybeSingle();
   if (!classRecord) notFound();
@@ -69,13 +70,15 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
   const memberships = membershipResult.data ?? [];
   const assignments = assignmentResult.data ?? [];
   const assignmentIds = assignments.map((assignment) => assignment.id);
-  const [questionRows, submissionRows, responseRows] = assignmentIds.length
+  const [questionRows, submissionRows, responseRows, recipientRows] = assignmentIds.length
     ? await Promise.all([
       supabase.from("assignment_questions").select("assignment_id,question_id,response_type,response_options").in("assignment_id", assignmentIds),
       supabase.from("assignment_submissions").select("assignment_id,student_id,status").in("assignment_id", assignmentIds),
       supabase.from("assignment_responses").select("assignment_id,student_id,question_id,response,is_correct").in("assignment_id", assignmentIds),
+      supabase.from("assignment_recipients").select("assignment_id,student_id").in("assignment_id", assignmentIds),
     ])
     : [
+      { data: [], error: null },
       { data: [], error: null },
       { data: [], error: null },
       { data: [], error: null },
@@ -86,10 +89,21 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
   (submissionRows.data ?? []).forEach((row) => {
     if (row.status === "submitted") submittedCountByAssignment.set(row.assignment_id, (submittedCountByAssignment.get(row.assignment_id) || 0) + 1);
   });
-  const assignmentLoadError = assignmentResult.error || questionRows.error || submissionRows.error || responseRows.error;
+  const assignmentLoadError = assignmentResult.error || questionRows.error || submissionRows.error || responseRows.error || recipientRows.error;
   const studentIds = (memberships ?? []).map((membership) => membership.student_id);
   const { data: profiles } = studentIds.length ? await supabase.from("profiles").select("user_id,display_name").in("user_id", studentIds) : { data: [] };
   const studentNames = new Map((profiles ?? []).map((profile) => [profile.user_id, profile.display_name || "Student"]));
+  const recipientsByAssignment = new Map<string, Set<string>>();
+  (recipientRows.data ?? []).forEach((recipient) => {
+    const existing = recipientsByAssignment.get(recipient.assignment_id) ?? new Set<string>();
+    existing.add(recipient.student_id);
+    recipientsByAssignment.set(recipient.assignment_id, existing);
+  });
+  const isAssignedTo = (assignmentId: string, studentId: string) => {
+    const recipients = recipientsByAssignment.get(assignmentId);
+    return !recipients?.size || recipients.has(studentId);
+  };
+  const assignedStudentCount = (assignmentId: string) => recipientsByAssignment.get(assignmentId)?.size || memberships.length;
   const performanceAssignments = [...assignments].reverse();
   const questionsByAssignment = new Map<string, ClassAssignmentQuestion[]>();
   ((questionRows.data ?? []) as ClassAssignmentQuestion[]).forEach((question) => {
@@ -106,6 +120,7 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
     submissionByCell.set(`${submission.assignment_id}:${submission.student_id}`, submission);
   });
   const performanceFor = (assignmentId: string, studentId: string): PerformanceResult => {
+    if (!isAssignedTo(assignmentId, studentId)) return { percentage: null, status: "not-assigned", detail: "Not assigned" };
     const submission = submissionByCell.get(`${assignmentId}:${studentId}`);
     const questions = questionsByAssignment.get(assignmentId) ?? [];
     let correct = 0;
@@ -147,6 +162,7 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
   const assignmentAverage = new Map<string, number | null>();
   performanceAssignments.forEach((assignment) => {
     const values = memberships
+      .filter((membership) => isAssignedTo(assignment.id, membership.student_id))
       .map((membership) => performanceByCell.get(`${membership.student_id}:${assignment.id}`)?.percentage)
       .filter((value): value is number => typeof value === "number");
     assignmentAverage.set(assignment.id, values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : null);
@@ -158,6 +174,8 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
     <main className={workspaceClass}>
     <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord.course}</p><h1>{classRecord.name}</h1><p>Set work, monitor progress and review every student&apos;s answers and working.</p></div><div className="teacher-workspace-stats" aria-label="Class summary"><span><strong>{memberships.length}</strong> students</span><span><strong>{assignments.length}</strong> assignments</span></div></div></Container></section>
     <section className="section-tight"><Container className="stack-xl">
+      {message.error ? <p className="form-message form-error">{message.error}</p> : null}
+      {message.success ? <p className="form-message form-success">{message.success}</p> : null}
       <div className="class-toolbar"><div className="class-code"><span>Invite students</span><strong>{classRecord.join_code}</strong><small>Share the invitation link or ask students to enter this code on their dashboard.</small></div><div className="class-toolbar-actions"><ClassInviteLink invitationUrl={invitationUrl} /><Link className="button" href={`/teacher/classes/${id}/assignments/new`}>Set an assignment</Link></div></div>
       <section className="stack" aria-labelledby="class-performance-heading">
         <div className="teacher-section-heading"><div><p className="eyebrow">Assignment history</p><h2 id="class-performance-heading">Class performance</h2></div><p>Compare completed assignments across the class. Select any result to open that student&apos;s work.</p></div>
@@ -171,7 +189,7 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
             return <tr key={membership.student_id}><th className="class-performance-student"><span className="class-performance-student-inner"><span className="student-avatar" aria-hidden="true">{(studentNames.get(membership.student_id) || "S").slice(0, 1).toUpperCase()}</span><span><strong>{studentNames.get(membership.student_id) || "Student"}</strong><small>{percentages.length} {percentages.length === 1 ? "result" : "results"}</small></span></span></th>{performanceAssignments.map((assignment) => {
               const result = performanceByCell.get(`${membership.student_id}:${assignment.id}`) ?? { percentage: null, status: "not-started" as const, detail: "Not started" };
               const scoreClass = result.percentage === null ? `is-${result.status}` : `is-${performanceTone(result.percentage)}`;
-              return <td key={assignment.id}><Link className={`class-performance-score ${scoreClass}`} href={`/teacher/assignments/${assignment.id}/students/${membership.student_id}`}><strong>{result.percentage === null ? result.status === "review" ? "Review" : result.status === "in-progress" ? "In progress" : "—" : `${result.percentage}%`}</strong><small>{result.detail}</small></Link></td>;
+              return <td key={assignment.id}>{result.status === "not-assigned" ? <span className={`class-performance-score ${scoreClass}`}><strong>—</strong><small>Not assigned</small></span> : <Link className={`class-performance-score ${scoreClass}`} href={`/teacher/assignments/${assignment.id}/students/${membership.student_id}`}><strong>{result.percentage === null ? result.status === "review" ? "Review" : result.status === "in-progress" ? "In progress" : "—" : `${result.percentage}%`}</strong><small>{result.detail}</small></Link>}</td>;
             })}<td className="class-performance-overall"><strong>{overall === null ? "—" : `${overall}%`}</strong><small>{overall === null ? "No completed scores" : `${percentages.length} completed`}</small></td></tr>;
           })}
           <tr className="class-performance-average"><th className="class-performance-student"><span className="class-performance-student-inner"><span><strong>Class average</strong><small>Completed scored work</small></span></span></th>{performanceAssignments.map((assignment) => { const average = assignmentAverage.get(assignment.id); return <td key={assignment.id}><Link href={`/teacher/assignments/${assignment.id}`}><strong>{average == null ? "—" : `${average}%`}</strong><small>{average == null ? "No scored submissions" : "Open assignment"}</small></Link></td>; })}<td className="class-performance-overall"><strong>—</strong></td></tr>
@@ -181,7 +199,7 @@ export default async function TeacherClassPage({ params }: { params: Promise<{ i
         <div className="stack"><div className="teacher-section-heading"><div><p className="eyebrow">Classwork</p><h2>Assignments</h2></div><p>Open an assignment to see progress by student and by question.</p></div>
           {assignmentLoadError ? <p className="form-message form-error">The assignments could not be refreshed just now. Please reload the page.</p> : null}
           <div className="teacher-list">
-            {assignments.map((assignment) => <Link className="teacher-list-row teacher-assignment-row" href={`/teacher/assignments/${assignment.id}`} key={assignment.id}><span><strong>{assignment.title}</strong><small>{assignment.due_at ? `Due ${new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "No due date"}</small></span><span className="teacher-list-meta"><strong>{questionCountByAssignment.get(assignment.id) || 0}</strong> questions</span><span className="teacher-list-meta"><strong>{submittedCountByAssignment.get(assignment.id) || 0}/{memberships.length}</strong> submitted</span><span className="teacher-row-arrow" aria-hidden="true">→</span></Link>)}
+            {assignments.map((assignment) => <Link className="teacher-list-row teacher-assignment-row" href={`/teacher/assignments/${assignment.id}`} key={assignment.id}><span><strong>{assignment.title}</strong><small>{assignment.due_at ? `Due ${new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "No due date"} · {recipientsByAssignment.get(assignment.id)?.size ? `${assignedStudentCount(assignment.id)} selected` : "Whole class"}</small></span><span className="teacher-list-meta"><strong>{questionCountByAssignment.get(assignment.id) || 0}</strong> questions</span><span className="teacher-list-meta"><strong>{submittedCountByAssignment.get(assignment.id) || 0}/{assignedStudentCount(assignment.id)}</strong> submitted</span><span className="teacher-row-arrow" aria-hidden="true">→</span></Link>)}
             {!assignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><span aria-hidden="true">＋</span><div><strong>No assignments yet</strong><p>Set the first piece of work for this class.</p></div></div> : null}
           </div>
         </div>
