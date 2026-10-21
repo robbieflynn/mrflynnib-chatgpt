@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T10:13:55.102Z",
+  "generatedAt": "2026-10-21T10:20:56.086Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
-  "completeLessonCount": 457,
-  "approvedSingleLessonCount": 24,
-  "questionCount": 956,
+  "completeLessonCount": 456,
+  "approvedSingleLessonCount": 25,
+  "questionCount": 955,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -4229,8 +4229,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "System of linear equations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M21TZ2AIHL_P1_Q14",
-        "V_N24TZ2AISL_P1_Q3"
+        "W_M21TZ2AIHL_P1_Q14"
       ],
       "questionParts": {
         "W_M21TZ2AIHL_P1_Q14": [

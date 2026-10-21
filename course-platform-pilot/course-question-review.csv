@@ -218,12 +218,12 @@ AA HL,2026-10-20,5.19.7,Maclaurin series differential equations,approved,M18TZ0H
 AA HL,2026-10-20,5.19.8,Euler's identity,approved-no-practice,,Rob approved this lesson with no attached practice
 AI HL,2026-10-20,1.1,Scientific notation,approved,M12TZ2AISL_P1_Q1|V_M23TZ1AISL_P1_Q8,Locked from Rob's AI Topic 1 review
 AI HL,2026-10-20,1.2.1,Arithmetic sequences and series,approved,N18TZ0SL_P1_Q3A|N09TZ0HL_P1_Q11X1A,Locked from Rob's AI Topic 1 review
-AI HL,2026-10-20,1.2.2,Sigma notation,awaiting-recheck,,Replaced question 1 with a finite sum that visibly uses sigma notation
+AI HL,2026-10-21,1.2.2,Sigma notation,approved,W_M22TZ2AIHL_P2_Q1|V_M22TZ2AISL_P2_Q2,Approved by Rob in the final Topic 1 review
 AI HL,2026-10-20,1.3,Geometric sequences and series,approved,V_N25TZ1AISL_P1_Q1|V_M24TZ1AISL_P1_Q3,Locked from Rob's AI Topic 1 review
 AI HL,2026-10-20,1.4.1,Compound interest,approved,V_M23TZ2AISL_P1_Q2|N20TZ0AISL_P1_Q8,Locked from Rob's AI Topic 1 review
 AI HL,2026-10-20,1.4.2,Depreciation,approved,N15TZ0AISL_P1_Q11|M19TZ1AISL_P1_Q14,Locked from Rob's AI Topic 1 review
-AI HL,2026-10-20,1.4.3,Inflation,awaiting-recheck,,Added two real-value questions that explicitly use inflation
-AI HL,2026-10-20,1.5.1,Laws of exponents,awaiting-recheck,,Replaced the modelling question with a direct exponent equation and ordered easy before harder
+AI HL,2026-10-21,1.4.3,Inflation,approved,W_SPECAIHL_P2_Q3|V_M22TZ2AISL_P1_Q13,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-21,1.5.1,Laws of exponents,approved,M15TZ1SL_P1_Q3|N16TZ0HL_P1_Q7,Approved by Rob in the final Topic 1 review
 AI HL,2026-10-20,1.5.2,Introduction to logs,approved,V_M22TZ2AISL_P1_Q4|V_SPECAISL_P1_Q8,Locked from Rob's AI Topic 1 review
 AI HL,2026-10-20,1.5.3,The number e,approved,V_N21TZ0AISL_P1_Q3,Locked from Rob's AI Topic 1 review
 AI HL,2026-10-20,1.6.1,Rounding,approved,N16TZ0AISL_P1_Q1,Locked from Rob's AI Topic 1 review
@@ -235,24 +235,24 @@ AI HL,2026-10-20,1.8.1,System of linear equations,approved,V_N24TZ1AISL_P1_Q3|V_
 AI HL,2026-10-20,1.8.2,Roots of a polynomial,approved-no-practice,,Rob approved this lesson with no attached practice
 AI HL,2026-10-20,1.9.1,Laws of logs,approved,M11TZ2SL_P1_Q5|W_M25TZ1AIHL_P1_Q10,Locked from Rob's AI Topic 1 review
 AI HL,2026-10-20,1.9.2,Change of base,approved,A_M25TZ3HL_P1_Q1|M16TZ1HL_P1_Q6,Locked from Rob's AI Topic 1 review
-AI HL,2026-10-20,1.10,More exponents,awaiting-recheck,,Replaced the inverse-function question with a direct exponential equation
+AI HL,2026-10-21,1.10,More exponents,approved,H_M13TZ2HL_P1_Q9|M14TZ2HL_P1_Q2,Approved by Rob in the final Topic 1 review
 AI HL,2026-10-20,1.11,Sum of an infinite geometric sequence,approved,H_N18TZ0SL_P2_Q5|W_M22TZ2AIHL_P1_Q7,Locked from Rob's AI Topic 1 review
 AI HL,2026-10-20,1.12.1,Complex numbers introduction,approved-no-practice,,Rob approved this introductory lesson with no attached practice
-AI HL,2026-10-20,1.12.2,Operations with complex numbers,awaiting-recheck,,Kept the approved division and added a simple direct evaluation question
-AI HL,2026-10-20,1.12.3,Complex solutions to polynomial equations,awaiting-recheck,,Added two polynomial equations with complex solutions
+AI HL,2026-10-21,1.12.2,Operations with complex numbers,approved,H_M18TZ2HL_P2_Q1|W_M21TZ1AIHL_P1_Q9,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-21,1.12.3,Complex solutions to polynomial equations,approved,M09TZ1HL_P2_Q2|A_N23TZ2HL_P1_Q7,Approved by Rob in the final Topic 1 review
 AI HL,2026-10-20,1.13.1,Modulus-argument form,approved,H_M13TZ1HL_P1_Q1|H_M17TZ1HL_P1_Q2,Locked from Rob's AI Topic 1 review
-AI HL,2026-10-20,1.13.2,Euler form,awaiting-recheck,,Kept the approved conversion and added a second Euler-form calculation
+AI HL,2026-10-21,1.13.2,Euler form,approved,W_N21TZ0AIHL_P2_Q5|W_M21TZ2AIHL_P1_Q12,Approved by Rob in the final Topic 1 review
 AI HL,2026-10-20,1.13.3,Adding sinusoidal functions,approved,W_M22TZ2AIHL_P1_Q13|W_M25TZ1AIHL_P1_Q14,Locked from Rob's AI Topic 1 review
-AI HL,2026-10-20,1.13.4,Operations and geometric interpretation,awaiting-recheck,,Kept the approved rotation question and added Argand-diagram powers
+AI HL,2026-10-21,1.13.4,Operations and geometric interpretation,approved,W_M24TZ2AIHL_P1_Q15|W_SPECAIHL_P1_Q15,Approved by Rob in the final Topic 1 review
 AI HL,2026-10-20,1.14.1,Introduction to matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
 AI HL,2026-10-20,1.14.2,Algebra of matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
 AI HL,2026-10-20,1.14.3,Multiplication of matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
 AI HL,2026-10-20,1.14.4,Identity matrix,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
 AI HL,2026-10-20,1.14.5,Properties of matrices,approved-no-practice,,No clean standalone exam source exists in the current bank; left blank as Rob allowed
 AI HL,2026-10-20,1.14.6,Determinant and inverse of a matrix,approved-no-practice,,Removed the rejected transformation questions; no clean replacement exists in the current bank
-AI HL,2026-10-20,1.14.7,System of linear equations,awaiting-recheck,W_M21TZ2AIHL_P1_Q14,Added the simultaneous-equations part Rob identified from the previous composite-transformation question
-AI HL,2026-10-20,1.15.1,Eigenvalues and eigenvectors,awaiting-recheck,,Removed phase and transition follow-ups; now contains two direct eigenvalue and eigenvector tasks
-AI HL,2026-10-20,1.15.2,Powers of matrices,awaiting-recheck,,Moved the requested diagonalisation question here and retained the approved powers question
+AI HL,2026-10-21,1.14.7,System of linear equations,approved-single-question,W_M21TZ2AIHL_P1_Q14,Rob approved question 1 and requested question 2 be removed
+AI HL,2026-10-21,1.15.1,Eigenvalues and eigenvectors,approved,W_M22TZ1AIHL_P1_Q11|W_M22TZ2AIHL_P2_Q5,Approved by Rob in the final Topic 1 review
+AI HL,2026-10-21,1.15.2,Powers of matrices,approved,W_N24TZ0AIHL_P1_Q11|W_M21TZ1AIHL_P2_Q5,Approved by Rob in the final Topic 1 review
 AI HL,2026-10-20,2.1.1,Gradient of a line,approved,M17TZ2AISL_P1_Q4|M15TZ2AISL_P1_Q3,Locked from Rob's AI Topic 2 review
 AI HL,2026-10-20,2.1.2,Equation of a straight line,approved,M11TZ2AISL_P1_Q5|M11TZ1AISL_P1_Q10,Locked from Rob's AI Topic 2 review
 AI HL,2026-10-20,2.1.3,Parallel and perpendicular lines,awaiting-recheck,,Replaced question 2 with a direct perpendicular-line problem with no diagram
