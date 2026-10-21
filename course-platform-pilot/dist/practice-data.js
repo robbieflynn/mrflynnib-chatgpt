@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T08:33:36.051Z",
+  "generatedAt": "2026-10-21T08:40:47.665Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
   "completeLessonCount": 458,
   "approvedSingleLessonCount": 24,
-  "questionCount": 956,
+  "questionCount": 957,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -289,17 +289,17 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Transformations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_M25TZ1HL_P1_Q10",
+        "M08TZ2SL_P2_Q3",
         "N17TZ0SL_P2_Q2"
       ],
       "questionParts": {
-        "A_M25TZ1HL_P1_Q10": [
+        "M08TZ2SL_P2_Q3": [
           "a",
           "b"
         ]
       },
       "questionPartTitles": {
-        "A_M25TZ1HL_P1_Q10": "Complete the square and sketch a quadratic"
+        "M08TZ2SL_P2_Q3": "Find intercepts and sketch a non-quadratic function"
       }
     },
     "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": {
@@ -1839,16 +1839,11 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Polynomial functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M18TZ1HL_P2_Q5",
+        "M10TZ1HL_P1_Q1",
         "N17TZ0HL_P1_Q3"
       ],
-      "questionParts": {
-        "M18TZ1HL_P2_Q5": [
-          "a"
-        ]
-      },
       "questionPartTitles": {
-        "M18TZ1HL_P2_Q5": "Rewrite a cubic by polynomial division"
+        "M10TZ1HL_P1_Q1": "Use polynomial factors to find two coefficients"
       }
     },
     "529c9f56-5b88-4226-a374-0b54c32fcd15": {
@@ -1897,16 +1892,26 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A_M22TZ2HL_P1_Q11",
-        "N10TZ0HL_P2_Q8"
+        "N10TZ0HL_P2_Q8",
+        "N19TZ0HL_P1_Q10"
       ],
       "questionParts": {
         "A_M22TZ2HL_P1_Q11": [
           "a"
+        ],
+        "N19TZ0HL_P1_Q10": [
+          "b"
         ]
+      },
+      "questionPartLabels": {
+        "N19TZ0HL_P1_Q10": {
+          "b": ""
+        }
       },
       "questionPartTitles": {
         "A_M22TZ2HL_P1_Q11": "Sketch the reciprocal of a quadratic",
-        "N10TZ0HL_P2_Q8": "Sketch a line divided by a quadratic"
+        "N10TZ0HL_P2_Q8": "Sketch a line divided by a quadratic",
+        "N19TZ0HL_P1_Q10": "Sketch a linear-over-quadratic function"
       }
     },
     "54f53e20-a14f-447a-a43f-c865e7eb424e": {
@@ -1953,16 +1958,11 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Inequalities",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_N24TZ0HL_P1_Q6",
+        "N17TZ0HL_P1_Q6",
         "M10TZ1HL_P2_Q9"
       ],
-      "questionParts": {
-        "A_N24TZ0HL_P1_Q6": [
-          "a"
-        ]
-      },
       "questionPartTitles": {
-        "A_N24TZ0HL_P1_Q6": "Solve 4x² − 11x − 3 < 0",
+        "N17TZ0HL_P1_Q6": "Sketch and solve a rational inequality",
         "M10TZ1HL_P2_Q9": "Solve a rational inequality with a restricted domain"
       }
     },
@@ -1995,11 +1995,11 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N10TZ0HL_P1_Q1",
-        "M14TZ2HL_P1_Q5"
+        "M15TZ2HL_P2_Q3"
       ],
       "questionPartTitles": {
         "N10TZ0HL_P1_Q1": "Solve |x − 1| > |2x − 1|",
-        "M14TZ2HL_P1_Q5": "Sketch a modulus function and solve an equation"
+        "M15TZ2HL_P2_Q3": "Sketch and solve a non-trigonometric modulus equation"
       }
     },
     "75958ce6-0c3e-4c88-82e8-3db6f8392e1f": {

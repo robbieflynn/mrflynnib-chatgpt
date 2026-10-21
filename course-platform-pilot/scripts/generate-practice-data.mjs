@@ -972,10 +972,9 @@ const verifiedOverrides = {
   // Preserve Rob's approved first inverse-introduction question and move the
   // graph-reading inverse question here from 2.5.2, where it was too indirect.
   "e62cb90d-32c9-4dc7-b508-15e458124e56": ["W_SPECAIHL_P1_Q2", "M18TZ1SL_P1_Q3"],
-  // Direct graph sketching only. Keep the approved second question and use
-  // the quadratic sketch (parts a-b only) first; omit its later inequality
-  // and logarithmic-composition work.
-  "eeb308ea-e4a0-44da-8932-705b5cb24c2f": ["A_M25TZ1HL_P1_Q10", "N17TZ0SL_P2_Q2"],
+  // Direct graph sketching only. Keep the approved second question and use a
+  // non-quadratic exponential graph first; omit its later gradient part.
+  "eeb308ea-e4a0-44da-8932-705b5cb24c2f": ["M08TZ2SL_P2_Q3", "N17TZ0SL_P2_Q2"],
   // Features must be identified from graphs, including range and labelled
   // local extrema. The second source is displayed only as its sketching part.
   "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": ["A_M25TZ2HL_P1_Q1", "A_M23TZ1SL_P2_Q3"],
@@ -995,9 +994,9 @@ const verifiedOverrides = {
   // No source question is shared between the two lessons.
   "8a506d7d-a1aa-4133-87cd-1f6099c2a544": ["N15TZ0HL_P2_Q2", "N18TZ0HL_P1_Q4"],
   "b8e1f841-d49c-4325-8d04-a78b335eb89b": ["M13TZ1HL_P2_Q2", "M14TZ1HL_P2_Q4"],
-  // Cubic factorisation through the factor theorem and polynomial division.
-  // Show only the polynomial parts of the longer first source.
-  "6468821a-a955-4837-b591-7e8bdf3705ca": ["M18TZ1HL_P2_Q5", "N17TZ0HL_P1_Q3"],
+  // Two direct factor/remainder-theorem questions, ordered from the shorter
+  // coefficient problem to the approved cubic factorisation question.
+  "6468821a-a955-4837-b591-7e8bdf3705ca": ["M10TZ1HL_P1_Q1", "N17TZ0HL_P1_Q3"],
   // AA Topic 3 review. Approved pairs are pinned; rejected cards are replaced
   // by the exact displayed parts below so later generation cannot reshuffle
   // them. Shared AA SL/HL videos deliberately use the same locked questions.
@@ -1228,21 +1227,23 @@ const verifiedOverrides = {
   "5776410f-820d-49e1-97f0-5261d9bb438d": ["M15TZ1HL_P1_Q7", "A_M21TZ2HL_P1_Q7"],
   // Keep the two neighbouring rational-function lessons algebraically exact
   // and completely separate. The denominator lesson now uses only clean
-  // graph work with a genuine quadratic denominator. The numerator lesson
-  // uses two quadratic-over-linear questions and hides the later integration.
-  "f8918c12-e985-4e26-bea3-c93f245655f1": ["A_M22TZ2HL_P1_Q11", "N10TZ0HL_P2_Q8"],
+  // graph work with a genuine quadratic denominator. Add a third explicit
+  // linear-over-quadratic example, displaying only its graph-features part.
+  // The numerator lesson uses two quadratic-over-linear questions and hides
+  // the later integration.
+  "f8918c12-e985-4e26-bea3-c93f245655f1": ["A_M22TZ2HL_P1_Q11", "N10TZ0HL_P2_Q8", "N19TZ0HL_P1_Q10"],
   "54f53e20-a14f-447a-a43f-c865e7eb424e": ["A_N23TZ1HL_P2_Q11", "A_N21TZ0HL_P2_Q10"],
   // Rob approved both even/odd questions during the final Topic 2 pass.
   "1ca31836-1394-43f7-8a9a-42198705f209": ["M15TZ1HL_P1_Q5", "A_M22TZ1HL_P2_Q6"],
-  // Retain the approved direct quadratic inequality, then use a harder
-  // calculator inequality with a restricted domain and vertical asymptote.
-  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": ["A_N24TZ0HL_P1_Q6", "M10TZ1HL_P2_Q9"],
+  // Start with a direct rational inequality rather than repeating the earlier
+  // quadratic-inequality lesson, then retain the harder calculator question.
+  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": ["N17TZ0HL_P1_Q6", "M10TZ1HL_P2_Q9"],
   // Two strong modulus-graph questions: a direct trigonometric modulus graph,
   // then both f(|x|) and |f(x)| from a supplied function graph.
   "990b6aba-3d06-489d-81e6-70a683d4f23a": ["M08TZ1HL_P2_Q2", "A_N25TZ3HL_P1_Q5"],
   // Keep the approved direct modulus inequality first. The second question
-  // now requires a modulus graph and then uses that graph to solve an equation.
-  "5c188648-60b0-48f6-83a1-9d5c18235dac": ["N10TZ0HL_P1_Q1", "M14TZ2HL_P1_Q5"],
+  // sketches and solves a non-trigonometric modulus equation.
+  "5c188648-60b0-48f6-83a1-9d5c18235dac": ["N10TZ0HL_P1_Q1", "M15TZ2HL_P2_Q3"],
   // Rob approved both reciprocal-transformation questions unchanged.
   "75958ce6-0c3e-4c88-82e8-3db6f8392e1f": ["A2_M25TZ3HL_P1_Q6", "A3_M25TZ3HL_P1_Q6"],
   "c8ce5b5c-f78f-40a9-a8aa-2c5065925d0f": ["A_M23TZ1SL_P1_Q5", "A_M24TZ2HL_P1_Q2"],
@@ -1739,6 +1740,7 @@ const intentionallyTriplePractice = new Set([
   "f924ec98-3f94-4b6e-b485-50d9a7cb0959", // AA SL + AA HL: Binomial distribution
   "16efb219-7953-40cb-b8ca-8b0e956f9e39", // AA SL + AA HL: direct sin/cos, ln and exponential derivatives
   "c243c099-8009-4c45-b936-7ba9a05ef501", // AA HL: HL-only substitution progression
+  "f8918c12-e985-4e26-bea3-c93f245655f1", // AA HL: rational functions with quadratic denominators
   "d084246b-aa0a-4a8b-a962-db8032c3bbcf", // IGCSE: Domain and Range
   "2d8c3008-d9cc-456e-a1a7-05999fc917ed", // IGCSE: Grouped Data
   "1a51ff2e-8cdc-4a3d-9f0b-85cf3f65e853", // IGCSE: Probability And/Or Rules
@@ -2170,9 +2172,6 @@ const practicePartOverrides = {
   "e92f65c0-af14-4e82-90de-28a2f004b677": {
     "M13TZ2HL_P2_Q6": ["a"],
   },
-  "6468821a-a955-4837-b591-7e8bdf3705ca": {
-    "M18TZ1HL_P2_Q5": ["a"],
-  },
   "17cbf90f-7617-48fa-855d-dc6b1013a2d4": {
     "N18TZ0SL_P1_Q2": ["a"],
     "M16TZ1SL_P1_Q1": ["a"],
@@ -2182,7 +2181,7 @@ const practicePartOverrides = {
     "M18TZ1SL_P1_Q1": ["a"],
   },
   "eeb308ea-e4a0-44da-8932-705b5cb24c2f": {
-    "A_M25TZ1HL_P1_Q10": ["a", "b"],
+    "M08TZ2SL_P2_Q3": ["a", "b"],
   },
   "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": {
     "A_M23TZ1SL_P2_Q3": ["b"],
@@ -2215,13 +2214,11 @@ const practicePartOverrides = {
   },
   "f8918c12-e985-4e26-bea3-c93f245655f1": {
     "A_M22TZ2HL_P1_Q11": ["a"],
+    "N19TZ0HL_P1_Q10": ["b"],
   },
   "54f53e20-a14f-447a-a43f-c865e7eb424e": {
     "A_N23TZ1HL_P2_Q11": ["a", "b", "c", "d"],
     "A_N21TZ0HL_P2_Q10": ["a", "b", "c", "d"],
-  },
-  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
-    "A_N24TZ0HL_P1_Q6": ["a"],
   },
   "990b6aba-3d06-489d-81e6-70a683d4f23a": {
     "M08TZ1HL_P2_Q2": ["a"],
@@ -2417,6 +2414,9 @@ const practicePartOverrides = {
 // Preserve the original source labels for filtering and markscheme matching,
 // then make extracted non-consecutive parts read naturally in course practice.
 const practicePartLabelOverrides = {
+  "f8918c12-e985-4e26-bea3-c93f245655f1": {
+    "N19TZ0HL_P1_Q10": { b: "" },
+  },
   "88b1a2a9-329c-473f-9f4e-f1ca55c8d057": {
     "W_M22TZ2AIHL_P2_Q1": { d: "" },
     "V_M22TZ2AISL_P2_Q2": { d: "" },
@@ -2950,7 +2950,7 @@ const practicePartTitles = {
     "M13TZ2HL_P2_Q6": "Solve 3cos²x − 8cos x + 4 = 0",
   },
   "6468821a-a955-4837-b591-7e8bdf3705ca": {
-    "M18TZ1HL_P2_Q5": "Rewrite a cubic by polynomial division",
+    "M10TZ1HL_P1_Q1": "Use polynomial factors to find two coefficients",
   },
   "17cbf90f-7617-48fa-855d-dc6b1013a2d4": {
     "N18TZ0SL_P1_Q2": "Read a function value from a table",
@@ -2961,7 +2961,7 @@ const practicePartTitles = {
     "M18TZ1SL_P1_Q1": "Evaluate f(14)",
   },
   "eeb308ea-e4a0-44da-8932-705b5cb24c2f": {
-    "A_M25TZ1HL_P1_Q10": "Complete the square and sketch a quadratic",
+    "M08TZ2SL_P2_Q3": "Find intercepts and sketch a non-quadratic function",
   },
   "4be6b3ed-84bd-4d5c-a9d3-67362859ef39": {
     "A_M23TZ1SL_P2_Q3": "Sketch a graph and label its local maximum and minimum",
@@ -2998,13 +2998,14 @@ const practicePartTitles = {
   "f8918c12-e985-4e26-bea3-c93f245655f1": {
     "A_M22TZ2HL_P1_Q11": "Sketch the reciprocal of a quadratic",
     "N10TZ0HL_P2_Q8": "Sketch a line divided by a quadratic",
+    "N19TZ0HL_P1_Q10": "Sketch a linear-over-quadratic function",
   },
   "54f53e20-a14f-447a-a43f-c865e7eb424e": {
     "A_N23TZ1HL_P2_Q11": "Asymptotes, intercepts and sketch of a quadratic-over-linear function",
     "A_N21TZ0HL_P2_Q10": "Sketch a second quadratic-over-linear function",
   },
   "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
-    "A_N24TZ0HL_P1_Q6": "Solve 4x² − 11x − 3 < 0",
+    "N17TZ0HL_P1_Q6": "Sketch and solve a rational inequality",
     "M10TZ1HL_P2_Q9": "Solve a rational inequality with a restricted domain",
   },
   "990b6aba-3d06-489d-81e6-70a683d4f23a": {
@@ -3013,7 +3014,7 @@ const practicePartTitles = {
   },
   "5c188648-60b0-48f6-83a1-9d5c18235dac": {
     "N10TZ0HL_P1_Q1": "Solve |x − 1| > |2x − 1|",
-    "M14TZ2HL_P1_Q5": "Sketch a modulus function and solve an equation",
+    "M15TZ2HL_P2_Q3": "Sketch and solve a non-trigonometric modulus equation",
   },
   "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": {
     "A_SPECHL_P1_Q3": "Sketch y = (f(x))² + 1 from the graph of f",
@@ -4057,6 +4058,8 @@ function passesLessonSpecificCheck(question, lesson) {
     && question.id === "N15TZ0SL_P1_Q5") return true;
   if (/^factorising quadratics$/.test(lessonTitle)
     && question.id === "N08TZ0SL_P2_Q1") return true;
+  if (/^sketching functions$/.test(lessonTitle)
+    && question.id === "M08TZ2SL_P2_Q3") return true;
   if (/^rational functions$/.test(lessonTitle)
     && question.id === "A_M24TZ1SL_P1_Q8") return true;
   if (/^solving equations with gdc$/.test(lessonTitle)
@@ -4068,15 +4071,15 @@ function passesLessonSpecificCheck(question, lesson) {
   // or inequality work, so relevance must be judged from the rendered extract
   // rather than the broader source title.
   if (/rational functions.*quadratic in denominator/.test(lessonTitle)
-    && ["A_M22TZ2HL_P1_Q11", "N10TZ0HL_P2_Q8"].includes(question.id)) return true;
+    && ["A_M22TZ2HL_P1_Q11", "N10TZ0HL_P2_Q8", "N19TZ0HL_P1_Q10"].includes(question.id)) return true;
   if (/rational functions.*quadratic in numerator/.test(lessonTitle)
     && ["A_N23TZ1HL_P2_Q11", "A_N21TZ0HL_P2_Q10"].includes(question.id)) return true;
   if (/^solving inequalities$/.test(lessonTitle)
-    && ["A_N24TZ0HL_P1_Q6", "M10TZ1HL_P2_Q9"].includes(question.id)) return true;
+    && ["N17TZ0HL_P1_Q6", "M10TZ1HL_P2_Q9"].includes(question.id)) return true;
   if (/^graphs of modulus functions$/.test(lessonTitle)
     && ["M08TZ1HL_P2_Q2", "A_N25TZ3HL_P1_Q5"].includes(question.id)) return true;
   if (/^modulus equations and inequalities$/.test(lessonTitle)
-    && ["N10TZ0HL_P1_Q1", "M14TZ2HL_P1_Q5"].includes(question.id)) return true;
+    && ["N10TZ0HL_P1_Q1", "M15TZ2HL_P2_Q3"].includes(question.id)) return true;
   // AA Topic 3 reviewed extracts. These mixed-source records are cropped to
   // the exact requested skill before their later area or percentage parts.
   if (/^distance between 2 points$/.test(lessonTitle)
@@ -4387,7 +4390,7 @@ function passesLessonSpecificCheck(question, lesson) {
   // records are whitelisted because their LaTeX contains nested braces that a
   // deliberately conservative generic expression check will not parse.
   if (/rational functions.*quadratic in denominator/.test(lessonTitle)) {
-    if (["M17TZ1HL_P1_Q11", "M11TZ2HL_P2_Q5"].includes(question.id)) return true;
+    if (["M17TZ1HL_P1_Q11", "M11TZ2HL_P2_Q5", "N19TZ0HL_P1_Q10"].includes(question.id)) return true;
     if (!/\\d?frac\{[^{}]*\}\{[^{}]*(?:x\^2|x²)[^{}]*\}/i.test(rawQuestionText)) return false;
   }
   if (/rational functions.*quadratic in numerator/.test(lessonTitle)) {
@@ -4395,7 +4398,7 @@ function passesLessonSpecificCheck(question, lesson) {
     if (!/\\d?frac\{[^{}]*(?:x\^2|x²)[^{}]*\}\{[^{}]*\}/i.test(rawQuestionText)) return false;
   }
   if (/^solving inequalities$/.test(lessonTitle)) {
-    if (["A_N24TZ0HL_P1_Q6", "M14TZ1HL_P2_Q6"].includes(question.id)) return true;
+    if (["A_N24TZ0HL_P1_Q6", "M14TZ1HL_P2_Q6", "N17TZ0HL_P1_Q6"].includes(question.id)) return true;
     if (/modulus|transformation/.test(fullQuestionText)) return false;
   }
   if (/graphs of y.*f x/.test(lessonTitle)) {
