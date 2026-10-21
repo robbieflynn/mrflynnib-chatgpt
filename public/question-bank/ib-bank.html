@@ -550478,6 +550478,7 @@ function diagramN11TZ0P2Q1grid(){
   var REQUESTED_PART_TITLES = practiceMap('partTitles');
   var REQUESTED_BODIES = practiceMap('bodies');
   var REQUESTED_DIFFICULTIES = practiceMap('difficulties');
+  var REQUESTED_HIDDEN_DIAGRAMS = new Set((EMBED_PARAMS.get('hideDiagrams') || '').split(',').filter(Boolean));
   var HIDE_PAPER = EMBED_PARAMS.get('hidePaper') === '1';
   var SHOW_SOLUTIONS = EMBED_PARAMS.get('solutions') !== '0';
   var requestedFiltersApplied = false;
@@ -550556,9 +550557,10 @@ function diagramN11TZ0P2Q1grid(){
     var hasTitle = Object.prototype.hasOwnProperty.call(REQUESTED_PART_TITLES, id);
     var hasBody = Object.prototype.hasOwnProperty.call(REQUESTED_BODIES, id);
     var hasDifficulty = Object.prototype.hasOwnProperty.call(REQUESTED_DIFFICULTIES, id);
+    var hideDiagram = REQUESTED_HIDDEN_DIAGRAMS.has(id);
     var hasLabelOverrides = labelOverrides && typeof labelOverrides === 'object' && !Array.isArray(labelOverrides);
     var hasTextOverrides = textOverrides && typeof textOverrides === 'object' && !Array.isArray(textOverrides);
-    if(!Array.isArray(labels) && !hasLabelOverrides && !hasTextOverrides && !hasTitle && !hasBody && !hasDifficulty) return q;
+    if(!Array.isArray(labels) && !hasLabelOverrides && !hasTextOverrides && !hasTitle && !hasBody && !hasDifficulty && !hideDiagram) return q;
 
     var copy = Object.assign({}, q);
     if(Array.isArray(labels) && labels.length){
@@ -550595,6 +550597,12 @@ function diagramN11TZ0P2Q1grid(){
     }
     if(hasTitle) copy.title = REQUESTED_PART_TITLES[id];
     if(hasBody) copy.body = REQUESTED_BODIES[id];
+    if(hideDiagram){
+      delete copy.diagram;
+      delete copy.diagram2;
+      delete copy.diagram3;
+      delete copy.diagram4;
+    }
     if(hasDifficulty && typeof REQUESTED_DIFFICULTIES[id] === 'string'){
       copy.difficulty = Object.assign({}, q.difficulty || {});
       ['AA SL', 'AA HL', 'AI SL', 'AI HL'].forEach(function(course){

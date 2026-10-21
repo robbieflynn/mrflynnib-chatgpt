@@ -481,7 +481,7 @@ function renderLessonPractice(lesson) {
   const frame = document.getElementById("practiceFrame");
   const bankFile = practice.bankPath || "ib-bank.html";
   const url = new URL(`/public/question-bank/${bankFile}`, window.location.href);
-  url.searchParams.set("renderer", "20261020-1");
+  url.searchParams.set("renderer", "20261021-2");
   url.searchParams.set("embedded", "1");
   url.searchParams.set("practice", "1");
   // Shared SL-and-HL lessons reuse the same question IDs, but each bank
@@ -510,6 +510,9 @@ function renderLessonPractice(lesson) {
   }
   if (practice.questionBodies) {
     url.searchParams.set("bodies", JSON.stringify(practice.questionBodies));
+  }
+  if (practice.questionHiddenDiagrams) {
+    url.searchParams.set("hideDiagrams", practice.questionHiddenDiagrams.join(","));
   }
   if (practice.questionDifficulties) {
     url.searchParams.set("difficulties", JSON.stringify(practice.questionDifficulties));

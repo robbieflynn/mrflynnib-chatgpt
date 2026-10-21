@@ -1342,16 +1342,17 @@ const verifiedOverrides = {
   // Direct exponential integration paired with the approved logarithmic
   // integral. Integration by parts is not part of this SL lesson.
   "6d504905-61e3-40cb-972c-13ff1691ffbd": ["N20TZ0SL_P1_Q6", "A_M22TZ2SL_P2_Q2"],
-  // The verified archive has no clean standalone indefinite sin/cos question.
-  // Use the one direct sine-area part rather than padding this lesson with
-  // optimization, substitution or a rate-model question.
-  "5c83085a-0fc2-4199-89b3-34ce0cf5539b": ["N08TZ0SL_P1_Q9", "M10TZ2SL_P1_Q10"],
+  // Retain the approved direct sine-area calculation. The rejected kinematics
+  // card is removed; the only other clean direct source is already locked in
+  // Finding f(x), so do not duplicate it or auto-fill a later-rule question.
+  "5c83085a-0fc2-4199-89b3-34ce0cf5539b": ["M10TZ2SL_P1_Q10"],
   // Reverse-chain work here is limited to a linear inner function. Nonlinear
   // substitutions belong in the next lesson.
   "190dd207-d2d9-4de5-b374-aaa9e4f951de": ["N10TZ0SL_P1_Q6", "M14TZ2SL_P1_Q5"],
-  // SL substitution only: each integrand has the form f'(x)g(f(x)). The
-  // trigonometric substitutions rejected here remain available for 5.16.1.
-  "924417ae-de6f-4e30-9f97-46ac0d001d4a": ["M17TZ1SL_P1_Q5", "A_N22TZ0SL_P1_Q5"],
+  // SL substitution only: first an exponential composite, then a rational
+  // integrand whose numerator is the derivative of the denominator and whose
+  // antiderivative is logarithmic.
+  "924417ae-de6f-4e30-9f97-46ac0d001d4a": ["M17TZ1SL_P1_Q5", "N20TZ0SL_P2_Q10"],
   "4fde506e-3b33-485d-9259-284f5f86bcd3": ["M09TZ2HL_P2_Q8", "M17TZ1HL_P1_Q4"],
   "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": ["A_SPECHL_P1_Q3", "N18TZ0HL_P2_Q8"],
 
@@ -1366,9 +1367,9 @@ const verifiedOverrides = {
   // Keep the approved cone question and add a moving helicopter whose angle
   // of elevation changes explicitly.
   "5637bf1d-3809-4388-bce0-6c903c2c779b": ["M14TZ2HL_P2_Q9", "M09TZ2HL_P2_Q10"],
-  // Formula-booklet HL rules: inverse-trigonometric differentiation and an
-  // arctangent antiderivative, rather than ordinary SL product/chain work.
-  "dd3009b8-25ed-4425-b4a5-611cc3ba1665": ["N08TZ0HL_P2_Q12", "A_M21TZ2HL_P2_Q12"],
+  // Formula-booklet HL rules: retain the approved arcsine derivative, then
+  // use arccos for variety rather than repeating a second arcsine example.
+  "dd3009b8-25ed-4425-b4a5-611cc3ba1665": ["N08TZ0HL_P2_Q12", "M18TZ1HL_P1_Q7"],
   "57c2580c-3193-417f-be6c-0332c78845ca": ["M15TZ1HL_P1_Q3", "M16TZ2HL_P1_Q3"],
   // Keep the approved first example, then add a second source that explicitly
   // establishes a partial-fractions decomposition and uses it to integrate.
@@ -1748,6 +1749,7 @@ const intentionallySinglePractice = new Set([
 // approved them as permanent one-question exceptions. Show the good question,
 // do not auto-fill a wrong second one, and keep the audit status as needs-review.
 const incompleteSinglePractice = new Set([
+  "5c83085a-0fc2-4199-89b3-34ce0cf5539b", // AA SL + AA HL: direct sin/cos integration (second non-repeated source still needed)
   "41d1e966-9bb1-4436-976e-d02187f32932", // AI SL + AI HL: exact perpendicular-bisector equation
   "562cf78f-2adf-4021-abac-bb7b80049618", // AI HL: horizontal stretch matrix
   "4f023b2b-b628-425a-a005-e96d992f7a32", // AI HL: translation by vector addition
@@ -2065,11 +2067,11 @@ const practicePartOverrides = {
     "N13TZ0HL_P1_Q10X1": ["a", "b"],
   },
   "5c83085a-0fc2-4199-89b3-34ce0cf5539b": {
-    "N08TZ0SL_P1_Q9": ["b"],
     "M10TZ2SL_P1_Q10": ["c"],
   },
   "924417ae-de6f-4e30-9f97-46ac0d001d4a": {
     "M17TZ1SL_P1_Q5": ["a"],
+    "N20TZ0SL_P2_Q10": ["c"],
   },
   "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": {
     "M10TZ2HL_P2_Q3": ["a"],
@@ -2318,10 +2320,10 @@ const practicePartOverrides = {
   },
   "dd3009b8-25ed-4425-b4a5-611cc3ba1665": {
     "N08TZ0HL_P2_Q12": ["c"],
-    "A_M21TZ2HL_P2_Q12": ["c"],
+    "M18TZ1HL_P1_Q7": ["a"],
   },
   "d10601dc-f866-4925-93d7-dc05b9316429": {
-    "M17TZ1HL_P1_Q11": ["c", "d"],
+    "M17TZ1HL_P1_Q11": ["d"],
   },
   "57c2580c-3193-417f-be6c-0332c78845ca": {
     "M16TZ2HL_P1_Q3": ["a", "b"],
@@ -2470,7 +2472,7 @@ const practicePartLabelOverrides = {
     "W_M23TZ1AIHL_P2_Q1": { a: "a", b: "b", e: "c" },
   },
   "d10601dc-f866-4925-93d7-dc05b9316429": {
-    "M17TZ1HL_P1_Q11": { c: "a", d: "b" },
+    "M17TZ1HL_P1_Q11": { d: "" },
   },
   "3c314627-da30-4ce3-b16f-c80816aaec14": {
     "N11TZ0AISL_P2_Q5": { d: "" },
@@ -2513,11 +2515,28 @@ const practicePartTextOverrides = {
       b: "On the coordinate axes below, sketch the graph of the derivative \\(y=f'(x)\\), clearly showing the coordinates of the images of the points A and D, labelling them \\(A''\\) and \\(D''\\) respectively.<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>",
     },
   },
+  "7c1d0df9-3f50-4bfb-ae45-b669c1405895": {
+    "M14TZ2SL_P1_Q6": {
+      a: "On the coordinate axes below, sketch the graph of \\(y=f'(x)\\).<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>",
+    },
+  },
+  "d10601dc-f866-4925-93d7-dc05b9316429": {
+    "M17TZ1HL_P1_Q11": {
+      d: "Find the value of \\(p\\) if \\(\\displaystyle\\int_0^1 f(x)\\,dx=\\ln(p)\\).",
+    },
+  },
+};
+
+// Some cropped practice extracts retain a source diagram that belongs only
+// to omitted parts. Hide that diagram in the course preview without changing
+// the complete question in the question bank.
+const practiceHiddenDiagrams = {
+  "20b8ec75-0605-426a-abec-066ca4c4f9d2": ["A_N22TZ0SL_P2_Q3"],
 };
 
 const practicePartTitles = {
   "d10601dc-f866-4925-93d7-dc05b9316429": {
-    "M17TZ1HL_P1_Q11": "Decompose into partial fractions and integrate",
+    "M17TZ1HL_P1_Q11": "Find p by integrating using partial fractions",
   },
   "fbd320cc-1282-4830-a9ba-15241df8dd87": {
     "4MA1_2019J_2HR_Q17": "Find a lower bound for a product",
@@ -2845,7 +2864,6 @@ const practicePartTitles = {
     "A_M22TZ2SL_P2_Q2": "Integrate a function containing 1/x",
   },
   "5c83085a-0fc2-4199-89b3-34ce0cf5539b": {
-    "N08TZ0SL_P1_Q9": "Integrate a cosine term to recover velocity",
     "M10TZ2SL_P1_Q10": "Integrate 6 + 6sin x to find an area",
   },
   "190dd207-d2d9-4de5-b374-aaa9e4f951de": {
@@ -2854,7 +2872,7 @@ const practicePartTitles = {
   },
   "924417ae-de6f-4e30-9f97-46ac0d001d4a": {
     "M17TZ1SL_P1_Q5": "Integrate xe^(x² − 1) using substitution",
-    "A_N22TZ0SL_P1_Q5": "Recover a function by substituting u = x²",
+    "N20TZ0SL_P2_Q10": "Use substitution to obtain a logarithmic antiderivative",
   },
   "3fd87e0f-1d17-4b5a-a0fd-4b8dd9a75aed": {
     "M10TZ2HL_P2_Q3": "Use z = (x − μ)/σ to find the standard deviation",
@@ -3086,7 +3104,7 @@ const practicePartTitles = {
   },
   "dd3009b8-25ed-4425-b4a5-611cc3ba1665": {
     "N08TZ0HL_P2_Q12": "Differentiate an expression containing arcsin",
-    "A_M21TZ2HL_P2_Q12": "Differentiate an inverse-sine function",
+    "M18TZ1HL_P1_Q7": "Differentiate an arccos function",
   },
   "57c2580c-3193-417f-be6c-0332c78845ca": {
     "M16TZ2HL_P1_Q3": "Use the arctangent integration formula",
@@ -3251,6 +3269,11 @@ const practicePartTitles = {
 // the practice card really shows "part C only" rather than carrying a stray
 // table from the original multi-part question.
 const practiceBodyOverrides = {
+  // Only the selected integration part is used from the source question, so
+  // keep its function and interval without the unrelated graphing preamble.
+  "20b8ec75-0605-426a-abec-066ca4c4f9d2": {
+    "A_N22TZ0SL_P2_Q3": "Consider the function \\(g(x)=8\\ln(x+1)-x^3\\), for \\(0\\leq x\\leq 3\\).",
+  },
   // Part (c) asks for f' but the definition of f appeared in part (a) of the
   // source. Restate it so the extracted derivative question is complete.
   "dd3009b8-25ed-4425-b4a5-611cc3ba1665": {
@@ -4906,6 +4929,7 @@ for (const [id, placement] of placements) {
       questionPartTexts: practicePartTextOverrides[id] || undefined,
       questionPartTitles: practicePartTitles[id] || undefined,
       questionBodies: practiceBodyOverrides[id] || undefined,
+      questionHiddenDiagrams: practiceHiddenDiagrams[id] || undefined,
       questionDifficulties: displayDifficultyOverrides(course, questionIds, practiceDifficultyOverrides[id]),
     };
   }

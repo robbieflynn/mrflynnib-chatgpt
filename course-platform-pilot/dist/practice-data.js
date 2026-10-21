@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T09:29:55.401Z",
+  "generatedAt": "2026-10-21T09:44:47.543Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
-  "completeLessonCount": 458,
+  "completeLessonCount": 457,
   "approvedSingleLessonCount": 24,
-  "questionCount": 957,
+  "questionCount": 956,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -1222,7 +1222,13 @@ window.MR_FLYNN_PRACTICE = {
       "questionPartTitles": {
         "A_N22TZ0SL_P2_Q3": "Find the total area between a graph and the x-axis",
         "W_N23TZ0AIHL_P1_Q11": "Find the area between a cubic curve and the x-axis"
-      }
+      },
+      "questionBodies": {
+        "A_N22TZ0SL_P2_Q3": "Consider the function \\(g(x)=8\\ln(x+1)-x^3\\), for \\(0\\leq x\\leq 3\\)."
+      },
+      "questionHiddenDiagrams": [
+        "A_N22TZ0SL_P2_Q3"
+      ]
     },
     "d336ee8b-277b-4f7d-90f8-c309a50d1d4c": {
       "lesson": "5.5.5 Finding a limit",
@@ -1322,6 +1328,11 @@ window.MR_FLYNN_PRACTICE = {
         "M14TZ2SL_P1_Q6": [
           "a"
         ]
+      },
+      "questionPartTexts": {
+        "M14TZ2SL_P1_Q6": {
+          "a": "On the coordinate axes below, sketch the graph of \\(y=f'(x)\\).<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>"
+        }
       },
       "questionPartTitles": {
         "M14TZ2SL_P1_Q6": "Sketch f′ from the graph of f without a calculator"
@@ -1428,19 +1439,14 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N08TZ0SL_P1_Q9",
         "M10TZ2SL_P1_Q10"
       ],
       "questionParts": {
-        "N08TZ0SL_P1_Q9": [
-          "b"
-        ],
         "M10TZ2SL_P1_Q10": [
           "c"
         ]
       },
       "questionPartTitles": {
-        "N08TZ0SL_P1_Q9": "Integrate a cosine term to recover velocity",
         "M10TZ2SL_P1_Q10": "Integrate 6 + 6sin x to find an area"
       }
     },
@@ -1465,16 +1471,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M17TZ1SL_P1_Q5",
-        "A_N22TZ0SL_P1_Q5"
+        "N20TZ0SL_P2_Q10"
       ],
       "questionParts": {
         "M17TZ1SL_P1_Q5": [
           "a"
+        ],
+        "N20TZ0SL_P2_Q10": [
+          "c"
         ]
       },
       "questionPartTitles": {
         "M17TZ1SL_P1_Q5": "Integrate xe^(x² − 1) using substitution",
-        "A_N22TZ0SL_P1_Q5": "Recover a function by substituting u = x²"
+        "N20TZ0SL_P2_Q10": "Use substitution to obtain a logarithmic antiderivative"
       }
     },
     "2f6505bd-9272-4e5b-b5ed-f6c596aff877": {
@@ -2622,19 +2631,19 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N08TZ0HL_P2_Q12",
-        "A_M21TZ2HL_P2_Q12"
+        "M18TZ1HL_P1_Q7"
       ],
       "questionParts": {
         "N08TZ0HL_P2_Q12": [
           "c"
         ],
-        "A_M21TZ2HL_P2_Q12": [
-          "c"
+        "M18TZ1HL_P1_Q7": [
+          "a"
         ]
       },
       "questionPartTitles": {
         "N08TZ0HL_P2_Q12": "Differentiate an expression containing arcsin",
-        "A_M21TZ2HL_P2_Q12": "Differentiate an inverse-sine function"
+        "M18TZ1HL_P1_Q7": "Differentiate an arccos function"
       },
       "questionBodies": {
         "N08TZ0HL_P2_Q12": "The function \\(f\\) is defined by \\(f(x)=x\\sqrt{9-x^2}+2\\arcsin\\left(\\dfrac{x}{3}\\right)\\)."
@@ -2670,18 +2679,21 @@ window.MR_FLYNN_PRACTICE = {
       ],
       "questionParts": {
         "M17TZ1HL_P1_Q11": [
-          "c",
           "d"
         ]
       },
       "questionPartLabels": {
         "M17TZ1HL_P1_Q11": {
-          "c": "a",
-          "d": "b"
+          "d": ""
+        }
+      },
+      "questionPartTexts": {
+        "M17TZ1HL_P1_Q11": {
+          "d": "Find the value of \\(p\\) if \\(\\displaystyle\\int_0^1 f(x)\\,dx=\\ln(p)\\)."
         }
       },
       "questionPartTitles": {
-        "M17TZ1HL_P1_Q11": "Decompose into partial fractions and integrate"
+        "M17TZ1HL_P1_Q11": "Find p by integrating using partial fractions"
       },
       "questionBodies": {
         "M17TZ1HL_P1_Q11": "Let \\(f(x)=\\dfrac{1}{x^2+3x+2}\\), where \\(x\\ne-2,-1\\)."
