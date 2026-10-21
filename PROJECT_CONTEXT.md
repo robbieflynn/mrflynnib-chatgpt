@@ -364,6 +364,8 @@ Rob is completing a final practice-question review of **AA HL**, **AI HL** and *
 
 On 20 October 2026, Rob completed his full AA HL Topic 5 read-through. Preserve every approved Topic 5 selection and intentional blank; only the explicitly replaced or newly added questions remain awaiting his recheck in the course-question review ledger.
 
+On 21 October 2026, Rob confirmed that lesson names should display mathematical expressions as mathematical notation rather than programming-style shorthand. In plain-text course titles, use readable symbols such as `eˣ` and `1⁄x` instead of `e^x`, `1/x` or malformed colon variants. Blank sketching grids must place the horizontal and vertical axes directly on grid lines, not between them.
+
 The administrator has a permanent teacher-account directory showing every teacher registration, curriculum, email-confirmation state, approval state, last sign-in, class count, assignment count, saved-test count and administrator-notification state. Unconfirmed applications remain visible in this directory but must not appear in the actionable approval queue. A confirmed teacher application must generate the administrator notification even if its access was approved before the confirmation callback completed; approving early must never suppress the notification.
 
 The administrator also has a permanent student-account directory. It shows the total number of registered student-role accounts and supports search plus IB/IGCSE, email-confirmation and class-membership filters. Each row shows registration time, last sign-in, classes joined, completed question-bank questions and submitted assignments. Teacher and administrator accounts are not included in the student total.

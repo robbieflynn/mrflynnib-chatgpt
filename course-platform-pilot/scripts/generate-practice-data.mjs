@@ -730,6 +730,18 @@ const authoredPractice = [
     markscheme: [["", [["\\(y\\,dy=3x^2\\,dx\\)", "M1"], ["\\(\\dfrac12y^2=x^3+C\\)", "A1"], ["\\(C=2\\)", "A1"], ["\\(y=\\sqrt{2x^3+4}\\)", "A2"]]]],
   }),
   authoredAiHlQuestion({
+    id: "MF_AIHL_T5_COUPLED_EXACT_0",
+    qnum: 51,
+    marks: 9,
+    difficulty: "Medium",
+    title: "Solve a coupled system in eigenvector form",
+    main: "Calculus",
+    sub: "Coupled differential equations",
+    body: "The coupled system \\(\\dfrac{d\\mathbf x}{dt}=A\\mathbf x\\) has \\(A=\\begin{pmatrix}3&2\\\\2&3\\end{pmatrix}\\) and \\(\\mathbf x(0)=\\begin{pmatrix}4\\\\2\\end{pmatrix}\\).",
+    parts: [["a", "Find the eigenvalues and corresponding eigenvectors of \\(A\\).", 5], ["b", "Hence find the exact solution in the form \\(\\mathbf x=A_1e^{\\lambda_1t}\\mathbf p_1+A_2e^{\\lambda_2t}\\mathbf p_2\\).", 4]],
+    markscheme: [["a", [["\\(\\det(A-\\lambda I)=(3-\\lambda)^2-4=0\\)", "M1"], ["\\(\\lambda_1=5\\), \\(\\lambda_2=1\\)", "A1A1"], ["corresponding eigenvectors may be taken as \\(\\mathbf p_1=\\begin{pmatrix}1\\\\1\\end{pmatrix}\\), \\(\\mathbf p_2=\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)", "A1A1"]]], ["b", [["\\(\\mathbf x=A_1e^{5t}\\begin{pmatrix}1\\\\1\\end{pmatrix}+A_2e^t\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)", "M1A1"], ["uses \\(A_1+A_2=4\\) and \\(A_1-A_2=2\\), giving \\(A_1=3\\), \\(A_2=1\\)", "M1"], ["\\(\\mathbf x=3e^{5t}\\begin{pmatrix}1\\\\1\\end{pmatrix}+e^t\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
     id: "MF_AIHL_T5_COUPLED_EXACT_1",
     qnum: 52,
     marks: 6,
@@ -1649,7 +1661,7 @@ const verifiedOverrides = {
   "99a7ab79-f157-4f85-83f1-52b8368acc0f": ["MF_AIHL_T5_INVERSE_CHAIN_EXP", "M11TZ2SL_P2_Q7", "MF_AIHL_T5_INVERSE_CHAIN_TRIG"],
   "f9365360-bc13-4c36-bd90-a494ae34a5ad": ["MF_AIHL_T5_SUBSTITUTION_1", "MF_AIHL_T5_SUBSTITUTION_2", "MF_AIHL_T5_SUBSTITUTION_LOG"],
   "0c4f3b43-0879-4243-9e14-d8322f9f011c": ["MF_AIHL_T5_AREA_Y_AXIS", "H_N15TZ0HL_P2_Q5"],
-  "0c3a7c7b-1b80-4833-a1b1-bc8aeb38cce4": ["W_N22TZ0AIHL_P2_Q5", "M12TZ1HL_P2_Q8"],
+  "0c3a7c7b-1b80-4833-a1b1-bc8aeb38cce4": ["W_N22TZ0AIHL_P2_Q5", "W_N24TZ0AIHL_P1_Q16"],
   "54333f98-7d7a-4d6a-b3cf-347122e184bc": ["MF_AIHL_T5_KINEMATICS_2", "H_M14TZ1HL_P1_Q8"],
   "9af63d1a-407b-4f90-ae78-30c8291fcd59": ["MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION", "W_M25TZ2AIHL_P1_Q12"],
   "660e272a-8a71-4422-8450-61a7ea1d58cf": ["MF_AIHL_T5_SEPARATION", "W_M24TZ1AIHL_P2_Q5"],
@@ -1658,7 +1670,7 @@ const verifiedOverrides = {
   // Euler calculation, not the later interpretation or eigenvalue work.
   "49e6c7ea-110b-4ab4-a0d5-97a2c9fe4b11": ["W_M24TZ1AIHL_P1_Q4", "W_M24TZ2AIHL_P1_Q7"],
   "1310ef79-c234-4d20-9054-53eb85ef7749": ["W_M25TZ3AIHL_P1_Q11", "W_N24TZ0AIHL_P1_Q17"],
-  "a916a502-98ff-4105-8574-80aac522eda7": ["W_N21TZ0AIHL_P2_Q6", "MF_AIHL_T5_COUPLED_EXACT_1"],
+  "a916a502-98ff-4105-8574-80aac522eda7": ["MF_AIHL_T5_COUPLED_EXACT_0", "MF_AIHL_T5_COUPLED_EXACT_1"],
   "ed654692-df93-4fbf-8bc5-a998e0897920": ["W_M23TZ2AIHL_P2_Q7", "MF_AIHL_T5_COUPLED_EXACT_2"],
   // Exact phase-type examples. Source and centre remain blank until the bank
   // contains clean unused examples with the required eigenvalue structures.
@@ -2417,7 +2429,6 @@ const practicePartOverrides = {
     "W_M25TZ3AIHL_P1_Q11": ["b"],
   },
   "a916a502-98ff-4105-8574-80aac522eda7": {
-    "W_N21TZ0AIHL_P2_Q6": ["c", "d"],
   },
   "ed654692-df93-4fbf-8bc5-a998e0897920": {
     "W_M23TZ2AIHL_P2_Q7": ["a", "b", "c"],
@@ -2542,7 +2553,7 @@ const practicePartTextOverrides = {
   },
   "a490ac5c-828a-4b25-a5e0-3cde3293071c": {
     "M12TZ2HL_P1_Q7": {
-      b: "On the coordinate axes below, sketch the graph of the derivative \\(y=f'(x)\\), clearly showing the coordinates of the images of the points A and D, labelling them \\(A''\\) and \\(D''\\) respectively.<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>",
+      b: "On the coordinate axes below, sketch the graph of the derivative \\(y=f'(x)\\), clearly showing the coordinates of the images of the points A and D, labelling them \\(A''\\) and \\(D''\\) respectively.<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;overflow:hidden;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(transparent 9px,#e5e7eb 9px,#e5e7eb 10px,transparent 10px),linear-gradient(90deg,transparent 9px,#e5e7eb 9px,#e5e7eb 10px,transparent 10px);background-size:20px 20px;background-position:center center;\"><div aria-hidden=\"true\" style=\"position:absolute;left:12px;right:12px;top:50%;height:2px;margin-top:-1px;background:#334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;top:12px;bottom:12px;left:50%;width:2px;margin-left:-1px;background:#334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;right:8px;top:50%;width:0;height:0;margin-top:-7px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid #334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;left:50%;top:8px;width:0;height:0;margin-left:-7px;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #334155;\"></div><span style=\"position:absolute;right:10px;top:50%;margin-top:9px;font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:50%;top:10px;margin-left:13px;font-weight:700;color:#334155;\">y</span></div>",
     },
   },
   "7c1d0df9-3f50-4bfb-ae45-b669c1405895": {
@@ -2562,6 +2573,7 @@ const practicePartTextOverrides = {
 // the complete question in the question bank.
 const practiceHiddenDiagrams = {
   "20b8ec75-0605-426a-abec-066ca4c4f9d2": ["A_N22TZ0SL_P2_Q3"],
+  "660e272a-8a71-4422-8450-61a7ea1d58cf": ["W_M24TZ1AIHL_P2_Q5"],
 };
 
 const practicePartTitles = {
@@ -3208,9 +3220,6 @@ const practicePartTitles = {
   "1310ef79-c234-4d20-9054-53eb85ef7749": {
     "W_N24TZ0AIHL_P1_Q17": "Apply Euler's method to a coupled predator-prey system",
     "W_M25TZ3AIHL_P1_Q11": "Apply Euler's method to a coupled linear system",
-  },
-  "a916a502-98ff-4105-8574-80aac522eda7": {
-    "W_N21TZ0AIHL_P2_Q6": "Solve a coupled system using eigenvalues and eigenvectors",
   },
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f": {
     "W_M21TZ2AIHL_P2_Q7": "Sketch a sink from two negative real eigenvalues",
@@ -4370,7 +4379,7 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/euler s method for coupled systems/.test(lessonTitle)
     && ["W_N24TZ0AIHL_P1_Q17", "W_M25TZ3AIHL_P1_Q11"].includes(question.id)) return true;
   if (/solutions of coupled differential equations p1/.test(lessonTitle)
-    && ["W_N21TZ0AIHL_P2_Q6", "MF_AIHL_T5_COUPLED_EXACT_1"].includes(question.id)) return true;
+    && ["MF_AIHL_T5_COUPLED_EXACT_0", "MF_AIHL_T5_COUPLED_EXACT_1"].includes(question.id)) return true;
   if (/solutions of coupled differential equations p2/.test(lessonTitle)
     && ["W_M23TZ2AIHL_P2_Q7", "MF_AIHL_T5_COUPLED_EXACT_2"].includes(question.id)) return true;
   if (/sketching phase portraits sink/.test(lessonTitle)
@@ -4430,7 +4439,7 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/area between curve and y axis/.test(lessonTitle)
     && ["H_N15TZ0HL_P2_Q5", "V_SPECAISL_P1_Q10", "MF_AIHL_T5_AREA_Y_AXIS"].includes(question.id)) return true;
   if (/volume of revolution about y axis/.test(lessonTitle)
-    && ["W_N22TZ0AIHL_P2_Q5", "M12TZ1HL_P2_Q8"].includes(question.id)) return true;
+    && ["W_N22TZ0AIHL_P2_Q5", "W_N24TZ0AIHL_P1_Q16"].includes(question.id)) return true;
   // These final AA HL calculus sources were reviewed at the displayed-part
   // level. Their complete source titles are broader than the selected prompt,
   // or the relevant mathematical notation is removed by text normalization.

@@ -2832,6 +2832,78 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
     ]
   },
   {
+    "id": "MF_AIHL_T5_COUPLED_EXACT_0",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 51,
+    "marks": 9,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Solve a coupled system in eigenvector form",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Coupled differential equations"
+      }
+    ],
+    "body": "The coupled system \\(\\dfrac{d\\mathbf x}{dt}=A\\mathbf x\\) has \\(A=\\begin{pmatrix}3&2\\\\2&3\\end{pmatrix}\\) and \\(\\mathbf x(0)=\\begin{pmatrix}4\\\\2\\end{pmatrix}\\).",
+    "parts": [
+      [
+        "a",
+        "Find the eigenvalues and corresponding eigenvectors of \\(A\\).",
+        5
+      ],
+      [
+        "b",
+        "Hence find the exact solution in the form \\(\\mathbf x=A_1e^{\\lambda_1t}\\mathbf p_1+A_2e^{\\lambda_2t}\\mathbf p_2\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\det(A-\\lambda I)=(3-\\lambda)^2-4=0\\)",
+            "M1"
+          ],
+          [
+            "\\(\\lambda_1=5\\), \\(\\lambda_2=1\\)",
+            "A1A1"
+          ],
+          [
+            "corresponding eigenvectors may be taken as \\(\\mathbf p_1=\\begin{pmatrix}1\\\\1\\end{pmatrix}\\), \\(\\mathbf p_2=\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)",
+            "A1A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(\\mathbf x=A_1e^{5t}\\begin{pmatrix}1\\\\1\\end{pmatrix}+A_2e^t\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)",
+            "M1A1"
+          ],
+          [
+            "uses \\(A_1+A_2=4\\) and \\(A_1-A_2=2\\), giving \\(A_1=3\\), \\(A_2=1\\)",
+            "M1"
+          ],
+          [
+            "\\(\\mathbf x=3e^{5t}\\begin{pmatrix}1\\\\1\\end{pmatrix}+e^t\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
     "id": "MF_AIHL_T5_COUPLED_EXACT_1",
     "course": "AI HL",
     "banks": [

@@ -990,7 +990,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "6d504905-61e3-40cb-972c-13ff1691ffbd",
         "code": "5.10.1",
-        "title": "Integrating e^x and 1/x",
+        "title": "Integrating eˣ and 1⁄x",
         "seconds": 333,
         "status": 4,
         "topic": 5,
@@ -2666,7 +2666,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "6d504905-61e3-40cb-972c-13ff1691ffbd",
         "code": "5.10.1",
-        "title": "Integrating e^x and 1/x",
+        "title": "Integrating eˣ and 1⁄x",
         "seconds": 333,
         "status": 4,
         "topic": 5,
@@ -5541,7 +5541,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "d9d11f09-511a-436a-9792-f66fc8ceeac5",
         "code": "5.11.3",
-        "title": "Integrating e^x and 1/x",
+        "title": "Integrating eˣ and 1⁄x",
         "seconds": 333,
         "status": 4,
         "topic": 5,
@@ -6217,7 +6217,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "6d504905-61e3-40cb-972c-13ff1691ffbd",
         "code": "5.10.1",
-        "title": "Integrating e^x and 1:x",
+        "title": "Integrating eˣ and 1⁄x",
         "seconds": 333,
         "status": 4
       },
@@ -6536,7 +6536,7 @@ window.MR_FLYNN_LIBRARY = {
       {
         "id": "d9d11f09-511a-436a-9792-f66fc8ceeac5",
         "code": "5.11.3",
-        "title": "Integrating e^x and 1:x",
+        "title": "Integrating eˣ and 1⁄x",
         "seconds": 333,
         "status": 4
       },

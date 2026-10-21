@@ -1,5 +1,5 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T12:03:19.525Z",
+  "generatedAt": "2026-10-21T18:01:11.487Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
   "completeLessonCount": 453,
@@ -1420,7 +1420,7 @@ window.MR_FLYNN_PRACTICE = {
       }
     },
     "6d504905-61e3-40cb-972c-13ff1691ffbd": {
-      "lesson": "5.10.1 Integrating e^x and 1/x",
+      "lesson": "5.10.1 Integrating eˣ and 1⁄x",
       "course": "AA SL",
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
@@ -5574,7 +5574,7 @@ window.MR_FLYNN_PRACTICE = {
       },
       "questionPartTexts": {
         "M12TZ2HL_P1_Q7": {
-          "b": "On the coordinate axes below, sketch the graph of the derivative \\(y=f'(x)\\), clearly showing the coordinates of the images of the points A and D, labelling them \\(A''\\) and \\(D''\\) respectively.<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>"
+          "b": "On the coordinate axes below, sketch the graph of the derivative \\(y=f'(x)\\), clearly showing the coordinates of the images of the points A and D, labelling them \\(A''\\) and \\(D''\\) respectively.<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;overflow:hidden;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(transparent 9px,#e5e7eb 9px,#e5e7eb 10px,transparent 10px),linear-gradient(90deg,transparent 9px,#e5e7eb 9px,#e5e7eb 10px,transparent 10px);background-size:20px 20px;background-position:center center;\"><div aria-hidden=\"true\" style=\"position:absolute;left:12px;right:12px;top:50%;height:2px;margin-top:-1px;background:#334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;top:12px;bottom:12px;left:50%;width:2px;margin-left:-1px;background:#334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;right:8px;top:50%;width:0;height:0;margin-top:-7px;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid #334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;left:50%;top:8px;width:0;height:0;margin-left:-7px;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #334155;\"></div><span style=\"position:absolute;right:10px;top:50%;margin-top:9px;font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:50%;top:10px;margin-left:13px;font-weight:700;color:#334155;\">y</span></div>"
         }
       },
       "questionPartTitles": {
@@ -5644,7 +5644,7 @@ window.MR_FLYNN_PRACTICE = {
       ]
     },
     "d9d11f09-511a-436a-9792-f66fc8ceeac5": {
-      "lesson": "5.11.3 Integrating e^x and 1/x",
+      "lesson": "5.11.3 Integrating eˣ and 1⁄x",
       "course": "AI HL",
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
@@ -5733,7 +5733,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "W_N22TZ0AIHL_P2_Q5",
-        "M12TZ1HL_P2_Q8"
+        "W_N24TZ0AIHL_P1_Q16"
       ]
     },
     "326ef6f4-cdc3-461c-b121-527fef739c83": {
@@ -5809,7 +5809,10 @@ window.MR_FLYNN_PRACTICE = {
       "questionPartTitles": {
         "H_M13TZ2HL_P2_Q12": "Solve y dy/dx = cos 2x by separation",
         "W_M24TZ1AIHL_P2_Q5": "Solve a separable differential equation with an initial condition"
-      }
+      },
+      "questionHiddenDiagrams": [
+        "W_M24TZ1AIHL_P2_Q5"
+      ]
     },
     "8f385b78-d17a-4742-831b-049b78b96673": {
       "lesson": "5.15 Slope fields",
@@ -5863,18 +5866,10 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Coupled differential equations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N21TZ0AIHL_P2_Q6",
+        "MF_AIHL_T5_COUPLED_EXACT_0",
         "MF_AIHL_T5_COUPLED_EXACT_1"
       ],
-      "questionParts": {
-        "W_N21TZ0AIHL_P2_Q6": [
-          "c",
-          "d"
-        ]
-      },
-      "questionPartTitles": {
-        "W_N21TZ0AIHL_P2_Q6": "Solve a coupled system using eigenvalues and eigenvectors"
-      }
+      "questionParts": {}
     },
     "ed654692-df93-4fbf-8bc5-a998e0897920": {
       "lesson": "5.17.3 Solutions of coupled differential equations (p2)",

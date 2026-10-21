@@ -348,7 +348,7 @@ AI HL,2026-10-21,4.3.1,Averages and spread,approved,V_M21TZ1AISL_P1_Q2|M19TZ1AIS
 AI HL,2026-10-21,4.3.2,Frequency tables,approved,V_M23TZ2AISL_P1_Q5|M17TZ2AISL_P1_Q7,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.3.3,Constant changes to data,approved,V_M24TZ1AISL_P1_Q8|V_M24TZ2AISL_P1_Q1,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.3.4,Variance and standard deviation by hand,approved-no-practice,,Rob confirmed that this lesson should remain blank
-AI HL,2026-10-21,4.4,Linear regression and correlation,awaiting-recheck,M17TZ1SL_P1_Q4|N14TZ0SL_P2_Q2,Question 2 now explicitly calculates the correlation coefficient before finding the regression line and making a prediction
+AI HL,2026-10-21,4.4,Linear regression and correlation,approved,M17TZ1SL_P1_Q4|N14TZ0SL_P2_Q2,Approved by Rob after recheck
 AI HL,2026-10-21,4.5,Probability formulae,approved,M11TZ1HL_P1_Q1|M14TZ2HL_P1_Q1,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.6.1,Venn diagrams,approved,M16TZ1SL_P1_Q2A|M10TZ1SL_P1_Q5,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.6.2,Tree Diagrams,approved,N17TZ0SL_P1_Q1|M13TZ2HL_P1_Q4,Locked from Rob's Topic 4 review
@@ -362,20 +362,20 @@ AI HL,2026-10-21,4.11.3,Chi squared goodness of fit,approved,V_M22TZ1AISL_P1_Q7|
 AI HL,2026-10-21,4.11.4,T-test,approved,V_M21TZ2AISL_P1_Q8|V_M21TZ1AISL_P1_Q6,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.12.1,Surveys and questionnaires,approved-no-practice,,Rob confirmed this lesson should remain blank
 AI HL,2026-10-21,4.12.2,Reliability v validity,approved-no-practice,,Rob confirmed this lesson should remain blank
-AI HL,2026-10-21,4.12.3,Chi squared (categorising data),awaiting-recheck,W_N22TZ0AIHL_P3_Q1,Replaced the Poisson question with a chi-squared goodness-of-fit test that combines categories
-AI HL,2026-10-21,4.12.4,Chi squared (degrees of freedom),awaiting-recheck,MF_AIHL_T4_CHI_SQUARED_DF|MF_AIHL_T4_NORMAL_GOF_DF,Kept question 1 and added a normal goodness-of-fit question with mean and standard deviation estimated
+AI HL,2026-10-21,4.12.3,Chi squared (categorising data),approved-single,W_N22TZ0AIHL_P3_Q1,Approved by Rob after recheck
+AI HL,2026-10-21,4.12.4,Chi squared (degrees of freedom),approved,MF_AIHL_T4_CHI_SQUARED_DF|MF_AIHL_T4_NORMAL_GOF_DF,Approved by Rob after recheck
 AI HL,2026-10-21,4.13.1,Non linear regression,approved,W_N22TZ0AIHL_P1_Q11|W_N23TZ0AIHL_P1_Q10,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.13.2,Sum of square residuals,approved,W_SPECAIHL_P1_Q12|W_M23TZ1AIHL_P1_Q16,Locked from Rob's Topic 4 review
-AI HL,2026-10-21,4.13.3,The coefficient of determination,awaiting-recheck,MF_AIHL_T4_COEFFICIENT_DETERMINATION|W_M23TZ2AIHL_P1_Q9,Added a direct coefficient-of-determination calculation and interpretation question
+AI HL,2026-10-21,4.13.3,The coefficient of determination,approved,MF_AIHL_T4_COEFFICIENT_DETERMINATION|W_M23TZ2AIHL_P1_Q9,Approved by Rob after recheck
 AI HL,2026-10-21,4.14.1,Linear transformations of X,approved,W_M24TZ1AIHL_P1_Q3|M19TZ2SL_P1_Q8A,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.14.2,Linear combinations of n random variables,approved,H_N18TZ0HL_P3S_Q1|W_M23TZ1AIHL_P1_Q11,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.14.3,Unbiased estimates for the mean and variance,approved,H_N17TZ0HL_P3S_Q2|H_M17TZ0HL_P3S_Q1,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.14.4,Unbiased estimates example questions,approved,H_M15TZ0HL_P3S_Q2|H_N18TZ0HL_P3S_Q2,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.15.1,Linear combination of n independent normal random variables,approved,H_M19TZ0HL_P3S_Q2X1|W_N24TZ0AIHL_P1_Q15,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.15.2,Normal distribution sampling,approved,H_M17TZ0HL_P3S_Q2X1|W_M22TZ1AIHL_P1_Q9,Locked from Rob's Topic 4 review
-AI HL,2026-10-21,4.15.3,The central limit theorem,awaiting-recheck,H_N19TZ0HL_P3S_Q3|W_M24TZ1AIHL_P2_Q6,Removed part C about errors from question 1 and retained the central-limit parts only
+AI HL,2026-10-21,4.15.3,The central limit theorem,approved,H_N19TZ0HL_P3S_Q3|W_M24TZ1AIHL_P2_Q6,Approved by Rob after recheck
 AI HL,2026-10-21,4.16.1,Confidence intervals (known variance),approved,H_N15TZ0HL_P3S_Q1X1|H_M15TZ0HL_P3S_Q3,Locked from Rob's Topic 4 review
-AI HL,2026-10-21,4.16.2,Confidence intervals (unknown variance),awaiting-recheck,W_SPECAIHL_P1_Q9|W_M23TZ2AIHL_P1_Q15,Replaced question 2 with a confidence interval calculated from eight raw data values
+AI HL,2026-10-21,4.16.2,Confidence intervals (unknown variance),approved,W_SPECAIHL_P1_Q9|W_M23TZ2AIHL_P1_Q15,Approved by Rob after recheck
 AI HL,2026-10-21,4.17,Poisson distribution,approved,W_M21TZ1AIHL_P1_Q1|W_M24TZ2AIHL_P1_Q9,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.18.1,Z-test one tailed,approved,H_M19TZ0HL_P3S_Q3|H_N14TZ0HL_P3S_Q5,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.18.2,Z-test two tailed,approved-single,H_M18TZ0HL_P3S_Q3,Rob approved the one exact two-tailed Z-test
@@ -390,27 +390,27 @@ AI HL,2026-10-21,4.18.10,Poisson errors,approved,W_SPECAIHL_P1_Q16|W_M22TZ1AIHL_
 AI HL,2026-10-21,4.18.11,Binomial errors,approved-single,W_N22TZ0AIHL_P1_Q16,Rob approved question 1 and allowed this lesson to remain a single-question set
 AI HL,2026-10-21,4.19.1,Markov chains introduction,approved-no-practice,,Rob confirmed this introduction should remain blank
 AI HL,2026-10-21,4.19.2,Transition matrices,approved,W_N21TZ0AIHL_P1_Q9|W_N23TZ0AIHL_P1_Q15,Locked from Rob's Topic 4 review
-AI HL,2026-10-21,4.19.3,Steady state and long term probabilities,awaiting-recheck,W_M23TZ2AIHL_P2_Q5|MF_AIHL_T4_LONG_TERM_PROBABILITY,Kept question 1 and replaced question 2 with a direct numerical long-term probability question
+AI HL,2026-10-21,4.19.3,Steady state and long term probabilities,approved,W_M23TZ2AIHL_P2_Q5|MF_AIHL_T4_LONG_TERM_PROBABILITY,Approved by Rob after recheck
 AI HL,2026-10-21,5.1.1,Introduction to differentiation,approved-no-practice,,Rob confirmed this introduction should remain blank
 AI HL,2026-10-21,5.1.2,Introduction to limits,approved-no-practice,,Rob confirmed this introduction should remain blank
 AI HL,2026-10-21,5.2,Increasing and decreasing functions,approved,V_N23TZ1AISL_P1_Q3|V_M25TZ1AISL_P1_Q8,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.3.1,Power rule,approved,N12TZ0AISL_P1_Q15|M13TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.3.2,Derivative at a point,approved,V_N24TZ2AISL_P1_Q12|V_M22TZ2AISL_P1_Q11,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.4,Tangents and normals,approved,V_N24TZ1AISL_P1_Q12|V_M23TZ1AISL_P1_Q5,Locked from Rob's Topic 5 review
-AI HL,2026-10-21,5.5.1,Integration power rule,awaiting-recheck,MF_AI_T5_POWER_RULE_INTEGRATION|V_M24TZ2AISL_P2_Q3,Replaced the limits-based first question with direct polynomial integration
+AI HL,2026-10-21,5.5.1,Integration power rule,approved,MF_AI_T5_POWER_RULE_INTEGRATION|V_M24TZ2AISL_P2_Q3,Approved by Rob after recheck
 AI HL,2026-10-21,5.5.2,Finding f of x,approved,N11TZ0SL_P1_Q4A|V_M25TZ3AISL_P1_Q9,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.5.3,Area under the curve,approved,M18TZ2SL_P1_Q2A|V_M22TZ2AISL_P1_Q6,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.6,Stationary points,approved,N13TZ0AISL_P1_Q9|M14TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.7,Optimization,approved,N17TZ0SL_P1_Q6A|M19TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.8,Trapezoidal rule,approved,V_N21TZ0AISL_P1_Q6|V_M22TZ1AISL_P1_Q6,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.9.1,"Derivative of sinx,cosx,lnx,e^x",approved,MF_AIHL_T5_BASIC_DERIVATIVES_1|MF_AIHL_T5_BASIC_DERIVATIVES_2,Locked from Rob's Topic 5 review
-AI HL,2026-10-21,5.9.2,Differentiation (rational exponents),awaiting-recheck,MF_AIHL_T5_RATIONAL_DERIVATIVES_1|MF_AIHL_T5_RATIONAL_DERIVATIVES_2,Kept both approved questions and changed fractional powers to stacked fraction notation
+AI HL,2026-10-21,5.9.2,Differentiation (rational exponents),approved,MF_AIHL_T5_RATIONAL_DERIVATIVES_1|MF_AIHL_T5_RATIONAL_DERIVATIVES_2,Approved by Rob after recheck
 AI HL,2026-10-21,5.9.3,Chain rule,approved,MF_AIHL_T5_CHAIN_RULE|H_M18TZ1HL_P1_Q2,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.9.4,Product rule,approved,H_N10TZ0SL_P1_Q2|M19TZ1SL_P2_Q3,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.9.5,Quotient rule,approved,H_M11TZ2SL_P1_Q4|M16TZ2HL_P2_Q12X2,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.9.6,Related rates of change,approved,W_M23TZ2AIHL_P1_Q12|M11TZ2HL_P2_Q9,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.10.1,Relationship between graphs and derivatives,approved-no-practice,,Rob accepted the lesson in its current blank state
-AI HL,2026-10-21,5.10.2,Sketching derivatives,awaiting-recheck,W_N21TZ0AIHL_P1_Q8|M12TZ2HL_P1_Q7,Kept both approved questions and added coordinate axes to question 2
+AI HL,2026-10-21,5.10.2,Sketching derivatives,approved,W_N21TZ0AIHL_P1_Q8|M12TZ2HL_P1_Q7,Approved by Rob; blank axes aligned directly to the grid lines
 AI HL,2026-10-21,5.10.3,Classifying stationary points,approved,N09TZ0SL_P1_Q9|M10TZ2SL_P1_Q8,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.10.4,Points of inflexion,approved,M11TZ1SL_P2_Q9|M08TZ2HL_P2_Q6,Locked from Rob's Topic 5 review
 AI HL,2026-10-21,5.11.1,Integration power rule (rational power),approved,MF_AIHL_T5_RATIONAL_POWER_INTEGRATION|N18TZ0HL_P2_Q2,Locked from Rob's Topic 5 review
@@ -426,22 +426,22 @@ AI HL,2026-10-20,5.17.1,Phase portraits intro,awaiting-recheck,W_N22TZ0AIHL_P1_Q
 AI HL,2026-10-20,5.17.5,Sketching phase portraits (source),awaiting-recheck,MF_AIHL_T5_PHASE_SOURCE,Added a clean source with two positive real eigenvalues
 AI HL,2026-10-20,5.17.9,Sketching phase portraits (centre),awaiting-recheck,MF_AIHL_T5_PHASE_CENTRE,Added a clean centre with purely imaginary eigenvalues
 AI HL,2026-10-21,5.11.2,Integrating sin and cos,approved,MF_AIHL_T5_SIN_COS_INTEGRATION_1|MF_AIHL_T5_SIN_COS_INTEGRATION_2,Locked from Rob's final Topic 5 review
-AI HL,2026-10-21,5.11.3,Integrating e^x and 1/x,awaiting-recheck,MF_AIHL_T5_DIRECT_EXP_INTEGRATION|MF_AIHL_T5_DIRECT_LOG_INTEGRATION,Replaced the chain-rule source with direct e^x and reciprocal integrations
-AI HL,2026-10-21,5.11.4,Inverse chain rule,awaiting-recheck,MF_AIHL_T5_INVERSE_CHAIN_EXP|M11TZ2SL_P2_Q7|MF_AIHL_T5_INVERSE_CHAIN_TRIG,Retained the approved source and added direct exponential and trigonometric examples
-AI HL,2026-10-21,5.11.5,Integration by substitution,awaiting-recheck,MF_AIHL_T5_SUBSTITUTION_1|MF_AIHL_T5_SUBSTITUTION_2|MF_AIHL_T5_SUBSTITUTION_LOG,Retained both approved questions and added a fraction that integrates to a logarithm
+AI HL,2026-10-21,5.11.3,Integrating eˣ and 1⁄x,approved,MF_AIHL_T5_DIRECT_EXP_INTEGRATION|MF_AIHL_T5_DIRECT_LOG_INTEGRATION,Approved by Rob; lesson title now uses mathematical notation
+AI HL,2026-10-21,5.11.4,Inverse chain rule,approved,MF_AIHL_T5_INVERSE_CHAIN_EXP|M11TZ2SL_P2_Q7|MF_AIHL_T5_INVERSE_CHAIN_TRIG,Approved by Rob after recheck
+AI HL,2026-10-21,5.11.5,Integration by substitution,approved,MF_AIHL_T5_SUBSTITUTION_1|MF_AIHL_T5_SUBSTITUTION_2|MF_AIHL_T5_SUBSTITUTION_LOG,Approved by Rob after recheck
 AI HL,2026-10-21,5.12.1,Area under the curve,approved,M08TZ2HL_P2_Q3|M10TZ2SL_P2_Q6,Locked from Rob's final Topic 5 review
-AI HL,2026-10-21,5.12.2,Area between curve and y-axis,awaiting-recheck,MF_AIHL_T5_AREA_Y_AXIS|H_N15TZ0HL_P2_Q5,Replaced the x-axis question with a direct area against the y-axis
+AI HL,2026-10-21,5.12.2,Area between curve and y-axis,approved,MF_AIHL_T5_AREA_Y_AXIS|H_N15TZ0HL_P2_Q5,Approved by Rob after recheck
 AI HL,2026-10-21,5.12.3,Volume of revolution,approved,M12TZ1SL_P2_Q4|H_M10TZ1HL_P1_Q8,Locked from Rob's final Topic 5 review
-AI HL,2026-10-21,5.12.4,Volume of revolution about y-axis,awaiting-recheck,W_N22TZ0AIHL_P2_Q5|M12TZ1HL_P2_Q8,Retained question 1 and replaced the similar second source with a distinct cone rotation about the y-axis
+AI HL,2026-10-21,5.12.4,Volume of revolution about y-axis,awaiting-recheck,W_N22TZ0AIHL_P2_Q5|W_N24TZ0AIHL_P1_Q16,Retained approved question 1 and replaced question 2 with a genuine rotation about the y-axis
 AI HL,2026-10-21,5.13.1,Kinematics,approved,M08TZ1SL_P1_Q6|H_M17TZ2HL_P1_Q4,Locked from Rob's final Topic 5 review
 AI HL,2026-10-21,5.13.2,Kinematics 2,approved,MF_AIHL_T5_KINEMATICS_2|H_M14TZ1HL_P1_Q8,Locked from Rob's final Topic 5 review
 AI HL,2026-10-21,5.14.1,Setting up a differential equation,approved,MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION|W_M25TZ2AIHL_P1_Q12,Locked from Rob's final Topic 5 review
-AI HL,2026-10-21,5.14.2,Separation of variables,awaiting-recheck,MF_AIHL_T5_SEPARATION|W_M24TZ1AIHL_P2_Q5,Retained both approved questions but removed the slope-field part from question 2
+AI HL,2026-10-21,5.14.2,Separation of variables,approved,MF_AIHL_T5_SEPARATION|W_M24TZ1AIHL_P2_Q5,Approved by Rob with the omitted slope-field diagram now also hidden
 AI HL,2026-10-21,5.15,Slope fields,approved,W_M23TZ1AIHL_P1_Q12|W_N21TZ0AIHL_P1_Q14,Locked from Rob's final Topic 5 review
 AI HL,2026-10-21,5.16.2,Euler's method example,approved,W_M24TZ1AIHL_P1_Q4|W_M24TZ2AIHL_P1_Q7,Locked from Rob's final Topic 5 review
 AI HL,2026-10-21,5.16.3,Euler's method for coupled systems,approved,W_M25TZ3AIHL_P1_Q11|W_N24TZ0AIHL_P1_Q17,Locked from Rob's final Topic 5 review
 AI HL,2026-10-21,5.17.1,Phase portraits intro,approved-no-practice,,Intentionally blank; examples may be reused only in later exact lessons
-AI HL,2026-10-21,5.17.2,Solutions of coupled differential equations p1,awaiting-recheck,W_N21TZ0AIHL_P2_Q6|MF_AIHL_T5_COUPLED_EXACT_1,Retained question 1 and replaced question 2 with the requested eigenvector-form exact solution
+AI HL,2026-10-21,5.17.2,Solutions of coupled differential equations p1,awaiting-recheck,MF_AIHL_T5_COUPLED_EXACT_0|MF_AIHL_T5_COUPLED_EXACT_1,Replaced the second-order source with a genuine coupled system solved in eigenvector form
 AI HL,2026-10-21,5.17.3,Solutions of coupled differential equations p2,awaiting-recheck,W_M23TZ2AIHL_P2_Q7|MF_AIHL_T5_COUPLED_EXACT_2,Replaced both questions with exact solutions in eigenvalue-eigenvector form
 AI HL,2026-10-21,5.17.4,Sketching phase portraits introduction,approved-no-practice,,Intentionally blank
 AI HL,2026-10-21,5.17.5,Sketching phase portraits (source),approved-single,MF_AIHL_T5_PHASE_SOURCE,Locked from Rob's final Topic 5 review
