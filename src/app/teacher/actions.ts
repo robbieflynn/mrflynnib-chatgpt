@@ -270,6 +270,8 @@ export async function createAssignment(formData: FormData) {
   const dueDate = String(formData.get("dueDate") || "");
   const requestedFeedbackMode = String(formData.get("feedbackMode") || "after_question");
   const feedbackMode = isAssignmentFeedbackMode(requestedFeedbackMode) ? requestedFeedbackMode : "after_question";
+  const recipientMode = formData.get("recipientMode") === "students" ? "students" : "class";
+  const requestedRecipientIds = Array.from(new Set(formData.getAll("recipientIds").map(String).filter(Boolean))).slice(0, 1000);
   const questionIds = Array.from(new Set(formData.getAll("questionIds").map(String).filter(Boolean))).slice(0, 100);
   const parsedConfigs = formData.getAll("responseConfigs").map(parseResponseConfig);
   const suppliedResponseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
@@ -278,6 +280,16 @@ export async function createAssignment(formData: FormData) {
   const { data: classRecord } = await supabase.from("classes").select("id,bank,course").eq("id", classId).eq("teacher_id", user.id).maybeSingle();
   if (!classRecord) redirect("/teacher?error=Class%20not%20found.");
   if (!title || questionIds.length === 0) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Add a title and select at least one question."));
+  let recipientIds: string[] = [];
+  if (recipientMode === "students") {
+    const { data: membershipRows, error: membershipError } = await supabase.from("class_memberships").select("student_id").eq("class_id", classId);
+    if (membershipError) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The class list could not be checked. Please try again."));
+    const memberIds = new Set((membershipRows ?? []).map((membership) => String(membership.student_id)));
+    recipientIds = requestedRecipientIds.filter((studentId) => memberIds.has(studentId));
+    if (!requestedRecipientIds.length || recipientIds.length !== requestedRecipientIds.length) {
+      redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Choose at least one current student for this assignment."));
+    }
+  }
 
   const source = classRecord.bank === "igcse"
     ? progressManifest.igcse
@@ -304,6 +316,17 @@ export async function createAssignment(formData: FormData) {
     published_at: new Date().toISOString(),
   }).select("id").single();
   if (error || !assignment) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The assignment could not be published."));
+
+  if (recipientIds.length) {
+    const { error: recipientsError } = await supabase.from("assignment_recipients").insert(recipientIds.map((studentId) => ({
+      assignment_id: assignment.id,
+      student_id: studentId,
+    })));
+    if (recipientsError) {
+      await supabase.from("assignments").delete().eq("id", assignment.id);
+      redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The selected students could not be saved."));
+    }
+  }
 
   const { error: questionsError } = await supabase.from("assignment_questions").insert(selected.map((question, position) => {
     const config = responseConfigs.get(question.id)!;
@@ -351,6 +374,34 @@ export async function createAssignment(formData: FormData) {
   revalidatePath("/teacher");
   revalidatePath("/account");
   redirect(`/teacher/assignments/${assignment.id}?success=${encodeURIComponent("Assignment published.")}`);
+}
+
+export async function deleteAssignment(formData: FormData) {
+  const { supabase, user } = await requireTeacher();
+  const assignmentId = String(formData.get("assignmentId") || "");
+  if (!assignmentId) redirect("/teacher?error=Assignment%20not%20found.");
+
+  const { data: assignment } = await supabase
+    .from("assignments")
+    .select("id,class_id")
+    .eq("id", assignmentId)
+    .eq("teacher_id", user.id)
+    .maybeSingle();
+  if (!assignment) redirect("/teacher?error=Assignment%20not%20found.");
+
+  const { error } = await supabase
+    .from("assignments")
+    .delete()
+    .eq("id", assignmentId)
+    .eq("teacher_id", user.id);
+  if (error) redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "The assignment could not be deleted."));
+
+  revalidatePath("/teacher");
+  revalidatePath("/igcse/teacher");
+  revalidatePath(`/teacher/classes/${assignment.class_id}`);
+  revalidatePath("/account");
+  revalidatePath("/igcse/account");
+  redirect(messagePath(`/teacher/classes/${assignment.class_id}`, "success", "Assignment deleted."));
 }
 
 export async function updateAssignmentFeedbackMode(formData: FormData) {
