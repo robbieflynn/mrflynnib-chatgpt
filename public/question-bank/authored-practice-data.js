@@ -1,5 +1,65 @@
 window.MR_FLYNN_AUTHORED_PRACTICE = [
   {
+    "id": "MF_AAHL_T4_DISCRETE_MEDIAN",
+    "course": "AA HL",
+    "banks": [
+      "AA HL"
+    ],
+    "paper": "Mr Flynn AA HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 1,
+    "marks": 3,
+    "authored": true,
+    "difficulty": {
+      "AA HL": "Easy"
+    },
+    "title": "Complete a discrete probability distribution and find its median",
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Discrete random variables"
+      }
+    ],
+    "body": "The discrete random variable \\(X\\) has the following probability distribution. <table><tr><th>\\(x\\)</th><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><th>\\(P(X=x)\\)</th><td>0.15</td><td>0.25</td><td>\\(k\\)</td><td>0.20</td></tr></table>",
+    "parts": [
+      [
+        "a",
+        "Find the value of \\(k\\).",
+        1
+      ],
+      [
+        "b",
+        "Find the median of \\(X\\).",
+        2
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(k=1-(0.15+0.25+0.20)=0.40\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(P(X\\leq1)=0.40\\) and \\(P(X\\leq2)=0.80\\)",
+            "M1"
+          ],
+          [
+            "median \\(=2\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
     "id": "MF_AIHL_T3_TRIG_GRAPH_TAN",
     "course": "AI HL",
     "banks": [

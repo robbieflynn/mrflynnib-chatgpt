@@ -135,27 +135,28 @@ AA HL,2026-10-20,4.2.1,Histograms and cumulative frequency curves,approved,M12TZ
 AA HL,2026-10-20,4.2.2,Box and whisker diagram,approved,M12TZ1HL_P2_Q5|N12TZ0SL_P1_Q8,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.2.3,Interpreting box plots,approved,N15TZ0SL_P1_Q1|A_M24TZ1SL_P2_Q1,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.2.4,Outliers,approved,V_M23TZ2AISL_P1_Q3|M18TZ1SL_P1_Q2,Locked from Rob's Topic 4 review
-AA HL,2026-10-20,4.3.1,Averages and spread,awaiting-recheck,M14TZ1HL_P1_Q2|M19TZ1HL_P2_Q3,Approved question 1 retained; frequency-table question replaced with a raw-data mean and standard-deviation calculation
+AA HL,2026-10-21,4.3.1,Averages and spread,approved,M14TZ1HL_P1_Q2|M19TZ1HL_P2_Q3,Approved by Rob after recheck
 AA HL,2026-10-20,4.3.2,Frequency tables,approved,A_M22TZ1SL_P2_Q2|M13TZ1HL_P2_Q1,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.3.3,Constant changes to data,approved,M18TZ2SL_P1_Q3|M16TZ2SL_P1_Q2,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.3.4,Variance and standard deviation by hand,approved-no-practice,,Rob explicitly requested that this lesson remain blank
-AA HL,2026-10-20,4.4,Linear regression and correlation,awaiting-recheck,A_M23TZ2SL_P2_Q1|W_M23TZ1AIHL_P2_Q1,Approved beam question retained; second question now interprets a model gradient in context before finding the regression line and correlation coefficient
+AA HL,2026-10-21,4.4,Linear regression and correlation,approved,A_M23TZ2SL_P2_Q1|W_M23TZ1AIHL_P2_Q1,Approved by Rob after recheck
 AA HL,2026-10-20,4.5,Probability formulae,approved,A_SPECTZ0HL_P1_Q1|A_N23TZ2HL_P1_Q2|A_N24TZ0HL_P1_Q2,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.6.1,Venn diagrams,approved,M11TZ2SL_P1_Q2|M09TZ2HL_P2_Q1,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.6.2,Tree diagrams,approved,M15TZ2SL_P1_Q1|M12TZ2HL_P1_Q3,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.7,Discrete random variables,approved,N13TZ0HL_P1_Q2S|N16TZ0HL_P1_Q2,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.8,Binomial distribution,approved,M08TZ1SL_P2_Q6|M15TZ1HL_P2_Q3|M18TZ2HL_P2_Q8,Locked from Rob's Topic 4 review
+AA HL,2026-10-21,4.9,Normal distribution,approved,N09TZ0SL_P1_Q3|M15TZ1HL_P2_Q2,Approved by Rob during Topic 4 recheck
 AA HL,2026-10-20,4.10,Regression line of x on y,awaiting-recheck,A_M24TZ1SL_P2_Q6|A_SPECTZ0HL_P2_Q4,Approved question 2 retained; quadratic-model question replaced with a second genuine x-on-y regression question
 AA HL,2026-10-20,4.11,Testing for independence,approved,M15TZ2HL_P1_Q1|A_N21TZ0SL_P1_Q4,Locked from Rob's final Topic 4 review
-AA HL,2026-10-20,4.12,Normal distribution (finding mean and std. dev.),awaiting-recheck,M10TZ2HL_P2_Q3|M11TZ1HL_P2_Q12,Approved question 1 retained; question 2 now finds both the mean and standard deviation
+AA HL,2026-10-21,4.12,Normal distribution (finding mean and std. dev.),approved,M10TZ2HL_P2_Q3|M11TZ1HL_P2_Q12,Approved by Rob after recheck
 AA HL,2026-10-20,4.13,Bayes' theorem,approved,N11TZ0HL_P1_Q3|M08TZ1HL_P2_Q8,Locked from Rob's final Topic 4 review
 AA HL,2026-10-20,4.14.1,Variance and standard deviation,approved,A_M25TZ2HL_P2_Q8|M10TZ1HL_P1_Q10,Locked from Rob's final Topic 4 review
 AA HL,2026-10-20,4.14.2,Variance and standard deviation of a discrete random variable,approved,M10TZ2HL_P2_Q2|N16TZ0HL_P2_Q1,Locked from Rob's final Topic 4 review
 AA HL,2026-10-20,4.14.3,Continuous random variables intro,approved,M10TZ2HL_P1_Q1|A_M22TZ1HL_P1_Q7,Locked from Rob's final Topic 4 review
-AA HL,2026-10-20,4.14.4,Mean of a continuous random variable,awaiting-recheck,M12TZ2HL_P2_Q7|A_N24TZ0HL_P2_Q6,Approved question 1 retained; question 2 now finds the mean from a density with two distinct non-zero pieces
-AA HL,2026-10-20,4.14.5,Median and mode of a discrete random variable,awaiting-recheck,A_M25TZ3HL_P2_Q3|M08TZ1SL_P2_Q1,Approved table-based mode question retained; question 2 now finds the median from another discrete frequency table
+AA HL,2026-10-21,4.14.4,Mean of a continuous random variable,approved,M12TZ2HL_P2_Q7|A_N24TZ0HL_P2_Q6,Approved by Rob after recheck
+AA HL,2026-10-21,4.14.5,Median and mode of a discrete random variable,awaiting-recheck,A_M25TZ3HL_P2_Q3|MF_AAHL_T4_DISCRETE_MEDIAN,Approved question 1 retained; question 2 replaced with a discrete probability-distribution table that asks for the median
 AA HL,2026-10-20,4.14.6,Median and mode of continuous random variable,approved,M12TZ1HL_P2_Q2|M08TZ2HL_P2_Q4,Locked from Rob's final Topic 4 review
-AA HL,2026-10-20,4.14.7,Variance of a continuous random variable,awaiting-recheck,M17TZ2HL_P2_Q10|M15TZ1HL_P2_Q11,Approved question 1 retained; unusual symmetric-density question replaced with a direct two-piece-density variance calculation
+AA HL,2026-10-21,4.14.7,Variance of a continuous random variable,approved,M17TZ2HL_P2_Q10|M15TZ1HL_P2_Q11,Approved by Rob after recheck
 AA HL,2026-10-20,4.14.8,Linear transformations of X,approved,A_N25TZ3HL_P1_Q7|A_SPECTZ0HL_P2_Q6,Locked from Rob's final Topic 4 review
 AA HL,2026-10-20,5.1.1,Introduction to differentiation,approved-no-practice,,Rob approved this introductory lesson with no attached practice
 AA HL,2026-10-20,5.1.2,Introduction to limits,approved-no-practice,,Rob approved this introductory lesson with no attached practice

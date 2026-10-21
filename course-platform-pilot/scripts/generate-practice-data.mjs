@@ -90,6 +90,29 @@ const igcseSeed = parseSeed(fs.readFileSync(igcseBankPath, "utf8")).map((questio
 // without mislabelling them as past-paper questions or borrowing a later skill.
 const authoredPractice = [
   {
+    id: "MF_AAHL_T4_DISCRETE_MEDIAN",
+    course: "AA HL",
+    banks: ["AA HL"],
+    paper: "Mr Flynn AA HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 1,
+    marks: 3,
+    authored: true,
+    difficulty: { "AA HL": "Easy" },
+    title: "Complete a discrete probability distribution and find its median",
+    topics: [{ main: "Statistics and Probability", sub: "Discrete random variables" }],
+    body: "The discrete random variable \\(X\\) has the following probability distribution. <table><tr><th>\\(x\\)</th><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><th>\\(P(X=x)\\)</th><td>0.15</td><td>0.25</td><td>\\(k\\)</td><td>0.20</td></tr></table>",
+    parts: [
+      ["a", "Find the value of \\(k\\).", 1],
+      ["b", "Find the median of \\(X\\).", 2],
+    ],
+    markscheme: [
+      ["a", [["\\(k=1-(0.15+0.25+0.20)=0.40\\)", "A1"]]],
+      ["b", [["\\(P(X\\leq1)=0.40\\) and \\(P(X\\leq2)=0.80\\)", "M1"], ["median \\(=2\\)", "A1"]]],
+    ],
+  },
+  {
     id: "MF_AIHL_T3_TRIG_GRAPH_TAN",
     course: "AI HL",
     banks: ["AI HL"],
@@ -1174,12 +1197,10 @@ const verifiedOverrides = {
   // Keep the approved first mean question. The second now uses two distinct
   // non-zero pieces of one probability density function.
   "76e8e8b2-11d1-4c5f-919c-8d18c85df672": ["M12TZ2HL_P2_Q7", "A_N24TZ0HL_P2_Q6"],
-  // The AA bank contains one exact probability-table mode question. Pair it
-  // with a short discrete-data median/mode question rather than padding this
-  // lesson with another expectation-only source.
-  // Keep the approved probability-table mode question, then use another
-  // table-based discrete-data question that asks directly for the median.
-  "2f5766d2-e280-4aff-ac80-36b91b5218b7": ["A_M25TZ3HL_P2_Q3", "M08TZ1SL_P2_Q1"],
+  // Keep the approved probability-table mode question, then use a short,
+  // clearly labelled practice question that also gives a probability table
+  // and asks directly for the median of the discrete random variable.
+  "2f5766d2-e280-4aff-ac80-36b91b5218b7": ["A_M25TZ3HL_P2_Q3", "MF_AAHL_T4_DISCRETE_MEDIAN"],
   // 4.14.6 was explicitly approved and therefore remains untouched.
   // Keep the approved first example. The second is a direct variance
   // calculation for a two-piece density, with earlier established constants
@@ -2060,7 +2081,6 @@ const practicePartOverrides = {
   },
   "2f5766d2-e280-4aff-ac80-36b91b5218b7": {
     "A_M25TZ3HL_P2_Q3": ["a"],
-    "M08TZ1SL_P2_Q1": ["b"],
   },
   "76e8e8b2-11d1-4c5f-919c-8d18c85df672": {
     "A_N24TZ0HL_P2_Q6": ["a"],
@@ -2846,7 +2866,7 @@ const practicePartTitles = {
   },
   "2f5766d2-e280-4aff-ac80-36b91b5218b7": {
     "A_M25TZ3HL_P2_Q3": "Complete a discrete distribution and identify its mode",
-    "M08TZ1SL_P2_Q1": "Find the median from a discrete frequency table",
+    "MF_AAHL_T4_DISCRETE_MEDIAN": "Complete a discrete probability distribution and find its median",
   },
   "76e8e8b2-11d1-4c5f-919c-8d18c85df672": {
     "A_N24TZ0HL_P2_Q6": "Find the mean of a two-piece continuous distribution",

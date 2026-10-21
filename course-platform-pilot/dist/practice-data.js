@@ -1,5 +1,5 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T08:40:47.665Z",
+  "generatedAt": "2026-10-21T09:29:55.401Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
   "completeLessonCount": 458,
@@ -2487,19 +2487,16 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "A_M25TZ3HL_P2_Q3",
-        "M08TZ1SL_P2_Q1"
+        "MF_AAHL_T4_DISCRETE_MEDIAN"
       ],
       "questionParts": {
         "A_M25TZ3HL_P2_Q3": [
           "a"
-        ],
-        "M08TZ1SL_P2_Q1": [
-          "b"
         ]
       },
       "questionPartTitles": {
         "A_M25TZ3HL_P2_Q3": "Complete a discrete distribution and identify its mode",
-        "M08TZ1SL_P2_Q1": "Find the median from a discrete frequency table"
+        "MF_AAHL_T4_DISCRETE_MEDIAN": "Complete a discrete probability distribution and find its median"
       }
     },
     "6aebf73e-a755-432a-b6a3-870f5d7c3269": {
