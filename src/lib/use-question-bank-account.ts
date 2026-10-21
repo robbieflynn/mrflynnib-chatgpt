@@ -219,7 +219,13 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           if (completed) completedRef.current.add(questionId);
           else completedRef.current.delete(questionId);
         }
-        send({ type: "mrflynnib-progress-result", questionId, completed, ok: !error && !assignmentError });
+        send({
+          type: "mrflynnib-progress-result",
+          questionId,
+          completed,
+          ok: !error && !assignmentError,
+          error: error?.message ?? assignmentError?.message ?? null,
+        });
         return;
       }
 

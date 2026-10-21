@@ -57,8 +57,14 @@ export function mathematicalSummaryTitle(value: string) {
   const namedFunction = `(?:ln|log|sin|cos|tan|exp)\\s*(?:[A-Za-zπ]${exponent}|\\([^()]+\\))${exponent}`;
   const parentheses = `\\([^()]+\\)${exponent}`;
   const atom = `(?:${namedFunction}|[A-Za-z]{1,3}\\([^()]+\\)${exponent}|[A-Z]{2,4}|${variableProduct}|${parentheses}|-?\\d+(?:\\.\\d+)?)`;
-  const expression = new RegExp(`(^|[^A-Za-z0-9])(${atom}(?:\\s*[+\\-−×÷/=≤≥<>]\\s*${atom})+)`, "g");
-  text = text.replace(expression, (_match, prefix, maths) => prefix + stash(maths));
+  const expression = new RegExp(`(^|[^A-Za-z0-9])(${atom}(?:\\s*[+\\-−×÷/=≤≥<>]\\s*${atom})+)(?![A-Za-z0-9])`, "g");
+  text = text.replace(expression, (_match, prefix, maths) => {
+    // A hyphen between ordinary words is punctuation, not subtraction. Without
+    // this guard, titles such as "A two-stage game" were rendered as maths and
+    // switched to the KaTeX italic font in the middle of a sentence.
+    if (/^[A-Za-z]{2,}\s*-\s*[A-Za-z]{2,}$/.test(maths)) return prefix + maths;
+    return prefix + stash(maths);
+  });
 
   text = text.replace(/\b([A-Za-z]{1,3}\([A-Za-z]\))/g, (maths) => stash(maths));
 
@@ -70,7 +76,12 @@ export function mathematicalSummaryTitle(value: string) {
 
   const textAcronyms = new Set(["AA", "AI", "CDF", "GDC", "HL", "IB", "IQR", "LHS", "PDF", "RHS", "SL"]);
   text = text.replace(/\b([A-Z]{2,4})\b/g, (token) => textAcronyms.has(token) ? token : stash(token));
-  text = text.replace(/\b([b-z]|[A-Z])\b/g, (variable) => stash(variable));
+  text = text.replace(/\b([b-z]|[A-Z])\b/g, (variable, _captured, offset) => {
+    // Keep the opening indefinite article in prose. Mathematical uses such as
+    // "A = 12" have already been captured by the expression pass above.
+    if (variable === "A" && offset === 0 && /^A\s+[a-z]/.test(text)) return variable;
+    return stash(variable);
+  });
   text = text.replace(/\b(find|value of|constant|coefficient)\s+(a)\b/gi, (_match, prefix, variable) => `${prefix} ${stash(variable)}`);
 
   return text.replace(/\uE000(\d+)\uE001/g, (_match, index) => String.raw`\(${expressions[Number(index)]}\)`);

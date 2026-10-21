@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import progressManifest from "@/data/question-bank-progress.json";
 import { requireAdmin, requireTeacher } from "@/lib/account-access";
 import { isAssignmentFeedbackMode } from "@/lib/assignment-feedback";
+import { orderAssessmentQuestions } from "@/lib/assessment-question-order";
 
 const validCourses = new Set(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
 const validResponseTypes = new Set(["teacher_review", "exact", "numeric", "multiple_choice", "multipart"]);
@@ -28,6 +29,19 @@ type ResponseConfig = {
   correctOption: number | null;
   parts: ResponsePart[];
 };
+
+function teacherReviewResponseConfig(id: string): ResponseConfig {
+  return {
+    id,
+    type: "teacher_review",
+    acceptedAnswers: [],
+    numericAnswer: null,
+    tolerance: null,
+    options: [],
+    correctOption: null,
+    parts: [],
+  };
+}
 
 function cleanChoiceAnswer(value: string) {
   return value
@@ -189,10 +203,16 @@ function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
       return { label, mode, acceptedAnswers: partAnswers, options: partOptions, correctOption: partCorrectOption };
     }).slice(0, 30);
     if (!id) return null;
-    if (type === "exact" && acceptedAnswers.length === 0) return null;
-    if (type === "numeric" && (!Number.isFinite(numericAnswer) || !Number.isFinite(tolerance) || Number(tolerance) < 0)) return null;
-    if (type === "multiple_choice" && !validChoiceSet(acceptedAnswers, options, correctOption)) return null;
-    if (type === "multipart" && (parts.length < 2 || parts.some((part) => !part.label || (part.mode === "multiple_choice" && !validChoiceSet(part.acceptedAnswers, part.options, part.correctOption))))) return null;
+    if (type === "exact" && acceptedAnswers.length === 0) return teacherReviewResponseConfig(id);
+    if (type === "numeric" && (!Number.isFinite(numericAnswer) || !Number.isFinite(tolerance) || Number(tolerance) < 0)) return teacherReviewResponseConfig(id);
+    if (type === "multiple_choice" && !validChoiceSet(acceptedAnswers, options, correctOption)) return teacherReviewResponseConfig(id);
+    if (type === "multipart") {
+      if (parts.length < 2 || parts.some((part) => !part.label)) return teacherReviewResponseConfig(id);
+      const safeParts = parts.map((part) => part.mode === "multiple_choice" && !validChoiceSet(part.acceptedAnswers, part.options, part.correctOption)
+        ? { label: part.label, mode: "whiteboard" as const, acceptedAnswers: [], options: [], correctOption: null }
+        : part);
+      return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption, parts: safeParts };
+    }
     return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption, parts };
   } catch {
     return null;
@@ -250,20 +270,37 @@ export async function createAssignment(formData: FormData) {
   const dueDate = String(formData.get("dueDate") || "");
   const requestedFeedbackMode = String(formData.get("feedbackMode") || "after_question");
   const feedbackMode = isAssignmentFeedbackMode(requestedFeedbackMode) ? requestedFeedbackMode : "after_question";
-  const questionIds = formData.getAll("questionIds").map(String).filter(Boolean).slice(0, 100);
+  const recipientMode = formData.get("recipientMode") === "students" ? "students" : "class";
+  const requestedRecipientIds = Array.from(new Set(formData.getAll("recipientIds").map(String).filter(Boolean))).slice(0, 1000);
+  const questionIds = Array.from(new Set(formData.getAll("questionIds").map(String).filter(Boolean))).slice(0, 100);
   const parsedConfigs = formData.getAll("responseConfigs").map(parseResponseConfig);
-  const responseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
+  const suppliedResponseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
+  const responseConfigs = new Map(questionIds.map((id) => [id, suppliedResponseConfigs.get(id) ?? teacherReviewResponseConfig(id)]));
 
   const { data: classRecord } = await supabase.from("classes").select("id,bank,course").eq("id", classId).eq("teacher_id", user.id).maybeSingle();
   if (!classRecord) redirect("/teacher?error=Class%20not%20found.");
   if (!title || questionIds.length === 0) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Add a title and select at least one question."));
-  if (questionIds.some((id) => !responseConfigs.has(id))) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Finish the answer-checking setup for every selected question."));
+  let recipientIds: string[] = [];
+  if (recipientMode === "students") {
+    const { data: membershipRows, error: membershipError } = await supabase.from("class_memberships").select("student_id").eq("class_id", classId);
+    if (membershipError) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The class list could not be checked. Please try again."));
+    const memberIds = new Set((membershipRows ?? []).map((membership) => String(membership.student_id)));
+    recipientIds = requestedRecipientIds.filter((studentId) => memberIds.has(studentId));
+    if (!requestedRecipientIds.length || recipientIds.length !== requestedRecipientIds.length) {
+      redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "Choose at least one current student for this assignment."));
+    }
+  }
 
   const source = classRecord.bank === "igcse"
     ? progressManifest.igcse
     : progressManifest.courses[classRecord.course as keyof typeof progressManifest.courses];
   const summaries = new Map(source.questions.map((question) => [question.id, question]));
-  const selected = questionIds.map((id) => summaries.get(id)).filter((question): question is NonNullable<typeof question> => Boolean(question));
+  const selectedInChosenOrder = questionIds.map((id) => summaries.get(id)).filter((question): question is NonNullable<typeof question> => Boolean(question));
+  const selected = orderAssessmentQuestions(selectedInChosenOrder.map((question) => ({
+    ...question,
+    paper: question.paperNumber || question.paper || "",
+    section: "section" in question && question.section === "B" ? "B" : "A",
+  })), classRecord.course as "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher");
   if (selected.length !== questionIds.length) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "One or more questions are no longer available."));
 
   const dueAt = dueDate ? new Date(`${dueDate}T23:59:00`).toISOString() : null;
@@ -279,6 +316,17 @@ export async function createAssignment(formData: FormData) {
     published_at: new Date().toISOString(),
   }).select("id").single();
   if (error || !assignment) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The assignment could not be published."));
+
+  if (recipientIds.length) {
+    const { error: recipientsError } = await supabase.from("assignment_recipients").insert(recipientIds.map((studentId) => ({
+      assignment_id: assignment.id,
+      student_id: studentId,
+    })));
+    if (recipientsError) {
+      await supabase.from("assignments").delete().eq("id", assignment.id);
+      redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The selected students could not be saved."));
+    }
+  }
 
   const { error: questionsError } = await supabase.from("assignment_questions").insert(selected.map((question, position) => {
     const config = responseConfigs.get(question.id)!;
@@ -328,6 +376,34 @@ export async function createAssignment(formData: FormData) {
   redirect(`/teacher/assignments/${assignment.id}?success=${encodeURIComponent("Assignment published.")}`);
 }
 
+export async function deleteAssignment(formData: FormData) {
+  const { supabase, user } = await requireTeacher();
+  const assignmentId = String(formData.get("assignmentId") || "");
+  if (!assignmentId) redirect("/teacher?error=Assignment%20not%20found.");
+
+  const { data: assignment } = await supabase
+    .from("assignments")
+    .select("id,class_id")
+    .eq("id", assignmentId)
+    .eq("teacher_id", user.id)
+    .maybeSingle();
+  if (!assignment) redirect("/teacher?error=Assignment%20not%20found.");
+
+  const { error } = await supabase
+    .from("assignments")
+    .delete()
+    .eq("id", assignmentId)
+    .eq("teacher_id", user.id);
+  if (error) redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "The assignment could not be deleted."));
+
+  revalidatePath("/teacher");
+  revalidatePath("/igcse/teacher");
+  revalidatePath(`/teacher/classes/${assignment.class_id}`);
+  revalidatePath("/account");
+  revalidatePath("/igcse/account");
+  redirect(messagePath(`/teacher/classes/${assignment.class_id}`, "success", "Assignment deleted."));
+}
+
 export async function updateAssignmentFeedbackMode(formData: FormData) {
   const { supabase, user } = await requireTeacher();
   const assignmentId = String(formData.get("assignmentId") || "");
@@ -359,12 +435,14 @@ export async function reviewTeacherApplication(formData: FormData) {
   const { supabase, user } = await requireAdmin();
   const applicantId = String(formData.get("applicantId") || "");
   const decision = String(formData.get("decision") || "");
-  if (!applicantId || applicantId === user.id || !new Set(["approve", "decline"]).has(decision)) redirect("/teacher?error=That%20request%20could%20not%20be%20reviewed.");
+  const returnTo = String(formData.get("returnTo") || "") === "/teacher/accounts" ? "/teacher/accounts" : "/teacher";
+  if (!applicantId || applicantId === user.id || !new Set(["approve", "decline"]).has(decision)) redirect(`${returnTo}?error=That%20request%20could%20not%20be%20reviewed.`);
   const values = decision === "approve"
     ? { role: "teacher", teacher_status: "approved", updated_at: new Date().toISOString() }
     : { role: "student", teacher_status: "rejected", updated_at: new Date().toISOString() };
   const { error } = await supabase.from("profiles").update(values).eq("user_id", applicantId).eq("teacher_status", "pending");
-  if (error) redirect(`/teacher?error=${encodeURIComponent("The teacher request could not be updated.")}`);
+  if (error) redirect(`${returnTo}?error=${encodeURIComponent("The teacher request could not be updated.")}`);
   revalidatePath("/teacher");
-  redirect(`/teacher?success=${encodeURIComponent(decision === "approve" ? "Teacher access approved." : "Teacher request declined.")}`);
+  revalidatePath("/teacher/accounts");
+  redirect(`${returnTo}?success=${encodeURIComponent(decision === "approve" ? "Teacher access approved." : "Teacher request declined.")}`);
 }

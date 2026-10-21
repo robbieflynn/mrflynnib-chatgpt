@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, type CSSProperties } from "react";
 import { Container, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
 import { AccountMenu } from "@/components/account-menu";
@@ -10,7 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
 import progressManifest from "@/data/question-bank-progress.json";
-import { joinClass } from "./actions";
+import { joinClass, requestTeacherAccess } from "./actions";
 
 export const metadata: Metadata = {
   title: "Mr Flynn IB account",
@@ -20,6 +20,21 @@ export const metadata: Metadata = {
 
 function percentage(completed: number, total: number) {
   return total ? Math.round((completed / total) * 100) : 0;
+}
+
+function dueDateLabel(dueAt: string | null) {
+  if (!dueAt) return "No due date";
+  const dueDate = new Date(dueAt);
+  const today = new Date();
+  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  const startOfDueDate = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate()).getTime();
+  const daysAway = Math.round((startOfDueDate - startOfToday) / 86_400_000);
+
+  if (daysAway < 0) return `${Math.abs(daysAway)} ${Math.abs(daysAway) === 1 ? "day" : "days"} overdue`;
+  if (daysAway === 0) return "Due today";
+  if (daysAway === 1) return "Due tomorrow";
+  if (daysAway <= 7) return `Due in ${daysAway} days`;
+  return `Due ${dueDate.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`;
 }
 
 type AccountSearchParams = {
@@ -71,6 +86,47 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     redirect(`${destination}error=${encodeURIComponent("IB and IGCSE use separate accounts. Sign out before entering the other account area.")}`);
   }
   if (profile?.role === "teacher" || profile?.role === "admin") redirect(isIgcse ? "/igcse/teacher" : "/teacher");
+  const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
+  const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
+  const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
+  const teacherRequested = pageSearchParams.teacher === "requested";
+  const teacherApprovalPending = profile?.teacher_status === "pending";
+
+  if (teacherApprovalRequired || teacherRequested) {
+    const requestPending = profile?.teacher_status === "pending" || teacherRequested;
+    const studentDashboardHref = isIgcse ? "/igcse/account" : "/account";
+
+    return (
+      <>
+        <PageHero
+          eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"}
+          title={requestPending ? "Teacher access requested" : "Looking for the teacher dashboard?"}
+          intro={requestPending
+            ? "Your request is waiting for approval. You can continue using your student dashboard while it is reviewed."
+            : "Your account is currently set up as a student. You can request teacher access using this same account."}
+        />
+        <section className="section-tight">
+          <Container className="narrow">
+            <div className="account-card teacher-access-gate stack-lg">
+              {accountError ? <p className="form-message form-error">{accountError}</p> : null}
+              <div className="stack-sm">
+                <h2>{requestPending ? "What happens next?" : "Keep everything in one account"}</h2>
+                <p>{requestPending
+                  ? "Once an administrator approves the request, this account will open the teacher dashboard."
+                  : "Your question-bank progress and saved work will remain in place. Your account will stay as a student account until an administrator approves the request."}</p>
+              </div>
+              {requestPending ? <p className="teacher-pending-note"><strong>Approval pending</strong><span>No further action is needed. You can return here to check the status.</span></p> : null}
+              <div className="teacher-access-gate-actions">
+                {!requestPending ? <form action={requestTeacherAccess}><button className="button" type="submit">Request teacher access</button></form> : null}
+                <Link className="button button-secondary" href={studentDashboardHref}>Return to student dashboard</Link>
+              </div>
+            </div>
+          </Container>
+        </section>
+      </>
+    );
+  }
+
   const selectedCourse = getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "") ?? questionBankCourses[0];
   const courseProgress = isIgcse ? progressManifest.igcse : progressManifest.courses[selectedCourse.code];
   const bank = isIgcse ? "igcse" : "ib";
@@ -133,11 +189,35 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   }));
   const assignmentCountByClass = new Map<string, number>();
   (assignments ?? []).forEach((assignment) => assignmentCountByClass.set(assignment.class_id, (assignmentCountByClass.get(assignment.class_id) || 0) + 1));
-  const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
-  const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
-  const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
-  const teacherRequested = pageSearchParams.teacher === "requested";
-
+  const studentAssignments = assignments.map((assignment) => {
+    const questionCount = questionCountByAssignment.get(assignment.id) || 0;
+    const progressCount = progressCountByAssignment.get(assignment.id) || 0;
+    const submissionStatus = submissionByAssignment.get(assignment.id);
+    return {
+      ...assignment,
+      questionCount,
+      progressCount,
+      submissionStatus,
+      assignmentPercentage: percentage(progressCount, questionCount),
+    };
+  });
+  const activeAssignments = studentAssignments
+    .filter((assignment) => assignment.submissionStatus !== "submitted")
+    .sort((first, second) => {
+      if (!first.due_at && !second.due_at) return 0;
+      if (!first.due_at) return 1;
+      if (!second.due_at) return -1;
+      return new Date(first.due_at).getTime() - new Date(second.due_at).getTime();
+    });
+  const completedAssignments = studentAssignments.filter((assignment) => assignment.submissionStatus === "submitted");
+  const nextAssignment = activeAssignments[0];
+  const firstIncompleteTopic = courseProgress.topics.find((topic) => topic.questionIds.some((id) => !completedQuestionIds.has(id)));
+  const firstIncompleteSubtopic = firstIncompleteTopic?.subtopics.find((subtopic) => subtopic.questionIds.some((id) => !completedQuestionIds.has(id)));
+  const continueLearningHref = firstIncompleteTopic && firstIncompleteSubtopic
+    ? isIgcse
+      ? `/igcse/question-bank?topic=${encodeURIComponent(firstIncompleteTopic.name)}&subtopic=${encodeURIComponent(firstIncompleteSubtopic.name)}`
+      : `/question-bank/${selectedCourse.slug}?topic=${encodeURIComponent(firstIncompleteTopic.name)}&subtopic=${encodeURIComponent(firstIncompleteSubtopic.name)}`
+    : questionBankHref;
   return (
     <>
       <section className={`dashboard-hero student-dashboard-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
@@ -147,14 +227,15 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           </div>
           <div className="dashboard-hero-layout">
             <div className="dashboard-hero-copy">
-              <span className="dashboard-role-label">Student dashboard</span>
+              <span className="dashboard-role-label">
+                {teacherApprovalPending ? "Teacher status: waiting approval" : "Student dashboard"}
+              </span>
               <h1>{displayName ? `Welcome back, ${displayName}` : "Your learning dashboard"}</h1>
-              <p>Keep up with your classes, assignments and question-bank progress.</p>
-            </div>
-            <div className="dashboard-hero-stats" aria-label="Student account summary">
-              <div><strong>{activeMemberships.length}</strong><span>{activeMemberships.length === 1 ? "class" : "classes"}</span></div>
-              <div><strong>{assignments.length}</strong><span>assignments</span></div>
-              <div><strong>{coursePercentage}%</strong><span>{progressLabel} progress</span></div>
+              <p>
+                {teacherApprovalPending
+                  ? "Your teacher account is being reviewed. You can use the question bank while you wait."
+                  : "Here's what to focus on next."}
+              </p>
             </div>
           </div>
         </Container>
@@ -163,53 +244,66 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <Container className="stack-xl">
           {accountError ? <p className="form-message form-error">{accountError}</p> : null}
           {accountSuccess ? <p className="form-message form-success">{accountSuccess}</p> : null}
-          {teacherRequested ? <p className="form-message form-success">Your teacher account request has been sent for approval. You can use the student question bank while you wait.</p> : null}
-          {teacherApprovalRequired ? <p className="form-message form-error">{profile?.teacher_status === "pending" ? "Your teacher account is waiting for approval." : "Teacher access must be approved before this account can create classes and assignments."}</p> : null}
-          {profile?.teacher_status === "pending" && !teacherRequested ? <p className="teacher-pending-note"><strong>Teacher approval pending</strong><span>You will be able to create classes and assignments once your request is approved.</span></p> : null}
-          <section className="student-class-section stack-lg">
-            <div className="dashboard-section-heading student-section-heading">
-              <div><p className="eyebrow">Classes</p><h2>{activeMemberships.length ? "Your classes" : "Join your first class"}</h2></div>
-              <p className="muted">Classes keep your teacher&apos;s assignments and feedback together.</p>
-            </div>
-            {activeMemberships.length ? <div className="student-class-grid">
-              {activeMemberships.map((membership) => {
-                const classRecord = Array.isArray(membership.classes) ? membership.classes[0] : membership.classes;
-                return <article className="student-class-card" key={membership.class_id}>
-                  <div className="student-class-card-top"><DashboardIcon name="class" /><span className="badge">{classRecord?.course}</span></div>
-                  <div><small>Class</small><h3>{classRecord?.name || "Your class"}</h3></div>
-                  <div className="student-class-card-meta"><span><strong>{assignmentCountByClass.get(membership.class_id) || 0}</strong> assignments</span><span>Joined {new Date(membership.joined_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span></div>
-                </article>;
-              })}
-            </div> : <div className="dashboard-empty-state"><DashboardIcon name="add" /><div><strong>No classes joined yet</strong><p>Enter the code shared by your teacher to connect this dashboard to your class.</p></div></div>}
-            <details className="join-class-panel" open={!activeMemberships.length}>
-              <summary>{activeMemberships.length ? "Join another class" : "Enter a class code"}<span aria-hidden="true">+</span></summary>
-              <form action={joinClass} className="join-class-form"><label className="field"><span>Class code</span><input name="code" placeholder="ABC1234" maxLength={10} required /></label><button className="button button-small" type="submit">Join class</button></form>
-            </details>
-          </section>
+          {teacherApprovalPending ? (
+            <p className="teacher-pending-note">
+              <strong>Teacher status: waiting approval</strong>
+              <span>You do not need to apply again. Once approved, this account will open your teacher dashboard automatically.</span>
+            </p>
+          ) : null}
+          <div className="student-next-grid">
+            <section className="student-next-card">
+              <div className="student-next-card-copy">
+                <p className="student-dashboard-kicker">Up next</p>
+                {nextAssignment ? <>
+                  <span className="student-next-context">{classNames.get(nextAssignment.class_id)} · {dueDateLabel(nextAssignment.due_at)}</span>
+                  <h2>{nextAssignment.title}</h2>
+                  <p>{nextAssignment.progressCount ? `You have completed ${nextAssignment.progressCount} of ${nextAssignment.questionCount} questions.` : `${nextAssignment.questionCount} ${nextAssignment.questionCount === 1 ? "question" : "questions"} ready to begin.`}</p>
+                </> : <>
+                  <span className="student-next-context">You&apos;re up to date</span>
+                  <h2>All caught up</h2>
+                  <p>{assignments.length ? "You have submitted all of your current assignments." : "There are no assignments waiting for you."}</p>
+                </>}
+              </div>
+              {nextAssignment ? <>
+                <div className="student-next-progress"><span><strong>{nextAssignment.assignmentPercentage}%</strong> complete</span><i><b style={{ width: `${nextAssignment.assignmentPercentage}%` }} /></i></div>
+                <Link className="button student-next-button" href={`/assignments/${nextAssignment.id}`}>{nextAssignment.progressCount ? "Continue assignment" : "Start assignment"}<span aria-hidden="true">→</span></Link>
+              </> : <Link className="button student-next-button" href={continueLearningHref}>Practise in the question bank<span aria-hidden="true">→</span></Link>}
+            </section>
+
+            <aside className="student-progress-summary" aria-label="Your progress">
+              <div><p className="student-dashboard-kicker">Personal progress</p><strong className="student-progress-number">{coursePercentage}%</strong><span>{progressLabel} question bank complete</span></div>
+              <div className="student-progress-ring" style={{ "--student-progress": `${coursePercentage * 3.6}deg` } as CSSProperties}><span>{coursePercentage}%</span></div>
+              <dl>
+                <div><dt>Questions completed</dt><dd>{courseCompleted.toLocaleString("en-GB")}</dd></div>
+                <div><dt>Saved whiteboards</dt><dd>{whiteboardCount ?? 0}</dd></div>
+                <div><dt>Assignments submitted</dt><dd>{completedAssignments.length}</dd></div>
+              </dl>
+            </aside>
+          </div>
 
           <section className="student-assignments dashboard-panel stack-lg">
-            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Classwork</p><h2>Your assignments</h2></div><p className="muted">Open an assignment to answer questions, save whiteboard working and submit it to your teacher.</p></div>
+            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>{activeAssignments.length ? "Due soon" : "You're up to date"}</h2></div><p className="muted">Your current work is ordered by due date, so the most important task is always easy to find.</p></div>
             {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
             <div className="student-assignment-list">
-              {assignments.map((assignment) => {
-                const questionCount = questionCountByAssignment.get(assignment.id) || 0;
-                const progressCount = progressCountByAssignment.get(assignment.id) || 0;
-                const submissionStatus = submissionByAssignment.get(assignment.id);
-                const assignmentPercentage = percentage(progressCount, questionCount);
+              {activeAssignments.map((assignment) => {
                 return <Link className="student-assignment-card" href={`/assignments/${assignment.id}`} key={assignment.id}>
-                  <span className="student-assignment-status"><i style={{ width: `${assignmentPercentage}%` }} /></span>
-                  <div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{assignment.due_at ? `Due ${new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : "No due date"}</span></div>
-                  <div className="student-assignment-progress"><strong>{progressCount}/{questionCount}</strong><span>questions</span></div>
-                  <span className={`status-pill ${submissionStatus === "submitted" ? "is-submitted" : ""}`}>{submissionStatus === "submitted" ? "Submitted" : progressCount ? "Continue" : "Start"}</span>
+                  <span className="student-assignment-status"><i style={{ width: `${assignment.assignmentPercentage}%` }} /></span>
+                  <div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{dueDateLabel(assignment.due_at)}</span></div>
+                  <div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div>
+                  <span className="status-pill">{assignment.progressCount ? "Continue" : "Start"}</span>
                   <span aria-hidden="true">→</span>
                 </Link>;
               })}
-              {!assignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>No assignments yet</strong><p>Your teacher&apos;s assignments will appear here.</p></div></div> : null}
+              {!activeAssignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>{assignments.length ? "Everything is submitted" : "No assignments yet"}</strong><p>{assignments.length ? "Nice work. Your next assignment will appear here when it is set." : "Your teacher's assignments will appear here."}</p></div></div> : null}
             </div>
+            {completedAssignments.length ? <details className="student-completed-assignments"><summary>Submitted assignments ({completedAssignments.length})<span aria-hidden="true">+</span></summary><div className="student-assignment-list">{completedAssignments.map((assignment) => <Link className="student-assignment-card is-complete" href={`/assignments/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>Submitted</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Submitted</span><span aria-hidden="true">→</span></Link>)}</div></details> : null}
           </section>
+
+          <section className="student-learning-section stack-lg">
+            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Independent practice</p><h2>Continue learning</h2></div><p className="muted">Pick up where you left off, or choose a topic to practise at your own pace.</p></div>
           {isIgcse ? (
             <div className="dashboard-course-bar dashboard-course-bar-single">
-              <div><span>Your question bank</span><strong>Edexcel IGCSE Mathematics</strong></div>
+              <div><span>Your question bank</span><strong>IGCSE Mathematics</strong></div>
             </div>
           ) : (
             <div className="dashboard-course-bar">
@@ -225,29 +319,29 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </div>
           )}
 
-          <div className="dashboard-overview">
+          <div className="dashboard-overview student-learning-overview">
             <div className="dashboard-overview-title">
-              <span>{progressLabel} progress</span>
-              <strong>{courseCompleted.toLocaleString("en-GB")} of {courseProgress.questionIds.length.toLocaleString("en-GB")} questions completed</strong>
+              <span>{firstIncompleteSubtopic ? "Suggested next topic" : `${progressLabel} progress`}</span>
+              <strong>{firstIncompleteSubtopic?.name || `${courseCompleted.toLocaleString("en-GB")} of ${courseProgress.questionIds.length.toLocaleString("en-GB")} questions completed`}</strong>
             </div>
             <div className="dashboard-progress" aria-label={`${coursePercentage}% complete`} aria-valuemax={100} aria-valuemin={0} aria-valuenow={coursePercentage} role="progressbar">
               <span style={{ width: `${coursePercentage}%` }} />
             </div>
             <div className="dashboard-overview-meta"><strong>{coursePercentage}%</strong><span>{whiteboardCount ?? 0} saved whiteboards</span></div>
-            <Link className="button button-small" href={questionBankHref}>Continue in question bank</Link>
+            <Link className="button button-small" href={continueLearningHref}>Continue learning</Link>
           </div>
 
           <div className="dashboard-topics stack-lg">
             <div className="dashboard-section-heading">
-              <div><p className="eyebrow">Topics and subtopics</p><h2>Question-bank progress</h2></div>
-              <p className="muted">Open a topic to view every subtopic. Select a subtopic to go straight to those questions.</p>
+              <div><p className="eyebrow">Topics and subtopics</p><h2>Explore your course</h2></div>
+              <p className="muted">Open a topic to see your progress and go straight to a subtopic.</p>
             </div>
             <div className="dashboard-topic-list">
               {courseProgress.topics.map((topic, topicIndex) => {
                 const topicCompleted = topic.questionIds.filter((id) => completedQuestionIds.has(id)).length;
                 const topicPercentage = percentage(topicCompleted, topic.questionIds.length);
                 return (
-                  <details className="dashboard-topic" key={topic.name} open={topicIndex === 0}>
+                  <details className="dashboard-topic" key={topic.name}>
                     <summary>
                       <span className="dashboard-topic-number">{topicIndex + 1}</span>
                       <span className="dashboard-topic-title"><strong>{topic.name}</strong><small>{topicCompleted} of {topic.questionIds.length} completed</small></span>
@@ -277,6 +371,28 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               })}
             </div>
           </div>
+          </section>
+
+          <section className="student-class-section stack-lg">
+            <div className="dashboard-section-heading student-section-heading">
+              <div><p className="eyebrow">Classes</p><h2>{activeMemberships.length ? "Your classes" : "Join your first class"}</h2></div>
+              <p className="muted">Classes keep your teacher&apos;s assignments and feedback together.</p>
+            </div>
+            {activeMemberships.length ? <div className="student-class-grid">
+              {activeMemberships.map((membership) => {
+                const classRecord = Array.isArray(membership.classes) ? membership.classes[0] : membership.classes;
+                return <article className="student-class-card" key={membership.class_id}>
+                  <div className="student-class-card-top"><DashboardIcon name="class" /><span className="badge">{classRecord?.course}</span></div>
+                  <div><small>Class</small><h3>{classRecord?.name || "Your class"}</h3></div>
+                  <div className="student-class-card-meta"><span><strong>{assignmentCountByClass.get(membership.class_id) || 0}</strong> assignments</span><span>Joined {new Date(membership.joined_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span></div>
+                </article>;
+              })}
+            </div> : <div className="dashboard-empty-state"><DashboardIcon name="add" /><div><strong>No classes joined yet</strong><p>Enter the code shared by your teacher to connect this dashboard to your class.</p></div></div>}
+            <details className="join-class-panel" open={!activeMemberships.length}>
+              <summary>{activeMemberships.length ? "Join another class" : "Enter a class code"}<span aria-hidden="true">+</span></summary>
+              <form action={joinClass} className="join-class-form"><label className="field"><span>Class code</span><input name="code" placeholder="ABC1234" maxLength={10} required /></label><button className="button button-small" type="submit">Join class</button></form>
+            </details>
+          </section>
 
         </Container>
       </section>

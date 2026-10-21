@@ -3,7 +3,7 @@
   if (params.get("assignment") !== "1" || window.parent === window) return;
 
   var MAX_SELECTED = 100;
-  var DRAFT_VERSION = 13;
+  var DRAFT_VERSION = 15;
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
@@ -30,25 +30,15 @@
     ".qb-assignment-select:hover{background:#e4f2ff}",
     ".qb-assignment-select input{width:19px;height:19px;margin:0;accent-color:var(--flynn-blue);cursor:pointer}",
     ".qb-card.qb-assignment-selected{outline:3px solid var(--flynn-blue);outline-offset:-2px}",
-    ".qb-assignment-answer{margin:0 0 18px;padding:16px;display:grid;gap:12px;border:1px solid #b9d5ef;border-radius:10px;background:#fbfdff;font:600 13px/1.4 var(--ui);color:#22364b}",
-    ".qb-assignment-answer[hidden]{display:none}",
-    ".qb-assignment-answer strong{color:var(--flynn-blue-dark);font-size:14px}",
-    ".qb-assignment-answer label{display:grid;gap:5px}",
-    ".qb-assignment-answer select,.qb-assignment-answer input[type=text],.qb-assignment-answer input[type=number]{min-height:40px;padding:8px 10px;border:1px solid #aebfc9;border-radius:7px;background:#fff;color:#15283b;font:500 14px/1.2 var(--ui)}",
-    ".qb-assignment-answer small{color:#647789;font-weight:500}",
-    ".qb-answer-method-copy{display:block;margin-top:-5px;color:#647789;font-weight:500}",
-    ".qb-accepted-answer-list{display:flex;flex-wrap:wrap;gap:7px}",
-    ".qb-accepted-answer{padding:7px 10px;border:1px solid #b9d5ef;border-radius:999px;background:#fff;color:#173b5c;font:700 13px/1.2 var(--ui)}",
-    ".qb-answer-review-note{padding:10px 12px;border-radius:8px;background:#fff7e7;color:#715317;font-weight:650}",
-    ".qb-answer-part-list{display:grid;gap:8px}",
-    ".qb-answer-part-row{padding:10px;display:grid;grid-template-columns:minmax(54px,auto) 1fr;align-items:start;gap:10px;border:1px solid #d5e1e7;border-radius:9px;background:#fff}",
-    ".qb-answer-part-row>strong{padding-top:6px;color:var(--flynn-blue-dark)}",
-    ".qb-answer-part-row .qb-answer-review-note{display:block;padding:7px 9px}",
-    ".qb-answer-choice-list{display:grid;gap:6px}",
-    ".qb-answer-choice{padding:7px 9px;display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #d5e1e7;border-radius:8px;background:#f8fafb;color:#29445a;font-weight:650}",
-    ".qb-answer-choice.is-correct{border-color:#8fc9b2;background:#eaf7f1;color:#176b50}",
-    ".qb-answer-choice small{padding:3px 6px;border-radius:999px;background:#fff;color:#176b50;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}",
+    ".qb-assignment-bulk{margin:0 0 20px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid #b9d5ef;border-radius:12px;background:#f3f9ff;font:600 13px/1.35 var(--ui);color:#415b70}",
+    ".qb-assignment-bulk[hidden]{display:none}",
+    ".qb-assignment-bulk-copy{display:grid;gap:2px}",
+    ".qb-assignment-bulk-copy strong{color:var(--flynn-blue-dark);font-size:14px}",
+    ".qb-assignment-bulk button{flex:0 0 auto;min-height:42px;padding:10px 16px;border:0;border-radius:9px;background:var(--flynn-blue);color:#fff;font:800 13px/1.2 var(--ui);cursor:pointer}",
+    ".qb-assignment-bulk button:hover{background:var(--flynn-blue-dark)}",
+    ".qb-assignment-bulk button:disabled{background:#aab9c5;cursor:default}",
     ".qb-assignment-limit{position:fixed;left:50%;bottom:18px;z-index:100;transform:translateX(-50%);padding:10px 16px;border-radius:999px;background:#9f2f2f;color:#fff;font:700 13px/1.2 var(--ui);box-shadow:0 8px 24px rgba(11,21,48,.22)}",
+    "@media(max-width:600px){.qb-assignment-bulk{align-items:stretch;flex-direction:column}.qb-assignment-bulk button{width:100%}}",
     "@media(max-width:480px){.qb-assignment-select{margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px}}"
   ].join("");
   document.head.appendChild(style);
@@ -90,12 +80,11 @@
     document.querySelectorAll(".qb-card").forEach(function (card) {
       var checkbox = card.querySelector(".qb-assignment-select input[type=checkbox]");
       var copy = card.querySelector(".qb-assignment-select span");
-      var editor = card.querySelector(".qb-assignment-answer");
       if (checkbox) checkbox.checked = false;
       if (copy) copy.textContent = "Add to assignment";
-      if (editor) editor.hidden = true;
       card.classList.remove("qb-assignment-selected");
     });
+    updateBulkControl();
     publish();
   }
 
@@ -107,12 +96,11 @@
     if (card) {
       var checkbox = card.querySelector(".qb-assignment-select input[type=checkbox]");
       var copy = card.querySelector(".qb-assignment-select span");
-      var editor = card.querySelector(".qb-assignment-answer");
       if (checkbox) checkbox.checked = false;
       if (copy) copy.textContent = "Add to assignment";
-      if (editor) editor.hidden = true;
       card.classList.remove("qb-assignment-selected");
     }
+    updateBulkControl();
     publish();
   }
 
@@ -120,11 +108,14 @@
     if (event.origin !== window.location.origin || event.source !== window.parent) return;
     if (event.data && event.data.type === "mrflynnib-assignment-clear") clearSelection();
     if (event.data && event.data.type === "mrflynnib-assignment-remove") removeSelection(String(event.data.id || ""));
+    if (event.data && event.data.type === "mrflynnib-assignment-create-shadow") createShadowSelection(Array.isArray(event.data.sources) ? event.data.sources : []);
   });
 
   function questionFor(id) {
     var card = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
-    return card && card.mrflynnibQuestion ? card.mrflynnibQuestion : null;
+    if (card && card.mrflynnibQuestion) return card.mrflynnibQuestion;
+    var getQuestion = window.mrflynnibQuestionById;
+    return typeof getQuestion === "function" ? getQuestion(id) : null;
   }
 
   function questionSummary(id) {
@@ -132,6 +123,8 @@
     var question = questionFor(id);
     if (!question) return existing || { id: id, title: "Selected question" };
     var card = document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
+    var metaFor = window.mrflynnibQuestionMeta;
+    var meta = typeof metaFor === "function" ? metaFor(id) : null;
     var text = function (selector) {
       var node = card && card.querySelector(selector);
       return node ? String(node.textContent || "").replace(/\s+/g, " ").trim() : "";
@@ -139,12 +132,56 @@
     return {
       id: id,
       title: plainText(question.title) || existing && existing.title || "Selected question",
-      topic: text(".qb-badge.topic .main") || existing && existing.topic || "",
-      subtopic: text(".qb-badge.topic .subs") || existing && existing.subtopic || "",
-      paper: text(".qb-badge.course") || existing && existing.paper || "",
-      difficulty: text(".qb-badge:not(.course):not(.topic):not(.marks)") || existing && existing.difficulty || "",
+      topic: meta && meta.topic || text(".qb-badge.topic .main") || existing && existing.topic || "",
+      subtopic: meta && meta.subtopic || text(".qb-badge.topic .subs") || existing && existing.subtopic || "",
+      paper: meta && meta.paper || text(".qb-badge.course") || existing && existing.paper || "",
+      section: meta && meta.section === "B" || question.section === "B" ? "B" : "A",
+      difficulty: meta && meta.difficulty || text(".qb-badge:not(.course):not(.topic):not(.marks)") || existing && existing.difficulty || "",
       marks: Number(question.marks) || existing && existing.marks || null
     };
+  }
+
+  var shadowRetryTimer = 0;
+  function createShadowSelection(sources, attempt) {
+    attempt = Number(attempt) || 0;
+    window.clearTimeout(shadowRetryTimer);
+    var findMatches = window.mrflynnibFindShadowQuestions;
+    if (typeof findMatches !== "function") {
+      if (attempt < 80) {
+        shadowRetryTimer = window.setTimeout(function () { createShadowSelection(sources, attempt + 1); }, 250);
+        return;
+      }
+      window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: false, unmatched: [{ title: "The question bank could not finish loading." }] }, window.location.origin);
+      return;
+    }
+    var result = findMatches(sources);
+    if (!result || (result.unmatched && result.unmatched.length) || !result.ids || result.ids.length !== sources.length) {
+      if (attempt < 80) {
+        shadowRetryTimer = window.setTimeout(function () { createShadowSelection(sources, attempt + 1); }, 250);
+        return;
+      }
+      window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: false, unmatched: result && result.unmatched || [{ title: "No complete shadow match was found." }] }, window.location.origin);
+      return;
+    }
+    selected = new Set(result.ids.map(String));
+    configs = {};
+    summaries = {};
+    Array.from(selected).forEach(function (id) {
+      configs[id] = defaultConfig(id);
+      summaries[id] = questionSummary(id);
+    });
+    document.querySelectorAll(".qb-card").forEach(function (card) {
+      var id = String(card.dataset.id || "");
+      var isSelected = selected.has(id);
+      var checkbox = card.querySelector(".qb-assignment-select input[type=checkbox]");
+      var copy = card.querySelector(".qb-assignment-select span");
+      if (checkbox) checkbox.checked = isSelected;
+      if (copy) copy.textContent = isSelected ? "Selected for assignment" : "Add to assignment";
+      card.classList.toggle("qb-assignment-selected", isSelected);
+    });
+    updateBulkControl();
+    publish();
+    window.parent.postMessage({ type: "mrflynnib-assignment-shadow-result", complete: true, matches: result.matches || [], fallbacks: Number(result.fallbacks) || 0 }, window.location.origin);
   }
 
   function plainText(value) {
@@ -362,75 +399,106 @@
     };
   }
 
-  function answerEditor(id) {
-    if (!configs[id] || configs[id].provisional) configs[id] = defaultConfig(id);
-    var config = configs[id];
-    var panel = document.createElement("div");
-    panel.className = "qb-assignment-answer";
-    panel.hidden = !selected.has(id);
-    var heading = document.createElement("strong");
-    heading.textContent = "Student answer format";
-    var methodCopy = document.createElement("small");
-    methodCopy.className = "qb-answer-method-copy";
-    var fields = document.createElement("div");
-    fields.className = "qb-answer-fields";
-    panel.appendChild(heading); panel.appendChild(methodCopy); panel.appendChild(fields);
-
-    function renderFields() {
-      fields.innerHTML = "";
-      if (config.type === "multiple_choice") {
-        methodCopy.textContent = "Students choose from one correct answer and four plausible alternatives. Choices are shuffled for each student.";
-        fields.appendChild(choicePreview(config.options, config.correctOption));
-      } else if (config.type === "multipart") {
-        methodCopy.textContent = "Each part is answered separately. Explanations use full-statement choices. Only drawing, diagram and show-or-prove parts use working on whiteboard or paper.";
-        var partList = document.createElement("div"); partList.className = "qb-answer-part-list";
-        config.parts.forEach(function (part) {
-          var partRow = document.createElement("div"); partRow.className = "qb-answer-part-row";
-          var partLabel = document.createElement("strong"); partLabel.textContent = part.label === "answer" ? "Answer" : "(" + part.label.replace("(", ")(") + ")";
-          var partDetail = document.createElement("div");
-          if (part.mode === "multiple_choice") {
-            partDetail.appendChild(choicePreview(part.options, part.correctOption));
-          } else {
-            var whiteboard = document.createElement("span"); whiteboard.className = "qb-answer-review-note"; whiteboard.textContent = "Student confirms this part is completed on the whiteboard or paper."; partDetail.appendChild(whiteboard);
-          }
-          partRow.appendChild(partLabel); partRow.appendChild(partDetail); partList.appendChild(partRow);
-        });
-        fields.appendChild(partList);
-      } else {
-        methodCopy.textContent = "";
-        var whiteboard = document.createElement("span");
-        whiteboard.className = "qb-answer-review-note";
-        whiteboard.textContent = "Student confirms this question is completed on the whiteboard or paper.";
-        fields.appendChild(whiteboard);
-      }
-    }
-
-    function choicePreview(options, correctOption) {
-      var list = document.createElement("div"); list.className = "qb-answer-choice-list";
-      (Array.isArray(options) ? options : []).forEach(function (option, index) {
-        var row = document.createElement("div"); row.className = "qb-answer-choice" + (index === correctOption ? " is-correct" : "");
-        var text = document.createElement("span");
-        if (choiceUtils && choiceUtils.renderAnswer) choiceUtils.renderAnswer(text, option);
-        else text.textContent = option;
-        row.appendChild(text);
-        if (index === correctOption) { var badge = document.createElement("small"); badge.textContent = "Correct"; row.appendChild(badge); }
-        list.appendChild(row);
-      });
-      return list;
-    }
-    renderFields();
-    return panel;
-  }
-
-  function showLimit() {
+  function showNotice(message) {
     var existing = document.querySelector(".qb-assignment-limit");
     if (existing) existing.remove();
     var notice = document.createElement("div");
     notice.className = "qb-assignment-limit";
     notice.setAttribute("role", "status");
-    notice.textContent = "You can select up to 100 questions.";
+    notice.textContent = message;
     document.body.appendChild(notice);
     window.setTimeout(function () { notice.remove(); }, 2600);
+  }
+
+  function showLimit() {
+    showNotice("You can select up to 100 questions.");
+  }
+
+  function filteredQuestionIds() {
+    var getIds = window.mrflynnibFilteredQuestionIds;
+    return typeof getIds === "function" ? getIds().map(String).filter(Boolean) : [];
+  }
+
+  function syncRenderedCards() {
+    document.querySelectorAll(".qb-card").forEach(function (card) {
+      var id = String(card.dataset.id || "");
+      var isSelected = selected.has(id);
+      var checkbox = card.querySelector(".qb-assignment-select input[type=checkbox]");
+      var copy = card.querySelector(".qb-assignment-select span");
+      if (checkbox) checkbox.checked = isSelected;
+      if (copy) copy.textContent = isSelected ? "Selected for assignment" : "Add to assignment";
+      card.classList.toggle("qb-assignment-selected", isSelected);
+    });
+  }
+
+  var bulkControl = null;
+  var bulkButton = null;
+  var bulkHeading = null;
+  var bulkDetail = null;
+
+  function updateBulkControl() {
+    if (!bulkControl) return;
+    var subtopicSelect = document.getElementById("qb-subtopic");
+    var subtopic = subtopicSelect ? String(subtopicSelect.value || "") : "";
+    var ids = subtopic ? filteredQuestionIds() : [];
+    var unselectedCount = ids.filter(function (id) { return !selected.has(id); }).length;
+    var remaining = Math.max(0, MAX_SELECTED - selected.size);
+    bulkControl.hidden = !subtopic;
+    if (!subtopic) return;
+    bulkHeading.textContent = subtopic;
+    if (!ids.length) {
+      bulkDetail.textContent = "No questions match the other filters currently selected.";
+      bulkButton.textContent = "No questions to add";
+      bulkButton.disabled = true;
+      return;
+    }
+    bulkDetail.textContent = ids.length + (ids.length === 1 ? " question matches" : " questions match") + " the filters above.";
+    bulkButton.textContent = !remaining && unselectedCount ? "100-question limit reached" : unselectedCount ? "Select all " + ids.length : "All " + ids.length + " selected";
+    bulkButton.disabled = unselectedCount === 0 || remaining === 0;
+  }
+
+  function installBulkControl() {
+    var controls = document.getElementById("qb-controls");
+    if (!controls || document.querySelector(".qb-assignment-bulk")) return;
+    bulkControl = document.createElement("div");
+    bulkControl.className = "qb-assignment-bulk";
+    bulkControl.hidden = true;
+    var copy = document.createElement("div");
+    copy.className = "qb-assignment-bulk-copy";
+    bulkHeading = document.createElement("strong");
+    bulkDetail = document.createElement("span");
+    copy.appendChild(bulkHeading);
+    copy.appendChild(bulkDetail);
+    bulkButton = document.createElement("button");
+    bulkButton.type = "button";
+    bulkButton.addEventListener("click", function () {
+      var ids = filteredQuestionIds();
+      var available = ids.filter(function (id) { return !selected.has(id); });
+      var remaining = Math.max(0, MAX_SELECTED - selected.size);
+      var additions = available.slice(0, remaining);
+      additions.forEach(function (id) {
+        selected.add(id);
+        configs[id] = defaultConfig(id);
+        summaries[id] = questionSummary(id);
+      });
+      syncRenderedCards();
+      publish();
+      updateBulkControl();
+      if (available.length > additions.length) {
+        showNotice("Added " + additions.length + " questions. Assignments can contain up to 100 questions.");
+      }
+    });
+    bulkControl.appendChild(copy);
+    bulkControl.appendChild(bulkButton);
+    controls.insertAdjacentElement("afterend", bulkControl);
+    ["qb-search", "qb-section", "qb-topic", "qb-subtopic", "qb-difficulty", "qb-papernum", "qb-only"].forEach(function (id) {
+      var input = document.getElementById(id);
+      if (!input) return;
+      var refresh = function () { window.setTimeout(updateBulkControl, 0); };
+      input.addEventListener("input", refresh);
+      input.addEventListener("change", refresh);
+    });
+    updateBulkControl();
   }
 
   function decorate(card) {
@@ -449,8 +517,6 @@
     label.appendChild(checkbox);
     label.appendChild(copy);
     card.insertBefore(label, card.firstChild);
-    var editor = answerEditor(id);
-    label.insertAdjacentElement("afterend", editor);
     card.classList.toggle("qb-assignment-selected", checkbox.checked);
 
     checkbox.addEventListener("change", function () {
@@ -463,8 +529,8 @@
       else selected.delete(id);
       copy.textContent = checkbox.checked ? "Selected for assignment" : "Add to assignment";
       card.classList.toggle("qb-assignment-selected", checkbox.checked);
-      editor.hidden = !checkbox.checked;
       publish();
+      updateBulkControl();
     });
   }
 
@@ -475,6 +541,7 @@
 
   var list = document.getElementById("qb-list");
   if (list) new MutationObserver(decorateAll).observe(list, { childList: true, subtree: true });
+  installBulkControl();
   decorateAll();
   publish();
 })();

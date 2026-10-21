@@ -106,6 +106,28 @@ create table if not exists public.assignments (
   updated_at timestamptz not null default now()
 );
 
+-- An assignment with no recipient rows belongs to the whole class. One or more
+-- rows make it a targeted assignment visible only to those current members.
+create table if not exists public.assignment_recipients (
+  assignment_id uuid not null references public.assignments(id) on delete cascade,
+  student_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (assignment_id, student_id)
+);
+
+create table if not exists public.saved_tests (
+  id uuid primary key default gen_random_uuid(),
+  teacher_id uuid not null references auth.users(id) on delete cascade,
+  title text not null check (char_length(title) between 1 and 100),
+  course text not null check (course in ('AA HL', 'AA SL', 'AI HL', 'AI SL', 'IGCSE Higher')),
+  paper text not null check (paper in ('Paper 1', 'Paper 2', 'Paper 1 and Paper 2')),
+  question_count integer not null check (question_count between 1 and 50),
+  total_marks integer not null check (total_marks between 1 and 1000),
+  payload jsonb not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 alter table public.assignments add column if not exists show_mark_scheme boolean not null default true;
 alter table public.assignments add column if not exists feedback_mode text not null default 'after_question';
 alter table public.assignments drop constraint if exists assignments_feedback_mode_check;
@@ -192,6 +214,8 @@ alter table public.whiteboard_documents enable row level security;
 alter table public.classes enable row level security;
 alter table public.class_memberships enable row level security;
 alter table public.assignments enable row level security;
+alter table public.assignment_recipients enable row level security;
+alter table public.saved_tests enable row level security;
 alter table public.assignment_questions enable row level security;
 alter table public.assignment_answer_keys enable row level security;
 alter table public.assignment_question_progress enable row level security;
@@ -208,6 +232,10 @@ create or replace function public.is_admin(account_id uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = ''
 as $$ select exists (select 1 from public.profiles where user_id = account_id and role = 'admin') $$;
 
+create or replace function public.profile_curriculum(account_id uuid default auth.uid())
+returns text language sql stable security definer set search_path = ''
+as $$ select curriculum from public.profiles where user_id = account_id $$;
+
 create or replace function public.teaches_class(class_uuid uuid, account_id uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = ''
 as $$ select exists (select 1 from public.classes where id = class_uuid and teacher_id = account_id) $$;
@@ -216,13 +244,28 @@ create or replace function public.is_class_member(class_uuid uuid, account_id uu
 returns boolean language sql stable security definer set search_path = ''
 as $$ select exists (select 1 from public.class_memberships where class_id = class_uuid and student_id = account_id) $$;
 
+create or replace function public.is_assignment_recipient(assignment_uuid uuid, account_id uuid default auth.uid())
+returns boolean language sql stable security definer set search_path = ''
+as $$
+  select
+    not exists (select 1 from public.assignment_recipients ar where ar.assignment_id = assignment_uuid)
+    or exists (select 1 from public.assignment_recipients ar where ar.assignment_id = assignment_uuid and ar.student_id = account_id)
+$$;
+
 create or replace function public.can_access_assignment(assignment_uuid uuid, account_id uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = ''
 as $$
   select exists (
     select 1 from public.assignments a
     where a.id = assignment_uuid
-      and (a.teacher_id = account_id or (a.status = 'published' and public.is_class_member(a.class_id, account_id)))
+      and (
+        (a.teacher_id = account_id and public.teaches_class(a.class_id, account_id))
+        or (
+          a.status = 'published'
+          and public.is_class_member(a.class_id, account_id)
+          and public.is_assignment_recipient(a.id, account_id)
+        )
+      )
   )
 $$;
 
@@ -255,9 +298,146 @@ create or replace function public.mark_teacher_notification_sent()
 returns void language sql security definer set search_path = ''
 as $$
   update public.profiles set teacher_notification_sent_at = now(), updated_at = now()
-  where user_id = auth.uid() and teacher_status = 'pending' and teacher_notification_sent_at is null
+  where user_id = auth.uid()
+    and teacher_status in ('pending', 'approved')
+    and teacher_notification_sent_at is null
 $$;
 grant execute on function public.mark_teacher_notification_sent() to authenticated;
+
+drop function if exists public.admin_teacher_accounts();
+create function public.admin_teacher_accounts()
+returns table (
+  user_id uuid,
+  display_name text,
+  email text,
+  curriculum text,
+  role text,
+  teacher_status text,
+  teacher_requested_at timestamptz,
+  teacher_notification_sent_at timestamptz,
+  email_confirmed_at timestamptz,
+  last_sign_in_at timestamptz,
+  created_at timestamptz,
+  class_count bigint,
+  assignment_count bigint,
+  saved_test_count bigint
+)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select
+    p.user_id,
+    p.display_name,
+    coalesce(nullif(p.email, ''), u.email, ''),
+    p.curriculum,
+    p.role,
+    p.teacher_status,
+    p.teacher_requested_at,
+    p.teacher_notification_sent_at,
+    u.email_confirmed_at,
+    u.last_sign_in_at,
+    p.created_at,
+    (select count(*) from public.classes c where c.teacher_id = p.user_id),
+    (select count(*) from public.assignments a where a.teacher_id = p.user_id),
+    (select count(*) from public.saved_tests s where s.teacher_id = p.user_id)
+  from public.profiles p
+  join auth.users u on u.id = p.user_id
+  where public.is_admin()
+    and (p.teacher_status <> 'none' or p.role in ('teacher', 'admin'))
+  order by p.teacher_requested_at desc nulls last, p.created_at desc
+$$;
+revoke all on function public.admin_teacher_accounts() from public;
+grant execute on function public.admin_teacher_accounts() to authenticated;
+
+drop function if exists public.admin_student_accounts();
+create function public.admin_student_accounts()
+returns table (
+  user_id uuid,
+  display_name text,
+  email text,
+  curriculum text,
+  email_confirmed_at timestamptz,
+  last_sign_in_at timestamptz,
+  created_at timestamptz,
+  class_count bigint,
+  completed_question_count bigint,
+  submitted_assignment_count bigint
+)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select
+    p.user_id,
+    p.display_name,
+    coalesce(nullif(p.email, ''), u.email, ''),
+    p.curriculum,
+    u.email_confirmed_at,
+    u.last_sign_in_at,
+    p.created_at,
+    (select count(*) from public.class_memberships cm where cm.student_id = p.user_id),
+    (select count(*) from public.question_progress qp where qp.user_id = p.user_id and qp.completed),
+    (select count(*) from public.assignment_submissions submissions where submissions.student_id = p.user_id and submissions.status = 'submitted')
+  from public.profiles p
+  join auth.users u on u.id = p.user_id
+  where public.is_admin()
+    and p.role = 'student'
+  order by p.created_at desc
+$$;
+revoke all on function public.admin_student_accounts() from public;
+revoke execute on function public.admin_student_accounts() from anon;
+grant execute on function public.admin_student_accounts() to authenticated;
+
+create or replace function public.request_teacher_access()
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  account_role text;
+  request_status text;
+begin
+  if auth.uid() is null then
+    raise exception 'You must be signed in to request teacher access.';
+  end if;
+
+  select role, teacher_status
+  into account_role, request_status
+  from public.profiles
+  where user_id = auth.uid()
+  for update;
+
+  if not found then
+    raise exception 'Your account profile could not be found.';
+  end if;
+
+  if account_role in ('teacher', 'admin') then
+    return 'approved';
+  end if;
+
+  if request_status = 'pending' then
+    return 'pending';
+  end if;
+
+  update public.profiles
+  set teacher_status = 'pending',
+      teacher_requested_at = now(),
+      teacher_notification_sent_at = null,
+      updated_at = now()
+  where user_id = auth.uid()
+    and role = 'student';
+
+  return 'pending';
+end;
+$$;
+
+revoke all on function public.request_teacher_access() from public;
+revoke execute on function public.request_teacher_access() from anon;
+grant execute on function public.request_teacher_access() to authenticated;
 
 drop policy if exists "Students read own profile" on public.profiles;
 create policy "Students read own profile" on public.profiles for select using ((select auth.uid()) = user_id);
@@ -273,22 +453,32 @@ drop policy if exists "Admins update teacher applications" on public.profiles;
 create policy "Admins update teacher applications" on public.profiles for update using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists "Students read own progress" on public.question_progress;
-create policy "Students read own progress" on public.question_progress for select using ((select auth.uid()) = user_id);
+create policy "Students read own progress" on public.question_progress for select
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students insert own progress" on public.question_progress;
-create policy "Students insert own progress" on public.question_progress for insert with check ((select auth.uid()) = user_id);
+create policy "Students insert own progress" on public.question_progress for insert
+  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students update own progress" on public.question_progress;
-create policy "Students update own progress" on public.question_progress for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "Students update own progress" on public.question_progress for update
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()))
+  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students delete own progress" on public.question_progress;
-create policy "Students delete own progress" on public.question_progress for delete using ((select auth.uid()) = user_id);
+create policy "Students delete own progress" on public.question_progress for delete
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 
 drop policy if exists "Students read own whiteboards" on public.whiteboard_documents;
-create policy "Students read own whiteboards" on public.whiteboard_documents for select using ((select auth.uid()) = user_id);
+create policy "Students read own whiteboards" on public.whiteboard_documents for select
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students insert own whiteboards" on public.whiteboard_documents;
-create policy "Students insert own whiteboards" on public.whiteboard_documents for insert with check ((select auth.uid()) = user_id);
+create policy "Students insert own whiteboards" on public.whiteboard_documents for insert
+  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students update own whiteboards" on public.whiteboard_documents;
-create policy "Students update own whiteboards" on public.whiteboard_documents for update using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "Students update own whiteboards" on public.whiteboard_documents for update
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()))
+  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 drop policy if exists "Students delete own whiteboards" on public.whiteboard_documents;
-create policy "Students delete own whiteboards" on public.whiteboard_documents for delete using ((select auth.uid()) = user_id);
+create policy "Students delete own whiteboards" on public.whiteboard_documents for delete
+  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
 
 drop policy if exists "Teachers read assigned whiteboards" on public.whiteboard_documents;
 create policy "Teachers read assigned whiteboards" on public.whiteboard_documents for select using (
@@ -298,6 +488,7 @@ create policy "Teachers read assigned whiteboards" on public.whiteboard_document
     where aq.bank = whiteboard_documents.bank and aq.question_id = whiteboard_documents.question_id
       and a.teacher_id = (select auth.uid())
       and public.is_class_member(a.class_id, whiteboard_documents.user_id)
+      and public.is_assignment_recipient(a.id, whiteboard_documents.user_id)
   )
 );
 
@@ -313,8 +504,20 @@ create policy "Students read own memberships" on public.class_memberships for se
 
 drop policy if exists "Teachers manage own assignments" on public.assignments;
 create policy "Teachers manage own assignments" on public.assignments for all using (teacher_id = (select auth.uid()) and public.teaches_class(class_id)) with check (teacher_id = (select auth.uid()) and public.teaches_class(class_id));
+drop policy if exists "Teachers manage own saved tests" on public.saved_tests;
+create policy "Teachers manage own saved tests" on public.saved_tests for all using (teacher_id = (select auth.uid()) and public.is_teacher()) with check (teacher_id = (select auth.uid()) and public.is_teacher());
 drop policy if exists "Students read class assignments" on public.assignments;
-create policy "Students read class assignments" on public.assignments for select using (status = 'published' and public.is_class_member(class_id));
+create policy "Students read class assignments" on public.assignments for select using (
+  status = 'published' and public.is_class_member(class_id) and public.is_assignment_recipient(id)
+);
+
+drop policy if exists "Teachers manage assignment recipients" on public.assignment_recipients;
+create policy "Teachers manage assignment recipients" on public.assignment_recipients for all
+  using (exists (select 1 from public.assignments a where a.id = assignment_recipients.assignment_id and a.teacher_id = (select auth.uid()) and public.teaches_class(a.class_id)))
+  with check (exists (select 1 from public.assignments a where a.id = assignment_recipients.assignment_id and a.teacher_id = (select auth.uid()) and public.teaches_class(a.class_id)));
+drop policy if exists "Students read own assignment recipients" on public.assignment_recipients;
+create policy "Students read own assignment recipients" on public.assignment_recipients for select
+  using (student_id = (select auth.uid()));
 
 drop policy if exists "Teachers manage assignment questions" on public.assignment_questions;
 create policy "Teachers manage assignment questions" on public.assignment_questions for all using (public.can_access_assignment(assignment_id) and public.is_teacher()) with check (public.can_access_assignment(assignment_id) and public.is_teacher());
@@ -344,6 +547,8 @@ create index if not exists whiteboard_documents_user_updated_idx on public.white
 create index if not exists classes_teacher_idx on public.classes (teacher_id, archived);
 create index if not exists class_memberships_student_idx on public.class_memberships (student_id);
 create index if not exists assignments_class_idx on public.assignments (class_id, created_at desc);
+create index if not exists assignment_recipients_student_idx on public.assignment_recipients (student_id, assignment_id);
+create index if not exists saved_tests_teacher_updated_idx on public.saved_tests (teacher_id, updated_at desc);
 create index if not exists assignment_progress_assignment_idx on public.assignment_question_progress (assignment_id, student_id);
 create index if not exists assignment_responses_assignment_idx on public.assignment_responses (assignment_id, student_id);
 

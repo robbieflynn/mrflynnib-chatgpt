@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui";
-import { getQuestionBankDashboardLink } from "@/lib/question-bank-dashboard-link";
 
 export const metadata: Metadata = {
   title: { default: "IGCSE Mathematics", template: "%s | Mr Flynn IB" },
@@ -15,10 +14,7 @@ const links = [
   { href: "/igcse/tutoring", label: "Tutoring" },
 ] as const;
 
-export default async function IgcseLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const dashboardLink = await getQuestionBankDashboardLink({ curriculum: "igcse" });
-  const questionBankHref = dashboardLink.signedIn ? dashboardLink.href : "/igcse/question-bank";
-
+export default function IgcseLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="igcse-site">
       <nav className="igcse-section-nav" aria-label="IGCSE Mathematics navigation">
@@ -26,7 +22,7 @@ export default async function IgcseLayout({ children }: Readonly<{ children: Rea
           <Link className="igcse-section-brand" href="/igcse"><span>Mr Flynn IB</span><strong>IGCSE Mathematics</strong></Link>
           <div className="igcse-section-links">
             {links.map((link) => (
-              <Link href={link.label === "Question bank" ? questionBankHref : link.href} key={link.href}>
+              <Link href={link.href} key={link.href}>
                 {link.label}
               </Link>
             ))}

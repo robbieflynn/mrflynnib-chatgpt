@@ -3,6 +3,38 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireSignedIn } from "@/lib/account-access";
+import { sendTeacherApplicationEmail } from "@/lib/teacher-application-email";
+
+export async function requestTeacherAccess() {
+  const { supabase, user } = await requireSignedIn("/account");
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("display_name,curriculum,role,teacher_status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const accountPath = profile?.curriculum === "igcse" ? "/igcse/account" : "/account";
+
+  if (profile?.role === "teacher" || profile?.role === "admin") {
+    redirect(profile.curriculum === "igcse" ? "/igcse/teacher" : "/teacher");
+  }
+  if (profile?.teacher_status === "pending") redirect(`${accountPath}?teacher=requested`);
+
+  const { data: status, error } = await supabase.rpc("request_teacher_access");
+  if (error || status !== "pending") {
+    redirect(`${accountPath}?teacher=approval-required&error=${encodeURIComponent("Your teacher access request could not be sent. Please try again.")}`);
+  }
+
+  if (user.email) {
+    const sent = await sendTeacherApplicationEmail({ name: profile?.display_name || "", email: user.email });
+    if (sent) await supabase.rpc("mark_teacher_notification_sent");
+  }
+
+  revalidatePath("/account");
+  revalidatePath("/igcse/account");
+  revalidatePath("/teacher");
+  revalidatePath("/teacher/accounts");
+  redirect(`${accountPath}?teacher=requested`);
+}
 
 export async function joinClass(formData: FormData) {
   const { supabase } = await requireSignedIn();
