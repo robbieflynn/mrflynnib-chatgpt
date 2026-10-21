@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T05:44:24.474Z",
+  "generatedAt": "2026-10-21T06:03:53.623Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 487,
-  "completeLessonCount": 455,
-  "approvedSingleLessonCount": 27,
-  "questionCount": 952,
+  "completeLessonCount": 457,
+  "approvedSingleLessonCount": 25,
+  "questionCount": 954,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -5042,16 +5042,15 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Chi-squared test – Independence",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M23TZ1AIHL_P2_Q5"
+        "W_N22TZ0AIHL_P3_Q1"
       ],
       "questionParts": {
-        "W_M23TZ1AIHL_P2_Q5": [
-          "c",
+        "W_N22TZ0AIHL_P3_Q1": [
           "d"
         ]
       },
       "questionPartTitles": {
-        "W_M23TZ1AIHL_P2_Q5": "Identify low expected frequencies before a chi-squared test"
+        "W_N22TZ0AIHL_P3_Q1": "Carry out a chi-squared goodness-of-fit test after combining categories"
       }
     },
     "53bbfe46-4d98-4159-b2df-eeea60362499": {
@@ -5060,7 +5059,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Chi-squared test – Independence",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "MF_AIHL_T4_CHI_SQUARED_DF"
+        "MF_AIHL_T4_CHI_SQUARED_DF",
+        "MF_AIHL_T4_NORMAL_GOF_DF"
       ]
     },
     "5da6d7d3-b205-4517-84f0-ab24321a3be3": {
@@ -5089,6 +5089,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Sum of square residuals and R²",
       "bankPath": "ib-bank.html",
       "questionIds": [
+        "MF_AIHL_T4_COEFFICIENT_DETERMINATION",
         "W_M23TZ2AIHL_P1_Q9"
       ],
       "questionParts": {
@@ -5212,7 +5213,13 @@ window.MR_FLYNN_PRACTICE = {
       "questionIds": [
         "H_N19TZ0HL_P3S_Q3",
         "W_M24TZ1AIHL_P2_Q6"
-      ]
+      ],
+      "questionParts": {
+        "H_N19TZ0HL_P3S_Q3": [
+          "a",
+          "b"
+        ]
+      }
     },
     "1b5161c6-1227-4018-84fc-ab50132be01b": {
       "lesson": "4.16.1 Confidence intervals (known variance)",
@@ -5239,8 +5246,11 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "W_SPECAIHL_P1_Q9",
-        "W_M21TZ2AIHL_P1_Q10"
-      ]
+        "W_M23TZ2AIHL_P1_Q15"
+      ],
+      "questionPartTitles": {
+        "W_M23TZ2AIHL_P1_Q15": "Calculate a confidence interval for an unknown variance from raw sample data"
+      }
     },
     "a864173f-9449-4675-bcaf-44ecc16cd9d4": {
       "lesson": "4.17 Poisson distribution",
@@ -5446,7 +5456,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "W_M23TZ2AIHL_P2_Q5",
-        "W_M25TZ3AIHL_P1_Q15"
+        "MF_AIHL_T4_LONG_TERM_PROBABILITY"
       ],
       "questionParts": {
         "W_M23TZ2AIHL_P2_Q5": [

@@ -409,6 +409,42 @@ const authoredPractice = [
     markscheme: [["a", [["\\(H_0:\\mu=500\\)", "A1"], ["\\(H_1:\\mu<500\\)", "A1"]]], ["b", [["uses a one-sample \\(t\\)-test", "M1"], ["\\(t=-2.05\\) and \\(p\\approx0.0326\\)", "A1A1"], ["reject \\(H_0\\); there is evidence that the population mean lifetime is less than \\(500\\) cycles", "R1"]]]],
   }),
   authoredAiHlQuestion({
+    id: "MF_AIHL_T4_NORMAL_GOF_DF",
+    qnum: 42,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Normal goodness of fit with two estimated parameters",
+    main: "Statistics and Probability",
+    sub: "Chi-squared test – Goodness of fit",
+    body: "A chi-squared goodness-of-fit test is used to test whether a data set can be modelled by a normal distribution. After combining categories with small expected frequencies, there are seven categories. The mean and standard deviation of the normal distribution are both estimated from the sample. The test statistic is \\(\\chi^2=10.4\\).",
+    parts: [["a", "Find the number of degrees of freedom for the test.", 2], ["b", "Find the p-value and state the conclusion at the \\(5\\%\\) significance level.", 3]],
+    markscheme: [["a", [["\\(7-1-2\\)", "M1"], ["\\(4\\) degrees of freedom", "A1"]]], ["b", [["\\(p=P(\\chi_4^2\\geq10.4)\\approx0.0342\\)", "M1A1"], ["reject the null hypothesis; there is evidence that the normal model is not a good fit", "R1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T4_COEFFICIENT_DETERMINATION",
+    qnum: 43,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Calculate and interpret a coefficient of determination",
+    main: "Statistics and Probability",
+    sub: "Sum of square residuals and R²",
+    body: "For a set of paired data, the product moment correlation coefficient is \\(r=-0.92\\).",
+    parts: [["a", "Calculate the coefficient of determination.", 2], ["b", "Interpret your answer in the context of a linear model.", 2]],
+    markscheme: [["a", [["\\(r^2=(-0.92)^2\\)", "M1"], ["\\(r^2=0.8464\\)", "A1"]]], ["b", [["about \\(84.6\\%\\) of the variation in the dependent variable", "A1"], ["is explained by its linear relationship with the independent variable", "R1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T4_LONG_TERM_PROBABILITY",
+    qnum: 44,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Find a long-term probability from a transition matrix",
+    main: "Statistics and Probability",
+    sub: "Markov chains and transition matrices",
+    body: "Each day a student travels to school by bus, \\(B\\), or by car, \\(C\\). The transition matrix is \\(T=\\begin{pmatrix}0.7&0.4\\\\0.3&0.6\\end{pmatrix}\\), where the state vector is ordered \\(B,C\\).",
+    parts: [["a", "Find the steady-state probability vector.", 3], ["b", "Hence state the long-term probability that the student travels by bus.", 2]],
+    markscheme: [["a", [["solves \\(T\\begin{pmatrix}b\\\\c\\end{pmatrix}=\\begin{pmatrix}b\\\\c\\end{pmatrix}\\) together with \\(b+c=1\\)", "M1"], ["\\(0.3b=0.4c\\)", "A1"], ["\\(\\begin{pmatrix}4/7\\\\3/7\\end{pmatrix}\\)", "A1"]]], ["b", [["the long-term probability is the bus component of the steady-state vector", "R1"], ["\\(4/7\\approx0.571\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
     id: "MF_AIHL_T5_BASIC_DERIVATIVES_1",
     qnum: 27,
     marks: 4,
@@ -1286,7 +1322,7 @@ const verifiedOverrides = {
   "522e01c2-0046-41ec-b4cd-1b9a7e89e70b": ["W_N22TZ0AIHL_P1_Q12", "W_SPECAIHL_P1_Q15X1"],
   // Free the explicit D^n question for Powers of matrices and keep the steady
   // state lesson focused on solving for and interpreting a long-run state.
-  "aacabb23-fe64-4316-bbf5-d1737b8fbad8": ["W_M23TZ2AIHL_P2_Q5", "W_M25TZ3AIHL_P1_Q15"],
+  "aacabb23-fe64-4316-bbf5-d1737b8fbad8": ["W_M23TZ2AIHL_P2_Q5", "MF_AIHL_T4_LONG_TERM_PROBABILITY"],
 
   "120456b0-8e18-4d3b-9fcc-9765286afe78": ["N13TZ0AISL_P1_Q13", "V_M25TZ3AISL_P1_Q11"],
   "35b51817-4a71-4b1b-9c57-056e58fe4a94": ["V_M24TZ1AISL_P1_Q5", "V_N24TZ1AISL_P1_Q10"],
@@ -1406,19 +1442,16 @@ const verifiedOverrides = {
   // Keep the contextual cooling model first, then use a full regression task
   // in which students calculate r, find the regression line and predict.
   "6280cb5e-91bd-4761-b655-6b88addc1345": ["M17TZ1SL_P1_Q4", "N14TZ0SL_P2_Q2"],
-  // This exact extract explicitly explains why low expected frequencies must
-  // be combined before a chi-squared goodness-of-fit test. The other exact
-  // source in the archive is not an approved active-bank record, so one
-  // verified question is better than padding this lesson with the wrong task.
-  "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d": ["W_M23TZ1AIHL_P2_Q5"],
-  "53bbfe46-4d98-4159-b2df-eeea60362499": ["MF_AIHL_T4_CHI_SQUARED_DF"],
+  // Use a chi-squared test in which categories are explicitly combined; the
+  // previous source was a Poisson test rather than the skill taught here.
+  "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d": ["W_N22TZ0AIHL_P3_Q1"],
+  "53bbfe46-4d98-4159-b2df-eeea60362499": ["MF_AIHL_T4_CHI_SQUARED_DF", "MF_AIHL_T4_NORMAL_GOF_DF"],
   // These two current mappings already satisfy Rob's newer feedback: the
   // second regression is a power model, and the second residual question
   // calculates and compares SSR for two models. Pin them to prevent reshuffle.
   "5da6d7d3-b205-4517-84f0-ab24321a3be3": ["W_N22TZ0AIHL_P1_Q11", "W_N23TZ0AIHL_P1_Q10"],
   "876ad43a-c778-48f2-8c79-8a3d409cfd41": ["W_SPECAIHL_P1_Q12", "W_M23TZ1AIHL_P1_Q16"],
-  // The verified bank has one exact calculation-and-interpretation R² item.
-  "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": ["W_M23TZ2AIHL_P1_Q9"],
+  "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": ["MF_AIHL_T4_COEFFICIENT_DETERMINATION", "W_M23TZ2AIHL_P1_Q9"],
   // Keep transformations of one variable separate from combinations of
   // several independent variables.
   "bb113001-688d-4876-91d0-208f1fdaa532": ["W_M24TZ1AIHL_P1_Q3", "M19TZ2SL_P1_Q8A"],
@@ -1426,11 +1459,14 @@ const verifiedOverrides = {
   // Keep Rob-approved Question 1. Replace the mixed Poisson source with the
   // self-contained sample-mean part of an unused normal-distribution question.
   "cde690c1-93a1-4385-b6cd-a31e4a885a7f": ["H_M17TZ0HL_P3S_Q2X1", "W_M22TZ1AIHL_P1_Q9"],
+  // Keep the central-limit calculation but stop before the later hypothesis-
+  // testing errors part.
+  "ff885118-b462-40ee-aeb4-e522eee399a8": ["H_N19TZ0HL_P3S_Q3", "W_M24TZ1AIHL_P2_Q6"],
   // Keep the two confidence-interval methods separate. Known variance uses a
   // stated population standard deviation; unknown variance estimates it from
   // the sample before forming the interval.
   "1b5161c6-1227-4018-84fc-ab50132be01b": ["H_N15TZ0HL_P3S_Q1X1", "H_M15TZ0HL_P3S_Q3"],
-  "860ba46c-0af6-4351-a3fd-6ea5fd09c3b4": ["W_SPECAIHL_P1_Q9", "W_M21TZ2AIHL_P1_Q10"],
+  "860ba46c-0af6-4351-a3fd-6ea5fd09c3b4": ["W_SPECAIHL_P1_Q9", "W_M23TZ2AIHL_P1_Q15"],
   // AI HL hypothesis-testing and Markov-chain close-out. Poisson-mean
   // practice must be an actual hypothesis test, correlation tests must state
   // hypotheses in terms of rho, and the three error lessons stay separated
@@ -1558,9 +1594,7 @@ const intentionallySinglePractice = new Set([
   "0e81f809-f846-4459-bcca-fb84c32fb263", // AI HL: one direct non-vector trig-equation source
   "4ca8f2d8-76d2-4e10-a48e-04d8a8d4eca3", // AI HL: Graph routes
   "3cffb57c-653d-45a2-9983-68b1016b23e4", // AI HL: Prim's algorithm with adjacency table
-  "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb", // AI HL: Coefficient of determination
   "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d", // AI HL: Chi-squared categorising data
-  "53bbfe46-4d98-4159-b2df-eeea60362499", // AI HL: Chi-squared degrees of freedom
   "36efc894-0227-4bab-99f6-2f85cd8c9706", // AI HL: Z-test two tailed (one exact known-variance source)
   "fb36af72-faa4-4e66-bf8d-099bc54e766a", // AI HL: Binomial errors (one source containing both error types)
   "d477bd69-e3be-4201-b8f0-2ba436cc3f6e", // AI HL: Phase portrait source
@@ -1939,10 +1973,13 @@ const practicePartOverrides = {
     "M14TZ2HL_P1_Q1": ["a", "b"],
   },
   "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d": {
-    "W_M23TZ1AIHL_P2_Q5": ["c", "d"],
+    "W_N22TZ0AIHL_P3_Q1": ["d"],
   },
   "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": {
     "W_M23TZ2AIHL_P1_Q9": ["e"],
+  },
+  "ff885118-b462-40ee-aeb4-e522eee399a8": {
+    "H_N19TZ0HL_P3S_Q3": ["a", "b"],
   },
   "bb113001-688d-4876-91d0-208f1fdaa532": {
     "W_M24TZ1AIHL_P1_Q3": ["b"],
@@ -2717,7 +2754,7 @@ const practicePartTitles = {
     "M14TZ2HL_P1_Q1": "Calculate an intersection and a union",
   },
   "8d2b60b3-ccaa-41cf-afa7-f6415e4ea05d": {
-    "W_M23TZ1AIHL_P2_Q5": "Identify low expected frequencies before a chi-squared test",
+    "W_N22TZ0AIHL_P3_Q1": "Carry out a chi-squared goodness-of-fit test after combining categories",
   },
   "5f9a2474-cb2a-40b8-b8a4-77bd1b8189fb": {
     "W_M23TZ2AIHL_P1_Q9": "Calculate and interpret the coefficient of determination",
@@ -3003,6 +3040,9 @@ const practicePartTitles = {
   },
   "1b5161c6-1227-4018-84fc-ab50132be01b": {
     "H_M15TZ0HL_P3S_Q3": "Calculate a confidence interval with known standard deviation",
+  },
+  "860ba46c-0af6-4351-a3fd-6ea5fd09c3b4": {
+    "W_M23TZ2AIHL_P1_Q15": "Calculate a confidence interval for an unknown variance from raw sample data",
   },
   "e98579d2-83b7-4dab-ab62-427fd2e8165e": {
     "V_N23TZ1AISL_P1_Q3": "Find where a function is increasing",
@@ -3858,6 +3898,8 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["N10TZ0SL_P1_Q9", "W_M25TZ1AIHL_P1_Q6"].includes(question.id)) return true;
   if (/^piecewise functions$/.test(lessonTitle)
     && ["W_N24TZ0AIHL_P1_Q6", "W_N23TZ0AIHL_P1_Q2"].includes(question.id)) return true;
+  if (/confidence intervals unknown variance/.test(lessonTitle)
+    && question.id === "W_M23TZ2AIHL_P1_Q15") return true;
   if (/^scaling with logs$/.test(lessonTitle)
     && ["W_N22TZ0AIHL_P1_Q13", "W_M22TZ2AIHL_P2_Q4"].includes(question.id)) return true;
   // Final AI Topic 1 review: these exact rendered extracts were selected for

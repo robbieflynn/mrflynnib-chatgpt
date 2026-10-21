@@ -354,10 +354,41 @@ AI HL,2026-10-21,4.7,Discrete random variables,approved,N12TZ0SL_P1_Q2A|N20TZ0HL
 AI HL,2026-10-21,4.8,Binomial distribution,approved,V_M25TZ1AISL_P1_Q7|M12TZ2HL_P2_Q2,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.9,Normal distribution,approved,M13TZ2SL_P2_Q2|M13TZ2HL_P2_Q3,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.10,Spearman's rank correlation coefficient,approved,V_M23TZ1AISL_P1_Q1|V_M25TZ2AISL_P1_Q10,Locked from Rob's Topic 4 review
-AI HL,2026-10-20,4.12.4,Chi squared (degrees of freedom),awaiting-recheck,MF_AIHL_T4_CHI_SQUARED_DF,Added the exact k minus 1 minus 2 calculation after estimating mean and standard deviation
-AI HL,2026-10-20,4.13.2,Sum of square residuals,awaiting-recheck,W_SPECAIHL_P1_Q12|W_M23TZ1AIHL_P1_Q16,Reordered the medium question before the difficult question
-AI HL,2026-10-20,4.18.3,T-test,awaiting-recheck,MF_AIHL_T4_ONE_SAMPLE_T_TEST|W_N24TZ0AIHL_P1_Q9X1,Replaced the unrelated mean and median card with a genuine one-sample t-test
-AI HL,2026-10-20,4.19.3,Steady state and long term probabilities,awaiting-recheck,W_M23TZ2AIHL_P2_Q5|W_M25TZ3AIHL_P1_Q15,Reordered the medium question before the difficult question
+AI HL,2026-10-21,4.11.1,Chi squared intro,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,4.11.2,Chi squared test for independence,approved,V_M24TZ2AISL_P1_Q3|V_M23TZ2AISL_P1_Q6,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.11.3,Chi squared goodness of fit,approved,V_M22TZ1AISL_P1_Q7|V_M21TZ2AISL_P1_Q11,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.11.4,T-test,approved,V_M21TZ2AISL_P1_Q8|V_M21TZ1AISL_P1_Q6,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.12.1,Surveys and questionnaires,approved-no-practice,,Rob confirmed this lesson should remain blank
+AI HL,2026-10-21,4.12.2,Reliability v validity,approved-no-practice,,Rob confirmed this lesson should remain blank
+AI HL,2026-10-21,4.12.3,Chi squared (categorising data),awaiting-recheck,W_N22TZ0AIHL_P3_Q1,Replaced the Poisson question with a chi-squared goodness-of-fit test that combines categories
+AI HL,2026-10-21,4.12.4,Chi squared (degrees of freedom),awaiting-recheck,MF_AIHL_T4_CHI_SQUARED_DF|MF_AIHL_T4_NORMAL_GOF_DF,Kept question 1 and added a normal goodness-of-fit question with mean and standard deviation estimated
+AI HL,2026-10-21,4.13.1,Non linear regression,approved,W_N22TZ0AIHL_P1_Q11|W_N23TZ0AIHL_P1_Q10,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.13.2,Sum of square residuals,approved,W_SPECAIHL_P1_Q12|W_M23TZ1AIHL_P1_Q16,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.13.3,The coefficient of determination,awaiting-recheck,MF_AIHL_T4_COEFFICIENT_DETERMINATION|W_M23TZ2AIHL_P1_Q9,Added a direct coefficient-of-determination calculation and interpretation question
+AI HL,2026-10-21,4.14.1,Linear transformations of X,approved,W_M24TZ1AIHL_P1_Q3|M19TZ2SL_P1_Q8A,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.14.2,Linear combinations of n random variables,approved,H_N18TZ0HL_P3S_Q1|W_M23TZ1AIHL_P1_Q11,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.14.3,Unbiased estimates for the mean and variance,approved,H_N17TZ0HL_P3S_Q2|H_M17TZ0HL_P3S_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.14.4,Unbiased estimates example questions,approved,H_M15TZ0HL_P3S_Q2|H_N18TZ0HL_P3S_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.15.1,Linear combination of n independent normal random variables,approved,H_M19TZ0HL_P3S_Q2X1|W_N24TZ0AIHL_P1_Q15,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.15.2,Normal distribution sampling,approved,H_M17TZ0HL_P3S_Q2X1|W_M22TZ1AIHL_P1_Q9,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.15.3,The central limit theorem,awaiting-recheck,H_N19TZ0HL_P3S_Q3|W_M24TZ1AIHL_P2_Q6,Removed part C about errors from question 1 and retained the central-limit parts only
+AI HL,2026-10-21,4.16.1,Confidence intervals (known variance),approved,H_N15TZ0HL_P3S_Q1X1|H_M15TZ0HL_P3S_Q3,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.16.2,Confidence intervals (unknown variance),awaiting-recheck,W_SPECAIHL_P1_Q9|W_M23TZ2AIHL_P1_Q15,Replaced question 2 with a confidence interval calculated from eight raw data values
+AI HL,2026-10-21,4.17,Poisson distribution,approved,W_M21TZ1AIHL_P1_Q1|W_M24TZ2AIHL_P1_Q9,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.1,Z-test one tailed,approved,H_M19TZ0HL_P3S_Q3|H_N14TZ0HL_P3S_Q5,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.2,Z-test two tailed,approved-single,H_M18TZ0HL_P3S_Q3,Rob approved the one exact two-tailed Z-test
+AI HL,2026-10-21,4.18.3,T-test,approved,MF_AIHL_T4_ONE_SAMPLE_T_TEST|W_N24TZ0AIHL_P1_Q9X1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.4,Matched pairs,approved,H_M15TZ0HL_P3S_Q2|H_N16TZ0HL_P3S_Q1X1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.5,Testing for population proportion,approved,W_M21TZ1AIHL_P1_Q11|W_N23TZ0AIHL_P2_Q7,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.6,Test for mean using Poisson distribution,approved,W_N21TZ0AIHL_P2_Q7|W_M21TZ2AIHL_P1_Q15,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.7,Testing for correlation,approved,H_N14TZ0HL_P3S_Q3X1|W_M23TZ1AIHL_P1_Q8,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.8,Type I an II errors Intro,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,4.18.9,Normal errors,approved,W_M22TZ2AIHL_P1_Q12|H_N16TZ0HL_P3S_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.10,Poisson errors,approved,W_SPECAIHL_P1_Q16|W_M22TZ1AIHL_P1_Q15,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.18.11,Binomial errors,approved-single,W_N22TZ0AIHL_P1_Q16,Rob approved question 1 and allowed this lesson to remain a single-question set
+AI HL,2026-10-21,4.19.1,Markov chains introduction,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,4.19.2,Transition matrices,approved,W_N21TZ0AIHL_P1_Q9|W_N23TZ0AIHL_P1_Q15,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.19.3,Steady state and long term probabilities,awaiting-recheck,W_M23TZ2AIHL_P2_Q5|MF_AIHL_T4_LONG_TERM_PROBABILITY,Kept question 1 and replaced question 2 with a direct numerical long-term probability question
 AI HL,2026-10-20,5.3.2,Derivative at a point,awaiting-recheck,V_N24TZ2AISL_P1_Q12|V_M22TZ2AISL_P1_Q11,Reordered the accessible gradient question before the harder one
 AI HL,2026-10-20,5.6,Stationary points,awaiting-recheck,N13TZ0AISL_P1_Q9|M14TZ1AISL_P1_Q15,Reordered the easier stationary-point calculation first
 AI HL,2026-10-20,5.9.1,"Derivative of sinx,cosx,lnx,e^x",awaiting-recheck,MF_AIHL_T5_BASIC_DERIVATIVES_1|MF_AIHL_T5_BASIC_DERIVATIVES_2,Added two direct derivatives without later rules

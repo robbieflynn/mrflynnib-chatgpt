@@ -1550,6 +1550,202 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
     ]
   },
   {
+    "id": "MF_AIHL_T4_NORMAL_GOF_DF",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 42,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Normal goodness of fit with two estimated parameters",
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Chi-squared test – Goodness of fit"
+      }
+    ],
+    "body": "A chi-squared goodness-of-fit test is used to test whether a data set can be modelled by a normal distribution. After combining categories with small expected frequencies, there are seven categories. The mean and standard deviation of the normal distribution are both estimated from the sample. The test statistic is \\(\\chi^2=10.4\\).",
+    "parts": [
+      [
+        "a",
+        "Find the number of degrees of freedom for the test.",
+        2
+      ],
+      [
+        "b",
+        "Find the p-value and state the conclusion at the \\(5\\%\\) significance level.",
+        3
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(7-1-2\\)",
+            "M1"
+          ],
+          [
+            "\\(4\\) degrees of freedom",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(p=P(\\chi_4^2\\geq10.4)\\approx0.0342\\)",
+            "M1A1"
+          ],
+          [
+            "reject the null hypothesis; there is evidence that the normal model is not a good fit",
+            "R1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T4_COEFFICIENT_DETERMINATION",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 43,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Calculate and interpret a coefficient of determination",
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Sum of square residuals and R²"
+      }
+    ],
+    "body": "For a set of paired data, the product moment correlation coefficient is \\(r=-0.92\\).",
+    "parts": [
+      [
+        "a",
+        "Calculate the coefficient of determination.",
+        2
+      ],
+      [
+        "b",
+        "Interpret your answer in the context of a linear model.",
+        2
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(r^2=(-0.92)^2\\)",
+            "M1"
+          ],
+          [
+            "\\(r^2=0.8464\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "about \\(84.6\\%\\) of the variation in the dependent variable",
+            "A1"
+          ],
+          [
+            "is explained by its linear relationship with the independent variable",
+            "R1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T4_LONG_TERM_PROBABILITY",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 44,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Find a long-term probability from a transition matrix",
+    "topics": [
+      {
+        "main": "Statistics and Probability",
+        "sub": "Markov chains and transition matrices"
+      }
+    ],
+    "body": "Each day a student travels to school by bus, \\(B\\), or by car, \\(C\\). The transition matrix is \\(T=\\begin{pmatrix}0.7&0.4\\\\0.3&0.6\\end{pmatrix}\\), where the state vector is ordered \\(B,C\\).",
+    "parts": [
+      [
+        "a",
+        "Find the steady-state probability vector.",
+        3
+      ],
+      [
+        "b",
+        "Hence state the long-term probability that the student travels by bus.",
+        2
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "solves \\(T\\begin{pmatrix}b\\\\c\\end{pmatrix}=\\begin{pmatrix}b\\\\c\\end{pmatrix}\\) together with \\(b+c=1\\)",
+            "M1"
+          ],
+          [
+            "\\(0.3b=0.4c\\)",
+            "A1"
+          ],
+          [
+            "\\(\\begin{pmatrix}4/7\\\\3/7\\end{pmatrix}\\)",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "the long-term probability is the bus component of the steady-state vector",
+            "R1"
+          ],
+          [
+            "\\(4/7\\approx0.571\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
     "id": "MF_AIHL_T5_BASIC_DERIVATIVES_1",
     "course": "AI HL",
     "banks": [
