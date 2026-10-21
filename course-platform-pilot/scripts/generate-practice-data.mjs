@@ -1696,6 +1696,7 @@ const intentionallyWithoutPractice = new Set([
 // reappear in the unresolved-gap audit merely because the general house style
 // uses two questions elsewhere.
 const intentionallySinglePractice = new Set([
+  "1f072e71-5da3-475f-9b54-e809a68a893d", // AA HL: Counting principles (one approved product-rule question)
   "b3fee6ec-1511-47bf-9c1b-222d719357f4", // AA HL: Complex numbers introduction
   "d5c720d9-4540-4c45-b822-a0c84764b619", // AA HL: Prove De Moivre by induction
   "35a8aee0-4d48-4084-883f-fc23b5be9039", // AA HL: Vector equation of a plane
@@ -3551,6 +3552,10 @@ for (const lessonId of placements.keys()) {
 // N15TZ0HL_P1_Q5 source. Reserve the original alias to the same lesson so the
 // generator cannot display that question again under its AA identifier.
 reservedQuestionOwners.set("N15TZ0HL_P1_Q5", "99a7ab79-f157-4f85-83f1-52b8368acc0f");
+// This source is an integration and volume-of-revolution question. It was
+// incorrectly auto-filled into Counting Principles and must not migrate into
+// another unrelated lesson when that reviewed slot is reduced to one card.
+reservedQuestionOwners.set("M14TZ1SL_P1_Q3", "__withheld_unrelated_integration_source__");
 
 function canonicalCourse(courses) {
   if (courses.includes("IGCSE Higher")) return "IGCSE Higher";

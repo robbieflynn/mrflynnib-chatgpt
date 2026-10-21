@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T08:22:25.988Z",
+  "generatedAt": "2026-10-21T08:33:36.051Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
-  "completeLessonCount": 459,
-  "approvedSingleLessonCount": 23,
-  "questionCount": 957,
+  "completeLessonCount": 458,
+  "approvedSingleLessonCount": 24,
+  "questionCount": 956,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -1493,8 +1493,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Counting principles",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_N22TZ0HL_P1_Q11",
-        "M14TZ1SL_P1_Q3"
+        "A_N22TZ0HL_P1_Q11"
       ],
       "questionParts": {
         "A_N22TZ0HL_P1_Q11": [
