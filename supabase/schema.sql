@@ -106,6 +106,15 @@ create table if not exists public.assignments (
   updated_at timestamptz not null default now()
 );
 
+-- An assignment with no recipient rows belongs to the whole class. One or more
+-- rows make it a targeted assignment visible only to those current members.
+create table if not exists public.assignment_recipients (
+  assignment_id uuid not null references public.assignments(id) on delete cascade,
+  student_id uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (assignment_id, student_id)
+);
+
 create table if not exists public.saved_tests (
   id uuid primary key default gen_random_uuid(),
   teacher_id uuid not null references auth.users(id) on delete cascade,
@@ -205,6 +214,7 @@ alter table public.whiteboard_documents enable row level security;
 alter table public.classes enable row level security;
 alter table public.class_memberships enable row level security;
 alter table public.assignments enable row level security;
+alter table public.assignment_recipients enable row level security;
 alter table public.saved_tests enable row level security;
 alter table public.assignment_questions enable row level security;
 alter table public.assignment_answer_keys enable row level security;
@@ -234,13 +244,28 @@ create or replace function public.is_class_member(class_uuid uuid, account_id uu
 returns boolean language sql stable security definer set search_path = ''
 as $$ select exists (select 1 from public.class_memberships where class_id = class_uuid and student_id = account_id) $$;
 
+create or replace function public.is_assignment_recipient(assignment_uuid uuid, account_id uuid default auth.uid())
+returns boolean language sql stable security definer set search_path = ''
+as $$
+  select
+    not exists (select 1 from public.assignment_recipients ar where ar.assignment_id = assignment_uuid)
+    or exists (select 1 from public.assignment_recipients ar where ar.assignment_id = assignment_uuid and ar.student_id = account_id)
+$$;
+
 create or replace function public.can_access_assignment(assignment_uuid uuid, account_id uuid default auth.uid())
 returns boolean language sql stable security definer set search_path = ''
 as $$
   select exists (
     select 1 from public.assignments a
     where a.id = assignment_uuid
-      and (a.teacher_id = account_id or (a.status = 'published' and public.is_class_member(a.class_id, account_id)))
+      and (
+        (a.teacher_id = account_id and public.teaches_class(a.class_id, account_id))
+        or (
+          a.status = 'published'
+          and public.is_class_member(a.class_id, account_id)
+          and public.is_assignment_recipient(a.id, account_id)
+        )
+      )
   )
 $$;
 
@@ -463,6 +488,7 @@ create policy "Teachers read assigned whiteboards" on public.whiteboard_document
     where aq.bank = whiteboard_documents.bank and aq.question_id = whiteboard_documents.question_id
       and a.teacher_id = (select auth.uid())
       and public.is_class_member(a.class_id, whiteboard_documents.user_id)
+      and public.is_assignment_recipient(a.id, whiteboard_documents.user_id)
   )
 );
 
@@ -481,7 +507,17 @@ create policy "Teachers manage own assignments" on public.assignments for all us
 drop policy if exists "Teachers manage own saved tests" on public.saved_tests;
 create policy "Teachers manage own saved tests" on public.saved_tests for all using (teacher_id = (select auth.uid()) and public.is_teacher()) with check (teacher_id = (select auth.uid()) and public.is_teacher());
 drop policy if exists "Students read class assignments" on public.assignments;
-create policy "Students read class assignments" on public.assignments for select using (status = 'published' and public.is_class_member(class_id));
+create policy "Students read class assignments" on public.assignments for select using (
+  status = 'published' and public.is_class_member(class_id) and public.is_assignment_recipient(id)
+);
+
+drop policy if exists "Teachers manage assignment recipients" on public.assignment_recipients;
+create policy "Teachers manage assignment recipients" on public.assignment_recipients for all
+  using (exists (select 1 from public.assignments a where a.id = assignment_recipients.assignment_id and a.teacher_id = (select auth.uid()) and public.teaches_class(a.class_id)))
+  with check (exists (select 1 from public.assignments a where a.id = assignment_recipients.assignment_id and a.teacher_id = (select auth.uid()) and public.teaches_class(a.class_id)));
+drop policy if exists "Students read own assignment recipients" on public.assignment_recipients;
+create policy "Students read own assignment recipients" on public.assignment_recipients for select
+  using (student_id = (select auth.uid()));
 
 drop policy if exists "Teachers manage assignment questions" on public.assignment_questions;
 create policy "Teachers manage assignment questions" on public.assignment_questions for all using (public.can_access_assignment(assignment_id) and public.is_teacher()) with check (public.can_access_assignment(assignment_id) and public.is_teacher());
@@ -511,6 +547,7 @@ create index if not exists whiteboard_documents_user_updated_idx on public.white
 create index if not exists classes_teacher_idx on public.classes (teacher_id, archived);
 create index if not exists class_memberships_student_idx on public.class_memberships (student_id);
 create index if not exists assignments_class_idx on public.assignments (class_id, created_at desc);
+create index if not exists assignment_recipients_student_idx on public.assignment_recipients (student_id, assignment_id);
 create index if not exists saved_tests_teacher_updated_idx on public.saved_tests (teacher_id, updated_at desc);
 create index if not exists assignment_progress_assignment_idx on public.assignment_question_progress (assignment_id, student_id);
 create index if not exists assignment_responses_assignment_idx on public.assignment_responses (assignment_id, student_id);
