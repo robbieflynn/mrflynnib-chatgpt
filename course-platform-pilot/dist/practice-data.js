@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T11:30:33.055Z",
+  "generatedAt": "2026-10-21T12:03:19.525Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
-  "completeLessonCount": 454,
-  "approvedSingleLessonCount": 30,
-  "questionCount": 953,
+  "completeLessonCount": 453,
+  "approvedSingleLessonCount": 32,
+  "questionCount": 952,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -4983,7 +4983,6 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Graph theory",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N24TZ0AIHL_P3_Q1",
         "MF_AIHL_T3_TSP_BOUNDS"
       ],
       "questionParts": {

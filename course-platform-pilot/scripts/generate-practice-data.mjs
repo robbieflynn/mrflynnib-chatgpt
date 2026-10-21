@@ -1579,7 +1579,7 @@ const verifiedOverrides = {
   "4ea42a07-b2d6-46c6-bd79-0987f8c97236": ["W_M23TZ1AIHL_P2_Q4", "MF_AIHL_T3_EULERIAN"],
   "a90ee76e-0a72-4a15-bf3d-1a3094677f44": ["W_M24TZ1AIHL_P1_Q8", "MF_AIHL_T3_CHINESE_POSTMAN"],
   "06dade6e-621a-4427-ad7c-1aa749bb8fa0": ["W_N21TZ0AIHL_P3_Q1", "MF_AIHL_T3_HAMILTONIAN"],
-  "c693e0c1-aeb5-4651-bc41-6791b5024408": ["W_N24TZ0AIHL_P3_Q1", "MF_AIHL_T3_TSP_BOUNDS"],
+  "c693e0c1-aeb5-4651-bc41-6791b5024408": ["MF_AIHL_T3_TSP_BOUNDS"],
   "e64a4cac-d435-4860-a028-f9f0b8266165": ["W_M24TZ2AIHL_P2_Q4", "MF_AIHL_T3_TSP_PRACTICAL"],
   // Nearest-neighbour here means the graph-theory tour algorithm, not the
   // nearest-site rule used with Voronoi diagrams.
@@ -1751,6 +1751,8 @@ const intentionallySinglePractice = new Set([
   "562cf78f-2adf-4021-abac-bb7b80049618", // AI HL: one direct horizontal-stretch matrix question
   "4f023b2b-b628-425a-a005-e96d992f7a32", // AI HL: one direct translation-by-vector question
   "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b", // AI HL: Rob approved enlargement question 2 only
+  "c699f91b-43d0-4d3f-af5b-05a042516032", // AI HL: one approved vector-components question
+  "c693e0c1-aeb5-4651-bc41-6791b5024408", // AI HL: Rob approved travelling-salesman question 2 only
   "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
   "5e60b54a-6bf2-4cf5-be78-4f13509448fd", // AI SL + AI HL: Rounding
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f", // AI HL: Phase portrait sink
@@ -4570,7 +4572,7 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/hamiltonian graphs/.test(lessonTitle)
     && ["W_N21TZ0AIHL_P3_Q1", "MF_AIHL_T3_HAMILTONIAN"].includes(question.id)) return true;
   if (/^the travelling salesman problem$/.test(lessonTitle)
-    && ["W_N24TZ0AIHL_P3_Q1", "MF_AIHL_T3_TSP_BOUNDS"].includes(question.id)) return true;
+    && question.id === "MF_AIHL_T3_TSP_BOUNDS") return true;
   if (/tsp practical|travelling salesman problem practical/.test(lessonTitle)
     && ["W_M24TZ2AIHL_P2_Q4", "MF_AIHL_T3_TSP_PRACTICAL"].includes(question.id)) return true;
   if (/nearest neighbour algorithm/.test(lessonTitle)
