@@ -49,10 +49,10 @@ AA HL,2026-10-20,1.16.2,System of linear equations part 2,approved,M13TZ1HL_P2_Q
 AA HL,2026-10-20,2.1.1,Gradient of a line,approved,M12TZ1AISL_P1_Q9|N18TZ0AISL_P1_Q12,Locked from Rob's second review
 AA HL,2026-10-20,2.1.2,Equation of a straight line,approved,M15TZ1AISL_P1_Q3|A_M24TZ2HL_P1_Q3,Locked from Rob's second review
 AA HL,2026-10-20,2.1.3,Parallel and perpendicular lines,approved,M18TZ2AISL_P1_Q6|M16TZ2AISL_P1_Q12,Locked from Rob's second review
-AA HL,2026-10-20,2.2.1,Functions introduction,awaiting-recheck,N18TZ0SL_P1_Q2|M16TZ1SL_P1_Q1,Replaced with direct function evaluation parts only; no inverse or composite work is displayed
-AA HL,2026-10-20,2.2.2,Evaluating functions,awaiting-recheck,N16TZ0SL_P2_Q1|M18TZ1SL_P1_Q1,Replaced with ordinary function-evaluation parts only; no inverse or composite work is displayed
-AA HL,2026-10-20,2.2.3,Inverse functions introduction,awaiting-recheck,W_SPECAIHL_P1_Q2|M18TZ1SL_P1_Q3,Retain current question 1 and move the former 2.5.2 question 1 here; remove current question 2
-AA HL,2026-10-21,2.3,Sketching functions,awaiting-recheck,M08TZ2SL_P2_Q3|N17TZ0SL_P2_Q2,Approved question 2 retained; quadratic question 1 replaced by a direct non-quadratic sketch with its later gradient part removed
+AA HL,2026-10-21,2.2.1,Functions introduction,approved,N18TZ0SL_P1_Q2|M16TZ1SL_P1_Q1,Approved by Rob after final recheck
+AA HL,2026-10-21,2.2.2,Evaluating functions,approved,N16TZ0SL_P2_Q1|M18TZ1SL_P1_Q1,Approved by Rob after final recheck
+AA HL,2026-10-21,2.2.3,Inverse functions introduction,approved,W_SPECAIHL_P1_Q2|M18TZ1SL_P1_Q3,Approved by Rob after final recheck
+AA HL,2026-10-21,2.3,Sketching functions,approved,M08TZ2SL_P2_Q3|N17TZ0SL_P2_Q2,Approved by Rob after final recheck
 AA HL,2026-10-21,2.4.1,Features of graphs,approved,A_M25TZ2HL_P1_Q1|A_M23TZ1SL_P2_Q3,Approved by Rob after recheck
 AA HL,2026-10-20,2.4.2,Asymptotes,approved,A_M23TZ2SL_P1_Q3|A_N21TZ0SL_P1_Q3,Locked from Rob's second review
 AA HL,2026-10-21,2.5.1,Composite functions,approved,N14TZ0SL_P2_Q1|A_N23TZ1SL_P1_Q2,Approved by Rob after recheck
@@ -70,16 +70,16 @@ AA HL,2026-10-20,2.10.1,Solving equations using substitution,approved,A_M23TZ1SL
 AA HL,2026-10-21,2.10.2,Solving equations with GDC,approved,M16TZ1SL_P2_Q2|M15TZ2SL_P2_Q8X1,Approved by Rob after recheck
 AA HL,2026-10-21,2.11.1,Transformations,approved,M08TZ2SL_P1_Q5|M12TZ2SL_P1_Q5,Approved by Rob after recheck
 AA HL,2026-10-21,2.11.2,Composite transformations,approved,N09TZ0SL_P1_Q4|M14TZ2HL_P1_Q8S,Approved by Rob after recheck
-AA HL,2026-10-21,2.12.1,Dividing polynomials,awaiting-recheck,M10TZ1HL_P1_Q1|N17TZ0HL_P1_Q3,Approved question 2 retained; question 1 replaced by a shorter question using the same factor and remainder theorem skill
+AA HL,2026-10-21,2.12.1,Dividing polynomials,approved-after-ordering,N17TZ0HL_P1_Q3|M10TZ1HL_P1_Q1,Approved pair reordered with the easier question first
 AA HL,2026-10-20,2.12.2,Factor and remainder theorems,approved,N13TZ0HL_P1_Q1|A_M25TZ3HL_P2_Q2,Locked from Rob's second review
 AA HL,2026-10-21,2.12.3,Graphs of polynomials,approved-single,M17TZ2HL_P2_Q11,Approved by Rob as a one-question lesson
 AA HL,2026-10-20,2.12.4,Sum and product of roots,approved-after-ordering,M15TZ1HL_P1_Q7|A_M21TZ2HL_P1_Q7,Same approved pair reordered medium before difficult
-AA HL,2026-10-21,2.13.1,Rational functions quadratic in denominator,awaiting-recheck,A_M22TZ2HL_P1_Q11|N10TZ0HL_P2_Q8|N19TZ0HL_P1_Q10,Approved first two retained; added a third linear-over-quadratic graph question with no calculus displayed
+AA HL,2026-10-21,2.13.1,Rational functions quadratic in denominator,approved,A_M22TZ2HL_P1_Q11|N10TZ0HL_P2_Q8|N19TZ0HL_P1_Q10,Approved by Rob after final recheck
 AA HL,2026-10-21,2.13.2,Rational functions quadratic in numerator,approved,A_N23TZ1HL_P2_Q11|A_N21TZ0HL_P2_Q10,Approved by Rob after recheck
 AA HL,2026-10-20,2.14,Even and odd functions,approved,M15TZ1HL_P1_Q5|A_M22TZ1HL_P2_Q6,Locked from Rob's final Topic 2 review
-AA HL,2026-10-21,2.15,Solving inequalities,awaiting-recheck,N17TZ0HL_P1_Q6|M10TZ1HL_P2_Q9,Approved question 2 retained; quadratic inequality replaced by a rational graph-and-inequality question
+AA HL,2026-10-21,2.15,Solving inequalities,awaiting-recheck,M15TZ1HL_P2_Q10|M10TZ1HL_P2_Q9,Approved question 2 retained; question 1 replaced with a difficult Paper 2 rational inequality and no modulus
 AA HL,2026-10-21,2.16.1,Graphs of modulus functions,approved,M08TZ1HL_P2_Q2|A_N25TZ3HL_P1_Q5,Approved by Rob after recheck
-AA HL,2026-10-21,2.16.2,Modulus equations and inequalities,awaiting-recheck,N10TZ0HL_P1_Q1|M15TZ2HL_P2_Q3,Approved question 1 retained; trigonometric question replaced by a non-trigonometric modulus graph and equation
+AA HL,2026-10-21,2.16.2,Modulus equations and inequalities,awaiting-recheck,N10TZ0HL_P1_Q1|M16TZ1HL_P1_Q7,Approved question 1 retained; question 2 replaced with a non-trigonometric modulus graph and exact equation
 AA HL,2026-10-20,2.16.3,Reciprocal transformations,approved,A2_M25TZ3HL_P1_Q6|A3_M25TZ3HL_P1_Q6,Locked from Rob's final Topic 2 review
 AA HL,2026-10-20,2.16.4,Graphs of y = [f(x)]²,approved,A_SPECHL_P1_Q3|N18TZ0HL_P2_Q8,Locked from Rob's final Topic 2 review
 AA HL,2026-10-20,3.1.1,Midpoint of a line segment,approved,M18TZ1AISL_P1_Q5|M14TZ1AISL_P1_Q9,Locked from Rob's Topic 3 review
@@ -106,7 +106,7 @@ AA HL,2026-10-20,3.7.2,Sinusoidal modelling,approved,W_N22TZ0AIHL_P1_Q6|A_M21TZ1
 AA HL,2026-10-21,3.8.1,Solving trig equations,approved,A_M24TZ2HL_P1_Q1|M13TZ2HL_P2_Q6,Approved by Rob after recheck
 AA HL,2026-10-20,3.8.2,Solving trig equations with identities,approved,A_M21TZ2SL_P1_Q3|A_M23TZ1SL_P1_Q4,Locked from Rob's Topic 3 review
 AA HL,2026-10-20,3.9.1,Reciprocal trig identities,approved,A_M21TZ1HL_P1_Q6|M11TZ1HL_P1_Q5,Locked from Rob's Topic 3 review
-AA HL,2026-10-20,3.9.2,Inverse trigonometric functions,awaiting-recheck,M09TZ2HL_P2_Q3|N11TZ0HL_P2_Q4,Approved question 1 retained; differentiation question replaced with a direct arctan and arcsin equation
+AA HL,2026-10-21,3.9.2,Inverse trigonometric functions,approved,M09TZ2HL_P2_Q3|N11TZ0HL_P2_Q4,Approved by Rob after final recheck
 AA HL,2026-10-20,3.10,Compound angle identities,approved,M16TZ1HL_P1_Q5|M10TZ2HL_P1_Q6,Locked from Rob's Topic 3 review
 AA HL,2026-10-21,3.12.1,Vectors introduction,approved,N13TZ0SL_P1_Q1|N15TZ0SL_P1_Q2,Approved by Rob after recheck
 AA HL,2026-10-21,3.12.2,Operations with vectors,approved,M10TZ2HL_P1_Q3|M13TZ1SL_P1_Q1,Approved by Rob after recheck
@@ -146,7 +146,7 @@ AA HL,2026-10-20,4.6.2,Tree diagrams,approved,M15TZ2SL_P1_Q1|M12TZ2HL_P1_Q3,Lock
 AA HL,2026-10-20,4.7,Discrete random variables,approved,N13TZ0HL_P1_Q2S|N16TZ0HL_P1_Q2,Locked from Rob's Topic 4 review
 AA HL,2026-10-20,4.8,Binomial distribution,approved,M08TZ1SL_P2_Q6|M15TZ1HL_P2_Q3|M18TZ2HL_P2_Q8,Locked from Rob's Topic 4 review
 AA HL,2026-10-21,4.9,Normal distribution,approved,N09TZ0SL_P1_Q3|M15TZ1HL_P2_Q2,Approved by Rob during Topic 4 recheck
-AA HL,2026-10-20,4.10,Regression line of x on y,awaiting-recheck,A_M24TZ1SL_P2_Q6|A_SPECTZ0HL_P2_Q4,Approved question 2 retained; quadratic-model question replaced with a second genuine x-on-y regression question
+AA HL,2026-10-21,4.10,Regression line of x on y,approved,A_M24TZ1SL_P2_Q6|A_SPECTZ0HL_P2_Q4,Approved by Rob after final recheck
 AA HL,2026-10-20,4.11,Testing for independence,approved,M15TZ2HL_P1_Q1|A_N21TZ0SL_P1_Q4,Locked from Rob's final Topic 4 review
 AA HL,2026-10-21,4.12,Normal distribution (finding mean and std. dev.),approved,M10TZ2HL_P2_Q3|M11TZ1HL_P2_Q12,Approved by Rob after recheck
 AA HL,2026-10-20,4.13,Bayes' theorem,approved,N11TZ0HL_P1_Q3|M08TZ1HL_P2_Q8,Locked from Rob's final Topic 4 review
@@ -154,7 +154,7 @@ AA HL,2026-10-20,4.14.1,Variance and standard deviation,approved,A_M25TZ2HL_P2_Q
 AA HL,2026-10-20,4.14.2,Variance and standard deviation of a discrete random variable,approved,M10TZ2HL_P2_Q2|N16TZ0HL_P2_Q1,Locked from Rob's final Topic 4 review
 AA HL,2026-10-20,4.14.3,Continuous random variables intro,approved,M10TZ2HL_P1_Q1|A_M22TZ1HL_P1_Q7,Locked from Rob's final Topic 4 review
 AA HL,2026-10-21,4.14.4,Mean of a continuous random variable,approved,M12TZ2HL_P2_Q7|A_N24TZ0HL_P2_Q6,Approved by Rob after recheck
-AA HL,2026-10-21,4.14.5,Median and mode of a discrete random variable,awaiting-recheck,A_M25TZ3HL_P2_Q3|MF_AAHL_T4_DISCRETE_MEDIAN,Approved question 1 retained; question 2 replaced with a discrete probability-distribution table that asks for the median
+AA HL,2026-10-21,4.14.5,Median and mode of a discrete random variable,approved,A_M25TZ3HL_P2_Q3|MF_AAHL_T4_DISCRETE_MEDIAN,Approved by Rob after final recheck
 AA HL,2026-10-20,4.14.6,Median and mode of continuous random variable,approved,M12TZ1HL_P2_Q2|M08TZ2HL_P2_Q4,Locked from Rob's final Topic 4 review
 AA HL,2026-10-21,4.14.7,Variance of a continuous random variable,approved,M17TZ2HL_P2_Q10|M15TZ1HL_P2_Q11,Approved by Rob after recheck
 AA HL,2026-10-20,4.14.8,Linear transformations of X,approved,A_N25TZ3HL_P1_Q7|A_SPECTZ0HL_P2_Q6,Locked from Rob's final Topic 4 review
@@ -167,23 +167,23 @@ AA HL,2026-10-21,5.4,Tangents and normals,approved,N18TZ0AISL_P1_Q11|N09TZ0SL_P1
 AA HL,2026-10-20,5.5.1,Integration power rule,approved,A_M21TZ1SL_P2_Q1|N13TZ0SL_P2_Q3,Locked from Rob's calculus review
 AA HL,2026-10-20,5.5.2,Finding f(x),approved,A_N21TZ0SL_P1_Q2|M19TZ1SL_P1_Q5,Locked from Rob's calculus review
 AA HL,2026-10-21,5.5.3,Definite integration,approved,A_M22TZ1HL_P1_Q1|N13TZ0SL_P1_Q4,Rob approved both questions in the Topic 5 confirmation pass
-AA HL,2026-10-21,5.5.4,Area under the curve,awaiting-recheck,A_N22TZ0SL_P2_Q3|W_N23TZ0AIHL_P1_Q11,Rob approved the questions; unnecessary source graph removed from the cropped first extract for recheck
+AA HL,2026-10-21,5.5.4,Area under the curve,approved,A_N22TZ0SL_P2_Q3|W_N23TZ0AIHL_P1_Q11,Approved by Rob after final recheck
 AA HL,2026-10-20,5.5.5,Finding a limit,approved-single,M14TZ1SL_P1_Q6,Approved first question retained alone because no second clean source avoids later integration rules
 AA HL,2026-10-21,5.6.1,"Derivative of sinx, cosx, lnx, e^x",approved,N16TZ0SL_P1_Q10X1|M18TZ1SL_P2_Q1|M15TZ1HL_P2_Q6,Rob approved all questions in the Topic 5 confirmation pass
 AA HL,2026-10-21,5.6.2,Chain rule,approved,M19TZ2SL_P1_Q10|M16TZ1SL_P1_Q10,Rob approved both questions in the Topic 5 confirmation pass
 AA HL,2026-10-20,5.6.3,Product rule,approved,M17TZ2SL_P1_Q6|N10TZ0SL_P1_Q2,Locked from Rob's calculus review
 AA HL,2026-10-20,5.6.4,Quotient rule,approved,M11TZ2SL_P1_Q4|M12TZ2SL_P1_Q10X1,Locked from Rob's calculus review
 AA HL,2026-10-20,5.7.1,Relationship between graphs and derivatives,approved,N08TZ0SL_P1_Q6|M10TZ2SL_P1_Q7,Locked from Rob's calculus review
-AA HL,2026-10-21,5.7.2,Sketching derivatives,awaiting-recheck,M14TZ2SL_P1_Q6,Rob approved the question; blank coordinate axes added beneath the sketch instruction for recheck
+AA HL,2026-10-21,5.7.2,Sketching derivatives,awaiting-recheck,M14TZ2SL_P1_Q6,Rob approved the question; drawing area rebuilt with aligned axes for final visual recheck
 AA HL,2026-10-21,5.7.3,Sketching derivatives with gdc,approved,M10TZ1SL_P2_Q3|M12TZ2SL_P2_Q2,Rob approved both questions in the Topic 5 confirmation pass
 AA HL,2026-10-20,5.8.1,Classifying stationary points,approved,M11TZ1HL_P1_Q12X1|N13TZ0HL_P1_Q10X1,Locked from Rob's calculus review
 AA HL,2026-10-20,5.8.2,Points of inflexion,approved-after-ordering,M16TZ1HL_P2_Q11X1|N10TZ0SL_P2_Q7,Same approved pair reordered easy before harder
 AA HL,2026-10-20,5.8.3,Optimization,approved,M16TZ2SL_P1_Q9|N09TZ0SL_P2_Q7,Locked from Rob's calculus review
 AA HL,2026-10-20,5.9,Kinematics,approved-after-ordering,M12TZ2SL_P2_Q5|M16TZ1HL_P2_Q3,Same approved pair reordered easy before harder
 AA HL,2026-10-20,5.10.1,Integrating e^x and 1/x,approved,N20TZ0SL_P1_Q6|A_M22TZ2SL_P2_Q2,Locked from Rob's calculus review
-AA HL,2026-10-21,5.10.2,Integrating sin and cos,awaiting-recheck,M10TZ2SL_P1_Q10,Kinematics question removed and the approved direct sine-integration question retained; a second clean non-repeated source is still needed
+AA HL,2026-10-21,5.10.2,Integrating sin and cos,approved-single,M10TZ2SL_P1_Q10,Rob approved leaving the direct sine-integration question on its own
 AA HL,2026-10-20,5.10.3,Inverse chain rule,approved,N10TZ0SL_P1_Q6|M14TZ2SL_P1_Q5,Locked from Rob's calculus review
-AA HL,2026-10-21,5.10.4,Integration by substitution,awaiting-recheck,M17TZ1SL_P1_Q5|N20TZ0SL_P2_Q10,Approved exponential substitution retained; second question now has the differentiated denominator above a fraction and gives a logarithm
+AA HL,2026-10-21,5.10.4,Integration by substitution,approved,M17TZ1SL_P1_Q5|N20TZ0SL_P2_Q10,Approved by Rob after final recheck
 AA HL,2026-10-20,5.11,Area between two curves,approved,M14TZ2HL_P2_Q3|A_M25TZ1HL_P1_Q3,Locked from Rob's final Topic 5 review
 AA HL,2026-10-20,5.12.1,Continuous functions,approved-no-practice,,Rob approved this lesson with no attached practice
 AA HL,2026-10-20,5.12.2,Differentiable functions,approved-no-practice,,Rob approved this lesson with no attached practice
@@ -192,9 +192,9 @@ AA HL,2026-10-20,5.12.4,Higher derivatives,approved,M15TZ2SL_P1_Q5|N16TZ0SL_P1_Q
 AA HL,2026-10-20,5.13,l'Hopital's rule,approved,A_M21TZ1HL_P1_Q8|A_M24TZ2HL_P1_Q8,Locked from Rob's final Topic 5 review
 AA HL,2026-10-20,5.14.1,Implicit differentiation,approved-after-difficulty,M17TZ1HL_P2_Q2|M08TZ1HL_P2_Q6,Same approved pair with question 1 corrected from green to orange
 AA HL,2026-10-20,5.14.2,Related rates of change,approved,M14TZ2HL_P2_Q9|M09TZ2HL_P2_Q10,Locked from Rob's final Topic 5 review
-AA HL,2026-10-21,5.15.1,More derivative rules,awaiting-recheck,N08TZ0HL_P2_Q12|M18TZ1HL_P1_Q7,Approved arcsine question retained; repeated arcsine example replaced with an arccos derivative
+AA HL,2026-10-21,5.15.1,More derivative rules,approved,N08TZ0HL_P2_Q12|M18TZ1HL_P1_Q7,Approved by Rob after final recheck
 AA HL,2026-10-20,5.15.2,More integration rules,approved,M15TZ1HL_P1_Q3|M16TZ2HL_P1_Q3,Locked from Rob's final Topic 5 review
-AA HL,2026-10-21,5.15.3,Integrating using partial fractions,awaiting-recheck,M09TZ2HL_P1_Q4|M17TZ1HL_P1_Q11,Approved pair retained; second card now shows only the integral question with part A and Hence removed
+AA HL,2026-10-21,5.15.3,Integrating using partial fractions,approved,M09TZ2HL_P1_Q4|M17TZ1HL_P1_Q11,Approved by Rob after final recheck
 AA HL,2026-10-21,5.16.1,Integration by substitution (HL only),approved,M15TZ1HL_P1_Q8|M09TZ2HL_P2_Q9|N12TZ0HL_P2_Q8,Rob approved all three questions in the Topic 5 confirmation pass
 AA HL,2026-10-20,5.16.2,Integration by parts,approved,N15TZ0HL_P1_Q2|M19TZ1HL_P2_Q5,Locked from Rob's final Topic 5 review
 AA HL,2026-10-20,5.16.3,Repeated integration by parts,approved,M11TZ2HL_P2_Q13B|N18TZ0HL_P1_Q10,Locked from Rob's final Topic 5 review

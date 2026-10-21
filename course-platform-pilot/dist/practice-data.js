@@ -1,5 +1,5 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T09:44:47.543Z",
+  "generatedAt": "2026-10-21T10:05:20.431Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
   "completeLessonCount": 457,
@@ -1331,7 +1331,7 @@ window.MR_FLYNN_PRACTICE = {
       },
       "questionPartTexts": {
         "M14TZ2SL_P1_Q6": {
-          "a": "On the coordinate axes below, sketch the graph of \\(y=f'(x)\\).<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>"
+          "a": "On the coordinate axes below, sketch the graph of \\(y=f'(x)\\).<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;overflow:hidden;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div aria-hidden=\"true\" style=\"position:absolute;left:12px;right:12px;top:113px;height:3px;background:#334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;top:12px;bottom:12px;left:218px;width:3px;background:#334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;right:8px;top:107px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid #334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;left:212px;top:8px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #334155;\"></div><span style=\"position:absolute;right:10px;top:124px;font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:232px;top:10px;font-weight:700;color:#334155;\">y</span></div>"
         }
       },
       "questionPartTitles": {
@@ -1848,8 +1848,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Polynomial functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M10TZ1HL_P1_Q1",
-        "N17TZ0HL_P1_Q3"
+        "N17TZ0HL_P1_Q3",
+        "M10TZ1HL_P1_Q1"
       ],
       "questionPartTitles": {
         "M10TZ1HL_P1_Q1": "Use polynomial factors to find two coefficients"
@@ -1967,11 +1967,21 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Inequalities",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "N17TZ0HL_P1_Q6",
+        "M15TZ1HL_P2_Q10",
         "M10TZ1HL_P2_Q9"
       ],
+      "questionParts": {
+        "M15TZ1HL_P2_Q10": [
+          "b"
+        ]
+      },
+      "questionPartLabels": {
+        "M15TZ1HL_P2_Q10": {
+          "b": ""
+        }
+      },
       "questionPartTitles": {
-        "N17TZ0HL_P1_Q6": "Sketch and solve a rational inequality",
+        "M15TZ1HL_P2_Q10": "Solve a difficult rational inequality",
         "M10TZ1HL_P2_Q9": "Solve a rational inequality with a restricted domain"
       }
     },
@@ -2004,11 +2014,11 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "N10TZ0HL_P1_Q1",
-        "M15TZ2HL_P2_Q3"
+        "M16TZ1HL_P1_Q7"
       ],
       "questionPartTitles": {
         "N10TZ0HL_P1_Q1": "Solve |x − 1| > |2x − 1|",
-        "M15TZ2HL_P2_Q3": "Sketch and solve a non-trigonometric modulus equation"
+        "M16TZ1HL_P1_Q7": "Sketch a modulus graph and solve its intersections"
       }
     },
     "75958ce6-0c3e-4c88-82e8-3db6f8392e1f": {

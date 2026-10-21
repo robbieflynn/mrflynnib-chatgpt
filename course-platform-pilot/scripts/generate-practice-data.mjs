@@ -1017,9 +1017,9 @@ const verifiedOverrides = {
   // No source question is shared between the two lessons.
   "8a506d7d-a1aa-4133-87cd-1f6099c2a544": ["N15TZ0HL_P2_Q2", "N18TZ0HL_P1_Q4"],
   "b8e1f841-d49c-4325-8d04-a78b335eb89b": ["M13TZ1HL_P2_Q2", "M14TZ1HL_P2_Q4"],
-  // Two direct factor/remainder-theorem questions, ordered from the shorter
-  // coefficient problem to the approved cubic factorisation question.
-  "6468821a-a955-4837-b591-7e8bdf3705ca": ["M10TZ1HL_P1_Q1", "N17TZ0HL_P1_Q3"],
+  // Two approved factor/remainder-theorem questions, reordered exactly as
+  // requested so the easier reviewed card appears first.
+  "6468821a-a955-4837-b591-7e8bdf3705ca": ["N17TZ0HL_P1_Q3", "M10TZ1HL_P1_Q1"],
   // AA Topic 3 review. Approved pairs are pinned; rejected cards are replaced
   // by the exact displayed parts below so later generation cannot reshuffle
   // them. Shared AA SL/HL videos deliberately use the same locked questions.
@@ -1256,15 +1256,17 @@ const verifiedOverrides = {
   "54f53e20-a14f-447a-a43f-c865e7eb424e": ["A_N23TZ1HL_P2_Q11", "A_N21TZ0HL_P2_Q10"],
   // Rob approved both even/odd questions during the final Topic 2 pass.
   "1ca31836-1394-43f7-8a9a-42198705f209": ["M15TZ1HL_P1_Q5", "A_M22TZ1HL_P2_Q6"],
-  // Start with a direct rational inequality rather than repeating the earlier
-  // quadratic-inequality lesson, then retain the harder calculator question.
-  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": ["N17TZ0HL_P1_Q6", "M10TZ1HL_P2_Q9"],
+  // Start with the difficult Paper 2 rational inequality Rob requested,
+  // showing only its self-contained second part, then retain the approved
+  // restricted-domain calculator inequality.
+  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": ["M15TZ1HL_P2_Q10", "M10TZ1HL_P2_Q9"],
   // Two strong modulus-graph questions: a direct trigonometric modulus graph,
   // then both f(|x|) and |f(x)| from a supplied function graph.
   "990b6aba-3d06-489d-81e6-70a683d4f23a": ["M08TZ1HL_P2_Q2", "A_N25TZ3HL_P1_Q5"],
   // Keep the approved direct modulus inequality first. The second question
-  // sketches and solves a non-trigonometric modulus equation.
-  "5c188648-60b0-48f6-83a1-9d5c18235dac": ["N10TZ0HL_P1_Q1", "M15TZ2HL_P2_Q3"],
+  // now sketches a genuine modulus graph together with a line and then solves
+  // their intersections exactly, with no trigonometry.
+  "5c188648-60b0-48f6-83a1-9d5c18235dac": ["N10TZ0HL_P1_Q1", "M16TZ1HL_P1_Q7"],
   // Rob approved both reciprocal-transformation questions unchanged.
   "75958ce6-0c3e-4c88-82e8-3db6f8392e1f": ["A2_M25TZ3HL_P1_Q6", "A3_M25TZ3HL_P1_Q6"],
   "c8ce5b5c-f78f-40a9-a8aa-2c5065925d0f": ["A_M23TZ1SL_P1_Q5", "A_M24TZ2HL_P1_Q2"],
@@ -1775,6 +1777,9 @@ const intentionallyTriplePractice = new Set([
 ]);
 
 const practicePartOverrides = {
+  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
+    "M15TZ1HL_P2_Q10": ["b"],
+  },
   "41d1e966-9bb1-4436-976e-d02187f32932": {
     "V_M21TZ2AISL_P1_Q6": ["a"],
   },
@@ -2436,6 +2441,9 @@ const practicePartOverrides = {
 // Preserve the original source labels for filtering and markscheme matching,
 // then make extracted non-consecutive parts read naturally in course practice.
 const practicePartLabelOverrides = {
+  "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
+    "M15TZ1HL_P2_Q10": { b: "" },
+  },
   "f8918c12-e985-4e26-bea3-c93f245655f1": {
     "N19TZ0HL_P1_Q10": { b: "" },
   },
@@ -2517,7 +2525,7 @@ const practicePartTextOverrides = {
   },
   "7c1d0df9-3f50-4bfb-ae45-b669c1405895": {
     "M14TZ2SL_P1_Q6": {
-      a: "On the coordinate axes below, sketch the graph of \\(y=f'(x)\\).<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>",
+      a: "On the coordinate axes below, sketch the graph of \\(y=f'(x)\\).<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;overflow:hidden;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div aria-hidden=\"true\" style=\"position:absolute;left:12px;right:12px;top:113px;height:3px;background:#334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;top:12px;bottom:12px;left:218px;width:3px;background:#334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;right:8px;top:107px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid #334155;\"></div><div aria-hidden=\"true\" style=\"position:absolute;left:212px;top:8px;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #334155;\"></div><span style=\"position:absolute;right:10px;top:124px;font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:232px;top:10px;font-weight:700;color:#334155;\">y</span></div>",
     },
   },
   "d10601dc-f866-4925-93d7-dc05b9316429": {
@@ -3043,7 +3051,7 @@ const practicePartTitles = {
     "A_N21TZ0HL_P2_Q10": "Sketch a second quadratic-over-linear function",
   },
   "5079b16d-57c4-40bb-bf1b-2aba1e1695fc": {
-    "N17TZ0HL_P1_Q6": "Sketch and solve a rational inequality",
+    "M15TZ1HL_P2_Q10": "Solve a difficult rational inequality",
     "M10TZ1HL_P2_Q9": "Solve a rational inequality with a restricted domain",
   },
   "990b6aba-3d06-489d-81e6-70a683d4f23a": {
@@ -3052,7 +3060,7 @@ const practicePartTitles = {
   },
   "5c188648-60b0-48f6-83a1-9d5c18235dac": {
     "N10TZ0HL_P1_Q1": "Solve |x − 1| > |2x − 1|",
-    "M15TZ2HL_P2_Q3": "Sketch and solve a non-trigonometric modulus equation",
+    "M16TZ1HL_P1_Q7": "Sketch a modulus graph and solve its intersections",
   },
   "c4db88f7-5d17-4e3e-acf2-8b714152fe0f": {
     "A_SPECHL_P1_Q3": "Sketch y = (f(x))² + 1 from the graph of f",
@@ -4118,11 +4126,11 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/rational functions.*quadratic in numerator/.test(lessonTitle)
     && ["A_N23TZ1HL_P2_Q11", "A_N21TZ0HL_P2_Q10"].includes(question.id)) return true;
   if (/^solving inequalities$/.test(lessonTitle)
-    && ["N17TZ0HL_P1_Q6", "M10TZ1HL_P2_Q9"].includes(question.id)) return true;
+    && ["M15TZ1HL_P2_Q10", "M10TZ1HL_P2_Q9"].includes(question.id)) return true;
   if (/^graphs of modulus functions$/.test(lessonTitle)
     && ["M08TZ1HL_P2_Q2", "A_N25TZ3HL_P1_Q5"].includes(question.id)) return true;
   if (/^modulus equations and inequalities$/.test(lessonTitle)
-    && ["N10TZ0HL_P1_Q1", "M15TZ2HL_P2_Q3"].includes(question.id)) return true;
+    && ["N10TZ0HL_P1_Q1", "M16TZ1HL_P1_Q7"].includes(question.id)) return true;
   // AA Topic 3 reviewed extracts. These mixed-source records are cropped to
   // the exact requested skill before their later area or percentage parts.
   if (/^distance between 2 points$/.test(lessonTitle)
@@ -4441,7 +4449,7 @@ function passesLessonSpecificCheck(question, lesson) {
     if (!/\\d?frac\{[^{}]*(?:x\^2|x²)[^{}]*\}\{[^{}]*\}/i.test(rawQuestionText)) return false;
   }
   if (/^solving inequalities$/.test(lessonTitle)) {
-    if (["A_N24TZ0HL_P1_Q6", "M14TZ1HL_P2_Q6", "N17TZ0HL_P1_Q6"].includes(question.id)) return true;
+    if (["A_N24TZ0HL_P1_Q6", "M14TZ1HL_P2_Q6", "M15TZ1HL_P2_Q10"].includes(question.id)) return true;
     if (/modulus|transformation/.test(fullQuestionText)) return false;
   }
   if (/graphs of y.*f x/.test(lessonTitle)) {
