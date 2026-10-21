@@ -200,6 +200,7 @@
       .replace(/\\notin(?=\\?\{|blackboard|cal|\s|$)/g, "∉").replace(/\\in(?!fty)(?=\\?\{|blackboard|cal|\s|$)/g, "∈")
       .replace(/\\cup\b/g, "∪").replace(/\\cap\b/g, "∩")
       .replace(/\\pm/g, "±").replace(/\\infty/g, "∞").replace(/\\pounds\b/g, "£")
+      .replace(/\\varphi\b/g, "φ").replace(/\\phi\b/g, "φ")
       .replace(/\\pi/g, "π").replace(/\\times/g, "×").replace(/\\cdot/g, "·")
       .replace(/([A-Za-z0-9)])(?=sqrt\()/g, "$1*")
       .replace(/\b([A-Za-z])(?=matrix\()/g, "$1*")
@@ -209,6 +210,7 @@
       .replace(/\\([A-Za-z]+)/g, "$1")
       .replace(/[{}]/g, ""))
       .replace(/\^\(∘\)/g, "°")
+      .replace(/\b(arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log|exp)\s*([α-ω])/gi, "$1($2)")
       .replace(/^=\s*/, "")
       .replace(/^\(\s*([A-Za-z][^()]*)\s*=\s*\)\s*/, "$1 = ")
       .trim();
@@ -2799,6 +2801,7 @@
       .replace(/\^\(([^()]*)\)/g, "^{$1}")
       .replace(/root\(([^,()]+),([^()]+)\)/gi, "\\sqrt[$1]{$2}")
       .replace(/sqrt\(([^()]+)\)/gi, "\\sqrt{$1}")
+      .replace(/φ/g, "\\varphi ")
       .replace(/π/g, "\\pi ")
       .replace(/∞/g, "\\infty ")
       .replace(/≤/g, "\\le ")
@@ -2958,6 +2961,7 @@
   }
 
   function isProseAnswer(value) {
+    if (/^(?:Since|Because|As)\b/i.test(String(value || "").trim())) return true;
     var words = String(value || "").match(/\b[A-Za-z]{2,}\b/g) || [];
     var proseWords = words.filter(function (word) {
       return !/^(?:dx|dy|dt|ds|dr|du|dv|sin|cos|tan|sec|csc|cot|ln|log|exp|sqrt|root|arg|cis|theta|alpha|beta|gamma|sigma|lambda|mu|pi|rad|cm|mm|km|kg|bold|vec|matrix|blackboard|cal|hat|bar|overline)$/i.test(word);
@@ -4489,6 +4493,16 @@
 
   function proseToLatex(value) {
     var answer = normalizeExplanationText(value);
+    var threePartReason = answer.match(/^(Since|Because|As)\s+(.+?),\s*(.+?)\s+and\s+(.+)$/i);
+    if (threePartReason) {
+      var firstCondition = expressionToLatex(threePartReason[2]);
+      var firstConclusion = expressionToLatex(threePartReason[3]);
+      var secondConclusion = expressionToLatex(threePartReason[4]);
+      if (firstCondition && firstConclusion && secondConclusion) {
+        return "\\text{" + threePartReason[1] + " }" + firstCondition + ",\\ "
+          + firstConclusion + "\\text{ and }" + secondConclusion;
+      }
+    }
     var result = "";
     var start = 0;
     var fractionPattern = /root\([^(),]+,[^()]+\)|sqrt\([^()]+\)|(?:\((?:[^()]|\([^()]*\))*\)|d(?:\^\d+)?[A-Za-z]|[-+]?[A-Za-z0-9.]+)\s*\/\s*(?:\((?:[^()]|\([^()]*\))*\)|d[A-Za-z](?:\^\d+)?|[-+]?[A-Za-z0-9.^-]+)/g;

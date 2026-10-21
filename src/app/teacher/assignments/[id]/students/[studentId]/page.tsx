@@ -15,6 +15,8 @@ export default async function StudentWorkingPage({ params, searchParams }: { par
   if (!assignment) notFound();
   const { data: membership } = await supabase.from("class_memberships").select("student_id").eq("class_id", assignment.class_id).eq("student_id", studentId).maybeSingle();
   if (!membership) notFound();
+  const { data: recipientRows } = await supabase.from("assignment_recipients").select("student_id").eq("assignment_id", id);
+  if (recipientRows?.length && !recipientRows.some((recipient) => recipient.student_id === studentId)) notFound();
   const [{ data: profile }, { data: questions }, { data: responses }, { data: progress }, { data: submission }] = await Promise.all([
     supabase.from("profiles").select("display_name").eq("user_id", studentId).maybeSingle(),
     supabase.from("assignment_questions").select("question_id,position,response_type,response_options").eq("assignment_id", id).order("position"),

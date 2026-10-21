@@ -6,7 +6,7 @@ export function AssignmentDraftClearer({ classId, enabled }: { classId: string; 
   useEffect(() => {
     if (!enabled) return;
     try {
-      const prefixes = [`mrflynnib-assignment-draft:${classId}`, `mrflynnib-assignment-setup:${classId}`];
+      const prefixes = [`mrflynnib-assignment-draft:${classId}`, `mrflynnib-assignment-setup:${classId}`, `mrflynnib-assignment-audience:${classId}`];
       Object.keys(window.sessionStorage).forEach((key) => {
         if (prefixes.some((prefix) => key.startsWith(prefix))) window.sessionStorage.removeItem(key);
       });
