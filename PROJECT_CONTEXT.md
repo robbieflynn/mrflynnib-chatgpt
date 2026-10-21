@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 14 October 2026
+Last updated: 21 October 2026
 
 ## Purpose of this file
 
@@ -270,6 +270,8 @@ The repository currently contains:
 - a secondary IGCSE Mathematics area with its own red-accented hub and course, question-bank, school and tutoring foundations
 
 The agreed legal-page approach is intentionally minimal. The public website has one concise Privacy Policy and one concise Terms of Use page. Cookie and analytics information is folded into the Privacy Policy, and the old `/cookies` route redirects to that section. Both pages identify Robert Flynn as the individual operating Mr Flynn IB but do not state his location. Course payment and checkout details remain governed by the information and applicable terms shown through Teachable. The current website terms cover personal use, intellectual property, educational limitations, school and tutoring enquiries, availability, external services and contact. Do not add question-bank terms, anti-scraping clauses, a governing-law clause, or references to Dubai or the UAE until Rob chooses to address them later.
+
+On 21 October 2026, Rob requested that the public Privacy Policy explain Supabase use explicitly. The policy states that an account requires a name and email address, with email as the only direct contact detail, while Supabase also stores the service data needed for authentication, progress, saved whiteboards, classes, assignments, responses and teacher reporting. It identifies West EU (Ireland) as the primary region for the Supabase database, authentication data and backups, explains role-based access within the platform, and notes that limited operational metadata, support data or provider processing may occur outside that region. It also explains that other providers may process limited personal information outside Switzerland or the EEA using applicable transfer safeguards. Do not reduce this disclosure to “email address only”, because learning and classroom activity linked to an account is also personal data.
 
 The Teachable course paths are verified and are being moved to the dedicated `learn.mrflynnib.com` subdomain for launch:
 
