@@ -176460,6 +176460,9 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
   // ---------- Persistence: merge seed into stored data without duplicating ----------
   var state = { all: [], filtered: [], rendered: 0, byId: {}, course: '' };
   window.mrflynnibQuestionById = function(id){ return state.byId[String(id)] || null; };
+  window.mrflynnibFilteredQuestionIds = function(){
+    return state.filtered.map(function(question){ return String(question.id || ''); }).filter(Boolean);
+  };
 
   // How many cards to build per batch. 25 comfortably fills a screen; the
   // observer below appends the next 25 before the student reaches the bottom.
@@ -177514,7 +177517,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 <script src="/question-bank/progress.js?v=2"></script>
 <script src="/question-bank/whiteboard.js?v=17"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=17"></script>
-<script src="/question-bank/assignment-selector.js?v=27"></script>
+<script src="/question-bank/assignment-selector.js?v=28"></script>
 <script src="/question-bank/test-selector.js?v=11"></script>
 <script src="/question-bank/assignment-response.js?v=9"></script>
 </body>
