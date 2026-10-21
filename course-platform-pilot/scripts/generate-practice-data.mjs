@@ -558,6 +558,54 @@ const authoredPractice = [
     markscheme: [["", [["antiderivative \\(-3\\cos x+2\\sin x\\)", "M1A1"], ["value \\(5\\)", "A2"]]]],
   }),
   authoredAiHlQuestion({
+    id: "MF_AIHL_T5_DIRECT_EXP_INTEGRATION",
+    qnum: 46,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Integrate an exponential term directly",
+    main: "Calculus",
+    sub: "Integration rules",
+    body: "",
+    parts: [["", "Find \\(\\displaystyle\\int(3e^x+4)\\,dx\\).", 4]],
+    markscheme: [["", [["integrates \\(e^x\\) directly", "M1"], ["\\(3e^x+4x+C\\)", "A3"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_DIRECT_LOG_INTEGRATION",
+    qnum: 47,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Integrate a reciprocal term directly",
+    main: "Calculus",
+    sub: "Integration rules",
+    body: "Let \\(x>0\\).",
+    parts: [["", "Find \\(\\displaystyle\\int\\left(\\frac5x-2\\right)\\,dx\\).", 4]],
+    markscheme: [["", [["uses \\(\\int \\frac1x\\,dx=\\ln x\\)", "M1"], ["\\(5\\ln x-2x+C\\)", "A3"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_INVERSE_CHAIN_EXP",
+    qnum: 48,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Use the inverse chain rule with an exponential",
+    main: "Calculus",
+    sub: "Integration rules",
+    body: "",
+    parts: [["", "Find \\(\\displaystyle\\int 6e^{3x}\\,dx\\).", 4]],
+    markscheme: [["", [["accounts for the inner derivative \\(3\\)", "M1"], ["\\(2e^{3x}+C\\)", "A3"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_INVERSE_CHAIN_TRIG",
+    qnum: 49,
+    marks: 4,
+    difficulty: "Medium",
+    title: "Use the inverse chain rule with cosine",
+    main: "Calculus",
+    sub: "Integration rules",
+    body: "",
+    parts: [["", "Find \\(\\displaystyle\\int 4\\cos(2x-1)\\,dx\\).", 4]],
+    markscheme: [["", [["accounts for the inner derivative \\(2\\)", "M1"], ["\\(2\\sin(2x-1)+C\\)", "A3"]]]],
+  }),
+  authoredAiHlQuestion({
     id: "MF_AIHL_T5_SUBSTITUTION_1",
     qnum: 35,
     marks: 4,
@@ -580,6 +628,30 @@ const authoredPractice = [
     body: "",
     parts: [["", "Evaluate \\(\\displaystyle\\int_0^2 3x^2\\sqrt{x^3+1}\\,dx\\).", 5]],
     markscheme: [["", [["uses \\(u=x^3+1\\), so \\(du=3x^2\\,dx\\)", "M1"], ["changes the limits to \\(1\\) and \\(9\\)", "A1"], ["\\(\\left[\\dfrac23u^{3/2}\\right]_1^9=\\dfrac{52}{3}\\)", "A3"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_SUBSTITUTION_LOG",
+    qnum: 50,
+    marks: 5,
+    difficulty: "Medium",
+    title: "Use substitution to obtain a logarithm",
+    main: "Calculus",
+    sub: "Integration by substitution",
+    body: "",
+    parts: [["", "Find \\(\\displaystyle\\int\\frac{2x}{x^2+5}\\,dx\\).", 5]],
+    markscheme: [["", [["uses \\(u=x^2+5\\), so \\(du=2x\\,dx\\)", "M1"], ["obtains \\(\\int\\frac1u\\,du\\)", "M1"], ["\\(\\ln(x^2+5)+C\\)", "A3"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_AREA_Y_AXIS",
+    qnum: 51,
+    marks: 4,
+    difficulty: "Easy",
+    title: "Find an area between a curve and the y-axis",
+    main: "Calculus",
+    sub: "Area and volume",
+    body: "The region \\(R\\) is bounded by the curve \\(x=y^2\\), the \\(y\\)-axis, and the lines \\(y=0\\) and \\(y=2\\).",
+    parts: [["", "Find the area of \\(R\\).", 4]],
+    markscheme: [["", [["uses \\(\\displaystyle\\int_0^2 y^2\\,dy\\)", "M2"], ["\\(\\left[\\frac{y^3}{3}\\right]_0^2=\\frac83\\)", "A2"]]]],
   }),
   authoredAiHlQuestion({
     id: "MF_AIHL_T5_KINEMATICS_2",
@@ -616,6 +688,30 @@ const authoredPractice = [
     body: "The variables \\(x\\) and \\(y\\) satisfy \\(\\dfrac{dy}{dx}=\\dfrac{3x^2}{y}\\), where \\(y>0\\), and \\(y=2\\) when \\(x=0\\).",
     parts: [["", "Find \\(y\\) in terms of \\(x\\).", 5]],
     markscheme: [["", [["\\(y\\,dy=3x^2\\,dx\\)", "M1"], ["\\(\\dfrac12y^2=x^3+C\\)", "A1"], ["\\(C=2\\)", "A1"], ["\\(y=\\sqrt{2x^3+4}\\)", "A2"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_COUPLED_EXACT_1",
+    qnum: 52,
+    marks: 6,
+    difficulty: "Medium",
+    title: "Solve a coupled system using eigenvectors",
+    main: "Calculus",
+    sub: "Coupled differential equations",
+    body: "A coupled system has eigenvalues \\(\\lambda_1=2\\), \\(\\lambda_2=-1\\), with corresponding eigenvectors \\(\\mathbf p_1=\\begin{pmatrix}1\\\\1\\end{pmatrix}\\) and \\(\\mathbf p_2=\\begin{pmatrix}1\\\\-2\\end{pmatrix}\\). Initially, \\(\\mathbf x(0)=\\begin{pmatrix}4\\\\1\\end{pmatrix}\\).",
+    parts: [["a", "Write down the general solution in the form \\(\\mathbf x=Ae^{\\lambda_1t}\\mathbf p_1+Be^{\\lambda_2t}\\mathbf p_2\\).", 2], ["b", "Find \\(A\\) and \\(B\\), and hence find the exact solution.", 4]],
+    markscheme: [["a", [["\\(\\mathbf x=Ae^{2t}\\begin{pmatrix}1\\\\1\\end{pmatrix}+Be^{-t}\\begin{pmatrix}1\\\\-2\\end{pmatrix}\\)", "A2"]]], ["b", [["uses \\(A+B=4\\) and \\(A-2B=1\\)", "M1A1"], ["\\(A=3\\), \\(B=1\\)", "A1"], ["\\(\\mathbf x=3e^{2t}\\begin{pmatrix}1\\\\1\\end{pmatrix}+e^{-t}\\begin{pmatrix}1\\\\-2\\end{pmatrix}\\)", "A1"]]]],
+  }),
+  authoredAiHlQuestion({
+    id: "MF_AIHL_T5_COUPLED_EXACT_2",
+    qnum: 53,
+    marks: 6,
+    difficulty: "Medium",
+    title: "Find an exact eigenvector-form solution",
+    main: "Calculus",
+    sub: "Coupled differential equations",
+    body: "A coupled system has eigenvalues \\(\\lambda_1=-2\\), \\(\\lambda_2=-4\\), with corresponding eigenvectors \\(\\mathbf p_1=\\begin{pmatrix}1\\\\2\\end{pmatrix}\\) and \\(\\mathbf p_2=\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\). Initially, \\(\\mathbf x(0)=\\begin{pmatrix}5\\\\4\\end{pmatrix}\\).",
+    parts: [["a", "Write down the general solution in the form \\(\\mathbf x=Ae^{\\lambda_1t}\\mathbf p_1+Be^{\\lambda_2t}\\mathbf p_2\\).", 2], ["b", "Use the initial condition to find the exact solution.", 4]],
+    markscheme: [["a", [["\\(\\mathbf x=Ae^{-2t}\\begin{pmatrix}1\\\\2\\end{pmatrix}+Be^{-4t}\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)", "A2"]]], ["b", [["uses \\(A+B=5\\) and \\(2A-B=4\\)", "M1A1"], ["\\(A=3\\), \\(B=2\\)", "A1"], ["\\(\\mathbf x=3e^{-2t}\\begin{pmatrix}1\\\\2\\end{pmatrix}+2e^{-4t}\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)", "A1"]]]],
   }),
   authoredAiHlQuestion({
     id: "MF_AIHL_T5_PHASE_SOURCE",
@@ -1507,9 +1603,11 @@ const verifiedOverrides = {
   "442602d9-44ec-4d6b-b6f8-1ae775349771": ["M11TZ1SL_P2_Q9", "M08TZ2HL_P2_Q6"],
   "97665ecc-2be3-414c-9944-564bf6fa8645": ["MF_AIHL_T5_RATIONAL_POWER_INTEGRATION", "N18TZ0HL_P2_Q2"],
   "918840eb-bf55-4e83-8939-40af339f1d94": ["MF_AIHL_T5_SIN_COS_INTEGRATION_1", "MF_AIHL_T5_SIN_COS_INTEGRATION_2"],
-  "f9365360-bc13-4c36-bd90-a494ae34a5ad": ["MF_AIHL_T5_SUBSTITUTION_1", "MF_AIHL_T5_SUBSTITUTION_2"],
-  "0c4f3b43-0879-4243-9e14-d8322f9f011c": ["V_SPECAISL_P1_Q10", "H_N15TZ0HL_P2_Q5"],
-  "811ba56d-a33e-46e8-9889-e3c15e2b8230": ["W_N22TZ0AIHL_P2_Q5", "M19TZ1HL_P2_Q7"],
+  "d9d11f09-511a-436a-9792-f66fc8ceeac5": ["MF_AIHL_T5_DIRECT_EXP_INTEGRATION", "MF_AIHL_T5_DIRECT_LOG_INTEGRATION"],
+  "99a7ab79-f157-4f85-83f1-52b8368acc0f": ["MF_AIHL_T5_INVERSE_CHAIN_EXP", "M11TZ2SL_P2_Q7", "MF_AIHL_T5_INVERSE_CHAIN_TRIG"],
+  "f9365360-bc13-4c36-bd90-a494ae34a5ad": ["MF_AIHL_T5_SUBSTITUTION_1", "MF_AIHL_T5_SUBSTITUTION_2", "MF_AIHL_T5_SUBSTITUTION_LOG"],
+  "0c4f3b43-0879-4243-9e14-d8322f9f011c": ["MF_AIHL_T5_AREA_Y_AXIS", "H_N15TZ0HL_P2_Q5"],
+  "811ba56d-a33e-46e8-9889-e3c15e2b8230": ["W_N22TZ0AIHL_P2_Q5", "M12TZ1HL_P2_Q8"],
   "54333f98-7d7a-4d6a-b3cf-347122e184bc": ["MF_AIHL_T5_KINEMATICS_2", "H_M14TZ1HL_P1_Q8"],
   "9af63d1a-407b-4f90-ae78-30c8291fcd59": ["MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION", "W_M25TZ2AIHL_P1_Q12"],
   "660e272a-8a71-4422-8450-61a7ea1d58cf": ["MF_AIHL_T5_SEPARATION", "W_M24TZ1AIHL_P2_Q5"],
@@ -1518,8 +1616,8 @@ const verifiedOverrides = {
   // Euler calculation, not the later interpretation or eigenvalue work.
   "49e6c7ea-110b-4ab4-a0d5-97a2c9fe4b11": ["W_M24TZ1AIHL_P1_Q4", "W_M24TZ2AIHL_P1_Q7"],
   "1310ef79-c234-4d20-9054-53eb85ef7749": ["W_M25TZ3AIHL_P1_Q11", "W_N24TZ0AIHL_P1_Q17"],
-  "a916a502-98ff-4105-8574-80aac522eda7": ["W_N21TZ0AIHL_P2_Q6", "W_SPECAIHL_P1_Q13"],
-  "ed654692-df93-4fbf-8bc5-a998e0897920": ["W_M24TZ2AIHL_P2_Q7X1", "W_M24TZ2AIHL_P2_Q7X2"],
+  "a916a502-98ff-4105-8574-80aac522eda7": ["W_N21TZ0AIHL_P2_Q6", "MF_AIHL_T5_COUPLED_EXACT_1"],
+  "ed654692-df93-4fbf-8bc5-a998e0897920": ["W_M23TZ2AIHL_P2_Q7", "MF_AIHL_T5_COUPLED_EXACT_2"],
   // Exact phase-type examples. Source and centre remain blank until the bank
   // contains clean unused examples with the required eigenvalue structures.
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f": ["W_M21TZ2AIHL_P2_Q7"],
@@ -1589,6 +1687,7 @@ const intentionallyWithoutPractice = new Set([
   "c140dbc4-5bd3-48a7-834e-dfb032927422", // AI HL: relationship between graphs and derivatives
   "eaa9adcd-5d3d-4fac-8b59-173980d36047", // AI HL: Euler's method (examples belong in the following lesson)
   "1532c139-e18e-4daf-a429-15a50f300444", // AI HL: Sketching phase portraits introduction
+  "522e01c2-0046-41ec-b4cd-1b9a7e89e70b", // AI HL: Phase portraits introduction
   "f5321b22-6b45-40ca-a705-57ee519bba5a", // AI HL: Surveys and questionnaires
   "b5304489-6978-49c9-af8b-059e251c5754", // AI HL: Reliability versus validity
 ]);
@@ -1616,8 +1715,6 @@ const intentionallySinglePractice = new Set([
   "fb36af72-faa4-4e66-bf8d-099bc54e766a", // AI HL: Binomial errors (one source containing both error types)
   "d477bd69-e3be-4201-b8f0-2ba436cc3f6e", // AI HL: Phase portrait source
   "e8505773-3b8b-41cc-84b3-d2e106e5533f", // AI HL: Phase portrait centre
-  "d9d11f09-511a-436a-9792-f66fc8ceeac5", // AI HL: Integrating e^x and 1/x (one direct logarithmic source)
-  "99a7ab79-f157-4f85-83f1-52b8368acc0f", // AI HL: Inverse chain rule (one clean linear-inner source)
   "d336ee8b-277b-4f7d-90f8-c309a50d1d4c", // AA SL + AA HL: Finding a limit (one clean pre-later-rules source)
   "7c1d0df9-3f50-4bfb-ae45-b669c1405895", // AA SL + AA HL: non-calculator derivative sketch
   "20b25248-b2b7-4f5b-b270-d68567b564d7", // IGCSE: ordinary frequency tables
@@ -1647,6 +1744,8 @@ const intentionallyTriplePractice = new Set([
   "949eaf81-334d-4578-a811-551fc53c7e3d", // IGCSE: Relative Frequency
   "ced2a712-ba39-44f5-a7dc-ef76f9c8a6ae", // AI HL: Arcs and sectors with radians
   "b4268179-f1d2-41ac-8573-6fd93c172880", // AI HL: Graphs of sin, cos and tan
+  "99a7ab79-f157-4f85-83f1-52b8368acc0f", // AI HL: Inverse chain rule progression
+  "f9365360-bc13-4c36-bd90-a494ae34a5ad", // AI HL: Substitution progression including logarithmic form
 ]);
 
 const practicePartOverrides = {
@@ -2264,7 +2363,7 @@ const practicePartOverrides = {
   },
   "660e272a-8a71-4422-8450-61a7ea1d58cf": {
     "H_M13TZ2HL_P2_Q12": ["a"],
-    "W_M24TZ1AIHL_P2_Q5": ["b"],
+    "W_M24TZ1AIHL_P2_Q5": ["b", "c", "d"],
   },
   "1310ef79-c234-4d20-9054-53eb85ef7749": {
     "W_N24TZ0AIHL_P1_Q17": ["a"],
@@ -2272,6 +2371,9 @@ const practicePartOverrides = {
   },
   "a916a502-98ff-4105-8574-80aac522eda7": {
     "W_N21TZ0AIHL_P2_Q6": ["c", "d"],
+  },
+  "ed654692-df93-4fbf-8bc5-a998e0897920": {
+    "W_M23TZ2AIHL_P2_Q7": ["a", "b", "c"],
   },
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f": {
     "W_M21TZ2AIHL_P2_Q7": ["b", "c", "d", "f"],
@@ -4187,7 +4289,9 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/euler s method for coupled systems/.test(lessonTitle)
     && ["W_N24TZ0AIHL_P1_Q17", "W_M25TZ3AIHL_P1_Q11"].includes(question.id)) return true;
   if (/solutions of coupled differential equations p1/.test(lessonTitle)
-    && ["W_N21TZ0AIHL_P2_Q6", "W_SPECAIHL_P1_Q13"].includes(question.id)) return true;
+    && ["W_N21TZ0AIHL_P2_Q6", "MF_AIHL_T5_COUPLED_EXACT_1"].includes(question.id)) return true;
+  if (/solutions of coupled differential equations p2/.test(lessonTitle)
+    && ["W_M23TZ2AIHL_P2_Q7", "MF_AIHL_T5_COUPLED_EXACT_2"].includes(question.id)) return true;
   if (/sketching phase portraits sink/.test(lessonTitle)
     && question.id === "W_M21TZ2AIHL_P2_Q7") return true;
   if (/sketching phase portraits spiral sink/.test(lessonTitle)
@@ -4220,8 +4324,13 @@ function passesLessonSpecificCheck(question, lesson) {
     && ["N09TZ0SL_P1_Q9", "M10TZ2SL_P1_Q8"].includes(question.id)) return true;
   if (/points of inflexion/.test(lessonTitle)
     && ["M08TZ2HL_P2_Q6", "M11TZ1SL_P2_Q9"].includes(question.id)) return true;
-  if (/integrating e.*1 x/.test(lessonTitle) && question.id === "N20TZ0SL_P1_Q6") return true;
-  if (/integrating e.*1 x/.test(lessonTitle) && question.id === "M13TZ1SL_P1_Q6") return true;
+  if (/integrating e.*1 x/.test(lessonTitle)
+    && [
+      "N20TZ0SL_P1_Q6",
+      "M13TZ1SL_P1_Q6",
+      "MF_AIHL_T5_DIRECT_EXP_INTEGRATION",
+      "MF_AIHL_T5_DIRECT_LOG_INTEGRATION",
+    ].includes(question.id)) return true;
   if (/integrating sin.*cos/.test(lessonTitle)
     && [
       "N08TZ0SL_P1_Q9",
@@ -4238,7 +4347,9 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/^area under the curve$/.test(lessonTitle)
     && ["M08TZ2HL_P2_Q3", "M10TZ2SL_P2_Q6"].includes(question.id)) return true;
   if (/area between curve and y axis/.test(lessonTitle)
-    && ["H_N15TZ0HL_P2_Q5", "V_SPECAISL_P1_Q10"].includes(question.id)) return true;
+    && ["H_N15TZ0HL_P2_Q5", "V_SPECAISL_P1_Q10", "MF_AIHL_T5_AREA_Y_AXIS"].includes(question.id)) return true;
+  if (/volume of revolution about y axis/.test(lessonTitle)
+    && ["W_N22TZ0AIHL_P2_Q5", "M12TZ1HL_P2_Q8"].includes(question.id)) return true;
   // These final AA HL calculus sources were reviewed at the displayed-part
   // level. Their complete source titles are broader than the selected prompt,
   // or the relevant mathematical notation is removed by text normalization.
@@ -4499,7 +4610,7 @@ function pairPassesLessonCheck(questions, lesson) {
     if (questions.some((question) => question.id === "N20TZ0SL_P1_Q6")
       && questions.some((question) => question.id === "A_M22TZ2SL_P2_Q2")) return true;
     return titles.some((title) => /exponential|e x/.test(title))
-      && titles.some((title) => /logarith|1 x/.test(title));
+      && titles.some((title) => /logarith|reciprocal|1 x/.test(title));
   }
   if (/derivative of sinx.*cosx.*lnx.*e x/.test(lessonTitle)) {
     const families = [/\bsin\b/, /\bcos\b/, /\bln\b|logarith/, /exponential/]

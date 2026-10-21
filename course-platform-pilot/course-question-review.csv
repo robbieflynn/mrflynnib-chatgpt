@@ -423,6 +423,32 @@ AI HL,2026-10-20,5.16.3,Euler's method for coupled systems,awaiting-recheck,W_M2
 AI HL,2026-10-20,5.17.1,Phase portraits intro,awaiting-recheck,W_N22TZ0AIHL_P1_Q12|W_SPECAIHL_P1_Q15X1,Reordered medium before difficult
 AI HL,2026-10-20,5.17.5,Sketching phase portraits (source),awaiting-recheck,MF_AIHL_T5_PHASE_SOURCE,Added a clean source with two positive real eigenvalues
 AI HL,2026-10-20,5.17.9,Sketching phase portraits (centre),awaiting-recheck,MF_AIHL_T5_PHASE_CENTRE,Added a clean centre with purely imaginary eigenvalues
+AI HL,2026-10-21,5.11.2,Integrating sin and cos,approved,MF_AIHL_T5_SIN_COS_INTEGRATION_1|MF_AIHL_T5_SIN_COS_INTEGRATION_2,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.11.3,Integrating e^x and 1/x,awaiting-recheck,MF_AIHL_T5_DIRECT_EXP_INTEGRATION|MF_AIHL_T5_DIRECT_LOG_INTEGRATION,Replaced the chain-rule source with direct e^x and reciprocal integrations
+AI HL,2026-10-21,5.11.4,Inverse chain rule,awaiting-recheck,MF_AIHL_T5_INVERSE_CHAIN_EXP|M11TZ2SL_P2_Q7|MF_AIHL_T5_INVERSE_CHAIN_TRIG,Retained the approved source and added direct exponential and trigonometric examples
+AI HL,2026-10-21,5.11.5,Integration by substitution,awaiting-recheck,MF_AIHL_T5_SUBSTITUTION_1|MF_AIHL_T5_SUBSTITUTION_2|MF_AIHL_T5_SUBSTITUTION_LOG,Retained both approved questions and added a fraction that integrates to a logarithm
+AI HL,2026-10-21,5.12.1,Area under the curve,approved,M08TZ2HL_P2_Q3|M10TZ2SL_P2_Q6,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.12.2,Area between curve and y-axis,awaiting-recheck,MF_AIHL_T5_AREA_Y_AXIS|H_N15TZ0HL_P2_Q5,Replaced the x-axis question with a direct area against the y-axis
+AI HL,2026-10-21,5.12.3,Volume of revolution,approved,M12TZ1SL_P2_Q4|H_M10TZ1HL_P1_Q8,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.12.4,Volume of revolution about y-axis,awaiting-recheck,W_N22TZ0AIHL_P2_Q5|M12TZ1HL_P2_Q8,Retained question 1 and replaced the similar second source with a distinct cone rotation about the y-axis
+AI HL,2026-10-21,5.13.1,Kinematics,approved,M08TZ1SL_P1_Q6|H_M17TZ2HL_P1_Q4,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.13.2,Kinematics 2,approved,MF_AIHL_T5_KINEMATICS_2|H_M14TZ1HL_P1_Q8,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.14.1,Setting up a differential equation,approved,MF_AIHL_T5_FORM_DIFFERENTIAL_EQUATION|W_M25TZ2AIHL_P1_Q12,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.14.2,Separation of variables,awaiting-recheck,MF_AIHL_T5_SEPARATION|W_M24TZ1AIHL_P2_Q5,Retained both approved questions but removed the slope-field part from question 2
+AI HL,2026-10-21,5.15,Slope fields,approved,W_M23TZ1AIHL_P1_Q12|W_N21TZ0AIHL_P1_Q14,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.16.2,Euler's method example,approved,W_M24TZ1AIHL_P1_Q4|W_M24TZ2AIHL_P1_Q7,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.16.3,Euler's method for coupled systems,approved,W_M25TZ3AIHL_P1_Q11|W_N24TZ0AIHL_P1_Q17,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.1,Phase portraits intro,approved-no-practice,,Intentionally blank; examples may be reused only in later exact lessons
+AI HL,2026-10-21,5.17.2,Solutions of coupled differential equations p1,awaiting-recheck,W_N21TZ0AIHL_P2_Q6|MF_AIHL_T5_COUPLED_EXACT_1,Retained question 1 and replaced question 2 with the requested eigenvector-form exact solution
+AI HL,2026-10-21,5.17.3,Solutions of coupled differential equations p2,awaiting-recheck,W_M23TZ2AIHL_P2_Q7|MF_AIHL_T5_COUPLED_EXACT_2,Replaced both questions with exact solutions in eigenvalue-eigenvector form
+AI HL,2026-10-21,5.17.4,Sketching phase portraits introduction,approved-no-practice,,Intentionally blank
+AI HL,2026-10-21,5.17.5,Sketching phase portraits (source),approved-single,MF_AIHL_T5_PHASE_SOURCE,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.6,Sketching phase portraits (sink),approved-single,W_M21TZ2AIHL_P2_Q7,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.7,Sketching phase portraits (spiral sink),approved-single,W_N24TZ0AIHL_P2_Q7,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.8,Sketching phase portraits (spiral source),approved-single,W_M23TZ1AIHL_P2_Q6,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.17.9,Sketching phase portraits (centre),approved-single,MF_AIHL_T5_PHASE_CENTRE,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.18.1,Second order Euler's method,approved,W_M23TZ2AIHL_P2_Q5|W_N22TZ0AIHL_P2_Q8,Locked from Rob's final Topic 5 review
+AI HL,2026-10-21,5.18.2,Second order DE exact solution,approved,W_M23TZ2AIHL_P2_Q7|W_M22TZ2AIHL_P2_Q7,Locked from Rob's final Topic 5 review
 IGCSE Higher,2026-10-20,1.4.3,Surds (Expanding Brackets),awaiting-recheck,MF_IGCSE_T1_EXPAND_SURDS|4MA1_2022J_2HR_Q13,Added a direct accessible surd-brackets question
 IGCSE Higher,2026-10-20,2.7.1,Solving Quadratics by Factorising,awaiting-recheck,4MA1_2021M_2H_Q9|MF_IGCSE_T2_FACTORISE_SOLVE_NON_MONIC,Added the requested non-monic factorise-and-solve progression
 IGCSE Higher,2026-10-20,2.7.2,Solving by Completing the Square,approved-single,4MA1_2018M_2HR_Q24,Kept the one honest source that completes the square and then solves

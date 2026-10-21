@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T06:21:05.072Z",
+  "generatedAt": "2026-10-21T08:01:33.690Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
-  "lessonCount": 487,
-  "completeLessonCount": 458,
-  "approvedSingleLessonCount": 25,
-  "questionCount": 955,
+  "lessonCount": 486,
+  "completeLessonCount": 459,
+  "approvedSingleLessonCount": 23,
+  "questionCount": 957,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -5635,7 +5635,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M13TZ1SL_P1_Q6"
+        "MF_AIHL_T5_DIRECT_EXP_INTEGRATION",
+        "MF_AIHL_T5_DIRECT_LOG_INTEGRATION"
       ]
     },
     "99a7ab79-f157-4f85-83f1-52b8368acc0f": {
@@ -5644,7 +5645,9 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M11TZ2SL_P2_Q7"
+        "MF_AIHL_T5_INVERSE_CHAIN_EXP",
+        "M11TZ2SL_P2_Q7",
+        "MF_AIHL_T5_INVERSE_CHAIN_TRIG"
       ]
     },
     "f9365360-bc13-4c36-bd90-a494ae34a5ad": {
@@ -5654,7 +5657,8 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "MF_AIHL_T5_SUBSTITUTION_1",
-        "MF_AIHL_T5_SUBSTITUTION_2"
+        "MF_AIHL_T5_SUBSTITUTION_2",
+        "MF_AIHL_T5_SUBSTITUTION_LOG"
       ]
     },
     "baf50754-d084-4bea-84e4-6d755bc624c6": {
@@ -5681,7 +5685,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Area under the curve",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "V_SPECAISL_P1_Q10",
+        "MF_AIHL_T5_AREA_Y_AXIS",
         "H_N15TZ0HL_P2_Q5"
       ],
       "questionParts": {
@@ -5715,7 +5719,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "W_N22TZ0AIHL_P2_Q5",
-        "M19TZ1HL_P2_Q7"
+        "M12TZ1HL_P2_Q8"
       ]
     },
     "326ef6f4-cdc3-461c-b121-527fef739c83": {
@@ -5783,7 +5787,9 @@ window.MR_FLYNN_PRACTICE = {
           "a"
         ],
         "W_M24TZ1AIHL_P2_Q5": [
-          "b"
+          "b",
+          "c",
+          "d"
         ]
       },
       "questionPartTitles": {
@@ -5837,16 +5843,6 @@ window.MR_FLYNN_PRACTICE = {
         "W_M25TZ3AIHL_P1_Q11": "Apply Euler's method to a coupled linear system"
       }
     },
-    "522e01c2-0046-41ec-b4cd-1b9a7e89e70b": {
-      "lesson": "5.17.1 Phase portraits intro",
-      "course": "AI HL",
-      "subtopic": "Phase portraits",
-      "bankPath": "ib-bank.html",
-      "questionIds": [
-        "W_N22TZ0AIHL_P1_Q12",
-        "W_SPECAIHL_P1_Q15X1"
-      ]
-    },
     "a916a502-98ff-4105-8574-80aac522eda7": {
       "lesson": "5.17.2 Solutions of coupled differential equations (p1)",
       "course": "AI HL",
@@ -5854,7 +5850,7 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "W_N21TZ0AIHL_P2_Q6",
-        "W_SPECAIHL_P1_Q13"
+        "MF_AIHL_T5_COUPLED_EXACT_1"
       ],
       "questionParts": {
         "W_N21TZ0AIHL_P2_Q6": [
@@ -5872,9 +5868,16 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Coupled differential equations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M24TZ2AIHL_P2_Q7X1",
-        "W_M24TZ2AIHL_P2_Q7X2"
-      ]
+        "W_M23TZ2AIHL_P2_Q7",
+        "MF_AIHL_T5_COUPLED_EXACT_2"
+      ],
+      "questionParts": {
+        "W_M23TZ2AIHL_P2_Q7": [
+          "a",
+          "b",
+          "c"
+        ]
+      }
     },
     "d477bd69-e3be-4201-b8f0-2ba436cc3f6e": {
       "lesson": "5.17.5 Sketching phase portraits (source)",
@@ -5970,8 +5973,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Second order differential equations",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_M23TZ2AIHL_P2_Q7",
-        "W_M22TZ2AIHL_P2_Q7"
+        "W_M22TZ2AIHL_P2_Q7",
+        "W_M22TZ1AIHL_P2_Q4"
       ],
       "questionParts": {
         "W_M23TZ2AIHL_P2_Q7": [

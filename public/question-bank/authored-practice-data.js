@@ -2162,6 +2162,190 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
     ]
   },
   {
+    "id": "MF_AIHL_T5_DIRECT_EXP_INTEGRATION",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 46,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Integrate an exponential term directly",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration rules"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int(3e^x+4)\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "integrates \\(e^x\\) directly",
+            "M1"
+          ],
+          [
+            "\\(3e^x+4x+C\\)",
+            "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_DIRECT_LOG_INTEGRATION",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 47,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Integrate a reciprocal term directly",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration rules"
+      }
+    ],
+    "body": "Let \\(x>0\\).",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int\\left(\\frac5x-2\\right)\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "uses \\(\\int \\frac1x\\,dx=\\ln x\\)",
+            "M1"
+          ],
+          [
+            "\\(5\\ln x-2x+C\\)",
+            "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_INVERSE_CHAIN_EXP",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 48,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Use the inverse chain rule with an exponential",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration rules"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int 6e^{3x}\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "accounts for the inner derivative \\(3\\)",
+            "M1"
+          ],
+          [
+            "\\(2e^{3x}+C\\)",
+            "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_INVERSE_CHAIN_TRIG",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 49,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Use the inverse chain rule with cosine",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration rules"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int 4\\cos(2x-1)\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "accounts for the inner derivative \\(2\\)",
+            "M1"
+          ],
+          [
+            "\\(2\\sin(2x-1)+C\\)",
+            "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
     "id": "MF_AIHL_T5_SUBSTITUTION_1",
     "course": "AI HL",
     "banks": [
@@ -2252,6 +2436,102 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
           [
             "\\(\\left[\\dfrac23u^{3/2}\\right]_1^9=\\dfrac{52}{3}\\)",
             "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_SUBSTITUTION_LOG",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 50,
+    "marks": 5,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Use substitution to obtain a logarithm",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration by substitution"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int\\frac{2x}{x^2+5}\\,dx\\).",
+        5
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "uses \\(u=x^2+5\\), so \\(du=2x\\,dx\\)",
+            "M1"
+          ],
+          [
+            "obtains \\(\\int\\frac1u\\,du\\)",
+            "M1"
+          ],
+          [
+            "\\(\\ln(x^2+5)+C\\)",
+            "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_AREA_Y_AXIS",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 51,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Find an area between a curve and the y-axis",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Area and volume"
+      }
+    ],
+    "body": "The region \\(R\\) is bounded by the curve \\(x=y^2\\), the \\(y\\)-axis, and the lines \\(y=0\\) and \\(y=2\\).",
+    "parts": [
+      [
+        "",
+        "Find the area of \\(R\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "uses \\(\\displaystyle\\int_0^2 y^2\\,dy\\)",
+            "M2"
+          ],
+          [
+            "\\(\\left[\\frac{y^3}{3}\\right]_0^2=\\frac83\\)",
+            "A2"
           ]
         ]
       ]
@@ -2426,6 +2706,134 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
           [
             "\\(y=\\sqrt{2x^3+4}\\)",
             "A2"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_COUPLED_EXACT_1",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 52,
+    "marks": 6,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Solve a coupled system using eigenvectors",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Coupled differential equations"
+      }
+    ],
+    "body": "A coupled system has eigenvalues \\(\\lambda_1=2\\), \\(\\lambda_2=-1\\), with corresponding eigenvectors \\(\\mathbf p_1=\\begin{pmatrix}1\\\\1\\end{pmatrix}\\) and \\(\\mathbf p_2=\\begin{pmatrix}1\\\\-2\\end{pmatrix}\\). Initially, \\(\\mathbf x(0)=\\begin{pmatrix}4\\\\1\\end{pmatrix}\\).",
+    "parts": [
+      [
+        "a",
+        "Write down the general solution in the form \\(\\mathbf x=Ae^{\\lambda_1t}\\mathbf p_1+Be^{\\lambda_2t}\\mathbf p_2\\).",
+        2
+      ],
+      [
+        "b",
+        "Find \\(A\\) and \\(B\\), and hence find the exact solution.",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\mathbf x=Ae^{2t}\\begin{pmatrix}1\\\\1\\end{pmatrix}+Be^{-t}\\begin{pmatrix}1\\\\-2\\end{pmatrix}\\)",
+            "A2"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "uses \\(A+B=4\\) and \\(A-2B=1\\)",
+            "M1A1"
+          ],
+          [
+            "\\(A=3\\), \\(B=1\\)",
+            "A1"
+          ],
+          [
+            "\\(\\mathbf x=3e^{2t}\\begin{pmatrix}1\\\\1\\end{pmatrix}+e^{-t}\\begin{pmatrix}1\\\\-2\\end{pmatrix}\\)",
+            "A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T5_COUPLED_EXACT_2",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 53,
+    "marks": 6,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Medium"
+    },
+    "title": "Find an exact eigenvector-form solution",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Coupled differential equations"
+      }
+    ],
+    "body": "A coupled system has eigenvalues \\(\\lambda_1=-2\\), \\(\\lambda_2=-4\\), with corresponding eigenvectors \\(\\mathbf p_1=\\begin{pmatrix}1\\\\2\\end{pmatrix}\\) and \\(\\mathbf p_2=\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\). Initially, \\(\\mathbf x(0)=\\begin{pmatrix}5\\\\4\\end{pmatrix}\\).",
+    "parts": [
+      [
+        "a",
+        "Write down the general solution in the form \\(\\mathbf x=Ae^{\\lambda_1t}\\mathbf p_1+Be^{\\lambda_2t}\\mathbf p_2\\).",
+        2
+      ],
+      [
+        "b",
+        "Use the initial condition to find the exact solution.",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "\\(\\mathbf x=Ae^{-2t}\\begin{pmatrix}1\\\\2\\end{pmatrix}+Be^{-4t}\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)",
+            "A2"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "uses \\(A+B=5\\) and \\(2A-B=4\\)",
+            "M1A1"
+          ],
+          [
+            "\\(A=3\\), \\(B=2\\)",
+            "A1"
+          ],
+          [
+            "\\(\\mathbf x=3e^{-2t}\\begin{pmatrix}1\\\\2\\end{pmatrix}+2e^{-4t}\\begin{pmatrix}1\\\\-1\\end{pmatrix}\\)",
+            "A1"
           ]
         ]
       ]
