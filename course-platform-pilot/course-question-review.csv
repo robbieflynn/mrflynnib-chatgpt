@@ -293,30 +293,31 @@ AI HL,2026-10-20,3.2.5,Area of a triangle,approved,M12TZ2SL_P2_Q1|M18TZ2AISL_P1_
 AI HL,2026-10-20,3.3.1,Bearings,approved,V_N23TZ1AISL_P1_Q5|N08TZ0SL_P2_Q6,Locked from Rob's AI Topic 3 review
 AI HL,2026-10-20,3.3.2,Angles of elevation and depression,approved,V_M23TZ1AISL_P1_Q2|V_N24TZ2AISL_P1_Q1,Locked from Rob's AI Topic 3 review
 AI HL,2026-10-20,3.4,Arcs and Sectors,approved,N19TZ0HL_P2_Q4D|V_M25TZ1AISL_P1_Q6,Locked from Rob's AI Topic 3 review
-AI HL,2026-10-20,3.5,Perpendicular bisectors,awaiting-recheck,V_M21TZ2AISL_P1_Q6,Replaced the perpendicular-line questions with an exact perpendicular-bisector equation
+AI HL,2026-10-21,3.5,Perpendicular bisectors,approved-single-question,V_M21TZ2AISL_P1_Q6,Rob approved the exact perpendicular-bisector question
 AI HL,2026-10-20,3.6.1,Voronoi diagrams intro,approved,V_M21TZ1AISL_P1_Q5|V_M25TZ3AISL_P1_Q5,Locked from Rob's AI Topic 3 review
 AI HL,2026-10-20,3.6.2,Voronoi examples,approved,V_M24TZ1AISL_P1_Q6|V_N21TZ0AISL_P1_Q7,Locked from Rob's AI Topic 3 review
 AI HL,2026-10-20,3.7.1,Radians,approved-no-practice,,Rob asked to leave ordinary radians blank and move its applications to the following lesson
-AI HL,2026-10-20,3.7.2,Arcs and sectors with radians,awaiting-recheck,N15TZ0SL_P2_Q1|N14TZ0SL_P2_Q3|M13TZ1HL_P2_Q5,Moved the two radians applications here beside the existing arc-and-sector question
+AI HL,2026-10-21,3.7.2,Arcs and sectors with radians,approved,N15TZ0SL_P2_Q1|N14TZ0SL_P2_Q3|M13TZ1HL_P2_Q5,Locked from Rob's AI HL Topic 3 review
 AI HL,2026-10-20,3.8.1,Mr. Flynn's exact triangles,approved-no-practice,,Rob asked to leave this lesson blank
 AI HL,2026-10-20,3.8.2,Unit circle,approved-no-practice,,Rob asked to leave this lesson blank
 AI HL,2026-10-20,3.8.3,The CAST diagram,approved-no-practice,,Rob asked to leave this lesson blank
-AI HL,2026-10-20,3.8.4,Graphs of sin cos and tan,awaiting-recheck,N15TZ0SL_P1_Q4|M10TZ1AISL_P1_Q11|MF_AIHL_T3_TRIG_GRAPH_TAN,Added direct sine cosine and tangent graph practice
+AI HL,2026-10-21,3.8.4,Graphs of sin cos and tan,approved,N15TZ0SL_P1_Q4|M10TZ1AISL_P1_Q11|MF_AIHL_T3_TRIG_GRAPH_TAN,Locked from Rob's AI HL Topic 3 review
 AI HL,2026-10-20,3.8.5,Sine rule ambiguous case,approved,N10TZ0HL_P2_Q1|M12TZ2HL_P2_Q3,Locked from Rob's AI Topic 3 review
-AI HL,2026-10-20,3.8.6,Trig identities,awaiting-recheck,MF_AIHL_T3_TRIG_IDENTITY_1|MF_AIHL_T3_TRIG_IDENTITY_2,Added practice using only sin squared plus cos squared equals one and tan equals sin over cos
-AI HL,2026-10-20,3.8.7,Solving Trigonometric Equations,awaiting-recheck,M08TZ1SL_P2_Q4,Replaced the rejected example with a direct trigonometric-equation solution
-AI HL,2026-10-20,3.9.1,Matrix transformations intro and stretches,awaiting-recheck,MF_AIHL_T3_MATRIX_STRETCH,Added a direct horizontal-stretch matrix question
-AI HL,2026-10-20,3.9.2,Translations,awaiting-recheck,MF_AIHL_T3_MATRIX_TRANSLATION,Added a direct translation-by-vector question
-AI HL,2026-10-20,3.9.3,Enlargements,awaiting-recheck,W_M22TZ1AIHL_P2_Q7|MF_AIHL_T3_MATRIX_ENLARGEMENT,Kept the approved enlargement and added a second centre-origin enlargement
+AI HL,2026-10-21,3.8.6,Trig identities,approved,MF_AIHL_T3_TRIG_IDENTITY_1|MF_AIHL_T3_TRIG_IDENTITY_2,Locked from Rob's AI HL Topic 3 review
+AI HL,2026-10-21,3.8.7,Solving Trigonometric Equations,approved-single-question,M08TZ1SL_P2_Q4,Rob approved the direct trigonometric-equation question
+AI HL,2026-10-21,3.9.1,Matrix transformations intro and stretches,approved-single-question,MF_AIHL_T3_MATRIX_STRETCH,Rob approved the direct horizontal-stretch matrix question
+AI HL,2026-10-21,3.9.2,Translations,approved-single-question,MF_AIHL_T3_MATRIX_TRANSLATION,Rob approved the direct translation-by-vector question
+AI HL,2026-10-21,3.9.3,Enlargements,approved-single-question,MF_AIHL_T3_MATRIX_ENLARGEMENT,Removed question 1 and kept Rob's approved question 2 only
 AI HL,2026-10-20,3.9.4,Rotations,approved,W_M25TZ1AIHL_P1_Q13|W_N21TZ0AIHL_P2_Q4,Locked from Rob's AI Topic 3 review
-AI HL,2026-10-20,3.9.5,Reflections,awaiting-recheck,W_N23TZ0AIHL_P2_Q6|MF_AIHL_T3_MATRIX_REFLECTION,Kept the approved reflection and added a second reflection-matrix question
-AI HL,2026-10-20,3.9.6,Composite matrix transformations,awaiting-recheck,W_N24TZ0AIHL_P2_Q6|W_M23TZ2AIHL_P1_Q13,Kept question 1 and replaced question 2 with a genuine sequence of transformations
+AI HL,2026-10-21,3.9.5,Reflections,awaiting-recheck,MF_AIHL_T3_MATRIX_REFLECTION_AXIS|MF_AIHL_T3_MATRIX_REFLECTION,Added a straightforward y-axis reflection and retained one general reflection-matrix question
+AI HL,2026-10-21,3.9.6,Composite matrix transformations,approved,W_N24TZ0AIHL_P2_Q6|W_M23TZ2AIHL_P1_Q13,Locked from Rob's AI HL Topic 3 review
 AI HL,2026-10-20,3.9.7,Determinant of a transformation matrix,approved,W_M22TZ2AIHL_P1_Q15|W_N22TZ0AIHL_P1_Q9,Locked from Rob's AI Topic 3 review
 AI HL,2026-10-20,3.10.1,Vectors introduction,approved-no-practice,,Rob asked to leave the introduction blank
 AI HL,2026-10-20,3.10.2,Operations with vectors,approved,M11TZ2SL_P1_Q3|H_N18TZ0SL_P1_Q5,Locked from Rob's AI Topic 3 review
-AI HL,2026-10-20,3.10.3,Magnitude and unit vectors,awaiting-recheck,N17TZ0SL_P2_Q3|MF_AIHL_T3_UNIT_VECTOR,Kept approved question 1 and replaced the angle question with direct magnitude and unit-vector work
-AI HL,2026-10-20,3.11,Vector equation of a line,awaiting-recheck,MF_AIHL_T3_VECTOR_LINE_3D_POINTS|MF_AIHL_T3_VECTOR_LINE_3D_DIRECTION,Replaced both questions with direct vector equations of lines in three dimensions
-AI HL,2026-10-20,3.12.1,Vectors and kinematics,awaiting-recheck,MF_AIHL_T3_VECTOR_KINEMATICS_3D|MF_AIHL_T3_VECTOR_KINEMATICS_MEETING,Replaced both questions with distinct three-dimensional vector-motion examples
+AI HL,2026-10-21,3.10.3,Magnitude and unit vectors,approved,N17TZ0SL_P2_Q3|MF_AIHL_T3_UNIT_VECTOR,Locked from Rob's AI HL Topic 3 review
+AI HL,2026-10-21,3.11,Vector equation of a line,approved,MF_AIHL_T3_VECTOR_LINE_3D_POINTS|MF_AIHL_T3_VECTOR_LINE_3D_DIRECTION,Locked from Rob's AI HL Topic 3 review
+AI HL,2026-10-21,3.12.1,Vectors and kinematics,approved,MF_AIHL_T3_VECTOR_KINEMATICS_3D|MF_AIHL_T3_VECTOR_KINEMATICS_MEETING,Locked from Rob's AI HL Topic 3 review
+AI HL,2026-10-21,3.12.2,Motion with variable velocity,approved,W_N22TZ0AIHL_P2_Q7|W_M25TZ3AIHL_P1_Q14,Locked from Rob's AI HL Topic 3 review
 AI HL,2026-10-20,3.13.1,Scalar product and angle between vectors,approved,M15TZ2SL_P2_Q2|M17TZ1SL_P2_Q2,Kept approved question 1 and restored the existing direct angle-between-vectors question as question 2
 AI HL,2026-10-20,3.13.2,Angle between two lines,approved,H_M09TZ1HL_P2_Q5|W_N22TZ0AIHL_P1_Q8,Locked from Rob's AI Topic 3 review
 AI HL,2026-10-20,3.13.3,Vector product,awaiting-recheck,W_SPECAIHL_P1_Q11|MF_AIHL_T3_VECTOR_PRODUCT,Kept the approved question and added a second direct vector-product calculation

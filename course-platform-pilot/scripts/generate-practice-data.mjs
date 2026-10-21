@@ -215,13 +215,30 @@ const authoredPractice = [
     markscheme: [["a", [["scale factor \\(\\dfrac13\\)", "A1"]]], ["b", [["\\(\\begin{pmatrix}\\frac13&0\\\\0&\\frac13\\end{pmatrix}\\)", "A1"]]], ["c", [["matrix multiplication or multiplying both coordinates by \\(\\dfrac13\\)", "M1"], ["\\(Q'(-4,5)\\)", "A1"]]]],
   },
   {
-    id: "MF_AIHL_T3_MATRIX_REFLECTION",
+    id: "MF_AIHL_T3_MATRIX_REFLECTION_AXIS",
     course: "AI HL",
     banks: ["AI HL"],
     paper: "Mr Flynn AI HL Practice",
     paperNumber: "Practice",
     section: "A",
     qnum: 7,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI HL": "Easy" },
+    title: "Reflect a point in the y-axis",
+    topics: [{ main: "Geometry and Trigonometry", sub: "Matrix transformations" }],
+    body: "The matrix \\(R=\\begin{pmatrix}-1&0\\\\0&1\\end{pmatrix}\\) represents a transformation of the plane.",
+    parts: [["a", "Describe the transformation represented by \\(R\\).", 2], ["b", "Find the image of the point \\(P(3,-2)\\) under this transformation.", 2]],
+    markscheme: [["a", [["reflection", "A1"], ["in the \\(y\\)-axis", "A1"]]], ["b", [["\\(R\\begin{pmatrix}3\\\\-2\\end{pmatrix}=\\begin{pmatrix}-3\\\\-2\\end{pmatrix}\\)", "M1A1"]]]],
+  },
+  {
+    id: "MF_AIHL_T3_MATRIX_REFLECTION",
+    course: "AI HL",
+    banks: ["AI HL"],
+    paper: "Mr Flynn AI HL Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 8,
     marks: 4,
     authored: true,
     difficulty: { "AI HL": "Medium" },
@@ -1545,9 +1562,9 @@ const verifiedOverrides = {
   // which the archive has no clean standalone question.
   "562cf78f-2adf-4021-abac-bb7b80049618": ["MF_AIHL_T3_MATRIX_STRETCH"],
   "4f023b2b-b628-425a-a005-e96d992f7a32": ["MF_AIHL_T3_MATRIX_TRANSLATION"],
-  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": ["W_M22TZ1AIHL_P2_Q7", "MF_AIHL_T3_MATRIX_ENLARGEMENT"],
+  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b": ["MF_AIHL_T3_MATRIX_ENLARGEMENT"],
   "7cb7f42a-7cfc-4b3d-95ba-cbb1297c215b": ["W_M25TZ1AIHL_P1_Q13", "W_N21TZ0AIHL_P2_Q4"],
-  "4ba2895d-48f5-439d-b0df-57c25ae1c824": ["W_N23TZ0AIHL_P2_Q6", "MF_AIHL_T3_MATRIX_REFLECTION"],
+  "4ba2895d-48f5-439d-b0df-57c25ae1c824": ["MF_AIHL_T3_MATRIX_REFLECTION_AXIS", "MF_AIHL_T3_MATRIX_REFLECTION"],
   "80522e92-56ee-4aa2-ae07-9e105b2efdf0": ["W_N24TZ0AIHL_P2_Q6", "W_M23TZ2AIHL_P1_Q13"],
   "3047e664-8bf6-4140-8c0c-cabd97cd06b5": ["W_M22TZ2AIHL_P1_Q15", "W_N22TZ0AIHL_P1_Q9"],
   // AI HL graph theory: each source is used in only one lesson, and each
@@ -1730,6 +1747,10 @@ const intentionallySinglePractice = new Set([
   "916aa44f-5240-4926-9cb6-12800d012e0c", // AA HL: one coherent polynomial factorise-and-sketch task
   "795817a0-1f56-45f4-b103-3b8936c00858", // AI HL: System of linear equations (Rob approved question 1 only)
   "72a5f616-843a-4be5-875c-6e57afe3d730", // AI HL: Piecewise functions (Rob approved question 1 only)
+  "41d1e966-9bb1-4436-976e-d02187f32932", // AI SL + AI HL: one exact perpendicular-bisector equation
+  "562cf78f-2adf-4021-abac-bb7b80049618", // AI HL: one direct horizontal-stretch matrix question
+  "4f023b2b-b628-425a-a005-e96d992f7a32", // AI HL: one direct translation-by-vector question
+  "cfa1dc1e-f80b-4e63-8275-6269cbe7f12b", // AI HL: Rob approved enlargement question 2 only
   "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
   "5e60b54a-6bf2-4cf5-be78-4f13509448fd", // AI SL + AI HL: Rounding
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f", // AI HL: Phase portrait sink
@@ -1754,9 +1775,6 @@ const intentionallySinglePractice = new Set([
 // do not auto-fill a wrong second one, and keep the audit status as needs-review.
 const incompleteSinglePractice = new Set([
   "5c83085a-0fc2-4199-89b3-34ce0cf5539b", // AA SL + AA HL: direct sin/cos integration (second non-repeated source still needed)
-  "41d1e966-9bb1-4436-976e-d02187f32932", // AI SL + AI HL: exact perpendicular-bisector equation
-  "562cf78f-2adf-4021-abac-bb7b80049618", // AI HL: horizontal stretch matrix
-  "4f023b2b-b628-425a-a005-e96d992f7a32", // AI HL: translation by vector addition
 ]);
 
 // Rob explicitly approved three-question progressions for these two Topic 4
@@ -4509,9 +4527,9 @@ function passesLessonSpecificCheck(question, lesson) {
   if (/^translations$/.test(lessonTitle)
     && question.id === "MF_AIHL_T3_MATRIX_TRANSLATION") return true;
   if (/^enlargements$/.test(lessonTitle)
-    && ["W_M22TZ1AIHL_P2_Q7", "MF_AIHL_T3_MATRIX_ENLARGEMENT"].includes(question.id)) return true;
+    && question.id === "MF_AIHL_T3_MATRIX_ENLARGEMENT") return true;
   if (/^reflections$/.test(lessonTitle)
-    && ["W_N23TZ0AIHL_P2_Q6", "MF_AIHL_T3_MATRIX_REFLECTION"].includes(question.id)) return true;
+    && ["MF_AIHL_T3_MATRIX_REFLECTION_AXIS", "MF_AIHL_T3_MATRIX_REFLECTION"].includes(question.id)) return true;
   if (/composite matrix transformations/.test(lessonTitle)
     && ["W_N24TZ0AIHL_P2_Q6", "W_M23TZ2AIHL_P1_Q13"].includes(question.id)) return true;
   if (/determinant of a transformation matrix/.test(lessonTitle)

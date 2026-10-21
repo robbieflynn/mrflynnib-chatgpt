@@ -432,7 +432,7 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
     ]
   },
   {
-    "id": "MF_AIHL_T3_MATRIX_REFLECTION",
+    "id": "MF_AIHL_T3_MATRIX_REFLECTION_AXIS",
     "course": "AI HL",
     "banks": [
       "AI HL"
@@ -441,6 +441,66 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
     "paperNumber": "Practice",
     "section": "A",
     "qnum": 7,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI HL": "Easy"
+    },
+    "title": "Reflect a point in the y-axis",
+    "topics": [
+      {
+        "main": "Geometry and Trigonometry",
+        "sub": "Matrix transformations"
+      }
+    ],
+    "body": "The matrix \\(R=\\begin{pmatrix}-1&0\\\\0&1\\end{pmatrix}\\) represents a transformation of the plane.",
+    "parts": [
+      [
+        "a",
+        "Describe the transformation represented by \\(R\\).",
+        2
+      ],
+      [
+        "b",
+        "Find the image of the point \\(P(3,-2)\\) under this transformation.",
+        2
+      ]
+    ],
+    "markscheme": [
+      [
+        "a",
+        [
+          [
+            "reflection",
+            "A1"
+          ],
+          [
+            "in the \\(y\\)-axis",
+            "A1"
+          ]
+        ]
+      ],
+      [
+        "b",
+        [
+          [
+            "\\(R\\begin{pmatrix}3\\\\-2\\end{pmatrix}=\\begin{pmatrix}-3\\\\-2\\end{pmatrix}\\)",
+            "M1A1"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "id": "MF_AIHL_T3_MATRIX_REFLECTION",
+    "course": "AI HL",
+    "banks": [
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI HL Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 8,
     "marks": 4,
     "authored": true,
     "difficulty": {
