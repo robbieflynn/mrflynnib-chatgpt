@@ -738,6 +738,22 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-dashboard-hero .dashboard-hero-layout { min-height: 118px; }
 .student-dashboard-hero .dashboard-hero-copy { gap: .45rem; }
 .student-dashboard-hero .dashboard-hero-copy h1 { max-width: 30ch; }
+.student-dashboard-loading-hero .dashboard-hero-shell { min-height: 184px; align-content: center; }
+.student-dashboard-loading-copy { width: min(100%, 620px); display: grid; gap: .8rem; }
+.student-dashboard-loading-copy span, .student-dashboard-loading-copy strong, .student-dashboard-loading-copy i, .student-dashboard-loading-card span, .student-dashboard-loading-card strong, .student-dashboard-loading-card i { display: block; overflow: hidden; border-radius: 999px; background: linear-gradient(90deg, rgba(255,255,255,.11), rgba(255,255,255,.22), rgba(255,255,255,.11)); background-size: 220% 100%; animation: dashboard-loading-shimmer 1.2s ease-in-out infinite; }
+.student-dashboard-loading-copy span { width: 105px; height: 11px; }
+.student-dashboard-loading-copy strong { width: min(82%, 480px); height: 40px; }
+.student-dashboard-loading-copy i { width: min(58%, 340px); height: 14px; }
+.student-dashboard-loading-label { margin: 0; color: #546270; font-size: .85rem; font-weight: 800; }
+.student-dashboard-loading-card { min-height: 300px; padding: clamp(1.4rem, 3vw, 2.2rem); display: grid; align-content: start; gap: 1rem; border-radius: 1.35rem; background: linear-gradient(135deg, #174f98, #0b2148 68%); box-shadow: 0 18px 48px rgba(11,33,72,.12); }
+.student-dashboard-loading-card.is-summary { background: white; border: 1px solid #dce2e5; box-shadow: 0 10px 30px rgba(11,21,48,.055); }
+.student-dashboard-loading-card span { width: 88px; height: 11px; }
+.student-dashboard-loading-card strong { width: 62%; height: 36px; }
+.student-dashboard-loading-card i { width: 78%; height: 13px; }
+.student-dashboard-loading-card i:last-child { width: 48%; }
+.student-dashboard-loading-card.is-summary span, .student-dashboard-loading-card.is-summary strong, .student-dashboard-loading-card.is-summary i { background: linear-gradient(90deg, #eef1f3, #dde4e8, #eef1f3); background-size: 220% 100%; }
+@keyframes dashboard-loading-shimmer { to { background-position: -220% 0; } }
+@media (prefers-reduced-motion: reduce) { .student-dashboard-loading-copy span, .student-dashboard-loading-copy strong, .student-dashboard-loading-copy i, .student-dashboard-loading-card span, .student-dashboard-loading-card strong, .student-dashboard-loading-card i { animation: none; } }
 .teacher-dashboard-hero { background: radial-gradient(circle at 78% 12%, rgba(31,151,139,.2), transparent 30%), #091831; }
 .teacher-dashboard-hero-igcse { border-bottom-color: rgba(179,38,54,.6); }
 .student-next-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(290px, .65fr); gap: 1.25rem; align-items: stretch; }

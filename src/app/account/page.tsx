@@ -132,30 +132,43 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const bank = isIgcse ? "igcse" : "ib";
   const questionBankHref = isIgcse ? "/igcse/question-bank" : `/question-bank/${selectedCourse.slug}`;
   const progressLabel = isIgcse ? "IGCSE" : selectedCourse.code;
-  const completedQuestionIds = new Set<string>();
-  let pageStart = 0;
+  const completedQuestionIdsPromise = (async () => {
+    const completedQuestionIds = new Set<string>();
+    let pageStart = 0;
 
-  while (true) {
-    const { data, error } = await supabase
-      .from("question_progress")
-      .select("question_id")
-      .eq("bank", bank)
-      .eq("completed", true)
-      .range(pageStart, pageStart + 999);
-    if (error || !data) break;
-    data.forEach((row) => completedQuestionIds.add(row.question_id));
-    if (data.length < 1000) break;
-    pageStart += 1000;
-  }
+    while (true) {
+      const { data, error } = await supabase
+        .from("question_progress")
+        .select("question_id")
+        .eq("user_id", user.id)
+        .eq("bank", bank)
+        .eq("completed", true)
+        .range(pageStart, pageStart + 999);
+      if (error || !data) break;
+      data.forEach((row) => completedQuestionIds.add(row.question_id));
+      if (data.length < 1000) break;
+      pageStart += 1000;
+    }
 
-  const { count: whiteboardCount } = await supabase
+    return completedQuestionIds;
+  })();
+  const whiteboardCountPromise = supabase
     .from("whiteboard_documents")
     .select("question_id", { count: "exact", head: true })
+    .eq("user_id", user.id)
     .eq("bank", bank);
+  const membershipsPromise = supabase
+    .from("class_memberships")
+    .select("class_id,joined_at,classes(id,name,course,bank)")
+    .eq("student_id", user.id);
+  const [completedQuestionIds, { count: whiteboardCount }, { data: memberships }] = await Promise.all([
+    completedQuestionIdsPromise,
+    whiteboardCountPromise,
+    membershipsPromise,
+  ]);
   const courseCompleted = courseProgress.questionIds.filter((id) => completedQuestionIds.has(id)).length;
   const coursePercentage = percentage(courseCompleted, courseProgress.questionIds.length);
   const displayName = typeof user.user_metadata.display_name === "string" ? user.user_metadata.display_name : "";
-  const { data: memberships } = await supabase.from("class_memberships").select("class_id,joined_at,classes(id,name,course,bank)").eq("student_id", user.id);
   const activeMemberships = (memberships ?? []).filter((membership) => {
     const classRecord = Array.isArray(membership.classes) ? membership.classes[0] : membership.classes;
     return classRecord?.bank === bank;
