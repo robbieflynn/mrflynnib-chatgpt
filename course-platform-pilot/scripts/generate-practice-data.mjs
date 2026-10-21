@@ -444,6 +444,23 @@ const authoredPractice = [
     parts: [["a", "Find the steady-state probability vector.", 3], ["b", "Hence state the long-term probability that the student travels by bus.", 2]],
     markscheme: [["a", [["solves \\(T\\begin{pmatrix}b\\\\c\\end{pmatrix}=\\begin{pmatrix}b\\\\c\\end{pmatrix}\\) together with \\(b+c=1\\)", "M1"], ["\\(0.3b=0.4c\\)", "A1"], ["\\(\\begin{pmatrix}4/7\\\\3/7\\end{pmatrix}\\)", "A1"]]], ["b", [["the long-term probability is the bus component of the steady-state vector", "R1"], ["\\(4/7\\approx0.571\\)", "A1"]]]],
   }),
+  {
+    id: "MF_AI_T5_POWER_RULE_INTEGRATION",
+    course: "AI SL",
+    banks: ["AI SL", "AI HL"],
+    paper: "Mr Flynn AI Practice",
+    paperNumber: "Practice",
+    section: "A",
+    qnum: 45,
+    marks: 4,
+    authored: true,
+    difficulty: { "AI SL": "Easy", "AI HL": "Easy" },
+    title: "Integrate a polynomial using the power rule",
+    topics: [{ main: "Calculus", sub: "Integration rules" }],
+    body: "",
+    parts: [["", "Find \\(\\displaystyle\\int(4x^3-6x^2+5)\\,dx\\).", 4]],
+    markscheme: [["", [["integrates each term using the power rule", "M1"], ["\\(x^4-2x^3+5x+C\\)", "A3"]]]],
+  },
   authoredAiHlQuestion({
     id: "MF_AIHL_T5_BASIC_DERIVATIVES_1",
     qnum: 27,
@@ -476,9 +493,9 @@ const authoredPractice = [
     title: "Differentiate rational powers",
     main: "Calculus",
     sub: "Differentiation - basic rules",
-    body: "Let \\(f(x)=4x^{1/2}-3x^{-1/2}\\), where \\(x>0\\).",
+    body: "Let \\(f(x)=4x^{\\frac12}-3x^{-\\frac12}\\), where \\(x>0\\).",
     parts: [["", "Find \\(f'(x)\\).", 4]],
-    markscheme: [["", [["\\(f'(x)=2x^{-1/2}+\\dfrac32x^{-3/2}\\)", "A4"]]]],
+    markscheme: [["", [["\\(f'(x)=2x^{-\\frac12}+\\dfrac32x^{-\\frac32}\\)", "A4"]]]],
   }),
   authoredAiHlQuestion({
     id: "MF_AIHL_T5_RATIONAL_DERIVATIVES_2",
@@ -488,9 +505,9 @@ const authoredPractice = [
     title: "Differentiate positive and negative fractional powers",
     main: "Calculus",
     sub: "Differentiation - basic rules",
-    body: "The function \\(g\\) is defined by \\(g(x)=6x^{2/3}+2x^{-3/2}\\), where \\(x>0\\).",
+    body: "The function \\(g\\) is defined by \\(g(x)=6x^{\\frac23}+2x^{-\\frac32}\\), where \\(x>0\\).",
     parts: [["a", "Find \\(g'(x)\\).", 4], ["b", "Find \\(g'(8)\\).", 1]],
-    markscheme: [["a", [["\\(g'(x)=4x^{-1/3}-3x^{-5/2}\\)", "A4"]]], ["b", [["\\(2-\\dfrac{3}{64\\sqrt8}\\)", "A1"]]]],
+    markscheme: [["a", [["\\(g'(x)=4x^{-\\frac13}-3x^{-\\frac52}\\)", "A4"]]], ["b", [["\\(2-\\dfrac{3}{64\\sqrt8}\\)", "A1"]]]],
   }),
   authoredAiHlQuestion({
     id: "MF_AIHL_T5_CHAIN_RULE",
@@ -1367,7 +1384,7 @@ const verifiedOverrides = {
   "741c0b0c-17ef-46e5-894c-c62447c47172": ["N12TZ0AISL_P1_Q15", "M13TZ1AISL_P1_Q15"],
   "f06c971e-bbd7-4cb2-8db5-e3abbe338077": ["V_N24TZ2AISL_P1_Q12", "V_M22TZ2AISL_P1_Q11"],
   "97a1a371-61a6-4585-971e-9fa6c167f39c": ["V_N24TZ1AISL_P1_Q12", "V_M23TZ1AISL_P1_Q5"],
-  "b31ff22b-38f1-489b-a9ce-209fa91d73e6": ["M14TZ1SL_P1_Q3", "V_M24TZ2AISL_P2_Q3"],
+  "b31ff22b-38f1-489b-a9ce-209fa91d73e6": ["MF_AI_T5_POWER_RULE_INTEGRATION", "V_M24TZ2AISL_P2_Q3"],
   "0512477b-d893-4805-9d2e-2f597b8c8673": ["N13TZ0AISL_P1_Q9", "M14TZ1AISL_P1_Q15"],
   "0f9fa92d-3b9f-4348-8368-4940114b9592": ["M11TZ2AISL_P1_Q14", "N11TZ0SL_P2_Q6"],
   // AI Topic 3 precision pass. These use only the prompt parts that assess
@@ -2290,7 +2307,6 @@ const practicePartOverrides = {
     "V_N24TZ2AISL_P1_Q12": ["a", "b"],
   },
   "b31ff22b-38f1-489b-a9ce-209fa91d73e6": {
-    "M14TZ1SL_P1_Q3": ["a"],
     "V_M24TZ2AISL_P2_Q3": ["b"],
   },
 };
@@ -2367,6 +2383,11 @@ const practicePartTextOverrides = {
     },
     "V_M22TZ2AISL_P2_Q2": {
       d: "(i) Calculate the value of \\(\\displaystyle\\sum_{n=1}^{12}\\left(340\\times1.058^{\\,n-1}\\right)\\).<br>(ii) Interpret your answer in this context.",
+    },
+  },
+  "a490ac5c-828a-4b25-a5e0-3cde3293071c": {
+    "M12TZ2HL_P1_Q7": {
+      b: "On the coordinate axes below, sketch the graph of the derivative \\(y=f'(x)\\), clearly showing the coordinates of the images of the points A and D, labelling them \\(A''\\) and \\(D''\\) respectively.<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>",
     },
   },
 };
@@ -3061,7 +3082,6 @@ const practicePartTitles = {
     "V_M23TZ1AISL_P1_Q5": "Find a tangent and test a proposed normal",
   },
   "b31ff22b-38f1-489b-a9ce-209fa91d73e6": {
-    "M14TZ1SL_P1_Q3": "Integrate x⁴ using the power rule",
     "V_M24TZ2AISL_P2_Q3": "Integrate a quadratic using the power rule",
   },
   "0512477b-d893-4805-9d2e-2f597b8c8673": {

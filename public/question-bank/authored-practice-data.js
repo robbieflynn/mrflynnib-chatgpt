@@ -1746,6 +1746,54 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
     ]
   },
   {
+    "id": "MF_AI_T5_POWER_RULE_INTEGRATION",
+    "course": "AI SL",
+    "banks": [
+      "AI SL",
+      "AI HL"
+    ],
+    "paper": "Mr Flynn AI Practice",
+    "paperNumber": "Practice",
+    "section": "A",
+    "qnum": 45,
+    "marks": 4,
+    "authored": true,
+    "difficulty": {
+      "AI SL": "Easy",
+      "AI HL": "Easy"
+    },
+    "title": "Integrate a polynomial using the power rule",
+    "topics": [
+      {
+        "main": "Calculus",
+        "sub": "Integration rules"
+      }
+    ],
+    "body": "",
+    "parts": [
+      [
+        "",
+        "Find \\(\\displaystyle\\int(4x^3-6x^2+5)\\,dx\\).",
+        4
+      ]
+    ],
+    "markscheme": [
+      [
+        "",
+        [
+          [
+            "integrates each term using the power rule",
+            "M1"
+          ],
+          [
+            "\\(x^4-2x^3+5x+C\\)",
+            "A3"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
     "id": "MF_AIHL_T5_BASIC_DERIVATIVES_1",
     "course": "AI HL",
     "banks": [
@@ -1865,7 +1913,7 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
         "sub": "Differentiation - basic rules"
       }
     ],
-    "body": "Let \\(f(x)=4x^{1/2}-3x^{-1/2}\\), where \\(x>0\\).",
+    "body": "Let \\(f(x)=4x^{\\frac12}-3x^{-\\frac12}\\), where \\(x>0\\).",
     "parts": [
       [
         "",
@@ -1878,7 +1926,7 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
         "",
         [
           [
-            "\\(f'(x)=2x^{-1/2}+\\dfrac32x^{-3/2}\\)",
+            "\\(f'(x)=2x^{-\\frac12}+\\dfrac32x^{-\\frac32}\\)",
             "A4"
           ]
         ]
@@ -1907,7 +1955,7 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
         "sub": "Differentiation - basic rules"
       }
     ],
-    "body": "The function \\(g\\) is defined by \\(g(x)=6x^{2/3}+2x^{-3/2}\\), where \\(x>0\\).",
+    "body": "The function \\(g\\) is defined by \\(g(x)=6x^{\\frac23}+2x^{-\\frac32}\\), where \\(x>0\\).",
     "parts": [
       [
         "a",
@@ -1925,7 +1973,7 @@ window.MR_FLYNN_AUTHORED_PRACTICE = [
         "a",
         [
           [
-            "\\(g'(x)=4x^{-1/3}-3x^{-5/2}\\)",
+            "\\(g'(x)=4x^{-\\frac13}-3x^{-\\frac52}\\)",
             "A4"
           ]
         ]

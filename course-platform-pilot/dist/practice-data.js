@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T06:03:53.623Z",
+  "generatedAt": "2026-10-21T06:21:05.072Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 487,
-  "completeLessonCount": 457,
+  "completeLessonCount": 458,
   "approvedSingleLessonCount": 25,
-  "questionCount": 954,
+  "questionCount": 955,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -1493,7 +1493,8 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Counting principles",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "A_N22TZ0HL_P1_Q11"
+        "A_N22TZ0HL_P1_Q11",
+        "M14TZ1SL_P1_Q3"
       ],
       "questionParts": {
         "A_N22TZ0HL_P1_Q11": [
@@ -3966,19 +3967,15 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Integration rules",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "M14TZ1SL_P1_Q3",
+        "MF_AI_T5_POWER_RULE_INTEGRATION",
         "V_M24TZ2AISL_P2_Q3"
       ],
       "questionParts": {
-        "M14TZ1SL_P1_Q3": [
-          "a"
-        ],
         "V_M24TZ2AISL_P2_Q3": [
           "b"
         ]
       },
       "questionPartTitles": {
-        "M14TZ1SL_P1_Q3": "Integrate x⁴ using the power rule",
         "V_M24TZ2AISL_P2_Q3": "Integrate a quadratic using the power rule"
       }
     },
@@ -5560,6 +5557,11 @@ window.MR_FLYNN_PRACTICE = {
         "M12TZ2HL_P1_Q7": [
           "b"
         ]
+      },
+      "questionPartTexts": {
+        "M12TZ2HL_P1_Q7": {
+          "b": "On the coordinate axes below, sketch the graph of the derivative \\(y=f'(x)\\), clearly showing the coordinates of the images of the points A and D, labelling them \\(A''\\) and \\(D''\\) respectively.<div aria-label=\"Blank coordinate axes for sketching the derivative\" style=\"position:relative;width:100%;max-width:440px;height:230px;margin:16px auto 4px;border:1px solid #cbd5e1;border-radius:8px;background-color:#fff;background-image:linear-gradient(#e5e7eb 1px,transparent 1px),linear-gradient(90deg,#e5e7eb 1px,transparent 1px);background-size:23px 23px;background-position:center center;\"><div style=\"position:absolute;left:0;right:0;top:50%;border-top:2px solid #334155;\"></div><div style=\"position:absolute;top:0;bottom:0;left:50%;border-left:2px solid #334155;\"></div><span style=\"position:absolute;right:8px;top:calc(50% + 6px);font-weight:700;color:#334155;\">x</span><span style=\"position:absolute;left:calc(50% + 8px);top:6px;font-weight:700;color:#334155;\">y</span></div>"
+        }
       },
       "questionPartTitles": {
         "W_N21TZ0AIHL_P1_Q8": "Sketch a function from the graph of its derivative",

@@ -389,14 +389,29 @@ AI HL,2026-10-21,4.18.11,Binomial errors,approved-single,W_N22TZ0AIHL_P1_Q16,Rob
 AI HL,2026-10-21,4.19.1,Markov chains introduction,approved-no-practice,,Rob confirmed this introduction should remain blank
 AI HL,2026-10-21,4.19.2,Transition matrices,approved,W_N21TZ0AIHL_P1_Q9|W_N23TZ0AIHL_P1_Q15,Locked from Rob's Topic 4 review
 AI HL,2026-10-21,4.19.3,Steady state and long term probabilities,awaiting-recheck,W_M23TZ2AIHL_P2_Q5|MF_AIHL_T4_LONG_TERM_PROBABILITY,Kept question 1 and replaced question 2 with a direct numerical long-term probability question
-AI HL,2026-10-20,5.3.2,Derivative at a point,awaiting-recheck,V_N24TZ2AISL_P1_Q12|V_M22TZ2AISL_P1_Q11,Reordered the accessible gradient question before the harder one
-AI HL,2026-10-20,5.6,Stationary points,awaiting-recheck,N13TZ0AISL_P1_Q9|M14TZ1AISL_P1_Q15,Reordered the easier stationary-point calculation first
-AI HL,2026-10-20,5.9.1,"Derivative of sinx,cosx,lnx,e^x",awaiting-recheck,MF_AIHL_T5_BASIC_DERIVATIVES_1|MF_AIHL_T5_BASIC_DERIVATIVES_2,Added two direct derivatives without later rules
-AI HL,2026-10-20,5.9.2,Differentiation (rational exponents),awaiting-recheck,MF_AIHL_T5_RATIONAL_DERIVATIVES_1|MF_AIHL_T5_RATIONAL_DERIVATIVES_2,Added direct positive and negative fractional-power differentiation
-AI HL,2026-10-20,5.9.3,Chain rule,awaiting-recheck,MF_AIHL_T5_CHAIN_RULE|H_M18TZ1HL_P1_Q2,Added a straightforward chain-rule question before the exam extract
-AI HL,2026-10-20,5.9.6,Related rates of change,awaiting-recheck,W_M23TZ2AIHL_P1_Q12|M11TZ2HL_P2_Q9,Reordered the medium shape question before the difficult rocket question
-AI HL,2026-10-20,5.10.4,Points of inflexion,awaiting-recheck,M11TZ1SL_P2_Q9|M08TZ2HL_P2_Q6,Reordered easy before medium
-AI HL,2026-10-20,5.11.1,Integration power rule (rational power),awaiting-recheck,MF_AIHL_T5_RATIONAL_POWER_INTEGRATION|N18TZ0HL_P2_Q2,Added a direct rational-power integral before the existing example
+AI HL,2026-10-21,5.1.1,Introduction to differentiation,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,5.1.2,Introduction to limits,approved-no-practice,,Rob confirmed this introduction should remain blank
+AI HL,2026-10-21,5.2,Increasing and decreasing functions,approved,V_N23TZ1AISL_P1_Q3|V_M25TZ1AISL_P1_Q8,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.3.1,Power rule,approved,N12TZ0AISL_P1_Q15|M13TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.3.2,Derivative at a point,approved,V_N24TZ2AISL_P1_Q12|V_M22TZ2AISL_P1_Q11,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.4,Tangents and normals,approved,V_N24TZ1AISL_P1_Q12|V_M23TZ1AISL_P1_Q5,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.5.1,Integration power rule,awaiting-recheck,MF_AI_T5_POWER_RULE_INTEGRATION|V_M24TZ2AISL_P2_Q3,Replaced the limits-based first question with direct polynomial integration
+AI HL,2026-10-21,5.5.2,Finding f of x,approved,N11TZ0SL_P1_Q4A|V_M25TZ3AISL_P1_Q9,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.5.3,Area under the curve,approved,M18TZ2SL_P1_Q2A|V_M22TZ2AISL_P1_Q6,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.6,Stationary points,approved,N13TZ0AISL_P1_Q9|M14TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.7,Optimization,approved,N17TZ0SL_P1_Q6A|M19TZ1AISL_P1_Q15,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.8,Trapezoidal rule,approved,V_N21TZ0AISL_P1_Q6|V_M22TZ1AISL_P1_Q6,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.1,"Derivative of sinx,cosx,lnx,e^x",approved,MF_AIHL_T5_BASIC_DERIVATIVES_1|MF_AIHL_T5_BASIC_DERIVATIVES_2,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.2,Differentiation (rational exponents),awaiting-recheck,MF_AIHL_T5_RATIONAL_DERIVATIVES_1|MF_AIHL_T5_RATIONAL_DERIVATIVES_2,Kept both approved questions and changed fractional powers to stacked fraction notation
+AI HL,2026-10-21,5.9.3,Chain rule,approved,MF_AIHL_T5_CHAIN_RULE|H_M18TZ1HL_P1_Q2,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.4,Product rule,approved,H_N10TZ0SL_P1_Q2|M19TZ1SL_P2_Q3,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.5,Quotient rule,approved,H_M11TZ2SL_P1_Q4|M16TZ2HL_P2_Q12X2,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.9.6,Related rates of change,approved,W_M23TZ2AIHL_P1_Q12|M11TZ2HL_P2_Q9,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.10.1,Relationship between graphs and derivatives,approved-no-practice,,Rob accepted the lesson in its current blank state
+AI HL,2026-10-21,5.10.2,Sketching derivatives,awaiting-recheck,W_N21TZ0AIHL_P1_Q8|M12TZ2HL_P1_Q7,Kept both approved questions and added coordinate axes to question 2
+AI HL,2026-10-21,5.10.3,Classifying stationary points,approved,N09TZ0SL_P1_Q9|M10TZ2SL_P1_Q8,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.10.4,Points of inflexion,approved,M11TZ1SL_P2_Q9|M08TZ2HL_P2_Q6,Locked from Rob's Topic 5 review
+AI HL,2026-10-21,5.11.1,Integration power rule (rational power),approved,MF_AIHL_T5_RATIONAL_POWER_INTEGRATION|N18TZ0HL_P2_Q2,Locked from Rob's Topic 5 review
 AI HL,2026-10-20,5.11.2,Integrating sin and cos,awaiting-recheck,MF_AIHL_T5_SIN_COS_INTEGRATION_1|MF_AIHL_T5_SIN_COS_INTEGRATION_2,Replaced later-technique questions with direct indefinite and definite trigonometric integrals
 AI HL,2026-10-20,5.11.5,Integration by substitution,awaiting-recheck,MF_AIHL_T5_SUBSTITUTION_1|MF_AIHL_T5_SUBSTITUTION_2,Replaced inappropriate examples with the accessible SL substitution pattern
 AI HL,2026-10-20,5.12.2,Area between curve and y-axis,awaiting-recheck,V_SPECAISL_P1_Q10|H_N15TZ0HL_P2_Q5,Reordered easy before medium
