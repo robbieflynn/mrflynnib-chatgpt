@@ -77,9 +77,9 @@ AA HL,2026-10-20,2.12.4,Sum and product of roots,approved-after-ordering,M15TZ1H
 AA HL,2026-10-21,2.13.1,Rational functions quadratic in denominator,approved,A_M22TZ2HL_P1_Q11|N10TZ0HL_P2_Q8|N19TZ0HL_P1_Q10,Approved by Rob after final recheck
 AA HL,2026-10-21,2.13.2,Rational functions quadratic in numerator,approved,A_N23TZ1HL_P2_Q11|A_N21TZ0HL_P2_Q10,Approved by Rob after recheck
 AA HL,2026-10-20,2.14,Even and odd functions,approved,M15TZ1HL_P1_Q5|A_M22TZ1HL_P2_Q6,Locked from Rob's final Topic 2 review
-AA HL,2026-10-21,2.15,Solving inequalities,awaiting-recheck,M15TZ1HL_P2_Q10|M10TZ1HL_P2_Q9,Approved question 2 retained; question 1 replaced with a difficult Paper 2 rational inequality and no modulus
+AA HL,2026-10-21,2.15,Solving inequalities,approved,M15TZ1HL_P2_Q10|M10TZ1HL_P2_Q9,Approved by Rob after the final recheck
 AA HL,2026-10-21,2.16.1,Graphs of modulus functions,approved,M08TZ1HL_P2_Q2|A_N25TZ3HL_P1_Q5,Approved by Rob after recheck
-AA HL,2026-10-21,2.16.2,Modulus equations and inequalities,awaiting-recheck,N10TZ0HL_P1_Q1|M16TZ1HL_P1_Q7,Approved question 1 retained; question 2 replaced with a non-trigonometric modulus graph and exact equation
+AA HL,2026-10-21,2.16.2,Modulus equations and inequalities,approved,N10TZ0HL_P1_Q1|M16TZ1HL_P1_Q7,Approved by Rob after the final recheck
 AA HL,2026-10-20,2.16.3,Reciprocal transformations,approved,A2_M25TZ3HL_P1_Q6|A3_M25TZ3HL_P1_Q6,Locked from Rob's final Topic 2 review
 AA HL,2026-10-20,2.16.4,Graphs of y = [f(x)]²,approved,A_SPECHL_P1_Q3|N18TZ0HL_P2_Q8,Locked from Rob's final Topic 2 review
 AA HL,2026-10-20,3.1.1,Midpoint of a line segment,approved,M18TZ1AISL_P1_Q5|M14TZ1AISL_P1_Q9,Locked from Rob's Topic 3 review
@@ -174,7 +174,7 @@ AA HL,2026-10-21,5.6.2,Chain rule,approved,M19TZ2SL_P1_Q10|M16TZ1SL_P1_Q10,Rob a
 AA HL,2026-10-20,5.6.3,Product rule,approved,M17TZ2SL_P1_Q6|N10TZ0SL_P1_Q2,Locked from Rob's calculus review
 AA HL,2026-10-20,5.6.4,Quotient rule,approved,M11TZ2SL_P1_Q4|M12TZ2SL_P1_Q10X1,Locked from Rob's calculus review
 AA HL,2026-10-20,5.7.1,Relationship between graphs and derivatives,approved,N08TZ0SL_P1_Q6|M10TZ2SL_P1_Q7,Locked from Rob's calculus review
-AA HL,2026-10-21,5.7.2,Sketching derivatives,awaiting-recheck,M14TZ2SL_P1_Q6,Rob approved the question; drawing area rebuilt with aligned axes for final visual recheck
+AA HL,2026-10-21,5.7.2,Sketching derivatives,approved,M14TZ2SL_P1_Q6,Rob approved the question; both axes now lie directly on the grid lines
 AA HL,2026-10-21,5.7.3,Sketching derivatives with gdc,approved,M10TZ1SL_P2_Q3|M12TZ2SL_P2_Q2,Rob approved both questions in the Topic 5 confirmation pass
 AA HL,2026-10-20,5.8.1,Classifying stationary points,approved,M11TZ1HL_P1_Q12X1|N13TZ0HL_P1_Q10X1,Locked from Rob's calculus review
 AA HL,2026-10-20,5.8.2,Points of inflexion,approved-after-ordering,M16TZ1HL_P2_Q11X1|N10TZ0SL_P2_Q7,Same approved pair reordered easy before harder
