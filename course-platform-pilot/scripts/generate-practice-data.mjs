@@ -1403,9 +1403,9 @@ const verifiedOverrides = {
   // Direct use of P(A ∪ B) and P(A ∩ B), without padding this lesson
   // with a context question whose probability formula is only incidental.
   "a9ba5e52-d70c-45b8-822c-f80312ea5c9a": ["M11TZ1HL_P1_Q1", "M14TZ2HL_P1_Q1"],
-  // Pair a straightforward regression calculation with a second question
-  // that explicitly interprets the gradient in context.
-  "6280cb5e-91bd-4761-b655-6b88addc1345": ["M17TZ1SL_P1_Q4", "M14TZ2SL_P2_Q3"],
+  // Keep the contextual cooling model first, then use a full regression task
+  // in which students calculate r, find the regression line and predict.
+  "6280cb5e-91bd-4761-b655-6b88addc1345": ["M17TZ1SL_P1_Q4", "N14TZ0SL_P2_Q2"],
   // This exact extract explicitly explains why low expected frequencies must
   // be combined before a chi-squared goodness-of-fit test. The other exact
   // source in the archive is not an approved active-bank record, so one
@@ -1599,11 +1599,6 @@ const intentionallyTriplePractice = new Set([
 ]);
 
 const practicePartOverrides = {
-  "6280cb5e-91bd-4761-b655-6b88addc1345": {
-    // The second source asks what the gradient represents in context. Keep
-    // that focused part and omit its later prediction follow-up.
-    "M14TZ2SL_P2_Q3": ["a"],
-  },
   "41d1e966-9bb1-4436-976e-d02187f32932": {
     "V_M21TZ2AISL_P1_Q6": ["a"],
   },

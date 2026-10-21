@@ -1,5 +1,5 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-20T18:13:07.346Z",
+  "generatedAt": "2026-10-21T05:44:24.474Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 487,
   "completeLessonCount": 455,
@@ -3764,13 +3764,8 @@ window.MR_FLYNN_PRACTICE = {
       "bankPath": "ib-bank.html",
       "questionIds": [
         "M17TZ1SL_P1_Q4",
-        "M14TZ2SL_P2_Q3"
-      ],
-      "questionParts": {
-        "M14TZ2SL_P2_Q3": [
-          "a"
-        ]
-      }
+        "N14TZ0SL_P2_Q2"
+      ]
     },
     "a9ba5e52-d70c-45b8-822c-f80312ea5c9a": {
       "lesson": "4.5 Probability formulae",

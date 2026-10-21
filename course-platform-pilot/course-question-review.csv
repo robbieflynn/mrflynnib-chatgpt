@@ -336,7 +336,24 @@ AI HL,2026-10-20,3.16.8,Travelling salesman problem,awaiting-recheck,W_N24TZ0AIH
 AI HL,2026-10-20,3.16.9,TSP practical problems,awaiting-recheck,W_M24TZ2AIHL_P2_Q4|MF_AIHL_T3_TSP_PRACTICAL,Kept the approved source and added a second practical travelling-salesman interpretation
 AI HL,2026-10-20,3.16.10,Nearest neighbour algorithm,awaiting-recheck,MF_AIHL_T3_NEAREST_NEIGHBOUR_1|MF_AIHL_T3_NEAREST_NEIGHBOUR_2,Replaced both Voronoi nearest-site questions with graph-theory nearest-neighbour tours
 AI HL,2026-10-20,3.16.11,Deleted vertex algorithm,approved,W_M25TZ3AIHL_P2_Q4|W_SPECAIHL_P2_Q5,Locked from Rob's AI Topic 3 review
-AI HL,2026-10-20,4.4,Linear regression and correlation,awaiting-recheck,M17TZ1SL_P1_Q4|M14TZ2SL_P2_Q3,Added a focused interpretation of the regression gradient in context
+AI HL,2026-10-21,4.1.1,Discrete v continuous data,approved,N13TZ0AISL_P1_Q1|N14TZ0AISL_P1_Q3,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.1.2,Sampling techniques,approved,V_SPECAISL_P1_Q3|V_M21TZ1AISL_P2_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.2.1,Histograms and cumulative frequency curves,approved,M17TZ1AISL_P1_Q1|M19TZ2AISL_P1_Q12,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.2.2,Box and whisker diagrams,approved,M19TZ1SL_P2_Q1|M19TZ2AISL_P1_Q6,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.2.3,Interpreting box plots,approved,V_M22TZ2AISL_P1_Q7|M11TZ2SL_P1_Q6,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.2.4,Outliers,approved,V_M23TZ2AISL_P1_Q3|M18TZ1SL_P1_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.3.1,Averages and spread,approved,V_M21TZ1AISL_P1_Q2|M19TZ1AISL_P1_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.3.2,Frequency tables,approved,V_M23TZ2AISL_P1_Q5|M17TZ2AISL_P1_Q7,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.3.3,Constant changes to data,approved,V_M24TZ1AISL_P1_Q8|V_M24TZ2AISL_P1_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.3.4,Variance and standard deviation by hand,approved-no-practice,,Rob confirmed that this lesson should remain blank
+AI HL,2026-10-21,4.4,Linear regression and correlation,awaiting-recheck,M17TZ1SL_P1_Q4|N14TZ0SL_P2_Q2,Question 2 now explicitly calculates the correlation coefficient before finding the regression line and making a prediction
+AI HL,2026-10-21,4.5,Probability formulae,approved,M11TZ1HL_P1_Q1|M14TZ2HL_P1_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.6.1,Venn diagrams,approved,M16TZ1SL_P1_Q2A|M10TZ1SL_P1_Q5,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.6.2,Tree Diagrams,approved,N17TZ0SL_P1_Q1|M13TZ2HL_P1_Q4,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.7,Discrete random variables,approved,N12TZ0SL_P1_Q2A|N20TZ0HL_P1_Q1,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.8,Binomial distribution,approved,V_M25TZ1AISL_P1_Q7|M12TZ2HL_P2_Q2,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.9,Normal distribution,approved,M13TZ2SL_P2_Q2|M13TZ2HL_P2_Q3,Locked from Rob's Topic 4 review
+AI HL,2026-10-21,4.10,Spearman's rank correlation coefficient,approved,V_M23TZ1AISL_P1_Q1|V_M25TZ2AISL_P1_Q10,Locked from Rob's Topic 4 review
 AI HL,2026-10-20,4.12.4,Chi squared (degrees of freedom),awaiting-recheck,MF_AIHL_T4_CHI_SQUARED_DF,Added the exact k minus 1 minus 2 calculation after estimating mean and standard deviation
 AI HL,2026-10-20,4.13.2,Sum of square residuals,awaiting-recheck,W_SPECAIHL_P1_Q12|W_M23TZ1AIHL_P1_Q16,Reordered the medium question before the difficult question
 AI HL,2026-10-20,4.18.3,T-test,awaiting-recheck,MF_AIHL_T4_ONE_SAMPLE_T_TEST|W_N24TZ0AIHL_P1_Q9X1,Replaced the unrelated mean and median card with a genuine one-sample t-test
