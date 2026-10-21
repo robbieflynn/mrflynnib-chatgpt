@@ -1729,6 +1729,7 @@ const intentionallySinglePractice = new Set([
   "908747f1-8799-4ca2-8f63-ba376beff0ab", // AA SL + AA HL: direct quadratic inequality only
   "916aa44f-5240-4926-9cb6-12800d012e0c", // AA HL: one coherent polynomial factorise-and-sketch task
   "795817a0-1f56-45f4-b103-3b8936c00858", // AI HL: System of linear equations (Rob approved question 1 only)
+  "72a5f616-843a-4be5-875c-6e57afe3d730", // AI HL: Piecewise functions (Rob approved question 1 only)
   "8cb13923-f306-4a16-bbc5-93a1f15caa63", // AI SL + AI HL: The number e
   "5e60b54a-6bf2-4cf5-be78-4f13509448fd", // AI SL + AI HL: Rounding
   "de2388f1-fbf3-49c0-883b-1eff70b9cf7f", // AI HL: Phase portrait sink

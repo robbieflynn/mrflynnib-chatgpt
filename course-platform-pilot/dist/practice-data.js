@@ -1,10 +1,10 @@
 window.MR_FLYNN_PRACTICE = {
-  "generatedAt": "2026-10-21T10:20:56.086Z",
+  "generatedAt": "2026-10-21T11:25:01.577Z",
   "format": "Verified lesson practice: lesson-specific exam questions, with explicit three-question exceptions",
   "lessonCount": 486,
-  "completeLessonCount": 456,
-  "approvedSingleLessonCount": 25,
-  "questionCount": 955,
+  "completeLessonCount": 455,
+  "approvedSingleLessonCount": 26,
+  "questionCount": 954,
   "selectionPolicy": "Exactly two verified existing-bank questions per completed lesson by default, with only explicitly approved blank, single-question or three-question exceptions; generated matches are capped at 10 marks, curated matches are revalidated, incomplete lessons remain flagged for review, and uncertain matches are withheld; AA paper and calculator rules are shown on every question",
   "lessons": {
     "95399e03-4f3d-47dd-8a88-41c986b50d91": {
@@ -4402,8 +4402,7 @@ window.MR_FLYNN_PRACTICE = {
       "subtopic": "Functions and inverse functions",
       "bankPath": "ib-bank.html",
       "questionIds": [
-        "W_N24TZ0AIHL_P1_Q6",
-        "W_N23TZ0AIHL_P1_Q2"
+        "W_N24TZ0AIHL_P1_Q6"
       ],
       "questionParts": {
         "W_N23TZ0AIHL_P1_Q2": [
