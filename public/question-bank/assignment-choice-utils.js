@@ -70,6 +70,17 @@
     return /^-?[A-Za-z0-9.π]+(?:\^-?[A-Za-z0-9.π]+)?$/.test(part) ? part : "(" + part + ")";
   }
 
+  function latexFractionHasFollowingFactor(source, start) {
+    var remainder = source.slice(start);
+    remainder = remainder.replace(/^(?:\s|\\[,;!:]|\\(?:quad|qquad|enspace)\b)*/g, "");
+    if (!remainder) return false;
+    if (/^[A-Za-z0-9α-ωΑ-Ωπ([]/.test(remainder)) return true;
+    if (remainder[0] !== "\\") return false;
+    var command = remainder.match(/^\\([A-Za-z]+)/);
+    if (!command) return false;
+    return !/^(?:right|end|cdot|times|div|pm|mp|leq?|geq?|neq?|approx|sim|to|mapsto|cup|cap|mid)$/i.test(command[1]);
+  }
+
   function replaceLatexFractions(value) {
     var source = String(value || "");
     var result = "";
@@ -79,7 +90,8 @@
       var numerator = readLatexArgument(source, index + command[0].length);
       var denominator = numerator && readLatexArgument(source, numerator.end);
       if (!numerator || !denominator) { result += source[index]; index += 1; continue; }
-      result += wrapFractionPart(replaceLatexFractions(numerator.value)) + "/" + wrapFractionPart(replaceLatexFractions(denominator.value));
+      var fraction = wrapFractionPart(replaceLatexFractions(numerator.value)) + "/" + wrapFractionPart(replaceLatexFractions(denominator.value));
+      result += latexFractionHasFollowingFactor(source, denominator.end) ? "(" + fraction + ")*" : fraction;
       index = denominator.end;
     }
     return result;
@@ -3213,6 +3225,38 @@
   function repairStoredChoiceOptions(options) {
     var values = Array.isArray(options) ? options.map(function (option) { return clean(option); }) : [];
     if (values.length !== 5) return values;
+
+    // Older assignments could interpret an unbraced TeX coefficient such as
+    // \dfrac12r^2\sin\theta as 1/(2r^2\sin\theta). Repair the five displayed
+    // options in place while keeping their indexes stable for answer checking.
+    var reciprocalParts = values.map(function (option) {
+      var match = option.match(/^(-?\d+(?:\.\d+)?)\s*\/\s*(-?\d+(?:\.\d+)?)([A-Za-zα-ωΑ-Ωπ][\s\S]+)$/);
+      return match ? { numerator: Number(match[1]), denominator: Number(match[2]), suffix: match[3] } : null;
+    });
+    var reciprocalSuffixes = reciprocalParts.filter(Boolean).map(function (part) { return part.suffix; });
+    if (reciprocalParts.filter(Boolean).length >= 4
+      && reciprocalSuffixes.length
+      && reciprocalSuffixes.every(function (suffix) { return suffix === reciprocalSuffixes[0]; })) {
+      var usedCoefficients = {};
+      reciprocalParts.forEach(function (part) {
+        if (part && part.denominator) usedCoefficients[part.numerator + "/" + part.denominator] = true;
+      });
+      var fallbackCoefficients = [[2, 1], [5, 2], [3, 4], [3, 1], [-2, 1]];
+      return values.map(function (option, index) {
+        var part = reciprocalParts[index];
+        if (!part) return option;
+        var numerator = part.numerator;
+        var denominator = part.denominator;
+        if (!denominator) {
+          var fallback = fallbackCoefficients.find(function (pair) { return !usedCoefficients[pair[0] + "/" + pair[1]]; }) || [2, 1];
+          numerator = fallback[0]; denominator = fallback[1];
+          usedCoefficients[numerator + "/" + denominator] = true;
+        }
+        var coefficient = denominator === 1 ? String(numerator) : "(" + numerator + "/" + denominator + ")";
+        return coefficient + "*" + part.suffix;
+      });
+    }
+
     var ratioIndexes = [];
     values.forEach(function (option, index) { if (ratioParts(option)) ratioIndexes.push(index); });
     if (ratioIndexes.length !== 1 || values.some(function (option) { return option.indexOf(":") === -1; })) return values;
