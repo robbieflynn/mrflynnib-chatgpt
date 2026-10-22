@@ -14,20 +14,27 @@ function readBrowserData(file, key) {
 const library = readBrowserData("library-data.js", "MR_FLYNN_LIBRARY");
 const igcse = readBrowserData("igcse-library-data.js", "MR_FLYNN_IGCSE_LIBRARY");
 const papers = readBrowserData("past-paper-data.js", "MR_FLYNN_PAST_PAPERS");
+const practice = readBrowserData("practice-data.js", "MR_FLYNN_PRACTICE");
 const courses = {};
+
+function sampleLessons(lessons, topicNumbers) {
+  return topicNumbers.map((topicNumber) => lessons.find((lesson) => lesson.topic === topicNumber && practice.lessons?.[lesson.id]))
+    .filter(Boolean)
+    .map((lesson) => lesson.id);
+}
 
 for (const [code, lessons] of Object.entries(library.courses || {})) {
   const id = code.toLowerCase().replaceAll(" ", "-");
   courses[id] = {
     lessons: lessons.map((lesson) => lesson.id),
-    samples: [...new Map(lessons.map((lesson) => [lesson.topic, lesson])).values()].slice(0, 3).map((lesson) => lesson.id),
+    samples: sampleLessons(lessons, [1, 3, 5]),
     pastPapers: (papers.courses?.[code] || []).flatMap((paper) => paper.questions.map((question) => question.id)),
   };
 }
 
 courses.igcse = {
   lessons: (igcse.lessons || []).map((lesson) => lesson.id),
-  samples: [...new Map((igcse.lessons || []).map((lesson) => [lesson.topic, lesson])).values()].slice(0, 3).map((lesson) => lesson.id),
+  samples: sampleLessons(igcse.lessons || [], [1, 4, 6]),
   pastPapers: (papers.courses?.IGCSE || []).flatMap((paper) => paper.questions.map((question) => question.id)),
 };
 

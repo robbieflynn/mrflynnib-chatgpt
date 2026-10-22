@@ -7,18 +7,21 @@ import { getCourseProduct } from "@/lib/platform-products";
 type VideoCourse = { lessons: string[]; samples: string[]; pastPapers: string[] };
 
 export async function GET(request: Request) {
-  const session = await getPlatformAccess();
-  if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const url = new URL(request.url);
   const courseId = url.searchParams.get("course") || "";
   const videoId = url.searchParams.get("video") || "";
   const kind = url.searchParams.get("kind") === "past-paper" ? "pastPapers" : "lessons";
   const course = getCourseProduct(courseId);
   const map = (videoAccess.courses as Record<string, VideoCourse>)[courseId];
-  if (!course || course.curriculum !== session.curriculum || !map || !map[kind].includes(videoId)) return NextResponse.json({ error: "Video not found" }, { status: 404 });
-  const ownsCourse = session.ownedCourses.some((item) => item.id === courseId);
+  if (!course || !map || !map[kind].includes(videoId)) return NextResponse.json({ error: "Video not found" }, { status: 404 });
   const isSample = kind === "lessons" && map.samples.includes(videoId);
-  if (!ownsCourse && !isSample) return NextResponse.json({ error: "Full course access required", upgrade: course.curriculum === "igcse" ? "/igcse/account/access" : "/account/access" }, { status: 403 });
+  if (!isSample) {
+    const session = await getPlatformAccess();
+    if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
+    if (course.curriculum !== session.curriculum && session.profile?.role !== "admin") return NextResponse.json({ error: "Video not found" }, { status: 404 });
+    const ownsCourse = session.ownedCourses.some((item) => item.id === courseId);
+    if (!ownsCourse) return NextResponse.json({ error: "Full course access required", upgrade: course.curriculum === "igcse" ? "/igcse/account/access" : "/account/access" }, { status: 403 });
+  }
   const libraryId = process.env.BUNNY_STREAM_LIBRARY_ID || videoAccess.libraryId;
   const expires = Math.floor(Date.now() / 1000) + 15 * 60;
   const tokenKey = process.env.BUNNY_STREAM_TOKEN_KEY;

@@ -18,6 +18,7 @@ const previewCourseId = salesPreviewMode
     ? previewMode.replace("single-course-", "")
     : null;
 const requestedCourseId = previewParameters.get("course");
+const requestedView = previewParameters.get("view");
 const previewTopic = Number(previewParameters.get("topic"));
 
 const courseDefinitions = [
@@ -331,11 +332,13 @@ function configurePreviewMode() {
   document.getElementById("courseBackButton").textContent = isIgcse ? "← IGCSE course" : "← IB courses";
   document.getElementById("summaryTopics").textContent = String(enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].topics.length, 0));
   document.getElementById("summaryTopicsLabel").textContent = "course topics";
+  const reviewHome = `/platform-review?curriculum=${isIgcse ? "igcse" : "ib"}&role=student`;
   document.getElementById("questionBankLink").href = isIgcse ? "/igcse/question-bank" : "/question-bank";
-  document.getElementById("assignmentsLink").href = isIgcse ? "/igcse/account#assignments" : "/account#assignments";
+  document.getElementById("assignmentsLink").href = `${reviewHome}&screen=assignment`;
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
   document.getElementById("manageAccessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
-  document.getElementById("learningHomeLink").href = isIgcse ? "/igcse/account" : "/account";
+  document.getElementById("learningHomeLink").href = reviewHome;
+  document.getElementById("primaryLearningHomeLink").href = reviewHome;
 }
 
 function configureCurriculumExperience(curriculum) {
@@ -351,7 +354,15 @@ function getCurrentLesson() {
 }
 
 function salesPreviewLessons(course = currentCourse) {
-  return course.topics.slice(0, 3).map((topic) => topic.lessons[0]).filter(Boolean);
+  const sampleTopics = course.id === "igcse" ? [1, 4, 6] : [1, 3, 5];
+  return sampleTopics.map((topicNumber) => {
+    const topic = course.topics.find((candidate) => candidate.number === topicNumber);
+    return topic?.lessons.find((lesson) => practiceLibrary?.lessons?.[lesson.id]);
+  }).filter(Boolean);
+}
+
+function isSampleLesson(lesson, course = currentCourse) {
+  return salesPreviewLessons(course).some((sample) => sample.id === lesson.id);
 }
 
 function lessonIsAvailable(lesson) {
@@ -437,9 +448,10 @@ function openCourse(courseId, lessonId = null) {
   if (!courses[courseId] || !enrolledCourseIds.includes(courseId)) return;
   currentCourseId = courseId;
   currentCourse = courses[courseId];
+  const reviewerDefaultLesson = reviewerMode ? salesPreviewLessons(currentCourse)[0]?.id : null;
   currentLessonId = lessonId && currentCourse.lessons.some((lesson) => lesson.id === lessonId)
     ? lessonId
-    : currentCourse.lessons.find((lesson) => lesson.id === state.lastLesson)?.id || currentCourse.lessons[0]?.id;
+    : reviewerDefaultLesson || currentCourse.lessons.find((lesson) => lesson.id === state.lastLesson)?.id || currentCourse.lessons[0]?.id;
   currentTopic = getCurrentLesson()?.topic || 1;
   state.lastCourse = courseId;
   state.lastLesson = currentLessonId;
@@ -481,6 +493,13 @@ function renderCourse() {
 }
 
 async function loadProtectedVideo(frame, loading, videoId, kind = "lesson") {
+  if (reviewerMode && kind === "lesson" && !isSampleLesson({ id: videoId })) {
+    frame.removeAttribute("src");
+    loading.classList.remove("is-hidden");
+    loading.innerHTML = `<p>This lesson is visible in the catalogue, but its video is part of the complete course.</p><a class="primary-button" href="${reviewCurriculum === "igcse" ? "/igcse/account/access" : "/account/access"}?course=${encodeURIComponent(currentCourseId)}">View course access</a>`;
+    return;
+  }
+  loading.innerHTML = `<span></span><p>${kind === "past-paper" ? "Loading the worked solution…" : "Loading your lesson…"}</p>`;
   try {
     const response = await fetch(`/api/platform/video?course=${encodeURIComponent(currentCourseId)}&video=${encodeURIComponent(videoId)}&kind=${kind === "past-paper" ? "past-paper" : "lesson"}`);
     const result = await response.json();
@@ -540,7 +559,7 @@ function renderLessonPractice(lesson) {
 
   const frame = document.getElementById("practiceFrame");
   const bankFile = practice.bankPath || "ib-bank.html";
-  const url = new URL(`/public/question-bank/${bankFile}`, window.location.href);
+  const url = new URL(`/question-bank/${bankFile}`, window.location.href);
   url.searchParams.set("renderer", "20261021-2");
   url.searchParams.set("embedded", "1");
   url.searchParams.set("practice", "1");
@@ -629,7 +648,7 @@ function renderLessonList(query = "") {
     const locked = !lessonIsAvailable(lesson);
     return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? "Locked lesson: " : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
       <span class="lesson-state">${locked ? "⌑" : complete ? "✓" : "▶"}</span>
-      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? "Full course" : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice" : ""}`}</small></span>
+      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? "Full course" : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice" : ""}${isSampleLesson(lesson) ? " · Free sample" : ""}`}</small></span>
     </button>`;
   }).join("");
 }
@@ -775,9 +794,15 @@ function renderProgress() {
 
 function pastPaperSets() {
   const sets = pastPaperLibrary?.courses?.[currentPastPaperCourse] || [];
-  return currentPastPaperSession === "all"
+  const filtered = currentPastPaperSession === "all"
     ? sets
     : sets.filter((set) => set.session === currentPastPaperSession);
+  return [...filtered].sort((first, second) => {
+    const firstYear = Number(first.session.match(/\b20\d{2}\b/)?.[0] || 0);
+    const secondYear = Number(second.session.match(/\b20\d{2}\b/)?.[0] || 0);
+    if (firstYear !== secondYear) return firstYear - secondYear;
+    return `${first.session} ${first.paper} ${first.timezone}`.localeCompare(`${second.session} ${second.paper} ${second.timezone}`, undefined, { numeric: true, sensitivity: "base" });
+  });
 }
 
 function renderPastPaperTabs() {
@@ -798,7 +823,11 @@ function renderPastPaperTabs() {
 
 function renderPastPaperSessionFilter() {
   const select = document.getElementById("pastPaperSessionFilter");
-  const sessions = [...new Set((pastPaperLibrary.courses[currentPastPaperCourse] || []).map((set) => set.session))];
+  const sessions = [...new Set((pastPaperLibrary.courses[currentPastPaperCourse] || []).map((set) => set.session))].sort((first, second) => {
+    const firstYear = Number(first.match(/\b20\d{2}\b/)?.[0] || 0);
+    const secondYear = Number(second.match(/\b20\d{2}\b/)?.[0] || 0);
+    return firstYear - secondYear || first.localeCompare(second, undefined, { numeric: true, sensitivity: "base" });
+  });
   select.innerHTML = `<option value="all">All sessions</option>${sessions.map((session) => `<option value="${escapeHtml(session)}">${escapeHtml(session)}</option>`).join("")}`;
   if (!sessions.includes(currentPastPaperSession)) currentPastPaperSession = "all";
   select.value = currentPastPaperSession;
@@ -1045,6 +1074,7 @@ async function bootstrapAccount() {
     document.getElementById("accessLink").href = platformAccount.links.access;
     document.getElementById("manageAccessLink").href = platformAccount.links.access;
     document.getElementById("learningHomeLink").href = platformAccount.links.account;
+    document.getElementById("primaryLearningHomeLink").href = platformAccount.links.account;
     document.getElementById("questionBankLink").href = platformAccount.links.questionBank;
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
     void flushLessonProgress();
@@ -1066,7 +1096,7 @@ async function initialize() {
   renderCourseCards();
   renderProgress();
   if (reviewerMode) {
-    setView("courses");
+    setView(requestedView === "past-papers" ? "pastPapers" : "courses");
   } else if (validPreviewCourseId || requestedCourseId) {
     const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
     const requestedLesson = enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
