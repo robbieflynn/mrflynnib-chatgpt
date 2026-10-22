@@ -3155,6 +3155,80 @@
     if (!list.some(function (item) { return equivalent(item, value); })) list.push(value);
   }
 
+  function ratioParts(value) {
+    var answer = clean(value);
+    if (!answer || isRawLatexAnswer(answer) || /[;=<>≤≥]/.test(answer)) return null;
+    var colons = [];
+    var depth = 0;
+    for (var index = 0; index < answer.length; index += 1) {
+      if (answer[index] === "(") depth += 1;
+      else if (answer[index] === ")") depth -= 1;
+      else if (answer[index] === ":" && depth === 0) colons.push(index);
+    }
+    if (depth !== 0 || colons.length !== 1) return null;
+    var left = answer.slice(0, colons[0]).trim();
+    var right = answer.slice(colons[0] + 1).trim();
+    if (!left || !right || isProseAnswer(left) || isProseAnswer(right)) return null;
+    if (!expressionToLatex(left) || !expressionToLatex(right)) return null;
+    return { left: left, right: right };
+  }
+
+  function ratioComponentCandidates(component) {
+    var values = [];
+    var radical = component.match(/^sqrt\((\d+(?:\.\d+)?)\)$/i);
+    if (radical) {
+      var radicand = Number(radical[1]);
+      [radicand + 2, radicand + 4, Math.max(1, radicand - 1), radicand * 2 + 1].forEach(function (value) {
+        addCandidate(values, "sqrt(" + formatNumber(value, decimalPlaces(radical[1])) + ")");
+      });
+      return values;
+    }
+    var quantity = quantityParts(component);
+    if (quantity && !quantity.prefix && !quantity.unit && quantity.number > 0) {
+      var number = quantity.number;
+      var places = decimalPlaces(quantity.rawNumber);
+      [number + 1, number + 2, number * 2 + 1, number / 2].forEach(function (value) {
+        if (value > 0) addCandidate(values, formatNumber(value, places || (value % 1 ? 2 : 0)));
+      });
+      return values;
+    }
+    var numberMatch = component.match(/\d+(?:\.\d+)?/);
+    if (numberMatch) {
+      var original = Number(numberMatch[0]);
+      [original + 1, original + 2, original * 2 + 1].forEach(function (value) {
+        addCandidate(values, component.slice(0, numberMatch.index) + formatNumber(value, decimalPlaces(numberMatch[0])) + component.slice(numberMatch.index + numberMatch[0].length));
+      });
+    }
+    return values;
+  }
+
+  function ratioDistractorCandidates(correct, list) {
+    var ratio = ratioParts(correct);
+    if (!ratio) return;
+    if (!equivalent(ratio.left, ratio.right)) addCandidate(list, ratio.right + ":" + ratio.left);
+    ratioComponentCandidates(ratio.left).forEach(function (left) { addCandidate(list, left + ":" + ratio.right); });
+    ratioComponentCandidates(ratio.right).forEach(function (right) { addCandidate(list, ratio.left + ":" + right); });
+  }
+
+  function repairStoredChoiceOptions(options) {
+    var values = Array.isArray(options) ? options.map(function (option) { return clean(option); }) : [];
+    if (values.length !== 5) return values;
+    var ratioIndexes = [];
+    values.forEach(function (option, index) { if (ratioParts(option)) ratioIndexes.push(index); });
+    if (ratioIndexes.length !== 1 || values.some(function (option) { return option.indexOf(":") === -1; })) return values;
+    var correctIndex = ratioIndexes[0];
+    var replacements = [];
+    ratioDistractorCandidates(values[correctIndex], replacements);
+    replacements = replacements.filter(function (candidate) {
+      return ratioParts(candidate) && !values.some(function (option) { return equivalent(candidate, option); });
+    });
+    if (replacements.length < 4) return values;
+    var replacementIndex = 0;
+    return values.map(function (option, index) {
+      return index === correctIndex ? option : replacements[replacementIndex++];
+    });
+  }
+
   function formatFraction(numerator, denominator) {
     if (!denominator) return "";
     if (denominator < 0) {
@@ -3274,6 +3348,7 @@
   // rather than producing near-identical decimal guesses.
   function structuralDistractorCandidates(correct, list) {
     var answer = clean(correct);
+    if (ratioParts(answer)) return;
     var numberPattern = /-?\d+(?:\.\d+)?/g;
     var tokens = [];
     var token;
@@ -3895,6 +3970,7 @@
     if (/\b(?:null\s+and\s+alternative\s+hypotheses|hypotheses)\b/i.test(finalInstruction)
       && !/;/.test(correct)) return null;
     var candidates = [];
+    ratioDistractorCandidates(correct, candidates);
     functionEvaluationResultCandidates(correct, candidates);
     interceptCoordinateCandidates(correct, prompt, candidates);
     fractionCandidates(correct, candidates);
@@ -3956,6 +4032,7 @@
     var distractors = candidates.filter(function (candidate) {
       if (!isChoiceTextSafe(candidate) || !isPlausibleForPrompt(candidate, prompt)
         || accepted.some(function (answer) { return equivalent(candidate, answer); })) return false;
+      if (ratioParts(correct) && !ratioParts(candidate)) return false;
       if (probabilityPrompt) {
         var correctProbabilityValue = numericValue(correct);
         var probabilityCandidate = numericValue(candidate);
@@ -4741,6 +4818,8 @@
     isDisplaySafe: isDisplaySafe,
     latexToPlain: latexToPlain,
     renderAnswer: renderAnswer,
+    repairStoredChoiceOptions: repairStoredChoiceOptions,
+    isRatioAnswer: function (value) { return Boolean(ratioParts(value)); },
     shuffled: shuffled,
     toLatex: toLatex,
     validateChoiceSet: validateChoiceSet,

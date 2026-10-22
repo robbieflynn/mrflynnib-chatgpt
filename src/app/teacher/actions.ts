@@ -162,9 +162,20 @@ function choiceLooksSafe(value: string) {
   return depth === 0 && expressionStructureLooksSafe(answer);
 }
 
+function isRatioAnswer(value: string) {
+  const answer = cleanChoiceAnswer(value);
+  if (!answer || /[;=<>≤≥]/.test(answer)) return false;
+  const colons = topLevelPositions(answer, (character) => character === ":");
+  if (colons.length !== 1) return false;
+  const left = answer.slice(0, colons[0]).trim();
+  const right = answer.slice(colons[0] + 1).trim();
+  return Boolean(left && right && expressionStructureLooksSafe(left) && expressionStructureLooksSafe(right));
+}
+
 function validChoiceSet(acceptedAnswers: string[], options: string[], correctOption: number | null) {
   if (!acceptedAnswers.length || options.length !== 5 || correctOption === null || correctOption < 0 || correctOption >= options.length) return false;
   if (options.some((option) => !choiceLooksSafe(option))) return false;
+  if (acceptedAnswers.some(isRatioAnswer) && options.some((option) => !isRatioAnswer(option))) return false;
   for (let left = 0; left < options.length; left += 1) {
     for (let right = left + 1; right < options.length; right += 1) {
       if (answersEquivalent(options[left], options[right])) return false;
