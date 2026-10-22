@@ -601,6 +601,16 @@
     if (event.data.type === "mrflynnib-assignment-response-result") {
       var item = state[event.data.questionId];
       if (!item) return;
+      if (!event.data.ok && event.data.queued) {
+        var queuedPart = event.data.response && String(event.data.response.partKey || "");
+        var queuedSelector = '.qb-card[data-id="' + CSS.escape(event.data.questionId) + '"] ' + (queuedPart ? '.qb-response-part[data-part-key="' + CSS.escape(queuedPart) + '"] ' : '') + '.qb-response-status';
+        var queued = document.querySelector(queuedSelector);
+        if (queued) {
+          queued.className = "qb-response-status";
+          queued.textContent = "Saved on this device. Waiting to reconnect…";
+        }
+        return;
+      }
       if (event.data.ok) {
         var submittedPart = event.data.response && String(event.data.response.partKey || "");
         if (submittedPart) {
