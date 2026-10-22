@@ -8,6 +8,40 @@ const choices = require("../public/question-bank/assignment-choice-utils.js");
 assert.equal(choices.latexToPlain(String.raw`\dfrac12r^2\sin\theta`), "(1/2)*r^2sintheta");
 assert.equal(choices.toLatex("(1/2)*r^2sintheta"), String.raw`\left(\frac{1}{2}\right)\times r^{2}\sin \theta `);
 assert.equal(choices.latexToPlain(String.raw`x^{\frac12}`), "x^(1/2)");
+assert.equal(choices.isAnswerCompatibleWithPrompt("(0,0,-2)", "Find the coordinates of A, B and C."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("ln(2)", "Find the equations of the horizontal and vertical asymptotes."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("2.51", "Write down the first two times t_1 and t_2."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("5+2*sqrt(55)", "Find the coordinates (x_P,y_P) of P."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("2theta", "Find the value of theta."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("(±2)", "Find the number of vehicles."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("OR the lowest final temperature", "State what the value represents."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("58-59 minutes", "Estimate the median time."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("(0.135,0.541); (1,0); (e^-2,4e^-2)", "Find the coordinates of A and B."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("a=1/m", "Write f'(x) in the required form, giving a and b in terms of m."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("-3", "Find the eigenvalues of matrix A."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("matrix(1;-3)", "Find the corresponding eigenvectors."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("742/3 m^3 (224/3 m^3)", "Calculate the exact volume."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt(String.raw`latex:\sqrt{2}\,\text{e}^{-5\pi\frac{\text{i}}{8}}`, "Obtain the two square roots of z."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("332°", "Find the real distance, in metres."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("(20.5,0)", "Work out the length of RQ."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("1300 (cm^2) (1296 (cm^2))", "Calculate the area of cloth."), false);
+assert.equal(choices.isChoiceTextSafe("any two valid assumptions"), false);
+assert.equal(choices.generateHypothesisChoiceSet([["Reject H0", "R1"]], "Find the probability of a Type I error.", "audit-type-one"), null);
+assert.equal(choices.isAnswerCompatibleWithPrompt("(a=2)", "Express the quadratic in the form a(x+b)^2+c."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("z=(3+t)/2", "Find the parametric equations of the line."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("f^-1(x)=arccos(1/(x-2))", "Find f^-1(x), stating its domain."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("a=24t", "Find the value of a."), false);
+assert.equal(choices.isAnswerCompatibleWithPrompt("x=3y", "Write down three equations that express the information."), false);
+assert.equal(choices.isChoiceTextSafe("2*(at B both populations are decreasing)"), false);
+const estimatedProbabilityChoices = choices.generateChoiceSet(["1/6"], "audit-estimated-probability", "Find an estimate for the probability that the height is greater than 82.5 cm.");
+assert(estimatedProbabilityChoices);
+assert(estimatedProbabilityChoices.options.every((option) => {
+  const [numerator, denominator] = option.split("/").map(Number);
+  return denominator > 0 && numerator >= 0 && numerator <= denominator;
+}));
+const fragmentProbabilityChoices = choices.generateChoiceSet(["0.145"], "audit-fragment-probability", "less than 4.5 kg;");
+assert(fragmentProbabilityChoices);
+assert(fragmentProbabilityChoices.options.every((option) => Number(option) >= 0 && Number(option) <= 1));
 const repairedCoefficientChoices = choices.repairStoredChoiceOptions([
   "1/2r^2sintheta", "-1/2r^2sintheta", "3/2r^2sintheta", "1/0r^2sintheta", "1/4r^2sintheta",
 ]);
@@ -99,12 +133,13 @@ function promptForSubpart(prompt, label) {
 
 function choiceSetForRows(rows, prompt, seed) {
   if (requiresWhiteboardTask(prompt)) return null;
-  return choices.generateComparisonReasonChoiceSet(rows, prompt, seed)
+  const set = choices.generateComparisonReasonChoiceSet(rows, prompt, seed)
     || choices.generateHypothesisChoiceSet(rows, prompt, seed)
     || choices.generateExplanationChoiceSet(rows, prompt, seed)
     || choices.generateConceptChoiceSet(rows, prompt, seed)
     || choices.generateParityChoiceSet(rows, prompt, seed)
     || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed, prompt);
+  return set && choices.isAnswerCompatibleWithPrompt(set.options[set.correctOption], prompt) ? set : null;
 }
 
 const choiceQualityIssues = [];
@@ -275,8 +310,10 @@ function looksObjective(prompt) {
 
 function requiresWhiteboardTask(prompt) {
   const text = plainText(prompt);
-  return /\b(show that|prove|verify that|sketch|draw|construct|plot|shade)\b/i.test(text)
-    || /\bcomplete\b[\s\S]*\bdiagram\b/i.test(text);
+  return /\b(show that|prove|verify that|establish that|demonstrate that|sketch|draw|construct|plot|shade)\b/i.test(text)
+    || /\b(?:show|establish|demonstrate)\b[\s\S]{0,100}\bthat\b/i.test(text)
+    || /\b(?:apply|use|using)\b[\s\S]*\b(?:mathematical )?induction\b/i.test(text)
+    || /\bcomplete\b[\s\S]*\b(?:diagram|table)\b/i.test(text);
 }
 
 function hasSharedWhiteboardInstruction(prompt) {
@@ -627,8 +664,7 @@ const derivativeExplanationChoices = choices.generateExplanationChoiceSet(
   "Explain why V has a maximum.",
   "audit-derivative-explanation",
 );
-assert(derivativeExplanationChoices);
-assert(derivativeExplanationChoices.options.every((option) => !choices.toLatex(option).includes("/")));
+assert.equal(derivativeExplanationChoices, null, "Implausible derivative-change distractors should fall back to teacher review.");
 
 const monotonicityReasonChoices = choices.generateExplanationChoiceSet(
   [
@@ -829,8 +865,7 @@ const twoObservationChoices = choices.generateExplanationChoiceSet(
   "State two observations that support the conclusion.",
   "audit-two-observations",
 );
-assert(twoObservationChoices);
-assert(twoObservationChoices.options[twoObservationChoices.correctOption].includes(";"));
+assert.equal(twoObservationChoices, null, "Nonsensical quartile distractors should fall back to teacher review.");
 
 const isoscelesReasonChoices = choices.generateExplanationChoiceSet(
   [[String.raw`Use isosceles triangle BOD to obtain \(38^\circ\).`, "A1"]],
@@ -1145,6 +1180,12 @@ for (const [label, path] of banks) {
         if (question.id === "M14TZ1HL_P2_Q11" && part === "b" && nestedLabel === "i") {
           assert.equal(nestedSet, null);
         }
+        if (question.id === "M14TZ1HL_P1_Q10" && part === "b" && nestedLabel === "i") {
+          assert.equal(nestedSet, null, "Coordinates were incorrectly offered as the derivative f'(x).");
+        }
+        if (question.id === "W_M21TZ1AIHL_P2_Q7X2" && part === "b" && nestedLabel === "i") {
+          assert.equal(nestedSet, null, "One expression was incorrectly offered as both z1 and z2.");
+        }
         if (question.id === "M14TZ1HL_P2_Q11" && part === "b" && nestedLabel === "ii") {
           assert.deepEqual(nestedAccepted.slice(0, 2), ["b=76-30mu", "76-30mu"]);
           assert(nestedSet);
@@ -1246,6 +1287,18 @@ for (const [label, path] of banks) {
         verifiedMaclaurinSeriesQuestion = true;
       }
       const set = choiceSetForRows(rows, prompt, `${question.id}:${part}`);
+      if (question.id === "M16TZ2SL_P2_Q9" && part === "e") {
+        assert.equal(set, null, "Coordinates were incorrectly offered as a gradient.");
+      }
+      if (question.id === "M17TZ2SL_P1_Q7" && part === "") {
+        assert.equal(set, null, "Solutions outside the stated interval were offered as correct.");
+      }
+      if (question.id === "V_M25TZ3AISL_P1_Q8" && part === "a") {
+        assert.equal(set, null, "A bare H1 label was incorrectly offered as the alternative hypothesis.");
+      }
+      if (question.id === "4MA1_2024M_2HR_Q11" && part === "b") {
+        assert.equal(set, null, "A mark-scheme acceptance range was incorrectly offered as a student answer.");
+      }
       if (!accepted.length && !set) {
         if (looksObjective(prompt) && !nested.length) objectiveFallbacks.push(`${label} ${question.id} ${part}: ${plainText(prompt)}`);
         continue;
@@ -1410,3 +1463,4 @@ if (auditDetailModes.includes("6")) {
       console.log(`accepted=${JSON.stringify(item.accepted || [])} rows=${JSON.stringify((item.rows || []).slice(-10))}`);
     });
 }
+assert.equal(choiceQualityIssues.length, 0, "The live assignment-choice audit found an unsafe or mismatched answer option.");
