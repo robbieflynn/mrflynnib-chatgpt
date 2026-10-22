@@ -149,7 +149,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
       answerSavesInFlight.add(storageKey);
       const controller = new AbortController();
-      const timeout = window.setTimeout(() => controller.abort(), 12_000);
+      const timeout = window.setTimeout(() => controller.abort(), 8_000);
       let data: unknown = null;
       let errorMessage = "";
       try {
@@ -408,6 +408,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         records[storageKey] = entry;
         writePendingRecords(pendingAnswerStorageKey, records);
         publishSyncStatus("syncing");
+        send({ type: "mrflynnib-assignment-response-result", questionId, response: entry.response, ok: false, pending: true });
         void deliverPendingAnswer(storageKey, entry);
         return;
       }
