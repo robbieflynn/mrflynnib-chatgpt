@@ -167,12 +167,18 @@
   function appendReadOnlyAnswer(container, item) {
     if (!item.response) { container.textContent = "No answer saved yet."; return; }
     if (item.response.parts && typeof item.response.parts === "object") {
+      var definitions = multipartDefinitions(item);
       container.classList.add("qb-response-readonly-parts");
       Object.keys(item.response.parts).forEach(function (label) {
         var row = document.createElement("div"); row.className = "qb-response-readonly-part";
         var badge = document.createElement("strong"); badge.textContent = partLabel(label);
         var answer = document.createElement("span");
         var value = item.response.parts[label];
+        var definition = definitions.find(function (part) { return part.label === label; });
+        if (definition && definition.mode === "multiple_choice") {
+          var storedIndex = definition.rawOptions.indexOf(String(value || ""));
+          if (storedIndex !== -1) value = definition.options[storedIndex];
+        }
         if (value === "__whiteboard__") answer.textContent = "Completed on the whiteboard or paper";
         else renderAnswer(answer, String(value || ""));
         var savedPartState = multipartPartState(item, label);
@@ -235,10 +241,12 @@
   function multipartDefinitions(item) {
     if (item.responseType !== "multipart" || !Array.isArray(item.responseOptions)) return [];
     return item.responseOptions.map(function (part) {
+      var rawOptions = part && typeof part === "object" && Array.isArray(part.options) ? part.options.map(String) : [];
       return part && typeof part === "object" ? {
         label: String(part.label || ""),
         mode: part.mode === "whiteboard" ? "whiteboard" : part.mode === "multiple_choice" ? "multiple_choice" : "exact",
-        options: repairedChoiceOptions(part.options)
+        rawOptions: rawOptions,
+        options: repairedChoiceOptions(rawOptions)
       } : null;
     }).filter(function (part) { return part && part.label; });
   }
@@ -475,11 +483,14 @@
         } else if (definition.mode === "multiple_choice") {
           var choiceState = { value: item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : "" };
           var options = document.createElement("div"); options.className = "qb-response-options qb-response-part-options";
-          orderedChoices(definition.options, String(item.optionSeed || "") + ":" + id + ":" + definition.label).forEach(function (optionText) {
+          var choiceItems = definition.options.map(function (optionText, index) {
+            return { optionText: optionText, storedValue: definition.rawOptions[index] || optionText };
+          });
+          orderedChoices(choiceItems, String(item.optionSeed || "") + ":" + id + ":" + definition.label).forEach(function (choiceItem) {
             var choiceLabel = document.createElement("label"); choiceLabel.className = "qb-response-option";
-            var choice = document.createElement("input"); choice.type = "radio"; choice.name = "answer-" + id + "-" + definition.label; choice.checked = choiceState.value === optionText;
-            choice.addEventListener("change", function () { choiceState.value = optionText; });
-            var choiceCopy = document.createElement("span"); renderAnswer(choiceCopy, optionText);
+            var choice = document.createElement("input"); choice.type = "radio"; choice.name = "answer-" + id + "-" + definition.label; choice.checked = choiceState.value === choiceItem.storedValue || choiceState.value === choiceItem.optionText;
+            choice.addEventListener("change", function () { choiceState.value = choiceItem.storedValue; });
+            var choiceCopy = document.createElement("span"); renderAnswer(choiceCopy, choiceItem.optionText);
             choiceLabel.appendChild(choice); choiceLabel.appendChild(choiceCopy); options.appendChild(choiceLabel);
           });
           partInputs[definition.label] = choiceState; content.appendChild(options);

@@ -5,6 +5,15 @@ import assert from "node:assert/strict";
 const require = createRequire(import.meta.url);
 const choices = require("../public/question-bank/assignment-choice-utils.js");
 
+assert.equal(choices.latexToPlain(String.raw`\dfrac12r^2\sin\theta`), "(1/2)*r^2sintheta");
+assert.equal(choices.toLatex("(1/2)*r^2sintheta"), String.raw`\left(\frac{1}{2}\right)\times r^{2}\sin \theta `);
+assert.equal(choices.latexToPlain(String.raw`x^{\frac12}`), "x^(1/2)");
+const repairedCoefficientChoices = choices.repairStoredChoiceOptions([
+  "1/2r^2sintheta", "-1/2r^2sintheta", "3/2r^2sintheta", "1/0r^2sintheta", "1/4r^2sintheta",
+]);
+assert.equal(repairedCoefficientChoices[0], "(1/2)*r^2sintheta");
+assert(repairedCoefficientChoices.every((choice) => !choice.includes("/0")));
+
 function extractSeed(path) {
   const source = readFileSync(path, "utf8");
   const marker = "var SEED = [";
@@ -1230,7 +1239,7 @@ for (const [label, path] of banks) {
         assert.equal(tableSet.options[tableSet.correctOption], "C; D");
       }
       if (question.id === "N15TZ0HL_P3_Q2" && part === "b") {
-        assert.equal(accepted[0], "f(x)=x+x^2+x^3/3-x^5/30");
+        assert.equal(accepted[0], "f(x)=x+x^2+(1/3)*x^3-(1/30)*x^5");
         const seriesSet = choices.generateChoiceSet(accepted, `${question.id}:${part}`);
         assert(seriesSet);
         assert(seriesSet.options.every((option) => choices.toLatex(option).includes("x")));
