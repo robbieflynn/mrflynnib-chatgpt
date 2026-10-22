@@ -3,18 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Private prototype of the Mr Flynn IB student course platform." />
+    <meta name="description" content="Your Mr Flynn IB courses, practice, assignments and progress." />
     <meta name="robots" content="noindex,nofollow" />
-    <title>My AA HL course | Mr Flynn IB</title>
+    <title>My learning | Mr Flynn IB</title>
     <link rel="icon" href="assets/mr-flynn-mark.png" />
     <link rel="stylesheet" href="styles.css?v=20261018-10" />
   </head>
   <body>
-    <div class="prototype-strip">
-      <strong>Private course-platform prototype</strong>
-      <span>Separate from the live Mr Flynn IB website. No real student accounts or payments are connected.</span>
-    </div>
-
     <div class="app-shell">
       <aside class="sidebar" id="sidebar" aria-label="Student navigation">
         <div class="sidebar-head">
@@ -41,6 +36,14 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
             <span>Progress</span>
           </button>
+          <a class="nav-item external-nav" id="questionBankLink" href="/question-bank">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M8 8h8M8 12h8"/></svg>
+            <span>Question bank</span>
+          </a>
+          <a class="nav-item external-nav" id="assignmentsLink" href="/account#assignments">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h7M9 16h7"/></svg>
+            <span>Assignments</span>
+          </a>
         </nav>
 
         <div class="sidebar-summary">
@@ -63,15 +66,16 @@
           <button class="icon-button menu-button" id="openMenu" type="button" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
-          <div class="topbar-context"><span class="status-dot"></span><span>Your learning space</span></div>
+          <div class="topbar-context"><span class="status-dot"></span><span>Your learning space</span><a class="access-pill" id="accessLink" href="/account/access">Free account</a></div>
           <button class="account-button" id="accountButton" type="button" aria-haspopup="menu" aria-expanded="false">
             <span class="avatar">RF</span>
-            <span><strong>Prototype learner</strong><small>Student account</small></span>
+            <span><strong id="accountName">Student</strong><small id="accountRole">Student account</small></span>
             <span aria-hidden="true">⌄</span>
           </button>
           <div class="account-menu" id="accountMenu" role="menu" hidden>
-            <button type="button" id="showLogin" role="menuitem">Preview sign-in screen</button>
-            <button type="button" id="resetProgress" role="menuitem">Reset prototype progress</button>
+            <a id="learningHomeLink" href="/account" role="menuitem">Learning home</a>
+            <a id="manageAccessLink" href="/account/access" role="menuitem">Manage access</a>
+            <button type="button" id="signOut" role="menuitem">Sign out</button>
           </div>
         </header>
 
@@ -117,7 +121,7 @@
               <div>
                 <p class="eyebrow">Continue learning</p>
                 <h2 id="continueLessonTitle">Choose a lesson to begin</h2>
-                <p id="continueLessonMeta">Your progress will stay on this browser.</p>
+                <p id="continueLessonMeta">Your progress is saved to your account.</p>
               </div>
               <div class="continue-progress">
                 <div><span id="continueProgressLabel">0% complete</span><span id="continueProgressCount">0 lessons</span></div>
@@ -290,25 +294,11 @@
       </main>
     </div>
 
-    <dialog class="prototype-dialog" id="loginDialog">
-      <button class="dialog-close" id="closeLogin" type="button" aria-label="Close sign-in preview">×</button>
-      <img src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" />
-      <p class="eyebrow">Student sign in</p>
-      <h2>One account for your course</h2>
-      <p>This previews the single login for a student enrolled in AA HL.</p>
-      <form id="prototypeLoginForm">
-        <label>Email address<input type="email" placeholder="student@example.com" required /></label>
-        <label>Password<input type="password" placeholder="••••••••" required /></label>
-        <button class="primary-button full" type="submit">Sign in to my course</button>
-      </form>
-      <small class="dialog-note">Prototype only. No real account is created or submitted; course and practice progress stays on this device.</small>
-    </dialog>
-
     <dialog class="prototype-dialog small" id="helpDialog">
       <button class="dialog-close" id="closeHelp" type="button" aria-label="Close help">×</button>
       <span class="help-icon large">?</span>
       <h2>How can we help?</h2>
-      <p>A production version would connect this area to account and course support.</p>
+      <p>For help with your account, course access or learning materials, contact Mr Flynn IB.</p>
       <a class="primary-button full" href="mailto:contact@mrflynnib.com">Email contact@mrflynnib.com</a>
     </dialog>
 
@@ -317,6 +307,6 @@
     <script src="igcse-library-data.js"></script>
     <script src="past-paper-data.js"></script>
     <script src="practice-data.js?v=20261021-9"></script>
-    <script src="app.js?v=20261021-9"></script>
+    <script src="app.js?v=20261022-1"></script>
   </body>
 </html>

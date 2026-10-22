@@ -147,7 +147,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     personalResult.data as PlatformEntitlement[] | null,
     schoolResult.data as PlatformLicenseSeat[] | null,
   ));
-  const upgradeHref = isIgcse ? "/igcse/courses" : "/courses";
+  const upgradeHref = `/account/access?qualification=${isIgcse ? "igcse" : "ib"}`;
   const completedQuestionIdsPromise = (async () => {
     const completedQuestionIds = new Set<string>();
     let pageStart = 0;
@@ -256,7 +256,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             <div className={`platform-access-summary ${access.paid ? "is-paid" : ""}`}>
               <span>{access.label}</span>
               <small>{access.detail}</small>
-              {!access.paid ? <Link href={upgradeHref}>Explore course access</Link> : null}
+              <Link href={upgradeHref}>{access.paid ? "Manage access" : "Explore course access"}</Link>
             </div>
             <AccountMenu signOutHref={isIgcse ? "/account?qualification=igcse" : "/account"} />
           </div>
@@ -285,6 +285,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               <span>You do not need to apply again. Once approved, this account will open your teacher dashboard automatically.</span>
             </p>
           ) : null}
+          <nav className="student-platform-nav" aria-label="Your learning areas">
+            <Link href="/learn"><DashboardIcon name="book" /><span><strong>Courses</strong><small>Lessons and past-paper solutions</small></span><b aria-hidden="true">→</b></Link>
+            <Link href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Independent practice and saved work</small></span><b aria-hidden="true">→</b></Link>
+            <Link href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Work set by your teachers</small></span><b aria-hidden="true">↓</b></Link>
+            <Link href="#question-bank-progress"><DashboardIcon name="check" /><span><strong>Progress</strong><small>Your learning at a glance</small></span><b aria-hidden="true">↓</b></Link>
+          </nav>
           <div className="student-next-grid">
             <section className="student-next-card">
               <div className="student-next-card-copy">
@@ -316,7 +322,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </aside>
           </div>
 
-          <section className="student-assignments dashboard-panel stack-lg">
+          <section className="student-assignments dashboard-panel stack-lg" id="assignments">
             <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>{activeAssignments.length ? "Due soon" : "You're up to date"}</h2></div><p className="muted">Your current work is ordered by due date, so the most important task is always easy to find.</p></div>
             {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
             <div className="student-assignment-list">
@@ -334,7 +340,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             {completedAssignments.length ? <details className="student-completed-assignments"><summary>Submitted assignments ({completedAssignments.length})<span aria-hidden="true">+</span></summary><div className="student-assignment-list">{completedAssignments.map((assignment) => <Link className="student-assignment-card is-complete" href={`/assignments/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>Submitted</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Submitted</span><span aria-hidden="true">→</span></Link>)}</div></details> : null}
           </section>
 
-          <section className="student-learning-section stack-lg">
+          <section className="student-learning-section stack-lg" id="question-bank-progress">
             <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Independent practice</p><h2>Continue learning</h2></div><p className="muted">Pick up where you left off, or choose a topic to practise at your own pace.</p></div>
           {isIgcse ? (
             <div className="dashboard-course-bar dashboard-course-bar-single">

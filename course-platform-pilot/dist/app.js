@@ -11,6 +11,7 @@ const previewCourseId = salesPreviewMode
   : previewMode?.startsWith("single-course-")
     ? previewMode.replace("single-course-", "")
     : null;
+const requestedCourseId = previewParameters.get("course");
 const previewTopic = Number(previewParameters.get("topic"));
 
 const courseDefinitions = [
@@ -116,24 +117,25 @@ const courses = Object.fromEntries(courseDefinitions.map((definition) => {
   return [course.id, course];
 }));
 
-// The student portal only shows courses the signed-in account owns. The
-// prototype learner is enrolled in AA HL so the preview demonstrates the
-// intended single-course experience without exposing the full catalogue.
+// Review URLs can still pin a course for visual QA. Normal learners receive
+// their curriculum and access state from the authenticated bootstrap route.
 const validPreviewCourseId = courseDefinitions.some((definition) => definition.id === previewCourseId)
   ? previewCourseId
   : null;
-const enrolledCourseIds = reviewerMode
+let enrolledCourseIds = reviewerMode
   ? courseDefinitions.map((definition) => definition.id)
   : [validPreviewCourseId || "aa-hl"];
-const enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
-const enrolledCourseId = validPreviewCourseId || "aa-hl";
+let ownedCourseIds = [...enrolledCourseIds];
+let enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
+let enrolledCourseId = validPreviewCourseId || "aa-hl";
+let platformAccount = null;
 
 const storageKey = "mrflynnib-course-platform-v3";
 const practiceDatabaseName = "mrflynnib-course-preview";
 const practiceDatabaseVersion = 1;
 const practiceWhiteboardStore = "whiteboards";
 let state = loadState();
-let currentCourseId = enrolledCourseIds.includes(state.lastCourse) ? state.lastCourse : enrolledCourseId;
+let currentCourseId = enrolledCourseIds.includes(requestedCourseId) ? requestedCourseId : enrolledCourseIds.includes(state.lastCourse) ? state.lastCourse : enrolledCourseId;
 let currentCourse = courses[currentCourseId];
 let currentLessonId = currentCourse.lessons.some((lesson) => lesson.id === state.lastLesson)
   ? state.lastLesson
@@ -150,14 +152,38 @@ function loadState() {
     const saved = JSON.parse(localStorage.getItem(storageKey));
     if (saved && Array.isArray(saved.completed)) {
       if (!Array.isArray(saved.practiceCompleted)) saved.practiceCompleted = [];
+      if (!saved.pendingLessonProgress || typeof saved.pendingLessonProgress !== "object") saved.pendingLessonProgress = {};
       return saved;
     }
   } catch {}
-  return { completed: [], practiceCompleted: [], lastCourse: enrolledCourseId, lastLesson: null };
+  return { completed: [], practiceCompleted: [], pendingLessonProgress: {}, lastCourse: enrolledCourseId, lastLesson: null };
 }
 
 function saveState() {
   localStorage.setItem(storageKey, JSON.stringify(state));
+}
+
+async function syncLessonProgress(courseId, lessonId, completed) {
+  if (!platformAccount || reviewerMode || salesPreviewMode) return;
+  state.pendingLessonProgress ||= {};
+  state.pendingLessonProgress[`${courseId}:${lessonId}`] = completed;
+  saveState();
+  try {
+    const response = await fetch("/api/platform/progress", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId, lessonId, completed }) });
+    if (!response.ok) throw new Error("save failed");
+    delete state.pendingLessonProgress[`${courseId}:${lessonId}`];
+    saveState();
+  } catch {
+    showToast("Saved on this device. We will sync it when the connection returns.");
+  }
+}
+
+async function flushLessonProgress() {
+  const pending = Object.entries(state.pendingLessonProgress || {});
+  for (const [key, completed] of pending) {
+    const separator = key.indexOf(":");
+    await syncLessonProgress(key.slice(0, separator), key.slice(separator + 1), completed);
+  }
 }
 
 let practiceDatabasePromise;
@@ -225,7 +251,7 @@ function sendPracticeAccountState(target) {
     configured: true,
     signedIn: true,
     readOnly: false,
-    localOnly: true,
+    localOnly: !platformAccount,
     completedQuestionIds: completedPracticeQuestionIds(),
   }, window.location.origin);
 }
@@ -277,16 +303,10 @@ function configurePreviewMode() {
   if (validPreviewCourseId) {
     const course = courses[validPreviewCourseId];
     document.title = `${course.code} course preview | Mr Flynn IB`;
-    document.querySelector(".prototype-strip strong").textContent = salesPreviewMode ? `${course.code} free course preview` : `Private ${course.code} course preview`;
-    document.querySelector(".prototype-strip span").textContent = salesPreviewMode
-      ? "Try three complete lesson-and-practice samples. Locked lessons are included with full course access."
-      : "Review the real lesson, practice and curriculum experience before the public launch.";
     return;
   }
   document.body.classList.add("reviewer-mode");
   document.title = "All five courses review | Mr Flynn IB";
-  document.querySelector(".prototype-strip strong").textContent = "Private five-course review";
-  document.querySelector(".prototype-strip span").textContent = "Review-only view. Nothing here is live and no payments or student accounts are connected.";
   document.getElementById("coursesNavLabel").textContent = "All courses";
   document.getElementById("sidebarCourseLabel").textContent = "Four IB courses and Edexcel IGCSE";
   document.getElementById("welcomeEyebrow").textContent = "Private review";
@@ -313,7 +333,9 @@ function salesPreviewLessons(course = currentCourse) {
 }
 
 function lessonIsAvailable(lesson) {
-  return !salesPreviewMode || salesPreviewLessons().some((sample) => sample.id === lesson.id);
+  if (reviewerMode || validPreviewCourseId && !salesPreviewMode) return true;
+  if (ownedCourseIds.includes(currentCourseId)) return true;
+  return salesPreviewLessons().some((sample) => sample.id === lesson.id);
 }
 
 function showToast(message) {
@@ -347,16 +369,17 @@ function setView(viewName) {
 function courseCard(course, large = false) {
   const completed = completedFor(course);
   const percentage = percentFor(course);
-  return `<button type="button" class="course-card ${large ? "is-large" : ""} accent-${course.accent}" data-course-id="${course.id}" aria-label="Open ${escapeHtml(course.code)} course">
+  const owned = ownedCourseIds.includes(course.id) || reviewerMode || validPreviewCourseId === course.id && !salesPreviewMode;
+  return `<button type="button" class="course-card ${large ? "is-large" : ""} ${owned ? "has-access" : "is-sample"} accent-${course.accent}" data-course-id="${course.id}" aria-label="Open ${escapeHtml(course.code)} course">
     <div class="course-card-art">
       ${courseArtwork(course)}
     </div>
     <div class="course-card-body">
-      <div class="course-card-meta"><span>Complete ${course.code} course</span><span>${course.lessons.length} lessons</span></div>
+      <div class="course-card-meta"><span>${owned ? `Your ${course.code} course` : `Try ${course.code}`}</span><span>${course.lessons.length} lessons</span></div>
       <h3>${course.name}</h3>
       <p>${course.description}</p>
       <div class="course-card-progress"><span style="width:${percentage}%"></span></div>
-      <div class="course-card-footer"><small>${completed} of ${course.lessons.length} completed</small><span class="course-card-link">Open course →</span></div>
+      <div class="course-card-footer"><small>${owned ? `${completed} of ${course.lessons.length} completed` : "Three sample lessons included"}</small><span class="course-card-link">${owned ? "Open course" : "Try course"} →</span></div>
     </div>
   </button>`;
 }
@@ -382,6 +405,12 @@ function renderDashboard() {
   document.getElementById("continueButton").dataset.courseId = course.id;
   document.getElementById("continueButton").dataset.lessonId = nextLesson.id;
   document.getElementById("dashboardCourseGrid").innerHTML = enrolledCourseDefinitions.map((definition) => courseCard(courses[definition.id])).join("");
+  if (!reviewerMode) {
+    document.getElementById("welcomeTitle").textContent = `Your ${course.code} learning space`;
+    document.getElementById("welcomeCopy").textContent = "Your course lessons, question bank, assignments and progress in one place.";
+    document.getElementById("sidebarCourseLabel").textContent = `${course.name}`;
+    document.getElementById("coursesNavLabel").textContent = enrolledCourseDefinitions.length > 1 ? "Courses" : "My course";
+  }
 }
 
 function openCourse(courseId, lessonId = null) {
@@ -431,6 +460,22 @@ function renderCourse() {
   renderLessonList(document.getElementById("lessonSearch").value);
 }
 
+async function loadProtectedVideo(frame, loading, videoId, kind = "lesson") {
+  try {
+    const response = await fetch(`/api/platform/video?course=${encodeURIComponent(currentCourseId)}&video=${encodeURIComponent(videoId)}&kind=${kind === "past-paper" ? "past-paper" : "lesson"}`);
+    const result = await response.json();
+    if (!response.ok || !result.url) throw new Error(result.error || "Video unavailable");
+    if (frame.src !== result.url) {
+      loading.classList.remove("is-hidden");
+      frame.src = result.url;
+      frame.onload = () => loading.classList.add("is-hidden");
+    }
+  } catch (error) {
+    loading.classList.remove("is-hidden");
+    loading.innerHTML = `<p>${escapeHtml(error?.message || "This video could not be opened.")}</p><a class="primary-button" href="/account/access?course=${encodeURIComponent(currentCourseId)}">View course access</a>`;
+  }
+}
+
 function renderLesson(lesson) {
   if (!lessonIsAvailable(lesson)) {
     showToast("This lesson is included with full course access");
@@ -453,17 +498,12 @@ function renderLesson(lesson) {
   const completeButton = document.getElementById("completeButton");
   completeButton.classList.toggle("is-complete", complete);
   completeButton.lastElementChild.textContent = complete ? "Completed" : "Mark complete";
-  const navigationLessons = salesPreviewMode ? salesPreviewLessons() : currentCourse.lessons;
+  const navigationLessons = currentCourse.lessons.filter((candidate) => lessonIsAvailable(candidate));
   const navigationIndex = navigationLessons.findIndex((candidate) => candidate.id === lesson.id);
   document.getElementById("previousLesson").disabled = navigationIndex <= 0;
   document.getElementById("nextLesson").disabled = navigationIndex >= navigationLessons.length - 1;
   const frame = document.getElementById("videoFrame");
-  const nextSource = `https://iframe.mediadelivery.net/embed/${library.libraryId}/${lesson.id}?autoplay=false&loop=false&muted=false&preload=true&responsive=true`;
-  if (frame.src !== nextSource) {
-    document.getElementById("videoLoading").classList.remove("is-hidden");
-    frame.src = nextSource;
-    frame.onload = () => document.getElementById("videoLoading").classList.add("is-hidden");
-  }
+  void loadProtectedVideo(frame, document.getElementById("videoLoading"), lesson.id);
 }
 
 function renderLessonPractice(lesson) {
@@ -598,18 +638,33 @@ window.addEventListener("message", async (event) => {
     else completed.delete(key);
     state.practiceCompleted = [...completed];
     saveState();
+    let synced = true;
+    if (platformAccount && !reviewerMode) {
+      try {
+        const response = await fetch("/api/platform/question-progress", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), completed: Boolean(message.completed) }) });
+        synced = response.ok;
+      } catch { synced = false; }
+    }
     event.source.postMessage({
       type: "mrflynnib-progress-result",
       questionId: String(message.questionId),
       completed: Boolean(message.completed),
       ok: true,
+      pending: !synced,
     }, window.location.origin);
     return;
   }
 
   if (message.type === "mrflynnib-whiteboard-load") {
     try {
-      const document = await getSavedWhiteboard(String(message.questionId));
+      let document = await getSavedWhiteboard(String(message.questionId));
+      if (platformAccount && !reviewerMode) {
+        try {
+          const response = await fetch(`/api/platform/whiteboard?questionId=${encodeURIComponent(String(message.questionId))}`);
+          const result = await response.json();
+          if (response.ok && result.document) document = result.document;
+        } catch {}
+      }
       event.source.postMessage({
         type: "mrflynnib-whiteboard-data",
         questionId: String(message.questionId),
@@ -630,10 +685,18 @@ window.addEventListener("message", async (event) => {
   if (message.type === "mrflynnib-whiteboard-save") {
     try {
       await saveWhiteboard(String(message.questionId), message.document);
+      let synced = true;
+      if (platformAccount && !reviewerMode) {
+        try {
+          const response = await fetch("/api/platform/whiteboard", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), document: message.document }) });
+          synced = response.ok;
+        } catch { synced = false; }
+      }
       event.source.postMessage({
         type: "mrflynnib-whiteboard-save-result",
         questionId: String(message.questionId),
         ok: true,
+        pending: !synced,
       }, window.location.origin);
     } catch (error) {
       event.source.postMessage({
@@ -647,7 +710,7 @@ window.addEventListener("message", async (event) => {
 });
 
 function moveLesson(direction) {
-  const navigationLessons = salesPreviewMode ? salesPreviewLessons() : currentCourse.lessons;
+  const navigationLessons = currentCourse.lessons.filter((lesson) => lessonIsAvailable(lesson));
   const currentIndex = navigationLessons.findIndex((lesson) => lesson.id === currentLessonId);
   const next = navigationLessons[currentIndex + direction];
   if (!next) return;
@@ -666,6 +729,7 @@ function toggleComplete() {
     showToast("Lesson completed");
   }
   saveState();
+  void syncLessonProgress(currentCourseId, currentLessonId, state.completed.includes(currentLessonId));
   renderCourse();
 }
 
@@ -794,12 +858,9 @@ function renderPastPaperQuestion(question) {
   document.getElementById("pastPaperQuestionMeta").textContent = [set.session, set.timezone, set.paper, formatDuration(question.seconds)].filter(Boolean).join(" · ");
   document.getElementById("pastPaperBadge").textContent = currentPastPaperCourse;
   const frame = document.getElementById("pastPaperFrame");
-  const nextSource = `https://iframe.mediadelivery.net/embed/${pastPaperLibrary.libraryId}/${question.id}?autoplay=false&loop=false&muted=false&preload=true&responsive=true`;
-  if (frame.src !== nextSource) {
-    document.getElementById("pastPaperLoading").classList.remove("is-hidden");
-    frame.src = nextSource;
-    frame.onload = () => document.getElementById("pastPaperLoading").classList.add("is-hidden");
-  }
+  const courseDefinition = courseDefinitions.find((definition) => definition.code === currentPastPaperCourse);
+  if (courseDefinition) currentCourseId = courseDefinition.id;
+  void loadProtectedVideo(frame, document.getElementById("pastPaperLoading"), question.id, "past-paper");
 }
 
 function renderPastPapers() {
@@ -908,40 +969,13 @@ document.addEventListener("click", (event) => {
   }
 });
 
-const loginDialog = document.getElementById("loginDialog");
-document.getElementById("showLogin").addEventListener("click", () => {
-  accountMenu.hidden = true;
-  loginDialog.showModal();
-});
-document.getElementById("closeLogin").addEventListener("click", () => loginDialog.close());
-document.getElementById("prototypeLoginForm").addEventListener("submit", (event) => {
-  event.preventDefault();
-  loginDialog.close();
-  showToast("Prototype sign-in successful");
-});
-
 const helpDialog = document.getElementById("helpDialog");
 document.getElementById("helpButton").addEventListener("click", () => helpDialog.showModal());
 document.getElementById("closeHelp").addEventListener("click", () => helpDialog.close());
 
-document.getElementById("resetProgress").addEventListener("click", () => {
-  state.completed = [];
-  state.practiceCompleted = [];
-  state.lastCourse = enrolledCourseId;
-  state.lastLesson = courses[enrolledCourseId].lessons[0]?.id || null;
-  currentCourseId = enrolledCourseId;
-  currentCourse = courses[currentCourseId];
-  currentLessonId = state.lastLesson;
-  currentTopic = 1;
-  saveState();
-  accountMenu.hidden = true;
-  renderDashboard();
-  renderCourseCards();
-  renderProgress();
-  if (document.getElementById("courseView").classList.contains("is-visible")) renderCourse();
-  const practiceFrame = document.getElementById("practiceFrame");
-  if (practiceFrame?.contentWindow) sendPracticeAccountState(practiceFrame.contentWindow);
-  showToast("Prototype progress reset");
+document.getElementById("signOut").addEventListener("click", async () => {
+  await fetch("/api/platform/sign-out", { method: "POST" });
+  window.location.assign("/account");
 });
 
 document.addEventListener("keydown", (event) => {
@@ -954,21 +988,70 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-const enrolledCourse = courses[enrolledCourseId];
-const visibleLessonCount = reviewerMode
-  ? enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0)
-  : enrolledCourse.lessons.length;
-document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
-document.getElementById("summaryVideos").textContent = visibleLessonCount;
-
-configurePreviewMode();
-renderDashboard();
-renderCourseCards();
-renderProgress();
-if (reviewerMode) {
-  setView("courses");
-} else if (validPreviewCourseId) {
-  const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
-  const requestedLesson = courses[validPreviewCourseId].topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
-  openCourse(validPreviewCourseId, requestedLesson?.id || null);
+async function bootstrapAccount() {
+  if (reviewerMode || validPreviewCourseId) return;
+  try {
+    const response = await fetch("/api/platform/bootstrap", { cache: "no-store" });
+    if (response.status === 401) {
+      window.location.assign(`/account?next=${encodeURIComponent("/learn")}`);
+      return;
+    }
+    if (!response.ok) throw new Error("Your learning space could not be loaded.");
+    platformAccount = await response.json();
+    enrolledCourseIds = platformAccount.availableCourseIds.filter((id) => courses[id]);
+    ownedCourseIds = platformAccount.ownedCourseIds.filter((id) => courses[id]);
+    enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
+    const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId)
+      ? requestedCourseId
+      : platformAccount.state?.last_course_id && enrolledCourseIds.includes(platformAccount.state.last_course_id)
+        ? platformAccount.state.last_course_id
+        : ownedCourseIds[0] || enrolledCourseIds[0];
+    enrolledCourseId = preferred;
+    currentCourseId = preferred;
+    currentCourse = courses[currentCourseId];
+    const savedLesson = platformAccount.state?.last_lesson_id || state.lastLesson;
+    currentLessonId = currentCourse.lessons.some((lesson) => lesson.id === savedLesson) ? savedLesson : currentCourse.lessons[0]?.id;
+    currentTopic = getCurrentLesson()?.topic || 1;
+    currentPastPaperCourse = currentCourse.code;
+    const serverCompleted = (platformAccount.progress || []).filter((row) => row.completed).map((row) => row.lesson_id);
+    state.completed = [...new Set([...state.completed, ...serverCompleted])];
+    state.lastCourse = currentCourseId;
+    state.lastLesson = currentLessonId;
+    saveState();
+    document.querySelector(".avatar").textContent = platformAccount.user.initials;
+    document.getElementById("accountName").textContent = platformAccount.user.displayName;
+    document.getElementById("accountRole").textContent = `${platformAccount.user.role === "admin" ? "Administrator" : platformAccount.user.role === "teacher" ? "Teacher" : "Student"} account`;
+    document.getElementById("accessLink").textContent = platformAccount.access?.label || "Free account";
+    document.getElementById("accessLink").href = platformAccount.links.access;
+    document.getElementById("manageAccessLink").href = platformAccount.links.access;
+    document.getElementById("learningHomeLink").href = platformAccount.links.account;
+    document.getElementById("questionBankLink").href = platformAccount.links.questionBank;
+    document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
+    void flushLessonProgress();
+  } catch (error) {
+    document.querySelector(".topbar-context span:last-of-type").textContent = "Working offline";
+    showToast(error?.message || "Using progress saved on this device.");
+  }
 }
+
+async function initialize() {
+  await bootstrapAccount();
+  const enrolledCourse = courses[enrolledCourseId];
+  const visibleLessonCount = enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0);
+  document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
+  document.getElementById("summaryVideos").textContent = visibleLessonCount;
+  configurePreviewMode();
+  renderDashboard();
+  renderCourseCards();
+  renderProgress();
+  if (reviewerMode) {
+    setView("courses");
+  } else if (validPreviewCourseId || requestedCourseId) {
+    const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
+    const requestedLesson = enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
+    openCourse(enrolledCourseId, requestedLesson?.id || currentLessonId);
+  }
+}
+
+window.addEventListener("online", () => void flushLessonProgress());
+void initialize();

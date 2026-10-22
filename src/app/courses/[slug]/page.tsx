@@ -3,8 +3,8 @@ import katex from "katex";
 import { notFound } from "next/navigation";
 import curriculumData from "@/data/curricula.json";
 import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
-import { courseAccessPlans, courses } from "@/lib/content";
-import { courseCheckoutPath } from "@/lib/outbound-destinations";
+import { courses } from "@/lib/content";
+import { courseProducts } from "@/lib/platform-products";
 
 type CurriculumTopic = { name: string; lessons: string[] };
 const curricula = curriculumData as Record<string, CurriculumTopic[]>;
@@ -40,7 +40,7 @@ export function generateStaticParams() { return courses.map(({ slug }) => ({ slu
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const course = courses.find((item) => item.slug === slug);
-  return course ? { title: course.title, description: `${course.description} Choose from three access options.` } : {};
+  return course ? { title: course.title, description: `${course.description} Try free lessons or unlock one year of complete course access.` } : {};
 }
 
 export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -49,6 +49,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
   if (!course) notFound();
 
   const curriculum = curricula[course.shortTitle] ?? [];
+  const product = courseProducts.find((item) => item.shortTitle === course.shortTitle)!;
 
   return (
     <>
@@ -62,12 +63,11 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <p className="lede">{course.description}</p>
           </div>
           <aside className="course-purchase-card">
-            <div className="stack"><Eyebrow>Choose your access</Eyebrow><h2>One complete course. Three access options.</h2><p>Every plan includes the complete {course.shortTitle} course. Choose and purchase your access on Teachable.</p></div>
-            <ul className="access-plan-list">
-              {courseAccessPlans.map((plan) => <li className={plan.recommended ? "access-plan-recommended" : ""} key={plan.duration}><div><strong>{plan.duration}</strong>{plan.recommended && <span>Recommended</span>}<small>{plan.description}</small></div><b>${plan.price}</b></li>)}
-            </ul>
-            <ButtonLink href={courseCheckoutPath(course.shortTitle)}>View access plans and enroll</ButtonLink>
-            <small>Prices are in US dollars. Payment and secure course access continue on Teachable.</small>
+            <div className="stack"><Eyebrow>Course access</Eyebrow><h2>One complete course. One clear price.</h2><p>Try representative lessons first, then unlock every topic, lesson, practice set and worked past-paper solution.</p></div>
+            <div className="native-course-price"><strong>US$69</strong><span>one year of complete access</span></div>
+            <ButtonLink href={`/account/access?course=${product.id}`}>Try lessons and view access</ButtonLink>
+            <ButtonLink href="/go/my-courses" secondary>Already enrolled on Teachable?</ButtonLink>
+            <small>Secure checkout and course access use your Mr Flynn IB account.</small>
           </aside>
         </Container>
       </section>

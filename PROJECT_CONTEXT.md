@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 21 October 2026
+Last updated: 22 October 2026
 
 ## Purpose of this file
 
@@ -367,6 +367,8 @@ On 22 October 2026, Rob approved establishing explicit Free and paid access foun
 School access should begin with the existing teacher-led class workflow rather than a heavy school-administrator product. Each teacher continues to create and manage their own classes, and students continue to join with class codes. A lightweight organisation layer may group teachers, annual licences and allocated student seats for central billing. A billing contact does not automatically control the school's classes or student work. Richer department administration should be added only in response to demonstrated school demand. Core classroom access remains free during early adoption; future paid school value should centre on complete content, advanced analysis, department management and course licences without ever preventing a student from opening an assigned question.
 
 The native course sales journey must let prospective students inspect the real course structure and try representative free lessons before purchase. Locked lesson videos and practice material should remain visible enough to demonstrate the course's depth without exposing paid content. Checkout, webhook fulfilment and entitlement changes must be reliable and auditable; never grant access from a client-side success screen alone.
+
+On 22 October 2026, Rob approved building the full connected-platform preview rather than only the access and school-licensing foundation. The intended experience is one signed-in learning home for each curriculum, with clear routes to Courses, Question bank, Assignments and Progress. The reviewed Bunny course platform is to become the native learning area with real account identity, server-saved progress, entitlement-checked playback, representative free lessons, Stripe checkout and webhook fulfilment. Existing Teachable customers need a transfer-request route and Teachable remains available during the transition. The first school version stays lightweight: central course licences and seat allocation sit alongside the existing teacher-owned classes and join-code workflow. This is a major preview change and must not reach production before Rob reviews and approves it.
 
 Rob is completing a final practice-question review of **AA HL**, **AI HL** and **IGCSE**. Shared lesson selections in AA SL and AI SL inherit the corresponding approved HL selections, while HL-only and SL-only lessons remain course-specific. Record each lesson as confirmed or still needing revision as Rob reports it, do not overwrite a newly revised selection in response to feedback that referred to an older preview, and change only unconfirmed selections unless Rob explicitly reopens a confirmed one.
 
