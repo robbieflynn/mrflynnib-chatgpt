@@ -466,7 +466,11 @@
     // Listen on the window as a fallback when pointer capture is unavailable.
     // The initiating pointer ID still owns the stroke, so hover cannot draw.
     window.addEventListener('pointermove', function (event) {
-      if ((event.pointerType === 'pen' || event.pointerType === 'mouse') &&
+      // Some stylus/browser combinations report buttons=0 while the pen is
+      // still touching the screen. Pointerup/pointercancel are authoritative
+      // for pens; using the mouse hover safeguard for them turns every stroke
+      // into a single dot.
+      if (event.pointerType === 'mouse' &&
           event.pointerId === activePointer && event.buttons === 0) {
         endStroke(event);
         return;
