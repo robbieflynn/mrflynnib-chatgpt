@@ -717,6 +717,14 @@ a.teacher-list-row:hover { background: var(--sky); }
 .dashboard-hero > .container { position: relative; z-index: 1; }
 .dashboard-hero-shell { display: grid; gap: 1rem; }
 .dashboard-account-row { min-height: 2.75rem; display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
+.platform-access-summary { min-height: 2.6rem; padding: .45rem .65rem .45rem .75rem; display: grid; grid-template-columns: auto auto; align-items: center; gap: .05rem .65rem; border: 1px solid rgba(255,255,255,.18); border-radius: .8rem; background: rgba(255,255,255,.08); color: white; backdrop-filter: blur(8px); }
+.platform-access-summary span { font-size: .75rem; font-weight: 900; }
+.platform-access-summary small { grid-column: 1; color: rgba(255,255,255,.64); font-size: .62rem; }
+.platform-access-summary a { grid-column: 2; grid-row: 1 / span 2; color: #a9dcff; font-size: .68rem; font-weight: 850; white-space: nowrap; }
+.platform-access-summary a:hover { color: white; }
+.platform-access-summary.is-paid span::before { content: "✓"; margin-right: .35rem; color: #73dfbd; }
+.teacher-early-access span::before { content: ""; }
+.teacher-dashboard-access { flex-wrap: nowrap; }
 .dashboard-account-row-with-breadcrumbs { justify-content: space-between; }
 .dashboard-account-row .breadcrumbs { margin: 0; color: rgba(255,255,255,.68); }
 .dashboard-account-row .breadcrumbs a:hover { color: white; }
@@ -1116,6 +1124,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-list-row .status-pill { grid-column: 1 / -1; }
   .dashboard-hero { padding: 1.8rem 0 2rem; }
   .dashboard-account-row { align-items: flex-start; }
+  .platform-access-summary { margin-right: auto; }
+  .teacher-dashboard-access { width: 100%; justify-content: space-between; }
   .dashboard-account-row-with-breadcrumbs { flex-direction: column-reverse; }
   .dashboard-hero h1 { font-size: clamp(2rem, 9vw, 2.65rem); }
   .dashboard-hero-stats { width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); }

@@ -9,6 +9,7 @@ import { StudentAccountForm } from "@/components/student-account-form";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
+import { platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
 import progressManifest from "@/data/question-bank-progress.json";
 import { joinClass, requestTeacherAccess } from "./actions";
 
@@ -132,6 +133,21 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const bank = isIgcse ? "igcse" : "ib";
   const questionBankHref = isIgcse ? "/igcse/question-bank" : `/question-bank/${selectedCourse.slug}`;
   const progressLabel = isIgcse ? "IGCSE" : selectedCourse.code;
+  const accessPromise = Promise.all([
+    supabase
+      .from("platform_entitlements")
+      .select("product_code,status,starts_at,expires_at")
+      .eq("user_id", user.id),
+    supabase
+      .from("organization_license_seats")
+      .select("revoked_at,organization_licenses(product_code,status,starts_at,ends_at)")
+      .eq("user_id", user.id)
+      .is("revoked_at", null),
+  ]).then(([personalResult, schoolResult]) => platformAccessSummary(
+    personalResult.data as PlatformEntitlement[] | null,
+    schoolResult.data as PlatformLicenseSeat[] | null,
+  ));
+  const upgradeHref = isIgcse ? "/igcse/courses" : "/courses";
   const completedQuestionIdsPromise = (async () => {
     const completedQuestionIds = new Set<string>();
     let pageStart = 0;
@@ -161,7 +177,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     .from("class_memberships")
     .select("class_id,joined_at,classes(id,name,course,bank)")
     .eq("student_id", user.id);
-  const [completedQuestionIds, { count: whiteboardCount }, { data: memberships }] = await Promise.all([
+  const [access, completedQuestionIds, { count: whiteboardCount }, { data: memberships }] = await Promise.all([
+    accessPromise,
     completedQuestionIdsPromise,
     whiteboardCountPromise,
     membershipsPromise,
@@ -236,12 +253,17 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       <section className={`dashboard-hero student-dashboard-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
         <Container className="dashboard-hero-shell">
           <div className="dashboard-account-row">
+            <div className={`platform-access-summary ${access.paid ? "is-paid" : ""}`}>
+              <span>{access.label}</span>
+              <small>{access.detail}</small>
+              {!access.paid ? <Link href={upgradeHref}>Explore course access</Link> : null}
+            </div>
             <AccountMenu signOutHref={isIgcse ? "/account?qualification=igcse" : "/account"} />
           </div>
           <div className="dashboard-hero-layout">
             <div className="dashboard-hero-copy">
               <span className="dashboard-role-label">
-                {teacherApprovalPending ? "Teacher status: waiting approval" : "Student dashboard"}
+                {teacherApprovalPending ? "Teacher status: waiting approval" : "My learning"}
               </span>
               <h1>{displayName ? `Welcome back, ${displayName}` : "Your learning dashboard"}</h1>
               <p>
