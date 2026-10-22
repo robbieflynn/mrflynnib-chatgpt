@@ -132,7 +132,7 @@
 .qb-whiteboard-viewport {
   max-height: 620px;
   overflow: auto;
-  overscroll-behavior: auto;
+  overscroll-behavior: contain;
 }
 
 .qb-card.qb-whiteboard-expanded .qb-whiteboard-viewport { max-height: min(76vh, 840px); }
@@ -252,6 +252,10 @@
 .qb-whiteboard-surface {
   position: relative;
   height: 2240px;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
   background-color: #fff;
   background-image:
     linear-gradient(#edf1f5 var(--whiteboard-grid-line, 1px), transparent var(--whiteboard-grid-line, 1px)),
@@ -274,6 +278,9 @@
 .qb-whiteboard-canvas {
   cursor: crosshair;
   touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 .qb-whiteboard-canvas.qb-whiteboard-panning { cursor: grab; }
 .qb-whiteboard-canvas.qb-whiteboard-panning:active { cursor: grabbing; }

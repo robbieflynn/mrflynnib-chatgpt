@@ -288,8 +288,8 @@
       clear.disabled = !hasVisibleWork();
     }
 
-    function drawStroke(stroke) {
-      if (!stroke.points.length) return;
+    function drawStrokePoints(stroke, points) {
+      if (!points.length) return;
       var width = canvas.clientWidth;
       var height = canvas.clientHeight;
       ctx.save();
@@ -300,13 +300,25 @@
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.beginPath();
-      var first = stroke.points[0];
+      var first = points[0];
       ctx.moveTo(first.x * width, first.y * height);
-      if (stroke.points.length === 1) ctx.lineTo(first.x * width + .01 * zoom, first.y * height + .01);
-      for (var i = 1; i < stroke.points.length; i++) {
-        ctx.lineTo(stroke.points[i].x * width, stroke.points[i].y * height);
+      if (points.length === 1) ctx.lineTo(first.x * width + .01 * zoom, first.y * height + .01);
+      for (var i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x * width, points[i].y * height);
       }
       ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawStroke(stroke) {
+      drawStrokePoints(stroke, stroke.points);
+    }
+
+    function drawStrokeIncrement(stroke, points) {
+      if (!points.length || !canvas.clientWidth || !canvas.clientHeight) return;
+      ctx.save();
+      ctx.scale(canvas.width / canvas.clientWidth, canvas.height / canvas.clientHeight);
+      drawStrokePoints(stroke, points);
       ctx.restore();
     }
 
@@ -344,7 +356,21 @@
     }
 
     function resize() {
-      var ratio = Math.min(window.devicePixelRatio || 1, 2);
+      var clientWidth = Math.max(1, canvas.clientWidth);
+      var clientHeight = Math.max(1, canvas.clientHeight);
+      // A full-size sheet at Retina resolution is taller than the reliable
+      // canvas limit on some iPads and allocates a very large bitmap twice.
+      // Keep the backing stores comfortably inside Safari's limits while the
+      // CSS-sized paper and saved coordinates remain unchanged.
+      var maxDimension = 4096;
+      var maxPixels = 8000000;
+      var ratio = Math.min(
+        window.devicePixelRatio || 1,
+        2,
+        maxDimension / clientWidth,
+        maxDimension / clientHeight,
+        Math.sqrt(maxPixels / (clientWidth * clientHeight))
+      );
       var width = Math.max(1, Math.round(canvas.clientWidth * ratio));
       var height = Math.max(1, Math.round(canvas.clientHeight * ratio));
       if (canvas.width === width && canvas.height === height) return;
@@ -361,6 +387,41 @@
         x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
         y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
       };
+    }
+
+    function eventSamples(event) {
+      var samples = [];
+      if (typeof event.getCoalescedEvents === 'function') {
+        try { samples = event.getCoalescedEvents() || []; } catch { samples = []; }
+      }
+      if (!samples.length) return [event];
+      var last = samples[samples.length - 1];
+      if (last.clientX !== event.clientX || last.clientY !== event.clientY) samples.push(event);
+      return samples;
+    }
+
+    function appendStrokeSamples(event) {
+      if (!activeStroke) return;
+      var samples = eventSamples(event);
+      if (activeStroke.straightened) {
+        activeStroke.points[1] = pointFromEvent(samples[samples.length - 1]);
+        redraw();
+        return;
+      }
+      var previous = activeStroke.points[activeStroke.points.length - 1];
+      var segment = [previous];
+      samples.forEach(function (sample) {
+        var point = pointFromEvent(sample);
+        var last = activeStroke.points[activeStroke.points.length - 1];
+        var distance = Math.hypot(
+          (point.x - last.x) * canvas.clientWidth,
+          (point.y - last.y) * canvas.clientHeight
+        );
+        if (distance < .2) return;
+        activeStroke.points.push(point);
+        segment.push(point);
+      });
+      if (segment.length > 1) drawStrokeIncrement(activeStroke, segment);
     }
 
     function startPinch() {
@@ -426,7 +487,7 @@
       if (activePointer !== null) return;
       activePointer = event.pointerId;
       activePointerType = event.pointerType;
-      canvas.focus({ preventScroll: true });
+      try { canvas.focus({ preventScroll: true }); } catch { canvas.focus(); }
       capturePointer(event.pointerId);
       var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'eraser' : mode;
       if (pointerMode === 'pan') {
@@ -459,9 +520,9 @@
       }
       activeStroke = { type: 'stroke', mode: pointerMode, colour: colour, points: [pointFromEvent(event)] };
       actions.push(activeStroke);
-      redraw();
+      drawStrokeIncrement(activeStroke, activeStroke.points);
       updateButtons();
-    });
+    }, { passive: false });
 
     // Listen on the window as a fallback when pointer capture is unavailable.
     // The initiating pointer ID still owns the stroke, so hover cannot draw.
@@ -509,10 +570,7 @@
       }
       if (!activeStroke) return;
       event.preventDefault();
-      var point = pointFromEvent(event);
-      if (activeStroke.straightened) activeStroke.points[1] = point;
-      else activeStroke.points.push(point);
-      redraw();
+      appendStrokeSamples(event);
       window.clearTimeout(straightTimer);
       if (activeStroke.mode === 'pen' && activeStroke.points.length > 1) {
         straightTimer = window.setTimeout(function () {
@@ -526,7 +584,7 @@
           redraw();
         }, 500);
       }
-    });
+    }, { passive: false });
 
     function endStroke(event) {
       if (touches.has(event.pointerId)) {
@@ -540,6 +598,7 @@
         }
       }
       if (event.pointerId !== activePointer) return;
+      if (activeStroke) appendStrokeSamples(event);
       var changed = Boolean(activeStroke || activeImage);
       activePointer = null;
       activePointerType = null;
