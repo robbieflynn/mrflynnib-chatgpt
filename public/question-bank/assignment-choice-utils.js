@@ -292,8 +292,10 @@
   }
 
   function requiresWhiteboard(prompt) {
-    return /\b(show that|prove|verify that|sketch|draw|construct|plot|shade)\b/i.test(plainText(prompt))
-      || /\bcomplete\b[\s\S]*\bdiagram\b/i.test(plainText(prompt));
+    return /\b(show that|prove|verify that|establish that|demonstrate that|sketch|draw|construct|plot|shade)\b/i.test(plainText(prompt))
+      || /\b(?:show|establish|demonstrate)\b[\s\S]{0,100}\bthat\b/i.test(plainText(prompt))
+      || /\b(?:apply|use|using)\b[\s\S]*\b(?:mathematical )?induction\b/i.test(plainText(prompt))
+      || /\bcomplete\b[\s\S]*\b(?:diagram|table)\b/i.test(plainText(prompt));
   }
 
   function isExplanationPrompt(prompt) {
@@ -325,9 +327,12 @@
 
   function asksForProbabilityAnswer(prompt) {
     if (isExplanationPrompt(prompt)) return false;
-    var question = plainText(prompt);
-    return /\b(?:find|calculate|work out|determine|write down|state|estimate|deduce|obtain)\s+(?:the\s+)?(?:conditional\s+|steady state\s+)?probability\b/i.test(question)
-      || /\b(?:find|calculate|determine|write down|state)\b[\s\S]*\bP\s*\([^)]*(?:[=<>|∩]|'\s*\))/i.test(question);
+    var question = clean(latexToPlain(prompt));
+    return /\b(?:find|calculate|work out|determine|write down|state|estimate|deduce|obtain)\s+(?:(?:an?\s+)?estimate\s+(?:of|for)\s+)?(?:the\s+)?(?:conditional\s+|steady state\s+)?probability\b/i.test(question)
+      || /\b(?:find|calculate|determine|write down|state)\b[\s\S]*\bP\s*\([^)]*\)/i.test(question)
+      || /^\s*P\s*\([^)]*\)\s*[.]?$/i.test(question)
+      || /\b(?:find|calculate|work out|determine|estimate)\b[\s\S]*\b(?:fraction|proportion)\s+of\b/i.test(question)
+      || /\bprobability tree\b/i.test(question);
   }
 
   function finalDirectValueFromRows(rows) {
@@ -3086,7 +3091,7 @@
       .trim();
     if (isGenericReasonPlaceholder(answer)) return true;
     return isGenericExpressionPlaceholder(answer)
-      || /\b(?:any\s+|one\s+|two\s+|a\s+|an\s+|the\s+|fully\s+)*(?:correct|valid|appropriate|acceptable|reasonable|consistent)\s+(?:calculation|method|working|result|response|answer|manipulation|integration|substitution|approach)(?:\s+(?:or|and)\s+(?:values?|calculations?|results?|answers?))?(?:\s+(?:for|in|using|involving|with|which|that|to)\b[^=<>≤≥]*)?$/i.test(answer);
+      || /\b(?:any\s+|one\s+|two\s+|a\s+|an\s+|the\s+|fully\s+)*(?:correct|valid|appropriate|acceptable|reasonable|consistent)\s+(?:calculation|method|working|result|response|answer|manipulation|integration|substitution|approach|assumptions?|observations?|reasons?|statements?)(?:\s+(?:or|and)\s+(?:values?|calculations?|results?|answers?|assumptions?|observations?|reasons?|statements?))?(?:\s+(?:for|in|using|involving|with|which|that|to)\b[^=<>≤≥]*)?$/i.test(answer);
   }
 
   function isGenericExpressionPlaceholder(value) {
@@ -3111,6 +3116,11 @@
       || /\bexpression is not (?:biased|inconclusive|unreliable|invalid)\b/i.test(answer)
       || /\b(?:minimum|maximum|initial|total) value \([^)]*\)\b/i.test(answer)
       || /\b(?:complete|decisive|conclusive) evidence\b/i.test(answer)
+      || /\b(?:equal|unrelated|higher|zero) quartile\b/i.test(answer)
+      || /\bmedian\s+weight\s+is\b[\s\S]{0,60}\bmedian\s+weight\b/i.test(answer)
+      || /\bchanges? from (?:undefined|constant|alternating) to\b|\bchanges? from (\w+) to \1\b/i.test(answer)
+      || /^(?:-?\d+(?:\.\d+)?\s*\*\s*\(|-\()[^)]*\b[A-Za-z]{2,}\b/i.test(answer)
+      || /\ba\s+(?:invalid|inconclusive|unreliable|appropriate)\b/i.test(answer)
       || /\b(?:a|an) (?:intercept|point of inflexion) at\b/i.test(answer);
   }
 
@@ -3956,11 +3966,177 @@
     });
   }
 
+  function constantExpressionValue(value) {
+    var expression = clean(value).replace(/\s/g, "").replace(/pi|π/gi, "π");
+    if (!expression || /[^0-9π+\-*/().]/.test(expression)) return null;
+    expression = expression
+      .replace(/(\d|\))(?=π|\()/g, "$1*")
+      .replace(/π(?=\d|\()/g, "π*")
+      .replace(/\)(?=\d|π)/g, ")*");
+
+    function unwrap(source) {
+      var result = source;
+      while (result[0] === "(" && result[result.length - 1] === ")") {
+        var depth = 0;
+        var wrapsWholeExpression = true;
+        for (var index = 0; index < result.length; index += 1) {
+          if (result[index] === "(") depth += 1;
+          else if (result[index] === ")") depth -= 1;
+          if (depth === 0 && index < result.length - 1) { wrapsWholeExpression = false; break; }
+        }
+        if (!wrapsWholeExpression) break;
+        result = result.slice(1, -1);
+      }
+      return result;
+    }
+
+    function evaluate(source) {
+      var result = unwrap(source);
+      var depth = 0;
+      for (var index = result.length - 1; index >= 0; index -= 1) {
+        if (result[index] === ")") depth += 1;
+        else if (result[index] === "(") depth -= 1;
+        else if (depth === 0 && (result[index] === "+" || result[index] === "-") && index > 0
+          && !/[+\-*/]/.test(result[index - 1])) {
+          var left = evaluate(result.slice(0, index));
+          var right = evaluate(result.slice(index + 1));
+          if (left === null || right === null) return null;
+          return result[index] === "+" ? left + right : left - right;
+        }
+      }
+      depth = 0;
+      for (var productIndex = result.length - 1; productIndex >= 0; productIndex -= 1) {
+        if (result[productIndex] === ")") depth += 1;
+        else if (result[productIndex] === "(") depth -= 1;
+        else if (depth === 0 && (result[productIndex] === "*" || result[productIndex] === "/")) {
+          var productLeft = evaluate(result.slice(0, productIndex));
+          var productRight = evaluate(result.slice(productIndex + 1));
+          if (productLeft === null || productRight === null || (result[productIndex] === "/" && productRight === 0)) return null;
+          return result[productIndex] === "*" ? productLeft * productRight : productLeft / productRight;
+        }
+      }
+      if (result === "π") return Math.PI;
+      if (/^[+-]?\d+(?:\.\d+)?$/.test(result)) return Number(result);
+      return null;
+    }
+
+    return evaluate(expression);
+  }
+
+  function intervalValuesMatchPrompt(answer, prompt) {
+    var question = clean(latexToPlain(prompt));
+    var interval = question.match(/([+\-]?(?:\d|π|pi|\()[0-9πpi+\-*/(). ]*)\s*(<|≤)\s*([A-Za-z])\s*(<|≤)\s*([+\-]?(?:\d|π|pi|\()[0-9πpi+\-*/(). ]*)/i);
+    if (!interval) return true;
+    var lower = constantExpressionValue(interval[1]);
+    var upper = constantExpressionValue(interval[5]);
+    if (lower === null || upper === null || lower >= upper) return true;
+    var variable = interval[3];
+    var assignments = clean(answer).split(/\s*;\s*/).map(function (piece) {
+      var match = piece.match(new RegExp("^" + variable + "\\s*=\\s*(.+)$", "i"));
+      return match ? constantExpressionValue(match[1]) : null;
+    });
+    if (!assignments.length || assignments.some(function (item) { return item === null; })) return true;
+    return assignments.every(function (item) { return item > lower && item < upper; });
+  }
+
+  function isAnswerCompatibleWithPrompt(answer, prompt) {
+    var candidate = clean(answer);
+    var question = clean(latexToPlain(prompt));
+    var instruction = finalInstructionText(question);
+    if (!candidate || !question) return Boolean(candidate);
+    if (candidate.length > 180) return false;
+    if (/^(?:or\b|accept|allow|answers? (?:in|from|between)|any (?:value|answer)|range of acceptable)/i.test(candidate)) return false;
+    if (/^-?\d+(?:\.\d+)?\s*-\s*-?\d+(?:\.\d+)?(?:\s+[A-Za-z]+)?$/.test(candidate)
+      && !/\b(?:range|interval)\b/i.test(instruction)) return false;
+    if (/\([^)]*(?:\d|sqrt|π|pi)[^)]*\)\s*(?:[A-Za-z]+(?:\^[23])?)?$/.test(candidate)
+      && /(?:\d|sqrt|π|pi)[^;]*\s+\([^)]*(?:\d|sqrt|π|pi)/.test(candidate)) return false;
+    if (/^\s*-?\d+(?:\.\d+)?\s*(?:\([^)]*\)|[A-Za-z]+(?:\^[23])?)\s*\(\s*-?\d+(?:\.\d+)?/i.test(candidate)) return false;
+    if (/^(?:latex:)?H_?[01]$/i.test(candidate.replace(/\s/g, ""))) return false;
+
+    var coordinateOnly = /^(?:[A-Z]\s*=\s*)?\([^,]+,[^,]+(?:,[^,]+)?\)(?:\s*;\s*\([^,]+,[^,]+(?:,[^,]+)?\))*$/.test(candidate);
+    if (/\b(?:gradient|slope)\b/i.test(instruction) && coordinateOnly && !/\bcoordinates?\b/i.test(instruction)) return false;
+    if (/\b(?:find|calculate|work out|determine|write down)\b[\s\S]*\b(?:length|distance)\b/i.test(instruction)
+      && (coordinateOnly || /°|\brad\b/i.test(candidate))) return false;
+    if (/(?:\b(?:derivative|differentiate|d[²2]?y\s*\/\s*dx)\b|\bf['′]{1,2}\s*\(\s*x\s*\))/i.test(instruction)
+      && coordinateOnly && !/\bcoordinates?\b/i.test(instruction)) return false;
+    if (/\b(?:find|determine|state|write down|give)\s+(?:an?\s+|the\s+)?equations?\s+(?:of|for)\b/i.test(instruction)
+      && !/[=<>≤≥]/.test(candidate)) return false;
+    if (/\bparametric equations\b/i.test(instruction) && (candidate.match(/=/g) || []).length < 2) return false;
+    var requestedEquationCount = question.match(/\b(?:write down|find|determine|give)\s+(two|three|four)\s+equations\b/i);
+    if (requestedEquationCount) {
+      var equationCounts = { two: 2, three: 3, four: 4 };
+      if ((candidate.match(/=/g) || []).length < equationCounts[requestedEquationCount[1].toLowerCase()]) return false;
+    }
+    if (/\bexpress\b[\s\S]*\bquadratic\b[\s\S]*\bin the form\b/i.test(instruction) && !/x/i.test(candidate)) return false;
+    if (/\bstating (?:its|the) domain\b|\band (?:state|give) (?:its|the) domain\b/i.test(instruction)
+      && !/;|\bdomain\b|[∈≤≥<>]/i.test(candidate)) return false;
+    if (/\b(?:find|calculate|determine|write down)\b[\s\S]*\bcoordinates?\b[\s\S]*\bof\b/i.test(instruction)
+      && !coordinateOnly) return false;
+    var requestedCoordinatePoints = instruction.match(/\bcoordinates?\b[\s\S]{0,80}?\bof\s+([A-Z](?:\s*,\s*[A-Z])*(?:\s+and\s+[A-Z])?)/);
+    if (requestedCoordinatePoints) {
+      var requestedPointCount = (requestedCoordinatePoints[1].match(/[A-Z]/g) || []).length;
+      var suppliedPointCount = (candidate.match(/\([^,;]+,[^,;]+(?:,[^,;]+)?\)/g) || []).length;
+      if (requestedPointCount !== suppliedPointCount) return false;
+    }
+    if (/\b(?:alternative|null)\s+hypothesis\b/i.test(instruction)
+      && !/[=<>≤≥≠:]|\b(?:independent|dependent|different|greater|less|equal|association|relationship|change|effect)\b/i.test(candidate)) return false;
+    if (/\bmodulus\b[\s\S]*\band\b[\s\S]*\bargument\b/i.test(instruction) && !/;/.test(candidate)) return false;
+    if (/\b(?:first\s+)?two\s+(?:[A-Za-z]+\s+)?(?:times|values|roots|solutions|coordinates)\b/i.test(instruction)
+      && !/;|±|\band\b/i.test(candidate)) return false;
+    if (/\bpossible values\b/i.test(instruction) && !/;|±|\band\b/i.test(candidate)) return false;
+
+    var requestedVariable = instruction.match(/\b(?:find|determine|write down|state)\s+(?:the\s+)?(?:value\s+of\s+)?([A-Za-z]|alpha|beta|gamma|theta|lambda|mu|sigma|omega)\s*(?:[.?,]|when|$)/i);
+    if (requestedVariable) {
+      var requestedName = requestedVariable[1].toLowerCase();
+      var candidateCanonical = canonical(candidate).replace(/θ/g, "theta").replace(/ω/g, "omega");
+      var selfReference = new RegExp("(?:^|[^a-z])(?:\\d+(?:\\.\\d+)?×)?" + requestedName + "(?:$|[^a-z])", "i");
+      if (!candidateCanonical.includes("=") && selfReference.test(candidateCanonical)) return false;
+      if (!/\bin terms of\b|\bwhen\b/i.test(instruction) && candidateCanonical.includes("=")) {
+        var rightSideWords = candidateCanonical.slice(candidateCanonical.indexOf("=") + 1)
+          .replace(/(?:sqrt|root|sin|cos|tan|sec|cosec|cot|ln|log|exp|abs|pi|rad|cm|mm|km|kg|ppm)/gi, "")
+          .match(/[a-z]+/g) || [];
+        if (rightSideWords.some(function (word) { return word !== "e"; })) return false;
+      }
+    }
+    if (/\bnumber of\b/i.test(instruction) && /±/.test(candidate)) return false;
+    if (/\b(?:find|determine)\b[\s\S]*\bvalues?\b/i.test(instruction)
+      && (candidate.match(/[<>≤≥]/g) || []).length >= 2
+      && !/;/.test(candidate)) return false;
+
+    var namedPair = instruction.match(/\b([A-Za-z]_?\d)\b[\s\S]{0,30}\band\s+\b([A-Za-z]_?\d)\b/i);
+    if (namedPair && !/;/.test(candidate)
+      && !(new RegExp(namedPair[1] + "\\s*=", "i").test(candidate) && new RegExp(namedPair[2] + "\\s*=", "i").test(candidate))) return false;
+    var variablePair = instruction.match(/\b(?:find|determine|calculate|write down|state|giving)\b[\s\S]{0,80}?\b([A-Za-zα-ω])\b\s*(?:,\s*)?\band\s+(?:of\s+)?\b([A-Za-zα-ω])\b/i);
+    if (variablePair && variablePair[1].toLowerCase() !== variablePair[2].toLowerCase()
+      && !(new RegExp("(?:^|;)\\s*" + variablePair[1] + "\\s*=", "i").test(candidate)
+        && new RegExp("(?:^|;)\\s*" + variablePair[2] + "\\s*=", "i").test(candidate))) return false;
+    if (/\beigenvalues\b/i.test(instruction) && !/;|\band\b/i.test(candidate)) return false;
+    if (/\beigenvectors\b/i.test(instruction) && (candidate.match(/matrix\(/gi) || []).length < 2
+      && !/\band\b/i.test(candidate)) return false;
+    if (!/\b(?:find|calculate|work out|write down|state|determine|solve|evaluate|express|give|estimate|deduce|obtain|explain|justify|name|describe|compare)\b/i.test(question)
+      && /[.!?]\s*$/.test(question)
+      && (question.match(/\b[A-Za-z]{2,}\b/g) || []).length >= 5) return false;
+    if (!intervalValuesMatchPrompt(candidate, question)) return false;
+    return true;
+  }
+
   function isPlausibleForPrompt(candidate, prompt) {
     var question = finalInstructionText(prompt).toLowerCase();
     var answer = clean(candidate);
     if (/sqrt\(\s*0\s*\)|root\([^,]+,\s*0\s*\)|±\s*-/.test(answer)) return false;
     var asksForProbability = asksForProbabilityAnswer(prompt);
+    var increasingChain = answer.match(/^\s*(-?\d+(?:\.\d+)?)\s*[<≤]\s*[A-Za-z]\s*[<≤]\s*(-?\d+(?:\.\d+)?)\s*$/);
+    if (increasingChain && Number(increasingChain[1]) >= Number(increasingChain[2])) return false;
+    var decreasingChain = answer.match(/^\s*(-?\d+(?:\.\d+)?)\s*[>≥]\s*[A-Za-z]\s*[>≥]\s*(-?\d+(?:\.\d+)?)\s*$/);
+    if (decreasingChain && Number(decreasingChain[1]) <= Number(decreasingChain[2])) return false;
+    if (/\btransition matrix\b/i.test(question)) {
+      var transitionEntries = answer.match(/-?\d+(?:\.\d+)?/g) || [];
+      if (transitionEntries.length && transitionEntries.some(function (entry) { return Number(entry) < 0 || Number(entry) > 1; })) return false;
+    }
+    if (/\bstandard form\b/i.test(question)) {
+      var standardForm = answer.match(/^\s*(-?\d+(?:\.\d+)?)\s*(?:×|\*)\s*10\^/);
+      if (standardForm && (Number(standardForm[1]) < 1 || Number(standardForm[1]) >= 10)) return false;
+    }
     if (asksForProbability && (/^\s*(?:-|2\s*\*)/.test(answer)
       || /\+\s*1\s*$/.test(answer)
       || /\bP\s*\([^)]*=\s*-/.test(answer)
@@ -3969,10 +4145,6 @@
     var numeric = answer.match(/(?:^|=|;)\s*(-?\d+(?:\.\d+)?)\s*(?:%|°|rad|cm|mm|km|m|s|kg|$)/i);
     if (directValue === null && !numeric) return true;
     var value = directValue === null ? Number(numeric[1]) : directValue;
-    var increasingChain = answer.match(/^\s*(-?\d+(?:\.\d+)?)\s*[<≤]\s*[A-Za-z]\s*[<≤]\s*(-?\d+(?:\.\d+)?)\s*$/);
-    if (increasingChain && Number(increasingChain[1]) >= Number(increasingChain[2])) return false;
-    var decreasingChain = answer.match(/^\s*(-?\d+(?:\.\d+)?)\s*[>≥]\s*[A-Za-z]\s*[>≥]\s*(-?\d+(?:\.\d+)?)\s*$/);
-    if (decreasingChain && Number(decreasingChain[1]) <= Number(decreasingChain[2])) return false;
     if (asksForProbability && (value < 0 || value > 1)) return false;
     if (/\bpercent(?:age)?\b|%/.test(question) && (value < 0 || value > 100)) return false;
     if (/\bcoefficient of determination\b|\br\^?2\b/.test(question + " " + answer.toLowerCase())) {
@@ -3999,6 +4171,7 @@
     var accepted = (Array.isArray(acceptedAnswers) ? acceptedAnswers : []).map(clean).filter(isChoiceTextSafe);
     if (!accepted.length) return null;
     var correct = accepted[0];
+    if (!isAnswerCompatibleWithPrompt(correct, prompt)) return null;
     var finalInstruction = finalInstructionText(prompt);
     if (asksForProbabilityAnswer(prompt)) {
       var correctProbability = numericValue(correct);
@@ -4045,7 +4218,10 @@
     contextualDistractorCandidates(correct, prompt, candidates);
     rawLatexDistractorCandidates(correct, candidates);
     proseMutationCandidates(correct, candidates);
-    var probabilityPrompt = asksForProbabilityAnswer(prompt);
+    var correctNumericValue = numericValue(correct.replace(/^.*?=/, ""));
+    var probabilityPrompt = asksForProbabilityAnswer(prompt)
+      || (correctNumericValue !== null && correctNumericValue >= 0 && correctNumericValue <= 1
+        && /^\s*(?:(?:that|is|are)\s+)?(?:less|more|under|over|at least|at most|exactly|between)\b/i.test(clean(latexToPlain(prompt))));
     var probabilityFraction = fractionParts(correct);
     if (probabilityPrompt && probabilityFraction && probabilityFraction.denominator > 1) {
       var probabilityStep = Math.max(1, Math.round(probabilityFraction.denominator * .12));
@@ -4489,6 +4665,7 @@
   function generateHypothesisChoiceSet(rows, prompt, seed) {
     var question = clean(latexToPlain(prompt));
     if (!/\b(?:hypothesis|significance level|null hypothesis|h\s*_?\s*0)\b/i.test(question)) return null;
+    if (asksForProbabilityAnswer(prompt) || /\bprobability\s+of\s+(?:a\s+)?type\s+[12i]+\s+error\b/i.test(question)) return null;
     var answer = (Array.isArray(rows) ? rows : []).map(function (row) {
       return plainText(latexToPlain(Array.isArray(row) ? row[0] : row));
     }).join(" ");
@@ -4859,6 +5036,7 @@
     generateHypothesisChoiceSet: generateHypothesisChoiceSet,
     generateParityChoiceSet: generateParityChoiceSet,
     isChoiceTextSafe: isChoiceTextSafe,
+    isAnswerCompatibleWithPrompt: isAnswerCompatibleWithPrompt,
     isDisplaySafe: isDisplaySafe,
     latexToPlain: latexToPlain,
     renderAnswer: renderAnswer,

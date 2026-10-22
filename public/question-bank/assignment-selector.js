@@ -252,8 +252,10 @@
   }
 
   function requiresWhiteboard(prompt) {
-    return /\b(show that|prove|verify that|sketch|draw|construct|plot|shade)\b/i.test(plainText(prompt))
-      || /\bcomplete\b[\s\S]*\bdiagram\b/i.test(plainText(prompt));
+    return /\b(show that|prove|verify that|establish that|demonstrate that|sketch|draw|construct|plot|shade)\b/i.test(plainText(prompt))
+      || /\b(?:show|establish|demonstrate)\b[\s\S]{0,100}\bthat\b/i.test(plainText(prompt))
+      || /\b(?:apply|use|using)\b[\s\S]*\b(?:mathematical )?induction\b/i.test(plainText(prompt))
+      || /\bcomplete\b[\s\S]*\b(?:diagram|table)\b/i.test(plainText(prompt));
   }
 
   function hasSharedWhiteboardInstruction(prompt) {
@@ -365,6 +367,8 @@
           if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
           if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(nestedRows, nestedPrompt, String(question.id || "") + ":" + label);
           if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label, nestedPrompt);
+          if (choices && choiceUtils && choiceUtils.isAnswerCompatibleWithPrompt
+            && !choiceUtils.isAnswerCompatibleWithPrompt(choices.options[choices.correctOption], nestedPrompt)) choices = null;
           results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
         });
       } else {
@@ -377,6 +381,8 @@
         if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateConceptChoiceSet && choiceUtils.generateConceptChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
         if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateParityChoiceSet && choiceUtils.generateParityChoiceSet(rows, prompt, String(question.id || "") + ":" + label);
         if (!whiteboardOnly && !choices) choices = choiceUtils && choiceUtils.generateChoiceSet(answers, String(question.id || "") + ":" + label, prompt);
+        if (choices && choiceUtils && choiceUtils.isAnswerCompatibleWithPrompt
+          && !choiceUtils.isAnswerCompatibleWithPrompt(choices.options[choices.correctOption], prompt)) choices = null;
         results.push({ label: label, mode: choices ? "multiple_choice" : "whiteboard", acceptedAnswers: choices ? choices.acceptedAnswers : [], options: choices ? choices.options : [], correctOption: choices ? choices.correctOption : null });
       }
     });
