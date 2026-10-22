@@ -7,6 +7,7 @@ import { requireSignedIn } from "@/lib/account-access";
 import { getQuestionBankCourseByCode } from "@/lib/question-bank-courses";
 import { submitAssignment } from "@/app/account/actions";
 import { assignmentFeedbackLabel, assignmentFeedbackModeFromRecord } from "@/lib/assignment-feedback";
+import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 
 export default async function StudentAssignmentPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; success?: string }> }) {
   const { id } = await params;
@@ -37,12 +38,15 @@ export default async function StudentAssignmentPage({ params, searchParams }: { 
   const workspaceClass = classRecord?.bank === "igcse" ? "student-assignment-workspace student-assignment-workspace-igcse" : "student-assignment-workspace";
   const feedbackMode = assignmentFeedbackModeFromRecord(assignment);
   const isSubmitted = submission?.status === "submitted";
+  const submissionConfirmation = completed < total
+    ? `You have completed ${completed} of ${total} questions. Are you sure you want to submit this assignment? You will not be able to change your answers or whiteboard working unless your teacher returns it to you.`
+    : "Are you sure you want to submit this assignment? You will not be able to change your answers or whiteboard working unless your teacher returns it to you.";
   return <>
     <main className={workspaceClass}>
     <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Student dashboard", href: "/account" }, { label: assignment.title }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord?.name || "Assignment"}</p><h1>{assignment.title}</h1>{assignment.instructions ? <p>{assignment.instructions}</p> : <p>Complete the questions below and show your working on the whiteboard or paper.</p>}</div><div className="teacher-workspace-stats"><span><strong>{completed}/{total}</strong> completed</span><span><strong>{answered}</strong> answers</span></div></div></Container></section>
     <section className="section-tight student-dashboard"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}{message.success ? <p className="form-message form-success">{message.success}</p> : null}
-      <div className="assignment-status-bar"><div><span>Your progress</span><strong>{completed} of {total} questions completed</strong></div><div className="dashboard-progress"><span style={{ width: `${total ? Math.round(completed / total * 100) : 0}%` }} /></div><div><span>Answers saved</span><strong>{answered} of {total}{correct ? ` · ${correct} correct` : ""}</strong></div><div><span>Due</span><strong>{assignment.due_at ? new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "No due date"}</strong></div>{isSubmitted ? <div className="assignment-submitted-status" role="status"><span aria-hidden="true">✓</span><strong>Submitted</strong></div> : <form action={submitAssignment}><input name="assignmentId" type="hidden" value={id} /><button className="button button-small" type="submit">Submit assignment</button></form>}</div>
+      <div className="assignment-status-bar"><div><span>Your progress</span><strong>{completed} of {total} questions completed</strong></div><div className="dashboard-progress"><span style={{ width: `${total ? Math.round(completed / total * 100) : 0}%` }} /></div><div><span>Answers saved</span><strong>{answered} of {total}{correct ? ` · ${correct} correct` : ""}</strong></div><div><span>Due</span><strong>{assignment.due_at ? new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "No due date"}</strong></div>{isSubmitted ? <div className="assignment-submitted-status" role="status"><span aria-hidden="true">✓</span><strong>Submitted</strong></div> : <form action={submitAssignment}><input name="assignmentId" type="hidden" value={id} /><ConfirmSubmitButton className="button button-small" confirmation={submissionConfirmation} idleLabel="Submit assignment" pendingLabel="Submitting…" /></form>}</div>
       <div className="assignment-note"><strong>Your work saves automatically.</strong><span>Work through one question at a time. Multiple-choice answers allow a second chance. Complete written working on the whiteboard or paper.</span></div>
       <div className="assignment-feedback-notice"><span>Mark schemes &amp; solutions</span><strong>{assignmentFeedbackLabel(feedbackMode)}</strong></div>
     </Container></section>
