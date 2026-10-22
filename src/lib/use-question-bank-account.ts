@@ -172,10 +172,6 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           ok: !error,
           error: error?.message ?? null,
         });
-        if (!error) {
-          await publishAssignmentState();
-          router.refresh();
-        }
         return;
       }
 
