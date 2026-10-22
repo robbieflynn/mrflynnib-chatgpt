@@ -198,6 +198,17 @@
       };
     }
 
+    function saveNow() {
+      window.clearTimeout(saveTimer);
+      saveTimer = null;
+      if (!localDirty || accountState().readOnly || !accountState().signedIn) return;
+      window.parent.postMessage({
+        type: 'mrflynnib-whiteboard-save',
+        questionId: questionId,
+        document: serialiseDocument()
+      }, window.location.origin);
+    }
+
     function scheduleSave() {
       if (accountState().readOnly) return;
       localDirty = true;
@@ -207,13 +218,7 @@
         return;
       }
       setSaveStatus('Saving…', 'saving');
-      saveTimer = window.setTimeout(function () {
-        window.parent.postMessage({
-          type: 'mrflynnib-whiteboard-save',
-          questionId: questionId,
-          document: serialiseDocument()
-        }, window.location.origin);
-      }, 900);
+      saveTimer = window.setTimeout(saveNow, 1800);
     }
 
     function requestSavedDocument() {
@@ -615,8 +620,12 @@
     // matching moves until up/cancel, or clear on focus/visibility loss.
     window.addEventListener('blur', resetInteraction);
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden) resetInteraction();
+      if (document.hidden) {
+        resetInteraction();
+        saveNow();
+      }
     });
+    window.addEventListener('pagehide', saveNow);
 
     function setMode(nextMode) {
       resetInteraction();
@@ -841,7 +850,7 @@
           documentLoaded = true;
           setSaveStatus('Saved', 'saved');
         } else {
-          setSaveStatus(event.data.reason === 'too-large' ? 'Too much to save' : 'Save failed', 'error');
+          setSaveStatus(event.data.reason === 'queued' ? 'Saved on this device — reconnecting' : event.data.reason === 'too-large' ? 'Too much to save' : 'Save failed', event.data.reason === 'queued' ? 'saving' : 'error');
         }
         return;
       }
@@ -887,11 +896,11 @@
         });
         actions = restored;
         setPaper(stored.paper === 'blank' ? 'blank' : 'squared');
-        localDirty = false;
+        localDirty = Boolean(event.data.pending);
         window.clearTimeout(saveTimer);
         redraw();
         updateButtons();
-        setSaveStatus('Saved', 'saved');
+        setSaveStatus(localDirty ? 'Saved on this device — reconnecting' : 'Saved', localDirty ? 'saving' : 'saved');
       }
     });
   }

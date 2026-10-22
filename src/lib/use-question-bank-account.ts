@@ -23,6 +23,69 @@ type AssignmentEmbedOptions = {
   viewedStudentId?: string;
 };
 
+type PendingAnswerSave = {
+  assignmentId: string;
+  attempts: number;
+  createdAt: string;
+  notified: boolean;
+  questionId: string;
+  requestId: string;
+  response: unknown;
+  userId: string;
+};
+
+type PendingWhiteboardSave = {
+  attempts: number;
+  bank: Bank;
+  document: unknown;
+  notified: boolean;
+  questionId: string;
+  revision: string;
+  userId: string;
+};
+
+const pendingAnswerStorageKey = "mrflynnib:pending-assignment-answers:v1";
+const pendingWhiteboardStorageKey = "mrflynnib:pending-whiteboards:v1";
+
+function readPendingRecords<T>(storageKey: string): Record<string, T> {
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed as Record<string, T> : {};
+  } catch {
+    return {};
+  }
+}
+
+function writePendingRecords<T>(storageKey: string, records: Record<string, T>) {
+  try {
+    window.localStorage.setItem(storageKey, JSON.stringify(records));
+  } catch {
+    // A full or unavailable browser store should not stop the live save attempt.
+  }
+}
+
+function answerSaveKey(entry: Pick<PendingAnswerSave, "assignmentId" | "questionId" | "response" | "userId">) {
+  const response = entry.response && typeof entry.response === "object" ? entry.response as { partKey?: unknown } : null;
+  return [entry.userId, entry.assignmentId, entry.questionId, String(response?.partKey || "answer")].join(":");
+}
+
+function whiteboardSaveKey(entry: Pick<PendingWhiteboardSave, "bank" | "questionId" | "userId">) {
+  return [entry.userId, entry.bank, entry.questionId].join(":");
+}
+
+function newSaveId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (character) => {
+    const random = Math.floor(Math.random() * 16);
+    const value = character === "x" ? random : (random & 0x3) | 0x8;
+    return value.toString(16);
+  });
+}
+
+function isPermanentSaveError(message: string) {
+  return /already been submitted|assignment not found|question not found|must sign in|student account|choose a valid answer|choose an answer|enter an answer|answer is too long|question part was not found/i.test(message);
+}
+
 export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | null>, bank: Bank, assignmentId?: string, options: AssignmentEmbedOptions = {}) {
   const router = useRouter();
   const { feedbackMode = "immediate", assignmentSubmitted = false, viewedStudentId } = options;
@@ -33,9 +96,191 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
   useEffect(() => {
     const frame = frameRef.current;
     let cancelled = false;
+    let retryTimer: number | null = null;
+    const answerSavesInFlight = new Set<string>();
+    const whiteboardSavesInFlight = new Set<string>();
 
     function send(data: Record<string, unknown>) {
       frameRef.current?.contentWindow?.postMessage(data, window.location.origin);
+    }
+
+    function matchingPendingCount() {
+      const userId = userRef.current?.id;
+      if (!userId) return 0;
+      const answerCount = Object.values(readPendingRecords<PendingAnswerSave>(pendingAnswerStorageKey))
+        .filter((entry) => entry.userId === userId && entry.assignmentId === assignmentId).length;
+      const whiteboardCount = Object.values(readPendingRecords<PendingWhiteboardSave>(pendingWhiteboardStorageKey))
+        .filter((entry) => entry.userId === userId && entry.bank === bank).length;
+      return answerCount + whiteboardCount;
+    }
+
+    function publishSyncStatus(state?: "online" | "offline" | "syncing") {
+      const pending = matchingPendingCount();
+      window.dispatchEvent(new CustomEvent("mrflynnib-sync-status", {
+        detail: { pending, state: state || (navigator.onLine ? (pending ? "syncing" : "online") : "offline") },
+      }));
+    }
+
+    function scheduleRetry(attempts = 0) {
+      if (cancelled || retryTimer) return;
+      const delay = navigator.onLine ? Math.min(30_000, 1_500 * Math.pow(2, Math.min(attempts, 4))) : 30_000;
+      retryTimer = window.setTimeout(() => {
+        retryTimer = null;
+        void flushPendingSaves();
+      }, delay);
+    }
+
+    async function deliverPendingAnswer(storageKey: string, entry: PendingAnswerSave) {
+      if (cancelled || !clientRef.current || !userRef.current || entry.userId !== userRef.current.id || entry.assignmentId !== assignmentId) return;
+      if (answerSavesInFlight.has(storageKey)) return;
+      if (!navigator.onLine) {
+        if (!entry.notified) {
+          entry.notified = true;
+          const records = readPendingRecords<PendingAnswerSave>(pendingAnswerStorageKey);
+          if (records[storageKey]?.requestId === entry.requestId) {
+            records[storageKey] = entry;
+            writePendingRecords(pendingAnswerStorageKey, records);
+          }
+          send({ type: "mrflynnib-assignment-response-result", questionId: entry.questionId, response: entry.response, ok: false, queued: true });
+        }
+        publishSyncStatus("offline");
+        scheduleRetry(entry.attempts);
+        return;
+      }
+      answerSavesInFlight.add(storageKey);
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 12_000);
+      let data: unknown = null;
+      let errorMessage = "";
+      try {
+        const result = await clientRef.current.rpc("submit_assignment_response_reliable", {
+          assignment_uuid: entry.assignmentId,
+          question_key: entry.questionId,
+          request_uuid: entry.requestId,
+          response_payload: entry.response,
+        }).abortSignal(controller.signal);
+        data = result.data;
+        errorMessage = result.error?.message || "";
+      } catch (error) {
+        errorMessage = error instanceof Error ? error.message : "The save service could not be reached.";
+      } finally {
+        window.clearTimeout(timeout);
+        answerSavesInFlight.delete(storageKey);
+      }
+      if (cancelled) return;
+      const records = readPendingRecords<PendingAnswerSave>(pendingAnswerStorageKey);
+      if (records[storageKey]?.requestId !== entry.requestId) return;
+      if (!errorMessage) {
+        delete records[storageKey];
+        writePendingRecords(pendingAnswerStorageKey, records);
+        const result = Array.isArray(data) ? data[0] as { is_correct?: boolean | null; result?: string | null } : null;
+        send({
+          type: "mrflynnib-assignment-response-result",
+          questionId: entry.questionId,
+          response: entry.response,
+          isCorrect: result?.is_correct ?? null,
+          result: result?.result ?? null,
+          ok: true,
+        });
+        publishSyncStatus();
+        return;
+      }
+      const message = errorMessage;
+      if (isPermanentSaveError(message)) {
+        delete records[storageKey];
+        writePendingRecords(pendingAnswerStorageKey, records);
+        send({ type: "mrflynnib-assignment-response-result", questionId: entry.questionId, response: entry.response, ok: false, error: message });
+        publishSyncStatus();
+        return;
+      }
+      entry.attempts += 1;
+      if (!entry.notified) {
+        entry.notified = true;
+        send({ type: "mrflynnib-assignment-response-result", questionId: entry.questionId, response: entry.response, ok: false, queued: true });
+      }
+      records[storageKey] = entry;
+      writePendingRecords(pendingAnswerStorageKey, records);
+      publishSyncStatus("syncing");
+      scheduleRetry(entry.attempts);
+    }
+
+    async function deliverPendingWhiteboard(storageKey: string, entry: PendingWhiteboardSave) {
+      if (cancelled || !clientRef.current || !userRef.current || entry.userId !== userRef.current.id || entry.bank !== bank) return;
+      if (whiteboardSavesInFlight.has(storageKey)) return;
+      if (!navigator.onLine) {
+        if (!entry.notified) {
+          entry.notified = true;
+          const records = readPendingRecords<PendingWhiteboardSave>(pendingWhiteboardStorageKey);
+          if (records[storageKey]?.revision === entry.revision) {
+            records[storageKey] = entry;
+            writePendingRecords(pendingWhiteboardStorageKey, records);
+          }
+          send({ type: "mrflynnib-whiteboard-save-result", questionId: entry.questionId, ok: false, reason: "queued" });
+        }
+        publishSyncStatus("offline");
+        scheduleRetry(entry.attempts);
+        return;
+      }
+      whiteboardSavesInFlight.add(storageKey);
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 12_000);
+      let failed = false;
+      try {
+        const result = await clientRef.current.from("whiteboard_documents").upsert({
+          user_id: entry.userId,
+          bank: entry.bank,
+          question_id: entry.questionId,
+          document: entry.document,
+          document_version: 1,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: "user_id,bank,question_id" }).abortSignal(controller.signal);
+        failed = Boolean(result.error);
+      } catch {
+        failed = true;
+      } finally {
+        window.clearTimeout(timeout);
+        whiteboardSavesInFlight.delete(storageKey);
+      }
+      if (cancelled) return;
+      const records = readPendingRecords<PendingWhiteboardSave>(pendingWhiteboardStorageKey);
+      const current = records[storageKey];
+      if (!failed) {
+        if (current?.revision === entry.revision) {
+          delete records[storageKey];
+          send({ type: "mrflynnib-whiteboard-save-result", questionId: entry.questionId, ok: true, savedAt: new Date().toISOString() });
+        }
+        writePendingRecords(pendingWhiteboardStorageKey, records);
+        publishSyncStatus();
+        if (current && current.revision !== entry.revision) void deliverPendingWhiteboard(storageKey, current);
+        return;
+      }
+      if (current?.revision === entry.revision) {
+        entry.attempts += 1;
+        if (!entry.notified) {
+          entry.notified = true;
+          send({ type: "mrflynnib-whiteboard-save-result", questionId: entry.questionId, ok: false, reason: "queued" });
+        }
+        records[storageKey] = entry;
+        writePendingRecords(pendingWhiteboardStorageKey, records);
+      }
+      publishSyncStatus("syncing");
+      scheduleRetry(entry.attempts);
+    }
+
+    async function flushPendingSaves() {
+      const userId = userRef.current?.id;
+      if (!userId) return;
+      const answerRecords = readPendingRecords<PendingAnswerSave>(pendingAnswerStorageKey);
+      const whiteboardRecords = readPendingRecords<PendingWhiteboardSave>(pendingWhiteboardStorageKey);
+      await Promise.all([
+        ...Object.entries(answerRecords)
+          .filter(([, entry]) => entry.userId === userId && entry.assignmentId === assignmentId)
+          .map(([key, entry]) => deliverPendingAnswer(key, entry)),
+        ...Object.entries(whiteboardRecords)
+          .filter(([, entry]) => entry.userId === userId && entry.bank === bank)
+          .map(([key, entry]) => deliverPendingWhiteboard(key, entry)),
+      ]);
+      publishSyncStatus();
     }
 
     async function publishAssignmentState() {
@@ -101,6 +346,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         completedQuestionIds: Array.from(completedRef.current),
       });
       if (assignmentId) await publishAssignmentState();
+      if (user) void flushPendingSaves();
     }
 
     async function handleMessage(event: MessageEvent<QuestionBankMessage>) {
@@ -147,31 +393,22 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           send({ type: "mrflynnib-assignment-response-result", questionId, response: message.response ?? null, ok: false });
           return;
         }
-        const partResponse = message.response && typeof message.response === "object" && "partKey" in message.response
-          ? message.response as { partKey?: unknown; partAnswer?: unknown }
-          : null;
-        const { data, error } = partResponse
-          ? await clientRef.current.rpc("submit_assignment_part_response", {
-              assignment_uuid: assignmentId,
-              question_key: questionId,
-              part_key: String(partResponse.partKey || ""),
-              part_answer: String(partResponse.partAnswer || ""),
-            })
-          : await clientRef.current.rpc("submit_assignment_response", {
-              assignment_uuid: assignmentId,
-              question_key: questionId,
-              response_payload: message.response,
-            });
-        const result = Array.isArray(data) ? data[0] : null;
-        send({
-          type: "mrflynnib-assignment-response-result",
+        const entry: PendingAnswerSave = {
+          assignmentId,
+          attempts: 0,
+          createdAt: new Date().toISOString(),
+          notified: false,
           questionId,
+          requestId: newSaveId(),
           response: message.response ?? null,
-          isCorrect: result?.is_correct ?? null,
-          result: result?.result ?? null,
-          ok: !error,
-          error: error?.message ?? null,
-        });
+          userId: userRef.current.id,
+        };
+        const storageKey = answerSaveKey(entry);
+        const records = readPendingRecords<PendingAnswerSave>(pendingAnswerStorageKey);
+        records[storageKey] = entry;
+        writePendingRecords(pendingAnswerStorageKey, records);
+        publishSyncStatus("syncing");
+        void deliverPendingAnswer(storageKey, entry);
         return;
       }
 
@@ -226,6 +463,14 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
 
       if (message.type === "mrflynnib-whiteboard-load") {
+        const localWhiteboards = readPendingRecords<PendingWhiteboardSave>(pendingWhiteboardStorageKey);
+        const localWhiteboardKey = whiteboardSaveKey({ bank, questionId, userId: userRef.current.id });
+        const localWhiteboard = localWhiteboards[localWhiteboardKey];
+        if (localWhiteboard) {
+          send({ type: "mrflynnib-whiteboard-data", questionId, document: localWhiteboard.document, updatedAt: null, ok: true, pending: true });
+          void deliverPendingWhiteboard(localWhiteboardKey, localWhiteboard);
+          return;
+        }
         if (assignmentId && (assignmentSubmitted || viewedStudentId)) {
           const studentId = viewedStudentId || userRef.current.id;
           const { data: snapshot, error: snapshotError } = await clientRef.current
@@ -271,15 +516,21 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           send({ type: "mrflynnib-whiteboard-save-result", questionId, ok: false, reason: "too-large" });
           return;
         }
-        const { error } = await clientRef.current.from("whiteboard_documents").upsert({
-          user_id: userRef.current.id,
+        const entry: PendingWhiteboardSave = {
+          attempts: 0,
           bank,
-          question_id: questionId,
           document: message.document,
-          document_version: 1,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: "user_id,bank,question_id" });
-        send({ type: "mrflynnib-whiteboard-save-result", questionId, ok: !error, savedAt: error ? null : new Date().toISOString() });
+          notified: false,
+          questionId,
+          revision: newSaveId(),
+          userId: userRef.current.id,
+        };
+        const storageKey = whiteboardSaveKey(entry);
+        const records = readPendingRecords<PendingWhiteboardSave>(pendingWhiteboardStorageKey);
+        records[storageKey] = entry;
+        writePendingRecords(pendingWhiteboardStorageKey, records);
+        publishSyncStatus("syncing");
+        void deliverPendingWhiteboard(storageKey, entry);
       }
     }
 
@@ -296,10 +547,17 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
     const { data: authListener } = client.auth.onAuthStateChange((_event, session) => {
       publishAccountState(session?.user ?? null);
     });
+    const handleOnline = () => void flushPendingSaves();
+    const handleOffline = () => publishSyncStatus("offline");
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
       cancelled = true;
+      if (retryTimer) window.clearTimeout(retryTimer);
       window.removeEventListener("message", handleMessage);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
       authListener.subscription.unsubscribe();
     };
   }, [assignmentId, assignmentSubmitted, bank, feedbackMode, frameRef, router, viewedStudentId]);

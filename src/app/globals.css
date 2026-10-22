@@ -992,6 +992,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .assignment-management-row form { margin: 0; }
 .assignment-feedback-notice { width: fit-content; padding: .7rem .9rem; display: flex; align-items: center; gap: .6rem; border: 1px solid #d3dfe3; border-radius: .8rem; background: white; color: var(--muted); font-size: .75rem; }
 .assignment-feedback-notice strong { color: var(--workspace-accent-dark); }
+.assignment-connection-status { padding: .85rem 1rem; display: flex; align-items: center; gap: .6rem; border: 1px solid #e0b359; border-radius: .85rem; background: #fff8e8; color: #6f4b08; }
+.assignment-connection-status strong { white-space: nowrap; }
+.assignment-connection-status.is-offline { border-color: #dc8f89; background: #fff1ef; color: #8d2c26; }
 .student-work-overview-note, .student-work-detail-bar { padding: .9rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid #cedadd; border-radius: 1rem; background: white; }
 .student-work-overview-note { justify-content: flex-start; }
 .student-work-overview-note strong, .student-work-detail-bar > div { display: grid; gap: .08rem; }
