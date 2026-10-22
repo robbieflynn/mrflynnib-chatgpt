@@ -17,8 +17,10 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+body.igcse-learning { --blue-700: #9b2f3f; --blue-600: #b33a4d; --blue-100: #f8e9ec; }
 button, input { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid rgba(36, 147, 238, 0.35); outline-offset: 2px; }
@@ -73,6 +75,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .library-status small, .library-status strong { display: block; }.library-status small { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spacing: .08em; }.library-status strong { margin-top: 3px; color: var(--navy-900); font-size: 10px; }
 
 .study-paths { display: grid; grid-template-columns: minmax(210px, .7fr) repeat(2, minmax(230px, 1fr)); gap: 14px; align-items: stretch; margin-bottom: 22px; }
+.study-paths.is-single-path { grid-template-columns: minmax(210px, .7fr) minmax(300px, 1.35fr); }
 .study-paths-intro { display: grid; align-content: center; padding: 4px 10px 4px 0; }.study-paths-intro h2 { margin: 0; color: var(--navy-900); font-family: Georgia, serif; font-size: 25px; font-weight: 500; line-height: 1.12; }
 .study-path-card { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: 13px; align-items: center; min-height: 82px; padding: 15px 17px; border: 1px solid var(--line); border-radius: 15px; background: #fff; color: var(--navy-900); text-align: left; box-shadow: 0 8px 24px rgba(8,33,61,.045); cursor: pointer; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
 .study-path-card:hover { transform: translateY(-2px); border-color: #b5ccdf; box-shadow: 0 14px 30px rgba(8,33,61,.08); }.study-path-card > span:last-child { color: var(--blue-700); font-weight: 900; }.study-path-card strong, .study-path-card small { display: block; }.study-path-card strong { font-family: Georgia, serif; font-size: 17px; font-weight: 500; }.study-path-card small { margin-top: 4px; color: var(--muted); font-size: 8px; }
@@ -80,7 +83,8 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 
 .continue-card { display: grid; grid-template-columns: minmax(360px, .9fr) minmax(0, 1.35fr); min-height: 286px; overflow: hidden; border-radius: 23px; background: #fff; box-shadow: var(--shadow); }
 .continue-art { align-self: center; aspect-ratio: 16 / 9; margin: 22px 0 22px 22px; overflow: hidden; border-radius: 16px; background: #3299dc; box-shadow: 0 10px 25px rgba(8,33,61,.1); }
-.continue-course-image { display: block; width: 100%; height: 100%; object-fit: cover; }
+.continue-art > img, .continue-art > .igcse-course-art { display: block; width: 100%; height: 100%; object-fit: cover; }
+.continue-art > .igcse-course-art { min-height: 100%; border-radius: 0; }
 .continue-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, .65fr); gap: 36px; align-items: center; padding: 38px; }
 .continue-body h2 { margin: 0; color: var(--navy-900); font-family: Georgia, serif; font-size: clamp(25px, 3vw, 36px); font-weight: 500; line-height: 1.14; }.continue-body h2 + p { margin: 10px 0 0; color: var(--muted); font-size: 11px; }
 .continue-progress > div:first-child { display: flex; justify-content: space-between; color: var(--muted); font-size: 9px; font-weight: 750; }

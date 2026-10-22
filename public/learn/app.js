@@ -4,7 +4,13 @@ const pastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
 const practiceLibrary = window.MR_FLYNN_PRACTICE;
 const previewParameters = new URLSearchParams(window.location.search);
 const previewMode = previewParameters.get("v");
-const reviewerMode = previewMode === "all-courses-review";
+const requestedCurriculum = previewParameters.get("curriculum");
+const reviewCurriculum = previewMode === "igcse-platform-review"
+  ? "igcse"
+  : previewMode === "ib-platform-review" || previewMode === "all-courses-review"
+    ? "ib"
+    : null;
+const reviewerMode = Boolean(reviewCurriculum);
 const salesPreviewMode = previewMode?.startsWith("course-preview-") || false;
 const previewCourseId = salesPreviewMode
   ? previewMode.replace("course-preview-", "")
@@ -122,12 +128,13 @@ const courses = Object.fromEntries(courseDefinitions.map((definition) => {
 const validPreviewCourseId = courseDefinitions.some((definition) => definition.id === previewCourseId)
   ? previewCourseId
   : null;
+const defaultCourseId = reviewCurriculum === "igcse" || requestedCurriculum === "igcse" ? "igcse" : validPreviewCourseId || "aa-hl";
 let enrolledCourseIds = reviewerMode
-  ? courseDefinitions.map((definition) => definition.id)
-  : [validPreviewCourseId || "aa-hl"];
+  ? courseDefinitions.filter((definition) => reviewCurriculum === "igcse" ? definition.id === "igcse" : definition.id !== "igcse").map((definition) => definition.id)
+  : [defaultCourseId];
 let ownedCourseIds = [...enrolledCourseIds];
 let enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
-let enrolledCourseId = validPreviewCourseId || "aa-hl";
+let enrolledCourseId = defaultCourseId;
 let platformAccount = null;
 
 const storageKey = "mrflynnib-course-platform-v3";
@@ -306,22 +313,37 @@ function configurePreviewMode() {
     return;
   }
   document.body.classList.add("reviewer-mode");
-  document.title = "All five courses review | Mr Flynn IB";
-  document.getElementById("coursesNavLabel").textContent = "All courses";
-  document.getElementById("sidebarCourseLabel").textContent = "Four IB courses and Edexcel IGCSE";
+  const isIgcse = reviewCurriculum === "igcse";
+  document.body.classList.toggle("igcse-learning", isIgcse);
+  document.title = `${isIgcse ? "IGCSE" : "IB"} platform review | Mr Flynn IB`;
+  document.getElementById("coursesNavLabel").textContent = isIgcse ? "My course" : "IB courses";
+  document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "Four IB Mathematics courses";
   document.getElementById("welcomeEyebrow").textContent = "Private review";
-  document.getElementById("welcomeTitle").textContent = "Review all five courses";
-  document.getElementById("welcomeCopy").textContent = "Open every course, topic and lesson from one private inspection view.";
-  document.getElementById("libraryStatusText").textContent = "Five complete course pathways";
+  document.getElementById("welcomeTitle").textContent = isIgcse ? "Review the IGCSE learning area" : "Review the IB learning area";
+  document.getElementById("welcomeCopy").textContent = isIgcse ? "Inspect the complete IGCSE course without entering the separate IB platform." : "Inspect AA HL, AA SL, AI HL and AI SL without entering the separate IGCSE platform.";
+  document.getElementById("libraryStatusText").textContent = isIgcse ? "Complete IGCSE course pathway" : "Four complete IB course pathways";
   document.getElementById("enrolmentEyebrow").textContent = "Review catalogue";
-  document.getElementById("dashboardCoursesTitle").textContent = "All five courses";
-  document.getElementById("dashboardCoursesButton").textContent = "Inspect all courses →";
+  document.getElementById("dashboardCoursesTitle").textContent = isIgcse ? "IGCSE Mathematics" : "IB Mathematics courses";
+  document.getElementById("dashboardCoursesButton").textContent = isIgcse ? "Inspect the course →" : "Inspect IB courses →";
   document.getElementById("coursesEyebrow").textContent = "Private course review";
-  document.getElementById("coursesTitle").textContent = "All five courses";
-  document.getElementById("coursesDescription").textContent = "Inspect the complete lesson structure for AA HL, AA SL, AI HL, AI SL and Edexcel IGCSE Mathematics. Open any card to review its topics, videos and mapped practice.";
-  document.getElementById("courseBackButton").textContent = "← All courses";
-  document.getElementById("summaryTopics").textContent = "26";
+  document.getElementById("coursesTitle").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
+  document.getElementById("coursesDescription").textContent = isIgcse ? "Inspect the complete IGCSE lesson structure and mapped practice in its own learning area." : "Inspect AA HL, AA SL, AI HL and AI SL as a dedicated IB course catalogue.";
+  document.getElementById("courseBackButton").textContent = isIgcse ? "← IGCSE course" : "← IB courses";
+  document.getElementById("summaryTopics").textContent = String(enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].topics.length, 0));
   document.getElementById("summaryTopicsLabel").textContent = "course topics";
+  document.getElementById("questionBankLink").href = isIgcse ? "/igcse/question-bank" : "/question-bank";
+  document.getElementById("assignmentsLink").href = isIgcse ? "/igcse/account#assignments" : "/account#assignments";
+  document.getElementById("accessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
+  document.getElementById("manageAccessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
+  document.getElementById("learningHomeLink").href = isIgcse ? "/igcse/account" : "/account";
+}
+
+function configureCurriculumExperience(curriculum) {
+  const isIgcse = curriculum === "igcse";
+  document.body.classList.toggle("igcse-learning", isIgcse);
+  const hasPastPapers = enrolledCourseDefinitions.some((definition) => pastPaperLibrary.courses?.[definition.code]);
+  document.querySelectorAll('[data-view="pastPapers"]').forEach((element) => { element.hidden = !hasPastPapers; });
+  document.querySelector(".study-paths")?.classList.toggle("is-single-path", !hasPastPapers);
 }
 
 function getCurrentLesson() {
@@ -394,9 +416,7 @@ function renderDashboard() {
   const lastLesson = course.lessons.find((lesson) => lesson.id === state.lastLesson);
   const nextLesson = lastLesson || course.lessons.find((lesson) => !state.completed.includes(lesson.id)) || course.lessons[0];
   const percentage = percentFor(course);
-  const continueCourseImage = document.getElementById("continueCourseImage");
-  continueCourseImage.src = course.image;
-  continueCourseImage.alt = `${course.code} course cover, Mr Flynn IB`;
+  document.getElementById("continueCourseArt").innerHTML = courseArtwork(course);
   document.getElementById("continueLessonTitle").textContent = `${nextLesson.code} ${nextLesson.title}`;
   document.getElementById("continueLessonMeta").textContent = `Topic ${nextLesson.topic}: ${topicName(course, nextLesson.topic)} · ${formatDuration(nextLesson.seconds)}`;
   document.getElementById("continueProgressLabel").textContent = `${percentage}% complete`;
@@ -1041,6 +1061,7 @@ async function initialize() {
   document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
   document.getElementById("summaryVideos").textContent = visibleLessonCount;
   configurePreviewMode();
+  configureCurriculumExperience(platformAccount?.curriculum || reviewCurriculum || (enrolledCourseId === "igcse" ? "igcse" : "ib"));
   renderDashboard();
   renderCourseCards();
   renderProgress();

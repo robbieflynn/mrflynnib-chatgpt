@@ -8,11 +8,12 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const product = getCourseProduct(typeof body.courseId === "string" ? body.courseId : "");
   if (!product || product.curriculum !== session.curriculum) return NextResponse.json({ error: "Invalid course" }, { status: 400 });
-  if (session.ownedCourses.some((course) => course.id === product.id)) return NextResponse.json({ url: "/learn" });
+  if (session.ownedCourses.some((course) => course.id === product.id)) return NextResponse.json({ url: product.curriculum === "igcse" ? "/igcse/learn" : "/learn" });
   const secret = process.env.STRIPE_SECRET_KEY;
   const price = process.env[product.stripePriceEnv];
   if (!secret || !price) return NextResponse.json({ error: "Checkout is not configured in this preview yet." }, { status: 503 });
   const origin = new URL(request.url).origin;
+  const accessPath = product.curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
   const params = new URLSearchParams({
     mode: "payment",
     "line_items[0][price]": price,
@@ -23,8 +24,8 @@ export async function POST(request: Request) {
     "metadata[product_code]": product.productCode,
     "metadata[curriculum]": product.curriculum,
     "metadata[access_days]": String(product.accessDays),
-    success_url: `${origin}/account/access?checkout=success&course=${product.id}`,
-    cancel_url: `${origin}/account/access?checkout=cancelled&course=${product.id}`,
+    success_url: `${origin}${accessPath}?checkout=success&course=${product.id}`,
+    cancel_url: `${origin}${accessPath}?checkout=cancelled&course=${product.id}`,
   });
   const response = await fetch("https://api.stripe.com/v1/checkout/sessions", { method: "POST", headers: { Authorization: `Bearer ${secret}`, "Content-Type": "application/x-www-form-urlencoded" }, body: params });
   const checkout = await response.json();

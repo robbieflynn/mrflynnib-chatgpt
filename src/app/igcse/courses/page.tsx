@@ -12,7 +12,7 @@ export default function IgcseCoursesPage() {
           <Eyebrow>Online course</Eyebrow>
           <h1>Lessons on every topic and past-paper solutions.</h1>
           <p className="lede">Learn Edexcel IGCSE Mathematics through clear topic lessons, then see the same ideas applied in complete past-paper solutions.</p>
-          <div className="cluster"><ButtonLink href="/account/access?qualification=igcse&course=igcse">Try lessons and view access</ButtonLink><ButtonLink href="/go/igcse-course" secondary>Continue on Teachable</ButtonLink></div>
+          <div className="cluster"><ButtonLink href="/igcse/account/access?course=igcse">Try lessons and view access</ButtonLink><ButtonLink href="/go/igcse-course" secondary>Continue on Teachable</ButtonLink></div>
         </div>
       </Container>
     </section>

@@ -147,7 +147,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     personalResult.data as PlatformEntitlement[] | null,
     schoolResult.data as PlatformLicenseSeat[] | null,
   ));
-  const upgradeHref = `/account/access?qualification=${isIgcse ? "igcse" : "ib"}`;
+  const upgradeHref = isIgcse ? "/igcse/account/access" : "/account/access";
   const completedQuestionIdsPromise = (async () => {
     const completedQuestionIds = new Set<string>();
     let pageStart = 0;
@@ -286,7 +286,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </p>
           ) : null}
           <nav className="student-platform-nav" aria-label="Your learning areas">
-            <Link href="/learn"><DashboardIcon name="book" /><span><strong>Courses</strong><small>Lessons and past-paper solutions</small></span><b aria-hidden="true">→</b></Link>
+            <Link href={isIgcse ? "/igcse/learn" : "/learn"}><DashboardIcon name="book" /><span><strong>Courses</strong><small>Lessons and past-paper solutions</small></span><b aria-hidden="true">→</b></Link>
             <Link href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Independent practice and saved work</small></span><b aria-hidden="true">→</b></Link>
             <Link href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Work set by your teachers</small></span><b aria-hidden="true">↓</b></Link>
             <Link href="#question-bank-progress"><DashboardIcon name="check" /><span><strong>Progress</strong><small>Your learning at a glance</small></span><b aria-hidden="true">↓</b></Link>

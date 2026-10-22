@@ -23,7 +23,7 @@ export async function GET() {
       account: session.curriculum === "igcse" ? "/igcse/account" : "/account",
       questionBank: session.curriculum === "igcse" ? "/igcse/question-bank" : "/question-bank",
       assignments: session.curriculum === "igcse" ? "/igcse/account#assignments" : "/account#assignments",
-      access: `/account/access?qualification=${session.curriculum}`,
+      access: session.curriculum === "igcse" ? "/igcse/account/access" : "/account/access",
     },
   }, { headers: { "Cache-Control": "private, no-store" } });
 }

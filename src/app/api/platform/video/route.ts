@@ -18,7 +18,7 @@ export async function GET(request: Request) {
   if (!course || course.curriculum !== session.curriculum || !map || !map[kind].includes(videoId)) return NextResponse.json({ error: "Video not found" }, { status: 404 });
   const ownsCourse = session.ownedCourses.some((item) => item.id === courseId);
   const isSample = kind === "lessons" && map.samples.includes(videoId);
-  if (!ownsCourse && !isSample) return NextResponse.json({ error: "Full course access required", upgrade: "/account/access" }, { status: 403 });
+  if (!ownsCourse && !isSample) return NextResponse.json({ error: "Full course access required", upgrade: course.curriculum === "igcse" ? "/igcse/account/access" : "/account/access" }, { status: 403 });
   const libraryId = process.env.BUNNY_STREAM_LIBRARY_ID || videoAccess.libraryId;
   const expires = Math.floor(Date.now() / 1000) + 15 * 60;
   const tokenKey = process.env.BUNNY_STREAM_TOKEN_KEY;
