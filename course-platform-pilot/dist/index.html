@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Private prototype of the Mr Flynn IB student course platform." />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>My AA HL course | Mr Flynn IB</title>
+    <link rel="icon" href="assets/mr-flynn-mark.png" />
+    <link rel="stylesheet" href="styles.css?v=20261018-10" />
+  </head>
+  <body>
+    <div class="prototype-strip">
+      <strong>Private course-platform prototype</strong>
+      <span>Separate from the live Mr Flynn IB website. No real student accounts or payments are connected.</span>
+    </div>
+
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Student navigation">
+        <div class="sidebar-head">
+          <button class="brand" type="button" data-view="dashboard" aria-label="Mr Flynn IB home">
+            <img src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" />
+          </button>
+          <button class="icon-button mobile-close" id="closeMenu" type="button" aria-label="Close navigation">×</button>
+        </div>
+
+        <nav class="main-nav">
+          <button class="nav-item is-active" type="button" data-view="dashboard">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg>
+            <span>Home</span>
+          </button>
+          <button class="nav-item" type="button" data-view="courses">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 16.5A2.5 2.5 0 0 1 6.5 14H20M8 7h8"/></svg>
+            <span id="coursesNavLabel">My course</span>
+          </button>
+          <button class="nav-item" type="button" data-view="pastPapers">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h7M9 16h7"/></svg>
+            <span>Past paper solutions</span>
+          </button>
+          <button class="nav-item" type="button" data-view="progress">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            <span>Progress</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-summary">
+          <p class="eyebrow">Video library</p>
+          <div><strong id="sidebarVideoCount">442</strong><span>lessons</span></div>
+          <small id="sidebarCourseLabel">Analysis &amp; Approaches HL</small>
+        </div>
+
+        <button class="help-card" type="button" id="helpButton">
+          <span class="help-icon">?</span>
+          <span><strong>Need help?</strong><small>Contact Mr Flynn IB</small></span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </aside>
+
+      <div class="sidebar-scrim" id="sidebarScrim" aria-hidden="true"></div>
+
+      <main class="main-stage">
+        <header class="topbar">
+          <button class="icon-button menu-button" id="openMenu" type="button" aria-label="Open navigation">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="topbar-context"><span class="status-dot"></span><span>Your learning space</span></div>
+          <button class="account-button" id="accountButton" type="button" aria-haspopup="menu" aria-expanded="false">
+            <span class="avatar">RF</span>
+            <span><strong>Prototype learner</strong><small>Student account</small></span>
+            <span aria-hidden="true">⌄</span>
+          </button>
+          <div class="account-menu" id="accountMenu" role="menu" hidden>
+            <button type="button" id="showLogin" role="menuitem">Preview sign-in screen</button>
+            <button type="button" id="resetProgress" role="menuitem">Reset prototype progress</button>
+          </div>
+        </header>
+
+        <section id="dashboardView" class="view is-visible">
+          <div class="welcome-row">
+            <div>
+              <p class="eyebrow" id="welcomeEyebrow">Welcome back</p>
+              <h1 id="welcomeTitle">Your AA HL course</h1>
+              <p id="welcomeCopy">Your lessons, practice and past-paper solutions in one calm learning space.</p>
+            </div>
+            <div class="library-status">
+              <span class="status-mark">✓</span>
+              <span><small>Course library</small><strong id="libraryStatusText">All five topics available</strong></span>
+            </div>
+          </div>
+
+          <section class="study-paths" aria-labelledby="studyPathsTitle">
+            <div class="study-paths-intro">
+              <p class="eyebrow">Start studying</p>
+              <h2 id="studyPathsTitle">What would you like to work on?</h2>
+            </div>
+            <button class="study-path-card course-path" type="button" data-view="courses">
+              <span class="study-path-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 16.5A2.5 2.5 0 0 1 6.5 14H20M8 7h8"/></svg>
+              </span>
+              <span><strong>Course lessons</strong><small>Learn the syllabus topic by topic</small></span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <button class="study-path-card paper-path" type="button" data-view="pastPapers">
+              <span class="study-path-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h7M9 16h7"/></svg>
+              </span>
+              <span><strong>Past paper solutions</strong><small>Practise by session, paper and question</small></span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </section>
+
+          <article class="continue-card" id="continueCard">
+            <div class="continue-art">
+              <img class="continue-course-image" id="continueCourseImage" src="assets/course-aa-sl.png" alt="AA SL course cover — Mr Flynn IB" />
+            </div>
+            <div class="continue-body">
+              <div>
+                <p class="eyebrow">Continue learning</p>
+                <h2 id="continueLessonTitle">Choose a lesson to begin</h2>
+                <p id="continueLessonMeta">Your progress will stay on this browser.</p>
+              </div>
+              <div class="continue-progress">
+                <div><span id="continueProgressLabel">0% complete</span><span id="continueProgressCount">0 lessons</span></div>
+                <div class="progress-track"><span id="continueProgressBar"></span></div>
+                <button class="primary-button" id="continueButton" type="button">Continue course <span>→</span></button>
+              </div>
+            </div>
+          </article>
+
+          <section class="section-block">
+            <div class="section-heading">
+              <div><p class="eyebrow" id="enrolmentEyebrow">Your enrolment</p><h2 id="dashboardCoursesTitle">My course</h2></div>
+              <button class="text-button" type="button" data-view="courses" id="dashboardCoursesButton">Open course →</button>
+            </div>
+            <div class="course-grid" id="dashboardCourseGrid"></div>
+          </section>
+
+          <section class="platform-summary">
+            <article><strong id="summaryVideos">442</strong><span>video lessons</span></article>
+            <article><strong id="summaryTopics">5</strong><span id="summaryTopicsLabel">syllabus topics</span></article>
+            <article><strong>1</strong><span>student login</span></article>
+          </section>
+        </section>
+
+        <section id="coursesView" class="view">
+          <div class="page-intro">
+            <p class="eyebrow" id="coursesEyebrow">Your library</p>
+            <h1 id="coursesTitle">My course</h1>
+            <p id="coursesDescription">Your account includes the complete AA HL course across all five syllabus topics.</p>
+          </div>
+          <div class="course-grid course-grid-large" id="allCourseGrid"></div>
+        </section>
+
+        <section id="courseView" class="view">
+          <header class="course-hero" id="courseHero">
+            <button class="back-button" id="courseBackButton" type="button" data-view="courses">← My course</button>
+            <div class="course-hero-row">
+              <div>
+                <span class="course-code" id="courseCode">AA SL</span>
+                <p class="eyebrow" id="courseFamily">IB Mathematics</p>
+                <h1 id="courseName">Analysis &amp; Approaches SL</h1>
+                <p id="courseSummary">A complete, structured course across all five syllabus topics.</p>
+              </div>
+              <div class="hero-stat"><strong id="coursePercent">0%</strong><span>complete</span></div>
+            </div>
+            <div class="course-stats">
+              <span><strong id="courseLessonCount">0</strong> lessons</span>
+              <span><strong id="courseTopicCount">5</strong> topics</span>
+            </div>
+            <div class="progress-track light"><span id="courseProgressBar"></span></div>
+          </header>
+
+          <div class="topic-strip" id="topicStrip" aria-label="Course topics"></div>
+
+          <div class="learning-layout">
+            <section class="player-column">
+              <div class="video-shell" id="videoShell">
+                <iframe id="videoFrame" title="Lesson video" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <div class="video-loading" id="videoLoading"><span></span><p>Loading your lesson…</p></div>
+              </div>
+              <div class="lesson-toolbar">
+                <div>
+                  <p class="eyebrow" id="lessonPosition">Lesson 1</p>
+                  <h2 id="lessonTitle">Select a lesson</h2>
+                  <p id="lessonMeta">Topic 1 · Number and algebra</p>
+                </div>
+                <button class="complete-button" id="completeButton" type="button"><span class="checkmark">✓</span><span>Mark complete</span></button>
+              </div>
+              <div class="lesson-details">
+                <div><small>COURSE</small><strong id="metaCourse">AA SL</strong></div>
+                <div><small>TOPIC</small><strong id="metaTopic">1 · Number and algebra</strong></div>
+                <div><small>DURATION</small><strong id="metaDuration">0 min</strong></div>
+              </div>
+              <section class="lesson-practice" id="lessonPractice" hidden aria-labelledby="lessonPracticeTitle">
+                <div class="lesson-practice-head">
+                  <div>
+                    <p class="eyebrow">Lesson practice</p>
+                    <h3 id="lessonPracticeTitle">Practice this lesson</h3>
+                    <p>These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.</p>
+                  </div>
+                  <div class="lesson-practice-actions">
+                    <span class="practice-count" id="practiceCount">Practice questions</span>
+                    <button class="practice-expand-button" id="practiceExpandButton" type="button" aria-pressed="false">
+                      <span aria-hidden="true">⛶</span><span>Expand practice</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="practice-frame-wrap" id="practiceFrameWrap">
+                  <iframe id="practiceFrame" title="Lesson practice questions" loading="lazy"></iframe>
+                </div>
+              </section>
+              <div class="lesson-navigation">
+                <button id="previousLesson" type="button">← Previous lesson</button>
+                <button id="nextLesson" type="button">Next lesson →</button>
+              </div>
+            </section>
+
+            <aside class="curriculum-panel" aria-label="Course lessons">
+              <div class="curriculum-head">
+                <div><p class="eyebrow" id="curriculumEyebrow">Topic 1</p><h2 id="curriculumTitle">Number and algebra</h2></div>
+                <span id="curriculumCount">0 lessons</span>
+              </div>
+              <label class="lesson-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+                <input id="lessonSearch" type="search" placeholder="Search this course" aria-label="Search course lessons" />
+              </label>
+              <div class="lesson-list" id="lessonList"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="pastPapersView" class="view">
+          <div class="page-intro past-paper-intro">
+            <p class="eyebrow">Exam preparation</p>
+            <h1>Past paper solutions</h1>
+            <p>Find an AA HL exam session, paper and the worked solution for the exact question you need.</p>
+          </div>
+
+          <div class="past-paper-course-tabs" id="pastPaperCourseTabs" aria-label="Your enrolled IB Mathematics course"></div>
+
+          <section class="past-paper-toolbar" aria-label="Past paper filters">
+            <div id="pastPaperCourseStats"></div>
+            <label>
+              <span>Exam session</span>
+              <select id="pastPaperSessionFilter" aria-label="Filter by exam session"></select>
+            </label>
+          </section>
+
+          <div class="past-paper-browser">
+            <aside class="paper-catalog" aria-label="Available past papers">
+              <div class="paper-catalog-head">
+                <div><p class="eyebrow">Available papers</p><h2 id="pastPaperCatalogTitle">AA HL papers</h2></div>
+                <span id="pastPaperResultCount"></span>
+              </div>
+              <div class="paper-set-list" id="pastPaperSetList"></div>
+            </aside>
+
+            <section class="paper-solution-panel" aria-label="Selected past paper solutions">
+              <div class="paper-player-shell">
+                <iframe id="pastPaperFrame" title="Past paper solution video" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+                <div class="video-loading" id="pastPaperLoading"><span></span><p>Loading the worked solution…</p></div>
+              </div>
+              <div class="paper-solution-heading">
+                <div>
+                  <p class="eyebrow" id="pastPaperQuestionPosition">Select a question</p>
+                  <h2 id="pastPaperQuestionTitle">Worked solution</h2>
+                  <p id="pastPaperQuestionMeta">Choose a paper from the library.</p>
+                </div>
+                <span class="paper-badge" id="pastPaperBadge">AA HL</span>
+              </div>
+              <div class="paper-question-panel">
+                <div class="paper-question-head">
+                  <strong id="pastPaperSetTitle">Questions</strong>
+                  <span id="pastPaperQuestionCount"></span>
+                </div>
+                <div class="paper-question-list" id="pastPaperQuestionList"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="progressView" class="view">
+          <div class="page-intro">
+            <p class="eyebrow">Learning activity</p>
+            <h1>Your progress</h1>
+            <p>See your progress across your AA HL course.</p>
+          </div>
+          <div class="progress-course-grid" id="progressCourseGrid"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="prototype-dialog" id="loginDialog">
+      <button class="dialog-close" id="closeLogin" type="button" aria-label="Close sign-in preview">×</button>
+      <img src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" />
+      <p class="eyebrow">Student sign in</p>
+      <h2>One account for your course</h2>
+      <p>This previews the single login for a student enrolled in AA HL.</p>
+      <form id="prototypeLoginForm">
+        <label>Email address<input type="email" placeholder="student@example.com" required /></label>
+        <label>Password<input type="password" placeholder="••••••••" required /></label>
+        <button class="primary-button full" type="submit">Sign in to my course</button>
+      </form>
+      <small class="dialog-note">Prototype only. No real account is created or submitted; course and practice progress stays on this device.</small>
+    </dialog>
+
+    <dialog class="prototype-dialog small" id="helpDialog">
+      <button class="dialog-close" id="closeHelp" type="button" aria-label="Close help">×</button>
+      <span class="help-icon large">?</span>
+      <h2>How can we help?</h2>
+      <p>A production version would connect this area to account and course support.</p>
+      <a class="primary-button full" href="mailto:contact@mrflynnib.com">Email contact@mrflynnib.com</a>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="library-data.js"></script>
+    <script src="igcse-library-data.js"></script>
+    <script src="past-paper-data.js"></script>
+    <script src="practice-data.js?v=20261021-9"></script>
+    <script src="app.js?v=20261021-9"></script>
+  </body>
+</html>
