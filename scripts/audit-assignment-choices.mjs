@@ -390,6 +390,14 @@ const areaExample = choices.generateChoiceSet(["31.0 (mathrmcm^2)"], "audit-area
 assert(areaExample && areaExample.options.every((option) => !/(?:mathrm|\\|\^circ)/i.test(option)));
 const radicalExample = choices.generateChoiceSet(["sqrt(8)"], "audit-radical");
 assert(radicalExample && radicalExample.options.every(choices.isDisplaySafe));
+const ratioExample = choices.generateChoiceSet(["sqrt(3):1"], "audit-ratio", "Find the exact value of the ratio R:r.");
+assert(ratioExample && ratioExample.options.every(choices.isRatioAnswer));
+assert.equal(ratioExample.options.filter((option) => choices.equivalent(option, "sqrt(3):1")).length, 1);
+assert(!ratioExample.options.some((option) => /\([^)]*:[^)]*\)\s*[+\-*]/.test(option) || /^[-\d]+\s*\*\s*\([^)]*:[^)]*\)/.test(option)));
+assert.deepEqual(
+  choices.repairStoredChoiceOptions(["(sqrt(3):1)-3", "-(sqrt(3):1)", "2*(sqrt(3):1)", "sqrt(3):1", "(sqrt(3):1)+2"]).map(choices.isRatioAnswer),
+  [true, true, true, true, true],
+);
 assert.equal(choices.generateChoiceSet(["1/4/2"], "audit-malformed"), null);
 assert.equal(choices.isDisplaySafe("(a)(x))"), false);
 assert.equal(choices.toLatex("2*x"), String.raw`2\times x`);

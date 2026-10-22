@@ -157,6 +157,13 @@
     else element.textContent = String(value || "");
   }
 
+  function repairedChoiceOptions(options) {
+    var values = Array.isArray(options) ? options.map(String) : [];
+    return choiceUtils && choiceUtils.repairStoredChoiceOptions
+      ? choiceUtils.repairStoredChoiceOptions(values)
+      : values;
+  }
+
   function appendReadOnlyAnswer(container, item) {
     if (!item.response) { container.textContent = "No answer saved yet."; return; }
     if (item.response.parts && typeof item.response.parts === "object") {
@@ -180,7 +187,7 @@
     }
     if (item.responseType === "multiple_choice") {
       var option = Number(item.response.option);
-      renderAnswer(container, item.responseOptions[option] || "No answer saved yet.");
+      renderAnswer(container, repairedChoiceOptions(item.responseOptions)[option] || "No answer saved yet.");
       return;
     }
     renderAnswer(container, String(item.response.text || "No answer saved yet."));
@@ -231,7 +238,7 @@
       return part && typeof part === "object" ? {
         label: String(part.label || ""),
         mode: part.mode === "whiteboard" ? "whiteboard" : part.mode === "multiple_choice" ? "multiple_choice" : "exact",
-        options: Array.isArray(part.options) ? part.options.map(String) : []
+        options: repairedChoiceOptions(part.options)
       } : null;
     }).filter(function (part) { return part && part.label; });
   }
@@ -505,7 +512,7 @@
       panel.appendChild(parts);
     } else if (item.responseType === "multiple_choice") {
       var options = document.createElement("div"); options.className = "qb-response-options";
-      orderedChoices(item.responseOptions.map(function (optionText, index) { return { optionText: optionText, originalIndex: index }; }), String(item.optionSeed || "") + ":" + id).forEach(function (choiceItem) {
+      orderedChoices(repairedChoiceOptions(item.responseOptions).map(function (optionText, index) { return { optionText: optionText, originalIndex: index }; }), String(item.optionSeed || "") + ":" + id).forEach(function (choiceItem) {
         var label = document.createElement("label"); label.className = "qb-response-option";
         var radio = document.createElement("input"); radio.type = "radio"; radio.name = "answer-" + id; radio.checked = selectedOption === choiceItem.originalIndex;
         radio.addEventListener("change", function () { selectedOption = choiceItem.originalIndex; });
