@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
+import { useQuestionBankAccount, type AssignmentQuestionState } from "@/lib/use-question-bank-account";
 import type { AssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
 type QuestionBankEmbedProps = {
@@ -14,9 +14,10 @@ type QuestionBankEmbedProps = {
   feedbackMode?: AssignmentFeedbackMode;
   assignmentSubmitted?: boolean;
   assignmentView?: "step" | "overview" | "detail";
+  initialQuestions?: AssignmentQuestionState[];
 };
 
-export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView }: QuestionBankEmbedProps) {
+export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView, initialQuestions }: QuestionBankEmbedProps) {
   const query = new URLSearchParams({ course, embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
@@ -29,7 +30,7 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(620);
-  useQuestionBankAccount(frameRef, "ib", assignmentId, { feedbackMode, assignmentSubmitted, viewedStudentId });
+  useQuestionBankAccount(frameRef, "ib", assignmentId, { feedbackMode, assignmentSubmitted, initialQuestions, viewedStudentId });
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;

@@ -20,7 +20,22 @@ type QuestionBankMessage = {
 type AssignmentEmbedOptions = {
   feedbackMode?: AssignmentFeedbackMode;
   assignmentSubmitted?: boolean;
+  initialQuestions?: AssignmentQuestionState[];
   viewedStudentId?: string;
+};
+
+export type AssignmentQuestionState = {
+  attemptCount: number;
+  isCorrect: boolean | null;
+  optionSeed: string;
+  position: number;
+  questionId: string;
+  readOnly: boolean;
+  response: unknown;
+  responseOptions: unknown[];
+  responseType: string;
+  submitted: boolean;
+  updatedAt: string | null;
 };
 
 type PendingAnswerSave = {
@@ -46,6 +61,7 @@ type PendingWhiteboardSave = {
 
 const pendingAnswerStorageKey = "mrflynnib:pending-assignment-answers:v1";
 const pendingWhiteboardStorageKey = "mrflynnib:pending-whiteboards:v1";
+const emptyAssignmentQuestions: AssignmentQuestionState[] = [];
 
 function readPendingRecords<T>(storageKey: string): Record<string, T> {
   try {
@@ -88,20 +104,42 @@ function isPermanentSaveError(message: string) {
 
 export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | null>, bank: Bank, assignmentId?: string, options: AssignmentEmbedOptions = {}) {
   const router = useRouter();
-  const { feedbackMode = "immediate", assignmentSubmitted = false, viewedStudentId } = options;
+  const { feedbackMode = "immediate", assignmentSubmitted = false, initialQuestions = emptyAssignmentQuestions, viewedStudentId } = options;
   const clientRef = useRef<SupabaseClient | null>(null);
   const userRef = useRef<User | null>(null);
   const completedRef = useRef<Set<string>>(new Set());
+  const assignmentQuestionsRef = useRef<AssignmentQuestionState[]>(initialQuestions);
 
   useEffect(() => {
     const frame = frameRef.current;
+    assignmentQuestionsRef.current = initialQuestions;
     let cancelled = false;
     let retryTimer: number | null = null;
+    let assignmentRetryTimer: number | null = null;
+    let assignmentRetryAttempts = 0;
     const answerSavesInFlight = new Set<string>();
     const whiteboardSavesInFlight = new Set<string>();
 
     function send(data: Record<string, unknown>) {
       frameRef.current?.contentWindow?.postMessage(data, window.location.origin);
+    }
+
+    function sendAssignmentState() {
+      send({
+        type: "mrflynnib-assignment-response-state",
+        feedbackMode,
+        assignmentSubmitted,
+        questions: assignmentQuestionsRef.current,
+      });
+    }
+
+    function scheduleAssignmentStateRetry() {
+      if (cancelled || assignmentRetryTimer) return;
+      const delay = Math.min(30_000, 1_500 * Math.pow(2, Math.min(assignmentRetryAttempts, 4)));
+      assignmentRetryTimer = window.setTimeout(() => {
+        assignmentRetryTimer = null;
+        void publishAssignmentState();
+      }, delay);
     }
 
     function matchingPendingCount() {
@@ -149,18 +187,29 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
       answerSavesInFlight.add(storageKey);
       const controller = new AbortController();
-      const timeout = window.setTimeout(() => controller.abort(), 8_000);
-      let data: unknown = null;
+      const timeout = window.setTimeout(() => controller.abort(), 15_000);
+      let resultData: { isCorrect?: boolean | null; result?: string | null } | null = null;
       let errorMessage = "";
+      let retryable = true;
       try {
-        const result = await clientRef.current.rpc("submit_assignment_response_reliable", {
-          assignment_uuid: entry.assignmentId,
-          question_key: entry.questionId,
-          request_uuid: entry.requestId,
-          response_payload: entry.response,
-        }).abortSignal(controller.signal);
-        data = result.data;
-        errorMessage = result.error?.message || "";
+        const response = await fetch(`/api/assignments/${encodeURIComponent(entry.assignmentId)}/responses`, {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            questionId: entry.questionId,
+            requestId: entry.requestId,
+            response: entry.response,
+          }),
+          signal: controller.signal,
+        });
+        const payload = await response.json().catch(() => null) as { isCorrect?: boolean | null; result?: string | null; message?: string; retryable?: boolean } | null;
+        if (response.ok) resultData = payload;
+        else {
+          errorMessage = payload?.message || `The save service returned ${response.status}.`;
+          retryable = payload?.retryable !== false && response.status >= 500;
+        }
       } catch (error) {
         errorMessage = error instanceof Error ? error.message : "The save service could not be reached.";
       } finally {
@@ -173,20 +222,19 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       if (!errorMessage) {
         delete records[storageKey];
         writePendingRecords(pendingAnswerStorageKey, records);
-        const result = Array.isArray(data) ? data[0] as { is_correct?: boolean | null; result?: string | null } : null;
         send({
           type: "mrflynnib-assignment-response-result",
           questionId: entry.questionId,
           response: entry.response,
-          isCorrect: result?.is_correct ?? null,
-          result: result?.result ?? null,
+          isCorrect: resultData?.isCorrect ?? null,
+          result: resultData?.result ?? null,
           ok: true,
         });
         publishSyncStatus();
         return;
       }
       const message = errorMessage;
-      if (isPermanentSaveError(message)) {
+      if (!retryable || isPermanentSaveError(message)) {
         delete records[storageKey];
         writePendingRecords(pendingAnswerStorageKey, records);
         send({ type: "mrflynnib-assignment-response-result", questionId: entry.questionId, response: entry.response, ok: false, error: message });
@@ -285,21 +333,26 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
 
     async function publishAssignmentState() {
       if (!assignmentId || !clientRef.current || !userRef.current) {
-        send({ type: "mrflynnib-assignment-response-state", questions: [] });
+        sendAssignmentState();
         return;
       }
+      // The server-rendered state makes the answer controls available immediately,
+      // even while Supabase is slow or temporarily unreachable.
+      sendAssignmentState();
       const studentId = viewedStudentId || userRef.current.id;
       const [{ data: questions, error: questionError }, { data: responses, error: responseError }] = await Promise.all([
         clientRef.current.from("assignment_questions").select("question_id,response_type,response_options,position").eq("assignment_id", assignmentId).order("position"),
         clientRef.current.from("assignment_responses").select("question_id,response,is_correct,attempt_count,updated_at").eq("assignment_id", assignmentId).eq("student_id", studentId),
       ]);
       if (cancelled) return;
+      if (questionError || responseError) {
+        assignmentRetryAttempts += 1;
+        scheduleAssignmentStateRetry();
+        return;
+      }
       const responseByQuestion = new Map((responses ?? []).map((row) => [String(row.question_id), row]));
-      send({
-        type: "mrflynnib-assignment-response-state",
-        feedbackMode,
-        assignmentSubmitted,
-        questions: questionError || responseError ? [] : (questions ?? []).map((question) => {
+      assignmentRetryAttempts = 0;
+      assignmentQuestionsRef.current = (questions ?? []).map((question) => {
           const saved = responseByQuestion.get(String(question.question_id));
           return {
             questionId: String(question.question_id),
@@ -314,8 +367,8 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
             position: Number(question.position || 0),
             optionSeed: studentId,
           };
-        }),
       });
+      sendAssignmentState();
     }
 
     async function publishAccountState(user: User | null) {
@@ -556,10 +609,11 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
     return () => {
       cancelled = true;
       if (retryTimer) window.clearTimeout(retryTimer);
+      if (assignmentRetryTimer) window.clearTimeout(assignmentRetryTimer);
       window.removeEventListener("message", handleMessage);
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
       authListener.subscription.unsubscribe();
     };
-  }, [assignmentId, assignmentSubmitted, bank, feedbackMode, frameRef, router, viewedStudentId]);
+  }, [assignmentId, assignmentSubmitted, bank, feedbackMode, frameRef, initialQuestions, router, viewedStudentId]);
 }

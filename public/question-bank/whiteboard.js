@@ -96,6 +96,10 @@
             '<span class="qb-whiteboard-zoom-label" aria-live="polite">100%</span>' +
             toolButton('zoom-in', '+') +
           '</div>' +
+          '<div class="qb-whiteboard-page-tools" role="group" aria-label="Whiteboard pages">' +
+            '<span class="qb-whiteboard-page-count" aria-live="polite">2 pages</span>' +
+            toolButton('add-page', 'Add page') +
+          '</div>' +
           toolButton('expand', 'Expand', false) +
           toolButton('undo', 'Undo') +
           toolButton('clear', 'Clear') +
@@ -104,6 +108,7 @@
       '</div>' +
       '<div class="qb-whiteboard-viewport">' +
         '<div class="qb-whiteboard-surface">' +
+          '<div class="qb-whiteboard-page-guides" aria-hidden="true"></div>' +
           '<canvas class="qb-whiteboard-image-layer" aria-hidden="true"></canvas>' +
           '<canvas class="qb-whiteboard-canvas" aria-label="Draw your working here"></canvas>' +
         '</div>' +
@@ -126,6 +131,7 @@
     var canvas = board.querySelector('.qb-whiteboard-canvas');
     var imageCanvas = board.querySelector('.qb-whiteboard-image-layer');
     var surface = board.querySelector('.qb-whiteboard-surface');
+    var pageGuides = board.querySelector('.qb-whiteboard-page-guides');
     var viewport = board.querySelector('.qb-whiteboard-viewport');
     var ctx = canvas.getContext('2d');
     var imageCtx = imageCanvas.getContext('2d');
@@ -149,7 +155,9 @@
     var colour = '#0d152e';
     var zoom = 1;
     var baseWidth = 1400;
-    var baseHeight = 2240;
+    var pageHeight = 2240;
+    var pageCount = 2;
+    var baseHeight = pageHeight * pageCount;
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
     var saveStatus = board.querySelector('.qb-whiteboard-save-status');
@@ -179,8 +187,9 @@
 
     function serialiseDocument() {
       return {
-        version: 1,
+        version: 2,
         paper: paperStyle,
+        pages: pageCount,
         actions: actions.map(function (action) {
           if (action.type === 'clear') return { type: 'clear' };
           if (action.type === 'stroke') return {
@@ -646,16 +655,66 @@
       scheduleSave();
     }
 
-    function setZoom(nextZoom) {
-      zoom = Math.max(.25, Math.min(2, nextZoom));
+    function updatePageGuides() {
+      pageGuides.innerHTML = '';
+      for (var index = 1; index < pageCount; index++) {
+        var guide = document.createElement('span');
+        guide.style.top = (index * pageHeight * zoom) + 'px';
+        pageGuides.appendChild(guide);
+      }
+      var label = board.querySelector('.qb-whiteboard-page-count');
+      label.textContent = pageCount + (pageCount === 1 ? ' page' : ' pages');
+      board.querySelector('[data-whiteboard-action="add-page"]').disabled = pageCount >= 8;
+    }
+
+    function updateSurfaceSize() {
       surface.style.width = (baseWidth * zoom) + 'px';
       surface.style.height = (baseHeight * zoom) + 'px';
       surface.style.backgroundSize = (24 * zoom) + 'px ' + (24 * zoom) + 'px';
       surface.style.setProperty('--whiteboard-grid-line', zoom + 'px');
+      updatePageGuides();
+      requestAnimationFrame(resize);
+    }
+
+    function setPageCount(nextCount, preserveExistingWork) {
+      var next = Math.max(1, Math.min(8, Math.round(Number(nextCount) || 1)));
+      if (next === pageCount) {
+        updateSurfaceSize();
+        return;
+      }
+      var oldHeight = baseHeight;
+      var nextHeight = pageHeight * next;
+      if (preserveExistingWork && oldHeight > 0) {
+        var ratio = oldHeight / nextHeight;
+        actions.forEach(function (action) {
+          if (action.type === 'stroke') action.points.forEach(function (point) { point.y *= ratio; });
+          if (action.type === 'image') {
+            action.y *= ratio;
+            action.height *= ratio;
+          }
+        });
+      }
+      pageCount = next;
+      baseHeight = nextHeight;
+      updateSurfaceSize();
+    }
+
+    function addPage() {
+      if (pageCount >= 8) return;
+      var previousPages = pageCount;
+      setPageCount(pageCount + 1, true);
+      scheduleSave();
+      requestAnimationFrame(function () {
+        viewport.scrollTop = previousPages * pageHeight * zoom;
+      });
+    }
+
+    function setZoom(nextZoom) {
+      zoom = Math.max(.25, Math.min(2, nextZoom));
       board.querySelector('.qb-whiteboard-zoom-label').textContent = Math.round(zoom * 100) + '%';
       board.querySelector('[data-whiteboard-action="zoom-out"]').disabled = zoom <= .25;
       board.querySelector('[data-whiteboard-action="zoom-in"]').disabled = zoom >= 2;
-      requestAnimationFrame(resize);
+      updateSurfaceSize();
     }
 
     function setExpanded(expanded) {
@@ -701,6 +760,7 @@
       if (action === 'blank-paper') setPaper('blank');
       if (action === 'zoom-out') setZoom(zoom - .25);
       if (action === 'zoom-in') setZoom(zoom + .25);
+      if (action === 'add-page') addPage();
       if (action === 'expand') setExpanded(!card.classList.contains('qb-whiteboard-expanded'));
       if (action === 'undo') undoLastAction();
       if (action === 'clear' && hasVisibleWork()) {
@@ -895,6 +955,7 @@
           }
         });
         actions = restored;
+        setPageCount(Number(stored.pages) || 1, false);
         setPaper(stored.paper === 'blank' ? 'blank' : 'squared');
         localDirty = Boolean(event.data.pending);
         window.clearTimeout(saveTimer);
