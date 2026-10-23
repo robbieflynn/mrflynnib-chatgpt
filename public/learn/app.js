@@ -339,6 +339,8 @@ function configurePreviewMode() {
   document.getElementById("manageAccessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
   document.getElementById("learningHomeLink").href = reviewHome;
   document.getElementById("primaryLearningHomeLink").href = reviewHome;
+  document.getElementById("topbarLearningHomeLink").href = reviewHome;
+  document.getElementById("brandLearningHomeLink").href = reviewHome;
 }
 
 function configureCurriculumExperience(curriculum) {
@@ -1075,6 +1077,8 @@ async function bootstrapAccount() {
     document.getElementById("manageAccessLink").href = platformAccount.links.access;
     document.getElementById("learningHomeLink").href = platformAccount.links.account;
     document.getElementById("primaryLearningHomeLink").href = platformAccount.links.account;
+    document.getElementById("topbarLearningHomeLink").href = platformAccount.links.account;
+    document.getElementById("brandLearningHomeLink").href = platformAccount.links.account;
     document.getElementById("questionBankLink").href = platformAccount.links.questionBank;
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
     void flushLessonProgress();

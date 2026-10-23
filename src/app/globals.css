@@ -110,11 +110,14 @@ p { margin: 0; }
 .desktop-nav a:not(.button):hover { color: var(--teal-dark); }
 .desktop-nav .header-contact-button { padding: .48rem .75rem; border: 1px solid #aeb8bc; border-radius: 999px; line-height: 1; }
 .desktop-nav .header-contact-button:hover { border-color: var(--teal); background: var(--teal-soft); color: var(--teal-dark); }
+.header-login-button { background: var(--navy); border-color: var(--navy); color: white; }
+.header-login-button:hover { background: #14284f; border-color: #14284f; }
 .mobile-nav { display: none; }
 .mobile-menu-toggle { position: relative; z-index: 3; padding: .45rem .2rem; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 800; cursor: pointer; }
 .mobile-nav-backdrop { position: fixed; inset: 4.8rem 0 0; z-index: 1; border: 0; background: rgba(7,16,36,.24); cursor: default; }
 .mobile-panel { position: absolute; left: 1rem; right: 1rem; top: 4.3rem; z-index: 2; padding: 1rem; background: white; border: 1px solid var(--line); border-radius: 1rem; box-shadow: var(--shadow); }
 .mobile-panel a { display: block; padding: .75rem; font-weight: 750; }
+.mobile-panel .mobile-account-link { margin-top: .45rem; border-radius: .7rem; background: var(--navy); color: white; text-align: center; }
 .account-menu { position: relative; z-index: 4; flex: 0 0 auto; }
 .account-menu-trigger {
   min-height: 2.75rem; max-width: 170px; padding: .3rem .55rem .3rem .35rem; display: flex; align-items: center; gap: .5rem;

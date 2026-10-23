@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { navItems } from "@/lib/site";
+import { HeaderAccountLink } from "@/components/header-account-link";
 
 export function MobileNavigation() {
   const [open, setOpen] = useState(false);
@@ -50,6 +51,9 @@ export function MobileNavigation() {
             <Link href="/tutoring" onClick={closeMenu}>Tutoring</Link>
             <Link href="/go/ib-tutors" className="tuition-nav" onClick={closeMenu}>One-to-One tuition</Link>
             <Link href="/contact" onClick={closeMenu}>Contact</Link>
+            <Suspense fallback={<Link className="mobile-account-link" href="/account" onClick={closeMenu}>Log in</Link>}>
+              <HeaderAccountLink className="mobile-account-link" onNavigate={closeMenu} />
+            </Suspense>
           </nav>
         </>
       ) : null}
