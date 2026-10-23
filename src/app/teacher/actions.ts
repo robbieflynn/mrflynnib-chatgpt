@@ -4,6 +4,7 @@ import { randomBytes } from "node:crypto";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import progressManifest from "@/data/question-bank-progress.json";
+import fixedAssignmentConfigs from "@/data/assignment-answer-configs.json";
 import { requireAdmin, requireTeacher } from "@/lib/account-access";
 import { isAssignmentFeedbackMode } from "@/lib/assignment-feedback";
 import { orderAssessmentQuestions } from "@/lib/assessment-question-order";
@@ -284,9 +285,6 @@ export async function createAssignment(formData: FormData) {
   const recipientMode = formData.get("recipientMode") === "students" ? "students" : "class";
   const requestedRecipientIds = Array.from(new Set(formData.getAll("recipientIds").map(String).filter(Boolean))).slice(0, 1000);
   const questionIds = Array.from(new Set(formData.getAll("questionIds").map(String).filter(Boolean))).slice(0, 100);
-  const parsedConfigs = formData.getAll("responseConfigs").map(parseResponseConfig);
-  const suppliedResponseConfigs = new Map(parsedConfigs.filter((config): config is ResponseConfig => Boolean(config)).map((config) => [config.id, config]));
-  const responseConfigs = new Map(questionIds.map((id) => [id, suppliedResponseConfigs.get(id) ?? teacherReviewResponseConfig(id)]));
 
   const { data: classRecord } = await supabase.from("classes").select("id,bank,course").eq("id", classId).eq("teacher_id", user.id).maybeSingle();
   if (!classRecord) redirect("/teacher?error=Class%20not%20found.");
@@ -313,6 +311,12 @@ export async function createAssignment(formData: FormData) {
     section: "section" in question && question.section === "B" ? "B" : "A",
   })), classRecord.course as "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher");
   if (selected.length !== questionIds.length) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "One or more questions are no longer available."));
+  const fixedBankConfigs = classRecord.bank === "igcse" ? fixedAssignmentConfigs.igcse : fixedAssignmentConfigs.ib;
+  const responseConfigs = new Map(questionIds.map((id) => {
+    const stored = (fixedBankConfigs as Record<string, unknown>)[id];
+    const parsed = stored ? parseResponseConfig(JSON.stringify(stored)) : null;
+    return [id, parsed ?? teacherReviewResponseConfig(id)];
+  }));
 
   const dueAt = dueDate ? new Date(`${dueDate}T23:59:00`).toISOString() : null;
   const { data: assignment, error } = await supabase.from("assignments").insert({

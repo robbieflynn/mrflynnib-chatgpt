@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import assert from "node:assert/strict";
 
 const require = createRequire(import.meta.url);
@@ -350,6 +350,44 @@ const activeQuestionIds = {
   IB: new Set(Object.values(progressManifest.courses || {}).flatMap((course) => course.questionIds || [])),
   IGCSE: new Set(progressManifest.igcse && progressManifest.igcse.questionIds || []),
 };
+
+const fixedAssignmentConfigs = { version: 1, ib: {}, igcse: {} };
+
+function fixedResponseConfig(questionId, parts) {
+  const empty = {
+    id: questionId,
+    type: "teacher_review",
+    acceptedAnswers: [],
+    numericAnswer: null,
+    tolerance: null,
+    options: [],
+    correctOption: null,
+    parts: [],
+  };
+  if (!parts.length) return empty;
+  if (parts.length === 1) {
+    const set = parts[0].choices;
+    if (!set) return empty;
+    return {
+      ...empty,
+      type: "multiple_choice",
+      acceptedAnswers: set.acceptedAnswers,
+      options: set.options,
+      correctOption: set.correctOption,
+    };
+  }
+  return {
+    ...empty,
+    type: "multipart",
+    parts: parts.map((part) => ({
+      label: part.label,
+      mode: part.choices ? "multiple_choice" : "whiteboard",
+      acceptedAnswers: part.choices?.acceptedAnswers || [],
+      options: part.choices?.options || [],
+      correctOption: part.choices?.correctOption ?? null,
+    })),
+  };
+}
 
 function assignmentPartConfigs(question) {
   if (!question || !Array.isArray(question.markscheme)) return [];
@@ -1366,6 +1404,7 @@ for (const [label, path] of banks) {
   let bankQuestionsWithWhiteboard = 0;
   for (const question of questions) {
     const configs = assignmentPartConfigs(question);
+    fixedAssignmentConfigs[label === "IB" ? "ib" : "igcse"][question.id] = fixedResponseConfig(question.id, configs);
     if (label === "IGCSE" && question.id === "4MA1_2020N_1H_Q7") {
       const nestedSolution = configs.find((config) => config.label === "c(ii)");
       assert(nestedSolution?.choices, "The separately labelled IGCSE c(ii) mark scheme did not produce choices.");
@@ -1477,3 +1516,8 @@ if (auditDetailModes.includes("6")) {
     });
 }
 assert.equal(choiceQualityIssues.length, 0, "The live assignment-choice audit found an unsafe or mismatched answer option.");
+
+if (process.env.WRITE_ASSIGNMENT_CONFIGS === "1") {
+  writeFileSync("src/data/assignment-answer-configs.json", `${JSON.stringify(fixedAssignmentConfigs)}\n`);
+  console.log(`Wrote fixed assignment configurations for ${Object.keys(fixedAssignmentConfigs.ib).length} IB and ${Object.keys(fixedAssignmentConfigs.igcse).length} IGCSE questions.`);
+}
