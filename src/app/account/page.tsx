@@ -87,6 +87,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     redirect(`${destination}error=${encodeURIComponent("IB and IGCSE use separate accounts. Sign out before entering the other account area.")}`);
   }
   if (profile?.role === "teacher" || profile?.role === "admin") redirect(isIgcse ? "/igcse/teacher" : "/teacher");
+  await supabase.rpc("claim_verified_course_access");
   const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
   const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
   const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";

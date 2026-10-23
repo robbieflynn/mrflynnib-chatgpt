@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "audit:assignment-choices": "node scripts/audit-assignment-choices.mjs"
+    "audit:assignment-choices": "node scripts/audit-assignment-choices.mjs",
+    "import:teachable-access": "node scripts/import-teachable-access.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
