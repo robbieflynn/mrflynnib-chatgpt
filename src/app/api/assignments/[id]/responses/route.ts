@@ -43,6 +43,10 @@ async function saveMultipartPart({
   const partKey = shortText(response.partKey, 30);
   if (!partKey) return null;
 
+  const adminUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!adminUrl || !serviceKey) return null;
+
   const { data: profile, error: profileError } = await supabase.from("profiles").select("role").eq("user_id", studentId).maybeSingle();
   if (profileError) throw profileError;
   if (profile?.role !== "student") throw new Error("Student answers can only be submitted from a student account.");
@@ -55,9 +59,6 @@ async function saveMultipartPart({
   if (question.response_type !== "multipart") throw new Error("That question part was not found.");
   if (submission?.status === "submitted") throw new Error("This assignment has already been submitted.");
 
-  const adminUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!adminUrl || !serviceKey) return null;
   const admin = createSupabaseAdmin(adminUrl, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } });
 
   const { data: priorRequest } = await admin
@@ -182,27 +183,6 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   const multipartPartKey = shortText(multipartResponse?.partKey, 30);
   const multipartPartAnswer = shortText(multipartResponse?.partAnswer, 500);
 
-  if (multipartResponse && multipartPartKey) {
-    try {
-      const result = await saveMultipartPart({
-        assignmentId: id,
-        questionId,
-        requestId,
-        response: multipartResponse,
-        studentId: user.id,
-        supabase,
-      });
-      if (result) return NextResponse.json(result, { headers: { "Cache-Control": "no-store, max-age=0" } });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "The answer could not be saved.";
-      const isPermanent = permanentError(message);
-      console.error("Assignment part save failed", { assignmentId: id, questionId, studentId: user.id, message });
-      if (isPermanent) {
-        return NextResponse.json({ message, retryable: false }, { status: 400 });
-      }
-    }
-  }
-
   const { data, error } = await supabase.rpc("submit_assignment_response_reliable", {
     assignment_uuid: id,
     question_key: questionId,
@@ -211,10 +191,9 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   });
   const reliableResult = Array.isArray(data) ? data[0] as { is_correct?: boolean | null; result?: string | null } : null;
 
-  if (multipartPartKey && (
-    (error && /complete every part/i.test(error.message || ""))
-    || (!error && reliableResult?.result === "locked")
-  )) {
+  let saveError = error;
+
+  if (multipartPartKey && (error || reliableResult?.result === "locked")) {
     // Some live databases still have the original whole-question version of
     // submit_assignment_response. Once any earlier part reaches two attempts,
     // that legacy function can incorrectly return "locked" for every remaining
@@ -232,6 +211,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         headers: { "Cache-Control": "no-store, max-age=0" },
       });
     }
+    saveError = partError;
     console.error("Assignment part compatibility save failed", {
       assignmentId: id,
       questionId,
@@ -239,20 +219,41 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       code: partError.code,
       message: partError.message,
     });
+
+    if (multipartResponse) {
+      try {
+        const fallbackResult = await saveMultipartPart({
+          assignmentId: id,
+          questionId,
+          requestId,
+          response: multipartResponse,
+          studentId: user.id,
+          supabase,
+        });
+        if (fallbackResult) return NextResponse.json(fallbackResult, { headers: { "Cache-Control": "no-store, max-age=0" } });
+      } catch (fallbackError) {
+        const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : "The answer could not be saved.";
+        const fallbackPermanent = permanentError(fallbackMessage);
+        console.error("Assignment part server fallback failed", { assignmentId: id, questionId, studentId: user.id, message: fallbackMessage });
+        if (fallbackPermanent) {
+          return NextResponse.json({ message: fallbackMessage, retryable: false }, { status: 400 });
+        }
+      }
+    }
   }
 
-  if (error) {
-    const message = error.message || "The answer could not be saved.";
+  if (saveError) {
+    const message = saveError.message || "The answer could not be saved.";
     const isPermanent = permanentError(message);
     console.error("Assignment answer save failed", {
       assignmentId: id,
       questionId,
       studentId: user.id,
-      code: error.code,
+      code: saveError.code,
       message,
     });
     return NextResponse.json({
-      message: isPermanent ? message : "The online save service did not respond. Your answer is safe on this device and will retry automatically.",
+      message: isPermanent ? message : "We could not confirm this save yet. We will retry automatically.",
       retryable: !isPermanent,
     }, { status: isPermanent ? 400 : 503 });
   }

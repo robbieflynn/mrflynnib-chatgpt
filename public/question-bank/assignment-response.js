@@ -659,7 +659,7 @@
         var queued = document.querySelector(queuedSelector);
         if (queued) {
           queued.className = "qb-response-status";
-          queued.textContent = "Safe on this device. Online save will retry automatically.";
+          queued.textContent = "Still saving. We will retry automatically.";
         }
         return;
       }
