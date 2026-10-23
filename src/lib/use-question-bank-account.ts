@@ -187,18 +187,29 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
       answerSavesInFlight.add(storageKey);
       const controller = new AbortController();
-      const timeout = window.setTimeout(() => controller.abort(), 8_000);
-      let data: unknown = null;
+      const timeout = window.setTimeout(() => controller.abort(), 15_000);
+      let resultData: { isCorrect?: boolean | null; result?: string | null } | null = null;
       let errorMessage = "";
+      let retryable = true;
       try {
-        const result = await clientRef.current.rpc("submit_assignment_response_reliable", {
-          assignment_uuid: entry.assignmentId,
-          question_key: entry.questionId,
-          request_uuid: entry.requestId,
-          response_payload: entry.response,
-        }).abortSignal(controller.signal);
-        data = result.data;
-        errorMessage = result.error?.message || "";
+        const response = await fetch(`/api/assignments/${encodeURIComponent(entry.assignmentId)}/responses`, {
+          method: "POST",
+          credentials: "same-origin",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            questionId: entry.questionId,
+            requestId: entry.requestId,
+            response: entry.response,
+          }),
+          signal: controller.signal,
+        });
+        const payload = await response.json().catch(() => null) as { isCorrect?: boolean | null; result?: string | null; message?: string; retryable?: boolean } | null;
+        if (response.ok) resultData = payload;
+        else {
+          errorMessage = payload?.message || `The save service returned ${response.status}.`;
+          retryable = payload?.retryable !== false && response.status >= 500;
+        }
       } catch (error) {
         errorMessage = error instanceof Error ? error.message : "The save service could not be reached.";
       } finally {
@@ -211,20 +222,19 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       if (!errorMessage) {
         delete records[storageKey];
         writePendingRecords(pendingAnswerStorageKey, records);
-        const result = Array.isArray(data) ? data[0] as { is_correct?: boolean | null; result?: string | null } : null;
         send({
           type: "mrflynnib-assignment-response-result",
           questionId: entry.questionId,
           response: entry.response,
-          isCorrect: result?.is_correct ?? null,
-          result: result?.result ?? null,
+          isCorrect: resultData?.isCorrect ?? null,
+          result: resultData?.result ?? null,
           ok: true,
         });
         publishSyncStatus();
         return;
       }
       const message = errorMessage;
-      if (isPermanentSaveError(message)) {
+      if (!retryable || isPermanentSaveError(message)) {
         delete records[storageKey];
         writePendingRecords(pendingAnswerStorageKey, records);
         send({ type: "mrflynnib-assignment-response-result", questionId: entry.questionId, response: entry.response, ok: false, error: message });
