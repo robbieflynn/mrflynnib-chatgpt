@@ -2310,6 +2310,17 @@ a.teacher-list-row:hover { background: var(--sky); }
 .access-course-card > div:first-child { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .access-course-card h2, .access-course-card p { margin: 0; }
 .access-course-card p { color: var(--muted); font-size: .85rem; }
+.course-checkout { margin-top: auto; }
+.course-plan-options { min-width: 0; padding: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem; border: 0; }
+.course-plan-options legend { margin-bottom: .55rem; color: var(--navy); font-size: .72rem; font-weight: 850; }
+.course-plan-option { position: relative; min-width: 0; padding: .8rem; display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: .55rem; border: 1px solid #cfdae2; border-radius: .8rem; background: #fff; cursor: pointer; }
+.course-plan-option.is-selected { border-color: var(--blue); background: #edf6ff; box-shadow: 0 0 0 2px rgba(20,113,181,.1); }
+.course-plan-option input { margin: 0; accent-color: var(--blue); }
+.course-plan-option span { display: grid; gap: .05rem; }
+.course-plan-option strong { color: var(--navy); font-size: 1.15rem; line-height: 1; }
+.course-plan-option small { color: var(--muted); font-size: .68rem; }
+.course-plan-option b { position: absolute; top: -.55rem; right: .45rem; padding: .2rem .42rem; border-radius: 999px; background: var(--navy); color: #fff; font-size: .55rem; letter-spacing: .03em; text-transform: uppercase; }
+.checkout-reassurance { color: var(--muted); font-size: .68rem; text-align: center; }
 .native-course-price { display: grid; gap: .1rem; padding: .9rem 1rem; border-radius: .8rem; background: #edf6ff; }
 .native-course-price strong { color: var(--navy); font-size: 1.7rem; }
 .native-course-price span { color: var(--muted); font-size: .75rem; }
@@ -2337,6 +2348,7 @@ a.teacher-list-row:hover { background: var(--sky); }
   .access-free-summary { max-width: none; }
   .access-claim-row, .school-seat-form { grid-template-columns: 1fr; }
   .access-claim-row form { flex-wrap: wrap; }
+  .course-plan-options { grid-template-columns: 1fr; }
 }
 
 /* Private connected-platform walkthrough. Example data only. */

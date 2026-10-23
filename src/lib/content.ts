@@ -12,9 +12,8 @@ export type Course = {
 };
 
 export const courseAccessPlans = [
-  { duration: "3 months", price: 49, description: "For focused exam revision", recommended: false },
-  { duration: "1 year", price: 69, description: "For a full academic year", recommended: false },
-  { duration: "2 years", price: 79, description: "For the complete IB journey", recommended: true },
+  { duration: "12 months", price: 69, description: "For a full academic year", recommended: false },
+  { duration: "24 months", price: 99, description: "Best value for the complete IB journey", recommended: true },
 ] as const;
 
 export const courses: Course[] = [
@@ -106,7 +105,7 @@ export const faqs = [
   {
     question: "What access plans are available?",
     answer:
-      "Each course has three one-time access options: 3 months for US$49, 1 year for US$69, or 2 years for US$79. The two-year plan offers the best value for students completing the full IB course.",
+      "Each course has two one-time access options: 12 months for US$69 or 24 months for US$99. The 24-month plan offers the best value for students completing the full IB course. Neither option renews automatically.",
   },
   {
     question: "Does each access plan include the complete course?",

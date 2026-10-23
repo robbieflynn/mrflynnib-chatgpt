@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
-import { courseProductForCode } from "@/lib/platform-products";
+import { courseProductForCode, getCoursePlan } from "@/lib/platform-products";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 type StripeObject = Record<string, unknown>;
@@ -59,6 +59,8 @@ async function fulfilCheckout(admin: AdminClient, event: StripeEvent, session: S
   const userId = text(metadata.user_id);
   const productCode = text(metadata.product_code);
   const product = courseProductForCode(productCode);
+  const planId = text(metadata.plan_id);
+  const plan = getCoursePlan(product, planId);
   const sessionId = text(session.id);
   const paymentStatus = text(session.payment_status);
   const amountTotal = number(session.amount_total);
@@ -66,11 +68,12 @@ async function fulfilCheckout(admin: AdminClient, event: StripeEvent, session: S
   const currency = text(session.currency).toLowerCase();
   const customerId = text(session.customer) || null;
   const paymentIntentId = text(session.payment_intent) || null;
-  const expectedAmount = product ? product.priceUsd * 100 : 0;
+  const expectedAmount = plan ? plan.priceUsd * 100 : 0;
   const validAmount = amountTotal === expectedAmount
     || (amountTotal < expectedAmount && amountDiscount > 0 && amountTotal + amountDiscount === expectedAmount);
   const valid = Boolean(
     product
+    && plan
     && userId
     && sessionId.startsWith("cs_")
     && text(session.client_reference_id) === userId
@@ -91,8 +94,8 @@ async function fulfilCheckout(admin: AdminClient, event: StripeEvent, session: S
     livemode: event.livemode,
     amount_total: amountTotal,
     currency,
-    access_days: product!.accessDays,
-    metadata: { amount_discount: amountDiscount },
+    access_days: plan!.accessDays,
+    metadata: { amount_discount: amountDiscount, plan_id: plan!.id },
     updated_at: new Date().toISOString(),
   };
 
@@ -125,9 +128,9 @@ async function fulfilCheckout(admin: AdminClient, event: StripeEvent, session: S
     accessStartsAt = new Date(existingPaymentEntitlement.starts_at);
     accessExpiresAt = existingPaymentEntitlement.expires_at
       ? new Date(existingPaymentEntitlement.expires_at)
-      : new Date(accessStartsAt.getTime() + product!.accessDays * 86_400_000);
+      : new Date(accessStartsAt.getTime() + plan!.accessDays * 86_400_000);
   } else {
-    accessExpiresAt = new Date(now.getTime() + product!.accessDays * 86_400_000);
+    accessExpiresAt = new Date(now.getTime() + plan!.accessDays * 86_400_000);
 
     const { error: entitlementError } = await admin.from("platform_entitlements").upsert({
       user_id: userId,
@@ -138,7 +141,7 @@ async function fulfilCheckout(admin: AdminClient, event: StripeEvent, session: S
       expires_at: accessExpiresAt.toISOString(),
       external_provider: "stripe",
       external_reference: sessionId,
-      metadata: { payment_intent: paymentIntentId, amount_total: amountTotal, currency, livemode: event.livemode },
+      metadata: { payment_intent: paymentIntentId, amount_total: amountTotal, currency, livemode: event.livemode, plan_id: plan!.id },
     }, { onConflict: "external_provider,external_reference" });
     if (entitlementError) throw entitlementError;
   }

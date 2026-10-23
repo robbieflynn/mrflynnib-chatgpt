@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getPlatformAccess } from "@/lib/platform-server";
-import { getCourseProduct } from "@/lib/platform-products";
+import { getCoursePlan, getCourseProduct } from "@/lib/platform-products";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -31,9 +31,11 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}));
   const product = getCourseProduct(typeof body.courseId === "string" ? body.courseId : "");
+  const plan = getCoursePlan(product, typeof body.planId === "string" ? body.planId : "");
   if (!product || product.curriculum !== session.curriculum) {
     return NextResponse.json({ error: "Invalid course" }, { status: 400 });
   }
+  if (!plan) return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
   if (session.ownedCourses.some((course) => course.id === product.id)) {
     return NextResponse.json({ url: product.curriculum === "igcse" ? "/igcse/learn" : "/learn" });
   }
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
   }
 
   const stripe = stripeConfiguration();
-  const price = process.env[product.stripePriceEnv];
+  const price = process.env[plan.stripePriceEnv];
   if (!stripe || !price?.startsWith("price_")) {
     return NextResponse.json({ error: "Checkout is not configured in this preview yet." }, { status: 503 });
   }
@@ -76,9 +78,11 @@ export async function POST(request: Request) {
     client_reference_id: session.user.id,
     "metadata[user_id]": session.user.id,
     "metadata[product_code]": product.productCode,
+    "metadata[plan_id]": plan.id,
     "metadata[curriculum]": product.curriculum,
     "payment_intent_data[metadata][user_id]": session.user.id,
     "payment_intent_data[metadata][product_code]": product.productCode,
+    "payment_intent_data[metadata][plan_id]": plan.id,
     success_url: successUrl.toString(),
     cancel_url: cancelUrl.toString(),
   });
@@ -94,7 +98,7 @@ export async function POST(request: Request) {
     headers: {
       Authorization: `Bearer ${stripe.secret}`,
       "Content-Type": "application/x-www-form-urlencoded",
-      "Idempotency-Key": `checkout:${session.user.id}:${product.productCode}:${requestId}`,
+      "Idempotency-Key": `checkout:${session.user.id}:${product.productCode}:${plan.id}:${requestId}`,
     },
     body: params,
     cache: "no-store",
