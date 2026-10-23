@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
+import { useQuestionBankAccount, type AssignmentQuestionState } from "@/lib/use-question-bank-account";
 import type { AssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
-export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView }: { topic?: string; subtopic?: string; questionIds?: string[]; assignmentId?: string; viewedStudentId?: string; feedbackMode?: AssignmentFeedbackMode; assignmentSubmitted?: boolean; assignmentView?: "step" | "overview" | "detail" }) {
+export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView, initialQuestions }: { topic?: string; subtopic?: string; questionIds?: string[]; assignmentId?: string; viewedStudentId?: string; feedbackMode?: AssignmentFeedbackMode; assignmentSubmitted?: boolean; assignmentView?: "step" | "overview" | "detail"; initialQuestions?: AssignmentQuestionState[] }) {
   const query = new URLSearchParams({ course: "IGCSE Higher", embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
@@ -17,7 +17,7 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(760);
-  useQuestionBankAccount(frameRef, "igcse", assignmentId, { feedbackMode, assignmentSubmitted, viewedStudentId });
+  useQuestionBankAccount(frameRef, "igcse", assignmentId, { feedbackMode, assignmentSubmitted, initialQuestions, viewedStudentId });
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;

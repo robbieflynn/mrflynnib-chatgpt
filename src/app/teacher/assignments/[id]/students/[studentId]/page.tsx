@@ -6,6 +6,7 @@ import { IgcseQuestionBankEmbed } from "@/components/igcse-question-bank-embed";
 import { requireTeacher } from "@/lib/account-access";
 import { getQuestionBankCourseByCode } from "@/lib/question-bank-courses";
 import { ReturnAssignmentForm } from "@/components/return-assignment-form";
+import type { AssignmentQuestionState } from "@/lib/use-question-bank-account";
 
 export default async function StudentWorkingPage({ params, searchParams }: { params: Promise<{ id: string; studentId: string }>; searchParams: Promise<{ question?: string; error?: string; success?: string }> }) {
   const { id, studentId } = await params;
@@ -20,7 +21,7 @@ export default async function StudentWorkingPage({ params, searchParams }: { par
   const [{ data: profile }, { data: questions }, { data: responses }, { data: progress }, { data: submission }] = await Promise.all([
     supabase.from("profiles").select("display_name").eq("user_id", studentId).maybeSingle(),
     supabase.from("assignment_questions").select("question_id,position,response_type,response_options").eq("assignment_id", id).order("position"),
-    supabase.from("assignment_responses").select("question_id,is_correct").eq("assignment_id", id).eq("student_id", studentId),
+    supabase.from("assignment_responses").select("question_id,response,is_correct,attempt_count,updated_at").eq("assignment_id", id).eq("student_id", studentId),
     supabase.from("assignment_question_progress").select("question_id").eq("assignment_id", id).eq("student_id", studentId).eq("completed", true),
     supabase.from("assignment_submissions").select("status,submitted_at").eq("assignment_id", id).eq("student_id", studentId).maybeSingle(),
   ]);
@@ -33,6 +34,23 @@ export default async function StudentWorkingPage({ params, searchParams }: { par
   const course = getQuestionBankCourseByCode(classRecord?.course || "");
   const studentName = profile?.display_name || "Student";
   const workspaceClass = classRecord?.bank === "igcse" ? "teacher-workspace teacher-workspace-igcse" : "teacher-workspace";
+  const responseByQuestion = new Map((responses ?? []).map((response) => [response.question_id, response]));
+  const initialQuestions: AssignmentQuestionState[] = (questions ?? []).map((question) => {
+    const saved = responseByQuestion.get(question.question_id);
+    return {
+      questionId: question.question_id,
+      responseType: String(question.response_type || "teacher_review"),
+      responseOptions: Array.isArray(question.response_options) ? question.response_options : [],
+      response: saved?.response ?? null,
+      isCorrect: saved?.is_correct ?? null,
+      attemptCount: Number(saved?.attempt_count || 0),
+      updatedAt: saved?.updated_at ?? null,
+      readOnly: true,
+      submitted: false,
+      position: Number(question.position || 0),
+      optionSeed: studentId,
+    };
+  });
   return <>
     <main className={workspaceClass}>
     <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: assignment.title, href: `/teacher/assignments/${id}` }, { label: studentName }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">Read-only student work</p><h1>{studentName}</h1><p>Review the answers and whiteboard working saved for {assignment.title}. Nothing can be changed from this view.</p></div><div className="teacher-workspace-stats"><span><strong>{attemptedQuestionIds.size}/{questions?.length ?? 0}</strong> attempted</span><span><strong>{responses?.filter((response) => response.is_correct === true).length ?? 0}</strong> correct</span></div></div></Container></section>
@@ -42,7 +60,7 @@ export default async function StudentWorkingPage({ params, searchParams }: { par
       {submission?.status === "submitted" ? <div className="submission-return-panel"><div><span className="status-pill is-submitted">Submitted</span><strong>Need the student to continue?</strong><p>Return the assignment without deleting any saved answers or whiteboard working. The student can then continue and submit it again.</p></div><ReturnAssignmentForm assignmentId={id} studentId={studentId} studentName={studentName} /></div> : <div className="submission-return-panel is-active"><div><span className="status-pill">In progress</span><strong>This assignment is open</strong><p>The student can continue working and submit when ready.</p></div></div>}
       <div className="assignment-summary-grid assignment-summary-grid-four"><div><span>Questions attempted</span><strong>{attemptedQuestionIds.size}/{questions?.length ?? 0}</strong><small>questions</small></div><div><span>Answers saved</span><strong>{responses?.length ?? 0}/{questions?.length ?? 0}</strong><small>answers</small></div><div><span>Automatically correct</span><strong>{responses?.filter((response) => response.is_correct === true).length ?? 0}</strong><small>answers</small></div><div><span>Review mode</span><strong>Read only</strong><small>student work is protected</small></div></div>
     </Container></section>
-    <section className="question-bank-embed-section"><Container className="stack">{focusedQuestion ? <div className="student-work-detail-bar"><div><span>Question {Number(focusedQuestion.position) + 1}</span><strong>Detailed answer and whiteboard</strong></div><Link className="button button-secondary button-small" href={`/teacher/assignments/${id}/students/${studentId}`}>Back to all questions</Link></div> : <div className="student-work-overview-note"><strong>All questions at a glance</strong><span>Whiteboards are shown as read-only previews. Open any card for the full question, answer and working.</span></div>}{classRecord?.bank === "igcse" ? <IgcseQuestionBankEmbed assignmentId={id} questionIds={displayedQuestionIds} viewedStudentId={studentId} assignmentView={focusedQuestion ? "detail" : "overview"} /> : course ? <QuestionBankEmbed assignmentId={id} course={course.code} questionIds={displayedQuestionIds} viewedStudentId={studentId} assignmentView={focusedQuestion ? "detail" : "overview"} /> : <p>These questions are not available.</p>}</Container></section>
+    <section className="question-bank-embed-section"><Container className="stack">{focusedQuestion ? <div className="student-work-detail-bar"><div><span>Question {Number(focusedQuestion.position) + 1}</span><strong>Detailed answer and whiteboard</strong></div><Link className="button button-secondary button-small" href={`/teacher/assignments/${id}/students/${studentId}`}>Back to all questions</Link></div> : <div className="student-work-overview-note"><strong>All questions at a glance</strong><span>Whiteboards are shown as read-only previews. Open any card for the full question, answer and working.</span></div>}{classRecord?.bank === "igcse" ? <IgcseQuestionBankEmbed assignmentId={id} questionIds={displayedQuestionIds} viewedStudentId={studentId} assignmentView={focusedQuestion ? "detail" : "overview"} initialQuestions={initialQuestions} /> : course ? <QuestionBankEmbed assignmentId={id} course={course.code} questionIds={displayedQuestionIds} viewedStudentId={studentId} assignmentView={focusedQuestion ? "detail" : "overview"} initialQuestions={initialQuestions} /> : <p>These questions are not available.</p>}</Container></section>
     </main>
   </>;
 }

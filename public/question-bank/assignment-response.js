@@ -646,7 +646,7 @@
         var pending = document.querySelector(pendingSelector);
         if (pending) {
           pending.className = "qb-response-status";
-          pending.textContent = "Saved on this device. Checking…";
+          pending.textContent = "Saving securely…";
         }
         return;
       }
@@ -656,7 +656,7 @@
         var queued = document.querySelector(queuedSelector);
         if (queued) {
           queued.className = "qb-response-status";
-          queued.textContent = "Saved on this device. Waiting to reconnect…";
+          queued.textContent = "Safe on this device. Online save will retry automatically.";
         }
         return;
       }

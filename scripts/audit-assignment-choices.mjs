@@ -26,6 +26,19 @@ assert.equal(choices.isAnswerCompatibleWithPrompt("332°", "Find the real distan
 assert.equal(choices.isAnswerCompatibleWithPrompt("(20.5,0)", "Work out the length of RQ."), false);
 assert.equal(choices.isAnswerCompatibleWithPrompt("1300 (cm^2) (1296 (cm^2))", "Calculate the area of cloth."), false);
 assert.equal(choices.isChoiceTextSafe("any two valid assumptions"), false);
+const maclaurinLogAnswers = choices.extractAcceptedAnswers([
+  [String.raw`\(x^2-\dfrac{x^4}{2}+\dfrac{x^6}{3}\)`, "A1"],
+], String.raw`Use the Maclaurin series for \(\ln(1+x)\) to write down the first three non-zero terms of the Maclaurin series for \(f(x)\).`);
+assert(maclaurinLogAnswers.some((answer) => answer.startsWith("f(x)=")));
+assert(maclaurinLogAnswers.every((answer) => !answer.startsWith("l=")));
+const maclaurinRationalAnswers = choices.extractAcceptedAnswers([
+  [String.raw`\(\dfrac{x}{1+x^2}=x-x^3+x^5\)`, "A1"],
+], String.raw`Find the first three non-zero terms of the Maclaurin series for \(\dfrac{x}{1+x^2}\).`);
+assert(maclaurinRationalAnswers.every((answer) => !/^x=x/.test(answer)));
+const maclaurinIntegralAnswers = choices.extractAcceptedAnswers([
+  [String.raw`\(x-\dfrac{x^3}{6}+\dfrac{x^5}{40}-\dfrac{x^7}{336}\)`, "A1"],
+], String.raw`Find the first four terms of the series for \(\displaystyle\int_0^x e^{-u^2/2}\,du\).`);
+assert(maclaurinIntegralAnswers.every((answer) => !answer.startsWith("t=")));
 assert.equal(choices.generateHypothesisChoiceSet([["Reject H0", "R1"]], "Find the probability of a Type I error.", "audit-type-one"), null);
 assert.equal(choices.isAnswerCompatibleWithPrompt("(a=2)", "Express the quadratic in the form a(x+b)^2+c."), false);
 assert.equal(choices.isAnswerCompatibleWithPrompt("z=(3+t)/2", "Find the parametric equations of the line."), false);
