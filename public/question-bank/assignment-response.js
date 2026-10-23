@@ -539,7 +539,10 @@
             partStatus.textContent = definition.mode === "whiteboard" ? "Confirm that this part is on your whiteboard or paper." : "Choose or enter an answer for this part.";
             return;
           }
-          partButton.disabled = true; partStatus.className = "qb-response-status"; partStatus.textContent = "Saving…";
+          partButton.disabled = true;
+          row.setAttribute("aria-busy", "true");
+          content.querySelectorAll("input").forEach(function (partInput) { partInput.disabled = true; });
+          partStatus.className = "qb-response-status"; partStatus.textContent = "Saving…";
           window.parent.postMessage({ type: "mrflynnib-assignment-response-save", questionId: id, response: { partKey: definition.label, partAnswer: answer } }, window.location.origin);
         });
         actions.appendChild(partButton); actions.appendChild(partStatus); content.appendChild(actions);
