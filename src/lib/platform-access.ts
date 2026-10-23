@@ -65,7 +65,14 @@ export function platformAccessSummary(
   const personalAccess = activePlatformEntitlements(entitlements, now);
   const schoolAccess = activePlatformEntitlements(activeSchoolEntitlements(schoolSeats), now);
   const active = [...personalAccess, ...schoolAccess];
-  const primary = active.find((entitlement) => entitlement.product_code.startsWith("course_"))
+  const courseAccess = active
+    .filter((entitlement) => entitlement.product_code.startsWith("course_"))
+    .sort((first, second) => {
+      const firstExpiry = first.expires_at ? new Date(first.expires_at).getTime() : Number.POSITIVE_INFINITY;
+      const secondExpiry = second.expires_at ? new Date(second.expires_at).getTime() : Number.POSITIVE_INFINITY;
+      return secondExpiry - firstExpiry;
+    });
+  const primary = courseAccess[0]
     ?? active.find((entitlement) => entitlement.product_code.startsWith("question_bank_plus"))
     ?? active[0];
 

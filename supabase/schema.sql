@@ -1000,10 +1000,12 @@ create table if not exists public.course_access_claims (
 );
 create unique index if not exists course_access_claims_one_pending_idx on public.course_access_claims (user_id, product_code) where status = 'pending';
 create table if not exists public.billing_customers (
-  user_id uuid primary key references auth.users(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  livemode boolean not null default false,
   stripe_customer_id text unique not null,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  primary key (user_id, livemode)
 );
 create table if not exists public.payment_events (
   provider_event_id text primary key,
@@ -1013,6 +1015,30 @@ create table if not exists public.payment_events (
   processed_at timestamptz,
   created_at timestamptz not null default now()
 );
+create table if not exists public.platform_purchases (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  product_code text not null check (char_length(product_code) between 1 and 80),
+  provider text not null default 'stripe' check (provider = 'stripe'),
+  checkout_session_id text not null unique check (char_length(checkout_session_id) between 1 and 200),
+  payment_intent_id text unique check (payment_intent_id is null or char_length(payment_intent_id) between 1 and 200),
+  customer_id text check (customer_id is null or char_length(customer_id) between 1 and 200),
+  livemode boolean not null,
+  status text not null check (status in ('pending', 'paid', 'failed', 'partially_refunded', 'refunded')),
+  amount_total integer not null default 0 check (amount_total >= 0),
+  amount_refunded integer not null default 0 check (amount_refunded >= 0 and amount_refunded <= amount_total),
+  currency text not null default 'usd' check (currency ~ '^[a-z]{3}$'),
+  access_days integer not null check (access_days between 1 and 3650),
+  access_starts_at timestamptz,
+  access_expires_at timestamptz,
+  purchased_at timestamptz,
+  refunded_at timestamptz,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (access_expires_at is null or access_starts_at is null or access_expires_at > access_starts_at)
+);
+create index if not exists platform_purchases_user_idx on public.platform_purchases (user_id, status, created_at desc);
 create index if not exists organization_memberships_user_idx on public.organization_memberships (user_id, status);
 create index if not exists organization_license_seats_user_idx on public.organization_license_seats (user_id) where revoked_at is null;
 alter table public.course_lesson_progress enable row level security;
@@ -1020,6 +1046,7 @@ alter table public.course_platform_state enable row level security;
 alter table public.course_access_claims enable row level security;
 alter table public.billing_customers enable row level security;
 alter table public.payment_events enable row level security;
+alter table public.platform_purchases enable row level security;
 create policy "Users manage their own lesson progress" on public.course_lesson_progress for all using (user_id = auth.uid() or public.is_admin()) with check (user_id = auth.uid() or public.is_admin());
 create policy "Users manage their own course state" on public.course_platform_state for all using (user_id = auth.uid() or public.is_admin()) with check (user_id = auth.uid() or public.is_admin());
 create policy "Users read their own access claims" on public.course_access_claims for select using (user_id = auth.uid() or public.is_admin());
@@ -1030,6 +1057,7 @@ grant select, insert, update, delete on public.course_platform_state to authenti
 grant select, insert, update on public.course_access_claims to authenticated;
 revoke all on public.billing_customers from anon, authenticated;
 revoke all on public.payment_events from anon, authenticated;
+revoke all on public.platform_purchases from anon, authenticated;
 
 -- Verified Teachable course access is private migration data. A confirmed
 -- account may claim only records matching its own normalised email address.

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountMenu } from "@/components/account-menu";
 import { CourseCheckoutButton } from "@/components/platform/course-checkout-button";
+import { CheckoutActivationNotice } from "@/components/platform/checkout-activation-notice";
 import { Container, Eyebrow } from "@/components/ui";
 import type { Curriculum } from "@/lib/account-access";
 import { getPlatformAccess } from "@/lib/platform-server";
@@ -21,12 +22,14 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
   const products = productsForCurriculum(curriculum);
   const owned = new Set(session.profile?.role === "admin" ? products.map((course) => course.id) : session.ownedCourses.map((course) => course.id));
   const claim = typeof query.claim === "string" ? query.claim : "";
+  const checkoutSessionId = typeof query.session_id === "string" ? query.session_id : "";
   return <>
     <section className={`dashboard-hero student-dashboard-hero ${curriculum === "igcse" ? "student-dashboard-hero-igcse" : ""}`}>
       <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">{curriculum === "igcse" ? "IGCSE access" : "IB access"}</span><h1>Your courses and account</h1><p>Start with the free question bank, try real course lessons, then unlock the complete course when you are ready.</p></div></Container>
     </section>
     <section className="section-tight platform-access-page"><Container className="stack-xl">
-      {query.checkout === "success" ? <p className="form-message form-success">Payment received. Your course access is being activated now. Refresh this page if it does not appear within a few seconds.</p> : null}
+      {query.checkout === "success" ? <CheckoutActivationNotice sessionId={checkoutSessionId} accessPath={accessPath} /> : null}
+      {query.checkout === "cancelled" ? <p className="form-message">Checkout was cancelled. You have not been charged.</p> : null}
       {claim === "sent" ? <p className="form-message form-success">Transfer request sent. We will verify your existing Teachable enrolment and add access to this account.</p> : null}
       {claim === "already-pending" ? <p className="form-message">Your Teachable transfer request is already waiting for review.</p> : null}
       {claim === "error" ? <p className="form-message form-error">The transfer request could not be sent. Please try again.</p> : null}

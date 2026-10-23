@@ -9,7 +9,8 @@ export function CourseCheckoutButton({ courseId }: { courseId: string }) {
     setBusy(true);
     setError("");
     try {
-      const response = await fetch("/api/platform/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId }) });
+      const requestId = crypto.randomUUID();
+      const response = await fetch("/api/platform/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId, requestId }) });
       const result = await response.json();
       if (!response.ok || !result.url) throw new Error(result.error || "Checkout could not be started.");
       window.location.assign(result.url);
