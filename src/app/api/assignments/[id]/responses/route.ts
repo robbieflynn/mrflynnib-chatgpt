@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { getFixedAssignmentConfig } from "@/lib/assignment-answer-config";
 
 export const dynamic = "force-dynamic";
 
@@ -52,11 +53,12 @@ async function saveMultipartPart({
   if (profile?.role !== "student") throw new Error("Student answers can only be submitted from a student account.");
 
   const [{ data: question }, { data: submission }] = await Promise.all([
-    supabase.from("assignment_questions").select("response_type").eq("assignment_id", assignmentId).eq("question_id", questionId).maybeSingle(),
+    supabase.from("assignment_questions").select("response_type,bank").eq("assignment_id", assignmentId).eq("question_id", questionId).maybeSingle(),
     supabase.from("assignment_submissions").select("status").eq("assignment_id", assignmentId).eq("student_id", studentId).maybeSingle(),
   ]);
   if (!question) throw new Error("Question not found.");
-  if (question.response_type !== "multipart") throw new Error("That question part was not found.");
+  const fixedConfig = getFixedAssignmentConfig(question.bank, questionId);
+  if ((fixedConfig?.type ?? question.response_type) !== "multipart") throw new Error("That question part was not found.");
   if (submission?.status === "submitted") throw new Error("This assignment has already been submitted.");
 
   const admin = createSupabaseAdmin(adminUrl, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } });
@@ -84,8 +86,17 @@ async function saveMultipartPart({
   ]);
   if (answerError || existingError) throw answerError || existingError;
 
-  const accepted = objectValue(answerKey?.accepted_answers);
-  const config = objectValue(accepted[partKey]) as PartConfig;
+  const storedAccepted = objectValue(answerKey?.accepted_answers);
+  const fixedPart = fixedConfig?.parts.find((part) => part.label === partKey);
+  const accepted = fixedConfig?.type === "multipart"
+    ? Object.fromEntries(fixedConfig.parts.map((part) => [part.label, {
+        mode: part.mode,
+        answers: part.acceptedAnswers,
+      }]))
+    : storedAccepted;
+  const config = fixedPart
+    ? { mode: fixedPart.mode, answers: fixedPart.acceptedAnswers }
+    : objectValue(accepted[partKey]) as PartConfig;
   if (!Object.keys(config).length) throw new Error("That question part was not found.");
 
   const existingResponse = objectValue(existing?.response);
@@ -93,7 +104,7 @@ async function saveMultipartPart({
   const states = { ...objectValue(existingResponse._partStates) } as Record<string, PartState>;
   const priorState = objectValue(states[partKey]) as PartState;
   const priorResult = String(priorState.result || "");
-  if (["correct", "incorrect_final", "saved"].includes(priorResult)) {
+  if (["correct", "incorrect_final"].includes(priorResult) || (priorResult === "saved" && config.mode === "whiteboard")) {
     return {
       isCorrect: priorResult === "correct" ? true : priorResult === "incorrect_final" ? false : null,
       result: "locked",

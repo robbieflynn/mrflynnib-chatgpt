@@ -7,6 +7,7 @@ import { requireTeacher } from "@/lib/account-access";
 import { getQuestionBankCourseByCode } from "@/lib/question-bank-courses";
 import { ReturnAssignmentForm } from "@/components/return-assignment-form";
 import type { AssignmentQuestionState } from "@/lib/use-question-bank-account";
+import { getFixedAssignmentConfig, responseOptionsForFixedConfig } from "@/lib/assignment-answer-config";
 
 export default async function StudentWorkingPage({ params, searchParams }: { params: Promise<{ id: string; studentId: string }>; searchParams: Promise<{ question?: string; error?: string; success?: string }> }) {
   const { id, studentId } = await params;
@@ -26,16 +27,24 @@ export default async function StudentWorkingPage({ params, searchParams }: { par
     supabase.from("assignment_submissions").select("status,submitted_at").eq("assignment_id", id).eq("student_id", studentId).maybeSingle(),
   ]);
   const classRecord = Array.isArray(assignment.classes) ? assignment.classes[0] : assignment.classes;
+  const effectiveQuestions = (questions ?? []).map((question) => {
+    const fixed = getFixedAssignmentConfig(classRecord?.bank, question.question_id);
+    return fixed ? {
+      ...question,
+      response_type: fixed.type,
+      response_options: responseOptionsForFixedConfig(fixed),
+    } : question;
+  });
   const dashboardHref = classRecord?.bank === "igcse" ? "/igcse/teacher" : "/teacher";
-  const questionIds = (questions ?? []).map((question) => question.question_id);
-  const focusedQuestion = requestedQuestion && (questions ?? []).find((question) => question.question_id === requestedQuestion);
+  const questionIds = effectiveQuestions.map((question) => question.question_id);
+  const focusedQuestion = requestedQuestion && effectiveQuestions.find((question) => question.question_id === requestedQuestion);
   const displayedQuestionIds = focusedQuestion ? [focusedQuestion.question_id] : questionIds;
   const attemptedQuestionIds = new Set([...(progress ?? []).map((row) => row.question_id), ...(responses ?? []).map((row) => row.question_id)]);
   const course = getQuestionBankCourseByCode(classRecord?.course || "");
   const studentName = profile?.display_name || "Student";
   const workspaceClass = classRecord?.bank === "igcse" ? "teacher-workspace teacher-workspace-igcse" : "teacher-workspace";
   const responseByQuestion = new Map((responses ?? []).map((response) => [response.question_id, response]));
-  const initialQuestions: AssignmentQuestionState[] = (questions ?? []).map((question) => {
+  const initialQuestions: AssignmentQuestionState[] = effectiveQuestions.map((question) => {
     const saved = responseByQuestion.get(question.question_id);
     return {
       questionId: question.question_id,

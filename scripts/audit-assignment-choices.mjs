@@ -157,6 +157,26 @@ function choiceSetForRows(rows, prompt, seed) {
   return set && choices.isAnswerCompatibleWithPrompt(set.options[set.correctOption], prompt) ? set : null;
 }
 
+function manualChoiceSet(questionId, label) {
+  if (questionId === "A_N24TZ0HL_P1_Q11" && label === "c(ii)") {
+    return {
+      acceptedAnswers: [
+        "-48y^4+240y^3-414y^2+285y-66",
+        "(24y^2-60y+33)(2y-1)(2-y)",
+      ],
+      options: [
+        "-48y^4+240y^3-414y^2+285y+66",
+        "-48y^4+240y^3-414y^2-285y-66",
+        "-48y^4+240y^3+414y^2+285y-66",
+        "48y^4+240y^3-414y^2+285y-66",
+        "-48y^4+240y^3-414y^2+285y-66",
+      ],
+      correctOption: 4,
+    };
+  }
+  return null;
+}
+
 const choiceQualityIssues = [];
 const liveChoiceSamples = [];
 
@@ -418,7 +438,9 @@ function assignmentPartConfigs(question) {
           prompt: nestedPrompt,
           accepted,
           rows: nestedRows,
-          choices: hasSharedWhiteboardInstruction(prompt) ? null : choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`),
+          choices: hasSharedWhiteboardInstruction(prompt)
+            ? null
+            : manualChoiceSet(question.id, label) || choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`),
         });
       }
     } else {
@@ -448,7 +470,13 @@ function assignmentPartConfigs(question) {
       if (question.id === "M10TZ2HL_P2_Q8" && part === "a") {
         assert(!choices.toLatex(accepted[0]).includes(String.raw`\n`), `n was rendered as a LaTeX command: ${JSON.stringify(accepted)}`);
       }
-      configs.push({ label, prompt, accepted, rows, choices: choiceSetForRows(rows, prompt, `${question.id}:${label}`) });
+      configs.push({
+        label,
+        prompt,
+        accepted,
+        rows,
+        choices: manualChoiceSet(question.id, label) || choiceSetForRows(rows, prompt, `${question.id}:${label}`),
+      });
     }
   }
   return configs;
