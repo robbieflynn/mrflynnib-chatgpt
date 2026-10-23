@@ -118,6 +118,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
     let assignmentRetryTimer: number | null = null;
     let assignmentRetryAttempts = 0;
     const answerSavesInFlight = new Set<string>();
+    const answerQuestionsInFlight = new Set<string>();
     const whiteboardSavesInFlight = new Set<string>();
 
     function send(data: Record<string, unknown>) {
@@ -171,6 +172,11 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
     async function deliverPendingAnswer(storageKey: string, entry: PendingAnswerSave) {
       if (cancelled || !clientRef.current || !userRef.current || entry.userId !== userRef.current.id || entry.assignmentId !== assignmentId) return;
       if (answerSavesInFlight.has(storageKey)) return;
+      const questionFlightKey = `${entry.assignmentId}:${entry.questionId}`;
+      if (answerQuestionsInFlight.has(questionFlightKey)) {
+        scheduleRetry(0);
+        return;
+      }
       if (!navigator.onLine) {
         if (!entry.notified) {
           entry.notified = true;
@@ -186,6 +192,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         return;
       }
       answerSavesInFlight.add(storageKey);
+      answerQuestionsInFlight.add(questionFlightKey);
       const controller = new AbortController();
       const timeout = window.setTimeout(() => controller.abort(), 15_000);
       let resultData: { isCorrect?: boolean | null; result?: string | null } | null = null;
@@ -215,6 +222,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       } finally {
         window.clearTimeout(timeout);
         answerSavesInFlight.delete(storageKey);
+        answerQuestionsInFlight.delete(questionFlightKey);
       }
       if (cancelled) return;
       const records = readPendingRecords<PendingAnswerSave>(pendingAnswerStorageKey);
