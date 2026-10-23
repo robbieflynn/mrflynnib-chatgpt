@@ -10,6 +10,7 @@ import { assignmentFeedbackLabel, assignmentFeedbackModeFromRecord } from "@/lib
 import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 import { AssignmentConnectionStatus } from "@/components/assignment-connection-status";
 import type { AssignmentQuestionState } from "@/lib/use-question-bank-account";
+import { getFixedAssignmentConfig, responseOptionsForFixedConfig } from "@/lib/assignment-answer-config";
 
 export default async function StudentAssignmentPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ error?: string; success?: string }> }) {
   const { id } = await params;
@@ -24,23 +25,31 @@ export default async function StudentAssignmentPage({ params, searchParams }: { 
     supabase.from("assignment_submissions").select("status,submitted_at").eq("assignment_id", id).eq("student_id", user.id).maybeSingle(),
     supabase.from("assignment_responses").select("question_id,response,is_correct,attempt_count,updated_at").eq("assignment_id", id).eq("student_id", user.id),
   ]);
+  const effectiveQuestions = (questions ?? []).map((question) => {
+    const fixed = getFixedAssignmentConfig(classRecord?.bank, question.question_id);
+    return fixed ? {
+      ...question,
+      response_type: fixed.type,
+      response_options: responseOptionsForFixedConfig(fixed),
+    } : question;
+  });
   const progressIds = new Set((progress ?? []).map((item) => item.question_id));
   const responseByQuestion = new Map((responses ?? []).map((response) => [response.question_id, response]));
-  const completed = (questions ?? []).filter((question) => {
+  const completed = effectiveQuestions.filter((question) => {
     const response = responseByQuestion.get(question.question_id);
     if (!response) return progressIds.has(question.question_id);
     if (question.response_type === "multipart") return progressIds.has(question.question_id);
     return question.response_type === "teacher_review" || response.is_correct === true || Number(response.attempt_count || 0) >= 2;
   }).length;
-  const total = questions?.length ?? 0;
+  const total = effectiveQuestions.length;
   const course = getQuestionBankCourseByCode(classRecord?.course || "");
-  const questionIds = (questions ?? []).map((question) => question.question_id);
+  const questionIds = effectiveQuestions.map((question) => question.question_id);
   const answered = responses?.length ?? 0;
   const correct = responses?.filter((response) => response.is_correct === true).length ?? 0;
   const workspaceClass = classRecord?.bank === "igcse" ? "student-assignment-workspace student-assignment-workspace-igcse" : "student-assignment-workspace";
   const feedbackMode = assignmentFeedbackModeFromRecord(assignment);
   const isSubmitted = submission?.status === "submitted";
-  const initialQuestions: AssignmentQuestionState[] = (questions ?? []).map((question) => {
+  const initialQuestions: AssignmentQuestionState[] = effectiveQuestions.map((question) => {
     const saved = responseByQuestion.get(question.question_id);
     return {
       questionId: question.question_id,

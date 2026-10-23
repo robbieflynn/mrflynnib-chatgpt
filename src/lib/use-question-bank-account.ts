@@ -359,13 +359,17 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         return;
       }
       const responseByQuestion = new Map((responses ?? []).map((row) => [String(row.question_id), row]));
+      const authoritativeConfigByQuestion = new Map(
+        initialQuestions.map((question) => [question.questionId, question]),
+      );
       assignmentRetryAttempts = 0;
       assignmentQuestionsRef.current = (questions ?? []).map((question) => {
           const saved = responseByQuestion.get(String(question.question_id));
+          const authoritative = authoritativeConfigByQuestion.get(String(question.question_id));
           return {
             questionId: String(question.question_id),
-            responseType: String(question.response_type || "teacher_review"),
-            responseOptions: Array.isArray(question.response_options) ? question.response_options : [],
+            responseType: authoritative?.responseType ?? String(question.response_type || "teacher_review"),
+            responseOptions: authoritative?.responseOptions ?? (Array.isArray(question.response_options) ? question.response_options : []),
             response: saved?.response ?? null,
             isCorrect: saved?.is_correct ?? null,
             attemptCount: saved?.attempt_count ?? 0,

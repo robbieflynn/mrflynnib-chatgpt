@@ -84,7 +84,7 @@
           toolButton('pan', 'Pan', false) +
           toolButton('move-image', 'Move image', false) +
           '<div class="qb-whiteboard-colours" role="group" aria-label="Pen colour">' +
-            colourButton('#0d152e', 'Black', true) +
+            colourButton('#000000', 'Black', true) +
             colourButton('#2563eb', 'Blue', false) +
             colourButton('#dc2626', 'Red', false) +
             colourButton('#15803d', 'Green', false) +
@@ -152,7 +152,7 @@
     var pinch = null;
     var touchGesture = false;
     var mode = 'pen';
-    var colour = '#0d152e';
+    var colour = '#000000';
     var zoom = 1;
     var baseWidth = 1400;
     var pageHeight = 2240;
@@ -308,9 +308,11 @@
       var height = canvas.clientHeight;
       ctx.save();
       ctx.globalCompositeOperation = stroke.mode === 'eraser' ? 'destination-out' : 'source-over';
-      ctx.strokeStyle = stroke.colour;
+      // Older saved documents used a very dark blue-grey as "black". Render
+      // those strokes as true black too, so existing work becomes clearer.
+      ctx.strokeStyle = stroke.colour === '#0d152e' ? '#000000' : stroke.colour;
       // Tool widths are measured on the paper, so existing and new ink scale together.
-      ctx.lineWidth = (stroke.mode === 'eraser' ? 24 : 3) * zoom;
+      ctx.lineWidth = (stroke.mode === 'eraser' ? 24 : 3.6) * zoom;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.beginPath();
@@ -376,8 +378,8 @@
       // canvas limit on some iPads and allocates a very large bitmap twice.
       // Keep the backing stores comfortably inside Safari's limits while the
       // CSS-sized paper and saved coordinates remain unchanged.
-      var maxDimension = 4096;
-      var maxPixels = 8000000;
+      var maxDimension = 8192;
+      var maxPixels = 10000000;
       var ratio = Math.min(
         window.devicePixelRatio || 1,
         2,
@@ -717,13 +719,25 @@
       updateSurfaceSize();
     }
 
-    function setExpanded(expanded) {
+    function syncExpandedState(expanded) {
       card.classList.toggle('qb-whiteboard-expanded', expanded);
+      document.body.classList.toggle('qb-whiteboard-fullscreen', expanded);
       var button = board.querySelector('[data-whiteboard-action="expand"]');
       button.setAttribute('aria-pressed', String(expanded));
       button.textContent = expanded ? 'Collapse' : 'Expand';
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: 'mrflynnib-whiteboard-expanded', expanded: expanded }, window.location.origin);
+      }
       requestAnimationFrame(resize);
     }
+
+    function setExpanded(expanded) {
+      syncExpandedState(expanded);
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && card.classList.contains('qb-whiteboard-expanded')) setExpanded(false);
+    });
 
     open.addEventListener('click', function () {
       resetInteraction();
@@ -935,7 +949,7 @@
             restored.push({
               type: 'stroke',
               mode: action.mode === 'eraser' ? 'eraser' : 'pen',
-              colour: typeof action.colour === 'string' ? action.colour : '#0d152e',
+              colour: typeof action.colour === 'string' ? action.colour : '#000000',
               straightened: Boolean(action.straightened),
               points: action.points.slice(0, 10000).map(function (point) {
                 return { x: Number(point.x) || 0, y: Number(point.y) || 0 };

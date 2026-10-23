@@ -17,6 +17,7 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(760);
+  const [whiteboardExpanded, setWhiteboardExpanded] = useState(false);
   useQuestionBankAccount(frameRef, "igcse", assignmentId, { feedbackMode, assignmentSubmitted, initialQuestions, viewedStudentId });
 
   const loadMoreIfNeeded = useCallback(() => {
@@ -39,13 +40,12 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
 
     const handleFrameMessage = (event: MessageEvent) => {
       const frame = frameRef.current;
-      if (
-        event.origin !== window.location.origin ||
-        event.source !== frame?.contentWindow ||
-        event.data?.type !== "mrflynnib-question-bank-height"
-      ) {
+      if (event.origin !== window.location.origin || event.source !== frame?.contentWindow) return;
+      if (event.data?.type === "mrflynnib-whiteboard-expanded") {
+        setWhiteboardExpanded(Boolean(event.data.expanded));
         return;
       }
+      if (event.data?.type !== "mrflynnib-question-bank-height") return;
 
       const nextHeight = Number(event.data.height);
       if (Number.isFinite(nextHeight)) {
@@ -83,12 +83,20 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
 
   return (
     <iframe
+      allowFullScreen
       className="igcse-qb-frame"
       loading="eager"
       ref={frameRef}
       scrolling="no"
       src={`/question-bank/igcse-bank.html?${query.toString()}`}
-      style={{ height: `${frameHeight}px` }}
+      style={whiteboardExpanded ? {
+        position: "fixed",
+        inset: 0,
+        zIndex: 10000,
+        width: "100vw",
+        height: "100dvh",
+        background: "#fff",
+      } : { height: `${frameHeight}px` }}
       title="Edexcel IGCSE Mathematics question bank"
     />
   );
