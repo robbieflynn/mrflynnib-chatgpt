@@ -1517,7 +1517,14 @@ if (auditDetailModes.includes("6")) {
 }
 assert.equal(choiceQualityIssues.length, 0, "The live assignment-choice audit found an unsafe or mismatched answer option.");
 
+const fixedAssignmentConfigSource = `${JSON.stringify(fixedAssignmentConfigs)}\n`;
 if (process.env.WRITE_ASSIGNMENT_CONFIGS === "1") {
-  writeFileSync("src/data/assignment-answer-configs.json", `${JSON.stringify(fixedAssignmentConfigs)}\n`);
+  writeFileSync("src/data/assignment-answer-configs.json", fixedAssignmentConfigSource);
   console.log(`Wrote fixed assignment configurations for ${Object.keys(fixedAssignmentConfigs.ib).length} IB and ${Object.keys(fixedAssignmentConfigs.igcse).length} IGCSE questions.`);
+} else {
+  assert.equal(
+    readFileSync("src/data/assignment-answer-configs.json", "utf8"),
+    fixedAssignmentConfigSource,
+    "The fixed assignment-answer catalogue is stale. Run npm run generate:assignment-configs and commit the result.",
+  );
 }
