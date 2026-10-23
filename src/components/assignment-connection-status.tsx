@@ -32,7 +32,7 @@ export function AssignmentConnectionStatus() {
   return <div className={`assignment-connection-status is-${state}`} role="status" aria-live="polite">
     <strong>{state === "offline" ? "Connection interrupted" : "Saving your work"}</strong>
     <span>{pending
-      ? `${pending} ${pending === 1 ? "piece" : "pieces"} of work ${pending === 1 ? "is" : "are"} safely held on this device until the online save is confirmed.`
-      : "Your work will continue syncing automatically when the connection returns."}</span>
+      ? `We are still saving ${pending} ${pending === 1 ? "answer" : "answers"}. You can keep working while we retry automatically.`
+      : "We will save your work automatically when the connection returns."}</span>
   </div>;
 }

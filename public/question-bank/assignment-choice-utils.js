@@ -2875,7 +2875,10 @@
       .replace(/bar\(([^()]+)\)/gi, "\\bar{$1}")
       .replace(/overline\(([^()]+)\)/gi, "\\overline{$1}")
       .replace(/_\(([^()]*)\)/g, "_{$1}")
-      .replace(/_([A-Za-z0-9]+)/g, "_{$1}")
+      // A numeric subscript ends before the next variable. Treating `a_3x^2`
+      // as one greedy subscript produced `a_{3x}^2` in assignment choices.
+      .replace(/_([0-9]+)/g, "_{$1}")
+      .replace(/_([A-Za-z]+)/g, "_{$1}")
       .replace(/\^\(\(([^()]*)\)\/([^()]*)\)/g, "^{\\frac{$1}{$2}}")
       .replace(/\^\(\s*([^/()]+)\s*\/\s*([^/()]+)\s*\)/g, "^{\\frac{$1}{$2}}")
       .replace(/\^\(([^()]*)\)/g, "^{$1}")
