@@ -27,24 +27,40 @@ async function checkSupabase() {
   const database = await checkSupabaseRequest("/rest/v1/classes?select=id&limit=1");
   if (!database.ok) return { ok: false, reason: database.reason };
 
+  async function reachedProtectedSaveFunction(path: string, body: Record<string, unknown>) {
+    const check = await checkSupabaseRequest(path, { method: "POST", body: JSON.stringify(body) });
+    if (check.ok) return true;
+    if (check.response?.status !== 400) return false;
+    const payload = await check.response.json().catch(() => null) as { code?: string; message?: string } | null;
+    return payload?.code === "P0001" && /sign in/i.test(payload.message || "");
+  }
+
   // Exercise the same RPC gateway students use to save answers. An anonymous
   // request is expected to be rejected by the function itself; reaching that
   // controlled rejection proves the save route is present and responding.
-  const saveApi = await checkSupabaseRequest("/rest/v1/rpc/submit_assignment_response_reliable", {
-    method: "POST",
-    body: JSON.stringify({
+  const saveApiReached = await reachedProtectedSaveFunction(
+    "/rest/v1/rpc/submit_assignment_response_reliable",
+    {
       assignment_uuid: "00000000-0000-0000-0000-000000000000",
       question_key: "health-check",
       request_uuid: "00000000-0000-4000-8000-000000000000",
       response_payload: {},
-    }),
-  });
-  if (saveApi.ok) return { ok: true, reason: null };
-  if (saveApi.response?.status === 400) {
-    const payload = await saveApi.response.json().catch(() => null) as { code?: string; message?: string } | null;
-    if (payload?.code === "P0001" && /sign in/i.test(payload.message || "")) return { ok: true, reason: null };
-  }
-  return { ok: false, reason: `save_${saveApi.reason}` };
+    },
+  );
+  if (!saveApiReached) return { ok: false, reason: "save_rpc_unreachable" };
+
+  const partSaveApiReached = await reachedProtectedSaveFunction(
+    "/rest/v1/rpc/submit_assignment_part_response",
+    {
+      assignment_uuid: "00000000-0000-0000-0000-000000000000",
+      question_key: "health-check",
+      part_key: "a",
+      part_answer: "health-check",
+    },
+  );
+  return partSaveApiReached
+    ? { ok: true, reason: null }
+    : { ok: false, reason: "part_save_rpc_unreachable" };
 }
 
 export async function GET() {

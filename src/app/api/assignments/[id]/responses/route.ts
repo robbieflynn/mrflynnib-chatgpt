@@ -176,13 +176,19 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ message: "Please sign in again before saving.", retryable: false }, { status: 401 });
 
-  if (response && typeof response === "object" && !Array.isArray(response) && shortText((response as Record<string, unknown>).partKey, 30)) {
+  const multipartResponse = response && typeof response === "object" && !Array.isArray(response)
+    ? response as Record<string, unknown>
+    : null;
+  const multipartPartKey = shortText(multipartResponse?.partKey, 30);
+  const multipartPartAnswer = shortText(multipartResponse?.partAnswer, 500);
+
+  if (multipartResponse && multipartPartKey) {
     try {
       const result = await saveMultipartPart({
         assignmentId: id,
         questionId,
         requestId,
-        response: response as Record<string, unknown>,
+        response: multipartResponse,
         studentId: user.id,
         supabase,
       });
@@ -191,10 +197,9 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       const message = error instanceof Error ? error.message : "The answer could not be saved.";
       const isPermanent = permanentError(message);
       console.error("Assignment part save failed", { assignmentId: id, questionId, studentId: user.id, message });
-      return NextResponse.json({
-        message: isPermanent ? message : "The online save service did not respond. Your answer is safe on this device and will retry automatically.",
-        retryable: !isPermanent,
-      }, { status: isPermanent ? 400 : 503 });
+      if (isPermanent) {
+        return NextResponse.json({ message, retryable: false }, { status: 400 });
+      }
     }
   }
 
@@ -204,6 +209,33 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     request_uuid: requestId,
     response_payload: response,
   });
+
+  if (error && multipartPartKey && /complete every part/i.test(error.message || "")) {
+    // Some live databases still have the original whole-question version of
+    // submit_assignment_response. The dedicated part RPC is the compatible
+    // path installed with multipart assignments, so use it until every live
+    // database has the updated reliable wrapper below.
+    const { data: partData, error: partError } = await supabase.rpc("submit_assignment_part_response", {
+      assignment_uuid: id,
+      question_key: questionId,
+      part_key: multipartPartKey,
+      part_answer: multipartPartAnswer,
+    });
+    if (!partError) {
+      const partResult = Array.isArray(partData) ? partData[0] as { is_correct?: boolean | null; result?: string | null } : null;
+      console.warn("Used assignment part compatibility save", { assignmentId: id, questionId, studentId: user.id });
+      return NextResponse.json({ isCorrect: partResult?.is_correct ?? null, result: partResult?.result ?? null }, {
+        headers: { "Cache-Control": "no-store, max-age=0" },
+      });
+    }
+    console.error("Assignment part compatibility save failed", {
+      assignmentId: id,
+      questionId,
+      studentId: user.id,
+      code: partError.code,
+      message: partError.message,
+    });
+  }
 
   if (error) {
     const message = error.message || "The answer could not be saved.";
