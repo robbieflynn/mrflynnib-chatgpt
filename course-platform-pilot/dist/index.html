@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex,nofollow" />
     <title>My learning | Mr Flynn IB</title>
     <link rel="icon" href="assets/mr-flynn-mark.png" />
-    <link rel="stylesheet" href="styles.css?v=20261023-1" />
+    <link rel="stylesheet" href="styles.css?v=20261023-2" />
   </head>
   <body>
     <div class="app-shell">
@@ -26,11 +26,7 @@
           </a>
           <button class="nav-item is-active" type="button" data-view="dashboard">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg>
-            <span>Course overview</span>
-          </button>
-          <button class="nav-item" type="button" data-view="courses">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 16.5A2.5 2.5 0 0 1 6.5 14H20M8 7h8"/></svg>
-            <span id="coursesNavLabel">My course</span>
+            <span>My course</span>
           </button>
           <button class="nav-item" type="button" data-view="pastPapers">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h7M9 16h7"/></svg>
@@ -38,7 +34,7 @@
           </button>
           <button class="nav-item" type="button" data-view="progress">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
-            <span>Progress</span>
+            <span>Course progress</span>
           </button>
           <a class="nav-item external-nav" id="questionBankLink" href="/question-bank">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 1 4 16.5z"/><path d="M8 8h8M8 12h8"/></svg>
@@ -136,7 +132,7 @@
           <section class="section-block">
             <div class="section-heading">
               <div><p class="eyebrow" id="enrolmentEyebrow">Your enrolment</p><h2 id="dashboardCoursesTitle">My course</h2></div>
-              <button class="text-button" type="button" data-view="courses" id="dashboardCoursesButton">Open course →</button>
+              <button class="text-button" type="button" id="dashboardCoursesButton">Open course →</button>
             </div>
             <div class="course-grid" id="dashboardCourseGrid"></div>
           </section>
@@ -159,7 +155,7 @@
 
         <section id="courseView" class="view">
           <header class="course-hero" id="courseHero">
-            <button class="back-button" id="courseBackButton" type="button" data-view="courses">← My course</button>
+            <button class="back-button" id="courseBackButton" type="button" data-view="dashboard">← My course</button>
             <div class="course-hero-row">
               <div>
                 <span class="course-code" id="courseCode">AA SL</span>
@@ -239,7 +235,7 @@
           <div class="page-intro past-paper-intro">
             <p class="eyebrow">Exam preparation</p>
             <h1>Past paper solutions</h1>
-            <p>Find an AA HL exam session, paper and the worked solution for the exact question you need.</p>
+            <p>Find your exam session, paper and the worked solution for the exact question you need. Specimen papers and every May 2021 paper are free to watch.</p>
           </div>
 
           <div class="past-paper-course-tabs" id="pastPaperCourseTabs" aria-label="Your enrolled IB Mathematics course"></div>
@@ -288,8 +284,8 @@
         <section id="progressView" class="view">
           <div class="page-intro">
             <p class="eyebrow">Learning activity</p>
-            <h1>Your progress</h1>
-            <p>See your progress across your AA HL course.</p>
+            <h1>Course progress</h1>
+            <p>See the video lessons and lesson practice you have completed. Your independent question-bank progress is shown separately in My learning.</p>
           </div>
           <div class="progress-course-grid" id="progressCourseGrid"></div>
         </section>
@@ -309,6 +305,6 @@
     <script src="igcse-library-data.js"></script>
     <script src="past-paper-data.js"></script>
     <script src="practice-data.js?v=20261021-9"></script>
-    <script src="app.js?v=20261023-1"></script>
+    <script src="app.js?v=20261023-2"></script>
   </body>
 </html>

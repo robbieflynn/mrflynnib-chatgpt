@@ -317,23 +317,22 @@ function configurePreviewMode() {
   const isIgcse = reviewCurriculum === "igcse";
   document.body.classList.toggle("igcse-learning", isIgcse);
   document.title = `${isIgcse ? "IGCSE" : "IB"} platform review | Mr Flynn IB`;
-  document.getElementById("coursesNavLabel").textContent = isIgcse ? "My course" : "IB courses";
-  document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "Four IB Mathematics courses";
+  document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : courses[currentCourseId].name;
   document.getElementById("welcomeEyebrow").textContent = "Private review";
-  document.getElementById("welcomeTitle").textContent = isIgcse ? "Review the IGCSE learning area" : "Review the IB learning area";
-  document.getElementById("welcomeCopy").textContent = isIgcse ? "Inspect the complete IGCSE course without entering the separate IB platform." : "Inspect AA HL, AA SL, AI HL and AI SL without entering the separate IGCSE platform.";
-  document.getElementById("libraryStatusText").textContent = isIgcse ? "Complete IGCSE course pathway" : "Four complete IB course pathways";
-  document.getElementById("enrolmentEyebrow").textContent = "Review catalogue";
-  document.getElementById("dashboardCoursesTitle").textContent = isIgcse ? "IGCSE Mathematics" : "IB Mathematics courses";
-  document.getElementById("dashboardCoursesButton").textContent = isIgcse ? "Inspect the course →" : "Inspect IB courses →";
+  document.getElementById("welcomeTitle").textContent = isIgcse ? "Review the IGCSE course" : `Review the ${courses[currentCourseId].code} course`;
+  document.getElementById("welcomeCopy").textContent = "Inspect the course lessons, practice, past-paper solutions and course progress in one place.";
+  document.getElementById("libraryStatusText").textContent = "Complete course pathway";
+  document.getElementById("enrolmentEyebrow").textContent = "Selected course";
+  document.getElementById("dashboardCoursesTitle").textContent = courses[currentCourseId].name;
+  document.getElementById("dashboardCoursesButton").textContent = "Open course →";
   document.getElementById("coursesEyebrow").textContent = "Private course review";
   document.getElementById("coursesTitle").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
   document.getElementById("coursesDescription").textContent = isIgcse ? "Inspect the complete IGCSE lesson structure and mapped practice in its own learning area." : "Inspect AA HL, AA SL, AI HL and AI SL as a dedicated IB course catalogue.";
-  document.getElementById("courseBackButton").textContent = isIgcse ? "← IGCSE course" : "← IB courses";
+  document.getElementById("courseBackButton").textContent = "← My course";
   document.getElementById("summaryTopics").textContent = String(enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].topics.length, 0));
   document.getElementById("summaryTopicsLabel").textContent = "course topics";
   const reviewHome = `/platform-review?curriculum=${isIgcse ? "igcse" : "ib"}&role=student`;
-  document.getElementById("questionBankLink").href = isIgcse ? "/igcse/question-bank" : "/question-bank";
+  syncQuestionBankLink();
   document.getElementById("assignmentsLink").href = `${reviewHome}&screen=assignment`;
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
   document.getElementById("manageAccessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
@@ -349,6 +348,15 @@ function configureCurriculumExperience(curriculum) {
   const hasPastPapers = enrolledCourseDefinitions.some((definition) => pastPaperLibrary.courses?.[definition.code]);
   document.querySelectorAll('[data-view="pastPapers"]').forEach((element) => { element.hidden = !hasPastPapers; });
   document.querySelector(".study-paths")?.classList.toggle("is-single-path", !hasPastPapers);
+}
+
+function questionBankHrefForCourse(courseId = currentCourseId) {
+  const base = courseId === "igcse" ? "/igcse/question-bank" : `/question-bank/${courseId}`;
+  return reviewerMode && courseId !== "igcse" ? `${base}?review=platform` : base;
+}
+
+function syncQuestionBankLink() {
+  document.getElementById("questionBankLink").href = questionBankHrefForCourse();
 }
 
 function getCurrentLesson() {
@@ -420,7 +428,7 @@ function courseCard(course, large = false) {
 }
 
 function renderCourseCards() {
-  const markup = enrolledCourseDefinitions.map((definition) => courseCard(courses[definition.id], true)).join("");
+  const markup = courseCard(currentCourse, true);
   document.getElementById("allCourseGrid").innerHTML = markup;
 }
 
@@ -437,12 +445,14 @@ function renderDashboard() {
   document.getElementById("continueProgressBar").style.width = `${percentage}%`;
   document.getElementById("continueButton").dataset.courseId = course.id;
   document.getElementById("continueButton").dataset.lessonId = nextLesson.id;
-  document.getElementById("dashboardCourseGrid").innerHTML = enrolledCourseDefinitions.map((definition) => courseCard(courses[definition.id])).join("");
+  document.getElementById("dashboardCoursesTitle").textContent = course.name;
+  document.getElementById("dashboardCoursesButton").dataset.courseId = course.id;
+  document.getElementById("dashboardCourseGrid").innerHTML = courseCard(course);
+  syncQuestionBankLink();
   if (!reviewerMode) {
     document.getElementById("welcomeTitle").textContent = `Your ${course.code} learning space`;
     document.getElementById("welcomeCopy").textContent = "Your course lessons, question bank, assignments and progress in one place.";
     document.getElementById("sidebarCourseLabel").textContent = `${course.name}`;
-    document.getElementById("coursesNavLabel").textContent = enrolledCourseDefinitions.length > 1 ? "Courses" : "My course";
   }
 }
 
@@ -458,6 +468,7 @@ function openCourse(courseId, lessonId = null) {
   state.lastCourse = courseId;
   state.lastLesson = currentLessonId;
   saveState();
+  syncQuestionBankLink();
   document.getElementById("lessonSearch").value = "";
   renderCourse();
   setView("course");
@@ -775,7 +786,8 @@ function toggleComplete() {
 }
 
 function renderProgress() {
-  document.getElementById("progressCourseGrid").innerHTML = enrolledCourseDefinitions.map((definition) => {
+  const currentDefinition = courseDefinitions.find((definition) => definition.id === currentCourseId);
+  document.getElementById("progressCourseGrid").innerHTML = [currentDefinition].filter(Boolean).map((definition) => {
     const course = courses[definition.id];
     const complete = completedFor(course);
     const percentage = percentFor(course);
@@ -805,6 +817,10 @@ function pastPaperSets() {
     if (firstYear !== secondYear) return firstYear - secondYear;
     return `${first.session} ${first.paper} ${first.timezone}`.localeCompare(`${second.session} ${second.paper} ${second.timezone}`, undefined, { numeric: true, sensitivity: "base" });
   });
+}
+
+function pastPaperSetIsFree(set) {
+  return set.session === "Specimen" || set.session === "May 2021";
 }
 
 function renderPastPaperTabs() {
@@ -869,7 +885,7 @@ function renderPastPaperCatalog() {
       ${sessionGroup.sets.map((set) => {
         const meta = [set.timezone, set.paper].filter(Boolean).join(" · ");
         return `<button class="paper-set-card ${set.id === currentPastPaperSetId ? "is-active" : ""}" type="button" data-paper-set-id="${set.id}">
-          <span><strong>${escapeHtml(meta)}</strong><em>${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}</em></span>
+          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Free</b>' : ""}</strong><em>${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}</em></span>
           <i aria-hidden="true">→</i>
         </button>`;
       }).join("")}
@@ -1079,7 +1095,7 @@ async function bootstrapAccount() {
     document.getElementById("primaryLearningHomeLink").href = platformAccount.links.account;
     document.getElementById("topbarLearningHomeLink").href = platformAccount.links.account;
     document.getElementById("brandLearningHomeLink").href = platformAccount.links.account;
-    document.getElementById("questionBankLink").href = platformAccount.links.questionBank;
+    syncQuestionBankLink();
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
     void flushLessonProgress();
   } catch (error) {
@@ -1100,7 +1116,7 @@ async function initialize() {
   renderCourseCards();
   renderProgress();
   if (reviewerMode) {
-    setView(requestedView === "past-papers" ? "pastPapers" : "courses");
+    setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
   } else if (validPreviewCourseId || requestedCourseId) {
     const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
     const requestedLesson = enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];

@@ -43,7 +43,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
   const className = isIgcse ? "Year 11 IGCSE" : "Year 12 AA HL";
   const courseName = isIgcse ? "Edexcel IGCSE Mathematics" : "Analysis & Approaches HL";
   const courseReviewHref = isIgcse ? "/learn/index.html?v=igcse-platform-review" : "/learn/index.html?v=ib-platform-review";
-  const questionBankHref = isIgcse ? "/igcse/question-bank" : "/question-bank/aa-hl";
+  const questionBankHref = isIgcse ? "/igcse/question-bank" : "/question-bank/aa-hl?review=platform";
   const assignmentHref = reviewHref(curriculum, "student", "assignment");
 
   return <>
@@ -62,21 +62,34 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <Link href={courseReviewHref}><DashboardIcon name="book" /><span><strong>Courses</strong><small>Video lessons, practice and past papers</small></span><b aria-hidden="true">→</b></Link>
           <Link href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Independent practice and saved work</small></span><b aria-hidden="true">→</b></Link>
           <Link href={assignmentHref}><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Work set by your teachers</small></span><b aria-hidden="true">→</b></Link>
-          <Link href="#progress"><DashboardIcon name="check" /><span><strong>Progress</strong><small>Your learning at a glance</small></span><b aria-hidden="true">↓</b></Link>
+          <Link href="#progress"><DashboardIcon name="check" /><span><strong>Progress overview</strong><small>Course and question bank activity</small></span><b aria-hidden="true">↓</b></Link>
         </nav>
 
-        <div className="student-next-grid">
+        <div className="student-next-grid is-single">
           <section className="student-next-card">
             <div className="student-next-card-copy"><p className="student-dashboard-kicker">Up next</p><span className="student-next-context">{className} · Due tomorrow</span><h2>Functions practice</h2><p>You have completed 3 of 8 questions.</p></div>
             <div className="student-next-progress"><span><strong>38%</strong> complete</span><i><b style={{ width: "38%" }} /></i></div>
             <Link className="button student-next-button" href={assignmentHref}>Continue assignment <span aria-hidden="true">→</span></Link>
           </section>
-          <aside className="student-progress-summary" id="progress" aria-label="Your progress">
-            <div><p className="student-dashboard-kicker">Personal progress</p><strong className="student-progress-number">24%</strong><span>{courseCode} question bank complete</span></div>
-            <div className="student-progress-ring" style={{ "--student-progress": "86deg" } as CSSProperties}><span>24%</span></div>
-            <dl><div><dt>Questions completed</dt><dd>126</dd></div><div><dt>Saved whiteboards</dt><dd>18</dd></div><div><dt>Assignments submitted</dt><dd>4</dd></div></dl>
-          </aside>
         </div>
+
+        <section className="student-progress-overview dashboard-panel stack-lg" id="progress" aria-labelledby="student-progress-heading">
+          <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Progress overview</p><h2 id="student-progress-heading">Two clear ways to measure your learning</h2></div><p className="muted">Course lessons and independent question-bank work are tracked separately.</p></div>
+          <div className="student-progress-grid">
+            <article className="student-progress-summary">
+              <div><p className="student-dashboard-kicker">Course progress</p><strong className="student-progress-number">31%</strong><span>{courseName} lessons complete</span></div>
+              <div className="student-progress-ring" style={{ "--student-progress": "112deg" } as CSSProperties}><span>31%</span></div>
+              <dl><div><dt>Lessons completed</dt><dd>67</dd></div><div><dt>Lesson practice completed</dt><dd>54</dd></div><div><dt>Current topic</dt><dd>Calculus</dd></div></dl>
+              <Link className="text-link" href={courseReviewHref}>View course progress →</Link>
+            </article>
+            <article className="student-progress-summary">
+              <div><p className="student-dashboard-kicker">Question bank progress</p><strong className="student-progress-number">24%</strong><span>{courseCode} independent questions complete</span></div>
+              <div className="student-progress-ring" style={{ "--student-progress": "86deg" } as CSSProperties}><span>24%</span></div>
+              <dl><div><dt>Questions completed</dt><dd>126</dd></div><div><dt>Saved whiteboards</dt><dd>18</dd></div><div><dt>Assignments submitted</dt><dd>4</dd></div></dl>
+              <Link className="text-link" href={questionBankHref}>View question bank progress →</Link>
+            </article>
+          </div>
+        </section>
 
         <section className="platform-review-study-grid">
           <article className="platform-review-study-card is-course"><span className="platform-review-card-label">Continue your course</span><h2>{courseName}</h2><p>Pick up with the next video lesson, then use the attached lesson practice.</p><div className="platform-review-meter"><i style={{ width: "31%" }} /></div><Link className="button" href={courseReviewHref}>Open course <span aria-hidden="true">→</span></Link></article>

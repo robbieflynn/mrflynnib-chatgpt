@@ -4,7 +4,7 @@ import videoAccess from "@/data/course-video-access.json";
 import { getPlatformAccess } from "@/lib/platform-server";
 import { getCourseProduct } from "@/lib/platform-products";
 
-type VideoCourse = { lessons: string[]; samples: string[]; pastPapers: string[] };
+type VideoCourse = { lessons: string[]; samples: string[]; pastPapers: string[]; freePastPapers?: string[] };
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -14,7 +14,9 @@ export async function GET(request: Request) {
   const course = getCourseProduct(courseId);
   const map = (videoAccess.courses as Record<string, VideoCourse>)[courseId];
   if (!course || !map || !map[kind].includes(videoId)) return NextResponse.json({ error: "Video not found" }, { status: 404 });
-  const isSample = kind === "lessons" && map.samples.includes(videoId);
+  const isSample = kind === "lessons"
+    ? map.samples.includes(videoId)
+    : Boolean(map.freePastPapers?.includes(videoId));
   if (!isSample) {
     const session = await getPlatformAccess();
     if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
