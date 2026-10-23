@@ -209,12 +209,16 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     request_uuid: requestId,
     response_payload: response,
   });
+  const reliableResult = Array.isArray(data) ? data[0] as { is_correct?: boolean | null; result?: string | null } : null;
 
-  if (error && multipartPartKey && /complete every part/i.test(error.message || "")) {
+  if (multipartPartKey && (
+    (error && /complete every part/i.test(error.message || ""))
+    || (!error && reliableResult?.result === "locked")
+  )) {
     // Some live databases still have the original whole-question version of
-    // submit_assignment_response. The dedicated part RPC is the compatible
-    // path installed with multipart assignments, so use it until every live
-    // database has the updated reliable wrapper below.
+    // submit_assignment_response. Once any earlier part reaches two attempts,
+    // that legacy function can incorrectly return "locked" for every remaining
+    // part. The dedicated part RPC checks only the requested part.
     const { data: partData, error: partError } = await supabase.rpc("submit_assignment_part_response", {
       assignment_uuid: id,
       question_key: questionId,
@@ -253,8 +257,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     }, { status: isPermanent ? 400 : 503 });
   }
 
-  const result = Array.isArray(data) ? data[0] as { is_correct?: boolean | null; result?: string | null } : null;
-  return NextResponse.json({ isCorrect: result?.is_correct ?? null, result: result?.result ?? null }, {
+  return NextResponse.json({ isCorrect: reliableResult?.is_correct ?? null, result: reliableResult?.result ?? null }, {
     headers: { "Cache-Control": "no-store, max-age=0" },
   });
 }
