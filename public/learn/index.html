@@ -198,7 +198,7 @@
                   <div>
                     <p class="eyebrow">Lesson practice</p>
                     <h3 id="lessonPracticeTitle">Practice this lesson</h3>
-                    <p>These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.</p>
+                    <p id="lessonPracticeCopy">These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.</p>
                   </div>
                   <div class="lesson-practice-actions">
                     <span class="practice-count" id="practiceCount">Practice questions</span>
@@ -300,11 +300,21 @@
       <a class="primary-button full" href="mailto:contact@mrflynnib.com">Email contact@mrflynnib.com</a>
     </dialog>
 
+    <dialog class="prototype-dialog small plus-upgrade-dialog" id="plusUpgradeDialog">
+      <button class="dialog-close" id="closePlusUpgrade" type="button" aria-label="Close upgrade message">×</button>
+      <span class="plus-mark" aria-hidden="true">+</span>
+      <p class="eyebrow">Mr Flynn IB Plus</p>
+      <h2>Unlock the complete lesson.</h2>
+      <p>The lesson structure and practice questions are free to preview. Plus unlocks the video, mark scheme, worked solution, whiteboard and lesson completion.</p>
+      <a class="primary-button full" id="plusUpgradeLink" href="/account/access">See Plus access</a>
+      <button class="dialog-secondary-button" id="dismissPlusUpgrade" type="button">Keep browsing</button>
+    </dialog>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="library-data.js"></script>
     <script src="igcse-library-data.js"></script>
     <script src="past-paper-data.js"></script>
     <script src="practice-data.js?v=20261021-9"></script>
-    <script src="app.js?v=20261023-2"></script>
+    <script src="app.js?v=20261024-1"></script>
   </body>
 </html>

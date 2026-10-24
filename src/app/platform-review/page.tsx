@@ -125,7 +125,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <details className="join-class-panel"><summary>Join another class<span aria-hidden="true">+</span></summary><div className="join-class-form"><label className="field"><span>Class code</span><input aria-label="Example class code" placeholder="ABC1234" readOnly /></label><button className="button button-small" type="button">Join class</button></div></details>
         </section>
 
-        <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for the complete course?</h2><p>Your complete question bank, classes and assignments stay free. Upgrade only when you want every course lesson, its attached practice and the full past-paper solution library.</p></div><Link className="button button-secondary" href={`${isIgcse ? "/igcse" : ""}/account/access`}>Compare course access</Link></section>
+        <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your complete question bank, classes and assignments stay free. Plus unlocks every course video, mark scheme, worked solution, whiteboard and the full past-paper solution library.</p></div><Link className="button button-secondary" href={`${isIgcse ? "/igcse" : ""}/account/access`}>See Plus access</Link></section>
       </Container>
     </section>
   </>;

@@ -195,9 +195,18 @@ body.practice-expanded::before { content: ""; position: fixed; z-index: 119; ins
   .prototype-dialog { padding: 34px 23px 25px; }
 }
 
-.lesson-item.is-locked { opacity: .62; }
-.lesson-item.is-locked .lesson-state { background: #f0f3f5; color: #647384; }
-.lesson-item.is-locked small { color: #65778a; font-weight: 800; }
+.lesson-item.is-locked { opacity: 1; }
+.lesson-item.is-locked .lesson-state { border-color: #cfc5ef; background: #f0ecff; color: #5b46ac; font-size: 12px; font-weight: 900; }
+.lesson-item.is-locked small { color: #6656a5; font-weight: 800; }
+.complete-button.is-plus-locked { border-color: #cfc5ef; background: #f5f2ff; color: #5944aa; }
+.complete-button.is-plus-locked .checkmark { border-color: #9a89d8; background: #6550b9; color: #fff; }
+.video-loading.is-plus-locked { padding: 28px; text-align: center; pointer-events: auto; }
+.video-loading.is-plus-locked > span { width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.1); color: #fff; font-size: 25px; font-weight: 700; animation: none; }
+.video-loading.is-plus-locked strong { color: #fff; font-size: clamp(16px, 2vw, 22px); }
+.video-loading.is-plus-locked p { max-width: 380px; margin: 0; color: #bdd3e5; font-size: 11px; line-height: 1.5; }
+.plus-upgrade-dialog .eyebrow { margin: 15px 0 8px; }
+.plus-mark { width: 54px; height: 54px; display: grid; place-items: center; margin: 0 auto; border-radius: 18px; background: linear-gradient(145deg, #6752bd, #3c2d83); color: #fff; box-shadow: 0 12px 25px rgba(74,56,155,.24); font-size: 30px; font-weight: 700; }
+.dialog-secondary-button { margin-top: 13px; padding: 8px 12px; border: 0; background: transparent; color: var(--muted); font-size: 9px; font-weight: 800; cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; transition-duration: .001ms !important; }

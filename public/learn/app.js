@@ -558,13 +558,26 @@ function renderCourse() {
   renderLessonList(document.getElementById("lessonSearch").value);
 }
 
-async function loadProtectedVideo(frame, loading, videoId, kind = "lesson") {
-  if (reviewerMode && kind === "lesson" && !isSampleLesson({ id: videoId })) {
+function plusAccessHref() {
+  const base = reviewCurriculum === "igcse" ? "/igcse/account/access" : "/account/access";
+  return `${base}?course=${encodeURIComponent(currentCourseId)}`;
+}
+
+function showPlusPrompt() {
+  const dialog = document.getElementById("plusUpgradeDialog");
+  document.getElementById("plusUpgradeLink").href = plusAccessHref();
+  if (!dialog.open) dialog.showModal();
+}
+
+async function loadProtectedVideo(frame, loading, videoId, kind = "lesson", locked = false) {
+  if (kind === "lesson" && locked) {
     frame.removeAttribute("src");
     loading.classList.remove("is-hidden");
-    loading.innerHTML = `<p>This lesson is visible in the catalogue, but its video is part of the complete course.</p><a class="primary-button" href="${reviewCurriculum === "igcse" ? "/igcse/account/access" : "/account/access"}?course=${encodeURIComponent(currentCourseId)}">View course access</a>`;
+    loading.classList.add("is-plus-locked");
+    loading.innerHTML = `<span aria-hidden="true">+</span><strong>Unlock this video with Mr Flynn IB Plus</strong><p>You can still preview the lesson questions below.</p><button class="primary-button" type="button" data-plus-upgrade>See Plus access</button>`;
     return;
   }
+  loading.classList.remove("is-plus-locked");
   loading.innerHTML = `<span></span><p>${kind === "past-paper" ? "Loading the worked solution…" : "Loading your lesson…"}</p>`;
   try {
     const response = await fetch(`/api/platform/video?course=${encodeURIComponent(currentCourseId)}&video=${encodeURIComponent(videoId)}&kind=${kind === "past-paper" ? "past-paper" : "lesson"}`);
@@ -582,10 +595,7 @@ async function loadProtectedVideo(frame, loading, videoId, kind = "lesson") {
 }
 
 function renderLesson(lesson) {
-  if (!lessonIsAvailable(lesson)) {
-    showToast("This lesson is included with full course access");
-    return;
-  }
+  const locked = !lessonIsAvailable(lesson);
   currentLessonId = lesson.id;
   currentTopic = lesson.topic;
   state.lastCourse = currentCourseId;
@@ -599,19 +609,22 @@ function renderLesson(lesson) {
   document.getElementById("metaCourse").textContent = currentCourse.code;
   document.getElementById("metaTopic").textContent = `${lesson.topic} · ${topicName(currentCourse, lesson.topic)}`;
   document.getElementById("metaDuration").textContent = formatDuration(lesson.seconds);
-  renderLessonPractice(lesson);
+  renderLessonPractice(lesson, locked);
   const completeButton = document.getElementById("completeButton");
-  completeButton.classList.toggle("is-complete", complete);
-  completeButton.lastElementChild.textContent = complete ? "Completed" : "Mark complete";
-  const navigationLessons = currentCourse.lessons.filter((candidate) => lessonIsAvailable(candidate));
+  completeButton.classList.toggle("is-complete", !locked && complete);
+  completeButton.classList.toggle("is-plus-locked", locked);
+  completeButton.dataset.plusLocked = locked ? "true" : "false";
+  completeButton.firstElementChild.textContent = locked ? "+" : "✓";
+  completeButton.lastElementChild.textContent = locked ? "Unlock with Plus" : complete ? "Completed" : "Mark complete";
+  const navigationLessons = currentCourse.lessons;
   const navigationIndex = navigationLessons.findIndex((candidate) => candidate.id === lesson.id);
   document.getElementById("previousLesson").disabled = navigationIndex <= 0;
   document.getElementById("nextLesson").disabled = navigationIndex >= navigationLessons.length - 1;
   const frame = document.getElementById("videoFrame");
-  void loadProtectedVideo(frame, document.getElementById("videoLoading"), lesson.id);
+  void loadProtectedVideo(frame, document.getElementById("videoLoading"), lesson.id, "lesson", locked);
 }
 
-function renderLessonPractice(lesson) {
+function renderLessonPractice(lesson, locked = false) {
   const panel = document.getElementById("lessonPractice");
   const practice = practiceLibrary?.lessons?.[lesson.id];
   panel.hidden = !practice;
@@ -622,6 +635,9 @@ function renderLessonPractice(lesson) {
 
   const questionCount = practice.questionIds.length;
   document.getElementById("practiceCount").textContent = `${questionCount} question${questionCount === 1 ? "" : "s"}`;
+  document.getElementById("lessonPracticeCopy").textContent = locked
+    ? "Read the lesson questions here. Mr Flynn IB Plus unlocks the mark schemes, worked solutions, whiteboards and completion tracking."
+    : "These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.";
 
   const frame = document.getElementById("practiceFrame");
   const bankFile = practice.bankPath || "ib-bank.html";
@@ -663,6 +679,7 @@ function renderLessonPractice(lesson) {
     url.searchParams.set("difficulties", JSON.stringify(practice.questionDifficulties));
   }
   url.searchParams.set("solutions", "1");
+  if (locked) url.searchParams.set("plusPreview", "1");
   if (frame.src !== url.href) {
     document.getElementById("practiceFrameWrap").style.height = "660px";
     frame.src = url.href;
@@ -712,9 +729,9 @@ function renderLessonList(query = "") {
     const complete = state.completed.includes(lesson.id);
     const practice = practiceLibrary?.lessons?.[lesson.id];
     const locked = !lessonIsAvailable(lesson);
-    return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? "Locked lesson: " : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
-      <span class="lesson-state">${locked ? "⌑" : complete ? "✓" : "▶"}</span>
-      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? "Complete course" : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Free lesson" : ""}`}</small></span>
+    return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? "Preview Plus lesson: " : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
+      <span class="lesson-state">${locked ? "+" : complete ? "✓" : "▶"}</span>
+      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? `${formatDuration(lesson.seconds)}${practice ? " · Practice preview" : ""} · Plus` : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Free lesson" : ""}`}</small></span>
     </button>`;
   }).join("");
 }
@@ -733,6 +750,11 @@ window.addEventListener("message", async (event) => {
 
   if (message.type === "mrflynnib-question-bank-ready") {
     sendPracticeAccountState(event.source);
+    return;
+  }
+
+  if (message.type === "mrflynnib-plus-required") {
+    showPlusPrompt();
     return;
   }
 
@@ -815,7 +837,7 @@ window.addEventListener("message", async (event) => {
 });
 
 function moveLesson(direction) {
-  const navigationLessons = currentCourse.lessons.filter((lesson) => lessonIsAvailable(lesson));
+  const navigationLessons = currentCourse.lessons;
   const currentIndex = navigationLessons.findIndex((lesson) => lesson.id === currentLessonId);
   const next = navigationLessons[currentIndex + direction];
   if (!next) return;
@@ -826,6 +848,10 @@ function moveLesson(direction) {
 }
 
 function toggleComplete() {
+  if (document.getElementById("completeButton").dataset.plusLocked === "true") {
+    showPlusPrompt();
+    return;
+  }
   if (state.completed.includes(currentLessonId)) {
     state.completed = state.completed.filter((id) => id !== currentLessonId);
     showToast("Lesson marked as not complete");
@@ -997,6 +1023,13 @@ function renderPastPapers() {
 }
 
 document.addEventListener("click", (event) => {
+  const plusButton = event.target.closest("[data-plus-upgrade]");
+  if (plusButton) {
+    event.preventDefault();
+    showPlusPrompt();
+    return;
+  }
+
   const viewButton = event.target.closest("[data-view]");
   if (viewButton) setView(viewButton.dataset.view);
 
@@ -1095,6 +1128,9 @@ document.addEventListener("click", (event) => {
 const helpDialog = document.getElementById("helpDialog");
 document.getElementById("helpButton").addEventListener("click", () => helpDialog.showModal());
 document.getElementById("closeHelp").addEventListener("click", () => helpDialog.close());
+const plusUpgradeDialog = document.getElementById("plusUpgradeDialog");
+document.getElementById("closePlusUpgrade").addEventListener("click", () => plusUpgradeDialog.close());
+document.getElementById("dismissPlusUpgrade").addEventListener("click", () => plusUpgradeDialog.close());
 
 document.getElementById("signOut").addEventListener("click", async () => {
   await fetch("/api/platform/sign-out", { method: "POST" });
