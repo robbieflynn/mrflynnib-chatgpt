@@ -2656,6 +2656,30 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-platform-nav-v2 .is-assignments .dashboard-icon { background: #d38218; }
 .student-platform-nav-v2 .is-progress .dashboard-icon { background: #2b8a6a; color: white; }
 .student-dashboard-igcse .student-platform-nav-v2 .dashboard-icon { background: var(--igcse-red-dark); }
+
+/* The learning walkthrough uses one calm blue/purple system for both curricula.
+   IGCSE remains explicit in the course copy without making the student UI feel alarming. */
+.platform-review-bar.is-igcse.is-student { border-bottom-color: #c8dded; background: #edf7ff; }
+.platform-review-bar.is-igcse.is-student nav a[aria-current="page"] { background: var(--navy); }
+.platform-review-student-hero.student-dashboard-hero-igcse { background: radial-gradient(circle at 75% 10%, rgba(42,126,187,.38), transparent 30%), #071733; }
+.platform-review-student-hero.student-dashboard-hero-igcse .dashboard-role-label { color: #8dcfff; }
+.platform-review-student-home.student-dashboard-igcse { --dashboard-accent: var(--teal); --dashboard-accent-dark: var(--teal-dark); --dashboard-accent-soft: var(--sky); }
+.platform-review-student-home.student-dashboard-igcse .button { background: var(--teal); box-shadow: 0 10px 30px rgba(32,123,151,.16); }
+.platform-review-student-home.student-dashboard-igcse .button:hover { background: var(--teal-dark); }
+.platform-review-student-home.student-dashboard-igcse .student-focus-primary { background: linear-gradient(138deg, #174f98 0%, #0b2148 72%); box-shadow: 0 20px 46px rgba(18,54,105,.17); }
+.platform-review-student-home.student-dashboard-igcse .student-focus-label { color: #93cfff; }
+.platform-review-student-home.student-dashboard-igcse .student-focus-button { border-color: white; background: white; color: #113c73; box-shadow: none; }
+.platform-review-student-home.student-dashboard-igcse .student-focus-button:hover { border-color: white; background: #edf6ff; color: #0a2b58; }
+.platform-review-student-home.student-dashboard-igcse .student-continue-card { background: linear-gradient(145deg, #f2eeff, #e8f1ff); }
+.platform-review-student-home.student-dashboard-igcse .student-continue-copy .student-focus-label { color: #6753ad; }
+.platform-review-student-home.student-dashboard-igcse .student-inline-action { color: #514096; }
+.platform-review-student-home.student-dashboard-igcse .student-inline-action:hover { color: #2e2468; }
+.platform-review-student-home.student-dashboard-igcse .student-continue-symbol { color: #514096; }
+.platform-review-student-home.student-dashboard-igcse .student-continue-meter i b { background: linear-gradient(90deg, #6e57c4, #9888df); }
+.platform-review-student-home.student-dashboard-igcse .student-platform-nav-v2 .is-course .dashboard-icon { background: #6a54b8; }
+.platform-review-student-home.student-dashboard-igcse .student-platform-nav-v2 .is-question-bank .dashboard-icon { background: #267fbd; }
+.platform-review-student-home.student-dashboard-igcse .student-platform-nav-v2 .is-assignments .dashboard-icon { background: #d38218; }
+.platform-review-student-home.student-dashboard-igcse .student-platform-nav-v2 .is-progress .dashboard-icon { background: #2b8a6a; }
 .student-home-section { margin-top: .35rem; padding: 2.15rem 0 0; border: 0; border-top: 1px solid rgba(80,97,117,.15); background: transparent; box-shadow: none; scroll-margin-top: 6rem; }
 .student-progress-overview { margin-top: .35rem; }
 .student-section-link { align-self: end; justify-self: end; color: var(--dashboard-accent-dark); font-size: .76rem; font-weight: 900; }

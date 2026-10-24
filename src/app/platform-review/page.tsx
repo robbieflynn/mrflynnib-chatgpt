@@ -26,7 +26,7 @@ function reviewHref(curriculum: "ib" | "igcse", role: "student" | "teacher", scr
 
 function ReviewBar({ curriculum, role }: { curriculum: "ib" | "igcse"; role: "student" | "teacher" }) {
   return (
-    <div className={`platform-review-bar ${curriculum === "igcse" ? "is-igcse" : ""}`}>
+    <div className={`platform-review-bar ${curriculum === "igcse" ? "is-igcse" : ""} ${role === "student" ? "is-student" : "is-teacher"}`}>
       <Container className="platform-review-bar-inner">
         <span><strong>Private platform walkthrough</strong><small>Example data only</small></span>
         <nav aria-label="Choose a walkthrough">
@@ -54,7 +54,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
   const assignmentHref = reviewHref(curriculum, "student", "assignment");
 
   return <>
-    <section className={`dashboard-hero student-dashboard-hero student-home-v2-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
+    <section className={`dashboard-hero student-dashboard-hero student-home-v2-hero platform-review-student-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
       <Container className="dashboard-hero-shell">
         <div className="dashboard-account-row">
           <div className="platform-access-summary"><span>Free account</span><small>Full question bank and classroom access</small><Link href={isIgcse ? "/igcse/courses" : "/account/access"}>{isIgcse ? "Open course" : "Explore course access"}</Link></div>
@@ -66,7 +66,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
         </div>
       </Container>
     </section>
-    <section className={`student-dashboard student-home-v2 section-tight ${isIgcse ? "student-dashboard-igcse" : ""}`}>
+    <section className={`student-dashboard student-home-v2 platform-review-student-home section-tight ${isIgcse ? "student-dashboard-igcse" : ""}`}>
       <Container className="stack-2xl">
         <section className="student-focus-grid" aria-labelledby="student-focus-heading">
           <article className="student-focus-primary">
