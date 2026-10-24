@@ -81,7 +81,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       : isPlusJourney
         ? `${plusCourse ? `${plusCourse.shortTitle} selected. ` : ""}Your account keeps your course access, lesson progress and question-bank work together.`
         : isSignUpJourney
-          ? "Save question-bank progress, whiteboards, classes and assignments without paying for a course."
+          ? "Choose how you want to start, then keep your question-bank progress, whiteboards, classes and course learning together."
           : "Sign in to continue your courses, question bank, classes and saved work.";
     return (
       <>
