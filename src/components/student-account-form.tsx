@@ -189,7 +189,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
                 <legend>Which course are you studying?</legend>
                 <p>{wantsPlus
                   ? "Choose the course you want to unlock. Secure payment follows after your account is confirmed."
-                  : "This personalises your learning home. You can upgrade the same account later if you choose."}</p>
+                  : "Choose your course so your learning home opens in the right place."}</p>
                 <div className="account-course-options is-single">
                   {ibCourseChoices.map((course) => <label className={studentCourse === course.id ? "is-selected" : ""} key={course.id}>
                     <input checked={studentCourse === course.id} name="studentCourse" onChange={() => { setStudentCourse(course.id); setError(null); }} required type="radio" value={course.id} />
