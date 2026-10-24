@@ -251,6 +251,20 @@ textarea { min-height: 130px; resize: vertical; }
 .account-type-options input { width: 1rem; height: 1rem; margin-top: .2rem; }
 .account-type-options span { display: grid; gap: .1rem; }
 .account-type-options small { color: var(--muted); font-size: .75rem; font-weight: 500; line-height: 1.35; }
+.account-access-field { min-width: 0; margin: 0; padding: 1rem; border: 1px solid #d8e1e6; border-radius: .95rem; background: #f8fafb; }
+.account-access-field legend { padding: 0 .25rem; color: var(--navy); font-size: .92rem; font-weight: 900; }
+.account-access-field > p { margin: -.1rem 0 .75rem; color: var(--muted); font-size: .74rem; line-height: 1.45; }
+.account-access-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .6rem; }
+.account-access-options label { min-width: 0; padding: .85rem; display: grid; grid-template-columns: auto minmax(0,1fr); grid-template-areas: "radio copy" "price price"; align-items: start; gap: .55rem; border: 1px solid #cbd5dc; border-radius: .8rem; background: white; cursor: pointer; }
+.account-access-options label.is-selected { border-color: var(--blue); background: #edf7ff; box-shadow: 0 0 0 2px rgba(35,127,202,.09); }
+.account-access-options label.is-selected.is-plus { border-color: #6b4fc8; background: #f3f0ff; box-shadow: 0 0 0 2px rgba(107,79,200,.1); }
+.account-access-options input { grid-area: radio; width: 1rem; height: 1rem; margin-top: .18rem; }
+.account-access-options span { grid-area: copy; min-width: 0; display: grid; gap: .12rem; }
+.account-access-options strong { color: var(--navy); font-size: .82rem; }
+.account-access-options small { color: var(--muted); font-size: .67rem; font-weight: 550; line-height: 1.4; }
+.account-access-options b { grid-area: price; justify-self: end; color: var(--blue); font-size: .76rem; }
+.account-access-options .is-plus b { color: #6248b5; }
+.account-access-note { display: block; margin-top: .7rem; color: var(--muted); font-size: .7rem; font-weight: 650; line-height: 1.45; }
 .account-course-field { min-width: 0; margin: 0; padding: 1rem; border: 1px solid #d8e1e6; border-radius: .95rem; background: #f8fafb; }
 .account-course-field legend { padding: 0 .25rem; color: var(--navy); font-size: .92rem; font-weight: 900; }
 .account-course-field > p { margin: -.1rem 0 .75rem; color: var(--muted); font-size: .74rem; line-height: 1.45; }
@@ -795,22 +809,15 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-dashboard-hero .dashboard-hero-layout { min-height: 118px; }
 .student-dashboard-hero .dashboard-hero-copy { gap: .45rem; }
 .student-dashboard-hero .dashboard-hero-copy h1 { max-width: 30ch; }
-.student-dashboard-loading-hero .dashboard-hero-shell { min-height: 184px; align-content: center; }
-.student-dashboard-loading-copy { width: min(100%, 620px); display: grid; gap: .8rem; }
-.student-dashboard-loading-copy span, .student-dashboard-loading-copy strong, .student-dashboard-loading-copy i, .student-dashboard-loading-card span, .student-dashboard-loading-card strong, .student-dashboard-loading-card i { display: block; overflow: hidden; border-radius: 999px; background: linear-gradient(90deg, rgba(255,255,255,.11), rgba(255,255,255,.22), rgba(255,255,255,.11)); background-size: 220% 100%; animation: dashboard-loading-shimmer 1.2s ease-in-out infinite; }
-.student-dashboard-loading-copy span { width: 105px; height: 11px; }
-.student-dashboard-loading-copy strong { width: min(82%, 480px); height: 40px; }
-.student-dashboard-loading-copy i { width: min(58%, 340px); height: 14px; }
-.student-dashboard-loading-label { margin: 0; color: #546270; font-size: .85rem; font-weight: 800; }
-.student-dashboard-loading-card { min-height: 300px; padding: clamp(1.4rem, 3vw, 2.2rem); display: grid; align-content: start; gap: 1rem; border-radius: 1.35rem; background: linear-gradient(135deg, #174f98, #0b2148 68%); box-shadow: 0 18px 48px rgba(11,33,72,.12); }
-.student-dashboard-loading-card.is-summary { background: white; border: 1px solid #dce2e5; box-shadow: 0 10px 30px rgba(11,21,48,.055); }
-.student-dashboard-loading-card span { width: 88px; height: 11px; }
-.student-dashboard-loading-card strong { width: 62%; height: 36px; }
-.student-dashboard-loading-card i { width: 78%; height: 13px; }
-.student-dashboard-loading-card i:last-child { width: 48%; }
-.student-dashboard-loading-card.is-summary span, .student-dashboard-loading-card.is-summary strong, .student-dashboard-loading-card.is-summary i { background: linear-gradient(90deg, #eef1f3, #dde4e8, #eef1f3); background-size: 220% 100%; }
+.account-route-loading { min-height: 62vh; padding: clamp(5rem,12vw,9rem) 0; background: linear-gradient(180deg,#f7fafc,#fbfaf6); }
+.account-route-loading-card { min-height: 260px; padding: clamp(1.5rem,4vw,2.4rem); display: grid; align-content: center; gap: 1rem; border: 1px solid #e2e8eb; border-radius: 1.35rem; background: rgba(255,255,255,.82); box-shadow: 0 18px 55px rgba(11,21,48,.045); }
+.account-route-loading-card span, .account-route-loading-card strong, .account-route-loading-card i { display: block; overflow: hidden; border-radius: 999px; background: linear-gradient(90deg,#eef2f4,#f7f9fa,#eef2f4); background-size: 220% 100%; animation: dashboard-loading-shimmer 1.2s ease-in-out infinite; }
+.account-route-loading-card span { width: 84px; height: 10px; }
+.account-route-loading-card strong { width: min(72%,420px); height: 32px; }
+.account-route-loading-card i { width: min(90%,540px); height: 12px; }
+.account-route-loading-card i:last-child { width: min(58%,340px); }
 @keyframes dashboard-loading-shimmer { to { background-position: -220% 0; } }
-@media (prefers-reduced-motion: reduce) { .student-dashboard-loading-copy span, .student-dashboard-loading-copy strong, .student-dashboard-loading-copy i, .student-dashboard-loading-card span, .student-dashboard-loading-card strong, .student-dashboard-loading-card i { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .account-route-loading-card span, .account-route-loading-card strong, .account-route-loading-card i { animation: none; } }
 .teacher-dashboard-hero { background: radial-gradient(circle at 78% 12%, rgba(31,151,139,.2), transparent 30%), #091831; }
 .teacher-dashboard-hero-igcse { border-bottom-color: rgba(179,38,54,.6); }
 .student-next-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(290px, .65fr); gap: 1.25rem; align-items: stretch; }
@@ -2482,6 +2489,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 
 @media (max-width: 650px) {
   .student-platform-nav, .access-course-grid, .access-support-grid { grid-template-columns: 1fr; }
+  .account-access-options { grid-template-columns: 1fr; }
   .account-plan-switch { grid-template-columns: 1fr; }
   .account-plan-switch a { padding-right: 4.6rem; }
   .access-course-selector { grid-template-columns: 1fr 1fr; }

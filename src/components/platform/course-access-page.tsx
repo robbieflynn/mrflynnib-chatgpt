@@ -15,7 +15,11 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
   const accessPath = curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
   const learnPath = curriculum === "igcse" ? "/igcse/learn" : "/learn";
   const session = await getPlatformAccess();
-  if (!session.user || !session.curriculum) redirect(`${accountPath}?next=${encodeURIComponent(accessPath)}`);
+  if (!session.user || !session.curriculum) {
+    const accountQuery = new URLSearchParams({ next: accessPath });
+    if (curriculum === "ib") accountQuery.set("plan", "plus");
+    redirect(`${accountPath}?${accountQuery.toString()}`);
+  }
   if (session.profile?.role !== "admin" && session.curriculum !== curriculum) {
     redirect(`${accountPath}?error=${encodeURIComponent(`This is a separate ${curriculum === "igcse" ? "IGCSE" : "IB"} account area. Sign out of the other account first.`)}`);
   }

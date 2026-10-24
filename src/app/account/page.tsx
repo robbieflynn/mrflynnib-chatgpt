@@ -75,28 +75,21 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       ? isSignUpJourney ? "Create your teacher account" : "Teacher sign in"
       : isPlusJourney
         ? isSignUpJourney ? "Create your account for Plus" : "Sign in to continue to Plus"
-        : isSignUpJourney ? "Create your account" : "Welcome back";
+        : isSignUpJourney ? "Create your account" : "Your Mr Flynn IB account";
     const intro = isTeacherJourney
       ? "Sign in to manage classes and assignments, or create a teacher account to request approval."
       : isPlusJourney
         ? `${plusCourse ? `${plusCourse.shortTitle} selected. ` : ""}Your account keeps your course access, lesson progress and question-bank work together.`
         : isSignUpJourney
           ? "Choose how you want to start, then keep your question-bank progress, whiteboards, classes and course learning together."
-          : "Sign in to continue your courses, question bank, classes and saved work.";
+          : "Sign in to continue, or create a Free or Plus account from the same page.";
     return (
       <>
         <section className={`account-entry-hero ${isPlusJourney ? "is-plus" : ""}`}>
           <Container className="stack-sm"><Eyebrow>{isTeacherJourney ? "Teacher account" : isPlusJourney ? "Mr Flynn IB Plus" : "Mr Flynn IB account"}</Eyebrow><h1>{title}</h1><p>{intro}</p></Container>
         </section>
         <section className="section-tight account-entry-section"><Container className="stack-xl">
-          {!isTeacherJourney && isSignUpJourney ? <div className="account-start-choice stack-sm">
-            <div><Eyebrow>Choose how to start</Eyebrow><h2>Start free or choose Plus.</h2><p>It is the same account either way. You can upgrade later without another login or losing saved work.</p></div>
-            <nav className="account-plan-switch" aria-label="Choose free or Plus">
-              <Link aria-current={!isPlusJourney ? "page" : undefined} className={!isPlusJourney ? "is-selected" : ""} href="/account?mode=sign-up"><span>Start free</span><strong>Question bank, whiteboards, classes and assignments</strong><small>Free</small></Link>
-              <Link aria-current={isPlusJourney ? "page" : undefined} className={isPlusJourney ? "is-selected is-plus" : "is-plus"} href={plusCourse ? `/plus?course=${plusCourse.id}` : "/plus"}><span>Choose Plus</span><strong>Every lesson and its extra practice in one IB course</strong><small>$79 · 2 years</small></Link>
-            </nav>
-          </div> : null}
-          <div className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li></ul></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Selected access</Eyebrow><h2>{plusCourse ? plusCourse.shortTitle : "Mr Flynn IB Plus"}</h2><p>{plusCourse?.title || "Choose your course after creating your account."}</p><ul><li>Every video lesson in the selected course.</li><li>All extra practice attached to those lessons.</li><li>One payment with no automatic renewal.</li></ul><Link className="text-link" href="/learn?view=courses">Choose a different course</Link></aside> : <aside className="account-benefits stack"><h2>Your free learning account</h2><ul><li>Save completed question-bank questions.</li><li>Return to editable whiteboard working later.</li><li>Join classes and complete assignments.</li></ul></aside>}</div>
+          <div className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Teacher Plus is optional and follows approval.</li></ul></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Selected access</Eyebrow><h2>{plusCourse ? plusCourse.shortTitle : "Mr Flynn IB Plus"}</h2><p>{plusCourse?.title || "Choose your course after creating your account."}</p><ul><li>Student Plus unlocks one chosen IB course.</li><li>Teacher Plus unlocks all four IB courses after approval.</li><li>Both are one-off payments with no automatic renewal.</li></ul><Link className="text-link" href="/learn?view=courses">View the courses</Link></aside> : <aside className="account-benefits stack"><h2>One account, whichever access you choose</h2><ul><li>Start free and upgrade later without losing saved work.</li><li>Student Plus unlocks one complete IB course.</li><li>Teacher Plus unlocks all four courses after approval.</li></ul></aside>}</div>
         </Container></section>
       </>
     );

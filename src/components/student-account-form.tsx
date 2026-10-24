@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "sign-in" | "sign-up" | "reset" | "resend";
+type AccessChoice = "free" | "plus";
 
 const ibCourseChoices = [
   { id: "aa-hl", code: "AA HL", title: "Analysis & Approaches Higher Level" },
@@ -41,12 +42,14 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState<"student" | "teacher">(teacherJourney ? "teacher" : "student");
+  const [accessChoice, setAccessChoice] = useState<AccessChoice>(plusJourney ? "plus" : "free");
   const [studentCourse, setStudentCourse] = useState<IbCourseId | "">(isIbCourseId(requestedCourse) ? requestedCourse : "");
   const [teacherCourses, setTeacherCourses] = useState<IbCourseId[]>([]);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmationNextPath, setConfirmationNextPath] = useState(nextPath);
+  const wantsPlus = curriculum === "ib" && accessChoice === "plus";
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -99,13 +102,13 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         ? accountType === "teacher" ? teacherCourses : [studentCourse]
         : ["igcse"];
       const signUpNextPath = curriculum === "igcse"
-          ? "/account?qualification=igcse"
-          : plusJourney && accountType === "student" && studentCourse
+        ? "/account?qualification=igcse"
+        : accountType === "teacher"
+          ? "/teacher"
+          : wantsPlus && studentCourse
             ? `/account/access?course=${encodeURIComponent(studentCourse)}`
-            : requestedNext?.startsWith("/")
+            : requestedNext?.startsWith("/") && !requestedNext.startsWith("/teacher")
               ? requestedNext
-          : accountType === "teacher"
-            ? "/teacher"
             : `/account?course=${encodeURIComponent(studentCourse)}`;
       setConfirmationNextPath(signUpNextPath);
       const { data, error: signUpError } = await supabase.auth.signUp({
@@ -121,6 +124,8 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
             primary_course: accountType === "student" ? selectedCourses[0] : selectedCourses[0] || null,
             course_preferences: selectedCourses,
             teacher_courses: accountType === "teacher" ? selectedCourses : [],
+            access_choice: wantsPlus ? "plus" : "free",
+            requested_plan: wantsPlus ? accountType === "teacher" ? "teacher-plus" : "student-plus" : null,
           },
           emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(signUpNextPath)}`,
         },
@@ -133,7 +138,9 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       } else {
         setMode("resend");
         setMessage(accountType === "teacher"
-          ? "Check your email to confirm your account. Your teacher access request will then be sent for approval."
+          ? wantsPlus
+            ? "Check your email to confirm your account. Your teacher access request will then be sent for approval, and Teacher Plus will be available once approved."
+            : "Check your email to confirm your account. Your teacher access request will then be sent for approval."
           : "Check your email to confirm your account, then return here to sign in.");
       }
       return;
@@ -161,14 +168,26 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       <form className="stack" onSubmit={submit}>
         {mode === "sign-up" ? (
           <>
-            {!plusJourney ? <fieldset className="account-type-field"><legend>Create an account as</legend><div className="account-type-options">
+            <fieldset className="account-type-field"><legend>First, who is the account for?</legend><div className="account-type-options">
               <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => { setAccountType("student"); setError(null); }} type="radio" value="student" /><span><strong>Student</strong><small>Choose the one course you are studying.</small></span></label>
               <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => { setAccountType("teacher"); setError(null); }} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Choose every course you teach. Approval is required.</small></span></label>
-            </div></fieldset> : <p className="account-plus-form-note"><strong>Student Plus journey</strong><span>Create your account first. You will review the price and payment securely on the next screen.</span></p>}
+            </div></fieldset>
+            {curriculum === "ib" ? <fieldset className="account-access-field"><legend>Then, choose your access</legend><p>Free and Plus use the same account. You can upgrade later without losing any saved work.</p><div className="account-access-options">
+              <label className={accessChoice === "free" ? "is-selected" : ""}>
+                <input checked={accessChoice === "free"} name="accessChoice" onChange={() => { setAccessChoice("free"); setError(null); }} type="radio" value="free" />
+                <span><strong>Free account</strong><small>{accountType === "teacher" ? "Classes, assignments and Test Maker" : "Question bank, whiteboards, classes and assignments"}</small></span>
+                <b>Free</b>
+              </label>
+              <label className={accessChoice === "plus" ? "is-selected is-plus" : "is-plus"}>
+                <input checked={accessChoice === "plus"} name="accessChoice" onChange={() => { setAccessChoice("plus"); setError(null); }} type="radio" value="plus" />
+                <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "All four IB courses and their lesson practice" : "Every lesson and its extra practice in one IB course"}</small></span>
+                <b>{accountType === "teacher" ? "$99 · 1 year" : "$79 · 2 years"}</b>
+              </label>
+            </div>{wantsPlus ? <small className="account-access-note">No payment is taken when you create the account. {accountType === "teacher" ? "Teacher approval comes first, then you can activate Teacher Plus." : "Secure checkout follows after your email is confirmed."}</small> : null}</fieldset> : null}
             {curriculum === "ib" ? accountType === "student" ? (
               <fieldset className="account-course-field">
                 <legend>Which course are you studying?</legend>
-                <p>{plusJourney
+                <p>{wantsPlus
                   ? "Choose the course you want to unlock. Secure payment follows after your account is confirmed."
                   : "This personalises your learning home. You can upgrade the same account later if you choose."}</p>
                 <div className="account-course-options is-single">
@@ -219,12 +238,16 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         {error ? <p className="form-message form-error" role="alert">{error}</p> : null}
         {message ? <p className="form-message form-success" role="status">{message}</p> : null}
         <button className="button" type="submit" disabled={pending}>
-          {pending ? "Please wait…" : mode === "sign-up" ? plusJourney ? "Create account and continue to Plus" : "Create my free account" : mode === "reset" ? "Send reset link" : mode === "resend" ? "Resend confirmation email" : plusJourney ? "Sign in and continue" : "Sign in"}
+          {pending ? "Please wait…" : mode === "sign-up"
+            ? accountType === "teacher"
+              ? wantsPlus ? "Create teacher account and request Plus" : "Create my free teacher account"
+              : wantsPlus ? "Create account and continue to Plus" : "Create my free account"
+            : mode === "reset" ? "Send reset link" : mode === "resend" ? "Resend confirmation email" : plusJourney ? "Sign in and continue" : "Sign in"}
         </button>
       </form>
       {mode === "sign-in" ? <><button className="account-text-button" type="button" onClick={() => { setMode("resend"); setError(null); setMessage(null); }}>Didn&apos;t receive a confirmation email?</button><button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button></> : null}
       {mode === "reset" || mode === "resend" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
-      <p className="small muted">This is a separate {curriculum === "igcse" ? "IGCSE" : "IB"} account area. {plusJourney ? "Creating an account does not charge you or activate Plus; secure checkout follows after sign-in." : "Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval."} Creating an account does not subscribe you to marketing emails.</p>
+      <p className="small muted">This is a separate {curriculum === "igcse" ? "IGCSE" : "IB"} account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. "}Creating an account does not subscribe you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href="/terms">Terms of Use</Link> and acknowledge the <Link className="text-link" href="/privacy">Privacy Policy</Link>.</p>
     </div>
   );
