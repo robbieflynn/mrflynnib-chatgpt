@@ -428,6 +428,15 @@ function lessonIsAvailable(lesson) {
   return salesPreviewLessons().some((sample) => sample.id === lesson.id);
 }
 
+function defaultLessonForTopic(topicNumber) {
+  const topic = currentCourse.topics.find((item) => item.number === topicNumber);
+  if (!topic?.lessons.length) return null;
+  if (hasCompleteCourseAccess(currentCourse)) {
+    return topic.lessons.find((lesson) => !state.completed.includes(lesson.id)) || topic.lessons[0];
+  }
+  return salesPreviewLessons(currentCourse).find((lesson) => lesson.topic === topicNumber) || topic.lessons[0];
+}
+
 function showToast(message) {
   const toast = document.getElementById("toast");
   toast.textContent = message;
@@ -1039,8 +1048,8 @@ document.addEventListener("click", (event) => {
   const topicButton = event.target.closest("[data-topic]");
   if (topicButton) {
     currentTopic = Number(topicButton.dataset.topic);
-    const topic = currentCourse.topics.find((item) => item.number === currentTopic);
-    if (topic?.lessons.length) renderLesson(topic.lessons[0]);
+    const defaultLesson = defaultLessonForTopic(currentTopic);
+    if (defaultLesson) renderLesson(defaultLesson);
     document.getElementById("lessonSearch").value = "";
     renderTopicStrip();
     renderLessonList();
