@@ -32,6 +32,15 @@ const mainOffers = [
     cta: "View school options",
     className: "offer-card-school",
   },
+  {
+    number: "04",
+    label: "Personal support",
+    title: "Tutoring",
+    body: "Contact Mr Flynn IB directly to ask about individual IB Mathematics support.",
+    href: "/tutoring",
+    cta: "Ask about tutoring",
+    className: "offer-card-support",
+  },
 ] as const;
 
 const featuredTestimonials = testimonials.filter((testimonial) => testimonial.featured);
@@ -76,7 +85,7 @@ export default function HomePage() {
               Complete courses, thousands of practice questions and trusted support, built specifically for IB Mathematics.
             </p>
             <div className="cluster hero-actions">
-              <ButtonLink href="#offers">Start here</ButtonLink>
+              <ButtonLink href="/account?mode=sign-up">Start here</ButtonLink>
             </div>
           </div>
         </Container>
@@ -86,7 +95,8 @@ export default function HomePage() {
         <Container className="stack-xl">
           <div className="homepage-route-heading">
             <Eyebrow>Explore Mr Flynn IB</Eyebrow>
-            <div><h2>What would you like to do?</h2><p>Follow a complete course, practise independently or explore access for your school.</p></div>
+            <h2>What would you like to do?</h2>
+            <p>Follow a complete course, practise independently, explore access for your school or ask about individual support.</p>
           </div>
           <div className="offer-grid">
             {mainOffers.map((offer) => (

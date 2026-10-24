@@ -14,14 +14,15 @@ export function LogoMark() {
   );
 }
 
-export function LogoLockup({ priority = false, tagline = "Your home for IB Mathematics" }: { priority?: boolean; tagline?: string | false }) {
+export function LogoLockup({ priority = false }: { priority?: boolean }) {
   return (
-    <span className="brand-lockup" role="img" aria-label={tagline ? `Mr Flynn IB — ${tagline}` : "Mr Flynn IB"}>
-      <Image className="brand-lockup-mark" src="/images/mr-flynn-mark.png" width={600} height={532} alt="" aria-hidden="true" priority={priority} />
-      <span className="brand-lockup-copy">
-        <span className="brand-wordmark"><span>Mr.</span><b aria-hidden="true">+</b><span>Flynn IB</span></span>
-        {tagline ? <span className="brand-tagline">{tagline}</span> : null}
-      </span>
-    </span>
+    <Image
+      className="brand-lockup"
+      src="/images/mr-flynn-ib-lockup.png"
+      width={1400}
+      height={356}
+      alt="Mr Flynn IB: IB Mathematics video lessons, IA guidance and past paper solutions"
+      priority={priority}
+    />
   );
 }
