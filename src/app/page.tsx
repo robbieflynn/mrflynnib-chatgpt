@@ -7,27 +7,27 @@ import { testimonials } from "@/lib/testimonials";
 const mainOffers = [
   {
     number: "01",
-    label: "For students",
-    title: "Learn and practise",
-    body: "Use one learning home for video lessons, independent practice, assignments and progress.",
-    href: "/account?mode=sign-up",
-    cta: "Create a free account",
-    className: "offer-card-student",
+    label: "Mr Flynn IB Plus",
+    title: "Courses",
+    body: "Complete video courses for AA HL, AA SL, AI HL and AI SL, with extra practice inside the lessons.",
+    href: "/courses",
+    cta: "Explore the courses",
+    className: "offer-card-course",
   },
   {
     number: "02",
-    label: "For teachers",
-    title: "Teach and set work",
-    body: "Create classes, set assignments and build printable tests with the free teacher tools.",
-    href: "/account?next=/teacher&mode=sign-up",
-    cta: "Create a teacher account",
-    className: "offer-card-teacher",
+    label: "Free to use",
+    title: "Question bank",
+    body: "Thousands of IB Mathematics questions organised by course, topic and difficulty.",
+    href: "/question-bank",
+    cta: "Explore the question bank",
+    className: "offer-card-bank",
   },
   {
     number: "03",
-    label: "For schools",
-    title: "Support a department",
-    body: "Discuss course access for a cohort while teachers keep control of their own classes.",
+    label: "For departments",
+    title: "Schools",
+    body: "IB Mathematics course access and support for students, departments and schools.",
     href: "/schools",
     cta: "View school options",
     className: "offer-card-school",
@@ -84,51 +84,18 @@ export default function HomePage() {
         </svg>
         <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
-            <Eyebrow>One account for IB Mathematics</Eyebrow>
             <h1>
               <span className="hero-title-line">Your Home for</span>
               <span className="hero-title-line hero-title-accent">IB Mathematics.</span>
             </h1>
             <p className="home-hero-lede">
-              Learn the course, practise thousands of questions, complete assignments and track your progress in one clear learning space.
+              Complete courses, thousands of practice questions and trusted support, built specifically for IB Mathematics.
             </p>
             <div className="cluster hero-actions">
               <ButtonLink href="/account?mode=sign-up">Start free</ButtonLink>
-              <ButtonLink href="/account" secondary>Log in</ButtonLink>
+              <ButtonLink href="/courses" secondary>Explore courses</ButtonLink>
               <Link href="/go/ib-tutors" className="button tuition-button">One-to-One tuition <span aria-hidden="true">↗</span></Link>
             </div>
-            <div className="home-access-pills" aria-label="Current access">
-              <span><i aria-hidden="true">✓</i> Complete question bank free</span>
-              <span><i aria-hidden="true">✓</i> Teacher tools free</span>
-              <span><i aria-hidden="true">+</i> Plus for complete courses</span>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="home-platform-section" aria-labelledby="home-platform-title">
-        <Container className="home-platform-grid">
-          <div className="home-platform-copy stack-lg">
-            <Eyebrow>One connected platform</Eyebrow>
-            <h2 id="home-platform-title">Learn, practise and keep everything together.</h2>
-            <p className="lede">Move naturally between the course, independent practice and work from your teacher, without learning a second system or creating another login.</p>
-            <div className="home-platform-feature-list">
-              <article className="is-course"><span>PLUS</span><div><strong>Complete video courses</strong><p>Every topic taught clearly, with extra practice built into each lesson.</p></div></article>
-              <article className="is-bank"><span>FREE</span><div><strong>Complete question bank</strong><p>Filter by course, topic and difficulty, then continue where you left off.</p></div></article>
-              <article className="is-class"><span>FREE</span><div><strong>Classes and assignments</strong><p>Join a class, complete set work and keep teacher feedback in one place.</p></div></article>
-              <article className="is-progress"><span>FREE</span><div><strong>Meaningful progress</strong><p>See course learning and question-bank practice separately, so both remain useful.</p></div></article>
-            </div>
-          </div>
-          <div className="home-product-preview" aria-label="Preview of the student learning home">
-            <div className="home-preview-toolbar"><span><i aria-hidden="true">MF</i><strong>My learning</strong></span><small>Free account</small></div>
-            <div className="home-preview-welcome"><span>YOUR LEARNING HOME</span><h3>Welcome back</h3><p>Your course, practice and assignments in one place.</p></div>
-            <article className="home-preview-focus"><div><small>CONTINUE LEARNING</small><strong>Factor and remainder theorems</strong><span>Topic 2 · Functions</span></div><b aria-hidden="true">→</b></article>
-            <div className="home-preview-shortcuts">
-              <article className="is-course"><i aria-hidden="true">▰</i><span><strong>My course</strong><small>Continue your lesson</small></span></article>
-              <article className="is-bank"><i aria-hidden="true">▥</i><span><strong>Question bank</strong><small>All questions free</small></span></article>
-            </div>
-            <article className="home-preview-assignment"><span><small>ASSIGNMENT</small><strong>Functions practice</strong></span><em>Due tomorrow</em></article>
-            <p className="home-preview-note">Representative student-platform preview</p>
           </div>
         </Container>
       </section>
@@ -137,7 +104,7 @@ export default function HomePage() {
         <Container className="stack-xl">
           <div className="home-section-intro">
             <span className="home-section-number" aria-hidden="true">01</span>
-            <div><Eyebrow>Choose your route</Eyebrow><h2>Built for the way you use it.</h2><p>A clear starting point for students, teachers, schools and families looking for individual support.</p></div>
+            <div><Eyebrow>Courses, practice and support</Eyebrow><h2>Choose where to begin.</h2><p>Start with the course, practise independently, explore school access or find individual support.</p></div>
           </div>
           <div className="offer-grid">
             {mainOffers.map((offer) => (
@@ -148,21 +115,7 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
-        </Container>
-      </section>
-
-      <section className="home-access-section" aria-labelledby="home-access-title">
-        <Container className="home-access-panel">
-          <div className="home-access-heading stack">
-            <Eyebrow>Start free</Eyebrow>
-            <h2 id="home-access-title">Useful before you pay.</h2>
-            <p>The free account is a real learning tool. Upgrade only when you want the complete structured course.</p>
-          </div>
-          <div className="home-access-cards">
-            <article className="home-access-card is-free"><span>FREE ACCOUNT</span><h3>Practise and take part</h3><ul><li>Complete question bank</li><li>Classes and assignments</li><li>Saved progress across devices</li></ul></article>
-            <article className="home-access-card is-plus"><span>MR FLYNN IB PLUS</span><h3>Follow the complete course</h3><ul><li>Every video lesson</li><li>All extra practice inside lessons</li><li>Everything in the free account</li></ul></article>
-          </div>
-          <div className="home-access-actions"><ButtonLink href="/account?mode=sign-up">Create a free account</ButtonLink><ButtonLink href="/courses" secondary>Explore the courses</ButtonLink></div>
+          <Link className="home-teacher-note" href="/account?next=/teacher&mode=sign-up"><span><strong>For teachers</strong>Create classes, set assignments and build printable tests for free.</span><b>Create a teacher account <i aria-hidden="true">→</i></b></Link>
         </Container>
       </section>
 
