@@ -110,8 +110,16 @@ async function fulfilCheckout(admin: AdminClient, event: StripeEvent, session: S
     .select("status")
     .eq("checkout_session_id", sessionId)
     .maybeSingle();
-  if (previousPurchase?.status === "paid") {
-    return { ignored: false, payload: { checkout_session_id: sessionId, product_code: productCode, duplicate: true } };
+  if (["paid", "partially_refunded", "refunded"].includes(previousPurchase?.status || "")) {
+    return {
+      ignored: false,
+      payload: {
+        checkout_session_id: sessionId,
+        product_code: productCode,
+        duplicate: true,
+        purchase_status: previousPurchase?.status,
+      },
+    };
   }
 
   const now = new Date();
