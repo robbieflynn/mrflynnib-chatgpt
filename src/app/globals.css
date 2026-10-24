@@ -2506,8 +2506,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-platform-nav-v2 .is-assignments .dashboard-icon { background: #d38218; }
 .student-platform-nav-v2 .is-progress .dashboard-icon { background: #2b8a6a; color: white; }
 .student-dashboard-igcse .student-platform-nav-v2 .dashboard-icon { background: var(--igcse-red-dark); }
-.student-home-section { padding: 0; border: 0; background: transparent; box-shadow: none; scroll-margin-top: 6rem; }
-.student-progress-overview { margin-top: 1rem; padding-top: 1.2rem; border-top: 1px solid rgba(80,97,117,.12); }
+.student-home-section { margin-top: .35rem; padding: 2.15rem 0 0; border: 0; border-top: 1px solid rgba(80,97,117,.15); background: transparent; box-shadow: none; scroll-margin-top: 6rem; }
+.student-progress-overview { margin-top: .35rem; }
 .student-section-link { align-self: end; justify-self: end; color: var(--dashboard-accent-dark); font-size: .76rem; font-weight: 900; }
 .student-home-v2 .student-assignment-card { min-height: 88px; border: 0; border-left: 4px solid #cbd8df; box-shadow: 0 6px 20px rgba(18,38,61,.045); }
 .student-home-v2 .student-assignment-card.is-urgent { border-left-color: #e19b27; background: linear-gradient(90deg, #fffaf0, #fff 35%); }
@@ -2533,7 +2533,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-resource-card > b { color: var(--dashboard-accent-dark); }
 .student-resource-icon { width: 48px; height: 48px; display: grid; place-items: center; border-radius: .9rem; background: #ffe9e6; color: #ae453c; font-size: .82rem; font-weight: 950; }
 .student-resource-card.is-saved .student-resource-icon { background: #e7f7f1; color: #23765a; }
-.student-home-v2 .student-class-section { padding: 0; border: 0; background: transparent; box-shadow: none; }
+.student-home-v2 .student-class-section { padding: 2.15rem 0 0; border: 0; border-top: 1px solid rgba(80,97,117,.15); background: transparent; box-shadow: none; }
 .student-home-v2 .student-class-card { border: 0; box-shadow: 0 7px 24px rgba(18,38,61,.045); }
 .student-upgrade-v2 { padding: 1.15rem 1.3rem; border: 0; background: #eef2f5; box-shadow: none; }
 .student-upgrade-v2 .button-secondary { flex: 0 0 auto; background: white; color: var(--navy); box-shadow: none; }
