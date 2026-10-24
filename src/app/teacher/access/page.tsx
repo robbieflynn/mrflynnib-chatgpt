@@ -36,7 +36,7 @@ export default async function TeacherAccessPage({ searchParams }: { searchParams
         <h2>{teacherPlusProduct.title}</h2>
         <p>Your free teacher account still includes classes, assignments and the IB Test Maker. Teacher Plus adds the complete teaching and learning content for all four IB courses.</p>
         <ul className="teacher-plus-list"><li>AA HL and AA SL</li><li>AI HL and AI SL</li><li>Every video lesson and its extra practice</li></ul>
-        {active ? <div className="stack-sm"><p className="form-message form-success">Teacher Plus is active{active.expires_at ? ` until ${new Date(active.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : ""}.</p><Link className="button" href="/learn?view=courses">Open all courses</Link></div> : <CourseCheckoutButton productId={teacherPlusProduct.id} plans={teacherPlusProduct.plans.map(({ id, label, priceUsd }) => ({ id, label, priceUsd }))} />}
+        {active ? <div className="stack-sm"><p className="form-message form-success">Teacher Plus is active{active.expires_at ? ` until ${new Date(active.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : ""}.</p><Link className="button" href="/learn/index.html?curriculum=ib&amp;view=courses">Open all courses</Link></div> : <CourseCheckoutButton productId={teacherPlusProduct.id} plans={teacherPlusProduct.plans.map(({ id, label, priceUsd }) => ({ id, label, priceUsd }))} />}
       </article>
       <p className="small muted"><strong>Teacher approval is required.</strong> Teacher Plus is an optional content upgrade. It does not affect access to the free classroom tools.</p>
     </Container></section>

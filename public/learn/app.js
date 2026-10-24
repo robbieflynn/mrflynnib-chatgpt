@@ -1188,7 +1188,9 @@ function configureGuestExperience() {
       document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
       document.getElementById("accessLink").textContent = requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
       document.getElementById("accessLink").href = requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
-      document.querySelector(".avatar").textContent = "+";
+      document.getElementById("accessLink").classList.add("is-plus");
+      accountButton.classList.add("is-guest");
+      document.querySelector(".avatar").textContent = "";
       document.getElementById("accountName").textContent = "Log in";
       document.getElementById("accountRole").textContent = "Save your progress";
       document.getElementById("learningHomeLink").textContent = "Log in";
@@ -1241,9 +1243,11 @@ async function bootstrapAccount() {
     state.lastLesson = currentLessonId;
     saveState();
     document.querySelector(".avatar").textContent = platformAccount.user.initials;
+    accountButton.classList.remove("is-guest");
     document.getElementById("accountName").textContent = platformAccount.user.displayName;
     document.getElementById("accountRole").textContent = `${platformAccount.user.role === "admin" ? "Administrator" : platformAccount.user.role === "teacher" ? "Teacher" : "Student"} account`;
     document.getElementById("accessLink").textContent = platformAccount.access?.label || "Free account";
+    document.getElementById("accessLink").classList.toggle("is-plus", Boolean(platformAccount.access?.label?.includes("Plus")));
     document.getElementById("accessLink").href = platformAccount.links.access;
     document.getElementById("manageAccessLink").href = platformAccount.links.access;
     document.getElementById("learningHomeLink").href = platformAccount.links.account;
@@ -1260,28 +1264,39 @@ async function bootstrapAccount() {
 }
 
 async function initialize() {
-  await bootstrapAccount();
-  const enrolledCourse = courses[enrolledCourseId];
-  const visibleLessonCount = enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0);
-  document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
-  document.getElementById("summaryVideos").textContent = visibleLessonCount;
-  configurePreviewMode();
-  configureCurriculumExperience(platformAccount?.curriculum || reviewCurriculum || (enrolledCourseId === "igcse" ? "igcse" : "ib"));
-  renderDashboard();
-  renderCourseCards();
-  renderProgress();
-  if (reviewerMode) {
-    setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
-  } else if (requestedView === "courses") {
-    setView("courses");
-  } else if (validPreviewCourseId || requestedCourseId) {
-    const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
-    const requestedLesson = guestMode
-      ? salesPreviewLessons(enrolledCourse).find((lesson) => lesson.topic === requestedTopic) || salesPreviewLessons(enrolledCourse)[0]
-      : enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
-    openCourse(enrolledCourseId, requestedLesson?.id || currentLessonId);
+  try {
+    await bootstrapAccount();
+    const enrolledCourse = courses[enrolledCourseId];
+    const visibleLessonCount = enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0);
+    document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
+    document.getElementById("summaryVideos").textContent = visibleLessonCount;
+    configurePreviewMode();
+    configureCurriculumExperience(platformAccount?.curriculum || reviewCurriculum || (enrolledCourseId === "igcse" ? "igcse" : "ib"));
+    renderDashboard();
+    renderCourseCards();
+    renderProgress();
+    if (reviewerMode) {
+      setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
+    } else if (requestedView === "courses") {
+      setView("courses");
+    } else if (validPreviewCourseId || requestedCourseId) {
+      const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
+      const requestedLesson = guestMode
+        ? salesPreviewLessons(enrolledCourse).find((lesson) => lesson.topic === requestedTopic) || salesPreviewLessons(enrolledCourse)[0]
+        : enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
+      openCourse(enrolledCourseId, requestedLesson?.id || currentLessonId);
+    } else {
+      setView("dashboard");
+    }
+  } finally {
+    document.body.classList.remove("is-booting");
+    document.getElementById("learningBoot")?.setAttribute("hidden", "");
   }
 }
 
 window.addEventListener("online", () => void flushLessonProgress());
-void initialize();
+void initialize().catch(() => {
+  document.body.classList.remove("is-booting");
+  document.getElementById("learningBoot")?.setAttribute("hidden", "");
+  showToast("The course area could not be loaded. Please refresh and try again.");
+});

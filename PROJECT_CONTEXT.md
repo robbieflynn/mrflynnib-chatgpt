@@ -83,6 +83,8 @@ Keep the prospective-customer and existing-student journeys distinct. The main C
 
 On 24 October 2026, Rob superseded the separate public **Choose your course** page. Every principal public **Courses** link now opens the real native course catalogue rather than a Teachable-era intermediary. Signed-out visitors can inspect all four IB course structures, open any lesson and watch the curated free lessons; locked lessons remain visible and explain the Plus access boundary. Logging in is required for account-specific progress and paid access, not merely to browse the catalogue. Keep `/courses` as a compatibility redirect to this native catalogue so old bookmarks do not break.
 
+The principal Courses links must enter the final native catalogue URL directly, without briefly rendering the My learning dashboard or passing through an intermediate Next.js redirect. While the static course catalogue establishes the signed-in or guest state, use one quiet branded loading state and reveal only the requested view. In signed-out catalogue mode, the top-right control should plainly say **Log in**; do not use a circular plus symbol as a substitute for an account avatar. Reserve the purple Plus treatment for actual Plus access labels and upgrade actions.
+
 Do not duplicate Teachable's learning platform unless a later strategic decision provides a compelling reason.
 
 ### Book
