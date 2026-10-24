@@ -150,11 +150,8 @@ const practiceWhiteboardStore = "whiteboards";
 let state = loadState();
 let currentCourseId = enrolledCourseIds.includes(requestedCourseId) ? requestedCourseId : enrolledCourseIds.includes(state.lastCourse) ? state.lastCourse : enrolledCourseId;
 let currentCourse = courses[currentCourseId];
-const initialAvailableLessons = hasCompleteCourseAccess(currentCourse) ? currentCourse.lessons : salesPreviewLessons(currentCourse);
-let currentLessonId = initialAvailableLessons.some((lesson) => lesson.id === state.lastLesson)
-  ? state.lastLesson
-  : initialAvailableLessons[0]?.id || currentCourse.lessons[0]?.id;
-let currentTopic = currentCourse.lessons.find((lesson) => lesson.id === currentLessonId)?.topic || 1;
+let currentLessonId = null;
+let currentTopic = 1;
 let currentPastPaperCourse = pastPaperLibrary.courses?.[currentCourse.code] ? currentCourse.code : "AA HL";
 let currentPastPaperSession = "all";
 let currentPastPaperSetId = null;
@@ -404,6 +401,12 @@ const curatedFreeLessonIds = {
     "81b9c335-ac60-4ca7-88f8-0f26f696266b", "20b25248-b2b7-4f5b-b270-d68567b564d7", "1a51ff2e-8cdc-4a3d-9f0b-85cf3f65e853",
   ],
 };
+
+const initialAvailableLessons = hasCompleteCourseAccess(currentCourse) ? currentCourse.lessons : salesPreviewLessons(currentCourse);
+currentLessonId = initialAvailableLessons.some((lesson) => lesson.id === state.lastLesson)
+  ? state.lastLesson
+  : initialAvailableLessons[0]?.id || currentCourse.lessons[0]?.id;
+currentTopic = currentCourse.lessons.find((lesson) => lesson.id === currentLessonId)?.topic || 1;
 
 function salesPreviewLessons(course = currentCourse) {
   const selectedIds = curatedFreeLessonIds[course.id] || [];
