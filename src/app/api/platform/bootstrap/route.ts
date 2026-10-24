@@ -17,6 +17,7 @@ export async function GET() {
     access: session.access,
     availableCourseIds: products.map((product) => product.id),
     ownedCourseIds: session.ownedCourses.map((product) => product.id),
+    preferredCourseId: typeof session.user.user_metadata.primary_course === "string" ? session.user.user_metadata.primary_course : null,
     progress: progress || [],
     state: courseState || null,
     links: {

@@ -28,7 +28,7 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
   const checkoutSessionId = typeof query.session_id === "string" ? query.session_id : "";
   return <>
     <section className={`dashboard-hero student-dashboard-hero access-page-hero ${curriculum === "igcse" ? "student-dashboard-hero-igcse" : ""}`}>
-      <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">Mr Flynn IB Plus</span><h1>{selectedProduct ? `Unlock the complete ${selectedProduct.shortTitle} course` : "Choose your complete course"}</h1><p>Every video lesson and the full set of extra practice attached to the course. Choose 12 or 24 months with no automatic renewal.</p></div></Container>
+      <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">Mr Flynn IB Plus</span><h1>{selectedProduct ? `Unlock the complete ${selectedProduct.shortTitle} course` : "Choose your complete course"}</h1><p>Every video lesson and the full set of extra practice attached to the course. Two years of access with one payment and no automatic renewal.</p></div></Container>
     </section>
     <section className="section-tight platform-access-page"><Container className="stack-xl">
       {query.checkout === "success" ? <CheckoutActivationNotice sessionId={checkoutSessionId} accessPath={accessPath} /> : null}

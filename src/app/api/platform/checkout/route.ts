@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getPlatformAccess } from "@/lib/platform-server";
-import { getCoursePlan, getCourseProduct } from "@/lib/platform-products";
+import { getCourseProduct, getPaidProductPlan, teacherPlusProduct } from "@/lib/platform-products";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -30,13 +30,23 @@ export async function POST(request: Request) {
   }
 
   const body = await request.json().catch(() => ({}));
-  const product = getCourseProduct(typeof body.courseId === "string" ? body.courseId : "");
-  const plan = getCoursePlan(product, typeof body.planId === "string" ? body.planId : "");
+  const teacherBundleRequested = body.productId === teacherPlusProduct.id;
+  const product = teacherBundleRequested
+    ? teacherPlusProduct
+    : getCourseProduct(typeof body.courseId === "string" ? body.courseId : "");
+  const plan = getPaidProductPlan(product, typeof body.planId === "string" ? body.planId : "");
   if (!product || product.curriculum !== session.curriculum) {
-    return NextResponse.json({ error: "Invalid course" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
+  }
+  if (teacherBundleRequested && !["teacher", "admin"].includes(session.profile?.role || "")) {
+    return NextResponse.json({ error: "Approved teacher access is required." }, { status: 403 });
   }
   if (!plan) return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
-  if (session.ownedCourses.some((course) => course.id === product.id)) {
+  const alreadyOwned = teacherBundleRequested
+    ? session.entitlements.some((item) => item.product_code === teacherPlusProduct.productCode)
+    : session.ownedCourses.some((course) => course.id === product.id);
+  if (alreadyOwned) {
+    if (teacherBundleRequested) return NextResponse.json({ url: "/teacher/access" });
     return NextResponse.json({ url: product.curriculum === "igcse" ? "/igcse/learn" : "/learn" });
   }
   if (!session.user.email) {
@@ -60,14 +70,14 @@ export async function POST(request: Request) {
     .eq("livemode", stripe.live)
     .maybeSingle();
 
-  const accessPath = product.curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
+  const accessPath = teacherBundleRequested ? "/teacher/access" : product.curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
   const successUrl = new URL(accessPath, requestOrigin);
   successUrl.searchParams.set("checkout", "success");
-  successUrl.searchParams.set("course", product.id);
+  if (!teacherBundleRequested) successUrl.searchParams.set("course", product.id);
   successUrl.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
   const cancelUrl = new URL(accessPath, requestOrigin);
   cancelUrl.searchParams.set("checkout", "cancelled");
-  cancelUrl.searchParams.set("course", product.id);
+  if (!teacherBundleRequested) cancelUrl.searchParams.set("course", product.id);
 
   const params = new URLSearchParams({
     mode: "payment",

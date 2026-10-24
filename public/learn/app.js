@@ -1225,7 +1225,9 @@ async function bootstrapAccount() {
       ? requestedCourseId
       : platformAccount.state?.last_course_id && enrolledCourseIds.includes(platformAccount.state.last_course_id)
         ? platformAccount.state.last_course_id
-        : ownedCourseIds[0] || enrolledCourseIds[0];
+        : platformAccount.preferredCourseId && enrolledCourseIds.includes(platformAccount.preferredCourseId)
+          ? platformAccount.preferredCourseId
+          : ownedCourseIds[0] || enrolledCourseIds[0];
     enrolledCourseId = preferred;
     currentCourseId = preferred;
     currentCourse = courses[currentCourseId];

@@ -251,6 +251,21 @@ textarea { min-height: 130px; resize: vertical; }
 .account-type-options input { width: 1rem; height: 1rem; margin-top: .2rem; }
 .account-type-options span { display: grid; gap: .1rem; }
 .account-type-options small { color: var(--muted); font-size: .75rem; font-weight: 500; line-height: 1.35; }
+.account-course-field { min-width: 0; margin: 0; padding: 1rem; border: 1px solid #d8e1e6; border-radius: .95rem; background: #f8fafb; }
+.account-course-field legend { padding: 0 .25rem; color: var(--navy); font-size: .92rem; font-weight: 900; }
+.account-course-field > p { margin: -.1rem 0 .75rem; color: var(--muted); font-size: .74rem; line-height: 1.45; }
+.account-course-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .55rem; }
+.account-course-options label { min-width: 0; padding: .72rem; display: grid; grid-template-columns: auto minmax(0,1fr); align-items: start; gap: .55rem; border: 1px solid #cbd5dc; border-radius: .75rem; background: white; cursor: pointer; }
+.account-course-options label.is-selected { border-color: var(--blue); background: #eaf5fd; box-shadow: 0 0 0 2px rgba(35,127,202,.09); }
+.account-course-options input { width: 1rem; height: 1rem; margin-top: .18rem; }
+.account-course-options span { min-width: 0; display: grid; gap: .08rem; }
+.account-course-options strong { color: var(--navy); font-size: .82rem; }
+.account-course-options small { color: var(--muted); font-size: .66rem; font-weight: 550; line-height: 1.35; }
+.teacher-access-links { display: flex; flex-wrap: wrap; gap: .7rem; }
+.teacher-access-links a { color: inherit; font-size: .72rem; font-weight: 900; text-decoration: underline; text-underline-offset: 3px; }
+.teacher-plus-hero { background: radial-gradient(circle at 86% 18%,rgba(128,100,220,.25),transparent 28%),linear-gradient(135deg,#102a56,#1f4f86); }
+.teacher-plus-card { max-width: 720px; margin-inline: auto; border-color: #d8cff4; background: linear-gradient(145deg,#f8f6ff,#fff); }
+.teacher-plus-list { margin: 0; display: grid; gap: .5rem; color: var(--ink-2); }
 .account-name-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
 .account-text-button { width: fit-content; padding: 0; border: 0; background: transparent; color: var(--teal-dark); font-weight: 800; cursor: pointer; }
 .account-text-button:hover { text-decoration: underline; }
@@ -1153,6 +1168,7 @@ a.teacher-list-row:hover { background: var(--sky); }
   .teacher-question-row { grid-template-columns: 38px minmax(0, 1fr); }
   .teacher-question-results { grid-column: 2; justify-content: flex-start; }
   .account-type-options { grid-template-columns: 1fr; }
+  .account-course-options { grid-template-columns: 1fr; }
   .account-name-fields { grid-template-columns: 1fr; }
   .teacher-approval-row { align-items: stretch; flex-direction: column; }
   .teacher-list-row { grid-template-columns: 1fr auto; }

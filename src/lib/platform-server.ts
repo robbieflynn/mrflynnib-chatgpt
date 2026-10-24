@@ -29,7 +29,9 @@ export async function getPlatformAccess() {
   }) as PlatformEntitlement[];
   const entitlements = activePlatformEntitlements([...personal, ...schoolEntitlements]);
   const products = productsForCurriculum(session.curriculum);
-  const entitledCourses = session.profile?.role === "admin"
+  const hasTeacherPlus = ["teacher", "admin"].includes(session.profile?.role || "")
+    && entitlements.some((item) => item.product_code === "teacher_plus_ib");
+  const entitledCourses = session.profile?.role === "admin" || hasTeacherPlus
     ? products
     : entitlements.map((item) => courseProductForCode(item.product_code)).filter((item): item is CourseProduct => Boolean(item && item.curriculum === session.curriculum));
   const ownedCourses = Array.from(new Map(entitledCourses.map((course) => [course.id, course])).values());

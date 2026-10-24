@@ -4,7 +4,7 @@ import { useState } from "react";
 
 type CheckoutPlan = { id: string; label: string; priceUsd: number; badge?: string };
 
-export function CourseCheckoutButton({ courseId, plans }: { courseId: string; plans: CheckoutPlan[] }) {
+export function CourseCheckoutButton({ courseId, productId, plans }: { courseId?: string; productId?: string; plans: CheckoutPlan[] }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [selectedPlan, setSelectedPlan] = useState(plans.find((plan) => plan.badge)?.id || plans[0]?.id || "");
@@ -13,7 +13,7 @@ export function CourseCheckoutButton({ courseId, plans }: { courseId: string; pl
     setError("");
     try {
       const requestId = crypto.randomUUID();
-      const response = await fetch("/api/platform/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId, planId: selectedPlan, requestId }) });
+      const response = await fetch("/api/platform/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId, productId, planId: selectedPlan, requestId }) });
       const result = await response.json();
       if (!response.ok || !result.url) throw new Error(result.error || "Checkout could not be started.");
       window.location.assign(result.url);
@@ -25,7 +25,7 @@ export function CourseCheckoutButton({ courseId, plans }: { courseId: string; pl
   const plan = plans.find((option) => option.id === selectedPlan) || plans[0];
   return <div className="course-checkout stack-sm">
     <fieldset className="course-plan-options"><legend>Choose access length</legend>{plans.map((option) => <label className={`course-plan-option ${selectedPlan === option.id ? "is-selected" : ""}`} key={option.id}>
-      <input checked={selectedPlan === option.id} name={`plan-${courseId}`} onChange={() => setSelectedPlan(option.id)} type="radio" value={option.id} />
+      <input checked={selectedPlan === option.id} name={`plan-${courseId || productId}`} onChange={() => setSelectedPlan(option.id)} type="radio" value={option.id} />
       <span><strong>${option.priceUsd}</strong><small>{option.label}</small></span>
       {option.badge ? <b>{option.badge}</b> : null}
     </label>)}</fieldset>

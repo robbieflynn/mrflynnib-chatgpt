@@ -19,8 +19,7 @@ export type CoursePlan = {
 };
 
 const standardPlans: CoursePlan[] = [
-  { id: "one-year", label: "12 months", priceUsd: 69, accessDays: 365, stripePriceEnv: "" },
-  { id: "two-years", label: "24 months", priceUsd: 99, accessDays: 730, stripePriceEnv: "", badge: "Best value" },
+  { id: "two-years", label: "24 months", priceUsd: 79, accessDays: 730, stripePriceEnv: "", badge: "Complete access" },
 ];
 
 function plansFor(envPrefix: string): CoursePlan[] {
@@ -38,6 +37,17 @@ export const courseProducts: CourseProduct[] = [
   { id: "igcse", curriculum: "igcse", productCode: "course_igcse", shortTitle: "IGCSE", title: "IGCSE Mathematics", plans: plansFor("STRIPE_PRICE_IGCSE") },
 ];
 
+export const teacherPlusProduct = {
+  id: "teacher-plus" as const,
+  curriculum: "ib" as const,
+  productCode: "teacher_plus_ib",
+  shortTitle: "Teacher Plus",
+  title: "All four IB Mathematics courses",
+  plans: [{ id: "one-year" as const, label: "12 months", priceUsd: 99, accessDays: 365, stripePriceEnv: "STRIPE_PRICE_TEACHER_PLUS_IB_ONE_YEAR" }],
+};
+
+export type PaidProduct = CourseProduct | typeof teacherPlusProduct;
+
 export function getCourseProduct(id: string | null | undefined) {
   return courseProducts.find((product) => product.id === id);
 }
@@ -46,7 +56,15 @@ export function courseProductForCode(productCode: string) {
   return courseProducts.find((product) => product.productCode === productCode);
 }
 
+export function paidProductForCode(productCode: string): PaidProduct | undefined {
+  return courseProductForCode(productCode) ?? (teacherPlusProduct.productCode === productCode ? teacherPlusProduct : undefined);
+}
+
 export function getCoursePlan(product: CourseProduct | undefined, planId: string | null | undefined) {
+  return product?.plans.find((plan) => plan.id === planId);
+}
+
+export function getPaidProductPlan(product: PaidProduct | undefined, planId: string | null | undefined) {
   return product?.plans.find((plan) => plan.id === planId);
 }
 

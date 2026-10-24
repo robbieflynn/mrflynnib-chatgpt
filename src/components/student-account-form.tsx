@@ -7,22 +7,26 @@ import { createClient } from "@/lib/supabase/client";
 
 type Mode = "sign-in" | "sign-up" | "reset" | "resend";
 
+const ibCourseChoices = [
+  { id: "aa-hl", code: "AA HL", title: "Analysis & Approaches Higher Level" },
+  { id: "aa-sl", code: "AA SL", title: "Analysis & Approaches Standard Level" },
+  { id: "ai-hl", code: "AI HL", title: "Applications & Interpretation Higher Level" },
+  { id: "ai-sl", code: "AI SL", title: "Applications & Interpretation Standard Level" },
+] as const;
+
+type IbCourseId = (typeof ibCourseChoices)[number]["id"];
+
+function isIbCourseId(value: string | null): value is IbCourseId {
+  return ibCourseChoices.some((course) => course.id === value);
+}
+
 export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: Mode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const curriculum = searchParams.get("qualification") === "igcse" ? "igcse" : "ib";
   const teacherJourney = searchParams.get("next")?.includes("teacher") ?? false;
   const plusJourney = searchParams.get("plan") === "plus" && curriculum === "ib";
-  const [mode, setMode] = useState<Mode>(initialMode);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [accountType, setAccountType] = useState<"student" | "teacher">(teacherJourney ? "teacher" : "student");
-  const [pending, setPending] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
+  const requestedCourse = searchParams.get("course");
   const requestedNext = searchParams.get("next");
   const nextPath = requestedNext?.startsWith("/")
     ? requestedNext
@@ -31,6 +35,18 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       : searchParams.get("course")
         ? `/account?course=${encodeURIComponent(searchParams.get("course")!)}`
         : "/account";
+  const [mode, setMode] = useState<Mode>(initialMode);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [accountType, setAccountType] = useState<"student" | "teacher">(teacherJourney ? "teacher" : "student");
+  const [studentCourse, setStudentCourse] = useState<IbCourseId | "">(isIbCourseId(requestedCourse) ? requestedCourse : "");
+  const [teacherCourses, setTeacherCourses] = useState<IbCourseId[]>([]);
+  const [pending, setPending] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [confirmationNextPath, setConfirmationNextPath] = useState(nextPath);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,7 +70,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         type: "signup",
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(confirmationNextPath)}`,
         },
       });
       setPending(false);
@@ -68,7 +84,28 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
     }
 
     if (mode === "sign-up") {
+      if (curriculum === "ib" && accountType === "student" && !studentCourse) {
+        setPending(false);
+        setError("Choose the IB Mathematics course you are studying.");
+        return;
+      }
+      if (curriculum === "ib" && accountType === "teacher" && teacherCourses.length === 0) {
+        setPending(false);
+        setError("Choose at least one IB Mathematics course that you teach.");
+        return;
+      }
       const displayName = `${firstName.trim()} ${lastName.trim()}`.trim().slice(0, 80);
+      const selectedCourses = curriculum === "ib"
+        ? accountType === "teacher" ? teacherCourses : [studentCourse]
+        : ["igcse"];
+      const signUpNextPath = requestedNext?.startsWith("/")
+        ? requestedNext
+        : curriculum === "igcse"
+          ? "/account?qualification=igcse"
+          : accountType === "teacher"
+            ? "/teacher"
+            : `/account?course=${encodeURIComponent(studentCourse)}`;
+      setConfirmationNextPath(signUpNextPath);
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -79,14 +116,17 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
             display_name: displayName,
             account_type: accountType,
             curriculum,
+            primary_course: accountType === "student" ? selectedCourses[0] : selectedCourses[0] || null,
+            course_preferences: selectedCourses,
+            teacher_courses: accountType === "teacher" ? selectedCourses : [],
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(signUpNextPath)}`,
         },
       });
       setPending(false);
       if (signUpError) return setError(signUpError.message);
       if (data.session) {
-        router.push(nextPath);
+        router.push(signUpNextPath);
         router.refresh();
       } else {
         setMode("resend");
@@ -120,9 +160,35 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         {mode === "sign-up" ? (
           <>
             {!plusJourney ? <fieldset className="account-type-field"><legend>Create an account as</legend><div className="account-type-options">
-              <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => setAccountType("student")} type="radio" value="student" /><span><strong>Student</strong><small>Save question progress and whiteboard working.</small></span></label>
-              <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => setAccountType("teacher")} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Teacher sign-up requires approval.</small></span></label>
+              <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => { setAccountType("student"); setError(null); }} type="radio" value="student" /><span><strong>Student</strong><small>Choose the one course you are studying.</small></span></label>
+              <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => { setAccountType("teacher"); setError(null); }} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Choose every course you teach. Approval is required.</small></span></label>
             </div></fieldset> : <p className="account-plus-form-note"><strong>Student Plus journey</strong><span>Create your account first. You will review the price and payment securely on the next screen.</span></p>}
+            {curriculum === "ib" ? accountType === "student" ? (
+              <fieldset className="account-course-field">
+                <legend>Which course are you studying?</legend>
+                <p>This sets up your learning home. It does not purchase Plus.</p>
+                <div className="account-course-options is-single">
+                  {ibCourseChoices.map((course) => <label className={studentCourse === course.id ? "is-selected" : ""} key={course.id}>
+                    <input checked={studentCourse === course.id} name="studentCourse" onChange={() => { setStudentCourse(course.id); setError(null); }} required type="radio" value={course.id} />
+                    <span><strong>{course.code}</strong><small>{course.title}</small></span>
+                  </label>)}
+                </div>
+              </fieldset>
+            ) : (
+              <fieldset className="account-course-field">
+                <legend>Which courses do you teach?</legend>
+                <p>Choose all that apply. This personalises your setup and does not change paid access.</p>
+                <div className="account-course-options is-multiple">
+                  {ibCourseChoices.map((course) => {
+                    const selected = teacherCourses.includes(course.id);
+                    return <label className={selected ? "is-selected" : ""} key={course.id}>
+                      <input checked={selected} name="teacherCourses" onChange={() => { setTeacherCourses((current) => selected ? current.filter((id) => id !== course.id) : [...current, course.id]); setError(null); }} type="checkbox" value={course.id} />
+                      <span><strong>{course.code}</strong><small>{course.title}</small></span>
+                    </label>;
+                  })}
+                </div>
+              </fieldset>
+            ) : null}
             <div className="account-name-fields">
               <div className="field">
                 <label htmlFor="student-first-name">First name</label>

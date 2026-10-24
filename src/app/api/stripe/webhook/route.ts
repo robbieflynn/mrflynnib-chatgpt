@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
-import { courseProductForCode, getCoursePlan } from "@/lib/platform-products";
+import { getPaidProductPlan, paidProductForCode } from "@/lib/platform-products";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 type StripeObject = Record<string, unknown>;
@@ -58,9 +58,9 @@ async function fulfilCheckout(admin: AdminClient, event: StripeEvent, session: S
   const metadata = object(session.metadata);
   const userId = text(metadata.user_id);
   const productCode = text(metadata.product_code);
-  const product = courseProductForCode(productCode);
+  const product = paidProductForCode(productCode);
   const planId = text(metadata.plan_id);
-  const plan = getCoursePlan(product, planId);
+  const plan = getPaidProductPlan(product, planId);
   const sessionId = text(session.id);
   const paymentStatus = text(session.payment_status);
   const amountTotal = number(session.amount_total);
