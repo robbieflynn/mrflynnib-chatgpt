@@ -45,12 +45,14 @@ type AccountSearchParams = {
   error?: string | string[];
   success?: string | string[];
   teacher?: string | string[];
+  mode?: string | string[];
 };
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<AccountSearchParams> }) {
   const pageSearchParams = await searchParams;
   const requestedNext = typeof pageSearchParams.next === "string" ? pageSearchParams.next : "";
   const isTeacherJourney = requestedNext === "/teacher" || requestedNext === "/igcse/teacher";
+  const isSignUpJourney = pageSearchParams.mode === "sign-up";
   if (!hasSupabaseBrowserConfig()) {
     return (
       <>
@@ -68,10 +70,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       <>
         <PageHero
           eyebrow={isTeacherJourney ? "Teacher account" : "Student account"}
-          title={isTeacherJourney ? "Teacher sign in" : "Save your question-bank progress"}
-          intro={isTeacherJourney ? "Sign in to manage classes and assignments, or create a teacher account to request approval." : "Sign in to tick off completed questions and continue your whiteboard working on another device."}
+          title={isSignUpJourney ? "Create your free account" : isTeacherJourney ? "Teacher sign in" : "Save your question-bank progress"}
+          intro={isSignUpJourney ? "Use one account for the question bank, classes, assignments and your learning progress." : isTeacherJourney ? "Sign in to manage classes and assignments, or create a teacher account to request approval." : "Sign in to tick off completed questions and continue your whiteboard working on another device."}
         />
-        <section className="section-tight"><Container className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li></ul></aside> : <aside className="account-benefits stack"><h2>Save your progress</h2><ul><li>Tick off questions as you complete them.</li><li>Return to editable whiteboard working later.</li></ul></aside>}</Container></section>
+        <section className="section-tight"><Container className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li></ul></aside> : <aside className="account-benefits stack"><h2>Save your progress</h2><ul><li>Tick off questions as you complete them.</li><li>Return to editable whiteboard working later.</li></ul></aside>}</Container></section>
       </>
     );
   }

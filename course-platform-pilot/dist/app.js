@@ -645,7 +645,7 @@ function renderLessonPractice(lesson, locked = false) {
   const questionCount = practice.questionIds.length;
   document.getElementById("practiceCount").textContent = `${questionCount} question${questionCount === 1 ? "" : "s"}`;
   document.getElementById("lessonPracticeCopy").textContent = locked
-    ? "Read the lesson questions here. Mr Flynn IB Plus unlocks the mark schemes, worked solutions, whiteboards and completion tracking."
+    ? "Preview this lesson here. Mr Flynn IB Plus unlocks the complete video lesson and all of its extra practice questions."
     : "These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.";
 
   const frame = document.getElementById("practiceFrame");

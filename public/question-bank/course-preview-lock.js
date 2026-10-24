@@ -4,7 +4,7 @@
   var params = new URLSearchParams(window.location.search);
   if (params.get("plusPreview") !== "1" || window.parent === window) return;
 
-  var selector = ".qb-ms-toggle,.qb-sol-toggle,.qb-progress-toggle,.qb-whiteboard-open-button";
+  var selector = ".qb-ms-toggle,.qb-sol-toggle,.qb-progress-toggle";
   var style = document.createElement("style");
   style.textContent = [
     ".qb-plus-preview " + selector.split(",").join(",.qb-plus-preview ") + "{position:relative!important;padding-right:58px!important;}",
