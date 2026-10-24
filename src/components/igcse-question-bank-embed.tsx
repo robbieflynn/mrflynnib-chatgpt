@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
+import { useQuestionBankAccount, type AssignmentQuestionState } from "@/lib/use-question-bank-account";
 import type { AssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
-export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView }: { topic?: string; subtopic?: string; questionIds?: string[]; assignmentId?: string; viewedStudentId?: string; feedbackMode?: AssignmentFeedbackMode; assignmentSubmitted?: boolean; assignmentView?: "step" | "overview" | "detail" }) {
+export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView, initialQuestions }: { topic?: string; subtopic?: string; questionIds?: string[]; assignmentId?: string; viewedStudentId?: string; feedbackMode?: AssignmentFeedbackMode; assignmentSubmitted?: boolean; assignmentView?: "step" | "overview" | "detail"; initialQuestions?: AssignmentQuestionState[] }) {
   const query = new URLSearchParams({ course: "IGCSE Higher", embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
@@ -17,7 +17,8 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(760);
-  useQuestionBankAccount(frameRef, "igcse", assignmentId, { feedbackMode, assignmentSubmitted, viewedStudentId });
+  const [whiteboardExpanded, setWhiteboardExpanded] = useState(false);
+  useQuestionBankAccount(frameRef, "igcse", assignmentId, { feedbackMode, assignmentSubmitted, initialQuestions, viewedStudentId });
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
@@ -39,13 +40,12 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
 
     const handleFrameMessage = (event: MessageEvent) => {
       const frame = frameRef.current;
-      if (
-        event.origin !== window.location.origin ||
-        event.source !== frame?.contentWindow ||
-        event.data?.type !== "mrflynnib-question-bank-height"
-      ) {
+      if (event.origin !== window.location.origin || event.source !== frame?.contentWindow) return;
+      if (event.data?.type === "mrflynnib-whiteboard-expanded") {
+        setWhiteboardExpanded(Boolean(event.data.expanded));
         return;
       }
+      if (event.data?.type !== "mrflynnib-question-bank-height") return;
 
       const nextHeight = Number(event.data.height);
       if (Number.isFinite(nextHeight)) {
@@ -83,12 +83,20 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
 
   return (
     <iframe
+      allowFullScreen
       className="igcse-qb-frame"
       loading="eager"
       ref={frameRef}
       scrolling="no"
       src={`/question-bank/igcse-bank.html?${query.toString()}`}
-      style={{ height: `${frameHeight}px` }}
+      style={whiteboardExpanded ? {
+        position: "fixed",
+        inset: 0,
+        zIndex: 10000,
+        width: "100vw",
+        height: "100dvh",
+        background: "#fff",
+      } : { height: `${frameHeight}px` }}
       title="Edexcel IGCSE Mathematics question bank"
     />
   );

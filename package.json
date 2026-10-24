@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "generate:assignment-configs": "WRITE_ASSIGNMENT_CONFIGS=1 node scripts/audit-assignment-choices.mjs",
     "audit:assignment-choices": "node scripts/audit-assignment-choices.mjs",
     "import:teachable-access": "node scripts/import-teachable-access.mjs"
   },

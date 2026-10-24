@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import assert from "node:assert/strict";
 
 const require = createRequire(import.meta.url);
@@ -7,6 +7,8 @@ const choices = require("../public/question-bank/assignment-choice-utils.js");
 
 assert.equal(choices.latexToPlain(String.raw`\dfrac12r^2\sin\theta`), "(1/2)*r^2sintheta");
 assert.equal(choices.toLatex("(1/2)*r^2sintheta"), String.raw`\left(\frac{1}{2}\right)\times r^{2}\sin \theta `);
+assert.equal(choices.toLatex("a_1+3a_3x^2+5a_5x^4"), String.raw`a_{1}+3a_{3}x^{2}+5a_{5}x^{4}`);
+assert.equal(choices.toLatex("1+a_1^2x^2+2a_1a_3x^4"), String.raw`1+a_{1}^{2}x^{2}+2a_{1}a_{3}x^{4}`);
 assert.equal(choices.latexToPlain(String.raw`x^{\frac12}`), "x^(1/2)");
 assert.equal(choices.isAnswerCompatibleWithPrompt("(0,0,-2)", "Find the coordinates of A, B and C."), false);
 assert.equal(choices.isAnswerCompatibleWithPrompt("ln(2)", "Find the equations of the horizontal and vertical asymptotes."), false);
@@ -26,6 +28,19 @@ assert.equal(choices.isAnswerCompatibleWithPrompt("332°", "Find the real distan
 assert.equal(choices.isAnswerCompatibleWithPrompt("(20.5,0)", "Work out the length of RQ."), false);
 assert.equal(choices.isAnswerCompatibleWithPrompt("1300 (cm^2) (1296 (cm^2))", "Calculate the area of cloth."), false);
 assert.equal(choices.isChoiceTextSafe("any two valid assumptions"), false);
+const maclaurinLogAnswers = choices.extractAcceptedAnswers([
+  [String.raw`\(x^2-\dfrac{x^4}{2}+\dfrac{x^6}{3}\)`, "A1"],
+], String.raw`Use the Maclaurin series for \(\ln(1+x)\) to write down the first three non-zero terms of the Maclaurin series for \(f(x)\).`);
+assert(maclaurinLogAnswers.some((answer) => answer.startsWith("f(x)=")));
+assert(maclaurinLogAnswers.every((answer) => !answer.startsWith("l=")));
+const maclaurinRationalAnswers = choices.extractAcceptedAnswers([
+  [String.raw`\(\dfrac{x}{1+x^2}=x-x^3+x^5\)`, "A1"],
+], String.raw`Find the first three non-zero terms of the Maclaurin series for \(\dfrac{x}{1+x^2}\).`);
+assert(maclaurinRationalAnswers.every((answer) => !/^x=x/.test(answer)));
+const maclaurinIntegralAnswers = choices.extractAcceptedAnswers([
+  [String.raw`\(x-\dfrac{x^3}{6}+\dfrac{x^5}{40}-\dfrac{x^7}{336}\)`, "A1"],
+], String.raw`Find the first four terms of the series for \(\displaystyle\int_0^x e^{-u^2/2}\,du\).`);
+assert(maclaurinIntegralAnswers.every((answer) => !answer.startsWith("t=")));
 assert.equal(choices.generateHypothesisChoiceSet([["Reject H0", "R1"]], "Find the probability of a Type I error.", "audit-type-one"), null);
 assert.equal(choices.isAnswerCompatibleWithPrompt("(a=2)", "Express the quadratic in the form a(x+b)^2+c."), false);
 assert.equal(choices.isAnswerCompatibleWithPrompt("z=(3+t)/2", "Find the parametric equations of the line."), false);
@@ -140,6 +155,26 @@ function choiceSetForRows(rows, prompt, seed) {
     || choices.generateParityChoiceSet(rows, prompt, seed)
     || choices.generateChoiceSet(choices.extractAcceptedAnswers(rows, prompt), seed, prompt);
   return set && choices.isAnswerCompatibleWithPrompt(set.options[set.correctOption], prompt) ? set : null;
+}
+
+function manualChoiceSet(questionId, label) {
+  if (questionId === "A_N24TZ0HL_P1_Q11" && label === "c(ii)") {
+    return {
+      acceptedAnswers: [
+        "-48y^4+240y^3-414y^2+285y-66",
+        "(24y^2-60y+33)(2y-1)(2-y)",
+      ],
+      options: [
+        "-48y^4+240y^3-414y^2+285y+66",
+        "-48y^4+240y^3-414y^2-285y-66",
+        "-48y^4+240y^3+414y^2+285y-66",
+        "48y^4+240y^3-414y^2+285y-66",
+        "-48y^4+240y^3-414y^2+285y-66",
+      ],
+      correctOption: 4,
+    };
+  }
+  return null;
 }
 
 const choiceQualityIssues = [];
@@ -338,6 +373,44 @@ const activeQuestionIds = {
   IGCSE: new Set(progressManifest.igcse && progressManifest.igcse.questionIds || []),
 };
 
+const fixedAssignmentConfigs = { version: 1, ib: {}, igcse: {} };
+
+function fixedResponseConfig(questionId, parts) {
+  const empty = {
+    id: questionId,
+    type: "teacher_review",
+    acceptedAnswers: [],
+    numericAnswer: null,
+    tolerance: null,
+    options: [],
+    correctOption: null,
+    parts: [],
+  };
+  if (!parts.length) return empty;
+  if (parts.length === 1) {
+    const set = parts[0].choices;
+    if (!set) return empty;
+    return {
+      ...empty,
+      type: "multiple_choice",
+      acceptedAnswers: set.acceptedAnswers,
+      options: set.options,
+      correctOption: set.correctOption,
+    };
+  }
+  return {
+    ...empty,
+    type: "multipart",
+    parts: parts.map((part) => ({
+      label: part.label,
+      mode: part.choices ? "multiple_choice" : "whiteboard",
+      acceptedAnswers: part.choices?.acceptedAnswers || [],
+      options: part.choices?.options || [],
+      correctOption: part.choices?.correctOption ?? null,
+    })),
+  };
+}
+
 function assignmentPartConfigs(question) {
   if (!question || !Array.isArray(question.markscheme)) return [];
   const markschemeByPart = new Map(question.markscheme
@@ -365,7 +438,9 @@ function assignmentPartConfigs(question) {
           prompt: nestedPrompt,
           accepted,
           rows: nestedRows,
-          choices: hasSharedWhiteboardInstruction(prompt) ? null : choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`),
+          choices: hasSharedWhiteboardInstruction(prompt)
+            ? null
+            : manualChoiceSet(question.id, label) || choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`),
         });
       }
     } else {
@@ -395,7 +470,13 @@ function assignmentPartConfigs(question) {
       if (question.id === "M10TZ2HL_P2_Q8" && part === "a") {
         assert(!choices.toLatex(accepted[0]).includes(String.raw`\n`), `n was rendered as a LaTeX command: ${JSON.stringify(accepted)}`);
       }
-      configs.push({ label, prompt, accepted, rows, choices: choiceSetForRows(rows, prompt, `${question.id}:${label}`) });
+      configs.push({
+        label,
+        prompt,
+        accepted,
+        rows,
+        choices: manualChoiceSet(question.id, label) || choiceSetForRows(rows, prompt, `${question.id}:${label}`),
+      });
     }
   }
   return configs;
@@ -1353,6 +1434,7 @@ for (const [label, path] of banks) {
   let bankQuestionsWithWhiteboard = 0;
   for (const question of questions) {
     const configs = assignmentPartConfigs(question);
+    fixedAssignmentConfigs[label === "IB" ? "ib" : "igcse"][question.id] = fixedResponseConfig(question.id, configs);
     if (label === "IGCSE" && question.id === "4MA1_2020N_1H_Q7") {
       const nestedSolution = configs.find((config) => config.label === "c(ii)");
       assert(nestedSolution?.choices, "The separately labelled IGCSE c(ii) mark scheme did not produce choices.");
@@ -1464,3 +1546,15 @@ if (auditDetailModes.includes("6")) {
     });
 }
 assert.equal(choiceQualityIssues.length, 0, "The live assignment-choice audit found an unsafe or mismatched answer option.");
+
+const fixedAssignmentConfigSource = `${JSON.stringify(fixedAssignmentConfigs)}\n`;
+if (process.env.WRITE_ASSIGNMENT_CONFIGS === "1") {
+  writeFileSync("src/data/assignment-answer-configs.json", fixedAssignmentConfigSource);
+  console.log(`Wrote fixed assignment configurations for ${Object.keys(fixedAssignmentConfigs.ib).length} IB and ${Object.keys(fixedAssignmentConfigs.igcse).length} IGCSE questions.`);
+} else {
+  assert.equal(
+    readFileSync("src/data/assignment-answer-configs.json", "utf8"),
+    fixedAssignmentConfigSource,
+    "The fixed assignment-answer catalogue is stale. Run npm run generate:assignment-configs and commit the result.",
+  );
+}

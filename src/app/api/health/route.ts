@@ -2,24 +2,65 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-async function checkSupabase() {
+async function checkSupabaseRequest(path: string, init?: RequestInit) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return { ok: false, reason: "not_configured" };
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4_000);
   try {
-    const response = await fetch(`${url}/rest/v1/classes?select=id&limit=1`, {
+    const response = await fetch(`${url}${path}`, {
       cache: "no-store",
-      headers: { apikey: key },
+      ...init,
+      headers: { apikey: key, "Content-Type": "application/json", ...init?.headers },
       signal: controller.signal,
     });
-    return { ok: response.ok, reason: response.ok ? null : `http_${response.status}` };
+    return { ok: response.ok, reason: response.ok ? null : `http_${response.status}`, response };
   } catch (error) {
     return { ok: false, reason: error instanceof Error && error.name === "AbortError" ? "timeout" : "unreachable" };
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function checkSupabase() {
+  const database = await checkSupabaseRequest("/rest/v1/classes?select=id&limit=1");
+  if (!database.ok) return { ok: false, reason: database.reason };
+
+  async function reachedProtectedSaveFunction(path: string, body: Record<string, unknown>) {
+    const check = await checkSupabaseRequest(path, { method: "POST", body: JSON.stringify(body) });
+    if (check.ok) return true;
+    if (check.response?.status !== 400) return false;
+    const payload = await check.response.json().catch(() => null) as { code?: string; message?: string } | null;
+    return payload?.code === "P0001" && /sign in/i.test(payload.message || "");
+  }
+
+  // Exercise the same RPC gateway students use to save answers. An anonymous
+  // request is expected to be rejected by the function itself; reaching that
+  // controlled rejection proves the save route is present and responding.
+  const saveApiReached = await reachedProtectedSaveFunction(
+    "/rest/v1/rpc/submit_assignment_response_reliable",
+    {
+      assignment_uuid: "00000000-0000-0000-0000-000000000000",
+      question_key: "health-check",
+      request_uuid: "00000000-0000-4000-8000-000000000000",
+      response_payload: {},
+    },
+  );
+  if (!saveApiReached) return { ok: false, reason: "save_rpc_unreachable" };
+
+  const partSaveApiReached = await reachedProtectedSaveFunction(
+    "/rest/v1/rpc/submit_assignment_part_response",
+    {
+      assignment_uuid: "00000000-0000-0000-0000-000000000000",
+      question_key: "health-check",
+      part_key: "a",
+      part_answer: "health-check",
+    },
+  );
+  return partSaveApiReached
+    ? { ok: true, reason: null }
+    : { ok: false, reason: "part_save_rpc_unreachable" };
 }
 
 export async function GET() {

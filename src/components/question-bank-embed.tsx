@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useQuestionBankAccount } from "@/lib/use-question-bank-account";
+import { useQuestionBankAccount, type AssignmentQuestionState } from "@/lib/use-question-bank-account";
 import type { AssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
 type QuestionBankEmbedProps = {
@@ -14,9 +14,10 @@ type QuestionBankEmbedProps = {
   feedbackMode?: AssignmentFeedbackMode;
   assignmentSubmitted?: boolean;
   assignmentView?: "step" | "overview" | "detail";
+  initialQuestions?: AssignmentQuestionState[];
 };
 
-export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView }: QuestionBankEmbedProps) {
+export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView, initialQuestions }: QuestionBankEmbedProps) {
   const query = new URLSearchParams({ course, embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
@@ -29,7 +30,8 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(620);
-  useQuestionBankAccount(frameRef, "ib", assignmentId, { feedbackMode, assignmentSubmitted, viewedStudentId });
+  const [whiteboardExpanded, setWhiteboardExpanded] = useState(false);
+  useQuestionBankAccount(frameRef, "ib", assignmentId, { feedbackMode, assignmentSubmitted, initialQuestions, viewedStudentId });
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
@@ -51,13 +53,12 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
 
     const handleFrameMessage = (event: MessageEvent) => {
       const frame = frameRef.current;
-      if (
-        event.origin !== window.location.origin ||
-        event.source !== frame?.contentWindow ||
-        event.data?.type !== "mrflynnib-question-bank-height"
-      ) {
+      if (event.origin !== window.location.origin || event.source !== frame?.contentWindow) return;
+      if (event.data?.type === "mrflynnib-whiteboard-expanded") {
+        setWhiteboardExpanded(Boolean(event.data.expanded));
         return;
       }
+      if (event.data?.type !== "mrflynnib-question-bank-height") return;
 
       const nextHeight = Number(event.data.height);
       if (Number.isFinite(nextHeight)) {
@@ -95,12 +96,20 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
 
   return (
     <iframe
+      allowFullScreen
       className="qb-bank-frame"
       loading="eager"
       ref={frameRef}
       scrolling="no"
       src={`/question-bank/ib-bank.html?${query.toString()}`}
-      style={{ height: `${frameHeight}px` }}
+      style={whiteboardExpanded ? {
+        position: "fixed",
+        inset: 0,
+        zIndex: 10000,
+        width: "100vw",
+        height: "100dvh",
+        background: "#fff",
+      } : { height: `${frameHeight}px` }}
       title={`${course} question bank`}
     />
   );

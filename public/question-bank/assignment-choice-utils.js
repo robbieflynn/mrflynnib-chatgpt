@@ -2743,10 +2743,15 @@
     }
     if (/\b(?:maclaurin|taylor)\b[\s\S]*\b(?:expansion|series)\b/i.test(question)) {
       var seriesPrompt = clean(latexToPlain(prompt));
-      var seriesTarget = seriesPrompt.match(/\b(?:expansion|series)\s+(?:of|for)\s+([A-Za-z](?:\([^)]*\))?)/i);
+      // Only add a left-hand side when the question explicitly names a
+      // function such as f(x). The previous expression could mistake the
+      // first letter of ln(...), "the function", an integral, or x/(...) for
+      // a function name and produce answers such as "l=...", "t=..." or
+      // "x=x-x^3+...".
+      var seriesTarget = seriesPrompt.match(/\b(?:expansion|series)\s+(?:of|for)\s+([A-Za-z])\s*\(\s*x\s*\)/i);
       if (seriesTarget) {
         answers = answers.map(function (answer) {
-          return answer.indexOf("=") === -1 ? seriesTarget[1] + "=" + answer : answer;
+          return answer.indexOf("=") === -1 ? seriesTarget[1] + "(x)=" + answer : answer;
         });
       }
     }
@@ -2870,7 +2875,10 @@
       .replace(/bar\(([^()]+)\)/gi, "\\bar{$1}")
       .replace(/overline\(([^()]+)\)/gi, "\\overline{$1}")
       .replace(/_\(([^()]*)\)/g, "_{$1}")
-      .replace(/_([A-Za-z0-9]+)/g, "_{$1}")
+      // A numeric subscript ends before the next variable. Treating `a_3x^2`
+      // as one greedy subscript produced `a_{3x}^2` in assignment choices.
+      .replace(/_([0-9]+)/g, "_{$1}")
+      .replace(/_([A-Za-z]+)/g, "_{$1}")
       .replace(/\^\(\(([^()]*)\)\/([^()]*)\)/g, "^{\\frac{$1}{$2}}")
       .replace(/\^\(\s*([^/()]+)\s*\/\s*([^/()]+)\s*\)/g, "^{\\frac{$1}{$2}}")
       .replace(/\^\(([^()]*)\)/g, "^{$1}")

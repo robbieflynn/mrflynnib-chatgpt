@@ -79,7 +79,6 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
   const shadowRequestedRef = useRef(false);
   const [frameHeight, setFrameHeight] = useState(initialFrameHeight);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [responseConfigs, setResponseConfigs] = useState<Record<string, unknown>[]>([]);
   const [questionSummaries, setQuestionSummaries] = useState<Record<string, SelectedQuestionSummary>>({});
   const [shadowStatus, setShadowStatus] = useState(shadowIds.length ? "Finding matched questions for the shadow task…" : "");
   const source = useMemo(() => {
@@ -103,7 +102,6 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
       // The selector still clears even when browser storage is restricted.
     }
     setSelectedIds([]);
-    setResponseConfigs([]);
     setQuestionSummaries({});
     frameRef.current?.contentWindow?.postMessage({ type: "mrflynnib-assignment-clear" }, window.location.origin);
   }, [draftId]);
@@ -151,12 +149,7 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
           difficulty: "",
           marks: null,
         }), course).map((question) => question.id);
-        const incomingConfigs: Record<string, unknown>[] = Array.isArray(event.data.configs)
-          ? event.data.configs.slice(0, 100).map((value: unknown) => value && typeof value === "object" ? value as Record<string, unknown> : {})
-          : [];
-        const configById = new Map<string, Record<string, unknown>>(ids.map((id, index) => [id, incomingConfigs[index] || {}]));
         setSelectedIds(orderedIds);
-        setResponseConfigs(orderedIds.map((id) => configById.get(id) || {}));
         setQuestionSummaries(next);
       }
       if (event.data?.type === "mrflynnib-assignment-shadow-result") {
@@ -196,7 +189,6 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
   return (
     <div className="assignment-picker stack">
       {selectedIds.map((id) => <input key={id} name="questionIds" type="hidden" value={id} />)}
-      {selectedIds.map((id, index) => <input key={`response-${id}`} name="responseConfigs" type="hidden" value={JSON.stringify({ ...(responseConfigs[index] || {}), id })} />)}
       {shadowStatus ? <p className={selectedIds.length === shadowIds.length && shadowIds.length ? "form-message form-success" : "form-message"} role="status">{shadowStatus}</p> : null}
       <div className="assignment-picker-summary" aria-live="polite">
         <span className="assignment-picker-summary-copy"><strong>{selectedIds.length} {selectedIds.length === 1 ? "question" : "questions"} selected for this assignment</strong><span>Select up to 100 questions. Your assignment contents are listed below.</span></span>

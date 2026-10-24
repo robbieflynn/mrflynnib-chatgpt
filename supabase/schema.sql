@@ -777,8 +777,18 @@ begin
     return query select saved_correct, saved_result;
     return;
   end if;
-  select submitted.is_correct, submitted.result into saved_correct, saved_result
-  from public.submit_assignment_response(assignment_uuid, question_key, response_payload) submitted;
+  if selected_part <> '' then
+    select submitted.is_correct, submitted.result into saved_correct, saved_result
+    from public.submit_assignment_part_response(
+      assignment_uuid,
+      question_key,
+      selected_part,
+      left(trim(coalesce(response_payload ->> 'partAnswer', '')), 500)
+    ) submitted;
+  else
+    select submitted.is_correct, submitted.result into saved_correct, saved_result
+    from public.submit_assignment_response(assignment_uuid, question_key, response_payload) submitted;
+  end if;
   update public.assignment_response_requests request
   set is_correct = saved_correct, result = saved_result
   where request.student_id = auth.uid() and request.request_id = request_uuid;

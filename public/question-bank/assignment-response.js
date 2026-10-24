@@ -13,6 +13,9 @@
   var choiceUtils = window.MrFlynnAssignmentChoices;
   var activeId = null;
   var activePartKey = null;
+  var revealActiveNavigation = false;
+  var partDrafts = {};
+  var collapsedParts = {};
   var list = document.getElementById("qb-list");
   if (!list) return;
 
@@ -61,6 +64,12 @@
     ".qb-response-part-content{min-width:0;display:grid;gap:9px}",
     ".qb-response-part-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}",
     ".qb-response-part-actions .qb-response-status{flex:1;min-width:190px}",
+    ".qb-response-part-summary{display:none;align-self:center;color:#18704f;font-weight:800}",
+    ".qb-assignment-response .qb-response-part-toggle{align-self:center;min-height:34px;padding:7px 10px;border:1px solid #a9c8de;background:#fff;color:var(--flynn-blue-dark)}",
+    ".qb-response-part.has-toggle{grid-template-columns:minmax(52px,auto) minmax(0,1fr) auto}",
+    ".qb-response-part.is-collapsed{grid-template-columns:minmax(52px,auto) minmax(0,1fr) auto;align-items:center}",
+    ".qb-response-part.is-collapsed .qb-response-part-content{display:none}",
+    ".qb-response-part.is-collapsed .qb-response-part-summary{display:block}",
     ".qb-response-option{padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:center;border:1px solid #c8d5dc;border-radius:8px;background:#fff;cursor:pointer}",
     ".qb-response-option input{width:18px;height:18px;accent-color:var(--flynn-blue)}",
     ".qb-response-part-options{width:100%}",
@@ -331,6 +340,7 @@
     if (!state[id]) return;
     activeId = id;
     activePartKey = partKey || null;
+    revealActiveNavigation = Boolean(shouldScroll);
     renderNavigation();
     document.querySelectorAll("#qb-list>.qb-card").forEach(function (card) {
       card.classList.toggle("qb-assignment-current", card.getAttribute("data-id") === activeId);
@@ -349,6 +359,8 @@
 
   function renderNavigation() {
     if (!navigation) return;
+    var previousTabs = navigation.querySelector(".qb-assignment-tabs");
+    var previousScrollLeft = previousTabs ? previousTabs.scrollLeft : 0;
     var visibleIds = orderedIds.filter(function (id) { return document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]'); });
     if (!activeId || visibleIds.indexOf(activeId) === -1) activeId = visibleIds.find(function (id) { return !isQuestionFinished(state[id]); }) || visibleIds[0] || null;
     navigation.replaceChildren();
@@ -377,6 +389,15 @@
       group.appendChild(partTabs); tabs.appendChild(group);
     });
     navigation.appendChild(tabs);
+    if (revealActiveNavigation) {
+      revealActiveNavigation = false;
+      window.requestAnimationFrame(function () {
+        var activeTab = tabs.querySelector(".qb-assignment-question-group.is-active") || tabs.querySelector(".qb-assignment-tab.is-active");
+        if (!activeTab) return;
+        var targetLeft = activeTab.offsetLeft - (tabs.clientWidth - activeTab.clientWidth) / 2;
+        tabs.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" });
+      });
+    } else tabs.scrollLeft = previousScrollLeft;
   }
 
   function appendStepControls(panel, id) {
@@ -472,16 +493,19 @@
     if (isMultipart) {
       var parts = document.createElement("div"); parts.className = "qb-response-parts";
       partDefinitions.forEach(function (definition, partIndex) {
+        var draftKey = id + "\u0000" + definition.label;
+        var hasDraft = Object.prototype.hasOwnProperty.call(partDrafts, draftKey);
         var row = document.createElement("div"); row.className = "qb-response-part" + (definition.mode === "whiteboard" ? " qb-response-part-whiteboard" : ""); row.dataset.partKey = definition.label;
         var labelBadge = document.createElement("strong"); labelBadge.textContent = partLabel(definition.label);
         var content = document.createElement("div"); content.className = "qb-response-part-content";
         if (definition.mode === "whiteboard") {
           var confirmation = document.createElement("span"); confirmation.className = "qb-whiteboard-confirm";
-          var checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = Boolean(item.response && item.response.parts && item.response.parts[definition.label] === "__whiteboard__");
+          var checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.checked = hasDraft ? Boolean(partDrafts[draftKey]) : Boolean(item.response && item.response.parts && item.response.parts[definition.label] === "__whiteboard__");
+          checkbox.addEventListener("change", function () { partDrafts[draftKey] = checkbox.checked; });
           var confirmationCopy = document.createElement("span"); confirmationCopy.textContent = "I completed this part on the whiteboard or paper";
           confirmation.appendChild(checkbox); confirmation.appendChild(confirmationCopy); partInputs[definition.label] = checkbox; content.appendChild(confirmation);
         } else if (definition.mode === "multiple_choice") {
-          var choiceState = { value: item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : "" };
+          var choiceState = { value: hasDraft ? String(partDrafts[draftKey] || "") : item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : "" };
           var options = document.createElement("div"); options.className = "qb-response-options qb-response-part-options";
           var choiceItems = definition.options.map(function (optionText, index) {
             return { optionText: optionText, storedValue: definition.rawOptions[index] || optionText };
@@ -489,14 +513,15 @@
           orderedChoices(choiceItems, String(item.optionSeed || "") + ":" + id + ":" + definition.label).forEach(function (choiceItem) {
             var choiceLabel = document.createElement("label"); choiceLabel.className = "qb-response-option";
             var choice = document.createElement("input"); choice.type = "radio"; choice.name = "answer-" + id + "-" + definition.label; choice.checked = choiceState.value === choiceItem.storedValue || choiceState.value === choiceItem.optionText;
-            choice.addEventListener("change", function () { choiceState.value = choiceItem.storedValue; });
+            choice.addEventListener("change", function () { choiceState.value = choiceItem.storedValue; partDrafts[draftKey] = choiceItem.storedValue; });
             var choiceCopy = document.createElement("span"); renderAnswer(choiceCopy, choiceItem.optionText);
             choiceLabel.appendChild(choice); choiceLabel.appendChild(choiceCopy); options.appendChild(choiceLabel);
           });
           partInputs[definition.label] = choiceState; content.appendChild(options);
         } else {
           var input = document.createElement("input"); input.type = "text"; input.maxLength = 500; input.inputMode = "text"; input.placeholder = "Enter your answer for " + partLabel(definition.label).toLowerCase();
-          input.value = item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : (partIndex === 0 && item.response ? String(item.response.text || "") : "");
+          input.value = hasDraft ? String(partDrafts[draftKey] || "") : item.response && item.response.parts ? String(item.response.parts[definition.label] || "") : (partIndex === 0 && item.response ? String(item.response.text || "") : "");
+          input.addEventListener("input", function () { partDrafts[draftKey] = input.value; });
           partInputs[definition.label] = input; mathInputs.push(input); content.appendChild(input);
         }
         var savedPartState = multipartPartState(item, definition.label);
@@ -514,11 +539,28 @@
             partStatus.textContent = definition.mode === "whiteboard" ? "Confirm that this part is on your whiteboard or paper." : "Choose or enter an answer for this part.";
             return;
           }
-          partButton.disabled = true; partStatus.className = "qb-response-status"; partStatus.textContent = "Saving…";
+          partButton.disabled = true;
+          row.setAttribute("aria-busy", "true");
+          content.querySelectorAll("input").forEach(function (partInput) { partInput.disabled = true; });
+          partStatus.className = "qb-response-status"; partStatus.textContent = "Saving…";
           window.parent.postMessage({ type: "mrflynnib-assignment-response-save", questionId: id, response: { partKey: definition.label, partAnswer: answer } }, window.location.origin);
         });
         actions.appendChild(partButton); actions.appendChild(partStatus); content.appendChild(actions);
-        row.appendChild(labelBadge); row.appendChild(content); parts.appendChild(row);
+        row.appendChild(labelBadge); row.appendChild(content);
+        if (savedPartState.result === "correct") {
+          row.classList.add("has-toggle");
+          var summary = document.createElement("span"); summary.className = "qb-response-part-summary"; summary.textContent = "Correct ✓"; row.appendChild(summary);
+          var toggle = document.createElement("button"); toggle.type = "button"; toggle.className = "qb-response-part-toggle";
+          var isCollapsed = collapsedParts[draftKey] !== false;
+          function updateCollapsedPart() {
+            row.classList.toggle("is-collapsed", isCollapsed);
+            toggle.textContent = isCollapsed ? "Review" : "Collapse";
+            toggle.setAttribute("aria-expanded", isCollapsed ? "false" : "true");
+          }
+          toggle.addEventListener("click", function () { isCollapsed = !isCollapsed; collapsedParts[draftKey] = isCollapsed; updateCollapsedPart(); });
+          updateCollapsedPart(); row.appendChild(toggle);
+        }
+        parts.appendChild(row);
       });
       panel.appendChild(parts);
     } else if (item.responseType === "multiple_choice") {
@@ -582,10 +624,10 @@
 
   function decorateAll() {
     reorderCards();
-    document.querySelectorAll(".qb-card").forEach(decorate);
-    renderNavigation();
+    document.querySelectorAll("#qb-list>.qb-card").forEach(decorate);
     if (view === "step") goToQuestion(activeId || orderedIds[0], false);
-    window.setTimeout(function () { document.querySelectorAll(".qb-card").forEach(openWhiteboardPreview); }, 40);
+    else renderNavigation();
+    window.setTimeout(function () { document.querySelectorAll("#qb-list>.qb-card").forEach(openWhiteboardPreview); }, 40);
   }
 
   window.addEventListener("message", function (event) {
@@ -601,19 +643,30 @@
     if (event.data.type === "mrflynnib-assignment-response-result") {
       var item = state[event.data.questionId];
       if (!item) return;
+      if (!event.data.ok && event.data.pending) {
+        var pendingPart = event.data.response && String(event.data.response.partKey || "");
+        var pendingSelector = '.qb-card[data-id="' + CSS.escape(event.data.questionId) + '"] ' + (pendingPart ? '.qb-response-part[data-part-key="' + CSS.escape(pendingPart) + '"] ' : '') + '.qb-response-status';
+        var pending = document.querySelector(pendingSelector);
+        if (pending) {
+          pending.className = "qb-response-status";
+          pending.textContent = "Saving securely…";
+        }
+        return;
+      }
       if (!event.data.ok && event.data.queued) {
         var queuedPart = event.data.response && String(event.data.response.partKey || "");
         var queuedSelector = '.qb-card[data-id="' + CSS.escape(event.data.questionId) + '"] ' + (queuedPart ? '.qb-response-part[data-part-key="' + CSS.escape(queuedPart) + '"] ' : '') + '.qb-response-status';
         var queued = document.querySelector(queuedSelector);
         if (queued) {
           queued.className = "qb-response-status";
-          queued.textContent = "Saved on this device. Waiting to reconnect…";
+          queued.textContent = "Still saving. We will retry automatically.";
         }
         return;
       }
       if (event.data.ok) {
         var submittedPart = event.data.response && String(event.data.response.partKey || "");
         if (submittedPart) {
+          delete partDrafts[event.data.questionId + "\u0000" + submittedPart];
           item.response = item.response && typeof item.response === "object" ? item.response : {};
           item.response.parts = item.response.parts && typeof item.response.parts === "object" ? item.response.parts : {};
           item.response._partStates = item.response._partStates && typeof item.response._partStates === "object" ? item.response._partStates : {};
@@ -646,7 +699,12 @@
     }
   });
 
-  new MutationObserver(function () { window.requestAnimationFrame(decorateAll); }).observe(list, { childList: true, subtree: true });
+  var decorateScheduled = false;
+  new MutationObserver(function () {
+    if (decorateScheduled) return;
+    decorateScheduled = true;
+    window.requestAnimationFrame(function () { decorateScheduled = false; decorateAll(); });
+  }).observe(list, { childList: true, subtree: true });
   window.setTimeout(decorateAll, 0);
   window.setTimeout(decorateAll, 300);
   window.setTimeout(decorateAll, 1000);
