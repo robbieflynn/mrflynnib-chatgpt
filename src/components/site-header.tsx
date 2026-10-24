@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { navItems, siteConfig } from "@/lib/site";
@@ -21,12 +20,6 @@ export function SiteHeader() {
             <HeaderAccountLink className="button button-small header-login-button" />
           </Suspense>
         </nav>
-        <div className="tuition-partner-group">
-          <Link href="/go/ib-tutors" className="header-tuition-link">One-to-One tuition</Link>
-          <Link className="tuition-partner-logo" href="/go/ib-tutors" aria-label="Visit IB Tutors at The Tuition Centre">
-            <Image src="/images/ib-tutors-logo.jpeg" alt="IB Tutors, from The Tuition Centre" width={1448} height={1086} priority />
-          </Link>
-        </div>
         <MobileNavigation />
       </Container>
     </header>

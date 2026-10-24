@@ -1,66 +1,113 @@
 import type { Metadata } from "next";
 import { EnquiryForm } from "@/components/enquiry-form";
-import { SchoolTierLink } from "@/components/school-tier-link";
-import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 
-export const metadata: Metadata = { title: "IB Mathematics school licences", description: "Two-year access to a selected Mr Flynn IB Mathematics course for classes, departments and school cohorts." };
+export const metadata: Metadata = {
+  title: "IB Mathematics for schools",
+  description: "Free classroom tools, assignments, test making and optional IB Mathematics course access for schools and departments.",
+};
 
-const tiers = [
-  { students: "10", range: "Licences 1–24", each: "$50" },
-  { students: "25", range: "Licences 25–49", each: "$40" },
-  { students: "50", range: "Licences 50–99", each: "$30" },
-  { students: "100", range: "Licence 100 onward", each: "$20" },
-];
+const teacherTools = [
+  { number: "01", title: "Classes and assignments", body: "Create a class, invite students with a code and set work from the question bank.", className: "school-tool-classes" },
+  { number: "02", title: "Question bank and whiteboards", body: "Students answer questions and can show their working on the built-in whiteboard.", className: "school-tool-bank" },
+  { number: "03", title: "IB Test Maker", body: "Build printable assessments and mark schemes from selected questions in a few steps.", className: "school-tool-tests" },
+  { number: "04", title: "Progress and analysis", body: "Review assignment history, student performance and question-level results in one place.", className: "school-tool-progress" },
+] as const;
 
 export default function SchoolsPage() {
   return (
     <>
-      <section className="schools-hero">
+      <section className="schools-hero schools-hero-v2">
         <Container className="schools-hero-shell">
           <Breadcrumbs items={[{ label: "Schools" }]} />
           <div className="schools-hero-layout">
-            <div className="schools-hero-heading stack">
-              <Eyebrow>For schools</Eyebrow>
-              <h1>Give every IB Mathematics student another clear explanation.</h1>
-            </div>
-            <div className="schools-hero-details stack-lg">
-              <p className="lede">Two-year access for a defined student cohort, with straightforward pricing.</p>
-              <a className="button" href="#school-options">See school options</a>
-              <div className="school-course-stack">
-                <span>Available course options</span>
-                <p>Each student receives one selected course.</p>
-                <div><strong>AA HL</strong><small>Analysis &amp; Approaches</small></div>
-                <div><strong>AA SL</strong><small>Analysis &amp; Approaches</small></div>
-                <div><strong>AI HL</strong><small>Applications &amp; Interpretation</small></div>
-                <div><strong>AI SL</strong><small>Applications &amp; Interpretation</small></div>
+            <div className="schools-hero-heading stack-lg">
+              <Eyebrow>For IB Mathematics departments</Eyebrow>
+              <h1>Better tools for teachers. Clearer support for students.</h1>
+              <p className="lede">Create classes, set work, review performance and build assessments. Add complete course access when your students need it.</p>
+              <div className="cluster">
+                <ButtonLink href="/account?next=/teacher&mode=sign-up">Create a free teacher account</ButtonLink>
+                <ButtonLink href="#school-enquiry" secondary>Ask about school access</ButtonLink>
               </div>
+            </div>
+            <div className="school-workspace-preview" aria-label="Mr Flynn IB school tools">
+              <div className="school-preview-heading"><span>Teacher workspace</span><strong>Year 12 AA HL</strong></div>
+              <div className="school-preview-stat school-preview-stat-wide"><small>Assignment overview</small><strong>24 students</strong><span>Class progress and question-level results</span></div>
+              <div className="school-preview-stat"><small>Question bank</small><strong>2,380</strong><span>AA HL questions</span></div>
+              <div className="school-preview-stat"><small>Test Maker</small><strong>Ready</strong><span>Paper, mark scheme and analysis</span></div>
+              <div className="school-preview-footer"><span>Classes</span><span>Assignments</span><span>Tests</span></div>
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="school-benefit-strip"><Container className="grid-3"><article><strong>Two-year access</strong><span>Support students throughout their complete IB course.</span></article><article><strong>One school invoice</strong><span>Simple purchasing for each student cohort.</span></article><article><strong>Independent support</strong><span>Students can revisit explanations outside lesson time.</span></article></Container></section>
+      <section className="school-benefit-strip">
+        <Container className="grid-3">
+          <article><strong>Teacher tools are free</strong><span>Start using classes, assignments and Test Maker without a school purchase.</span></article>
+          <article><strong>Simple student joining</strong><span>Students use a class code and work from their existing account.</span></article>
+          <article><strong>Course access is optional</strong><span>Add complete video-course licences only for the students who need them.</span></article>
+        </Container>
+      </section>
 
-      <section id="school-options" className="section school-pricing-section">
+      <section className="section school-tools-section">
         <Container className="stack-xl">
           <div className="section-heading-row">
-            <div className="stack"><Eyebrow>Two-year school pricing</Eyebrow><h2>Choose the cohort size that fits.</h2></div>
-            <p className="lede">Pricing is graduated: each rate applies only to the licences within that band.</p>
+            <div className="stack"><Eyebrow>Teacher workspace</Eyebrow><h2>Set work, see progress and build assessments.</h2></div>
+            <p className="lede">The day-to-day classroom tools are designed to be useful immediately, without requiring a paid school package.</p>
           </div>
-          <div className="school-tier-grid">
-            {tiers.map((tier) => (
-              <article className="school-tier" key={tier.students}>
-                <small>{tier.range}</small>
-                <div className="tier-price"><strong>{tier.each}</strong><span>per licence in this band / two years</span></div>
-                <SchoolTierLink students={tier.students} />
+          <div className="school-tool-grid">
+            {teacherTools.map((tool) => (
+              <article className={`school-tool-card ${tool.className}`} key={tool.title}>
+                <span>{tool.number}</span>
+                <div className="stack"><h3>{tool.title}</h3><p>{tool.body}</p></div>
               </article>
             ))}
           </div>
-          <p className="pricing-note"><strong>Minimum order: 10 student licences.</strong> Lower rates apply only to the licences within each band, so the total never decreases when another student is added. Course allocation, access dates and provisioning are confirmed with the school before invoicing.</p>
         </Container>
       </section>
 
-      <section id="school-enquiry" className="section"><Container className="split"><div className="stack-lg"><Eyebrow>Request school access</Eyebrow><h2>Tell us about your cohort.</h2><p className="lede">Share the likely number of students, courses and year groups. We will confirm the right package and practical setup before any invoice is issued.</p></div><EnquiryForm kind="school" /></Container></section>
+      <section className="section school-access-section" id="school-options">
+        <Container className="stack-xl">
+          <div className="section-heading-row">
+            <div className="stack"><Eyebrow>Choose the right starting point</Eyebrow><h2>Use the teaching tools free. Add courses when needed.</h2></div>
+            <p className="lede">A school does not need to purchase course licences before its teachers can create classes or set assignments.</p>
+          </div>
+          <div className="school-access-grid">
+            <article className="school-access-card school-access-free">
+              <small>For every teacher</small>
+              <h3>Free classroom tools</h3>
+              <p>Create classes, set question-bank assignments, review student work and prepare printable assessments.</p>
+              <ul className="check-list"><li>Teacher accounts and class codes</li><li>Assignments and student whiteboards</li><li>IB Test Maker and mark schemes</li><li>Class and question-level analysis</li></ul>
+              <ButtonLink href="/account?next=/teacher&mode=sign-up">Create a teacher account</ButtonLink>
+            </article>
+            <article className="school-access-card school-access-paid">
+              <small>For school cohorts</small>
+              <h3>Complete course access</h3>
+              <p>Add structured video lessons and in-lesson practice for selected students across AA HL, AA SL, AI HL or AI SL.</p>
+              <ul className="check-list"><li>Complete course for each selected pathway</li><li>Video lessons and lesson practice</li><li>Access arranged for your student cohort</li><li>School quotation and invoicing</li></ul>
+              <ButtonLink href="#school-enquiry" secondary>Ask about course licences</ButtonLink>
+            </article>
+          </div>
+        </Container>
+      </section>
+
+      <section className="section school-flow-section">
+        <Container className="stack-xl">
+          <div className="stack school-flow-heading"><Eyebrow>How it works</Eyebrow><h2>A straightforward classroom setup.</h2></div>
+          <div className="school-flow-grid">
+            <article><span>1</span><div><strong>Create a class</strong><p>A teacher opens a free account and creates a separate class for each group.</p></div></article>
+            <article><span>2</span><div><strong>Students join</strong><p>Students enter the class code and see assignments in their Learning home.</p></div></article>
+            <article><span>3</span><div><strong>Add course access if needed</strong><p>Contact us when a cohort would benefit from the complete video course.</p></div></article>
+          </div>
+        </Container>
+      </section>
+
+      <section id="school-enquiry" className="section school-enquiry-section">
+        <Container className="split">
+          <div className="stack-lg"><Eyebrow>School enquiries</Eyebrow><h2>Tell us what your department needs.</h2><p className="lede">Share your courses, likely student numbers and how you hope to use Mr Flynn IB. We will recommend a practical setup and confirm any course-access quotation before you commit.</p></div>
+          <EnquiryForm kind="school" />
+        </Container>
+      </section>
     </>
   );
 }

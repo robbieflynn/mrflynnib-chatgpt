@@ -16,7 +16,7 @@ const mainOffers = [
   },
   {
     number: "02",
-    label: "Free to use",
+    label: "Independent practice",
     title: "Question bank",
     body: "Thousands of IB Mathematics questions organised by course, topic and difficulty.",
     href: "/question-bank",
@@ -31,24 +31,6 @@ const mainOffers = [
     href: "/schools",
     cta: "View school options",
     className: "offer-card-school",
-  },
-  {
-    number: "04",
-    label: "Personal support",
-    title: "Tutoring",
-    body: "Contact Mr Flynn IB directly to discuss focused individual support and current availability.",
-    href: "/tutoring",
-    cta: "Ask about tutoring",
-    className: "offer-card-support",
-  },
-  {
-    number: "05",
-    label: "With IB Tutors",
-    title: "One-to-One Tuition with IB Tutors",
-    body: "Specialist support in Physics, Chemistry, Biology and Maths.",
-    href: "/go/ib-tutors",
-    cta: "Explore IB Tutors",
-    className: "offer-card-partner",
   },
 ] as const;
 
@@ -65,22 +47,24 @@ export default function HomePage() {
   return (
     <>
       <section className="new-hero new-hero-simple home-connected-hero">
-        <div className="hero-math hero-math-one" aria-hidden="true">𝑓(𝑥)</div>
-        <div className="hero-math hero-math-two" aria-hidden="true">∫</div>
-        <svg className="hero-graph" viewBox="0 0 640 280" fill="none" aria-hidden="true" focusable="false">
+        <svg className="hero-graph hero-graph-refined" viewBox="0 0 760 340" fill="none" aria-hidden="true" focusable="false">
           <defs>
             <linearGradient id="hero-graph-fade" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="white" stopOpacity="0" />
+              <stop offset="0" stopColor="white" stopOpacity="0.08" />
+              <stop offset="0.42" stopColor="white" stopOpacity="0.72" />
               <stop offset="1" stopColor="white" stopOpacity="1" />
             </linearGradient>
             <mask id="hero-graph-mask">
-              <rect width="640" height="280" fill="url(#hero-graph-fade)" />
+              <rect width="760" height="340" fill="url(#hero-graph-fade)" />
             </mask>
           </defs>
           <g mask="url(#hero-graph-mask)" stroke="currentColor">
-            <path d="M0 60H640M0 120H640M0 180H640M0 240H640M100 0V280M200 0V280M300 0V280M400 0V280M500 0V280M600 0V280" strokeOpacity=".07" />
-            <path d="M0 260C150 260 235 235 320 170S505 110 640 10" strokeWidth="1.5" strokeOpacity=".23" />
+            <path d="M0 60H760M0 120H760M0 180H760M0 240H760M0 300H760M80 0V340M160 0V340M240 0V340M320 0V340M400 0V340M480 0V340M560 0V340M640 0V340M720 0V340" strokeOpacity=".055" />
+            <path d="M0 284H760M164 0V340" strokeWidth="1.2" strokeOpacity=".12" />
+            <path d="M20 300C124 296 180 282 244 236C326 177 377 91 454 88C548 84 574 211 742 24" strokeWidth="2" strokeOpacity=".23" />
+            <path d="M88 236C154 164 218 164 284 236C350 308 414 308 480 236C546 164 610 164 676 236" strokeWidth="1.4" strokeOpacity=".11" />
           </g>
+          <g fill="currentColor" opacity=".28"><circle cx="244" cy="236" r="4" /><circle cx="454" cy="88" r="4" /><circle cx="606" cy="159" r="4" /></g>
         </svg>
         <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
@@ -92,9 +76,7 @@ export default function HomePage() {
               Complete courses, thousands of practice questions and trusted support, built specifically for IB Mathematics.
             </p>
             <div className="cluster hero-actions">
-              <ButtonLink href="/account?mode=sign-up">Start free</ButtonLink>
-              <ButtonLink href="/courses" secondary>Explore courses</ButtonLink>
-              <Link href="/go/ib-tutors" className="button tuition-button">One-to-One tuition <span aria-hidden="true">↗</span></Link>
+              <ButtonLink href="#offers">Start here</ButtonLink>
             </div>
           </div>
         </Container>
@@ -102,9 +84,9 @@ export default function HomePage() {
 
       <section className="section offers-section" id="offers">
         <Container className="stack-xl">
-          <div className="home-section-intro">
-            <span className="home-section-number" aria-hidden="true">01</span>
-            <div><Eyebrow>Courses, practice and support</Eyebrow><h2>Choose where to begin.</h2><p>Start with the course, practise independently, explore school access or find individual support.</p></div>
+          <div className="homepage-route-heading">
+            <Eyebrow>Explore Mr Flynn IB</Eyebrow>
+            <div><h2>What would you like to do?</h2><p>Follow a complete course, practise independently or explore access for your school.</p></div>
           </div>
           <div className="offer-grid">
             {mainOffers.map((offer) => (
