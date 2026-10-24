@@ -81,7 +81,6 @@ export async function POST(request: Request) {
 
   const params = new URLSearchParams({
     mode: "payment",
-    "payment_method_types[0]": "card",
     "line_items[0][price]": price,
     "line_items[0][quantity]": "1",
     allow_promotion_codes: "true",
@@ -115,6 +114,14 @@ export async function POST(request: Request) {
   });
   const checkout = await response.json().catch(() => ({}));
   if (!response.ok || typeof checkout.url !== "string") {
+    const stripeError = checkout?.error;
+    console.error("Stripe checkout session creation failed", {
+      status: response.status,
+      type: typeof stripeError?.type === "string" ? stripeError.type : undefined,
+      code: typeof stripeError?.code === "string" ? stripeError.code : undefined,
+      param: typeof stripeError?.param === "string" ? stripeError.param : undefined,
+      requestId: response.headers.get("request-id") || undefined,
+    });
     return NextResponse.json({ error: "Checkout could not be started. Please try again." }, { status: 502 });
   }
   return NextResponse.json({ url: checkout.url }, { headers: { "Cache-Control": "private, no-store" } });
