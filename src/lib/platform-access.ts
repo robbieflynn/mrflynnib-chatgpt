@@ -79,7 +79,7 @@ export function platformAccessSummary(
   if (!primary) {
     return {
       label: "Free account",
-      detail: "Question bank and classroom access",
+      detail: "Complete question bank and classroom tools",
       paid: false,
     };
   }

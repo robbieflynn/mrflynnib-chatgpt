@@ -129,11 +129,16 @@ const courses = Object.fromEntries(courseDefinitions.map((definition) => {
 const validPreviewCourseId = courseDefinitions.some((definition) => definition.id === previewCourseId)
   ? previewCourseId
   : null;
-const defaultCourseId = reviewCurriculum === "igcse" || requestedCurriculum === "igcse" ? "igcse" : validPreviewCourseId || "aa-hl";
+const requestedReviewCourseId = courseDefinitions.some((definition) => definition.id === requestedCourseId)
+  ? requestedCourseId
+  : null;
+const defaultCourseId = reviewCurriculum === "igcse" || requestedCurriculum === "igcse"
+  ? "igcse"
+  : requestedReviewCourseId || validPreviewCourseId || "aa-hl";
 let enrolledCourseIds = reviewerMode
-  ? courseDefinitions.filter((definition) => reviewCurriculum === "igcse" ? definition.id === "igcse" : definition.id !== "igcse").map((definition) => definition.id)
+  ? [defaultCourseId]
   : [defaultCourseId];
-let ownedCourseIds = [...enrolledCourseIds];
+let ownedCourseIds = reviewerMode || salesPreviewMode ? [] : [...enrolledCourseIds];
 let enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
 let enrolledCourseId = defaultCourseId;
 let platformAccount = null;
@@ -318,16 +323,16 @@ function configurePreviewMode() {
   document.body.classList.toggle("igcse-learning", isIgcse);
   document.title = `${isIgcse ? "IGCSE" : "IB"} platform review | Mr Flynn IB`;
   document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : courses[currentCourseId].name;
-  document.getElementById("welcomeEyebrow").textContent = "Private review";
-  document.getElementById("welcomeTitle").textContent = isIgcse ? "Review the IGCSE course" : `Review the ${courses[currentCourseId].code} course`;
-  document.getElementById("welcomeCopy").textContent = "Inspect the course lessons, practice, past-paper solutions and course progress in one place.";
-  document.getElementById("libraryStatusText").textContent = "Complete course pathway";
-  document.getElementById("enrolmentEyebrow").textContent = "Selected course";
+  document.getElementById("welcomeEyebrow").textContent = "Free course preview";
+  document.getElementById("welcomeTitle").textContent = isIgcse ? "Try the IGCSE course" : `Try the ${courses[currentCourseId].code} course`;
+  document.getElementById("welcomeCopy").textContent = "Three complete lessons are free. Each includes the video and its attached practice questions.";
+  document.getElementById("libraryStatusText").textContent = "3 complete lessons free";
+  document.getElementById("enrolmentEyebrow").textContent = "Your selected course";
   document.getElementById("dashboardCoursesTitle").textContent = courses[currentCourseId].name;
-  document.getElementById("dashboardCoursesButton").textContent = "Open course →";
-  document.getElementById("coursesEyebrow").textContent = "Private course review";
-  document.getElementById("coursesTitle").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
-  document.getElementById("coursesDescription").textContent = isIgcse ? "Inspect the complete IGCSE lesson structure and mapped practice in its own learning area." : "Inspect AA HL, AA SL, AI HL and AI SL as a dedicated IB course catalogue.";
+  document.getElementById("dashboardCoursesButton").textContent = "View syllabus →";
+  document.getElementById("coursesEyebrow").textContent = "My course";
+  document.getElementById("coursesTitle").textContent = courses[currentCourseId].name;
+  document.getElementById("coursesDescription").textContent = "Free lessons are ready to watch. The complete syllabus stays visible so you can see exactly what full course access includes.";
   document.getElementById("courseBackButton").textContent = "← My course";
   document.getElementById("summaryTopics").textContent = String(enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].topics.length, 0));
   document.getElementById("summaryTopicsLabel").textContent = "course topics";
@@ -376,7 +381,8 @@ function isSampleLesson(lesson, course = currentCourse) {
 }
 
 function lessonIsAvailable(lesson) {
-  if (reviewerMode || validPreviewCourseId && !salesPreviewMode) return true;
+  if (reviewerMode || salesPreviewMode) return isSampleLesson(lesson);
+  if (validPreviewCourseId && !salesPreviewMode) return true;
   if (ownedCourseIds.includes(currentCourseId)) return true;
   return salesPreviewLessons().some((sample) => sample.id === lesson.id);
 }
@@ -412,7 +418,7 @@ function setView(viewName) {
 function courseCard(course, large = false) {
   const completed = completedFor(course);
   const percentage = percentFor(course);
-  const owned = ownedCourseIds.includes(course.id) || reviewerMode || validPreviewCourseId === course.id && !salesPreviewMode;
+  const owned = ownedCourseIds.includes(course.id) || validPreviewCourseId === course.id && !salesPreviewMode;
   return `<button type="button" class="course-card ${large ? "is-large" : ""} ${owned ? "has-access" : "is-sample"} accent-${course.accent}" data-course-id="${course.id}" aria-label="Open ${escapeHtml(course.code)} course">
     <div class="course-card-art">
       ${courseArtwork(course)}
@@ -422,7 +428,7 @@ function courseCard(course, large = false) {
       <h3>${course.name}</h3>
       <p>${course.description}</p>
       <div class="course-card-progress"><span style="width:${percentage}%"></span></div>
-      <div class="course-card-footer"><small>${owned ? `${completed} of ${course.lessons.length} completed` : "Three sample lessons included"}</small><span class="course-card-link">${owned ? "Open course" : "Try course"} →</span></div>
+      <div class="course-card-footer"><small>${owned ? `${completed} of ${course.lessons.length} completed` : "3 complete lessons free"}</small><span class="course-card-link">${owned ? "Open course" : "Try free lessons"} →</span></div>
     </div>
   </button>`;
 }
@@ -661,7 +667,7 @@ function renderLessonList(query = "") {
     const locked = !lessonIsAvailable(lesson);
     return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? "Locked lesson: " : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
       <span class="lesson-state">${locked ? "⌑" : complete ? "✓" : "▶"}</span>
-      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? "Full course" : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice" : ""}${isSampleLesson(lesson) ? " · Free sample" : ""}`}</small></span>
+      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? "Complete course" : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Free lesson" : ""}`}</small></span>
     </button>`;
   }).join("");
 }

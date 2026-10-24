@@ -101,7 +101,10 @@ export default function HomePage() {
 
       <section className="section offers-section" id="offers">
         <Container className="stack-xl">
-          <h2>What do you need today?</h2>
+          <div className="home-section-intro">
+            <span className="home-section-number" aria-hidden="true">01</span>
+            <div><Eyebrow>Choose where to begin</Eyebrow><h2>What do you need today?</h2><p>Learn the course, practise independently or find support for your school.</p></div>
+          </div>
           <div className="offer-grid">
             {mainOffers.map((offer) => (
               <Link className={`offer-card ${offer.className}`.trim()} href={offer.href} key={offer.title}>

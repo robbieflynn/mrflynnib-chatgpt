@@ -43,9 +43,9 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
   const courseCode = isIgcse ? "IGCSE" : "AA HL";
   const className = isIgcse ? "Year 11 IGCSE" : "Year 12 AA HL";
   const courseName = isIgcse ? "Edexcel IGCSE Mathematics" : "Analysis & Approaches HL";
-  const continueTopic = isIgcse ? "Topic 2 · Algebra" : "Topic 1 · Number and algebra";
-  const continueLesson = isIgcse ? "Quadratic graphs" : "Maclaurin series";
-  const continueDetail = isIgcse ? "Next: completing the square" : "Next: using standard expansions";
+  const continueTopic = isIgcse ? "Topic 1 · Number" : "Topic 1 · Number and algebra";
+  const continueLesson = isIgcse ? "Fractions" : "Scientific notation";
+  const continueDetail = "Free lesson · Video and practice included";
   const courseReviewHref = isIgcse ? "/learn/index.html?v=igcse-platform-review" : "/learn/index.html?v=ib-platform-review";
   const questionBankHref = isIgcse ? "/igcse/question-bank" : "/question-bank/aa-hl?review=platform";
   const assignmentHref = reviewHref(curriculum, "student", "assignment");
@@ -54,7 +54,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
     <section className={`dashboard-hero student-dashboard-hero student-home-v2-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
       <Container className="dashboard-hero-shell">
         <div className="dashboard-account-row">
-          <div className="platform-access-summary"><span>Free account</span><small>Question bank and classroom access</small><Link href={`${isIgcse ? "/igcse" : ""}/account/access`}>Explore course access</Link></div>
+          <div className="platform-access-summary"><span>Free account</span><small>Full question bank and classroom access</small><Link href={`${isIgcse ? "/igcse" : ""}/account/access`}>Explore course access</Link></div>
           <div className="platform-review-account"><span>MF</span><strong>Maya Flynn</strong><small>Student</small></div>
         </div>
         <div className="dashboard-hero-layout">
@@ -74,13 +74,13 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <article className="student-continue-card">
             <div className="student-continue-copy"><span className="student-focus-label">Continue learning</span><small>{continueTopic}</small><h2>{continueLesson}</h2><p>{continueDetail}</p><Link className="student-inline-action" href={courseReviewHref}>Open lesson <span aria-hidden="true">→</span></Link></div>
             {!isIgcse ? <Image src="/learn/assets/course-aa-hl.png" alt="" width={250} height={250} loading="eager" /> : <div className="student-continue-symbol" aria-hidden="true">x²</div>}
-            <div className="student-continue-meter"><span><strong>31%</strong> of course complete</span><i><b style={{ width: "31%" }} /></i></div>
+            <div className="student-continue-meter"><span><strong>1 of 3</strong> free lessons complete</span><i><b style={{ width: "33%" }} /></i></div>
           </article>
         </section>
 
         <nav className="student-platform-nav student-platform-nav-v2" aria-label="Your learning areas">
-          <Link className="is-course" href={courseReviewHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>Lessons and practice</small></span><b aria-hidden="true">→</b></Link>
-          <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Independent practice</small></span><b aria-hidden="true">→</b></Link>
+          <Link className="is-course" href={courseReviewHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>3 complete lessons free</small></span><b aria-hidden="true">→</b></Link>
+          <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>All questions free</small></span><b aria-hidden="true">→</b></Link>
           <Link className="is-assignments" href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Two due soon</small></span><b aria-hidden="true">↓</b></Link>
           <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
         </nav>
@@ -94,18 +94,18 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
         </section>
 
         <section className="student-progress-overview student-home-section stack-lg" id="progress" aria-labelledby="student-progress-heading">
-          <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Two parts of your learning</h2></div><p className="muted">Course lessons and question-bank practice are measured separately.</p></div>
+          <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Your progress</h2></div><p className="muted">Course lessons and question-bank practice are kept separate, so each number is meaningful.</p></div>
           <div className="student-progress-grid student-progress-grid-v2">
             <article className="student-progress-summary is-course-progress">
-              <div><p className="student-dashboard-kicker">Course progress</p><strong className="student-progress-number">31%</strong><span>{courseName}</span></div>
-              <div className="student-progress-ring" style={{ "--student-progress": "112deg" } as CSSProperties}><span>31%</span></div>
-              <dl><div><dt>Lessons</dt><dd>67</dd></div><div><dt>Practice sets</dt><dd>54</dd></div><div><dt>Current topic</dt><dd>Calculus</dd></div></dl>
+              <div><p className="student-dashboard-kicker">Free course preview</p><strong className="student-progress-number">1 of 3</strong><span>{courseName}</span></div>
+              <div className="student-progress-ring" style={{ "--student-progress": "119deg" } as CSSProperties}><span>33%</span></div>
+              <dl><div><dt>Lessons watched</dt><dd>1</dd></div><div><dt>Practice sets</dt><dd>1</dd></div><div><dt>Free lessons left</dt><dd>2</dd></div></dl>
               <Link className="student-inline-action" href={courseReviewHref}>Continue course →</Link>
             </article>
             <article className="student-progress-summary is-bank-progress">
-              <div><p className="student-dashboard-kicker">Question bank progress</p><strong className="student-progress-number">24%</strong><span>{courseCode} independent practice</span></div>
-              <div className="student-progress-ring" style={{ "--student-progress": "86deg" } as CSSProperties}><span>24%</span></div>
-              <dl><div><dt>Questions</dt><dd>126</dd></div><div><dt>Whiteboards</dt><dd>18</dd></div><div><dt>Assignments</dt><dd>4</dd></div></dl>
+              <div><p className="student-dashboard-kicker">Question bank progress</p><strong className="student-progress-number">126</strong><span>questions completed</span></div>
+              <div className="student-progress-ring" style={{ "--student-progress": "19deg" } as CSSProperties}><span>5%</span></div>
+              <dl><div><dt>Topics practised</dt><dd>5</dd></div><div><dt>Saved whiteboards</dt><dd>18</dd></div><div><dt>Bank explored</dt><dd>5%</dd></div></dl>
               <Link className="student-inline-action" href={questionBankHref}>Continue practising →</Link>
             </article>
           </div>
@@ -122,7 +122,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <details className="join-class-panel"><summary>Join another class<span aria-hidden="true">+</span></summary><div className="join-class-form"><label className="field"><span>Class code</span><input aria-label="Example class code" placeholder="ABC1234" readOnly /></label><button className="button button-small" type="button">Join class</button></div></details>
         </section>
 
-        <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for the complete course?</h2><p>Your free question bank, classes and assignments stay available. Upgrade only when you want every video lesson, lesson practice and past-paper solution.</p></div><Link className="button button-secondary" href={`${isIgcse ? "/igcse" : ""}/account/access`}>Compare course access</Link></section>
+        <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for the complete course?</h2><p>Your complete question bank, classes and assignments stay free. Upgrade only when you want every course lesson, its attached practice and the full past-paper solution library.</p></div><Link className="button button-secondary" href={`${isIgcse ? "/igcse" : ""}/account/access`}>Compare course access</Link></section>
       </Container>
     </section>
   </>;
@@ -146,7 +146,7 @@ function TeacherHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
   const course = isIgcse ? "IGCSE" : "AA HL";
   const className = isIgcse ? "Year 11 IGCSE" : "Year 12 AA HL";
   return <>
-    <section className={`dashboard-hero teacher-dashboard-hero ${isIgcse ? "teacher-dashboard-hero-igcse" : ""}`}><Container className="dashboard-hero-shell"><div className="dashboard-account-row"><div className="platform-access-summary teacher-early-access"><span>Classroom early access</span><small>Core teacher tools are currently free</small><Link href={isIgcse ? "/igcse/schools" : "/schools"}>School access</Link></div><div className="platform-review-account"><span>RF</span><strong>Mr Flynn</strong><small>Teacher</small></div></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">{isIgcse ? "IGCSE" : "IB"} teacher dashboard</span><h1>Welcome, Mr Flynn</h1><p>Create and manage your own classes. Students join with the code you share.</p></div><div className="dashboard-hero-stats"><div><strong>2</strong><span>classes</span></div><div><strong>38</strong><span>students</span></div><div><strong>9</strong><span>assignments</span></div></div></div></Container></section>
+    <section className={`dashboard-hero teacher-dashboard-hero ${isIgcse ? "teacher-dashboard-hero-igcse" : ""}`}><Container className="dashboard-hero-shell"><div className="dashboard-account-row"><div className="platform-access-summary teacher-early-access"><span>Free teacher account</span><small>Classes, assignments and Test Maker included</small><Link href={isIgcse ? "/igcse/schools" : "/schools"}>School access</Link></div><div className="platform-review-account"><span>RF</span><strong>Mr Flynn</strong><small>Teacher</small></div></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">{isIgcse ? "IGCSE" : "IB"} teacher dashboard</span><h1>Welcome, Mr Flynn</h1><p>Create and manage your own classes. Students join with the code you share.</p></div><div className="dashboard-hero-stats"><div><strong>2</strong><span>classes</span></div><div><strong>38</strong><span>students</span></div><div><strong>9</strong><span>assignments</span></div></div></div></Container></section>
     <section className={`section-tight teacher-dashboard ${isIgcse ? "igcse-teacher-dashboard" : ""}`}><Container className="stack-xl">
       <nav className="platform-review-teacher-actions"><Link href={reviewHref(curriculum, "teacher", "class")}><DashboardIcon name="class" /><span><strong>Open a class</strong><small>Students, assignments and class performance</small></span><b>→</b></Link><Link href={reviewHref(curriculum, "teacher", "set-assignment")}><DashboardIcon name="assignment" /><span><strong>Set an assignment</strong><small>Select questions and choose students</small></span><b>→</b></Link><Link href={isIgcse ? "/igcse/teacher/test-maker" : "/teacher/test-maker"}><DashboardIcon name="book" /><span><strong>{isIgcse ? "IGCSE" : "IB"} Test Maker</strong><small>Build, save and print assessments</small></span><b>→</b></Link></nav>
       <section className="teacher-tool-banner"><div className="teacher-tool-banner-icon" aria-hidden="true">T</div><div><p className="eyebrow">Teacher tools</p><h2>{isIgcse ? "IGCSE" : "IB"} Test Maker</h2><p>Select questions, then save, reuse and print a formatted paper, mark scheme and question-level analysis.</p></div><Link className="button" href={isIgcse ? "/igcse/teacher/test-maker" : "/teacher/test-maker"}>Open Test Maker</Link></section>

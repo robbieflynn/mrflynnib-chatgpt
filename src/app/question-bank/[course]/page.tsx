@@ -40,12 +40,13 @@ export default async function CourseQuestionBankPage({ params, searchParams }: {
         <Container className="stack-lg">
           <Breadcrumbs items={[{ ...dashboardLink, label: learningHomeLabel }, { label: "Question bank", href: "/question-bank" }, { label: course.code }]} />
           <div className="qb-course-page-heading">
-            <div className="stack">
-              <Eyebrow>{course.code} question bank</Eyebrow>
+            <div className="stack qb-course-title-block">
+              <div className="qb-course-meta"><Eyebrow>{course.code} question bank</Eyebrow><span>Free access</span></div>
               <h1>{course.pathway} {course.level}</h1>
               <p className="lede">
                 {course.questionCount?.toLocaleString("en-GB")} questions, organised by topic, paper and difficulty, with complete mark schemes.
               </p>
+              <div className="qb-course-highlights" aria-label="Question bank features"><span>All questions free</span><span>Complete mark schemes</span><span>Save your progress</span></div>
             </div>
             <div className="qb-course-page-actions">
               <Link className="button button-secondary button-small qb-dashboard-return" href={dashboardLink.href}>← {learningHomeLabel}</Link>
