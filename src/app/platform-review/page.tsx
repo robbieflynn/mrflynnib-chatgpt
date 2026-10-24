@@ -44,8 +44,11 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
   const className = isIgcse ? "Year 11 IGCSE" : "Year 12 AA HL";
   const courseName = isIgcse ? "Edexcel IGCSE Mathematics" : "Analysis & Approaches HL";
   const continueTopic = isIgcse ? "Topic 1 · Number" : "Topic 1 · Number and algebra";
-  const continueLesson = isIgcse ? "Fractions" : "Scientific notation";
+  const continueLesson = isIgcse ? "Surds (Expanding Brackets)" : "More exponents";
   const continueDetail = "Free lesson · Video and practice included";
+  const freeLessonCount = isIgcse ? 18 : 15;
+  const freeLessonPercentage = isIgcse ? 6 : 7;
+  const freeLessonProgress = isIgcse ? "22deg" : "25deg";
   const courseReviewHref = isIgcse ? "/learn/index.html?v=igcse-platform-review" : "/learn/index.html?v=ib-platform-review";
   const questionBankHref = isIgcse ? "/igcse/question-bank" : "/question-bank/aa-hl?review=platform";
   const assignmentHref = reviewHref(curriculum, "student", "assignment");
@@ -74,12 +77,12 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <article className="student-continue-card">
             <div className="student-continue-copy"><span className="student-focus-label">Continue learning</span><small>{continueTopic}</small><h2>{continueLesson}</h2><p>{continueDetail}</p><Link className="student-inline-action" href={courseReviewHref}>Open lesson <span aria-hidden="true">→</span></Link></div>
             {!isIgcse ? <Image src="/learn/assets/course-aa-hl.png" alt="" width={250} height={250} loading="eager" /> : <div className="student-continue-symbol" aria-hidden="true">x²</div>}
-            <div className="student-continue-meter"><span><strong>1 of 3</strong> free lessons complete</span><i><b style={{ width: "33%" }} /></i></div>
+            <div className="student-continue-meter"><span><strong>1 of {freeLessonCount}</strong> free lessons complete</span><i><b style={{ width: `${freeLessonPercentage}%` }} /></i></div>
           </article>
         </section>
 
         <nav className="student-platform-nav student-platform-nav-v2" aria-label="Your learning areas">
-          <Link className="is-course" href={courseReviewHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>3 complete lessons free</small></span><b aria-hidden="true">→</b></Link>
+          <Link className="is-course" href={courseReviewHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>3 free lessons in every topic</small></span><b aria-hidden="true">→</b></Link>
           <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>All questions free</small></span><b aria-hidden="true">→</b></Link>
           <Link className="is-assignments" href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Two due soon</small></span><b aria-hidden="true">↓</b></Link>
           <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
@@ -97,9 +100,9 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Your progress</h2></div><p className="muted">Course lessons and question-bank practice are kept separate, so each number is meaningful.</p></div>
           <div className="student-progress-grid student-progress-grid-v2">
             <article className="student-progress-summary is-course-progress">
-              <div><p className="student-dashboard-kicker">Free course preview</p><strong className="student-progress-number">1 of 3</strong><span>{courseName}</span></div>
-              <div className="student-progress-ring" style={{ "--student-progress": "119deg" } as CSSProperties}><span>33%</span></div>
-              <dl><div><dt>Lessons watched</dt><dd>1</dd></div><div><dt>Practice sets</dt><dd>1</dd></div><div><dt>Free lessons left</dt><dd>2</dd></div></dl>
+              <div><p className="student-dashboard-kicker">Free course preview</p><strong className="student-progress-number">1 of {freeLessonCount}</strong><span>{courseName}</span></div>
+              <div className="student-progress-ring" style={{ "--student-progress": freeLessonProgress } as CSSProperties}><span>{freeLessonPercentage}%</span></div>
+              <dl><div><dt>Lessons watched</dt><dd>1</dd></div><div><dt>Practice sets</dt><dd>1</dd></div><div><dt>Free lessons left</dt><dd>{freeLessonCount - 1}</dd></div></dl>
               <Link className="student-inline-action" href={courseReviewHref}>Continue course →</Link>
             </article>
             <article className="student-progress-summary is-bank-progress">

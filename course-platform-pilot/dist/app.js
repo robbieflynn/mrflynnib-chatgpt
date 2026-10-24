@@ -150,9 +150,10 @@ const practiceWhiteboardStore = "whiteboards";
 let state = loadState();
 let currentCourseId = enrolledCourseIds.includes(requestedCourseId) ? requestedCourseId : enrolledCourseIds.includes(state.lastCourse) ? state.lastCourse : enrolledCourseId;
 let currentCourse = courses[currentCourseId];
-let currentLessonId = currentCourse.lessons.some((lesson) => lesson.id === state.lastLesson)
+const initialAvailableLessons = hasCompleteCourseAccess(currentCourse) ? currentCourse.lessons : salesPreviewLessons(currentCourse);
+let currentLessonId = initialAvailableLessons.some((lesson) => lesson.id === state.lastLesson)
   ? state.lastLesson
-  : currentCourse.lessons[0]?.id;
+  : initialAvailableLessons[0]?.id || currentCourse.lessons[0]?.id;
 let currentTopic = currentCourse.lessons.find((lesson) => lesson.id === currentLessonId)?.topic || 1;
 let currentPastPaperCourse = pastPaperLibrary.courses?.[currentCourse.code] ? currentCourse.code : "AA HL";
 let currentPastPaperSession = "all";
@@ -286,16 +287,12 @@ function formatDuration(seconds, compact = false) {
   return remainder ? `${hours} hr ${remainder} min` : `${hours} hr`;
 }
 
-function completedFor(course) {
-  return course.lessons.filter((lesson) => state.completed.includes(lesson.id)).length;
+function completedIn(lessons) {
+  return lessons.filter((lesson) => state.completed.includes(lesson.id)).length;
 }
 
-function percentFor(course) {
-  return course.lessons.length ? Math.round((completedFor(course) / course.lessons.length) * 100) : 0;
-}
-
-function topicCompleted(topic) {
-  return topic.lessons.filter((lesson) => state.completed.includes(lesson.id)).length;
+function percentIn(lessons) {
+  return lessons.length ? Math.round((completedIn(lessons) / lessons.length) * 100) : 0;
 }
 
 function topicName(course, topicNumber) {
@@ -325,8 +322,9 @@ function configurePreviewMode() {
   document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : courses[currentCourseId].name;
   document.getElementById("welcomeEyebrow").textContent = "Free course preview";
   document.getElementById("welcomeTitle").textContent = isIgcse ? "Try the IGCSE course" : `Try the ${courses[currentCourseId].code} course`;
-  document.getElementById("welcomeCopy").textContent = "Three complete lessons are free. Each includes the video and its attached practice questions.";
-  document.getElementById("libraryStatusText").textContent = "3 complete lessons free";
+  const freeLessonCount = salesPreviewLessons(courses[currentCourseId]).length;
+  document.getElementById("welcomeCopy").textContent = "Three carefully chosen lessons in every topic are free. Each includes the video and its attached practice questions.";
+  document.getElementById("libraryStatusText").textContent = `${freeLessonCount} complete lessons free`;
   document.getElementById("enrolmentEyebrow").textContent = "Your selected course";
   document.getElementById("dashboardCoursesTitle").textContent = courses[currentCourseId].name;
   document.getElementById("dashboardCoursesButton").textContent = "View syllabus →";
@@ -369,15 +367,25 @@ function getCurrentLesson() {
 }
 
 function salesPreviewLessons(course = currentCourse) {
-  const sampleTopics = course.id === "igcse" ? [1, 4, 6] : [1, 3, 5];
-  return sampleTopics.map((topicNumber) => {
-    const topic = course.topics.find((candidate) => candidate.number === topicNumber);
-    return topic?.lessons.find((lesson) => practiceLibrary?.lessons?.[lesson.id]);
-  }).filter(Boolean);
+  return course.topics.flatMap((topic) => {
+    const eligibleLessons = topic.lessons.filter((lesson) => (
+      lesson.title.trim().toLowerCase() !== "scientific notation"
+      && practiceLibrary?.lessons?.[lesson.id]
+    ));
+    const candidates = eligibleLessons.length >= 3
+      ? eligibleLessons
+      : topic.lessons.filter((lesson) => lesson.title.trim().toLowerCase() !== "scientific notation");
+    if (candidates.length <= 3) return candidates;
+    return [0.25, 0.5, 0.75].map((position) => candidates[Math.floor((candidates.length - 1) * position)]);
+  });
 }
 
 function isSampleLesson(lesson, course = currentCourse) {
   return salesPreviewLessons(course).some((sample) => sample.id === lesson.id);
+}
+
+function hasCompleteCourseAccess(course = currentCourse) {
+  return ownedCourseIds.includes(course.id) || validPreviewCourseId === course.id && !salesPreviewMode;
 }
 
 function lessonIsAvailable(lesson) {
@@ -416,9 +424,10 @@ function setView(viewName) {
 }
 
 function courseCard(course, large = false) {
-  const completed = completedFor(course);
-  const percentage = percentFor(course);
-  const owned = ownedCourseIds.includes(course.id) || validPreviewCourseId === course.id && !salesPreviewMode;
+  const owned = hasCompleteCourseAccess(course);
+  const progressLessons = owned ? course.lessons : salesPreviewLessons(course);
+  const completed = completedIn(progressLessons);
+  const percentage = percentIn(progressLessons);
   return `<button type="button" class="course-card ${large ? "is-large" : ""} ${owned ? "has-access" : "is-sample"} accent-${course.accent}" data-course-id="${course.id}" aria-label="Open ${escapeHtml(course.code)} course">
     <div class="course-card-art">
       ${courseArtwork(course)}
@@ -428,7 +437,7 @@ function courseCard(course, large = false) {
       <h3>${course.name}</h3>
       <p>${course.description}</p>
       <div class="course-card-progress"><span style="width:${percentage}%"></span></div>
-      <div class="course-card-footer"><small>${owned ? `${completed} of ${course.lessons.length} completed` : "3 complete lessons free"}</small><span class="course-card-link">${owned ? "Open course" : "Try free lessons"} →</span></div>
+      <div class="course-card-footer"><small>${owned ? `${completed} of ${course.lessons.length} completed` : `${salesPreviewLessons(course).length} complete lessons free`}</small><span class="course-card-link">${owned ? "Open course" : "Try free lessons"} →</span></div>
     </div>
   </button>`;
 }
@@ -440,14 +449,15 @@ function renderCourseCards() {
 
 function renderDashboard() {
   const course = courses[enrolledCourseId];
-  const lastLesson = course.lessons.find((lesson) => lesson.id === state.lastLesson);
-  const nextLesson = lastLesson || course.lessons.find((lesson) => !state.completed.includes(lesson.id)) || course.lessons[0];
-  const percentage = percentFor(course);
+  const progressLessons = hasCompleteCourseAccess(course) ? course.lessons : salesPreviewLessons(course);
+  const lastLesson = progressLessons.find((lesson) => lesson.id === state.lastLesson);
+  const nextLesson = lastLesson || progressLessons.find((lesson) => !state.completed.includes(lesson.id)) || progressLessons[0] || course.lessons[0];
+  const percentage = percentIn(progressLessons);
   document.getElementById("continueCourseArt").innerHTML = courseArtwork(course);
   document.getElementById("continueLessonTitle").textContent = `${nextLesson.code} ${nextLesson.title}`;
   document.getElementById("continueLessonMeta").textContent = `Topic ${nextLesson.topic}: ${topicName(course, nextLesson.topic)} · ${formatDuration(nextLesson.seconds)}`;
   document.getElementById("continueProgressLabel").textContent = `${percentage}% complete`;
-  document.getElementById("continueProgressCount").textContent = `${completedFor(course)} of ${course.lessons.length} lessons`;
+  document.getElementById("continueProgressCount").textContent = `${completedIn(progressLessons)} of ${progressLessons.length} ${hasCompleteCourseAccess(course) ? "lessons" : "free lessons"}`;
   document.getElementById("continueProgressBar").style.width = `${percentage}%`;
   document.getElementById("continueButton").dataset.courseId = course.id;
   document.getElementById("continueButton").dataset.lessonId = nextLesson.id;
@@ -466,10 +476,10 @@ function openCourse(courseId, lessonId = null) {
   if (!courses[courseId] || !enrolledCourseIds.includes(courseId)) return;
   currentCourseId = courseId;
   currentCourse = courses[courseId];
-  const reviewerDefaultLesson = reviewerMode ? salesPreviewLessons(currentCourse)[0]?.id : null;
+  const freeDefaultLesson = hasCompleteCourseAccess(currentCourse) ? null : salesPreviewLessons(currentCourse)[0]?.id;
   currentLessonId = lessonId && currentCourse.lessons.some((lesson) => lesson.id === lessonId)
     ? lessonId
-    : reviewerDefaultLesson || currentCourse.lessons.find((lesson) => lesson.id === state.lastLesson)?.id || currentCourse.lessons[0]?.id;
+    : freeDefaultLesson || currentCourse.lessons.find((lesson) => lesson.id === state.lastLesson)?.id || currentCourse.lessons[0]?.id;
   currentTopic = getCurrentLesson()?.topic || 1;
   state.lastCourse = courseId;
   state.lastLesson = currentLessonId;
@@ -481,12 +491,15 @@ function openCourse(courseId, lessonId = null) {
 }
 
 function renderTopicStrip() {
+  const owned = hasCompleteCourseAccess(currentCourse);
+  const freeLessons = owned ? [] : salesPreviewLessons(currentCourse);
   document.getElementById("topicStrip").innerHTML = currentCourse.topics.map((topic) => {
-    const completed = topicCompleted(topic);
+    const progressLessons = owned ? topic.lessons : freeLessons.filter((lesson) => lesson.topic === topic.number);
+    const completed = completedIn(progressLessons);
     return `<button class="topic-button ${topic.number === currentTopic ? "is-active" : ""}" type="button" data-topic="${topic.number}">
       <span>Topic ${topic.number}</span>
       <strong>${escapeHtml(topic.name)}</strong>
-      <small>${completed} / ${topic.lessons.length} complete</small>
+      <small>${completed} / ${progressLessons.length} ${owned ? "complete" : "free lessons"}</small>
     </button>`;
   }).join("");
 }
@@ -495,7 +508,8 @@ function renderCourse() {
   const lesson = getCurrentLesson();
   if (!lesson) return;
   currentTopic = lesson.topic;
-  const percentage = percentFor(currentCourse);
+  const progressLessons = hasCompleteCourseAccess(currentCourse) ? currentCourse.lessons : salesPreviewLessons(currentCourse);
+  const percentage = percentIn(progressLessons);
   document.getElementById("courseHero").className = `course-hero accent-${currentCourse.accent}`;
   document.getElementById("courseCode").textContent = currentCourse.code;
   document.getElementById("courseName").textContent = currentCourse.name;
@@ -795,17 +809,20 @@ function renderProgress() {
   const currentDefinition = courseDefinitions.find((definition) => definition.id === currentCourseId);
   document.getElementById("progressCourseGrid").innerHTML = [currentDefinition].filter(Boolean).map((definition) => {
     const course = courses[definition.id];
-    const complete = completedFor(course);
-    const percentage = percentFor(course);
+    const owned = hasCompleteCourseAccess(course);
+    const progressLessons = owned ? course.lessons : salesPreviewLessons(course);
+    const complete = completedIn(progressLessons);
+    const percentage = percentIn(progressLessons);
     const topicRows = course.topics.map((topic) => {
-      const topicComplete = topicCompleted(topic);
-      const topicPercent = topic.lessons.length ? Math.round((topicComplete / topic.lessons.length) * 100) : 0;
-      return `<div class="topic-progress-row"><span>Topic ${topic.number}</span><div><i style="width:${topicPercent}%"></i></div><small>${topicComplete}/${topic.lessons.length}</small></div>`;
+      const topicLessons = owned ? topic.lessons : progressLessons.filter((lesson) => lesson.topic === topic.number);
+      const topicComplete = completedIn(topicLessons);
+      const topicPercent = percentIn(topicLessons);
+      return `<div class="topic-progress-row"><span>Topic ${topic.number}</span><div><i style="width:${topicPercent}%"></i></div><small>${topicComplete}/${topicLessons.length}</small></div>`;
     }).join("");
     return `<article class="progress-course-card accent-${course.accent}">
       <div class="progress-course-head"><span>${course.code}</span><div><strong>${percentage}%</strong><small>complete</small></div></div>
       <h2>${course.name}</h2>
-      <p>${complete} of ${course.lessons.length} lessons completed</p>
+      <p>${complete} of ${progressLessons.length} ${owned ? "lessons" : "free lessons"} completed</p>
       <div class="topic-progress-list">${topicRows}</div>
       <button class="primary-button" type="button" data-course-id="${course.id}">Continue course</button>
     </article>`;
