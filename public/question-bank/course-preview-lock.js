@@ -8,7 +8,7 @@
   var style = document.createElement("style");
   style.textContent = [
     ".qb-plus-preview " + selector.split(",").join(",.qb-plus-preview ") + "{position:relative!important;padding-right:58px!important;}",
-    ".qb-plus-preview " + selector.split(",").join("::after,.qb-plus-preview ") + "::after{content:'Plus';position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:3px 6px;border-radius:999px;background:#237fca;color:#fff;font-size:9px;font-weight:800;letter-spacing:.03em;}",
+    ".qb-plus-preview " + selector.split(",").join("::after,.qb-plus-preview ") + "::after{content:'Plus';position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:3px 6px;border-radius:999px;background:#6b4fc8;color:#fff;font-size:9px;font-weight:800;letter-spacing:.03em;}",
     ".qb-plus-preview .qb-progress-toggle:disabled{opacity:1!important;cursor:pointer!important;}",
   ].join("");
   document.head.appendChild(style);

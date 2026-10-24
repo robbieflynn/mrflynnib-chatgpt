@@ -580,6 +580,7 @@ function plusAccessHref() {
 function showPlusPrompt() {
   const dialog = document.getElementById("plusUpgradeDialog");
   document.getElementById("plusUpgradeLink").href = plusAccessHref();
+  document.getElementById("plusUpgradeLink").textContent = guestMode ? "Create account for Plus" : "Choose Plus access";
   if (!dialog.open) dialog.showModal();
 }
 
@@ -588,7 +589,7 @@ async function loadProtectedVideo(frame, loading, videoId, kind = "lesson", lock
     frame.removeAttribute("src");
     loading.classList.remove("is-hidden");
     loading.classList.add("is-plus-locked");
-    loading.innerHTML = `<span aria-hidden="true">+</span><strong>Unlock this video with Mr Flynn IB Plus</strong><p>You can still preview the lesson questions below.</p><button class="primary-button" type="button" data-plus-upgrade>See Plus access</button>`;
+    loading.innerHTML = `<span aria-hidden="true">+</span><strong>Unlock this video with Mr Flynn IB Plus</strong><p>You can still preview the lesson questions below.</p><button class="primary-button" type="button" data-plus-upgrade>Unlock with Plus</button>`;
     return;
   }
   loading.classList.remove("is-plus-locked");
@@ -1185,7 +1186,7 @@ function configureGuestExperience() {
       document.getElementById("topbarLearningHomeLink").href = "/";
       document.getElementById("topbarLearningHomeLink").textContent = "← Mr Flynn IB";
       document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
-      document.getElementById("accessLink").textContent = "See Plus access";
+      document.getElementById("accessLink").textContent = requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
       document.getElementById("accessLink").href = requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
       document.querySelector(".avatar").textContent = "+";
       document.getElementById("accountName").textContent = "Log in";
