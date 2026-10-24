@@ -1266,7 +1266,9 @@ async function bootstrapAccount() {
 async function initialize() {
   await bootstrapAccount();
   const enrolledCourse = courses[enrolledCourseId];
-  const visibleLessonCount = enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0);
+  const visibleLessonCount = guestMode
+    ? enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0)
+    : enrolledCourse.lessons.length;
   document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
   document.getElementById("summaryVideos").textContent = visibleLessonCount;
   configurePreviewMode();
@@ -1280,7 +1282,7 @@ async function initialize() {
     setView("courses");
   } else if (validPreviewCourseId || requestedCourseId) {
     const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
-    const requestedLesson = guestMode
+    const requestedLesson = !hasCompleteCourseAccess(enrolledCourse)
       ? salesPreviewLessons(enrolledCourse).find((lesson) => lesson.topic === requestedTopic) || salesPreviewLessons(enrolledCourse)[0]
       : enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
     openCourse(enrolledCourseId, requestedLesson?.id || currentLessonId);
