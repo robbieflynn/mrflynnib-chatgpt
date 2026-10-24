@@ -98,10 +98,12 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       const selectedCourses = curriculum === "ib"
         ? accountType === "teacher" ? teacherCourses : [studentCourse]
         : ["igcse"];
-      const signUpNextPath = requestedNext?.startsWith("/")
-        ? requestedNext
-        : curriculum === "igcse"
+      const signUpNextPath = curriculum === "igcse"
           ? "/account?qualification=igcse"
+          : plusJourney && accountType === "student" && studentCourse
+            ? `/account/access?course=${encodeURIComponent(studentCourse)}`
+            : requestedNext?.startsWith("/")
+              ? requestedNext
           : accountType === "teacher"
             ? "/teacher"
             : `/account?course=${encodeURIComponent(studentCourse)}`;
@@ -166,7 +168,9 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
             {curriculum === "ib" ? accountType === "student" ? (
               <fieldset className="account-course-field">
                 <legend>Which course are you studying?</legend>
-                <p>This sets up your learning home. It does not purchase Plus.</p>
+                <p>{plusJourney
+                  ? "Choose the course you want to unlock. Secure payment follows after your account is confirmed."
+                  : "This personalises your learning home. You can upgrade the same account later if you choose."}</p>
                 <div className="account-course-options is-single">
                   {ibCourseChoices.map((course) => <label className={studentCourse === course.id ? "is-selected" : ""} key={course.id}>
                     <input checked={studentCourse === course.id} name="studentCourse" onChange={() => { setStudentCourse(course.id); setError(null); }} required type="radio" value={course.id} />
@@ -215,7 +219,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         {error ? <p className="form-message form-error" role="alert">{error}</p> : null}
         {message ? <p className="form-message form-success" role="status">{message}</p> : null}
         <button className="button" type="submit" disabled={pending}>
-          {pending ? "Please wait…" : mode === "sign-up" ? plusJourney ? "Create account and continue" : "Create my free account" : mode === "reset" ? "Send reset link" : mode === "resend" ? "Resend confirmation email" : plusJourney ? "Sign in and continue" : "Sign in"}
+          {pending ? "Please wait…" : mode === "sign-up" ? plusJourney ? "Create account and continue to Plus" : "Create my free account" : mode === "reset" ? "Send reset link" : mode === "resend" ? "Resend confirmation email" : plusJourney ? "Sign in and continue" : "Sign in"}
         </button>
       </form>
       {mode === "sign-in" ? <><button className="account-text-button" type="button" onClick={() => { setMode("resend"); setError(null); setMessage(null); }}>Didn&apos;t receive a confirmation email?</button><button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button></> : null}
