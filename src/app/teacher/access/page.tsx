@@ -32,7 +32,7 @@ export default async function TeacherAccessPage({ searchParams }: { searchParams
       {query.checkout === "success" ? <CheckoutActivationNotice sessionId={sessionId} accessPath="/teacher/access" /> : null}
       {query.checkout === "cancelled" ? <p className="form-message">Checkout was cancelled. You have not been charged.</p> : null}
       <article className={`access-course-card teacher-plus-card ${active ? "has-access" : ""}`}>
-        <div><span className="course-detail-code">Teacher Plus</span><small>{active ? "Active" : "$99 per year"}</small></div>
+        <div><span className="course-detail-code">Teacher Plus</span><small>{active ? "Active" : "$99 · 1 year"}</small></div>
         <h2>{teacherPlusProduct.title}</h2>
         <p>Your free teacher account still includes classes, assignments and the IB Test Maker. Teacher Plus adds the complete teaching and learning content for all four IB courses.</p>
         <ul className="teacher-plus-list"><li>AA HL and AA SL</li><li>AI HL and AI SL</li><li>Every video lesson and its extra practice</li></ul>
