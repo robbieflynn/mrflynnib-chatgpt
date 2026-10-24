@@ -850,7 +850,8 @@ create table if not exists public.platform_entitlements (
 );
 
 create unique index if not exists platform_entitlements_external_reference_idx
-  on public.platform_entitlements (external_provider, external_reference);
+  on public.platform_entitlements (external_provider, external_reference)
+  where external_provider is not null and external_reference is not null;
 create index if not exists platform_entitlements_user_active_idx
   on public.platform_entitlements (user_id, status, expires_at);
 
@@ -1132,3 +1133,93 @@ end;
 $$;
 revoke all on function public.claim_verified_course_access() from public;
 grant execute on function public.claim_verified_course_access() to authenticated;
+
+-- Confirmed accounts from Rob's approved partner-school domains receive
+-- course access automatically. Teacher Plus is activated only after the
+-- separate teacher approval process has promoted the profile role.
+create or replace function public.school_plus_product_for_user(account_id uuid)
+returns text language plpgsql stable security definer set search_path = '' as $$
+declare
+  account_domain text;
+  account_confirmed_at timestamptz;
+  account_metadata jsonb;
+  account_role text;
+  account_curriculum text;
+  selected_course text;
+  joined_course text;
+begin
+  select lower(split_part(coalesce(users.email, ''), '@', 2)), users.email_confirmed_at,
+    coalesce(users.raw_user_meta_data, '{}'::jsonb), coalesce(profiles.role, 'student'),
+    coalesce(profiles.curriculum, 'ib')
+  into account_domain, account_confirmed_at, account_metadata, account_role, account_curriculum
+  from auth.users users
+  left join public.profiles profiles on profiles.user_id = users.id
+  where users.id = account_id;
+
+  if account_confirmed_at is null
+     or account_domain not in ('jess.sch.ae', 'beausoleil.ch', 'westminsteracademy.org.uk') then
+    return null;
+  end if;
+  if account_curriculum = 'igcse' then return 'course_igcse'; end if;
+  if account_role in ('teacher', 'admin') then return 'teacher_plus_ib'; end if;
+  if account_metadata ->> 'account_type' = 'teacher' then return null; end if;
+
+  selected_course := lower(trim(coalesce(account_metadata ->> 'primary_course', '')));
+  if selected_course in ('aa-hl', 'aa-sl', 'ai-hl', 'ai-sl') then
+    return 'course_ib_' || replace(selected_course, '-', '_');
+  end if;
+
+  select classes.course into joined_course
+  from public.class_memberships memberships
+  join public.classes classes on classes.id = memberships.class_id
+  where memberships.student_id = account_id
+    and classes.bank = 'ib'
+    and not classes.archived
+  order by memberships.joined_at desc
+  limit 1;
+
+  if joined_course in ('AA HL', 'AA SL', 'AI HL', 'AI SL') then
+    return 'course_ib_' || lower(replace(joined_course, ' ', '_'));
+  end if;
+  if account_domain = 'jess.sch.ae' then return 'course_ib_aa_hl'; end if;
+  return null;
+end;
+$$;
+revoke all on function public.school_plus_product_for_user(uuid) from public;
+
+create or replace function public.claim_school_plus_access()
+returns integer language plpgsql security definer set search_path = '' as $$
+declare
+  account_id uuid := auth.uid();
+  product_code text;
+  account_domain text;
+begin
+  if account_id is null then return 0; end if;
+  product_code := public.school_plus_product_for_user(account_id);
+  if product_code is null then return 0; end if;
+
+  select lower(split_part(coalesce(users.email, ''), '@', 2)) into account_domain
+  from auth.users users where users.id = account_id;
+
+  insert into public.platform_entitlements (
+    user_id, product_code, status, source, starts_at, expires_at,
+    external_provider, external_reference, metadata
+  ) values (
+    account_id, product_code, 'active', 'school', now(), null,
+    'school-domain', 'school-domain:' || account_id::text,
+    jsonb_build_object('domain', account_domain, 'automatic', true)
+  )
+  on conflict (external_provider, external_reference)
+    where external_provider is not null and external_reference is not null
+  do update set
+    product_code = excluded.product_code,
+    status = 'active',
+    source = 'school',
+    expires_at = null,
+    metadata = excluded.metadata,
+    updated_at = now();
+  return 1;
+end;
+$$;
+revoke all on function public.claim_school_plus_access() from public;
+grant execute on function public.claim_school_plus_access() to authenticated;

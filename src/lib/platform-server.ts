@@ -16,7 +16,10 @@ export async function getPlatformAccess() {
   if (!session.user || !session.curriculum) return { ...session, access: null, ownedCourses: [] as CourseProduct[], entitlements: [] as PlatformEntitlement[] };
   // Best effort: a confirmed account whose email matches a verified Teachable
   // migration record receives the exact course and expiry already audited.
-  await session.supabase.rpc("claim_verified_course_access");
+  await Promise.all([
+    session.supabase.rpc("claim_verified_course_access"),
+    session.supabase.rpc("claim_school_plus_access"),
+  ]);
   const [personalResult, schoolResult] = await Promise.all([
     session.supabase.from("platform_entitlements").select("product_code,status,starts_at,expires_at").eq("user_id", session.user.id),
     session.supabase.from("organization_license_seats").select("revoked_at,organization_licenses(product_code,status,starts_at,ends_at)").eq("user_id", session.user.id).is("revoked_at", null),
