@@ -75,7 +75,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       ? isSignUpJourney ? "Create your teacher account" : "Teacher sign in"
       : isPlusJourney
         ? isSignUpJourney ? "Create your account for Plus" : "Sign in to continue to Plus"
-        : isSignUpJourney ? "Create your free account" : "Welcome back";
+        : isSignUpJourney ? "Create your account" : "Welcome back";
     const intro = isTeacherJourney
       ? "Sign in to manage classes and assignments, or create a teacher account to request approval."
       : isPlusJourney
@@ -90,7 +90,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         </section>
         <section className="section-tight account-entry-section"><Container className="stack-xl">
           {!isTeacherJourney && isSignUpJourney ? <div className="account-start-choice stack-sm">
-            <div><Eyebrow>Choose how to start</Eyebrow><h2>One account: start free or continue to Plus.</h2><p>You can upgrade the same account later, so there is no second login and no saved work is lost.</p></div>
+            <div><Eyebrow>Choose how to start</Eyebrow><h2>Start free or choose Plus.</h2><p>It is the same account either way. You can upgrade later without another login or losing saved work.</p></div>
             <nav className="account-plan-switch" aria-label="Choose free or Plus">
               <Link aria-current={!isPlusJourney ? "page" : undefined} className={!isPlusJourney ? "is-selected" : ""} href="/account?mode=sign-up"><span>Start free</span><strong>Question bank, whiteboards, classes and assignments</strong><small>Free</small></Link>
               <Link aria-current={isPlusJourney ? "page" : undefined} className={isPlusJourney ? "is-selected is-plus" : "is-plus"} href={plusCourse ? `/plus?course=${plusCourse.id}` : "/plus"}><span>Choose Plus</span><strong>Every lesson and its extra practice in one IB course</strong><small>$79 · 2 years</small></Link>
