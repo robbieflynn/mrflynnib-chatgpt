@@ -24,7 +24,7 @@ begin
     users.email_confirmed_at,
     coalesce(users.raw_user_meta_data, '{}'::jsonb),
     coalesce(profiles.role, 'student'),
-    coalesce(profiles.curriculum, 'ib')
+    coalesce(profiles.curriculum, case when users.raw_user_meta_data ->> 'curriculum' = 'igcse' then 'igcse' else 'ib' end)
   into account_domain, account_confirmed_at, account_metadata, account_role, account_curriculum
   from auth.users users
   left join public.profiles profiles on profiles.user_id = users.id
@@ -80,14 +80,13 @@ $$;
 
 revoke all on function public.school_plus_product_for_user(uuid) from public;
 
-create or replace function public.claim_school_plus_access()
+create or replace function public.upsert_school_plus_access(account_id uuid)
 returns integer
 language plpgsql
 security definer
 set search_path = ''
 as $$
 declare
-  account_id uuid := auth.uid();
   product_code text;
   account_domain text;
 begin
@@ -97,6 +96,11 @@ begin
 
   product_code := public.school_plus_product_for_user(account_id);
   if product_code is null then
+    update public.platform_entitlements
+    set status = 'revoked', updated_at = now()
+    where external_provider = 'school-domain'
+      and external_reference = 'school-domain:' || account_id::text
+      and status <> 'revoked';
     return 0;
   end if;
 
@@ -140,8 +144,56 @@ begin
 end;
 $$;
 
+revoke all on function public.upsert_school_plus_access(uuid) from public;
+
+create or replace function public.claim_school_plus_access()
+returns integer
+language sql
+security definer
+set search_path = ''
+as $$
+  select public.upsert_school_plus_access(auth.uid());
+$$;
+
 revoke all on function public.claim_school_plus_access() from public;
 grant execute on function public.claim_school_plus_access() to authenticated;
+
+create or replace function public.sync_school_plus_from_auth_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  perform public.upsert_school_plus_access(new.id);
+  return new;
+end;
+$$;
+
+create or replace function public.sync_school_plus_from_profile()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  perform public.upsert_school_plus_access(new.user_id);
+  return new;
+end;
+$$;
+
+revoke all on function public.sync_school_plus_from_auth_user() from public;
+revoke all on function public.sync_school_plus_from_profile() from public;
+
+drop trigger if exists sync_school_plus_on_auth_user on auth.users;
+create trigger sync_school_plus_on_auth_user
+  after insert or update of email_confirmed_at, email, raw_user_meta_data on auth.users
+  for each row execute procedure public.sync_school_plus_from_auth_user();
+
+drop trigger if exists sync_school_plus_on_profile on public.profiles;
+create trigger sync_school_plus_on_profile
+  after insert or update of role, curriculum on public.profiles
+  for each row execute procedure public.sync_school_plus_from_profile();
 
 -- Existing confirmed accounts receive the same entitlement immediately.
 insert into public.platform_entitlements (
