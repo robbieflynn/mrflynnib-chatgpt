@@ -48,7 +48,7 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
       })}</div>
       <div className="access-support-grid">
         <article className="card stack"><Eyebrow>Already paid on Teachable?</Eyebrow><h2>Bring your access across.</h2><p>Use the same email address if possible. We will verify the enrolment before activating your course here.</p><form className="stack" action={requestTeachableTransfer}><label>Course<select name="courseId" required>{products.map((product) => <option value={product.id} key={product.id}>{product.shortTitle}</option>)}</select></label><label>Anything we should know? <span className="muted">(optional)</span><textarea name="note" rows={3} /></label><button className="button button-secondary" type="submit">Request access transfer</button></form></article>
-        <article className="card stack"><Eyebrow>Still using Teachable?</Eyebrow><h2>Your old course remains available.</h2><p>Nothing is being removed while the new platform is introduced. You can continue learning on Teachable during the transition.</p><Link className="button button-secondary" href={curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"}>Continue on Teachable</Link></article>
+        <article className="card stack"><Eyebrow>Previous Teachable course</Eyebrow><h2>Your previous course remains available.</h2><p>Nothing is being removed while the new platform is introduced. You can continue learning on Teachable during the transition.</p><Link className="button button-secondary" href={curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"}>Open previous Teachable course</Link></article>
       </div>
     </Container></section>
   </>;

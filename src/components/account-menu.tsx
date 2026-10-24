@@ -169,6 +169,7 @@ export function AccountMenu({
             <Link href={accountHome} role="menuitem" onClick={() => setOpen(false)}>{isTeacher ? "Teacher home" : "Learning home"}</Link>
             <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link>
             <Link href={accessHref} role="menuitem" onClick={() => setOpen(false)}>Manage access</Link>
+            <Link href={account.curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"} role="menuitem" onClick={() => setOpen(false)}>Previous Teachable course</Link>
           </nav> : null}
           <button className="account-menu-signout" type="button" role="menuitem" disabled={signingOut} onClick={signOut}>
             <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8 4H4v12h4M12 6l4 4-4 4M16 10H8" /></svg>

@@ -346,6 +346,9 @@ function configurePreviewMode() {
 function configureCurriculumExperience(curriculum) {
   const isIgcse = curriculum === "igcse";
   document.body.classList.toggle("igcse-learning", isIgcse);
+  const legacyCourseHref = isIgcse ? "/go/igcse-course" : "/go/my-courses";
+  document.getElementById("topbarLegacyCourseLink").href = legacyCourseHref;
+  document.getElementById("legacyCourseLink").href = legacyCourseHref;
   const hasPastPapers = enrolledCourseDefinitions.some((definition) => pastPaperLibrary.courses?.[definition.code]);
   document.querySelectorAll('[data-view="pastPapers"]').forEach((element) => { element.hidden = !hasPastPapers; });
   document.querySelector(".study-paths")?.classList.toggle("is-single-path", !hasPastPapers);

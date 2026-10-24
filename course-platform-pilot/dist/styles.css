@@ -71,6 +71,8 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .account-menu button, .account-menu a { width: 100%; display: block; padding: 12px 14px; border: 0; background: #fff; color: var(--ink); text-align: left; text-decoration: none; font-size: 10px; cursor: pointer; }
 .account-menu button:hover, .account-menu a:hover { background: #f4f7fa; }
 .access-pill { margin-left: 10px; padding: 5px 8px; border-radius: 999px; background: #eef6ff; color: var(--blue-700); text-decoration: none; font-size: 8px; font-weight: 850; }
+.topbar-legacy-link { margin-left: 2px; color: #56687a; text-decoration: none; font-size: 8px; font-weight: 800; }
+.topbar-legacy-link:hover { color: var(--blue-700); text-decoration: underline; text-underline-offset: 2px; }
 
 .view { display: none; padding: 48px clamp(28px, 4vw, 62px) 76px; }
 .view.is-visible { display: block; }

@@ -92,6 +92,13 @@ export default function HomePage() {
         </Container>
       </section>
 
+      <section className="legacy-course-strip" aria-label="Previous Teachable course access">
+        <Container>
+          <p><strong>Already learning on the previous Teachable course?</strong> Your course is still available while access moves to the new platform.</p>
+          <Link href="/go/my-courses">Open your previous course <span aria-hidden="true">↗</span></Link>
+        </Container>
+      </section>
+
       <section className="section offers-section" id="offers">
         <Container className="stack-xl">
           <div className="homepage-route-heading">
