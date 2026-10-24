@@ -10,7 +10,6 @@ import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
 import { platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
-import { getCourseProduct } from "@/lib/platform-products";
 import progressManifest from "@/data/question-bank-progress.json";
 import { choosePrimaryCourse, joinClass, requestTeacherAccess } from "./actions";
 
@@ -58,8 +57,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const isSignUpJourney = pageSearchParams.mode === "sign-up";
   const isPlusJourney = pageSearchParams.plan === "plus" && !isTeacherJourney;
   const isTeachableJourney = pageSearchParams.source === "teachable" && !isTeacherJourney;
-  const requestedPlusCourse = getCourseProduct(typeof pageSearchParams.course === "string" ? pageSearchParams.course : "");
-  const plusCourse = requestedPlusCourse?.curriculum === "ib" ? requestedPlusCourse : undefined;
   if (!hasSupabaseBrowserConfig()) {
     return (
       <>
@@ -86,7 +83,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       : isTeachableJourney
         ? "Sign in or create an account with the same email address you used on Teachable. After you confirm it, any matching active course is added automatically without another payment."
       : isPlusJourney
-        ? `${plusCourse ? `${plusCourse.shortTitle} selected. ` : ""}Your account keeps your course access, lesson progress and question-bank work together.`
+        ? "Choose Student or Teacher below to see the right Plus access. Your account keeps course access, lesson progress and question-bank work together."
         : isSignUpJourney
           ? "Choose Student or Teacher, then choose Free or Plus."
           : "Sign in to continue to your learning or teaching space.";
@@ -96,7 +93,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <Container className="stack-sm"><Eyebrow>{isTeacherJourney ? "Teacher account" : isTeachableJourney ? "Existing Teachable student" : isPlusJourney ? "Mr Flynn IB Plus" : isSignUpJourney ? "Create account" : "Sign in"}</Eyebrow><h1>{title}</h1><p>{intro}</p></Container>
         </section>
         <section className="section-tight account-entry-section"><Container className="stack-xl">
-          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Teacher Plus is optional and follows approval.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Selected access</Eyebrow><h2>{plusCourse ? plusCourse.shortTitle : "Mr Flynn IB Plus"}</h2><p>{plusCourse?.title || "Choose your course after creating your account."}</p><ul><li>Student Plus includes every Free feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses after approval.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
+          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Teacher Plus is optional and follows approval.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and approved teachers.</p><ul><li>Student Plus includes every Free feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses after approval.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
         </Container></section>
       </>
     );
