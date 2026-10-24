@@ -6,6 +6,10 @@ Last updated: 23 October 2026
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.
 
+## Working with Rob
+
+Rob wants genuine independent judgement rather than reflexive agreement. Treat his design and product questions as ideas to evaluate, not as instructions to change something unless he clearly asks for the change. Inspect the evidence, explain relevant trade-offs, disagree when warranted, and make a recommendation that remains consistent when challenged unless new evidence changes it. Do not mirror Rob&apos;s latest suggestion merely to be agreeable.
+
 ## Founder and business
 
 Rob Flynn is building MrFlynnIB.com into a premium, expert-led home for IB Mathematics. Rob is an experienced IB Mathematics teacher who has worked as an IB examiner and moderator, has taught and supported thousands of students, and has received more than one million views on his educational videos. His central strength is explaining difficult IB Mathematics clearly through personal, engaging video lessons.
