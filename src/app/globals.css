@@ -242,6 +242,7 @@ textarea { min-height: 130px; resize: vertical; }
 .outbound-page, .thank-you-page { min-height: 65vh; display: grid; align-items: center; }
 
 .account-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+.account-layout.is-single { grid-template-columns: minmax(0, 700px); justify-content: center; }
 .account-card { padding: clamp(1.4rem, 3vw, 2.2rem); border: 1px solid var(--line); border-radius: 1.4rem; background: white; box-shadow: 0 20px 55px rgba(11,21,48,.07); }
 .account-legacy-route { padding: .9rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid #dce4e8; border-radius: .9rem; background: #f7fafc; }
 .account-legacy-route > span { display: grid; gap: .12rem; }

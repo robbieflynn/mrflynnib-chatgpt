@@ -172,7 +172,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
               <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => { setAccountType("student"); setError(null); }} type="radio" value="student" /><span><strong>Student</strong><small>Choose the one course you are studying.</small></span></label>
               <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => { setAccountType("teacher"); setError(null); }} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Choose every course you teach. Approval is required.</small></span></label>
             </div></fieldset>
-            {curriculum === "ib" ? <fieldset className="account-access-field"><legend>Then, choose your access</legend><p>Free and Plus use the same account. You can upgrade later without losing any saved work.</p><div className="account-access-options">
+            {curriculum === "ib" ? <fieldset className="account-access-field"><legend>Then, choose your access</legend><div className="account-access-options">
               <label className={accessChoice === "free" ? "is-selected" : ""}>
                 <input checked={accessChoice === "free"} name="accessChoice" onChange={() => { setAccessChoice("free"); setError(null); }} type="radio" value="free" />
                 <span><strong>Free account</strong><small>{accountType === "teacher" ? "Classes, assignments and Test Maker" : "Question bank, whiteboards, classes and assignments"}</small></span>
@@ -180,7 +180,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
               </label>
               <label className={accessChoice === "plus" ? "is-selected is-plus" : "is-plus"}>
                 <input checked={accessChoice === "plus"} name="accessChoice" onChange={() => { setAccessChoice("plus"); setError(null); }} type="radio" value="plus" />
-                <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "All four IB courses and their lesson practice" : "Every lesson and its extra practice in one IB course"}</small></span>
+                <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "Everything in Free, plus every lesson and its extra practice in all four IB courses" : "Everything in Free, plus every lesson and its extra practice in one IB course"}</small></span>
                 <b>{accountType === "teacher" ? "$99 · 1 year" : "$79 · 2 years"}</b>
               </label>
             </div>{wantsPlus ? <small className="account-access-note">No payment is taken when you create the account. {accountType === "teacher" ? "Teacher approval comes first, then you can activate Teacher Plus." : "Secure checkout follows after your email is confirmed."}</small> : null}</fieldset> : null}
