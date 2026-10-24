@@ -1210,6 +1210,7 @@ function configureGuestExperience() {
       document.getElementById("coursesEyebrow").textContent = "IB Mathematics courses";
       document.getElementById("coursesTitle").textContent = "Choose your course";
       document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three free lessons in every syllabus topic.";
+      document.getElementById("teachableMigrationNote").hidden = false;
       document.getElementById("sidebarCourseLabel").textContent = "IB Mathematics courses";
 }
 

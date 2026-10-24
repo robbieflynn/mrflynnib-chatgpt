@@ -48,6 +48,7 @@ type AccountSearchParams = {
   teacher?: string | string[];
   mode?: string | string[];
   plan?: string | string[];
+  source?: string | string[];
 };
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<AccountSearchParams> }) {
@@ -56,6 +57,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const isTeacherJourney = requestedNext.startsWith("/teacher") || requestedNext.startsWith("/igcse/teacher");
   const isSignUpJourney = pageSearchParams.mode === "sign-up";
   const isPlusJourney = pageSearchParams.plan === "plus" && !isTeacherJourney;
+  const isTeachableJourney = pageSearchParams.source === "teachable" && !isTeacherJourney;
   const requestedPlusCourse = getCourseProduct(typeof pageSearchParams.course === "string" ? pageSearchParams.course : "");
   const plusCourse = requestedPlusCourse?.curriculum === "ib" ? requestedPlusCourse : undefined;
   if (!hasSupabaseBrowserConfig()) {
@@ -73,11 +75,15 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (!user) {
     const title = isTeacherJourney
       ? isSignUpJourney ? "Create your teacher account" : "Teacher sign in"
+      : isTeachableJourney
+        ? "Bring your Teachable access across"
       : isPlusJourney
         ? isSignUpJourney ? "Create your account for Plus" : "Sign in to continue to Plus"
         : isSignUpJourney ? "Create your account" : "Your Mr Flynn IB account";
     const intro = isTeacherJourney
       ? "Sign in to manage classes and assignments, or create a teacher account to request approval."
+      : isTeachableJourney
+        ? "Sign in or create an account with the same email address you used on Teachable. After you confirm it, any matching current course is added automatically without another payment."
       : isPlusJourney
         ? `${plusCourse ? `${plusCourse.shortTitle} selected. ` : ""}Your account keeps your course access, lesson progress and question-bank work together.`
         : isSignUpJourney

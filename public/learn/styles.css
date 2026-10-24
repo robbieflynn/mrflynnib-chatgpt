@@ -87,6 +87,15 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .welcome-row, .page-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; margin-bottom: 30px; }
 .welcome-row h1, .page-intro h1 { margin: 0; color: var(--navy-900); font-family: Georgia, serif; font-size: clamp(36px, 4vw, 52px); font-weight: 500; letter-spacing: -0.035em; }
 .welcome-row h1 + p, .page-intro h1 + p { max-width: 720px; margin: 10px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.teachable-migration-note { margin: -4px 0 24px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border: 1px solid #d7e2ea; border-radius: 14px; background: linear-gradient(110deg, #f1f8fd, #fff 72%); }
+.teachable-migration-note[hidden] { display: none; }
+.teachable-migration-note > div { display: flex; align-items: center; gap: 8px; }
+.teachable-migration-note > div:first-child { align-items: flex-start; flex-direction: column; }
+.teachable-migration-note strong { color: var(--navy-900); font-size: 11px; }
+.teachable-migration-note span { max-width: 720px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.teachable-migration-note a { color: var(--blue-700); font-size: 9px; font-weight: 850; text-decoration: none; white-space: nowrap; }
+.teachable-migration-note a:hover { text-decoration: underline; text-underline-offset: 2px; }
+.teachable-migration-note .is-secondary { color: var(--muted); font-weight: 750; }
 .library-status { display: flex; align-items: center; gap: 11px; padding: 13px 16px; border: 1px solid var(--line); border-radius: 13px; background: #fff; white-space: nowrap; }
 .status-mark { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 9px; background: #e6f7ef; color: var(--green); font-weight: 900; }
 .library-status small, .library-status strong { display: block; }.library-status small { color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spacing: .08em; }.library-status strong { margin-top: 3px; color: var(--navy-900); font-size: 10px; }
@@ -191,6 +200,8 @@ body.practice-expanded::before { content: ""; position: fixed; z-index: 119; ins
 }
 
 @media (max-width: 680px) {
+  .teachable-migration-note, .teachable-migration-note > div:last-child { align-items: flex-start; flex-direction: column; }
+  .teachable-migration-note > div:last-child { gap: 6px; }
   .welcome-row { display: block; }.library-status { display: none; }.welcome-row h1, .page-intro h1 { font-size: 36px; }
   .study-paths { grid-template-columns: 1fr; }.study-paths-intro { padding-bottom: 3px; }.study-paths-intro h2 { font-size: 22px; }
   .continue-body { padding: 27px; }.course-grid, .progress-course-grid { grid-template-columns: 1fr; }.course-card, .course-card.is-large { grid-template-columns: 1fr; min-height: 0; }.course-card-body { min-height: 240px; padding: 20px; }.course-card h3 { font-size: 20px; }

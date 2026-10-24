@@ -1388,6 +1388,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .legacy-course-strip p strong { color: var(--ink); }
 .legacy-course-strip a { flex: 0 0 auto; color: var(--teal-dark); font-size: .8rem; font-weight: 850; }
 .legacy-course-strip a:hover { text-decoration: underline; text-underline-offset: .22em; }
+.legacy-course-actions { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; white-space: nowrap; }
+.legacy-course-strip .legacy-course-secondary { color: var(--muted); font-weight: 750; }
 
 .account-course-setup-hero { padding: clamp(2.5rem,5vw,4rem) 0; background: radial-gradient(circle at 84% 18%,rgba(35,127,202,.18),transparent 28%),linear-gradient(135deg,#edf7ff,#fbfaf6 74%); }
 .account-course-setup-hero-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; }
@@ -2696,6 +2698,7 @@ a.teacher-list-row:hover { background: var(--sky); }
   .home-connected-hero { min-height: 540px; }
   .legacy-course-strip .container, .account-legacy-route { padding-block: 1rem; align-items: flex-start; flex-direction: column; }
   .legacy-course-strip .container { gap: .55rem; }
+  .legacy-course-actions { align-items: flex-start; flex-direction: column; gap: .45rem; white-space: normal; }
   .account-course-setup-hero-inner, .account-course-setup-actions { align-items: stretch; flex-direction: column; }
   .account-course-setup-actions .button { width: 100%; }
   .new-hero-grid-simple h1 .hero-title-line { white-space: normal; }

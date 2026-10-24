@@ -248,7 +248,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       {mode === "sign-in" ? <><button className="account-text-button" type="button" onClick={() => { setMode("resend"); setError(null); setMessage(null); }}>Didn&apos;t receive a confirmation email?</button><button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button></> : null}
       {mode === "reset" || mode === "resend" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
       <div className="account-legacy-route">
-        <span><strong>Still using the previous Teachable course?</strong><small>It remains available during the move to the new platform.</small></span>
+        <span><strong>Already paid on Teachable?</strong><small>Use the same email address in this form. After confirmation, any matching active course is added automatically without another payment.</small></span>
         <Link href={curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"}>Open previous course <span aria-hidden="true">↗</span></Link>
       </div>
       <p className="small muted">This is a separate {curriculum === "igcse" ? "IGCSE" : "IB"} account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. "}Creating an account does not subscribe you to marketing emails.</p>
