@@ -81,6 +81,8 @@ Every individual course offers the same two one-time access options: **12 months
 
 Keep the prospective-customer and existing-student journeys distinct. The main Courses page should simply say **“Choose your course”** and present AA HL, AA SL, AI HL, and AI SL without prices or unnecessary course-choice advice. Each individual course page should preview the two access options and lead into the native account and Stripe checkout journey. During the migration period, existing Teachable students still need a clear previous-enrolment route so verified paid, valid-code or approved-school access can be carried across without buying again.
 
+On 24 October 2026, Rob superseded the separate public **Choose your course** page. Every principal public **Courses** link now opens the real native course catalogue rather than a Teachable-era intermediary. Signed-out visitors can inspect all four IB course structures, open any lesson and watch the curated free lessons; locked lessons remain visible and explain the Plus access boundary. Logging in is required for account-specific progress and paid access, not merely to browse the catalogue. Keep `/courses` as a compatibility redirect to this native catalogue so old bookmarks do not break.
+
 Do not duplicate Teachable's learning platform unless a later strategic decision provides a compelling reason.
 
 ### Book

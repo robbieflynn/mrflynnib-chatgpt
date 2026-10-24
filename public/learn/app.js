@@ -138,10 +138,11 @@ const defaultCourseId = reviewCurriculum === "igcse" || requestedCurriculum === 
 let enrolledCourseIds = reviewerMode
   ? [defaultCourseId]
   : [defaultCourseId];
-let ownedCourseIds = reviewerMode || salesPreviewMode ? [] : [...enrolledCourseIds];
+let ownedCourseIds = [];
 let enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
 let enrolledCourseId = defaultCourseId;
 let platformAccount = null;
+let guestMode = false;
 
 const storageKey = "mrflynnib-course-platform-v3";
 const practiceDatabaseName = "mrflynnib-course-preview";
@@ -485,7 +486,10 @@ function courseCard(course, large = false) {
 }
 
 function renderCourseCards() {
-  const markup = courseCard(currentCourse, true);
+  const visibleCourses = guestMode
+    ? courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => courses[definition.id])
+    : [currentCourse];
+  const markup = visibleCourses.map((course) => courseCard(course, true)).join("");
   document.getElementById("allCourseGrid").innerHTML = markup;
 }
 
@@ -507,7 +511,7 @@ function renderDashboard() {
   document.getElementById("dashboardCoursesButton").dataset.courseId = course.id;
   document.getElementById("dashboardCourseGrid").innerHTML = courseCard(course);
   syncQuestionBankLink();
-  if (!reviewerMode) {
+  if (!reviewerMode && !guestMode) {
     document.getElementById("welcomeTitle").textContent = `Your ${course.code} learning space`;
     document.getElementById("welcomeCopy").textContent = "Your course lessons, question bank, assignments and progress in one place.";
     document.getElementById("sidebarCourseLabel").textContent = `${course.name}`;
@@ -568,6 +572,7 @@ function renderCourse() {
 }
 
 function plusAccessHref() {
+  if (guestMode) return `/account?mode=sign-up&next=${encodeURIComponent(`/account/access?course=${currentCourseId}`)}`;
   const base = reviewCurriculum === "igcse" ? "/igcse/account/access" : "/account/access";
   return `${base}?course=${encodeURIComponent(currentCourseId)}`;
 }
@@ -1156,12 +1161,54 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+function configureGuestExperience() {
+      guestMode = true;
+      enrolledCourseIds = courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => definition.id);
+      ownedCourseIds = [];
+      enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
+      const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId) ? requestedCourseId : "aa-hl";
+      enrolledCourseId = preferred;
+      currentCourseId = preferred;
+      currentCourse = courses[preferred];
+      currentLessonId = salesPreviewLessons(currentCourse)[0]?.id || currentCourse.lessons[0]?.id;
+      currentTopic = getCurrentLesson()?.topic || 1;
+      currentPastPaperCourse = currentCourse.code;
+
+      document.body.classList.add("guest-course-browser");
+      document.querySelector(".nav-item[data-view='dashboard'] span").textContent = "Courses";
+      document.querySelector(".nav-item[data-view='dashboard']").dataset.view = "courses";
+      document.getElementById("primaryLearningHomeLink").href = "/account?next=/learn";
+      document.getElementById("primaryLearningHomeLink").querySelector("strong").textContent = "Log in";
+      document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = "Save progress and unlock Plus";
+      document.getElementById("assignmentsLink").hidden = true;
+      document.getElementById("brandLearningHomeLink").href = "/";
+      document.getElementById("topbarLearningHomeLink").href = "/";
+      document.getElementById("topbarLearningHomeLink").textContent = "← Mr Flynn IB";
+      document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
+      document.getElementById("accessLink").textContent = "Free account";
+      document.getElementById("accessLink").href = "/account?mode=sign-up&next=/learn";
+      document.querySelector(".avatar").textContent = "+";
+      document.getElementById("accountName").textContent = "Log in";
+      document.getElementById("accountRole").textContent = "Save your progress";
+      document.getElementById("learningHomeLink").textContent = "Log in";
+      document.getElementById("learningHomeLink").href = "/account?next=/learn";
+      document.getElementById("manageAccessLink").textContent = "Create free account";
+      document.getElementById("manageAccessLink").href = "/account?mode=sign-up&next=/learn";
+      document.getElementById("signOut").hidden = true;
+      document.getElementById("courseBackButton").textContent = "← All courses";
+      document.getElementById("courseBackButton").dataset.view = "courses";
+      document.getElementById("welcomeEyebrow").textContent = "Course preview";
+      document.getElementById("welcomeTitle").textContent = `Explore the ${currentCourse.code} course`;
+      document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic for free.";
+      document.getElementById("libraryStatusText").textContent = `${salesPreviewLessons(currentCourse).length} complete lessons free`;
+}
+
 async function bootstrapAccount() {
   if (reviewerMode || validPreviewCourseId) return;
   try {
     const response = await fetch("/api/platform/bootstrap", { cache: "no-store" });
     if (response.status === 401) {
-      window.location.assign(`/account?next=${encodeURIComponent("/learn")}`);
+      configureGuestExperience();
       return;
     }
     if (!response.ok) throw new Error("Your learning space could not be loaded.");
@@ -1199,9 +1246,9 @@ async function bootstrapAccount() {
     syncQuestionBankLink();
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
     void flushLessonProgress();
-  } catch (error) {
-    document.querySelector(".topbar-context span:last-of-type").textContent = "Working offline";
-    showToast(error?.message || "Using progress saved on this device.");
+  } catch {
+    configureGuestExperience();
+    showToast("You can still browse the free course preview.");
   }
 }
 
@@ -1220,7 +1267,9 @@ async function initialize() {
     setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
   } else if (validPreviewCourseId || requestedCourseId) {
     const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
-    const requestedLesson = enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
+    const requestedLesson = guestMode
+      ? salesPreviewLessons(enrolledCourse).find((lesson) => lesson.topic === requestedTopic) || salesPreviewLessons(enrolledCourse)[0]
+      : enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
     openCourse(enrolledCourseId, requestedLesson?.id || currentLessonId);
   }
 }

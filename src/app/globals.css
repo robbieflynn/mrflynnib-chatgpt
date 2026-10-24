@@ -1263,6 +1263,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .new-hero-grid-simple h1 .hero-title-accent { color: var(--teal); }
 .new-hero-grid-simple .home-hero-lede { max-width: 760px; }
 .new-hero-grid-simple .hero-actions { justify-content: center; }
+.button.tuition-button { background: #ff891d; color: #172a3a; border-color: #ff891d; box-shadow: none; }
+.button.tuition-button:hover { background: #f27a0a; border-color: #f27a0a; color: #172a3a; }
 .hero-credentials { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; color: var(--muted); font-size: .84rem; font-weight: 800; }
 .hero-credentials i { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
 .hero-math { position: absolute; color: rgba(35,127,202,.055); font-family: Georgia, serif; line-height: 1; pointer-events: none; }

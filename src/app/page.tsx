@@ -10,7 +10,7 @@ const mainOffers = [
     label: "Mr Flynn IB Plus",
     title: "Courses",
     body: "Complete video courses for AA HL, AA SL, AI HL and AI SL, with extra practice inside the lessons.",
-    href: "/courses",
+    href: "/learn?course=aa-hl",
     cta: "Explore the courses",
     className: "offer-card-course",
   },
@@ -86,6 +86,7 @@ export default function HomePage() {
             </p>
             <div className="cluster hero-actions">
               <ButtonLink href="/account?mode=sign-up">Start here</ButtonLink>
+              <Link href="/go/ib-tutors" className="button tuition-button">One-to-One tuition <span aria-hidden="true">↗</span></Link>
             </div>
           </div>
         </Container>

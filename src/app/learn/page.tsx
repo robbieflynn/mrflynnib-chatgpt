@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
-import { requireSignedIn } from "@/lib/account-access";
 
 export default async function LearnPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  await requireSignedIn("/learn", "ib");
   const query = await searchParams;
   const target = new URLSearchParams({ curriculum: "ib" });
-  if (typeof query.course === "string") target.set("course", query.course);
+  target.set("course", typeof query.course === "string" ? query.course : "aa-hl");
+  if (typeof query.view === "string") target.set("view", query.view);
   redirect(`/learn/index.html?${target.toString()}`);
 }

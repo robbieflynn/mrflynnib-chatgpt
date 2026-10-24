@@ -16,7 +16,7 @@ export const siteConfig = {
 } as const;
 
 export const navItems = [
-  { label: "Courses", href: "/courses" },
+  { label: "Courses", href: "/learn?course=aa-hl" },
   { label: "IA guidance", href: "/ia" },
   { label: "Question bank", href: "/question-bank" },
   { label: "Schools", href: "/schools" },
