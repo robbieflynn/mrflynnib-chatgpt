@@ -124,5 +124,21 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ error: "Checkout could not be started. Please try again." }, { status: 502 });
   }
+
+  const expectedAmount = plan.priceUsd * 100;
+  if (checkout.amount_total !== expectedAmount || checkout.currency !== "usd") {
+    console.error("Stripe checkout price mismatch", {
+      productCode: product.productCode,
+      planId: plan.id,
+      expectedAmount,
+      actualAmount: checkout.amount_total,
+      currency: checkout.currency,
+      requestId: response.headers.get("request-id") || undefined,
+    });
+    return NextResponse.json(
+      { error: "Checkout is temporarily unavailable while we verify the price." },
+      { status: 502 },
+    );
+  }
   return NextResponse.json({ url: checkout.url }, { headers: { "Cache-Control": "private, no-store" } });
 }
