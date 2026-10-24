@@ -57,7 +57,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
     <section className={`dashboard-hero student-dashboard-hero student-home-v2-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
       <Container className="dashboard-hero-shell">
         <div className="dashboard-account-row">
-          <div className="platform-access-summary"><span>Free account</span><small>Full question bank and classroom access</small><Link href={`${isIgcse ? "/igcse" : ""}/account/access`}>Explore course access</Link></div>
+          <div className="platform-access-summary"><span>Free account</span><small>Full question bank and classroom access</small><Link href={isIgcse ? "/igcse/courses" : "/account/access"}>{isIgcse ? "Open course" : "Explore course access"}</Link></div>
           <div className="platform-review-account"><span>MF</span><strong>Maya Flynn</strong><small>Student</small></div>
         </div>
         <div className="dashboard-hero-layout">
@@ -125,7 +125,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <details className="join-class-panel"><summary>Join another class<span aria-hidden="true">+</span></summary><div className="join-class-form"><label className="field"><span>Class code</span><input aria-label="Example class code" placeholder="ABC1234" readOnly /></label><button className="button button-small" type="button">Join class</button></div></details>
         </section>
 
-        <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your complete question bank, classes and assignments stay free. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href={`${isIgcse ? "/igcse" : ""}/account/access`}>See Plus access</Link></section>
+        {isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Course access</span><h2>Continue your IGCSE course</h2><p>Your IGCSE question bank, classes and assignments are free. Existing course students can continue on Teachable while the new native course access is prepared.</p></div><Link className="button button-secondary" href="/igcse/courses">Open course</Link></section> : <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your complete question bank, classes and assignments stay free. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href="/account/access">See Plus access</Link></section>}
       </Container>
     </section>
   </>;

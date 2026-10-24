@@ -317,7 +317,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             <div className={`platform-access-summary ${access.paid ? "is-paid" : ""}`}>
               <span>{access.label}</span>
               <small>{access.detail}</small>
-              <Link href={upgradeHref}>{access.paid ? "Manage access" : "Explore course access"}</Link>
+              <Link href={upgradeHref}>{access.paid ? "Manage access" : isIgcse ? "Course access" : "Explore course access"}</Link>
             </div>
             <AccountMenu signOutHref={isIgcse ? "/account?qualification=igcse" : "/account"} />
           </div>
