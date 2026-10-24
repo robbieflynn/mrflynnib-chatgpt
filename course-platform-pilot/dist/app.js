@@ -572,7 +572,7 @@ function renderCourse() {
 }
 
 function plusAccessHref() {
-  if (guestMode) return `/account?mode=sign-up&next=${encodeURIComponent(`/account/access?course=${currentCourseId}`)}`;
+  if (guestMode) return `/plus?course=${encodeURIComponent(currentCourseId)}`;
   const base = reviewCurriculum === "igcse" ? "/igcse/account/access" : "/account/access";
   return `${base}?course=${encodeURIComponent(currentCourseId)}`;
 }
@@ -604,7 +604,7 @@ async function loadProtectedVideo(frame, loading, videoId, kind = "lesson", lock
     }
   } catch (error) {
     loading.classList.remove("is-hidden");
-    loading.innerHTML = `<p>${escapeHtml(error?.message || "This video could not be opened.")}</p><a class="primary-button" href="/account/access?course=${encodeURIComponent(currentCourseId)}">View course access</a>`;
+    loading.innerHTML = `<p>${escapeHtml(error?.message || "This video could not be opened.")}</p><a class="primary-button" href="${guestMode ? `/plus?course=${encodeURIComponent(currentCourseId)}` : `/account/access?course=${encodeURIComponent(currentCourseId)}`}">View course access</a>`;
   }
 }
 
@@ -1185,8 +1185,8 @@ function configureGuestExperience() {
       document.getElementById("topbarLearningHomeLink").href = "/";
       document.getElementById("topbarLearningHomeLink").textContent = "← Mr Flynn IB";
       document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
-      document.getElementById("accessLink").textContent = "Free account";
-      document.getElementById("accessLink").href = "/account?mode=sign-up&next=/learn";
+      document.getElementById("accessLink").textContent = "See Plus access";
+      document.getElementById("accessLink").href = requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
       document.querySelector(".avatar").textContent = "+";
       document.getElementById("accountName").textContent = "Log in";
       document.getElementById("accountRole").textContent = "Save your progress";
@@ -1201,6 +1201,10 @@ function configureGuestExperience() {
       document.getElementById("welcomeTitle").textContent = `Explore the ${currentCourse.code} course`;
       document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic for free.";
       document.getElementById("libraryStatusText").textContent = `${salesPreviewLessons(currentCourse).length} complete lessons free`;
+      document.getElementById("coursesEyebrow").textContent = "IB Mathematics courses";
+      document.getElementById("coursesTitle").textContent = "Choose your course";
+      document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three free lessons in every syllabus topic.";
+      document.getElementById("sidebarCourseLabel").textContent = "IB Mathematics courses";
 }
 
 async function bootstrapAccount() {
@@ -1265,6 +1269,8 @@ async function initialize() {
   renderProgress();
   if (reviewerMode) {
     setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
+  } else if (requestedView === "courses") {
+    setView("courses");
   } else if (validPreviewCourseId || requestedCourseId) {
     const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
     const requestedLesson = guestMode

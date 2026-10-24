@@ -6,7 +6,7 @@ import { CheckoutActivationNotice } from "@/components/platform/checkout-activat
 import { Container, Eyebrow } from "@/components/ui";
 import type { Curriculum } from "@/lib/account-access";
 import { getPlatformAccess } from "@/lib/platform-server";
-import { productsForCurriculum } from "@/lib/platform-products";
+import { getCourseProduct, productsForCurriculum } from "@/lib/platform-products";
 import { requestTeachableTransfer } from "@/app/account/access/actions";
 
 export async function CourseAccessPage({ curriculum, searchParams }: { curriculum: Curriculum; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
@@ -20,12 +20,15 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
     redirect(`${accountPath}?error=${encodeURIComponent(`This is a separate ${curriculum === "igcse" ? "IGCSE" : "IB"} account area. Sign out of the other account first.`)}`);
   }
   const products = productsForCurriculum(curriculum);
+  const requestedProduct = getCourseProduct(typeof query.course === "string" ? query.course : "");
+  const selectedProduct = requestedProduct?.curriculum === curriculum ? requestedProduct : null;
+  const visibleProducts = selectedProduct ? [selectedProduct] : products;
   const owned = new Set(session.profile?.role === "admin" ? products.map((course) => course.id) : session.ownedCourses.map((course) => course.id));
   const claim = typeof query.claim === "string" ? query.claim : "";
   const checkoutSessionId = typeof query.session_id === "string" ? query.session_id : "";
   return <>
-    <section className={`dashboard-hero student-dashboard-hero ${curriculum === "igcse" ? "student-dashboard-hero-igcse" : ""}`}>
-      <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">{curriculum === "igcse" ? "IGCSE access" : "IB access"}</span><h1>Your courses and account</h1><p>Start with the free question bank, preview real course lessons, then upgrade to Mr Flynn IB Plus when you want the complete course.</p></div></Container>
+    <section className={`dashboard-hero student-dashboard-hero access-page-hero ${curriculum === "igcse" ? "student-dashboard-hero-igcse" : ""}`}>
+      <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">Mr Flynn IB Plus</span><h1>{selectedProduct ? `Unlock the complete ${selectedProduct.shortTitle} course` : "Choose your complete course"}</h1><p>Every video lesson and the full set of extra practice attached to the course. Choose 12 or 24 months with no automatic renewal.</p></div></Container>
     </section>
     <section className="section-tight platform-access-page"><Container className="stack-xl">
       {query.checkout === "success" ? <CheckoutActivationNotice sessionId={checkoutSessionId} accessPath={accessPath} /> : null}
@@ -34,9 +37,10 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
       {claim === "already-pending" ? <p className="form-message">Your Teachable transfer request is already waiting for review.</p> : null}
       {claim === "error" ? <p className="form-message form-error">The transfer request could not be sent. Please try again.</p> : null}
       <div className="platform-access-intro"><div><Eyebrow>Current access</Eyebrow><h2>{session.access?.label || "Free account"}</h2><p>{session.access?.detail || "Complete question bank and classroom tools"}</p></div><div className="access-free-summary"><strong>Free for now</strong><span>Every question, classes, assignments and saved work</span></div></div>
-      <div className="access-course-grid">{products.map((product) => {
+      {curriculum === "ib" ? <nav className="access-course-selector" aria-label="Choose course">{products.map((product) => <Link aria-current={product.id === selectedProduct?.id ? "page" : undefined} className={product.id === selectedProduct?.id ? "is-selected" : ""} href={`${accessPath}?course=${product.id}`} key={product.id}><strong>{product.shortTitle}</strong><span>{product.title}</span></Link>)}</nav> : null}
+      <div className={`access-course-grid ${selectedProduct ? "is-focused" : ""}`}>{visibleProducts.map((product) => {
         const hasAccess = owned.has(product.id);
-        return <article className={`access-course-card ${hasAccess ? "has-access" : ""}`} key={product.id}><div><span className="course-detail-code">{product.shortTitle}</span><small>{hasAccess ? "Plus active" : "Mr Flynn IB Plus"}</small></div><h2>{product.title}</h2><p>The complete video course, with the full set of extra practice questions inside its lessons.</p>{hasAccess ? <Link className="button" href={`${learnPath}?course=${product.id}`}>Open course</Link> : <CourseCheckoutButton courseId={product.id} plans={product.plans.map(({ id, label, priceUsd, badge }) => ({ id, label, priceUsd, badge }))} />}</article>;
+        return <article className={`access-course-card ${hasAccess ? "has-access" : ""}`} key={product.id}><div><span className="course-detail-code">{product.shortTitle}</span><small>{hasAccess ? "Plus active" : "Mr Flynn IB Plus"}</small></div><h2>{product.title}</h2><p>The complete video course, with every lesson and the full set of extra practice questions inside it.</p>{hasAccess ? <Link className="button" href={`${learnPath}?course=${product.id}`}>Open course</Link> : <CourseCheckoutButton courseId={product.id} plans={product.plans.map(({ id, label, priceUsd, badge }) => ({ id, label, priceUsd, badge }))} />}</article>;
       })}</div>
       <div className="access-support-grid">
         <article className="card stack"><Eyebrow>Already paid on Teachable?</Eyebrow><h2>Bring your access across.</h2><p>Use the same email address if possible. We will verify the enrolment before activating your course here.</p><form className="stack" action={requestTeachableTransfer}><label>Course<select name="courseId" required>{products.map((product) => <option value={product.id} key={product.id}>{product.shortTitle}</option>)}</select></label><label>Anything we should know? <span className="muted">(optional)</span><textarea name="note" rows={3} /></label><button className="button button-secondary" type="submit">Request access transfer</button></form></article>

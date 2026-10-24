@@ -12,6 +12,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
   const searchParams = useSearchParams();
   const curriculum = searchParams.get("qualification") === "igcse" ? "igcse" : "ib";
   const teacherJourney = searchParams.get("next")?.includes("teacher") ?? false;
+  const plusJourney = searchParams.get("plan") === "plus" && curriculum === "ib";
   const [mode, setMode] = useState<Mode>(initialMode);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -118,10 +119,10 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
       <form className="stack" onSubmit={submit}>
         {mode === "sign-up" ? (
           <>
-            <fieldset className="account-type-field"><legend>Create an account as</legend><div className="account-type-options">
+            {!plusJourney ? <fieldset className="account-type-field"><legend>Create an account as</legend><div className="account-type-options">
               <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => setAccountType("student")} type="radio" value="student" /><span><strong>Student</strong><small>Save question progress and whiteboard working.</small></span></label>
               <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => setAccountType("teacher")} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Teacher sign-up requires approval.</small></span></label>
-            </div></fieldset>
+            </div></fieldset> : <p className="account-plus-form-note"><strong>Student Plus journey</strong><span>Create your account first. You will review the price and payment securely on the next screen.</span></p>}
             <div className="account-name-fields">
               <div className="field">
                 <label htmlFor="student-first-name">First name</label>
@@ -148,12 +149,12 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         {error ? <p className="form-message form-error" role="alert">{error}</p> : null}
         {message ? <p className="form-message form-success" role="status">{message}</p> : null}
         <button className="button" type="submit" disabled={pending}>
-          {pending ? "Please wait…" : mode === "sign-up" ? "Create my account" : mode === "reset" ? "Send reset link" : mode === "resend" ? "Resend confirmation email" : "Sign in"}
+          {pending ? "Please wait…" : mode === "sign-up" ? plusJourney ? "Create account and continue" : "Create my free account" : mode === "reset" ? "Send reset link" : mode === "resend" ? "Resend confirmation email" : plusJourney ? "Sign in and continue" : "Sign in"}
         </button>
       </form>
       {mode === "sign-in" ? <><button className="account-text-button" type="button" onClick={() => { setMode("resend"); setError(null); setMessage(null); }}>Didn&apos;t receive a confirmation email?</button><button className="account-text-button" type="button" onClick={() => { setMode("reset"); setError(null); setMessage(null); }}>Forgotten your password?</button></> : null}
       {mode === "reset" || mode === "resend" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
-      <p className="small muted">This is a separate {curriculum === "igcse" ? "IGCSE" : "IB"} account area. Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. Neither subscribes you to marketing emails.</p>
+      <p className="small muted">This is a separate {curriculum === "igcse" ? "IGCSE" : "IB"} account area. {plusJourney ? "Creating an account does not charge you or activate Plus; secure checkout follows after sign-in." : "Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval."} Creating an account does not subscribe you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href="/terms">Terms of Use</Link> and acknowledge the <Link className="text-link" href="/privacy">Privacy Policy</Link>.</p>
     </div>
   );

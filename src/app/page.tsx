@@ -10,7 +10,7 @@ const mainOffers = [
     label: "Mr Flynn IB Plus",
     title: "Courses",
     body: "Complete video courses for AA HL, AA SL, AI HL and AI SL, with extra practice inside the lessons.",
-    href: "/learn?course=aa-hl",
+    href: "/learn?view=courses",
     cta: "Explore the courses",
     className: "offer-card-course",
   },

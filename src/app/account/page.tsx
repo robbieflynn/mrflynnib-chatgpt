@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense, type CSSProperties } from "react";
-import { Container, PageHero } from "@/components/ui";
+import { Container, Eyebrow, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
 import { AccountMenu } from "@/components/account-menu";
 import { StudentAccountForm } from "@/components/student-account-form";
@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
 import { platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
+import { getCourseProduct } from "@/lib/platform-products";
 import progressManifest from "@/data/question-bank-progress.json";
 import { joinClass, requestTeacherAccess } from "./actions";
 
@@ -46,6 +47,7 @@ type AccountSearchParams = {
   success?: string | string[];
   teacher?: string | string[];
   mode?: string | string[];
+  plan?: string | string[];
 };
 
 export default async function AccountPage({ searchParams }: { searchParams: Promise<AccountSearchParams> }) {
@@ -53,6 +55,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const requestedNext = typeof pageSearchParams.next === "string" ? pageSearchParams.next : "";
   const isTeacherJourney = requestedNext === "/teacher" || requestedNext === "/igcse/teacher";
   const isSignUpJourney = pageSearchParams.mode === "sign-up";
+  const isPlusJourney = pageSearchParams.plan === "plus" && !isTeacherJourney;
+  const requestedPlusCourse = getCourseProduct(typeof pageSearchParams.course === "string" ? pageSearchParams.course : "");
+  const plusCourse = requestedPlusCourse?.curriculum === "ib" ? requestedPlusCourse : undefined;
   if (!hasSupabaseBrowserConfig()) {
     return (
       <>
@@ -66,14 +71,30 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
+    const title = isTeacherJourney
+      ? isSignUpJourney ? "Create your teacher account" : "Teacher sign in"
+      : isPlusJourney
+        ? isSignUpJourney ? "Create your account for Plus" : "Sign in to continue to Plus"
+        : isSignUpJourney ? "Create your free account" : "Welcome back";
+    const intro = isTeacherJourney
+      ? "Sign in to manage classes and assignments, or create a teacher account to request approval."
+      : isPlusJourney
+        ? `${plusCourse ? `${plusCourse.shortTitle} selected. ` : ""}Your account keeps your course access, lesson progress and question-bank work together.`
+        : isSignUpJourney
+          ? "Save question-bank progress, whiteboards, classes and assignments without paying for a course."
+          : "Sign in to continue your courses, question bank, classes and saved work.";
     return (
       <>
-        <PageHero
-          eyebrow={isTeacherJourney ? "Teacher account" : "Student account"}
-          title={isSignUpJourney ? "Create your free account" : isTeacherJourney ? "Teacher sign in" : "Save your question-bank progress"}
-          intro={isSignUpJourney ? "Use one account for the question bank, classes, assignments and your learning progress." : isTeacherJourney ? "Sign in to manage classes and assignments, or create a teacher account to request approval." : "Sign in to tick off completed questions and continue your whiteboard working on another device."}
-        />
-        <section className="section-tight"><Container className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li></ul></aside> : <aside className="account-benefits stack"><h2>Save your progress</h2><ul><li>Tick off questions as you complete them.</li><li>Return to editable whiteboard working later.</li></ul></aside>}</Container></section>
+        <section className={`account-entry-hero ${isPlusJourney ? "is-plus" : ""}`}>
+          <Container className="stack-sm"><Eyebrow>{isTeacherJourney ? "Teacher account" : isPlusJourney ? "Mr Flynn IB Plus" : "Mr Flynn IB account"}</Eyebrow><h1>{title}</h1><p>{intro}</p></Container>
+        </section>
+        <section className="section-tight account-entry-section"><Container className="stack-xl">
+          {!isTeacherJourney && isSignUpJourney ? <nav className="account-plan-switch" aria-label="Choose account type">
+            <Link className={!isPlusJourney ? "is-selected" : ""} href="/account?mode=sign-up"><span>Free account</span><strong>Question bank, whiteboards, classes and assignments</strong><small>Free</small></Link>
+            <Link className={isPlusJourney ? "is-selected is-plus" : "is-plus"} href={plusCourse ? `/plus?course=${plusCourse.id}` : "/plus"}><span>Mr Flynn IB Plus</span><strong>Every course lesson and its extra practice</strong><small>From $69</small></Link>
+          </nav> : null}
+          <div className="account-layout"><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li></ul></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Selected access</Eyebrow><h2>{plusCourse ? plusCourse.shortTitle : "Mr Flynn IB Plus"}</h2><p>{plusCourse?.title || "Choose your course after creating your account."}</p><ul><li>Every video lesson in the selected course.</li><li>All extra practice attached to those lessons.</li><li>One payment with no automatic renewal.</li></ul><Link className="text-link" href={plusCourse ? `/plus?course=${plusCourse.id}` : "/plus"}>Change course or review prices</Link></aside> : <aside className="account-benefits stack"><h2>Your free learning account</h2><ul><li>Save completed question-bank questions.</li><li>Return to editable whiteboard working later.</li><li>Join classes and complete assignments.</li></ul></aside>}</div>
+        </Container></section>
       </>
     );
   }
