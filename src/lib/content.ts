@@ -94,7 +94,7 @@ export const faqs = [
   {
     question: "Where are the courses hosted?",
     answer:
-      "Course lessons and student access are hosted on Teachable. MrFlynnIB.com explains the courses, helps you choose the right one and links securely to Teachable for enrollment and login.",
+      "Course lessons and student access are provided through your Mr Flynn IB account on MrFlynnIB.com, with secure video delivery through Bunny Stream. Teachable remains available as a legacy option during the transition.",
   },
   {
     question: "Which IB Mathematics courses are covered?",
@@ -109,12 +109,12 @@ export const faqs = [
   {
     question: "Does each access plan include the complete course?",
     answer:
-      "Yes. Every access plan includes the same complete course. The only difference is how long you can access it.",
+      "A Free account includes the complete question bank, classroom tools and selected free lessons. Student Plus includes everything in Free, plus every lesson and its extra practice in one chosen IB course. Teacher Plus includes everything in Free, plus every lesson and its extra practice in all four IB courses.",
   },
   {
     question: "I am already enrolled. How do I access my lessons?",
     answer:
-      "Use the My courses link at the top of the website. It takes existing students directly to the Teachable login used for course access.",
+      "Sign in or create a Mr Flynn IB account using the same email address as your Teachable account. After you confirm the address, any matching active course is added automatically without another payment. The legacy Teachable site also remains available during the transition.",
   },
   {
     question: "How can I find out about tutoring?",

@@ -175,7 +175,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
             {curriculum === "ib" ? <fieldset className="account-access-field"><legend>Then, choose your access</legend><div className="account-access-options">
               <label className={accessChoice === "free" ? "is-selected" : ""}>
                 <input checked={accessChoice === "free"} name="accessChoice" onChange={() => { setAccessChoice("free"); setError(null); }} type="radio" value="free" />
-                <span><strong>Free account</strong><small>{accountType === "teacher" ? "Classes, assignments and Test Maker" : "Question bank, whiteboards, classes and assignments"}</small></span>
+                <span><strong>Free account</strong><small>{accountType === "teacher" ? "Question bank, classes, assignments and Test Maker" : "Question bank, whiteboards, classes and assignments"}</small></span>
                 <b>Free</b>
               </label>
               <label className={accessChoice === "plus" ? "is-selected is-plus" : "is-plus"}>
