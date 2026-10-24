@@ -18,23 +18,28 @@ export type CoursePlan = {
   badge?: string;
 };
 
-const standardPlans: CoursePlan[] = [
+const ibStudentPlans: CoursePlan[] = [
   { id: "two-years", label: "24 months", priceUsd: 79, accessDays: 730, stripePriceEnv: "", badge: "Complete access" },
 ];
 
-function plansFor(envPrefix: string): CoursePlan[] {
-  return standardPlans.map((plan) => ({
+const igcsePlans: CoursePlan[] = [
+  { id: "one-year", label: "12 months", priceUsd: 69, accessDays: 365, stripePriceEnv: "" },
+  { id: "two-years", label: "24 months", priceUsd: 99, accessDays: 730, stripePriceEnv: "", badge: "Best value" },
+];
+
+function plansFor(plans: CoursePlan[], envPrefix: string): CoursePlan[] {
+  return plans.map((plan) => ({
     ...plan,
     stripePriceEnv: `${envPrefix}_${plan.id === "one-year" ? "ONE_YEAR" : "TWO_YEARS"}`,
   }));
 }
 
 export const courseProducts: CourseProduct[] = [
-  { id: "aa-hl", curriculum: "ib", productCode: "course_ib_aa_hl", shortTitle: "AA HL", title: "Analysis & Approaches HL", plans: plansFor("STRIPE_PRICE_IB_AA_HL") },
-  { id: "aa-sl", curriculum: "ib", productCode: "course_ib_aa_sl", shortTitle: "AA SL", title: "Analysis & Approaches SL", plans: plansFor("STRIPE_PRICE_IB_AA_SL") },
-  { id: "ai-hl", curriculum: "ib", productCode: "course_ib_ai_hl", shortTitle: "AI HL", title: "Applications & Interpretation HL", plans: plansFor("STRIPE_PRICE_IB_AI_HL") },
-  { id: "ai-sl", curriculum: "ib", productCode: "course_ib_ai_sl", shortTitle: "AI SL", title: "Applications & Interpretation SL", plans: plansFor("STRIPE_PRICE_IB_AI_SL") },
-  { id: "igcse", curriculum: "igcse", productCode: "course_igcse", shortTitle: "IGCSE", title: "IGCSE Mathematics", plans: plansFor("STRIPE_PRICE_IGCSE") },
+  { id: "aa-hl", curriculum: "ib", productCode: "course_ib_aa_hl", shortTitle: "AA HL", title: "Analysis & Approaches HL", plans: plansFor(ibStudentPlans, "STRIPE_PRICE_IB_AA_HL") },
+  { id: "aa-sl", curriculum: "ib", productCode: "course_ib_aa_sl", shortTitle: "AA SL", title: "Analysis & Approaches SL", plans: plansFor(ibStudentPlans, "STRIPE_PRICE_IB_AA_SL") },
+  { id: "ai-hl", curriculum: "ib", productCode: "course_ib_ai_hl", shortTitle: "AI HL", title: "Applications & Interpretation HL", plans: plansFor(ibStudentPlans, "STRIPE_PRICE_IB_AI_HL") },
+  { id: "ai-sl", curriculum: "ib", productCode: "course_ib_ai_sl", shortTitle: "AI SL", title: "Applications & Interpretation SL", plans: plansFor(ibStudentPlans, "STRIPE_PRICE_IB_AI_SL") },
+  { id: "igcse", curriculum: "igcse", productCode: "course_igcse", shortTitle: "IGCSE", title: "IGCSE Mathematics", plans: plansFor(igcsePlans, "STRIPE_PRICE_IGCSE") },
 ];
 
 export const teacherPlusProduct = {

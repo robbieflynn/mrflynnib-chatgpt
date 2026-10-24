@@ -53,7 +53,7 @@ type AccountSearchParams = {
 export default async function AccountPage({ searchParams }: { searchParams: Promise<AccountSearchParams> }) {
   const pageSearchParams = await searchParams;
   const requestedNext = typeof pageSearchParams.next === "string" ? pageSearchParams.next : "";
-  const isTeacherJourney = requestedNext === "/teacher" || requestedNext === "/igcse/teacher";
+  const isTeacherJourney = requestedNext.startsWith("/teacher") || requestedNext.startsWith("/igcse/teacher");
   const isSignUpJourney = pageSearchParams.mode === "sign-up";
   const isPlusJourney = pageSearchParams.plan === "plus" && !isTeacherJourney;
   const requestedPlusCourse = getCourseProduct(typeof pageSearchParams.course === "string" ? pageSearchParams.course : "");
