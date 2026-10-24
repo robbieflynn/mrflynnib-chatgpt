@@ -20,7 +20,10 @@ export default function IgcsePage() {
       <section className="igcse-route-section igcse-route-section-first">
         <Container className="stack-xl">
           <Breadcrumbs items={[{ label: "IGCSE Mathematics" }]} />
-          <div className="igcse-route-heading stack"><Eyebrow>Edexcel IGCSE Mathematics</Eyebrow><h1>What do you need today?</h1></div>
+          <div className="igcse-route-heading">
+            <span className="igcse-route-symbol" aria-hidden="true">x²</span>
+            <div className="stack"><Eyebrow>Edexcel IGCSE Mathematics</Eyebrow><h1>Choose where to begin</h1><p>Learn the course, practise questions or find support for your school.</p></div>
+          </div>
           <div className="igcse-route-grid">
             {routes.map((route) => (
               <Link className="igcse-route-card" href={route.href} key={route.title}>

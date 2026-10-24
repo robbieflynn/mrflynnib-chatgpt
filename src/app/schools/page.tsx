@@ -1,66 +1,55 @@
 import type { Metadata } from "next";
 import { EnquiryForm } from "@/components/enquiry-form";
-import { SchoolTierLink } from "@/components/school-tier-link";
-import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 
-export const metadata: Metadata = { title: "IB Mathematics school licences", description: "Two-year access to a selected Mr Flynn IB Mathematics course for classes, departments and school cohorts." };
-
-const tiers = [
-  { students: "10", range: "Licences 1–24", each: "$50" },
-  { students: "25", range: "Licences 25–49", each: "$40" },
-  { students: "50", range: "Licences 50–99", each: "$30" },
-  { students: "100", range: "Licence 100 onward", each: "$20" },
-];
+export const metadata: Metadata = {
+  title: "IB Mathematics for schools",
+  description: "Classes, assignments, test making, progress analysis and complete IB Mathematics course access for schools.",
+};
 
 export default function SchoolsPage() {
   return (
     <>
-      <section className="schools-hero">
+      <section className="schools-hero schools-hero-simple">
         <Container className="schools-hero-shell">
           <Breadcrumbs items={[{ label: "Schools" }]} />
-          <div className="schools-hero-layout">
-            <div className="schools-hero-heading stack">
-              <Eyebrow>For schools</Eyebrow>
-              <h1>Give every IB Mathematics student another clear explanation.</h1>
-            </div>
-            <div className="schools-hero-details stack-lg">
-              <p className="lede">Two-year access for a defined student cohort, with straightforward pricing.</p>
-              <a className="button" href="#school-options">See school options</a>
-              <div className="school-course-stack">
-                <span>Available course options</span>
-                <p>Each student receives one selected course.</p>
-                <div><strong>AA HL</strong><small>Analysis &amp; Approaches</small></div>
-                <div><strong>AA SL</strong><small>Analysis &amp; Approaches</small></div>
-                <div><strong>AI HL</strong><small>Applications &amp; Interpretation</small></div>
-                <div><strong>AI SL</strong><small>Applications &amp; Interpretation</small></div>
-              </div>
+          <div className="schools-hero-centred stack-lg">
+            <Eyebrow>For IB Mathematics departments</Eyebrow>
+            <h1>Better tools for teachers. Clearer support for students.</h1>
+            <p className="lede">Create classes, set assignments, review student progress, build assessments and give students access to complete IB Mathematics courses.</p>
+            <div className="cluster">
+              <ButtonLink href="/account?next=/teacher&mode=sign-up">Create a free teacher account</ButtonLink>
+              <ButtonLink href="#school-enquiry" secondary>Ask about school access</ButtonLink>
             </div>
           </div>
         </Container>
       </section>
 
-      <section className="school-benefit-strip"><Container className="grid-3"><article><strong>Two-year access</strong><span>Support students throughout their complete IB course.</span></article><article><strong>One school invoice</strong><span>Simple purchasing for each student cohort.</span></article><article><strong>Independent support</strong><span>Students can revisit explanations outside lesson time.</span></article></Container></section>
-
-      <section id="school-options" className="section school-pricing-section">
-        <Container className="stack-xl">
-          <div className="section-heading-row">
-            <div className="stack"><Eyebrow>Two-year school pricing</Eyebrow><h2>Choose the cohort size that fits.</h2></div>
-            <p className="lede">Pricing is graduated: each rate applies only to the licences within that band.</p>
+      <section className="section school-access-section" id="school-options">
+        <Container className="split">
+          <div className="stack-lg">
+            <Eyebrow>Teacher tools</Eyebrow>
+            <h2>Everything you need to set work and see how students are doing.</h2>
+            <p className="lede">Teachers can start with a free account. If your school also wants complete course access for students, ask us about a school setup.</p>
           </div>
-          <div className="school-tier-grid">
-            {tiers.map((tier) => (
-              <article className="school-tier" key={tier.students}>
-                <small>{tier.range}</small>
-                <div className="tier-price"><strong>{tier.each}</strong><span>per licence in this band / two years</span></div>
-                <SchoolTierLink students={tier.students} />
-              </article>
-            ))}
+          <div className="school-simple-list">
+            <ul className="check-list">
+              <li>Create classes and invite students</li>
+              <li>Set question-bank assignments</li>
+              <li>Review student work and class progress</li>
+              <li>Build printable tests and mark schemes</li>
+              <li>Download question-level analysis</li>
+            </ul>
           </div>
-          <p className="pricing-note"><strong>Minimum order: 10 student licences.</strong> Lower rates apply only to the licences within each band, so the total never decreases when another student is added. Course allocation, access dates and provisioning are confirmed with the school before invoicing.</p>
         </Container>
       </section>
 
-      <section id="school-enquiry" className="section"><Container className="split"><div className="stack-lg"><Eyebrow>Request school access</Eyebrow><h2>Tell us about your cohort.</h2><p className="lede">Share the likely number of students, courses and year groups. We will confirm the right package and practical setup before any invoice is issued.</p></div><EnquiryForm kind="school" /></Container></section>
+      <section id="school-enquiry" className="section school-enquiry-section">
+        <Container className="split">
+          <div className="stack-lg"><Eyebrow>School enquiries</Eyebrow><h2>Tell us what your department needs.</h2><p className="lede">Share your courses and likely student numbers. We will recommend a practical setup and confirm any course-access quotation before you commit.</p></div>
+          <EnquiryForm kind="school" />
+        </Container>
+      </section>
     </>
   );
 }

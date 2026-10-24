@@ -12,9 +12,7 @@ export type Course = {
 };
 
 export const courseAccessPlans = [
-  { duration: "3 months", price: 49, description: "For focused exam revision", recommended: false },
-  { duration: "1 year", price: 69, description: "For a full academic year", recommended: false },
-  { duration: "2 years", price: 79, description: "For the complete IB journey", recommended: true },
+  { duration: "24 months", price: 79, description: "Complete access to one course", recommended: true },
 ] as const;
 
 export const courses: Course[] = [
@@ -96,7 +94,7 @@ export const faqs = [
   {
     question: "Where are the courses hosted?",
     answer:
-      "Course lessons and student access are hosted on Teachable. MrFlynnIB.com explains the courses, helps you choose the right one and links securely to Teachable for enrollment and login.",
+      "Course lessons and student access are provided through your Mr Flynn IB account on MrFlynnIB.com, with secure video delivery through Bunny Stream. Teachable remains available as a legacy option during the transition.",
   },
   {
     question: "Which IB Mathematics courses are covered?",
@@ -106,17 +104,17 @@ export const faqs = [
   {
     question: "What access plans are available?",
     answer:
-      "Each course has three one-time access options: 3 months for US$49, 1 year for US$69, or 2 years for US$79. The two-year plan offers the best value for students completing the full IB course.",
+      "Each student course costs US$79 for 24 months of access. It is one payment and does not renew automatically. Approved teachers can optionally choose Teacher Plus for US$99 for 12 months of access to all four IB Mathematics courses.",
   },
   {
     question: "Does each access plan include the complete course?",
     answer:
-      "Yes. Every access plan includes the same complete course. The only difference is how long you can access it.",
+      "A Free account includes the complete question bank, classroom tools and selected free lessons. Student Plus includes everything in Free, plus every lesson and its extra practice in one chosen IB course. Teacher Plus includes everything in Free, plus every lesson and its extra practice in all four IB courses.",
   },
   {
     question: "I am already enrolled. How do I access my lessons?",
     answer:
-      "Use the My courses link at the top of the website. It takes existing students directly to the Teachable login used for course access.",
+      "Sign in or create a Mr Flynn IB account using the same email address as your Teachable account. After you confirm the address, any matching active course is added automatically without another payment. The legacy Teachable site also remains available during the transition.",
   },
   {
     question: "How can I find out about tutoring?",

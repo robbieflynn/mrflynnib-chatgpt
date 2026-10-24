@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { navItems, siteConfig } from "@/lib/site";
-import { ButtonLink, Container } from "@/components/ui";
+import { Container } from "@/components/ui";
 import { LogoLockup } from "@/components/logo";
 import { MobileNavigation } from "@/components/mobile-navigation";
+import { AccountMenu } from "@/components/account-menu";
 
 export function SiteHeader() {
   return (
@@ -15,7 +16,7 @@ export function SiteHeader() {
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.filter((item) => item.href !== "/book").map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
           <Link className="header-contact-button" href="/contact">Contact</Link>
-          <ButtonLink href="/courses" small>Explore courses</ButtonLink>
+          <AccountMenu className="header-account-menu" showNavigation showSignedOut />
         </nav>
         <div className="tuition-partner-group">
           <Link href="/go/ib-tutors" className="header-tuition-link">One-to-One tuition</Link>

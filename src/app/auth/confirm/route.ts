@@ -41,6 +41,10 @@ export async function GET(request: NextRequest) {
       } = await supabase.auth.getUser();
 
       if (user) {
+        await Promise.all([
+          supabase.rpc("claim_verified_course_access"),
+          supabase.rpc("claim_school_plus_access"),
+        ]);
         const { data: profile } = await supabase
           .from("profiles")
           .select("display_name,teacher_status,teacher_notification_sent_at")

@@ -3,7 +3,33 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireSignedIn } from "@/lib/account-access";
+import { getQuestionBankCourse } from "@/lib/question-bank-courses";
 import { sendTeacherApplicationEmail } from "@/lib/teacher-application-email";
+
+export async function choosePrimaryCourse(formData: FormData) {
+  const { supabase, user } = await requireSignedIn("/account", "ib");
+  const courseId = String(formData.get("courseId") || "");
+  const destination = formData.get("destination") === "plus" ? "plus" : "home";
+  const course = getQuestionBankCourse(courseId);
+
+  if (!course) redirect(`/account?error=${encodeURIComponent("Choose your IB Mathematics course to continue.")}`);
+
+  const existingPreferences = Array.isArray(user.user_metadata.course_preferences)
+    ? user.user_metadata.course_preferences.filter((value): value is string => typeof value === "string")
+    : [];
+  const { error } = await supabase.auth.updateUser({
+    data: {
+      ...user.user_metadata,
+      primary_course: course.slug,
+      course_preferences: Array.from(new Set([course.slug, ...existingPreferences])),
+    },
+  });
+
+  if (error) redirect(`/account?error=${encodeURIComponent("Your course choice could not be saved. Please try again.")}`);
+
+  revalidatePath("/account");
+  redirect(destination === "plus" ? `/account/access?course=${course.slug}` : `/account?course=${course.slug}`);
+}
 
 export async function requestTeacherAccess() {
   const { supabase, user } = await requireSignedIn("/account");

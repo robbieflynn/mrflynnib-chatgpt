@@ -6,7 +6,7 @@ const contentSecurityPolicy = [
   "font-src 'self' data:",
   "form-action 'self' mailto:",
   "frame-ancestors 'self'",
-  "frame-src 'self' https://www.youtube-nocookie.com",
+  "frame-src 'self' https://www.youtube-nocookie.com https://player.mediadelivery.net",
   "img-src 'self' data: blob: https:",
   "media-src 'self'",
   "object-src 'none'",

@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useId, useRef, useState } from "react";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/client";
 
@@ -9,6 +10,16 @@ type AccountSummary = {
   displayName: string;
   email: string;
   role: "student" | "teacher" | "admin";
+  curriculum: "ib" | "igcse";
+};
+
+type AccountMenuProps = {
+  signOutHref?: string;
+  showNavigation?: boolean;
+  className?: string;
+  signedOutClassName?: string;
+  signedOutLabel?: string;
+  showSignedOut?: boolean;
 };
 
 function initials(name: string, email: string) {
@@ -17,11 +28,20 @@ function initials(name: string, email: string) {
   return (words[0]?.slice(0, 2) || email.slice(0, 2) || "ME").toUpperCase();
 }
 
-export function AccountMenu({ signOutHref = "/account" }: { signOutHref?: string }) {
+export function AccountMenu({
+  signOutHref = "/account",
+  showNavigation = false,
+  className = "",
+  signedOutClassName = "button button-small header-login-button",
+  signedOutLabel = "Log in",
+  showSignedOut = false,
+}: AccountMenuProps) {
+  const pathname = usePathname();
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const [account, setAccount] = useState<AccountSummary | null>(null);
+  const panelId = useId();
+  const [account, setAccount] = useState<AccountSummary | null | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -41,7 +61,7 @@ export function AccountMenu({ signOutHref = "/account" }: { signOutHref?: string
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role,display_name")
+        .select("role,display_name,curriculum")
         .eq("user_id", user.id)
         .maybeSingle();
       if (!active) return;
@@ -57,6 +77,7 @@ export function AccountMenu({ signOutHref = "/account" }: { signOutHref?: string
         displayName: profile?.display_name || metadataName || email.split("@")[0] || "Your account",
         email,
         role,
+        curriculum: profile?.curriculum === "igcse" ? "igcse" : "ib",
       });
     }
 
@@ -91,9 +112,22 @@ export function AccountMenu({ signOutHref = "/account" }: { signOutHref?: string
     };
   }, [open]);
 
-  if (!account) return null;
+  if (!account) {
+    if (!showSignedOut) return null;
+    const isIgcse = pathname.startsWith("/igcse");
+    const href = isIgcse ? "/account?qualification=igcse" : "/account";
+    return <Link className={signedOutClassName} href={href}>{signedOutLabel}</Link>;
+  }
 
   const roleLabel = account.role === "admin" ? "Administrator" : account.role === "teacher" ? "Teacher" : "Student";
+  const isTeacher = account.role === "teacher" || account.role === "admin";
+  const accountHome = account.curriculum === "igcse"
+    ? isTeacher ? "/igcse/teacher" : "/account?qualification=igcse"
+    : isTeacher ? "/teacher" : "/account";
+  const coursesHref = `/learn/index.html?curriculum=${account.curriculum}&view=courses`;
+  const accessHref = account.curriculum === "igcse"
+    ? "/account?qualification=igcse"
+    : isTeacher ? "/teacher/access" : "/account/access";
 
   async function signOut() {
     setSigningOut(true);
@@ -109,13 +143,13 @@ export function AccountMenu({ signOutHref = "/account" }: { signOutHref?: string
   }
 
   return (
-    <div className="account-menu" ref={menuRef}>
+    <div className={`account-menu ${className}`.trim()} ref={menuRef}>
       <button
         ref={triggerRef}
         className="account-menu-trigger"
         type="button"
         aria-expanded={open}
-        aria-controls="account-menu-panel"
+        aria-controls={panelId}
         aria-haspopup="menu"
         aria-label={`Open account menu for ${account.displayName}`}
         onClick={() => setOpen((current) => !current)}
@@ -126,11 +160,17 @@ export function AccountMenu({ signOutHref = "/account" }: { signOutHref?: string
       </button>
 
       {open ? (
-        <div className="account-menu-panel" id="account-menu-panel" role="menu">
+        <div className="account-menu-panel" id={panelId} role="menu">
           <div className="account-menu-identity">
             <span className="account-menu-avatar account-menu-avatar-large" aria-hidden="true">{initials(account.displayName, account.email)}</span>
             <span><small>Signed in as {roleLabel.toLowerCase()}</small><strong>{account.displayName}</strong><span>{account.email}</span></span>
           </div>
+          {showNavigation ? <nav className="account-menu-navigation" aria-label="Account navigation">
+            <Link href={accountHome} role="menuitem" onClick={() => setOpen(false)}>{isTeacher ? "Teacher home" : "Learning home"}</Link>
+            <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link>
+            <Link href={accessHref} role="menuitem" onClick={() => setOpen(false)}>Manage access</Link>
+            <Link href={account.curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"} role="menuitem" onClick={() => setOpen(false)}>Previous Teachable course</Link>
+          </nav> : null}
           <button className="account-menu-signout" type="button" role="menuitem" disabled={signingOut} onClick={signOut}>
             <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8 4H4v12h4M12 6l4 4-4 4M16 10H8" /></svg>
             {signingOut ? "Signing out…" : "Sign out"}

@@ -18,7 +18,7 @@ export default function TermsPage() {
       />
       <section className="section-tight">
         <Container className="narrow stack-xl">
-          <p className="muted"><strong>Last updated:</strong> 4 October 2026</p>
+          <p className="muted"><strong>Last updated:</strong> 23 October 2026</p>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>About these terms</h2>
@@ -26,8 +26,9 @@ export default function TermsPage() {
           </section>
 
           <section className="stack">
-            <h2 style={{ fontSize: "2rem" }}>Courses and Teachable</h2>
-            <p>Course checkout, payment, enrollment, account login and lesson delivery take place through Teachable. The price, access period and other important purchase information are shown before checkout. Teachable&apos;s applicable checkout terms and refund process also apply to purchases made on its platform.</p>
+            <h2 style={{ fontSize: "2rem" }}>Courses and payments</h2>
+            <p>Native Mr Flynn IB course payments are processed securely by Stripe. The course, price and access period are shown before checkout, and access is connected to the signed-in Mr Flynn IB account used to begin the purchase. Mr Flynn IB does not receive or store complete card details.</p>
+            <p>Teachable remains available during the course-platform transition. Purchases made on Teachable continue to be subject to the checkout and refund terms shown there.</p>
             <p>Mr Flynn IB remains responsible for the course content and reasonable course support. For help with an enrollment or course, email <a className="text-link" href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p>
           </section>
 

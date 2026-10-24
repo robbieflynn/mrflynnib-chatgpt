@@ -18,7 +18,7 @@ export default function PrivacyPage() {
       />
       <section className="section-tight">
         <Container className="narrow stack-xl">
-          <p className="muted"><strong>Last updated:</strong> 21 October 2026</p>
+          <p className="muted"><strong>Last updated:</strong> 23 October 2026</p>
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Who we are</h2>
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
             <h2 style={{ fontSize: "2rem" }}>Information we collect</h2>
             <p>We collect information you choose to provide, such as your name, email address, school, role, country and the contents of an enquiry. A Mr Flynn IB account requires a name and email address. The email address is the only direct contact detail required. We do not ask account holders for a telephone number, postal address or date of birth.</p>
             <p>To provide the question bank, classroom and assignment features, we also store service data linked to the account. This may include the selected curriculum and account role, class memberships, assignments, submitted answers, question completion and progress, saved whiteboard working, and information needed to authenticate the account and keep the service secure.</p>
-            <p>When you enroll through Teachable, we may receive limited student, enrollment, purchase and course-progress information made available to course creators. Basic technical logs may also be created when you use the website.</p>
+            <p>When you purchase a native Mr Flynn IB course, Stripe processes the payment and provides us with limited transaction information such as the product, payment status, amount, currency and Stripe customer or payment reference. Mr Flynn IB does not receive or store your complete card details. During the transition from Teachable, we may also receive limited student, enrollment, purchase and course-progress information made available to course creators. Basic technical logs may be created when you use the website.</p>
             <p>The syllabus checklists download directly from this website. You do not need to provide personal information to download them.</p>
           </section>
 
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Services we use</h2>
-            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, Google Workspace for business email, Resend for transactional emails, Supabase for the account and classroom platform, and Teachable for course checkout, enrollment and delivery. Embedded videos use YouTube&apos;s privacy-enhanced mode.</p>
+            <p>We use trusted providers to operate the website and services. These currently include Vercel for hosting, Google Workspace for business email, Resend for transactional emails, Supabase for accounts and the classroom platform, Stripe for native course payments, Bunny Stream for native course video delivery, and Teachable during the course-platform transition. Embedded YouTube videos use YouTube&apos;s privacy-enhanced mode.</p>
             <p>We share only the information reasonably needed for each service.</p>
           </section>
 
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>International data transfers</h2>
-            <p>Although the main Supabase account database is hosted in Ireland, some providers, including Teachable, Vercel, Resend and some service subprocessors, may process limited personal information outside Switzerland or the European Economic Area. Where applicable, providers use contractual or other recognised safeguards for international transfers, such as standard contractual clauses.</p>
+            <p>Although the main Supabase account database is hosted in Ireland, some providers, including Stripe, Bunny Stream, Teachable, Vercel, Resend and some service subprocessors, may process limited personal information outside Switzerland or the European Economic Area. Where applicable, providers use contractual or other recognised safeguards for international transfers, such as standard contractual clauses.</p>
           </section>
 
           <section className="stack">
