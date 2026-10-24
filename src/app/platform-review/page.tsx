@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
@@ -42,75 +43,86 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
   const courseCode = isIgcse ? "IGCSE" : "AA HL";
   const className = isIgcse ? "Year 11 IGCSE" : "Year 12 AA HL";
   const courseName = isIgcse ? "Edexcel IGCSE Mathematics" : "Analysis & Approaches HL";
+  const continueTopic = isIgcse ? "Topic 2 · Algebra" : "Topic 1 · Number and algebra";
+  const continueLesson = isIgcse ? "Quadratic graphs" : "Maclaurin series";
+  const continueDetail = isIgcse ? "Next: completing the square" : "Next: using standard expansions";
   const courseReviewHref = isIgcse ? "/learn/index.html?v=igcse-platform-review" : "/learn/index.html?v=ib-platform-review";
   const questionBankHref = isIgcse ? "/igcse/question-bank" : "/question-bank/aa-hl?review=platform";
   const assignmentHref = reviewHref(curriculum, "student", "assignment");
 
   return <>
-    <section className={`dashboard-hero student-dashboard-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
+    <section className={`dashboard-hero student-dashboard-hero student-home-v2-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
       <Container className="dashboard-hero-shell">
         <div className="dashboard-account-row">
           <div className="platform-access-summary"><span>Free account</span><small>Question bank and classroom access</small><Link href={`${isIgcse ? "/igcse" : ""}/account/access`}>Explore course access</Link></div>
           <div className="platform-review-account"><span>MF</span><strong>Maya Flynn</strong><small>Student</small></div>
         </div>
-        <div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">My learning</span><h1>Welcome back, Maya</h1><p>Here is what to focus on next.</p></div></div>
+        <div className="dashboard-hero-layout">
+          <div className="dashboard-hero-copy"><span className="dashboard-role-label">My learning</span><h1>Welcome back, Maya</h1><p>Everything you need for {courseCode}, in one place.</p></div>
+          <div className="student-home-course-chip"><span>Current course</span><strong>{courseCode}</strong><small>{courseName}</small></div>
+        </div>
       </Container>
     </section>
-    <section className={`student-dashboard section-tight ${isIgcse ? "student-dashboard-igcse" : ""}`}>
-      <Container className="stack-xl">
-        <nav className="student-platform-nav" aria-label="Your learning areas">
-          <Link href={courseReviewHref}><DashboardIcon name="book" /><span><strong>Courses</strong><small>Video lessons, practice and past papers</small></span><b aria-hidden="true">→</b></Link>
-          <Link href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Independent practice and saved work</small></span><b aria-hidden="true">→</b></Link>
-          <Link href={assignmentHref}><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Work set by your teachers</small></span><b aria-hidden="true">→</b></Link>
-          <Link href="#progress"><DashboardIcon name="check" /><span><strong>Progress overview</strong><small>Course and question bank activity</small></span><b aria-hidden="true">↓</b></Link>
+    <section className={`student-dashboard student-home-v2 section-tight ${isIgcse ? "student-dashboard-igcse" : ""}`}>
+      <Container className="stack-2xl">
+        <section className="student-focus-grid" aria-labelledby="student-focus-heading">
+          <article className="student-focus-primary">
+            <div className="student-focus-top"><span className="student-focus-label">Your next task</span><span className="student-due-pill">Due tomorrow</span></div>
+            <div className="student-focus-copy"><span>{className}</span><h2 id="student-focus-heading">Functions practice</h2><p>Three questions complete. Continue from question 4.</p></div>
+            <div className="student-focus-footer"><div><span><strong>3 of 8</strong> questions</span><i><b style={{ width: "38%" }} /></i></div><Link className="button student-focus-button" href={assignmentHref}>Continue assignment <span aria-hidden="true">→</span></Link></div>
+          </article>
+          <article className="student-continue-card">
+            <div className="student-continue-copy"><span className="student-focus-label">Continue learning</span><small>{continueTopic}</small><h2>{continueLesson}</h2><p>{continueDetail}</p><Link className="student-inline-action" href={courseReviewHref}>Open lesson <span aria-hidden="true">→</span></Link></div>
+            {!isIgcse ? <Image src="/learn/assets/course-aa-hl.png" alt="" width={250} height={250} loading="eager" /> : <div className="student-continue-symbol" aria-hidden="true">x²</div>}
+            <div className="student-continue-meter"><span><strong>31%</strong> of course complete</span><i><b style={{ width: "31%" }} /></i></div>
+          </article>
+        </section>
+
+        <nav className="student-platform-nav student-platform-nav-v2" aria-label="Your learning areas">
+          <Link className="is-course" href={courseReviewHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>Lessons and practice</small></span><b aria-hidden="true">→</b></Link>
+          <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Independent practice</small></span><b aria-hidden="true">→</b></Link>
+          <Link className="is-assignments" href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Two due soon</small></span><b aria-hidden="true">↓</b></Link>
+          <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
         </nav>
 
-        <div className="student-next-grid is-single">
-          <section className="student-next-card">
-            <div className="student-next-card-copy"><p className="student-dashboard-kicker">Up next</p><span className="student-next-context">{className} · Due tomorrow</span><h2>Functions practice</h2><p>You have completed 3 of 8 questions.</p></div>
-            <div className="student-next-progress"><span><strong>38%</strong> complete</span><i><b style={{ width: "38%" }} /></i></div>
-            <Link className="button student-next-button" href={assignmentHref}>Continue assignment <span aria-hidden="true">→</span></Link>
-          </section>
-        </div>
-
-        <section className="student-progress-overview dashboard-panel stack-lg" id="progress" aria-labelledby="student-progress-heading">
-          <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Progress overview</p><h2 id="student-progress-heading">Two clear ways to measure your learning</h2></div><p className="muted">Course lessons and independent question-bank work are tracked separately.</p></div>
-          <div className="student-progress-grid">
-            <article className="student-progress-summary">
-              <div><p className="student-dashboard-kicker">Course progress</p><strong className="student-progress-number">31%</strong><span>{courseName} lessons complete</span></div>
-              <div className="student-progress-ring" style={{ "--student-progress": "112deg" } as CSSProperties}><span>31%</span></div>
-              <dl><div><dt>Lessons completed</dt><dd>67</dd></div><div><dt>Lesson practice completed</dt><dd>54</dd></div><div><dt>Current topic</dt><dd>Calculus</dd></div></dl>
-              <Link className="text-link" href={courseReviewHref}>View course progress →</Link>
-            </article>
-            <article className="student-progress-summary">
-              <div><p className="student-dashboard-kicker">Question bank progress</p><strong className="student-progress-number">24%</strong><span>{courseCode} independent questions complete</span></div>
-              <div className="student-progress-ring" style={{ "--student-progress": "86deg" } as CSSProperties}><span>24%</span></div>
-              <dl><div><dt>Questions completed</dt><dd>126</dd></div><div><dt>Saved whiteboards</dt><dd>18</dd></div><div><dt>Assignments submitted</dt><dd>4</dd></div></dl>
-              <Link className="text-link" href={questionBankHref}>View question bank progress →</Link>
-            </article>
-          </div>
-        </section>
-
-        <section className="platform-review-study-grid">
-          <article className="platform-review-study-card is-course"><span className="platform-review-card-label">Continue your course</span><h2>{courseName}</h2><p>Pick up with the next video lesson, then use the attached lesson practice.</p><div className="platform-review-meter"><i style={{ width: "31%" }} /></div><Link className="button" href={courseReviewHref}>Open course <span aria-hidden="true">→</span></Link></article>
-          {!isIgcse ? <article className="platform-review-study-card"><span className="platform-review-card-label">Exam preparation</span><h2>Past-paper solutions</h2><p>Browse worked solutions from specimen papers through to the latest available session.</p><Link className="button button-secondary" href={`${courseReviewHref}&course=aa-hl&view=past-papers`}>Browse past papers <span aria-hidden="true">→</span></Link></article> : <article className="platform-review-study-card"><span className="platform-review-card-label">Independent practice</span><h2>Question bank</h2><p>Filter by topic, subtopic and difficulty, then save your progress and whiteboard work.</p><Link className="button button-secondary" href={questionBankHref}>Open question bank <span aria-hidden="true">→</span></Link></article>}
-        </section>
-
-        <section className="student-assignments dashboard-panel stack-lg" id="assignments">
-          <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>Due soon</h2></div><p className="muted">The most urgent work appears first.</p></div>
+        <section className="student-assignments student-home-section stack-lg" id="assignments">
+          <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>Due soon</h2></div><Link className="student-section-link" href={assignmentHref}>View all assignments →</Link></div>
           <div className="student-assignment-list">
-            <Link className="student-assignment-card" href={assignmentHref}><span className="student-assignment-status"><i style={{ width: "38%" }} /></span><div><small>{className}</small><strong>Functions practice</strong><span>Due tomorrow</span></div><div className="student-assignment-progress"><strong>3/8</strong><span>questions</span></div><span className="status-pill">Continue</span><span aria-hidden="true">→</span></Link>
+            <Link className="student-assignment-card is-urgent" href={assignmentHref}><span className="student-assignment-status"><i style={{ width: "38%" }} /></span><div><small>{className}</small><strong>Functions practice</strong><span>Due tomorrow</span></div><div className="student-assignment-progress"><strong>3/8</strong><span>questions</span></div><span className="status-pill">Continue</span><span aria-hidden="true">→</span></Link>
             <Link className="student-assignment-card" href={assignmentHref}><span className="student-assignment-status"><i style={{ width: "0%" }} /></span><div><small>{className}</small><strong>Sequences review</strong><span>Due in 6 days</span></div><div className="student-assignment-progress"><strong>0/6</strong><span>questions</span></div><span className="status-pill">Start</span><span aria-hidden="true">→</span></Link>
           </div>
         </section>
 
-        <section className="student-class-section stack-lg">
+        <section className="student-progress-overview student-home-section stack-lg" id="progress" aria-labelledby="student-progress-heading">
+          <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Two parts of your learning</h2></div><p className="muted">Course lessons and question-bank practice are measured separately.</p></div>
+          <div className="student-progress-grid student-progress-grid-v2">
+            <article className="student-progress-summary is-course-progress">
+              <div><p className="student-dashboard-kicker">Course progress</p><strong className="student-progress-number">31%</strong><span>{courseName}</span></div>
+              <div className="student-progress-ring" style={{ "--student-progress": "112deg" } as CSSProperties}><span>31%</span></div>
+              <dl><div><dt>Lessons</dt><dd>67</dd></div><div><dt>Practice sets</dt><dd>54</dd></div><div><dt>Current topic</dt><dd>Calculus</dd></div></dl>
+              <Link className="student-inline-action" href={courseReviewHref}>Continue course →</Link>
+            </article>
+            <article className="student-progress-summary is-bank-progress">
+              <div><p className="student-dashboard-kicker">Question bank progress</p><strong className="student-progress-number">24%</strong><span>{courseCode} independent practice</span></div>
+              <div className="student-progress-ring" style={{ "--student-progress": "86deg" } as CSSProperties}><span>24%</span></div>
+              <dl><div><dt>Questions</dt><dd>126</dd></div><div><dt>Whiteboards</dt><dd>18</dd></div><div><dt>Assignments</dt><dd>4</dd></div></dl>
+              <Link className="student-inline-action" href={questionBankHref}>Continue practising →</Link>
+            </article>
+          </div>
+        </section>
+
+        <section className="student-resource-row" aria-label="More ways to learn">
+          {!isIgcse ? <Link className="student-resource-card is-papers" href={`${courseReviewHref}&course=aa-hl&view=past-papers`}><span className="student-resource-icon" aria-hidden="true">P</span><span><small>Exam preparation</small><strong>Past-paper solutions</strong><em>Specimen and May 2021 are free</em></span><b aria-hidden="true">→</b></Link> : <Link className="student-resource-card is-papers" href={questionBankHref}><span className="student-resource-icon" aria-hidden="true">Q</span><span><small>Independent practice</small><strong>Question bank</strong><em>Filter by topic and difficulty</em></span><b aria-hidden="true">→</b></Link>}
+          <Link className="student-resource-card is-saved" href={questionBankHref}><span className="student-resource-icon" aria-hidden="true">18</span><span><small>Your work</small><strong>Saved whiteboards</strong><em>Continue from any device</em></span><b aria-hidden="true">→</b></Link>
+        </section>
+
+        <section className="student-class-section student-home-section stack-lg">
           <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Classes</p><h2>Your classes</h2></div><p className="muted">Classes keep your teacher&apos;s assignments and feedback together.</p></div>
           <div className="student-class-grid"><article className="student-class-card"><div className="student-class-card-top"><DashboardIcon name="class" /><span className="badge">{courseCode}</span></div><div><small>Class</small><h3>{className}</h3></div><div className="student-class-card-meta"><span><strong>6</strong> assignments</span><span>Joined 9 Oct</span></div></article></div>
           <details className="join-class-panel"><summary>Join another class<span aria-hidden="true">+</span></summary><div className="join-class-form"><label className="field"><span>Class code</span><input aria-label="Example class code" placeholder="ABC1234" readOnly /></label><button className="button button-small" type="button">Join class</button></div></details>
         </section>
 
-        <section className="platform-review-upgrade"><div><span className="platform-review-card-label">Free account</span><h2>Learn more before you upgrade</h2><p>Your question bank, classes and assignments stay available. Course pages show the complete lesson structure and include selected free video lessons with practice.</p></div><Link className="button" href={`${isIgcse ? "/igcse" : ""}/account/access`}>See course access</Link></section>
+        <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for the complete course?</h2><p>Your free question bank, classes and assignments stay available. Upgrade only when you want every video lesson, lesson practice and past-paper solution.</p></div><Link className="button button-secondary" href={`${isIgcse ? "/igcse" : ""}/account/access`}>Compare course access</Link></section>
       </Container>
     </section>
   </>;
