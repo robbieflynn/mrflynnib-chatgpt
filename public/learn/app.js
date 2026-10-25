@@ -948,8 +948,11 @@ function renderPastPaperTabs() {
   tabs.classList.toggle("is-single-course", definitions.length === 1);
   tabs.innerHTML = definitions.map((definition) => {
     const stats = pastPaperLibrary.stats[definition.code];
-    const Tag = reviewerMode ? "button" : "div";
-    const attributes = reviewerMode ? `type="button" data-past-course="${definition.code}"` : `aria-label="Your enrolled course"`;
+    const canChooseCourse = reviewerMode || guestMode;
+    const Tag = canChooseCourse ? "button" : "div";
+    const attributes = canChooseCourse
+      ? `type="button" data-past-course="${definition.code}" aria-label="View ${escapeHtml(definition.name)} past-paper previews"`
+      : `aria-label="Your enrolled course"`;
     return `<${Tag} class="past-paper-course-tab ${definition.code === currentPastPaperCourse ? "is-active" : ""}" ${attributes}>
       <span>${definition.code}</span>
       <strong>${escapeHtml(definition.name)}</strong>
@@ -1330,8 +1333,8 @@ async function initialize() {
     renderProgress();
     if (reviewerMode) {
       setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
-    } else if (guestMode && requestedView === "courses") {
-      setView("courses");
+    } else if (guestMode && (requestedView === "courses" || requestedView === "past-papers")) {
+      setView(requestedView === "past-papers" ? "pastPapers" : "courses");
     } else if (validPreviewCourseId || requestedCourseId) {
       const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
       const requestedLesson = !hasCompleteCourseAccess(enrolledCourse)
