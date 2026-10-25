@@ -65,6 +65,8 @@ On 26 October 2026, Rob superseded the earlier duplicate-account requirement. Au
 
 The shared-login explanation belongs only in the IGCSE account journey. IB-facing sign-in, account-creation and password screens must not mention IGCSE; an IB student should experience Mr Flynn IB as a complete standalone product without being introduced to the secondary IGCSE offer during account access.
 
+On 25 October 2026, Rob confirmed that IGCSE Student Plus uses the same launch offer as an individual IB student course: **US$79 for 24 months (730 days)**, paid once with no automatic renewal. The IGCSE purchase unlocks the complete native IGCSE Mathematics course and its course practice inside the separate IGCSE account area; it does not grant an IB course.
+
 ### Online courses
 
 Courses cover the IB Mathematics pathways AA HL, AA SL, AI HL, and AI SL. Teachable hosts course checkout, enrollment, login, and learning delivery. MrFlynnIB.com should provide premium course landing pages, previews, curriculum information, FAQs, evidence, and clear calls to action, then send customers deliberately and seamlessly to the correct Teachable destination. Existing students need an obvious Teachable login route.
