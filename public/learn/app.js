@@ -349,8 +349,6 @@ function configureCurriculumExperience(curriculum) {
   const isIgcse = curriculum === "igcse";
   document.body.classList.toggle("igcse-learning", isIgcse);
   document.title = isIgcse ? "IGCSE Mathematics course | Mr Flynn" : "My learning | Mr Flynn IB";
-  document.getElementById("courseBrandLogo").hidden = isIgcse;
-  document.getElementById("igcseCourseBrand").hidden = !isIgcse;
   document.getElementById("brandLearningHomeLink").setAttribute("aria-label", isIgcse ? "Back to IGCSE Mathematics" : "Back to My learning");
   signOutDestination = isIgcse ? "/igcse/account" : "/account";
   const legacyCourseHref = isIgcse ? "/go/igcse-course" : "/go/my-courses";
