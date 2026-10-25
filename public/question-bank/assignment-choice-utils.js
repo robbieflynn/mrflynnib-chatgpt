@@ -3776,6 +3776,31 @@
     addCandidate(list, expression.replace(/∞/g, "1"));
   }
 
+  function compoundInequalityChoiceSet(accepted, correct, seed, prompt) {
+    var instruction = finalInstructionText(prompt);
+    if (!/\b(?:find|determine|solve)\b[\s\S]*\b(?:set of )?values?\b/i.test(instruction)) return null;
+    var expression = clean(correct);
+    var match = expression.match(/^\(([^()]+?)(<|≤)([A-Za-z])(<|≤)([^()]+?)\)∪\(([^()]+?)(<|≤)\3(<|≤)([^()]+?)\)$/);
+    if (!match) return null;
+    var bounds = [match[1], match[5], match[6], match[9]].map(function (value) { return constantExpressionValue(value); });
+    if (bounds.some(function (value) { return value === null; })
+      || !(bounds[0] < bounds[1] && bounds[1] < bounds[2] && bounds[2] < bounds[3])) return null;
+    var variable = match[3];
+    var left = "(" + match[1] + match[2] + variable + match[4] + match[5] + ")";
+    var right = "(" + match[6] + match[7] + variable + match[8] + match[9] + ")";
+    var distractors = [
+      "(" + match[1] + "≤" + variable + "≤" + match[5] + ")∪(" + match[6] + "≤" + variable + "≤" + match[9] + ")",
+      left,
+      right,
+      match[5] + "<" + variable + "<" + match[6],
+    ];
+    var options = shuffled([correct].concat(distractors), seed);
+    var correctOption = options.indexOf(correct);
+    return validateChoiceSet(accepted, options, correctOption)
+      ? { acceptedAnswers: accepted, options: options, correctOption: correctOption }
+      : null;
+  }
+
   function domainRangeMembershipCandidates(correct, prompt, list) {
     var instruction = finalInstructionText(prompt);
     if (!/\b(?:domain|range)\b/i.test(instruction)) return;
@@ -4109,7 +4134,7 @@
     if (/\bnumber of\b/i.test(instruction) && /±/.test(candidate)) return false;
     if (/\b(?:find|determine)\b[\s\S]*\bvalues?\b/i.test(instruction)
       && (candidate.match(/[<>≤≥]/g) || []).length >= 2
-      && !/;/.test(candidate)) return false;
+      && !/[;∪∩]|\b(?:or|and)\b/i.test(candidate)) return false;
 
     var namedPair = instruction.match(/\b([A-Za-z]_?\d)\b[\s\S]{0,30}\band\s+\b([A-Za-z]_?\d)\b/i);
     if (namedPair && !/;/.test(candidate)
@@ -4194,6 +4219,8 @@
       && !/[;±]|\band\b/i.test(correct)) return null;
     if (/\b(?:null\s+and\s+alternative\s+hypotheses|hypotheses)\b/i.test(finalInstruction)
       && !/;/.test(correct)) return null;
+    var compoundInequalitySet = compoundInequalityChoiceSet(accepted, correct, seed, prompt);
+    if (compoundInequalitySet) return compoundInequalitySet;
     var candidates = [];
     ratioDistractorCandidates(correct, candidates);
     functionEvaluationResultCandidates(correct, candidates);
