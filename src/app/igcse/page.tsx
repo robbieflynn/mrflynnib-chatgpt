@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
+import { ButtonLink, Container, Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "IGCSE Mathematics",
@@ -38,7 +38,6 @@ export default function IgcsePage() {
           <g className="igcse-landing-points"><circle cx="300" cy="318" r="5" /><circle cx="526" cy="126" r="5" /><circle cx="722" cy="248" r="5" /></g>
         </svg>
         <Container className="igcse-landing-hero-inner">
-          <Breadcrumbs items={[{ label: "IGCSE Mathematics" }]} />
           <div className="igcse-landing-copy stack-lg">
             <div className="stack">
               <Eyebrow>Edexcel IGCSE Mathematics</Eyebrow>
@@ -46,8 +45,8 @@ export default function IgcsePage() {
               <p className="lede">Complete video lessons, past-paper solutions and focused question practice, explained clearly by Mr Flynn IB.</p>
             </div>
             <div className="cluster igcse-landing-actions">
-              <ButtonLink href="/account?qualification=igcse&mode=sign-up">Start here</ButtonLink>
-              <ButtonLink href="/account?qualification=igcse" secondary>Log in</ButtonLink>
+              <ButtonLink href="/igcse/account?mode=sign-up">Start here</ButtonLink>
+              <ButtonLink href="/igcse/account" secondary>Log in</ButtonLink>
             </div>
           </div>
         </Container>

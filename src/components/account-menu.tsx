@@ -149,7 +149,7 @@ export function AccountMenu({
   if (!displayedAccount) {
     if (!showSignedOut) return null;
     const isIgcse = pathname.startsWith("/igcse");
-    const href = isIgcse ? "/account?qualification=igcse" : "/account";
+    const href = isIgcse ? "/igcse/account" : "/account";
     return <Link className={signedOutClassName} href={href}>{signedOutLabel}</Link>;
   }
 
@@ -159,11 +159,11 @@ export function AccountMenu({
   const accountHome = isPlatformReview
     ? `/platform-review?curriculum=${displayedAccount.curriculum}&role=${isTeacher ? "teacher" : "student"}`
     : displayedAccount.curriculum === "igcse"
-    ? isTeacher ? "/igcse/teacher" : "/account?qualification=igcse"
+    ? isTeacher ? "/igcse/teacher" : "/igcse/account"
     : isTeacher ? "/teacher" : "/account";
   const coursesHref = `/learn/index.html?curriculum=${displayedAccount.curriculum}&view=courses`;
   const accessHref = displayedAccount.curriculum === "igcse"
-    ? "/account?qualification=igcse"
+    ? "/igcse/account"
     : isTeacher ? "/teacher/access" : "/account/access";
 
   async function signOut() {

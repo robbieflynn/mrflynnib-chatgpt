@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "katex/dist/katex.min.css";
 import "./globals.css";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { SiteChrome } from "@/components/site-chrome";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -28,9 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en-GB">
       <body>
         <a className="skip-link" href="#main-content">Skip to content</a>
-        <SiteHeader />
-        <main id="main-content">{children}</main>
-        <SiteFooter />
+        <SiteChrome>{children}</SiteChrome>
         <Analytics />
       </body>
     </html>

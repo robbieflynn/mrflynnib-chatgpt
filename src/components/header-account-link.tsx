@@ -17,8 +17,6 @@ export function HeaderAccountLink({ className = "", onNavigate, showSignedOut = 
   const searchParams = useSearchParams();
   const [account, setAccount] = useState<{ role: "student" | "teacher" | "admin"; curriculum: "ib" | "igcse" } | null>(null);
   const isIgcse = pathname.startsWith("/igcse");
-  const isStudentArea = pathname === "/account" || pathname.startsWith("/account/") || pathname === "/igcse/account" || pathname.startsWith("/igcse/account/") || pathname.startsWith("/assignments/");
-  const isTeacherArea = pathname === "/teacher" || pathname.startsWith("/teacher/") || pathname === "/igcse/teacher" || pathname.startsWith("/igcse/teacher/");
   const reviewCurriculum = searchParams.get("curriculum") === "igcse" ? "igcse" : "ib";
   const reviewRole = searchParams.get("role") === "teacher" ? "teacher" : "student";
   const reviewHref = `/platform-review?curriculum=${reviewCurriculum}&role=${reviewRole}`;
@@ -47,14 +45,17 @@ export function HeaderAccountLink({ className = "", onNavigate, showSignedOut = 
   }, [pathname]);
 
   const accountIsTeacher = account?.role === "teacher" || account?.role === "admin";
-  const accountHref = account?.curriculum === "igcse"
-    ? accountIsTeacher ? "/igcse/teacher" : "/account?qualification=igcse"
-    : accountIsTeacher ? "/teacher" : "/account";
-  const href = pathname === "/platform-review" ? reviewHref : account ? accountHref : isIgcse ? "/igcse/account" : "/account";
+  const accountMatchesArea = !account || account.role === "admin" || (isIgcse ? account.curriculum === "igcse" : account.curriculum === "ib");
+  const accountHref = isIgcse
+    ? accountIsTeacher ? "/igcse/teacher" : "/igcse/account"
+    : account?.curriculum === "igcse"
+      ? accountIsTeacher ? "/igcse/teacher" : "/igcse/account"
+      : accountIsTeacher ? "/teacher" : "/account";
+  const href = pathname === "/platform-review" ? reviewHref : account && accountMatchesArea ? accountHref : isIgcse ? "/igcse/account" : "/account";
   const label = pathname === "/platform-review"
     ? reviewRole === "teacher" ? "Teacher home" : "My learning"
-    : account ? accountIsTeacher ? "Teacher home" : "My learning"
-      : isTeacherArea ? "Teacher home" : isStudentArea ? "My learning" : "Log in";
+    : account && accountMatchesArea ? accountIsTeacher ? "Teacher home" : "My learning"
+      : "Log in";
 
   if (!account && !showSignedOut && pathname !== "/platform-review") return null;
 

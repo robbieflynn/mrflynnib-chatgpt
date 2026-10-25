@@ -1,11 +1,13 @@
-import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import AccountPage from "@/app/account/page";
+
+export const metadata: Metadata = {
+  title: "IGCSE Mathematics account",
+  description: "Sign in to your separate Mr Flynn IGCSE Mathematics student or teacher account.",
+  robots: { index: false, follow: false },
+};
 
 export default async function IgcseAccountPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
-  const query = new URLSearchParams({ qualification: "igcse" });
-  Object.entries(params).forEach(([key, value]) => {
-    if (key === "qualification" || typeof value !== "string") return;
-    query.set(key, value);
-  });
-  redirect(`/account?${query.toString()}`);
+  return <AccountPage searchParams={Promise.resolve({ ...params, qualification: "igcse" })} />;
 }
