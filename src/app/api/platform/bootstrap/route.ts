@@ -13,8 +13,12 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "This account belongs to the other curriculum area", code: "curriculum_mismatch", currentCurriculum: session.curriculum }, { status: 409 });
   }
   const curriculum = isAdmin ? requestedCurriculum : session.curriculum;
-  const { data: progress } = await session.supabase.from("course_lesson_progress").select("course_id,lesson_id,completed,last_viewed_at").eq("user_id", session.user.id).eq("curriculum", curriculum);
-  const { data: courseState } = await session.supabase.from("course_platform_state").select("last_course_id,last_lesson_id").eq("user_id", session.user.id).eq("curriculum", curriculum).maybeSingle();
+  const [progressResult, courseStateResult] = await Promise.all([
+    session.supabase.from("course_lesson_progress").select("course_id,lesson_id,completed,last_viewed_at").eq("user_id", session.user.id).eq("curriculum", curriculum),
+    session.supabase.from("course_platform_state").select("last_course_id,last_lesson_id").eq("user_id", session.user.id).eq("curriculum", curriculum).maybeSingle(),
+  ]);
+  const { data: progress } = progressResult;
+  const { data: courseState } = courseStateResult;
   const products = productsForCurriculum(curriculum);
   const preferredCourseId = typeof session.user.user_metadata.primary_course === "string" ? session.user.user_metadata.primary_course : null;
   const role = session.profile?.role || "student";

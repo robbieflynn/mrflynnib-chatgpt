@@ -2,6 +2,8 @@
 
 Last updated: 25 October 2026
 
+On 25 October 2026, the production server architecture was aligned with the existing West EU Ireland Supabase project. Keep Vercel dynamic functions pinned to the Dublin `dub1` region through the version-controlled `vercel.json`; static assets continue to use Vercel's global CDN. Do not move or recreate the Supabase project merely to make this alignment. The repository includes read-only smoke and staged load checks for the public website, native course catalogue and assignment-save health path. Run those checks after infrastructure changes and before classroom use; they supplement rather than replace real authenticated assignment testing.
+
 ## Purpose of this file
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.

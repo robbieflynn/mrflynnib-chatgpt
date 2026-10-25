@@ -64,10 +64,18 @@ async function checkSupabase() {
 }
 
 export async function GET() {
+  const startedAt = performance.now();
   const checkedAt = new Date().toISOString();
   const database = await checkSupabase();
+  const responseTimeMs = Math.round(performance.now() - startedAt);
   return NextResponse.json(
-    { checkedAt, database: database.ok ? "operational" : "degraded", website: "operational" },
+    {
+      checkedAt,
+      database: database.ok ? "operational" : "degraded",
+      website: "operational",
+      region: process.env.VERCEL_REGION || "local",
+      responseTimeMs,
+    },
     { status: database.ok ? 200 : 503, headers: { "Cache-Control": "no-store, max-age=0" } },
   );
 }
