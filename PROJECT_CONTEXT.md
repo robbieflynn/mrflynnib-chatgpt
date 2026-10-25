@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 24 October 2026
+Last updated: 25 October 2026
 
 ## Purpose of this file
 
@@ -325,6 +325,8 @@ The workflow must remain simple:
 7. Codex verifies the public production result and reports it accurately.
 
 On 10 October 2026, Rob confirmed that a request to make a website change also authorises publishing that completed, checked change to the live site. Do not routinely stop and ask him to approve a preview. A preview can still be used for internal QA, and explicit preview-only instructions or genuinely high-risk, irreversible actions still take precedence.
+
+Rob reaffirmed this delivery preference on 25 October 2026: routine fixes should be made live by default once the relevant checks pass, unless he explicitly says **preview only**, **do not publish**, or **local only**. Major redesigns and other changes that materially alter the customer experience should still be shown in a preview before production, while urgent repairs to already approved live behaviour should not be delayed by a separate publication question.
 
 Do not return to full-site ZIP transfers for ordinary development. Keep one repository and evolve it incrementally.
 

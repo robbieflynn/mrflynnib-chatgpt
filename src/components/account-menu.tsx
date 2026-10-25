@@ -5,12 +5,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/client";
+import { platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
 
 type AccountSummary = {
   displayName: string;
   email: string;
   role: "student" | "teacher" | "admin";
   curriculum: "ib" | "igcse";
+  accessLabel?: string | null;
 };
 
 type AccountMenuProps = {
@@ -71,12 +73,28 @@ export function AccountMenu({
         return;
       }
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role,display_name,curriculum")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const [{ data: profile }, { data: entitlements }, { data: schoolSeats }] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("role,display_name,curriculum")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("platform_entitlements")
+          .select("product_code,status,starts_at,expires_at")
+          .eq("user_id", user.id),
+        supabase
+          .from("organization_license_seats")
+          .select("revoked_at,organization_licenses(product_code,status,starts_at,ends_at)")
+          .eq("user_id", user.id)
+          .is("revoked_at", null),
+      ]);
       if (!active) return;
+
+      const access = platformAccessSummary(
+        entitlements as PlatformEntitlement[] | null,
+        schoolSeats as PlatformLicenseSeat[] | null,
+      );
 
       const metadata = user.user_metadata || {};
       const metadataName = typeof metadata.display_name === "string"
@@ -90,15 +108,19 @@ export function AccountMenu({
         email,
         role,
         curriculum: profile?.curriculum === "igcse" ? "igcse" : "ib",
+        accessLabel: access.paid ? access.label : null,
       });
     }
 
     void loadAccount();
     const { data: authListener } = supabase.auth.onAuthStateChange(() => void loadAccount());
+    const refreshAccess = () => void loadAccount();
+    window.addEventListener("platform-access-updated", refreshAccess);
 
     return () => {
       active = false;
       authListener.subscription.unsubscribe();
+      window.removeEventListener("platform-access-updated", refreshAccess);
     };
   }, [isPlatformReview]);
 
@@ -132,6 +154,7 @@ export function AccountMenu({
   }
 
   const roleLabel = displayedAccount.role === "admin" ? "Administrator" : displayedAccount.role === "teacher" ? "Teacher" : "Student";
+  const accountStatusLabel = displayedAccount.accessLabel || roleLabel;
   const isTeacher = displayedAccount.role === "teacher" || displayedAccount.role === "admin";
   const accountHome = isPlatformReview
     ? `/platform-review?curriculum=${displayedAccount.curriculum}&role=${isTeacher ? "teacher" : "student"}`
@@ -169,7 +192,7 @@ export function AccountMenu({
         onClick={() => setOpen((current) => !current)}
       >
         <span className="account-menu-avatar" aria-hidden="true">{initials(displayedAccount.displayName, displayedAccount.email)}</span>
-        <span className="account-menu-trigger-copy"><strong>{displayedAccount.displayName}</strong><small>{roleLabel}</small></span>
+        <span className="account-menu-trigger-copy"><strong>{displayedAccount.displayName}</strong><small>{accountStatusLabel}</small></span>
         <svg aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg>
       </button>
 
@@ -177,7 +200,7 @@ export function AccountMenu({
         <div className="account-menu-panel" id={panelId} role="menu">
           <div className="account-menu-identity">
             <span className="account-menu-avatar account-menu-avatar-large" aria-hidden="true">{initials(displayedAccount.displayName, displayedAccount.email)}</span>
-            <span><small>{isPlatformReview ? "Example" : "Signed in as"} {roleLabel.toLowerCase()}</small><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span></span>
+            <span><small>{displayedAccount.accessLabel ? `${displayedAccount.accessLabel} · ${roleLabel}` : `${isPlatformReview ? "Example" : "Signed in as"} ${roleLabel.toLowerCase()}`}</small><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span></span>
           </div>
           {showNavigation ? <nav className="account-menu-navigation" aria-label="Account navigation">
             <Link href={accountHome} role="menuitem" onClick={() => setOpen(false)}>{isTeacher ? "Teacher home" : "Learning home"}</Link>
