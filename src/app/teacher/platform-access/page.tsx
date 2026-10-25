@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AccountMenu } from "@/components/account-menu";
 import { AccessCodeCreator } from "@/components/platform/access-code-creator";
 import { Breadcrumbs, Container } from "@/components/ui";
-import { requireAdmin } from "@/lib/account-access";
+import { requireSignedIn } from "@/lib/account-access";
 import { courseProducts, teacherPlusProduct } from "@/lib/platform-products";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { grantCourseAccess, revokeCourseAccess, setAccessCodeStatus } from "./actions";
@@ -38,7 +38,14 @@ function messageFor(query: Record<string, string | string[] | undefined>) {
 }
 
 export default async function PlatformAccessAdminPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  await requireAdmin();
+  const { supabase, user } = await requireSignedIn("/teacher/platform-access", "ib");
+  const { data: viewerProfile } = await supabase.from("profiles").select("role,display_name").eq("user_id", user.id).maybeSingle();
+  if (viewerProfile?.role !== "admin") {
+    return <>
+      <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row dashboard-account-row-with-breadcrumbs"><Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Platform access" }]} /><AccountMenu signOutHref="/account?next=/teacher/platform-access" /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">Administrator access</span><h1>Switch to the administrator account</h1><p>This page is available only to the main Mr Flynn IB administrator.</p></div></Container></section>
+      <section className="section-tight"><Container className="narrow"><div className="account-card stack-lg"><div><p className="eyebrow">Current account</p><h2>{viewerProfile?.display_name || "Signed-in account"}</h2><p className="muted">{user.email || "No email address"} · {viewerProfile?.role || "student"}</p></div><p>Sign out using the account menu above, then sign in on this preview with <strong>mrflynnib@gmail.com</strong>. Your main account is already approved as an administrator.</p></div></Container></section>
+    </>;
+  }
   const query = await searchParams;
   const admin = createAdminClient();
   const [{ data: entitlementData }, { data: purchaseData }, { data: codeData, error: codeError }] = await Promise.all([
