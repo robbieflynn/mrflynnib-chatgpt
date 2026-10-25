@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "IGCSE Mathematics",
@@ -17,12 +17,47 @@ const routes = [
 export default function IgcsePage() {
   return (
     <>
+      <section className="igcse-landing-hero">
+        <svg className="igcse-landing-graph" viewBox="0 0 920 480" fill="none" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="igcse-graph-fade" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="white" stopOpacity="0.02" />
+              <stop offset="0.44" stopColor="white" stopOpacity="0.54" />
+              <stop offset="1" stopColor="white" stopOpacity="1" />
+            </linearGradient>
+            <mask id="igcse-graph-mask">
+              <rect width="920" height="480" fill="url(#igcse-graph-fade)" />
+            </mask>
+          </defs>
+          <g mask="url(#igcse-graph-mask)" stroke="currentColor">
+            <path d="M0 80H920M0 160H920M0 240H920M0 320H920M0 400H920M80 0V480M160 0V480M240 0V480M320 0V480M400 0V480M480 0V480M560 0V480M640 0V480M720 0V480M800 0V480M880 0V480" strokeOpacity=".06" />
+            <path d="M0 400H920M240 0V480" strokeWidth="1.4" strokeOpacity=".14" />
+            <path d="M24 418C144 412 226 382 300 318C382 247 433 130 526 126C637 121 696 284 896 44" strokeWidth="2.4" strokeOpacity=".28" />
+            <path d="M102 334C184 238 266 238 348 334C430 430 512 430 594 334C676 238 758 238 840 334" strokeWidth="1.5" strokeOpacity=".12" />
+          </g>
+          <g className="igcse-landing-points"><circle cx="300" cy="318" r="5" /><circle cx="526" cy="126" r="5" /><circle cx="722" cy="248" r="5" /></g>
+        </svg>
+        <Container className="igcse-landing-hero-inner">
+          <Breadcrumbs items={[{ label: "IGCSE Mathematics" }]} />
+          <div className="igcse-landing-copy stack-lg">
+            <div className="stack">
+              <Eyebrow>Edexcel IGCSE Mathematics</Eyebrow>
+              <h1>Your home for IGCSE Mathematics.</h1>
+              <p className="lede">Complete video lessons, past-paper solutions and focused question practice, explained clearly by Mr Flynn IB.</p>
+            </div>
+            <div className="cluster igcse-landing-actions">
+              <ButtonLink href="/account?qualification=igcse&mode=sign-up">Start here</ButtonLink>
+              <ButtonLink href="/account?qualification=igcse" secondary>Log in</ButtonLink>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       <section className="igcse-route-section igcse-route-section-first">
         <Container className="stack-xl">
-          <Breadcrumbs items={[{ label: "IGCSE Mathematics" }]} />
-          <div className="igcse-route-heading">
-            <span className="igcse-route-symbol" aria-hidden="true">x²</span>
-            <div className="stack"><Eyebrow>Edexcel IGCSE Mathematics</Eyebrow><h1>Choose where to begin</h1><p>Learn the course, practise questions or find support for your school.</p></div>
+          <div className="igcse-route-intro stack">
+            <Eyebrow>Explore IGCSE Mathematics</Eyebrow>
+            <h2>What would you like to do?</h2>
           </div>
           <div className="igcse-route-grid">
             {routes.map((route) => (
