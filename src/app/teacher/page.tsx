@@ -5,6 +5,8 @@ import { DashboardIcon } from "@/components/dashboard-icon";
 import { AccountMenu } from "@/components/account-menu";
 import { PendingSubmitButton } from "@/components/pending-submit-button";
 import { requireTeacher } from "@/lib/account-access";
+import { activePlatformEntitlements, type PlatformEntitlement } from "@/lib/platform-access";
+import { teacherPlusProduct } from "@/lib/platform-products";
 import { teacherAccountSummaries } from "@/lib/teacher-accounts";
 import { createClass, reviewTeacherApplication } from "./actions";
 
@@ -13,18 +15,23 @@ export const metadata: Metadata = { title: "Teacher dashboard", robots: { index:
 export default async function TeacherPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
   const { supabase, user, profile } = await requireTeacher("/teacher", "ib");
   const message = await searchParams;
-  const [classesResult, teacherAccountsResult] = await Promise.all([
+  const [classesResult, teacherAccountsResult, teacherPlusResult] = await Promise.all([
     supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("teacher_id", user.id).eq("bank", "ib").eq("archived", false).order("created_at", { ascending: false }),
     profile.role === "admin" ? supabase.rpc("admin_teacher_accounts") : Promise.resolve({ data: [], error: null }),
+    supabase.from("platform_entitlements").select("product_code,status,starts_at,expires_at").eq("user_id", user.id).eq("product_code", teacherPlusProduct.productCode),
   ]);
   const { data: classes } = classesResult;
   const { data: teacherAccountRows, error: teacherAccountError } = teacherAccountsResult;
   const teacherApplications = teacherAccountSummaries(teacherAccountRows).filter((account) => account.teacher_status === "pending" && account.email_confirmed_at);
+  const activeTeacherPlus = activePlatformEntitlements(teacherPlusResult.data as PlatformEntitlement[] | null)[0];
+  const teacherPlusDetail = activeTeacherPlus?.expires_at
+    ? `All four IB courses included · Active until ${new Date(activeTeacherPlus.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
+    : "All four IB Mathematics courses included";
   const totalStudents = (classes ?? []).reduce((total, item) => total + (Array.isArray(item.class_memberships) ? item.class_memberships[0]?.count ?? 0 : 0), 0);
   const totalAssignments = (classes ?? []).reduce((total, item) => total + (Array.isArray(item.assignments) ? item.assignments[0]?.count ?? 0 : 0), 0);
 
   return <>
-    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row"><div className="platform-access-summary teacher-early-access"><span>Free teacher account</span><small>Classes, assignments and Test Maker included</small><span className="teacher-access-links"><Link href="/teacher/access">Teacher Plus</Link><Link href="/schools">School access</Link></span></div><AccountMenu signOutHref="/account?next=/teacher" /></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">IB teacher dashboard</span><h1>{profile.display_name ? `Welcome, ${profile.display_name}` : "Your teaching dashboard"}</h1><p>Create and manage your own classes. Students join each class with the code you share.</p></div><div className="dashboard-hero-stats" aria-label="Teacher account summary"><div><strong>{classes?.length ?? 0}</strong><span>classes</span></div><div><strong>{totalStudents}</strong><span>students</span></div><div><strong>{totalAssignments}</strong><span>assignments</span></div></div></div></Container></section>
+    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row"><div className="platform-access-summary teacher-early-access">{activeTeacherPlus ? <><span>Teacher Plus</span><small>{teacherPlusDetail}</small><span className="teacher-access-links"><Link href="/learn/index.html?curriculum=ib&amp;view=courses">Open courses</Link><Link href="/schools">School access</Link></span></> : <><span>Free teacher account</span><small>Classes, assignments and Test Maker included</small><span className="teacher-access-links"><Link href="/teacher/access">Teacher Plus</Link><Link href="/schools">School access</Link></span></>}</div><AccountMenu signOutHref="/account?next=/teacher" /></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">IB teacher dashboard</span><h1>{profile.display_name ? `Welcome, ${profile.display_name}` : "Your teaching dashboard"}</h1><p>Create and manage your own classes. Students join each class with the code you share.</p></div><div className="dashboard-hero-stats" aria-label="Teacher account summary"><div><strong>{classes?.length ?? 0}</strong><span>classes</span></div><div><strong>{totalStudents}</strong><span>students</span></div><div><strong>{totalAssignments}</strong><span>assignments</span></div></div></div></Container></section>
     <section className="section-tight teacher-dashboard"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}
       {message.success ? <p className="form-message form-success">{message.success}</p> : null}
