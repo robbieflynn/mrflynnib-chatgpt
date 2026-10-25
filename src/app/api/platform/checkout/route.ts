@@ -95,6 +95,7 @@ async function createCheckout(request: Request) {
     "payment_intent_data[metadata][user_id]": session.user.id,
     "payment_intent_data[metadata][product_code]": product.productCode,
     "payment_intent_data[metadata][plan_id]": plan.id,
+    "wallet_options[link][display]": "never",
     success_url: successUrl.toString(),
     cancel_url: cancelUrl.toString(),
   });
