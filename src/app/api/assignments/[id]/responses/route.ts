@@ -26,6 +26,59 @@ function normalizedAnswer(value: unknown) {
   return String(value ?? "").trim().replace(/\s+/g, "").toLowerCase();
 }
 
+async function repairFixedMultipleChoiceConfiguration({
+  assignmentId,
+  questionId,
+  response,
+  studentId,
+  supabase,
+}: {
+  assignmentId: string;
+  questionId: string;
+  response: Record<string, unknown>;
+  studentId: string;
+  supabase: Awaited<ReturnType<typeof createClient>>;
+}) {
+  const selectedOption = Number(response.option);
+  if (!Number.isInteger(selectedOption)) return false;
+
+  const adminUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!adminUrl || !serviceKey) return false;
+
+  const [{ data: profile, error: profileError }, { data: assignment }, { data: question }] = await Promise.all([
+    supabase.from("profiles").select("role").eq("user_id", studentId).maybeSingle(),
+    supabase.from("assignments").select("id").eq("id", assignmentId).maybeSingle(),
+    supabase.from("assignment_questions").select("bank").eq("assignment_id", assignmentId).eq("question_id", questionId).maybeSingle(),
+  ]);
+  if (profileError) throw profileError;
+  if (profile?.role !== "student") throw new Error("Student answers can only be submitted from a student account.");
+  if (!assignment || !question) return false;
+
+  const fixedConfig = getFixedAssignmentConfig(question.bank, questionId);
+  if (fixedConfig?.type !== "multiple_choice" || fixedConfig.correctOption === null) return false;
+  if (selectedOption < 0 || selectedOption >= fixedConfig.options.length) throw new Error("Choose a valid answer.");
+
+  const admin = createSupabaseAdmin(adminUrl, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } });
+  const { error: answerKeyError } = await admin.from("assignment_answer_keys").upsert({
+    assignment_id: assignmentId,
+    question_id: questionId,
+    accepted_answers: fixedConfig.acceptedAnswers,
+    numeric_answer: null,
+    numeric_tolerance: null,
+    correct_option: fixedConfig.correctOption,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: "assignment_id,question_id" });
+  if (answerKeyError) throw answerKeyError;
+
+  const { error: questionError } = await admin.from("assignment_questions").update({
+    response_type: "multiple_choice",
+    response_options: fixedConfig.options,
+  }).eq("assignment_id", assignmentId).eq("question_id", questionId);
+  if (questionError) throw questionError;
+  return true;
+}
+
 async function saveMultipartPart({
   assignmentId,
   questionId,
@@ -203,6 +256,43 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   const reliableResult = Array.isArray(data) ? data[0] as { is_correct?: boolean | null; result?: string | null } : null;
 
   let saveError = error;
+
+  if (error && multipartResponse && !multipartPartKey) {
+    try {
+      const repaired = await repairFixedMultipleChoiceConfiguration({
+        assignmentId: id,
+        questionId,
+        response: multipartResponse,
+        studentId: user.id,
+        supabase,
+      });
+      if (repaired) {
+        const { data: repairedData, error: repairedError } = await supabase.rpc("submit_assignment_response_reliable", {
+          assignment_uuid: id,
+          question_key: questionId,
+          request_uuid: requestId,
+          response_payload: response,
+        });
+        if (!repairedError) {
+          const repairedResult = Array.isArray(repairedData)
+            ? repairedData[0] as { is_correct?: boolean | null; result?: string | null }
+            : null;
+          console.warn("Repaired stale assignment answer configuration", { assignmentId: id, questionId, studentId: user.id });
+          return NextResponse.json({ isCorrect: repairedResult?.is_correct ?? null, result: repairedResult?.result ?? null }, {
+            headers: { "Cache-Control": "no-store, max-age=0" },
+          });
+        }
+        saveError = repairedError;
+      }
+    } catch (repairError) {
+      const repairMessage = repairError instanceof Error ? repairError.message : "The answer could not be saved.";
+      const repairPermanent = permanentError(repairMessage);
+      console.error("Assignment answer configuration repair failed", { assignmentId: id, questionId, studentId: user.id, message: repairMessage });
+      if (repairPermanent) {
+        return NextResponse.json({ message: repairMessage, retryable: false }, { status: 400 });
+      }
+    }
+  }
 
   if (multipartPartKey && (error || reliableResult?.result === "locked")) {
     // Some live databases still have the original whole-question version of
