@@ -15,3 +15,20 @@ export async function requestTeachableTransfer(formData: FormData) {
   revalidatePath(accessPath);
   redirect(`${accessPath}?claim=${error?.code === "23505" ? "already-pending" : error ? "error" : "sent"}`);
 }
+
+export async function redeemAccessCode(formData: FormData) {
+  const curriculum = formData.get("curriculum") === "igcse" ? "igcse" : "ib";
+  const accessPath = curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
+  const { supabase } = await requireSignedIn(accessPath, curriculum);
+  const code = String(formData.get("accessCode") || "").trim();
+  if (!code) redirect(`${accessPath}?code=invalid`);
+  const { data, error } = await supabase.rpc("redeem_platform_access_code", { raw_code: code });
+  const result = data && typeof data === "object" ? data as { status?: string } : null;
+  if (error) redirect(`${accessPath}?code=error`);
+  const status = result?.status || "error";
+  if (status === "redeemed") {
+    revalidatePath(accessPath);
+    revalidatePath(curriculum === "igcse" ? "/igcse/account" : "/account");
+  }
+  redirect(`${accessPath}?code=${encodeURIComponent(status)}`);
+}
