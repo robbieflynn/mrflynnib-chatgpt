@@ -14,7 +14,15 @@ export function CourseCheckoutButton({ courseId, productId, plans }: { courseId?
     try {
       const requestId = crypto.randomUUID();
       const response = await fetch("/api/platform/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId, productId, planId: selectedPlan, requestId }) });
-      const result = await response.json();
+      const responseBody = await response.text();
+      let result: { error?: string; url?: string } = {};
+      if (responseBody) {
+        try {
+          result = JSON.parse(responseBody) as { error?: string; url?: string };
+        } catch {
+          throw new Error("Secure checkout is temporarily unavailable. Please try again shortly.");
+        }
+      }
       if (!response.ok || !result.url) throw new Error(result.error || "Checkout could not be started.");
       window.location.assign(result.url);
     } catch (checkoutError) {
