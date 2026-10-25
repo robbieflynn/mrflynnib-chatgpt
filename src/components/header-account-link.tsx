@@ -9,9 +9,10 @@ import { createClient } from "@/lib/supabase/client";
 type HeaderAccountLinkProps = {
   className?: string;
   onNavigate?: () => void;
+  showSignedOut?: boolean;
 };
 
-export function HeaderAccountLink({ className = "", onNavigate }: HeaderAccountLinkProps) {
+export function HeaderAccountLink({ className = "", onNavigate, showSignedOut = true }: HeaderAccountLinkProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [account, setAccount] = useState<{ role: "student" | "teacher" | "admin"; curriculum: "ib" | "igcse" } | null>(null);
@@ -54,6 +55,8 @@ export function HeaderAccountLink({ className = "", onNavigate }: HeaderAccountL
     ? reviewRole === "teacher" ? "Teacher home" : "My learning"
     : account ? accountIsTeacher ? "Teacher home" : "My learning"
       : isTeacherArea ? "Teacher home" : isStudentArea ? "My learning" : "Log in";
+
+  if (!account && !showSignedOut && pathname !== "/platform-review") return null;
 
   return <Link className={className} href={href} onClick={onNavigate}>{label}</Link>;
 }
