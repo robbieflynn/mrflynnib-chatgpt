@@ -2692,7 +2692,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-continue-meter i { background: rgba(73,59,140,.12); }
 .student-continue-meter i b { background: linear-gradient(90deg, #6e57c4, #9888df); }
 .student-dashboard-igcse .student-continue-meter i b { background: linear-gradient(90deg, var(--igcse-red), #e27684); }
-.student-platform-nav-v2 { gap: .7rem; }
+.student-platform-nav-v2 { margin-top: 1.25rem; gap: .7rem; }
 .student-platform-nav-v2 > a { min-height: 78px; border: 0; box-shadow: none; }
 .student-platform-nav-v2 > a:hover { box-shadow: 0 10px 24px rgba(11,21,48,.07); }
 .student-platform-nav-v2 .is-course { background: #f0edff; }

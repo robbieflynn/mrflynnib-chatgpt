@@ -105,6 +105,7 @@ async function collectMigrationData() {
     zeroPriceTransactions: 0,
     zeroPriceCouponTransactions: 0,
     refundedOrChargedBackTransactions: 0,
+    evidenceWarning: "Teachable v1 transactions omit 100%-off coupon redemptions. Excluded active enrollments require a Sale.created/v2 purchase/support-export reconciliation before they can be treated as manual or free.",
   };
 
   for (const course of targets) {
