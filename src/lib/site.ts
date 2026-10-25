@@ -17,7 +17,6 @@ export const siteConfig = {
 
 export const navItems = [
   { label: "Courses", href: "/learn/index.html?curriculum=ib&view=courses" },
-  { label: "IA guidance", href: "/ia" },
   { label: "Question bank", href: "/question-bank" },
   { label: "Schools", href: "/schools" },
   { label: "Book", href: "/book" },
