@@ -29,7 +29,7 @@ export default async function TeacherAccessPage({ searchParams }: { searchParams
       </Container>
     </section>
     <section className="section-tight platform-access-page"><Container className="narrow stack-xl">
-      {query.checkout === "success" ? <CheckoutActivationNotice sessionId={sessionId} accessPath="/teacher/access" /> : null}
+      {query.checkout === "success" ? <CheckoutActivationNotice sessionId={sessionId} accessPath="/teacher/access" title="All four IB Mathematics courses" openHref="/learn/index.html?curriculum=ib&view=courses" /> : null}
       {query.checkout === "cancelled" ? <p className="form-message">Checkout was cancelled. You have not been charged.</p> : null}
       <article className={`access-course-card teacher-plus-card ${active ? "has-access" : ""}`}>
         <div><span className="course-detail-code">Teacher Plus</span><small>{active ? "Active" : "$99 · 1 year"}</small></div>

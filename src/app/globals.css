@@ -2459,6 +2459,18 @@ a.teacher-list-row:hover { background: var(--sky); }
 .platform-access-intro p { margin: .35rem 0 0; color: var(--muted); }
 .access-free-summary { max-width: 340px; padding: .85rem 1rem; display: grid; gap: .2rem; border-radius: .75rem; background: #eaf5ff; color: var(--navy); }
 .access-free-summary span { color: var(--muted); font-size: .76rem; }
+.access-plus-summary { max-width: 340px; padding: .85rem 1rem; display: grid; gap: .2rem; border: 1px solid #d6c9ff; border-radius: .75rem; background: linear-gradient(135deg,#f4f0ff,#ece8ff); color: #4e3698; }
+.access-plus-summary span { color: #655e7b; font-size: .76rem; }
+.checkout-success-card { padding: clamp(1.4rem,3vw,2rem); display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 1.25rem; border: 1px solid #9bcfbd; border-radius: 1.15rem; background: linear-gradient(135deg,#fff,#edf9f4); box-shadow: 0 14px 34px rgba(10,74,55,.08); }
+.checkout-success-card.is-activating { border-color: #b6cfe4; background: linear-gradient(135deg,#fff,#eef7ff); }
+.checkout-success-card.is-error { border-color: #e0aaaa; background: linear-gradient(135deg,#fff,#fff2f2); }
+.checkout-success-icon { width: 3rem; height: 3rem; display: grid; place-items: center; border-radius: 50%; background: #1f8f69; color: white; font-size: 1.25rem; font-weight: 950; }
+.checkout-success-card.is-activating .checkout-success-icon { background: var(--blue); }
+.checkout-success-card.is-error .checkout-success-icon { background: var(--danger); }
+.checkout-success-card h2, .checkout-success-card p { margin: 0; }
+.checkout-success-card h2 { margin-top: .25rem; color: var(--navy); }
+.checkout-success-card > div:nth-child(2) > p:last-child { margin-top: .4rem; color: var(--muted); font-size: .84rem; }
+.checkout-success-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .55rem; }
 .access-course-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .access-course-grid.is-focused { grid-template-columns: minmax(0,760px); justify-content: center; }
 .access-course-selector { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .7rem; }
@@ -2478,13 +2490,13 @@ a.teacher-list-row:hover { background: var(--sky); }
 .access-code-card form { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .7rem; }
 .access-code-card label { display: grid; gap: .35rem; color: var(--navy); font-size: .74rem; font-weight: 850; }
 .access-code-card input { width: 100%; min-height: 44px; padding: .7rem .8rem; border: 1px solid #aec7da; border-radius: .65rem; background: white; color: var(--ink); font: inherit; text-transform: uppercase; }
-.course-checkout { margin-top: auto; padding-top: .35rem; gap: .85rem; }
-.course-single-plan { padding: 1rem 1.05rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid #9fc9e8; border-radius: .85rem; background: #edf6ff; }
-.course-single-plan span { display: grid; gap: .2rem; }
+.course-checkout { margin-top: auto; padding-top: .55rem; gap: 1.15rem; }
+.course-single-plan { padding: 1.2rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; border: 1px solid #9fc9e8; border-radius: .85rem; background: #edf6ff; }
+.course-single-plan span { display: grid; gap: .4rem; }
 .course-single-plan strong { color: var(--navy); font-size: 1.65rem; line-height: 1; }
 .course-single-plan small { color: var(--muted); font-size: .75rem; }
 .course-single-plan b { padding: .3rem .55rem; border-radius: 999px; background: var(--navy); color: #fff; font-size: .6rem; letter-spacing: .05em; text-transform: uppercase; }
-.course-checkout-button { width: 100%; justify-content: center; }
+.course-checkout-button { width: 100%; min-height: 3.15rem; margin-top: .15rem; justify-content: center; }
 .course-plan-options { min-width: 0; padding: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem; border: 0; }
 .course-plan-options legend { margin-bottom: .55rem; color: var(--navy); font-size: .72rem; font-weight: 850; }
 .course-plan-option { position: relative; min-width: 0; padding: .8rem; display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: .55rem; border: 1px solid #cfdae2; border-radius: .8rem; background: #fff; cursor: pointer; }
@@ -2541,7 +2553,9 @@ a.teacher-list-row:hover { background: var(--sky); }
   .account-plan-switch a { padding-right: 4.6rem; }
   .access-course-selector { grid-template-columns: 1fr 1fr; }
   .platform-access-intro { align-items: stretch; flex-direction: column; }
-  .access-free-summary { max-width: none; }
+  .access-free-summary, .access-plus-summary { max-width: none; }
+  .checkout-success-card { grid-template-columns: auto minmax(0,1fr); }
+  .checkout-success-actions { grid-column: 1 / -1; justify-content: flex-start; }
   .access-claim-row, .school-seat-form { grid-template-columns: 1fr; }
   .access-claim-row form { flex-wrap: wrap; }
   .course-plan-options { grid-template-columns: 1fr; }
