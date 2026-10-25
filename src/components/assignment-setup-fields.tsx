@@ -17,7 +17,9 @@ type AssignmentSetupFieldsProps = {
   initialFeedbackMode?: string;
 };
 
-export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstructions = "", initialFeedbackMode = "after_question" }: AssignmentSetupFieldsProps) {
+const defaultAssignmentInstructions = "Complete the questions and show your working on the whiteboard or paper.";
+
+export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstructions = defaultAssignmentInstructions, initialFeedbackMode = "after_question" }: AssignmentSetupFieldsProps) {
   const fieldsRef = useRef<HTMLDivElement>(null);
   const storageKey = `mrflynnib-assignment-setup:${draftId}`;
   const defaultFeedbackMode = isAssignmentFeedbackMode(initialFeedbackMode) ? initialFeedbackMode : "after_question";
@@ -59,7 +61,7 @@ export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstr
     <div className="assignment-setup-card form-grid" onChange={saveDraft} ref={fieldsRef}>
       <label className="field"><span>Assignment title</span><input name="title" defaultValue={initialTitle} placeholder="Functions practice" maxLength={120} required /></label>
       <label className="field"><span>Due date <small className="muted">(optional)</small></span><input name="dueDate" type="date" /></label>
-      <label className="field field-full"><span>Instructions <small className="muted">(optional)</small></span><textarea name="instructions" defaultValue={initialInstructions} maxLength={1500} placeholder="Complete the questions and show your working on the whiteboard or paper." /></label>
+      <label className="field field-full"><span>Instructions <small className="muted">(optional)</small></span><textarea name="instructions" defaultValue={initialInstructions} maxLength={1500} placeholder={defaultAssignmentInstructions} /></label>
       <fieldset className="assignment-feedback-settings field-full"><legend>Mark schemes and worked solutions</legend><p>Choose when students can open the complete feedback for each question. You can change this after publishing.</p><div className="assignment-feedback-options">{assignmentFeedbackOptions.map((option) => <label className="assignment-feedback-option" key={option.value}><input name="feedbackMode" type="radio" value={option.value} defaultChecked={option.value === defaultFeedbackMode} /><span><strong>{option.label}</strong><small>{option.description}</small></span></label>)}</div></fieldset>
     </div>
   );
