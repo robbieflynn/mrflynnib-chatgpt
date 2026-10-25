@@ -13,7 +13,10 @@ function isLiveMode() {
 function stripeConfiguration() {
   const secret = process.env.STRIPE_SECRET_KEY;
   const live = isLiveMode();
-  if (!secret || (live ? !secret.startsWith("sk_live_") : !secret.startsWith("sk_test_"))) return null;
+  const validPrefix = live
+    ? secret?.startsWith("sk_live_") || secret?.startsWith("rk_live_")
+    : secret?.startsWith("sk_test_") || secret?.startsWith("rk_test_");
+  if (!secret || !validPrefix) return null;
   return { secret, live };
 }
 
@@ -56,7 +59,7 @@ export async function POST(request: Request) {
   const stripe = stripeConfiguration();
   const price = process.env[plan.stripePriceEnv];
   if (!stripe || !price?.startsWith("price_")) {
-    return NextResponse.json({ error: "Checkout is not configured in this preview yet." }, { status: 503 });
+    return NextResponse.json({ error: "Secure checkout is temporarily unavailable. Please try again shortly." }, { status: 503 });
   }
 
   const requestId = typeof body.requestId === "string" && UUID_PATTERN.test(body.requestId)

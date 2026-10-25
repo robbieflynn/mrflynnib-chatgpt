@@ -10,14 +10,22 @@ export async function GET() {
   const { data: progress } = await session.supabase.from("course_lesson_progress").select("course_id,lesson_id,completed,last_viewed_at").eq("user_id", session.user.id).eq("curriculum", session.curriculum);
   const { data: courseState } = await session.supabase.from("course_platform_state").select("last_course_id,last_lesson_id").eq("user_id", session.user.id).eq("curriculum", session.curriculum).maybeSingle();
   const products = productsForCurriculum(session.curriculum);
+  const preferredCourseId = typeof session.user.user_metadata.primary_course === "string" ? session.user.user_metadata.primary_course : null;
+  const role = session.profile?.role || "student";
+  const availableCourseIds = role === "teacher" || role === "admin"
+    ? products.map((product) => product.id)
+    : Array.from(new Set([
+      ...(preferredCourseId && products.some((product) => product.id === preferredCourseId) ? [preferredCourseId] : []),
+      ...session.ownedCourses.map((product) => product.id),
+    ]));
   const displayName = session.profile?.display_name || session.user.user_metadata.display_name || session.user.email?.split("@")[0] || "Student";
   return NextResponse.json({
     user: { displayName, email: session.user.email || "", initials: String(displayName).split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase(), role: session.profile?.role || "student" },
     curriculum: session.curriculum,
     access: session.access,
-    availableCourseIds: products.map((product) => product.id),
+    availableCourseIds,
     ownedCourseIds: session.ownedCourses.map((product) => product.id),
-    preferredCourseId: typeof session.user.user_metadata.primary_course === "string" ? session.user.user_metadata.primary_course : null,
+    preferredCourseId,
     progress: progress || [],
     state: courseState || null,
     links: {

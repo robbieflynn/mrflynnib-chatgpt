@@ -329,10 +329,11 @@ function configurePreviewMode() {
   document.getElementById("coursesEyebrow").textContent = "My course";
   document.getElementById("coursesTitle").textContent = courses[currentCourseId].name;
   document.getElementById("coursesDescription").textContent = "Free lessons are ready to watch. The complete syllabus stays visible so you can see exactly what full course access includes.";
-  document.getElementById("courseBackButton").textContent = "← My course";
+  document.getElementById("courseBackButton").textContent = "← Learning home";
   document.getElementById("summaryTopics").textContent = String(enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].topics.length, 0));
   document.getElementById("summaryTopicsLabel").textContent = "course topics";
   const reviewHome = `/platform-review?curriculum=${isIgcse ? "igcse" : "ib"}&role=student`;
+  document.getElementById("courseBackButton").href = reviewHome;
   syncQuestionBankLink();
   document.getElementById("assignmentsLink").href = `${reviewHome}&screen=assignment`;
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
@@ -458,6 +459,7 @@ function setView(viewName) {
   document.querySelectorAll(".view").forEach((view) => {
     view.classList.toggle("is-visible", view.id === `${viewName}View`);
   });
+  document.getElementById("myCourseButton").classList.toggle("is-active", ["dashboard", "courses", "course"].includes(viewName));
   document.querySelectorAll(".nav-item[data-view]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.view === viewName || (viewName === "course" && button.dataset.view === "courses"));
   });
@@ -1105,6 +1107,14 @@ document.addEventListener("click", (event) => {
   }
 });
 
+document.getElementById("myCourseButton").addEventListener("click", () => {
+  if (guestMode) {
+    setView("courses");
+    return;
+  }
+  openCourse(currentCourseId, currentLessonId);
+});
+
 document.getElementById("openMenu").addEventListener("click", () => {
   document.getElementById("sidebar").classList.add("is-open");
   document.getElementById("sidebarScrim").classList.add("is-open");
@@ -1179,8 +1189,7 @@ function configureGuestExperience() {
       currentPastPaperCourse = currentCourse.code;
 
       document.body.classList.add("guest-course-browser");
-      document.querySelector(".nav-item[data-view='dashboard'] span").textContent = "Courses";
-      document.querySelector(".nav-item[data-view='dashboard']").dataset.view = "courses";
+      document.getElementById("myCourseButton").querySelector("span").textContent = "Courses";
       document.getElementById("primaryLearningHomeLink").href = "/account?next=/learn";
       document.getElementById("primaryLearningHomeLink").querySelector("strong").textContent = "Log in";
       document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = "Save progress and unlock Plus";
@@ -1202,7 +1211,7 @@ function configureGuestExperience() {
       document.getElementById("manageAccessLink").href = "/account?mode=sign-up&next=/learn";
       document.getElementById("signOut").hidden = true;
       document.getElementById("courseBackButton").textContent = "← All courses";
-      document.getElementById("courseBackButton").dataset.view = "courses";
+      document.getElementById("courseBackButton").href = "/learn/index.html?curriculum=ib&view=courses";
       document.getElementById("welcomeEyebrow").textContent = "Course preview";
       document.getElementById("welcomeTitle").textContent = `Explore the ${currentCourse.code} course`;
       document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic for free.";
@@ -1283,7 +1292,7 @@ async function initialize() {
     renderProgress();
     if (reviewerMode) {
       setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
-    } else if (requestedView === "courses") {
+    } else if (guestMode && requestedView === "courses") {
       setView("courses");
     } else if (validPreviewCourseId || requestedCourseId) {
       const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
@@ -1291,8 +1300,10 @@ async function initialize() {
         ? salesPreviewLessons(enrolledCourse).find((lesson) => lesson.topic === requestedTopic) || salesPreviewLessons(enrolledCourse)[0]
         : enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
       openCourse(enrolledCourseId, requestedLesson?.id || currentLessonId);
+    } else if (guestMode) {
+      setView("courses");
     } else {
-      setView("dashboard");
+      openCourse(enrolledCourseId, currentLessonId);
     }
   } finally {
     document.body.classList.remove("is-booting");
