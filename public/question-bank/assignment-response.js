@@ -5,9 +5,11 @@
   if (params.get("assignmentWork") !== "1" || window.parent === window) return;
 
   var view = params.get("assignmentView") || "step";
+  var assignmentId = params.get("assignmentId") || "";
   var state = {};
   var orderedIds = [];
   var renderVersion = 0;
+  var lastProgressSignature = "";
   var feedbackMode = "immediate";
   var assignmentSubmitted = false;
   var choiceUtils = window.MrFlynnAssignmentChoices;
@@ -336,6 +338,23 @@
     return "review";
   }
 
+  function publishProgress() {
+    if (!assignmentId || !orderedIds.length) return;
+    var items = orderedIds.map(function (id) { return state[id]; }).filter(Boolean);
+    var progress = {
+      type: "mrflynnib-assignment-progress",
+      assignmentId: assignmentId,
+      completed: items.filter(isQuestionFinished).length,
+      answered: items.filter(function (item) { return Boolean(item.response); }).length,
+      correct: items.filter(function (item) { return questionState(item) === "correct"; }).length,
+      total: items.length
+    };
+    var signature = [progress.completed, progress.answered, progress.correct, progress.total].join(":");
+    if (signature === lastProgressSignature) return;
+    lastProgressSignature = signature;
+    window.parent.postMessage(progress, window.location.origin);
+  }
+
   function goToQuestion(id, shouldScroll, partKey) {
     if (!state[id]) return;
     activeId = id;
@@ -627,6 +646,7 @@
     document.querySelectorAll("#qb-list>.qb-card").forEach(decorate);
     if (view === "step") goToQuestion(activeId || orderedIds[0], false);
     else renderNavigation();
+    publishProgress();
     window.setTimeout(function () { document.querySelectorAll("#qb-list>.qb-card").forEach(openWhiteboardPreview); }, 40);
   }
 

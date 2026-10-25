@@ -22,7 +22,10 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
   if (questionIds?.length) query.set("ids", questionIds.join(","));
-  if (assignmentId) query.set("assignmentWork", "1");
+  if (assignmentId) {
+    query.set("assignmentWork", "1");
+    query.set("assignmentId", assignmentId);
+  }
   if (assignmentId && feedbackMode === "hidden" && !viewedStudentId) query.set("solutions", "0");
   if (assignmentView) query.set("assignmentView", assignmentView);
   const frameRef = useRef<HTMLIFrameElement>(null);
