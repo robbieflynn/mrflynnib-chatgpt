@@ -548,6 +548,8 @@ Rob revised the tuition preview header to a single row: keep Courses, Question b
 
 On 29 September 2026, Rob refined the preview again: remove the More menu, remove Book from the header and mobile menu, show IA guidance directly in the main header, and place One-to-one tuition at the far right immediately beside the IB Tutors logo. This changes navigation placement only; it does not remove the book page or homepage book content.
 
+On 25 October 2026, Rob simplified the top navigation by removing **IA guidance** from both desktop and mobile menus because the header had become too busy. Keep the dedicated IA page and the prominent IA section on the homepage; this is a navigation simplification, not a reduction in the IA offering.
+
 Rob then requested restoring the header's **Explore courses** button and removing **My courses** from both desktop and mobile navigation. Rob subsequently refined the desktop order: place **Explore courses** immediately after **Contact** inside the main navigation, then retain a clear visual gap before the separate partner group containing **One-to-One tuition** immediately beside the IB Tutors logo.
 
 On 23 October 2026, Rob superseded that header call-to-action decision: replace **Explore courses** with **Log in** on the public website. In a student platform context, show **My learning** instead and make the route back to the learning dashboard persistent and unmistakable inside the course interface.
