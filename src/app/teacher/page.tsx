@@ -13,10 +13,12 @@ export const metadata: Metadata = { title: "Teacher dashboard", robots: { index:
 export default async function TeacherPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
   const { supabase, user, profile } = await requireTeacher("/teacher", "ib");
   const message = await searchParams;
-  const { data: classes } = await supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("teacher_id", user.id).eq("bank", "ib").eq("archived", false).order("created_at", { ascending: false });
-  const { data: teacherAccountRows, error: teacherAccountError } = profile.role === "admin"
-    ? await supabase.rpc("admin_teacher_accounts")
-    : { data: [], error: null };
+  const [classesResult, teacherAccountsResult] = await Promise.all([
+    supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("teacher_id", user.id).eq("bank", "ib").eq("archived", false).order("created_at", { ascending: false }),
+    profile.role === "admin" ? supabase.rpc("admin_teacher_accounts") : Promise.resolve({ data: [], error: null }),
+  ]);
+  const { data: classes } = classesResult;
+  const { data: teacherAccountRows, error: teacherAccountError } = teacherAccountsResult;
   const teacherApplications = teacherAccountSummaries(teacherAccountRows).filter((account) => account.teacher_status === "pending" && account.email_confirmed_at);
   const totalStudents = (classes ?? []).reduce((total, item) => total + (Array.isArray(item.class_memberships) ? item.class_memberships[0]?.count ?? 0 : 0), 0);
   const totalAssignments = (classes ?? []).reduce((total, item) => total + (Array.isArray(item.assignments) ? item.assignments[0]?.count ?? 0 : 0), 0);
