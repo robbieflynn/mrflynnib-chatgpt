@@ -96,6 +96,7 @@ async function collectMigrationData() {
     transactionsScanned: 0,
     prepared: 0,
     excludedWithoutPurchaseOrCode: 0,
+    recoveredTimeLimitedEnrollments: 0,
     excludedExpired: 0,
     excludedMissingUser: 0,
     byCourse: {},
@@ -105,7 +106,7 @@ async function collectMigrationData() {
     zeroPriceTransactions: 0,
     zeroPriceCouponTransactions: 0,
     refundedOrChargedBackTransactions: 0,
-    evidenceWarning: "Teachable v1 transactions omit 100%-off coupon redemptions. Excluded active enrollments require a Sale.created/v2 purchase/support-export reconciliation before they can be treated as manual or free.",
+    evidenceWarning: "Teachable v1 transactions omit 100%-off coupon redemptions. Active enrolments with a future expiry are retained as time-limited checkout evidence; non-expiring enrolments without another approved source remain excluded.",
   };
 
   for (const course of targets) {
@@ -144,15 +145,21 @@ async function collectMigrationData() {
       }
       const approvedTransaction = (transactionsByUser.get(Number(enrollment.user_id)) || []).find(isUsableTransaction);
       const schoolEmail = isApprovedSchoolEmail(user.email);
-      if (!schoolEmail && !approvedTransaction) {
+      const timeLimitedEnrollment = Boolean(expiresAt && expiresAt > now);
+      if (!schoolEmail && !approvedTransaction && !timeLimitedEnrollment) {
         summary.excludedWithoutPurchaseOrCode += 1;
         continue;
       }
       const evidence = schoolEmail
         ? "approved_school_domain_and_active_enrollment"
-        : (approvedTransaction.coupon_id !== null && approvedTransaction.coupon_id !== undefined)
+        : (approvedTransaction?.coupon_id !== null && approvedTransaction?.coupon_id !== undefined)
           ? "coupon_user_and_active_enrollment"
-          : "paid_transaction_and_active_enrollment";
+          : approvedTransaction
+            ? "paid_transaction_and_active_enrollment"
+            : "time_limited_checkout_enrollment";
+      if (evidence === "time_limited_checkout_enrollment") {
+        summary.recoveredTimeLimitedEnrollments += 1;
+      }
       rows.push({
         email: String(user.email).trim().toLowerCase(),
         product_code: productCodes.get(course.name),
@@ -315,7 +322,6 @@ const server = createServer(async (request, response) => {
         external_reference: `teachable:${row.course_id}:${row.user_id}`,
         starts_at: new Date(row.enrolled_at).toISOString(),
         expires_at: row.expires_at ? new Date(row.expires_at).toISOString() : null,
-        status: "verified",
         metadata: { teachable_course_id: row.course_id, teachable_user_id: row.user_id },
         updated_at: now,
       }));
