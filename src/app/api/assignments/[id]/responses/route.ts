@@ -220,6 +220,7 @@ async function saveMultipartPart({
 }
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
+  const startedAt = performance.now();
   const { id } = await context.params;
   if (!uuidPattern.test(id)) return NextResponse.json({ message: "Assignment not found.", retryable: false }, { status: 404 });
 
@@ -238,24 +239,34 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ message: "Please sign in again before saving.", retryable: false }, { status: 401 });
-
   const multipartResponse = response && typeof response === "object" && !Array.isArray(response)
     ? response as Record<string, unknown>
     : null;
   const multipartPartKey = shortText(multipartResponse?.partKey, 30);
   const multipartPartAnswer = shortText(multipartResponse?.partAnswer, 500);
 
+  const rpcStartedAt = performance.now();
   const { data, error } = await supabase.rpc("submit_assignment_response_reliable", {
     assignment_uuid: id,
     question_key: questionId,
     request_uuid: requestId,
     response_payload: response,
   });
+  const rpcDurationMs = performance.now() - rpcStartedAt;
   const reliableResult = Array.isArray(data) ? data[0] as { is_correct?: boolean | null; result?: string | null } : null;
 
   let saveError = error;
+  let studentId = "";
+
+  // The database function authenticates the request and enforces assignment
+  // access itself. Avoid a second remote auth lookup on the successful path;
+  // it made every answer check wait for auth before the actual save began.
+  // We still resolve the verified user before any compatibility or repair path.
+  if (error || (multipartPartKey && reliableResult?.result === "locked")) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ message: "Please sign in again before saving.", retryable: false }, { status: 401 });
+    studentId = user.id;
+  }
 
   if (error && multipartResponse && !multipartPartKey) {
     try {
@@ -263,7 +274,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
         assignmentId: id,
         questionId,
         response: multipartResponse,
-        studentId: user.id,
+        studentId,
         supabase,
       });
       if (repaired) {
@@ -277,7 +288,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
           const repairedResult = Array.isArray(repairedData)
             ? repairedData[0] as { is_correct?: boolean | null; result?: string | null }
             : null;
-          console.warn("Repaired stale assignment answer configuration", { assignmentId: id, questionId, studentId: user.id });
+          console.warn("Repaired stale assignment answer configuration", { assignmentId: id, questionId, studentId });
           return NextResponse.json({ isCorrect: repairedResult?.is_correct ?? null, result: repairedResult?.result ?? null }, {
             headers: { "Cache-Control": "no-store, max-age=0" },
           });
@@ -287,7 +298,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     } catch (repairError) {
       const repairMessage = repairError instanceof Error ? repairError.message : "The answer could not be saved.";
       const repairPermanent = permanentError(repairMessage);
-      console.error("Assignment answer configuration repair failed", { assignmentId: id, questionId, studentId: user.id, message: repairMessage });
+      console.error("Assignment answer configuration repair failed", { assignmentId: id, questionId, studentId, message: repairMessage });
       if (repairPermanent) {
         return NextResponse.json({ message: repairMessage, retryable: false }, { status: 400 });
       }
@@ -307,7 +318,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     });
     if (!partError) {
       const partResult = Array.isArray(partData) ? partData[0] as { is_correct?: boolean | null; result?: string | null } : null;
-      console.warn("Used assignment part compatibility save", { assignmentId: id, questionId, studentId: user.id });
+      console.warn("Used assignment part compatibility save", { assignmentId: id, questionId, studentId });
       return NextResponse.json({ isCorrect: partResult?.is_correct ?? null, result: partResult?.result ?? null }, {
         headers: { "Cache-Control": "no-store, max-age=0" },
       });
@@ -316,7 +327,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     console.error("Assignment part compatibility save failed", {
       assignmentId: id,
       questionId,
-      studentId: user.id,
+      studentId,
       code: partError.code,
       message: partError.message,
     });
@@ -328,14 +339,14 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
           questionId,
           requestId,
           response: multipartResponse,
-          studentId: user.id,
+          studentId,
           supabase,
         });
         if (fallbackResult) return NextResponse.json(fallbackResult, { headers: { "Cache-Control": "no-store, max-age=0" } });
       } catch (fallbackError) {
         const fallbackMessage = fallbackError instanceof Error ? fallbackError.message : "The answer could not be saved.";
         const fallbackPermanent = permanentError(fallbackMessage);
-        console.error("Assignment part server fallback failed", { assignmentId: id, questionId, studentId: user.id, message: fallbackMessage });
+        console.error("Assignment part server fallback failed", { assignmentId: id, questionId, studentId, message: fallbackMessage });
         if (fallbackPermanent) {
           return NextResponse.json({ message: fallbackMessage, retryable: false }, { status: 400 });
         }
@@ -349,7 +360,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     console.error("Assignment answer save failed", {
       assignmentId: id,
       questionId,
-      studentId: user.id,
+      studentId,
       code: saveError.code,
       message,
     });
@@ -360,6 +371,9 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   }
 
   return NextResponse.json({ isCorrect: reliableResult?.is_correct ?? null, result: reliableResult?.result ?? null }, {
-    headers: { "Cache-Control": "no-store, max-age=0" },
+    headers: {
+      "Cache-Control": "no-store, max-age=0",
+      "Server-Timing": `answer-rpc;dur=${rpcDurationMs.toFixed(1)}, total;dur=${(performance.now() - startedAt).toFixed(1)}`,
+    },
   });
 }
