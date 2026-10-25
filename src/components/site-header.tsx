@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { navItems, siteConfig } from "@/lib/site";
 import { Container } from "@/components/ui";
-import { LogoLockup } from "@/components/logo";
+import { LogoMark } from "@/components/logo";
 import { MobileNavigation } from "@/components/mobile-navigation";
 import { AccountMenu } from "@/components/account-menu";
 import { HeaderAccountLink } from "@/components/header-account-link";
@@ -13,7 +13,8 @@ export function SiteHeader() {
     <header className="site-header">
       <Container className="header-inner">
         <Link href="/" className="brand" aria-label={`${siteConfig.name} home`}>
-          <LogoLockup priority />
+          <LogoMark />
+          <span className="header-brand-name"><small>Mr Flynn</small><strong>IB Mathematics</strong></span>
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.filter((item) => item.href !== "/book").map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
