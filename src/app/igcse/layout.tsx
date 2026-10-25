@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { HeaderAccountLink } from "@/components/header-account-link";
+import { LogoLockup } from "@/components/logo";
 import { Container } from "@/components/ui";
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default function IgcseLayout({ children }: Readonly<{ children: React.Rea
     <div className="igcse-site">
       <header className="igcse-section-nav">
         <Container className="igcse-section-nav-inner">
-          <Link className="igcse-section-brand" href="/igcse"><span>Mr Flynn</span><strong>IGCSE Mathematics</strong></Link>
+          <Link className="igcse-section-brand" href="/igcse"><LogoLockup priority /><span>IGCSE Mathematics</span></Link>
           <nav className="igcse-section-links" aria-label="IGCSE Mathematics navigation">
             {links.map((link) => (
               <Link href={link.href} key={link.href}>
