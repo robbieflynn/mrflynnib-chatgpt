@@ -83,7 +83,7 @@ export default async function NewAssignmentPage({ params, searchParams }: { para
     <section className="section-tight"><Container>
       <form action={createAssignment} className="assignment-builder stack-xl"><input name="classId" type="hidden" value={id} />
         {message.error ? <p className="form-message form-error">{message.error}</p> : null}
-        <AssignmentSetupFields draftId={assignmentDraftId} initialFeedbackMode={sourceFeedbackMode} initialInstructions={sourceInstructions} initialTitle={sourceTitle} />
+        <AssignmentSetupFields draftId={assignmentDraftId} initialFeedbackMode={sourceFeedbackMode} initialInstructions={creatingShadow ? sourceInstructions : undefined} initialTitle={sourceTitle} />
         <AssignmentAudienceFields draftId={assignmentDraftId} initialRecipientIds={initialRecipientIds} students={students} />
         <div className="stack"><div className="teacher-section-heading"><div><p className="eyebrow">Question bank</p><h2>{creatingShadow ? "Review matched questions" : "Choose questions"}</h2></div><p>{creatingShadow ? "The complete shadow task is prepared automatically. You can still remove or replace any question before publishing." : "Select up to 100 questions. Suitable parts become five-choice questions automatically. Proofs, diagrams and written explanations use whiteboard or paper completion."}</p></div><AssignmentQuestionPicker bank={classRecord.bank} course={course} draftId={assignmentDraftId} shadowSources={shadowSources} /></div>
         <div className="assignment-builder-actions"><p className="muted small">The assignment will appear only for the audience selected above.</p><PendingSubmitButton idleLabel="Publish assignment" pendingLabel="Publishing…" /></div>
