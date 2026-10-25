@@ -110,6 +110,8 @@ p { margin: 0; }
 .desktop-nav a:not(.button):hover { color: var(--teal-dark); }
 .desktop-nav .header-contact-button { padding: .48rem .75rem; border: 1px solid #aeb8bc; border-radius: 999px; line-height: 1; }
 .desktop-nav .header-contact-button:hover { border-color: var(--teal); background: var(--teal-soft); color: var(--teal-dark); }
+.desktop-nav .header-learning-home-link { padding: .48rem .72rem; border-radius: 999px; background: #edf6ff; color: #135f99; line-height: 1; }
+.desktop-nav .header-learning-home-link:hover { background: #dceeff; color: #0b4a7a; }
 .header-login-button { background: var(--navy); border-color: var(--navy); color: white; }
 .header-login-button:hover { background: #14284f; border-color: #14284f; }
 .mobile-nav { display: none; }

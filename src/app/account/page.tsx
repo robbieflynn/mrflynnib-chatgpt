@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense, type CSSProperties } from "react";
@@ -9,8 +10,10 @@ import { StudentAccountForm } from "@/components/student-account-form";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
-import { platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
+import { activePlatformEntitlements, platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
+import { courseProductForCode } from "@/lib/platform-products";
 import progressManifest from "@/data/question-bank-progress.json";
+import courseVideoAccess from "@/data/course-video-access.json";
 import { choosePrimaryCourse, joinClass, requestTeacherAccess } from "./actions";
 
 export const metadata: Metadata = {
@@ -155,8 +158,40 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     );
   }
 
+  const [personalAccessResult, schoolAccessResult] = await Promise.all([
+    supabase
+      .from("platform_entitlements")
+      .select("product_code,status,starts_at,expires_at")
+      .eq("user_id", user.id),
+    supabase
+      .from("organization_license_seats")
+      .select("revoked_at,organization_licenses(product_code,status,starts_at,ends_at)")
+      .eq("user_id", user.id)
+      .is("revoked_at", null),
+  ]);
+  const personalEntitlements = personalAccessResult.data as PlatformEntitlement[] | null;
+  const schoolSeats = schoolAccessResult.data as PlatformLicenseSeat[] | null;
+  const access = platformAccessSummary(personalEntitlements, schoolSeats);
+  const ownedCourseIds = Array.from(new Set(activePlatformEntitlements(personalEntitlements)
+    .map((entitlement) => courseProductForCode(entitlement.product_code)?.id)
+    .filter((courseId): courseId is "aa-hl" | "aa-sl" | "ai-hl" | "ai-sl" => Boolean(courseId && courseId !== "igcse"))));
+
   const preferredCourse = typeof user.user_metadata.primary_course === "string" ? user.user_metadata.primary_course : "";
   const requestedPrimaryCourse = getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "");
+  if (!isIgcse && !getQuestionBankCourse(preferredCourse) && ownedCourseIds.length === 1) {
+    const inferredCourse = ownedCourseIds[0];
+    const existingPreferences = Array.isArray(user.user_metadata.course_preferences)
+      ? user.user_metadata.course_preferences.filter((value): value is string => typeof value === "string")
+      : [];
+    const { error: courseSaveError } = await supabase.auth.updateUser({
+      data: {
+        ...user.user_metadata,
+        primary_course: inferredCourse,
+        course_preferences: Array.from(new Set([inferredCourse, ...existingPreferences])),
+      },
+    });
+    if (!courseSaveError) redirect(`/account?course=${inferredCourse}`);
+  }
   if (!isIgcse && !getQuestionBankCourse(preferredCourse)) {
     return <>
       <section className="account-course-setup-hero">
@@ -192,20 +227,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const bank = isIgcse ? "igcse" : "ib";
   const questionBankHref = isIgcse ? "/igcse/question-bank" : `/question-bank/${selectedCourse.slug}`;
   const progressLabel = isIgcse ? "IGCSE" : selectedCourse.code;
-  const accessPromise = Promise.all([
-    supabase
-      .from("platform_entitlements")
-      .select("product_code,status,starts_at,expires_at")
-      .eq("user_id", user.id),
-    supabase
-      .from("organization_license_seats")
-      .select("revoked_at,organization_licenses(product_code,status,starts_at,ends_at)")
-      .eq("user_id", user.id)
-      .is("revoked_at", null),
-  ]).then(([personalResult, schoolResult]) => platformAccessSummary(
-    personalResult.data as PlatformEntitlement[] | null,
-    schoolResult.data as PlatformLicenseSeat[] | null,
-  ));
   const upgradeHref = isIgcse ? "/igcse/account/access" : "/account/access";
   const completedQuestionIdsPromise = (async () => {
     const completedQuestionIds = new Set<string>();
@@ -236,11 +257,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     .from("class_memberships")
     .select("class_id,joined_at,classes(id,name,course,bank)")
     .eq("student_id", user.id);
-  const [access, completedQuestionIds, { count: whiteboardCount }, { data: memberships }] = await Promise.all([
-    accessPromise,
+  const [completedQuestionIds, { count: whiteboardCount }, { data: memberships }, { data: lessonProgressRows }, { data: coursePlatformState }] = await Promise.all([
     completedQuestionIdsPromise,
     whiteboardCountPromise,
     membershipsPromise,
+    supabase.from("course_lesson_progress").select("lesson_id,completed,last_viewed_at").eq("user_id", user.id).eq("curriculum", isIgcse ? "igcse" : "ib").eq("course_id", isIgcse ? "igcse" : selectedCourse.slug),
+    supabase.from("course_platform_state").select("last_lesson_id").eq("user_id", user.id).eq("curriculum", isIgcse ? "igcse" : "ib").maybeSingle(),
   ]);
   const courseCompleted = courseProgress.questionIds.filter((id) => completedQuestionIds.has(id)).length;
   const coursePercentage = percentage(courseCompleted, courseProgress.questionIds.length);
@@ -307,9 +329,17 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       ? `/igcse/question-bank?topic=${encodeURIComponent(firstIncompleteTopic.name)}&subtopic=${encodeURIComponent(firstIncompleteSubtopic.name)}`
       : `/question-bank/${selectedCourse.slug}?topic=${encodeURIComponent(firstIncompleteTopic.name)}&subtopic=${encodeURIComponent(firstIncompleteSubtopic.name)}`
     : questionBankHref;
+  const courseManifestKey = isIgcse ? "igcse" : selectedCourse.slug;
+  const courseManifest = courseVideoAccess.courses[courseManifestKey];
+  const availableLessonIds = access.paid ? courseManifest.lessons : courseManifest.samples;
+  const completedLessonIds = new Set((lessonProgressRows ?? []).filter((row) => row.completed).map((row) => row.lesson_id));
+  const completedLessons = availableLessonIds.filter((lessonId) => completedLessonIds.has(lessonId)).length;
+  const courseLessonPercentage = percentage(completedLessons, availableLessonIds.length);
+  const courseLessonLabel = access.paid ? "course lessons" : "free lessons";
+  const lastLessonAvailable = Boolean(coursePlatformState?.last_lesson_id && availableLessonIds.includes(coursePlatformState.last_lesson_id));
   return (
     <>
-      <section className={`dashboard-hero student-dashboard-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
+      <section className={`dashboard-hero student-dashboard-hero student-home-v2-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
         <Container className="dashboard-hero-shell">
           <div className="dashboard-account-row">
             <div className={`platform-access-summary ${access.paid ? "is-paid" : ""}`}>
@@ -331,11 +361,16 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
                   : "Here's what to focus on next."}
               </p>
             </div>
+            <div className="student-home-course-chip">
+              <span>Current course</span>
+              <strong>{progressLabel}</strong>
+              <small>{isIgcse ? "IGCSE Mathematics" : `${selectedCourse.pathway} ${selectedCourse.level}`}</small>
+            </div>
           </div>
         </Container>
       </section>
-      <section className={`student-dashboard section-tight ${isIgcse ? "student-dashboard-igcse" : ""}`}>
-        <Container className="stack-xl">
+      <section className={`student-dashboard student-home-v2 section-tight ${isIgcse ? "student-dashboard-igcse" : ""}`}>
+        <Container className="stack-2xl">
           {accountError ? <p className="form-message form-error">{accountError}</p> : null}
           {accountSuccess ? <p className="form-message form-success">{accountSuccess}</p> : null}
           {teacherApprovalPending ? (
@@ -344,49 +379,39 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               <span>You do not need to apply again. Once approved, this account will open your teacher dashboard automatically.</span>
             </p>
           ) : null}
-          <nav className="student-platform-nav" aria-label="Your learning areas">
-            <Link href={courseLearningHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>{isIgcse ? "Lessons and past-paper solutions" : `${selectedCourse.code} lessons and past-paper solutions`}</small></span><b aria-hidden="true">→</b></Link>
-            <Link href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Independent practice and saved work</small></span><b aria-hidden="true">→</b></Link>
-            <Link href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Work set by your teachers</small></span><b aria-hidden="true">↓</b></Link>
-            <Link href="#question-bank-progress"><DashboardIcon name="check" /><span><strong>Progress</strong><small>Your learning at a glance</small></span><b aria-hidden="true">↓</b></Link>
-          </nav>
-          <div className="student-next-grid">
-            <section className="student-next-card">
-              <div className="student-next-card-copy">
-                <p className="student-dashboard-kicker">Up next</p>
-                {nextAssignment ? <>
-                  <span className="student-next-context">{classNames.get(nextAssignment.class_id)} · {dueDateLabel(nextAssignment.due_at)}</span>
-                  <h2>{nextAssignment.title}</h2>
-                  <p>{nextAssignment.progressCount ? `You have completed ${nextAssignment.progressCount} of ${nextAssignment.questionCount} questions.` : `${nextAssignment.questionCount} ${nextAssignment.questionCount === 1 ? "question" : "questions"} ready to begin.`}</p>
-                </> : <>
-                  <span className="student-next-context">You&apos;re up to date</span>
-                  <h2>All caught up</h2>
-                  <p>{assignments.length ? "You have submitted all of your current assignments." : "There are no assignments waiting for you."}</p>
-                </>}
+          <section className="student-focus-grid" aria-labelledby="student-focus-heading">
+            <article className="student-focus-primary">
+              <div className="student-focus-top"><span className="student-focus-label">{nextAssignment ? "Your next task" : "You're up to date"}</span>{nextAssignment?.due_at ? <span className="student-due-pill">{dueDateLabel(nextAssignment.due_at)}</span> : null}</div>
+              <div className="student-focus-copy">
+                <span>{nextAssignment ? classNames.get(nextAssignment.class_id) : progressLabel}</span>
+                <h2 id="student-focus-heading">{nextAssignment?.title || "Choose what to practise next"}</h2>
+                <p>{nextAssignment ? nextAssignment.progressCount ? `${nextAssignment.progressCount} of ${nextAssignment.questionCount} questions complete.` : `${nextAssignment.questionCount} ${nextAssignment.questionCount === 1 ? "question" : "questions"} ready to begin.` : "There are no assignments waiting. Continue independently in the question bank."}</p>
               </div>
-              {nextAssignment ? <>
-                <div className="student-next-progress"><span><strong>{nextAssignment.assignmentPercentage}%</strong> complete</span><i><b style={{ width: `${nextAssignment.assignmentPercentage}%` }} /></i></div>
-                <Link className="button student-next-button" href={`/assignments/${nextAssignment.id}`}>{nextAssignment.progressCount ? "Continue assignment" : "Start assignment"}<span aria-hidden="true">→</span></Link>
-              </> : <Link className="button student-next-button" href={continueLearningHref}>Practise in the question bank<span aria-hidden="true">→</span></Link>}
-            </section>
+              <div className="student-focus-footer">
+                <div><span><strong>{nextAssignment ? `${nextAssignment.progressCount} of ${nextAssignment.questionCount}` : `${courseCompleted.toLocaleString("en-GB")} completed`}</strong> {nextAssignment ? "questions" : "question-bank questions"}</span><i><b style={{ width: `${nextAssignment?.assignmentPercentage ?? coursePercentage}%` }} /></i></div>
+                <Link className="button student-focus-button" href={nextAssignment ? `/assignments/${nextAssignment.id}` : continueLearningHref}>{nextAssignment ? nextAssignment.progressCount ? "Continue assignment" : "Start assignment" : "Continue practising"} <span aria-hidden="true">→</span></Link>
+              </div>
+            </article>
+            <article className="student-continue-card">
+              <div className="student-continue-copy"><span className="student-focus-label">Continue learning</span><small>{progressLabel}</small><h2>{lastLessonAvailable ? "Continue your last lesson" : "Open your course"}</h2><p>{access.paid ? "Every video lesson and its extra practice are unlocked." : "Three complete lessons in every topic are free."}</p><Link className="student-inline-action" href={courseLearningHref}>{lastLessonAvailable ? "Continue course" : "Choose a lesson"} <span aria-hidden="true">→</span></Link></div>
+              {!isIgcse ? <Image src={`/learn/assets/course-${selectedCourse.slug}.png`} alt="" width={250} height={250} /> : <div className="student-continue-symbol" aria-hidden="true">x²</div>}
+              <div className="student-continue-meter"><span><strong>{completedLessons} of {availableLessonIds.length}</strong> {courseLessonLabel} complete</span><i><b style={{ width: `${courseLessonPercentage}%` }} /></i></div>
+            </article>
+          </section>
 
-            <aside className="student-progress-summary" aria-label="Your progress">
-              <div><p className="student-dashboard-kicker">Personal progress</p><strong className="student-progress-number">{coursePercentage}%</strong><span>{progressLabel} question bank complete</span></div>
-              <div className="student-progress-ring" style={{ "--student-progress": `${coursePercentage * 3.6}deg` } as CSSProperties}><span>{coursePercentage}%</span></div>
-              <dl>
-                <div><dt>Questions completed</dt><dd>{courseCompleted.toLocaleString("en-GB")}</dd></div>
-                <div><dt>Saved whiteboards</dt><dd>{whiteboardCount ?? 0}</dd></div>
-                <div><dt>Assignments submitted</dt><dd>{completedAssignments.length}</dd></div>
-              </dl>
-            </aside>
-          </div>
+          <nav className="student-platform-nav student-platform-nav-v2" aria-label="Your learning areas">
+            <Link className="is-course" href={courseLearningHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>{isIgcse ? "Lessons and past-paper solutions" : `${selectedCourse.code} lessons and past-paper solutions`}</small></span><b aria-hidden="true">→</b></Link>
+            <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>All questions free</small></span><b aria-hidden="true">→</b></Link>
+            <Link className="is-assignments" href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>{activeAssignments.length ? `${activeAssignments.length} ${activeAssignments.length === 1 ? "task" : "tasks"} due` : "No work due"}</small></span><b aria-hidden="true">↓</b></Link>
+            <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
+          </nav>
 
-          <section className="student-assignments dashboard-panel stack-lg" id="assignments">
+          <section className="student-assignments student-home-section stack-lg" id="assignments">
             <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>{activeAssignments.length ? "Due soon" : "You're up to date"}</h2></div><p className="muted">Your current work is ordered by due date, so the most important task is always easy to find.</p></div>
             {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
             <div className="student-assignment-list">
-              {activeAssignments.map((assignment) => {
-                return <Link className="student-assignment-card" href={`/assignments/${assignment.id}`} key={assignment.id}>
+              {activeAssignments.map((assignment, assignmentIndex) => {
+                return <Link className={`student-assignment-card ${assignmentIndex === 0 ? "is-urgent" : ""}`} href={`/assignments/${assignment.id}`} key={assignment.id}>
                   <span className="student-assignment-status"><i style={{ width: `${assignment.assignmentPercentage}%` }} /></span>
                   <div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{dueDateLabel(assignment.due_at)}</span></div>
                   <div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div>
@@ -397,6 +422,24 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               {!activeAssignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>{assignments.length ? "Everything is submitted" : "No assignments yet"}</strong><p>{assignments.length ? "Nice work. Your next assignment will appear here when it is set." : "Your teacher's assignments will appear here."}</p></div></div> : null}
             </div>
             {completedAssignments.length ? <details className="student-completed-assignments"><summary>Submitted assignments ({completedAssignments.length})<span aria-hidden="true">+</span></summary><div className="student-assignment-list">{completedAssignments.map((assignment) => <Link className="student-assignment-card is-complete" href={`/assignments/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>Submitted</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Submitted</span><span aria-hidden="true">→</span></Link>)}</div></details> : null}
+          </section>
+
+          <section className="student-progress-overview student-home-section stack-lg" id="progress" aria-labelledby="student-progress-heading">
+            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Your progress</h2></div><p className="muted">Course lessons and question-bank practice are shown separately, so each number is meaningful.</p></div>
+            <div className="student-progress-grid student-progress-grid-v2">
+              <article className="student-progress-summary is-course-progress">
+                <div><p className="student-dashboard-kicker">{access.paid ? "Course progress" : "Free course preview"}</p><strong className="student-progress-number">{completedLessons} of {availableLessonIds.length}</strong><span>{isIgcse ? "IGCSE Mathematics" : `${selectedCourse.pathway} ${selectedCourse.level}`}</span></div>
+                <div className="student-progress-ring" style={{ "--student-progress": `${courseLessonPercentage * 3.6}deg` } as CSSProperties}><span>{courseLessonPercentage}%</span></div>
+                <dl><div><dt>Lessons completed</dt><dd>{completedLessons}</dd></div><div><dt>{access.paid ? "Lessons remaining" : "Free lessons remaining"}</dt><dd>{Math.max(0, availableLessonIds.length - completedLessons)}</dd></div><div><dt>Access</dt><dd>{access.paid ? "Plus" : "Free"}</dd></div></dl>
+                <Link className="student-inline-action" href={courseLearningHref}>Continue course →</Link>
+              </article>
+              <article className="student-progress-summary is-bank-progress">
+                <div><p className="student-dashboard-kicker">Question bank progress</p><strong className="student-progress-number">{courseCompleted.toLocaleString("en-GB")}</strong><span>questions completed</span></div>
+                <div className="student-progress-ring" style={{ "--student-progress": `${coursePercentage * 3.6}deg` } as CSSProperties}><span>{coursePercentage}%</span></div>
+                <dl><div><dt>Bank explored</dt><dd>{coursePercentage}%</dd></div><div><dt>Saved whiteboards</dt><dd>{whiteboardCount ?? 0}</dd></div><div><dt>Assignments submitted</dt><dd>{completedAssignments.length}</dd></div></dl>
+                <Link className="student-inline-action" href={continueLearningHref}>Continue practising →</Link>
+              </article>
+            </div>
           </section>
 
           <section className="student-learning-section stack-lg" id="question-bank-progress">
@@ -468,7 +511,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           </div>
           </section>
 
-          <section className="student-class-section stack-lg">
+          <section className="student-resource-row" aria-label="More ways to learn">
+            <Link className="student-resource-card is-papers" href={`${courseLearningHref}${courseLearningHref.includes("?") ? "&" : "?"}view=past-papers`}><span className="student-resource-icon" aria-hidden="true">P</span><span><small>Exam preparation</small><strong>Past-paper solutions</strong><em>{isIgcse ? "Work through exam-style questions" : "Specimen and May 2021 are free"}</em></span><b aria-hidden="true">→</b></Link>
+            <Link className="student-resource-card is-saved" href={questionBankHref}><span className="student-resource-icon" aria-hidden="true">{whiteboardCount ?? 0}</span><span><small>Your work</small><strong>Saved whiteboards</strong><em>Continue from any device</em></span><b aria-hidden="true">→</b></Link>
+          </section>
+
+          <section className="student-class-section student-home-section stack-lg">
             <div className="dashboard-section-heading student-section-heading">
               <div><p className="eyebrow">Classes</p><h2>{activeMemberships.length ? "Your classes" : "Join your first class"}</h2></div>
               <p className="muted">Classes keep your teacher&apos;s assignments and feedback together.</p>
@@ -488,6 +536,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               <form action={joinClass} className="join-class-form"><label className="field"><span>Class code</span><input name="code" placeholder="ABC1234" maxLength={10} required /></label><button className="button button-small" type="submit">Join class</button></form>
             </details>
           </section>
+
+          {!access.paid && !isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your complete question bank, classes and assignments stay free. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href={upgradeHref}>See Plus access</Link></section> : null}
 
         </Container>
       </section>

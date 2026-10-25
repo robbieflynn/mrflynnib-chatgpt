@@ -548,6 +548,8 @@ Rob then requested restoring the header's **Explore courses** button and removin
 
 On 23 October 2026, Rob superseded that header call-to-action decision: replace **Explore courses** with **Log in** on the public website. In a student platform context, show **My learning** instead and make the route back to the learning dashboard persistent and unmistakable inside the course interface.
 
+On 25 October 2026, Rob confirmed that the approved colourful student Learning Home is the real signed-in dashboard, not a review-only example. It must use live assignments, course progress, question-bank progress, classes and saved whiteboards. Existing accounts without a stored main course keep all prior data: automatically select a single active paid or migrated course when one can be identified safely; otherwise ask the student to choose the course that personalises their Learning Home. Show a direct **My learning** link in the signed-in desktop header as well as the account menu.
+
 Rob subsequently standardised the customer-facing capitalisation to **One-to-One** and requested a fifth homepage route for mobile only. Keep the desktop homepage at its four balanced principal cards. On viewports up to 650 pixels wide, show a compact fifth card after Tutoring titled **One-to-One Tuition with IB Tutors**, link it to `/go/ib-tutors`, list Physics, Chemistry, Biology and Maths, and use the partner's navy and orange palette so it is distinct but harmonious with the homepage.
 
 Keep this mobile-only IB Tutors card on the same white background as the four principal cards. Use navy text and restrained orange accents rather than a dark filled background.
