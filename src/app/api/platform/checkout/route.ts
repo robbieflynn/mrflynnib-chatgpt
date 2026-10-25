@@ -20,7 +20,7 @@ function stripeConfiguration() {
   return { secret, live };
 }
 
-export async function POST(request: Request) {
+async function createCheckout(request: Request) {
   const requestOrigin = new URL(request.url).origin;
   const suppliedOrigin = request.headers.get("origin");
   if (suppliedOrigin && suppliedOrigin !== requestOrigin) {
@@ -144,4 +144,18 @@ export async function POST(request: Request) {
     );
   }
   return NextResponse.json({ url: checkout.url }, { headers: { "Cache-Control": "private, no-store" } });
+}
+
+export async function POST(request: Request) {
+  try {
+    return await createCheckout(request);
+  } catch (error) {
+    console.error("Checkout request failed before a Stripe session was created", {
+      message: error instanceof Error ? error.message : "Unknown checkout error",
+    });
+    return NextResponse.json(
+      { error: "Secure checkout is temporarily unavailable. Please try again shortly." },
+      { status: 503 },
+    );
+  }
 }
