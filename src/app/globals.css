@@ -1929,9 +1929,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-site { --igcse-accent: #237fca; --igcse-accent-dark: #1267ae; --igcse-accent-soft: #eaf5ff; --igcse-detail: #b65360; --igcse-detail-soft: #faeef0; background: #f8fbfe; }
 .igcse-section-nav { position: relative; z-index: 5; border-bottom: 1px solid rgba(18,103,174,.13); background: rgba(255,255,255,.96); }
 .igcse-section-nav-inner { min-height: 4.1rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
-.igcse-section-brand { display: grid; gap: .05rem; line-height: 1.15; }
-.igcse-section-brand span { color: var(--muted); font-size: .65rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
-.igcse-section-brand strong { color: var(--navy); font-size: 1.05rem; }
+.igcse-section-brand { display: flex; align-items: center; gap: .75rem; line-height: 1.15; }
+.igcse-section-brand .brand-lockup { width: 168px; }
+.igcse-section-brand span { padding-left: .75rem; border-left: 1px solid #d7e1e8; color: var(--igcse-accent-dark); font-size: .65rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 .igcse-section-links { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2rem; color: var(--ink-2); font-size: .85rem; font-weight: 800; }
 .igcse-section-links a:hover { color: var(--igcse-accent-dark); }
 .igcse-section-actions { display: flex; align-items: center; gap: .8rem; }
@@ -2113,6 +2113,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .igcse-home-card { min-height: auto; border-radius: 1.25rem; }
   .igcse-home-routes { display: none; }
   .igcse-section-nav-inner { padding-block: .75rem; align-items: flex-start; flex-direction: column; }
+  .igcse-section-brand .brand-lockup { width: 140px; }
+  .igcse-section-brand span { max-width: 7rem; padding-left: .55rem; font-size: .57rem; white-space: normal; }
   .igcse-section-actions { position: absolute; right: 1rem; top: .7rem; }
   .igcse-back-to-ib { display: none; }
   .igcse-section-actions .button { min-height: 2.35rem; padding: .55rem .75rem; font-size: .7rem; }

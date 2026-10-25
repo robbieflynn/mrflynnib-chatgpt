@@ -147,17 +147,27 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
       return;
     }
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-    setPending(false);
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     if (signInError) {
+      setPending(false);
       if (signInError.code === "email_not_confirmed") {
         setMode("resend");
         return setError("Your email address has not been confirmed yet. Send a new confirmation email below.");
       }
       return setError("That email address and password did not match.");
     }
-    router.push(nextPath);
-    router.refresh();
+    const { data: signedInProfile } = await supabase
+      .from("profiles")
+      .select("role,curriculum")
+      .eq("user_id", signInData.user.id)
+      .maybeSingle();
+    const signedInCurriculum = signedInProfile?.curriculum === "igcse" ? "igcse" : "ib";
+    if (signedInProfile?.role !== "admin" && signedInCurriculum !== curriculum) {
+      await supabase.auth.signOut({ scope: "local" });
+      setPending(false);
+      return setError(`That email address belongs to the separate ${signedInCurriculum === "igcse" ? "IGCSE" : "IB"} account area. Use your ${curriculum === "igcse" ? "IGCSE" : "IB"} account details or create an account for this area.`);
+    }
+    window.location.replace(nextPath);
   }
 
   return (
