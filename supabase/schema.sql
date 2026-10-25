@@ -826,3 +826,521 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- Paid access and lightweight school licensing foundations.
+-- Teachers continue to own and manage their own classes. Organisations group
+-- licences and teachers for billing without introducing a second class model.
+
+create table if not exists public.platform_entitlements (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  product_code text not null check (char_length(product_code) between 1 and 80),
+  status text not null default 'active' check (status in ('pending', 'active', 'expired', 'revoked')),
+  source text not null check (source in ('stripe', 'teachable', 'school', 'admin', 'promotion')),
+  starts_at timestamptz not null default now(),
+  expires_at timestamptz,
+  external_provider text,
+  external_reference text,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (expires_at is null or expires_at > starts_at),
+  check (external_provider is null or char_length(external_provider) <= 40),
+  check (external_reference is null or char_length(external_reference) <= 200)
+);
+
+create unique index if not exists platform_entitlements_external_reference_idx
+  on public.platform_entitlements (external_provider, external_reference)
+  where external_provider is not null and external_reference is not null;
+create index if not exists platform_entitlements_user_active_idx
+  on public.platform_entitlements (user_id, status, expires_at);
+
+create table if not exists public.organizations (
+  id uuid primary key default gen_random_uuid(),
+  name text not null check (char_length(name) between 1 and 160),
+  curriculum text not null default 'ib' check (curriculum in ('ib', 'igcse')),
+  billing_email text not null default '' check (char_length(billing_email) <= 254),
+  status text not null default 'active' check (status in ('prospect', 'pilot', 'active', 'expired', 'archived')),
+  created_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.organization_memberships (
+  organization_id uuid not null references public.organizations(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  role text not null default 'teacher' check (role in ('billing_contact', 'teacher')),
+  status text not null default 'active' check (status in ('invited', 'active', 'removed')),
+  joined_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  primary key (organization_id, user_id)
+);
+
+create table if not exists public.organization_licenses (
+  id uuid primary key default gen_random_uuid(),
+  organization_id uuid not null references public.organizations(id) on delete cascade,
+  product_code text not null check (char_length(product_code) between 1 and 80),
+  status text not null default 'active' check (status in ('pending', 'pilot', 'active', 'expired', 'revoked')),
+  seat_limit integer check (seat_limit is null or seat_limit > 0),
+  starts_at timestamptz not null default now(),
+  ends_at timestamptz,
+  external_provider text,
+  external_reference text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (ends_at is null or ends_at > starts_at)
+);
+
+create table if not exists public.organization_license_seats (
+  license_id uuid not null references public.organization_licenses(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  assigned_by uuid references auth.users(id) on delete set null,
+  assigned_at timestamptz not null default now(),
+  revoked_at timestamptz,
+  primary key (license_id, user_id)
+);
+
+alter table public.classes add column if not exists organization_id uuid references public.organizations(id) on delete set null;
+create index if not exists classes_organization_id_idx on public.classes (organization_id) where organization_id is not null;
+
+alter table public.platform_entitlements enable row level security;
+alter table public.organizations enable row level security;
+alter table public.organization_memberships enable row level security;
+alter table public.organization_licenses enable row level security;
+alter table public.organization_license_seats enable row level security;
+
+create or replace function public.is_organization_member(organization_uuid uuid, account_id uuid default auth.uid())
+returns boolean language sql stable security definer set search_path = ''
+as $$
+  select exists (
+    select 1 from public.organization_memberships membership
+    where membership.organization_id = organization_uuid
+      and membership.user_id = account_id
+      and membership.status = 'active'
+  )
+$$;
+
+create or replace function public.is_organization_billing_contact(organization_uuid uuid, account_id uuid default auth.uid())
+returns boolean language sql stable security definer set search_path = ''
+as $$
+  select exists (
+    select 1 from public.organization_memberships membership
+    where membership.organization_id = organization_uuid
+      and membership.user_id = account_id
+      and membership.role = 'billing_contact'
+      and membership.status = 'active'
+  )
+$$;
+
+grant execute on function public.is_organization_member(uuid, uuid) to authenticated;
+grant execute on function public.is_organization_billing_contact(uuid, uuid) to authenticated;
+
+drop policy if exists "Users can read their platform entitlements" on public.platform_entitlements;
+create policy "Users can read their platform entitlements"
+  on public.platform_entitlements for select
+  using (user_id = auth.uid() or public.is_admin());
+
+drop policy if exists "Members can read their organization" on public.organizations;
+create policy "Members can read their organization"
+  on public.organizations for select
+  using (public.is_organization_member(id) or public.is_admin());
+
+drop policy if exists "Members can read relevant organization memberships" on public.organization_memberships;
+create policy "Members can read relevant organization memberships"
+  on public.organization_memberships for select
+  using (
+    user_id = auth.uid()
+    or public.is_organization_billing_contact(organization_id)
+    or public.is_admin()
+  );
+
+drop policy if exists "Members can read organization licences" on public.organization_licenses;
+create policy "Members can read organization licences"
+  on public.organization_licenses for select
+  using (public.is_organization_member(organization_id) or public.is_admin());
+
+drop policy if exists "Users can read relevant organization seats" on public.organization_license_seats;
+create policy "Users can read relevant organization seats"
+  on public.organization_license_seats for select
+  using (
+    user_id = auth.uid()
+    or exists (
+      select 1 from public.organization_licenses licence
+      where licence.id = organization_license_seats.license_id
+        and public.is_organization_billing_contact(licence.organization_id)
+    )
+    or public.is_admin()
+  );
+
+-- Entitlements, organisation membership and licence changes are intentionally
+-- server/admin controlled. No authenticated insert, update or delete policies
+-- are granted here. Stripe webhooks and administrative workflows use the
+-- service-role client and leave an auditable source/reference on each record.
+
+create table if not exists public.course_lesson_progress (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  curriculum text not null check (curriculum in ('ib', 'igcse')),
+  course_id text not null check (char_length(course_id) between 1 and 40),
+  lesson_id text not null check (char_length(lesson_id) between 1 and 100),
+  completed boolean not null default false,
+  last_viewed_at timestamptz not null default now(),
+  completed_at timestamptz,
+  updated_at timestamptz not null default now(),
+  primary key (user_id, curriculum, course_id, lesson_id)
+);
+create table if not exists public.course_platform_state (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  curriculum text not null check (curriculum in ('ib', 'igcse')),
+  last_course_id text,
+  last_lesson_id text,
+  updated_at timestamptz not null default now(),
+  primary key (user_id, curriculum)
+);
+create table if not exists public.course_access_claims (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  curriculum text not null check (curriculum in ('ib', 'igcse')),
+  product_code text not null check (char_length(product_code) between 1 and 80),
+  email text not null check (char_length(email) between 3 and 254),
+  note text not null default '' check (char_length(note) <= 1000),
+  status text not null default 'pending' check (status in ('pending', 'approved', 'declined')),
+  reviewed_by uuid references auth.users(id) on delete set null,
+  reviewed_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create unique index if not exists course_access_claims_one_pending_idx on public.course_access_claims (user_id, product_code) where status = 'pending';
+create table if not exists public.billing_customers (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  livemode boolean not null default false,
+  stripe_customer_id text unique not null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  primary key (user_id, livemode)
+);
+create table if not exists public.payment_events (
+  provider_event_id text primary key,
+  event_type text not null,
+  status text not null check (status in ('processing', 'processed', 'ignored', 'failed')),
+  payload jsonb not null default '{}'::jsonb,
+  processed_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create table if not exists public.platform_purchases (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  product_code text not null check (char_length(product_code) between 1 and 80),
+  provider text not null default 'stripe' check (provider = 'stripe'),
+  checkout_session_id text not null unique check (char_length(checkout_session_id) between 1 and 200),
+  payment_intent_id text unique check (payment_intent_id is null or char_length(payment_intent_id) between 1 and 200),
+  customer_id text check (customer_id is null or char_length(customer_id) between 1 and 200),
+  livemode boolean not null,
+  status text not null check (status in ('pending', 'paid', 'failed', 'partially_refunded', 'refunded')),
+  amount_total integer not null default 0 check (amount_total >= 0),
+  amount_refunded integer not null default 0 check (amount_refunded >= 0 and amount_refunded <= amount_total),
+  currency text not null default 'usd' check (currency ~ '^[a-z]{3}$'),
+  access_days integer not null check (access_days between 1 and 3650),
+  access_starts_at timestamptz,
+  access_expires_at timestamptz,
+  purchased_at timestamptz,
+  refunded_at timestamptz,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (access_expires_at is null or access_starts_at is null or access_expires_at > access_starts_at)
+);
+create index if not exists platform_purchases_user_idx on public.platform_purchases (user_id, status, created_at desc);
+create index if not exists organization_memberships_user_idx on public.organization_memberships (user_id, status);
+create index if not exists organization_license_seats_user_idx on public.organization_license_seats (user_id) where revoked_at is null;
+alter table public.course_lesson_progress enable row level security;
+alter table public.course_platform_state enable row level security;
+alter table public.course_access_claims enable row level security;
+alter table public.billing_customers enable row level security;
+alter table public.payment_events enable row level security;
+alter table public.platform_purchases enable row level security;
+create policy "Users manage their own lesson progress" on public.course_lesson_progress for all using (user_id = auth.uid() or public.is_admin()) with check (user_id = auth.uid() or public.is_admin());
+create policy "Users manage their own course state" on public.course_platform_state for all using (user_id = auth.uid() or public.is_admin()) with check (user_id = auth.uid() or public.is_admin());
+create policy "Users read their own access claims" on public.course_access_claims for select using (user_id = auth.uid() or public.is_admin());
+create policy "Users create their own pending access claims" on public.course_access_claims for insert with check (user_id = auth.uid() and status = 'pending' and reviewed_by is null and reviewed_at is null);
+create policy "Administrators review access claims" on public.course_access_claims for update using (public.is_admin()) with check (public.is_admin());
+grant select, insert, update, delete on public.course_lesson_progress to authenticated;
+grant select, insert, update, delete on public.course_platform_state to authenticated;
+grant select, insert, update on public.course_access_claims to authenticated;
+revoke all on public.billing_customers from anon, authenticated;
+revoke all on public.payment_events from anon, authenticated;
+revoke all on public.platform_purchases from anon, authenticated;
+
+-- Verified Teachable course access is private migration data. A confirmed
+-- account may claim only records matching its own normalised email address.
+create table if not exists public.course_access_migrations (
+  id uuid primary key default gen_random_uuid(),
+  normalized_email text not null check (char_length(normalized_email) between 3 and 254 and normalized_email = lower(trim(normalized_email))),
+  product_code text not null check (product_code in ('course_ib_aa_hl', 'course_ib_aa_sl', 'course_ib_ai_hl', 'course_ib_ai_sl', 'course_igcse')),
+  source text not null default 'teachable' check (source in ('teachable', 'school')),
+  evidence_type text not null check (char_length(evidence_type) between 1 and 100),
+  external_reference text not null unique check (char_length(external_reference) between 1 and 200),
+  starts_at timestamptz not null,
+  expires_at timestamptz,
+  status text not null default 'verified' check (status in ('verified', 'claimed', 'held', 'expired')),
+  claimed_by uuid references auth.users(id) on delete set null,
+  claimed_at timestamptz,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (normalized_email, product_code),
+  check (expires_at is null or expires_at > starts_at),
+  check ((status = 'claimed' and claimed_by is not null and claimed_at is not null) or status <> 'claimed')
+);
+create index if not exists course_access_migrations_claim_idx on public.course_access_migrations (normalized_email, status, expires_at);
+alter table public.course_access_migrations enable row level security;
+revoke all on public.course_access_migrations from anon, authenticated;
+
+create or replace function public.claim_verified_course_access()
+returns integer language plpgsql security definer set search_path = '' as $$
+declare
+  account_id uuid := auth.uid();
+  account_email text;
+  confirmed_at timestamptz;
+  migration_record public.course_access_migrations%rowtype;
+  claimed_count integer := 0;
+begin
+  if account_id is null then return 0; end if;
+  select lower(trim(users.email)), users.email_confirmed_at into account_email, confirmed_at from auth.users users where users.id = account_id;
+  if account_email is null or confirmed_at is null then return 0; end if;
+  for migration_record in
+    select migrations.* from public.course_access_migrations migrations
+    where migrations.normalized_email = account_email and migrations.status = 'verified'
+      and (migrations.expires_at is null or migrations.expires_at > now())
+    for update skip locked
+  loop
+    if not exists (
+      select 1 from public.platform_entitlements entitlements
+      where entitlements.user_id = account_id and entitlements.product_code = migration_record.product_code
+        and entitlements.status = 'active' and (entitlements.expires_at is null or entitlements.expires_at > now())
+    ) then
+      insert into public.platform_entitlements (user_id, product_code, status, source, starts_at, expires_at, external_provider, external_reference, metadata)
+      values (account_id, migration_record.product_code, 'active', migration_record.source, migration_record.starts_at,
+        migration_record.expires_at, 'teachable-migration', migration_record.id::text,
+        jsonb_build_object('migration_record_id', migration_record.id, 'evidence_type', migration_record.evidence_type))
+      on conflict do nothing;
+    end if;
+    update public.course_access_migrations set status = 'claimed', claimed_by = account_id, claimed_at = now(), updated_at = now()
+      where id = migration_record.id;
+    claimed_count := claimed_count + 1;
+  end loop;
+  return claimed_count;
+end;
+$$;
+revoke all on function public.claim_verified_course_access() from public;
+grant execute on function public.claim_verified_course_access() to authenticated;
+
+-- Owner-managed course access and secure, auditable free-access codes.
+create table if not exists public.platform_access_codes (
+  id uuid primary key default gen_random_uuid(),
+  code_hash text not null unique check (code_hash ~ '^[a-f0-9]{64}$'),
+  code_hint text not null check (char_length(code_hint) between 5 and 32),
+  product_code text not null check (char_length(product_code) between 1 and 80),
+  status text not null default 'active' check (status in ('active', 'disabled')),
+  access_days integer check (access_days is null or access_days between 1 and 3650),
+  max_redemptions integer not null default 1 check (max_redemptions between 1 and 10000),
+  redemption_count integer not null default 0 check (redemption_count between 0 and max_redemptions),
+  expires_at timestamptz,
+  note text not null default '' check (char_length(note) <= 500),
+  created_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.platform_access_code_redemptions (
+  id uuid primary key default gen_random_uuid(),
+  code_id uuid not null references public.platform_access_codes(id) on delete restrict,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  entitlement_id uuid not null references public.platform_entitlements(id) on delete restrict,
+  redeemed_at timestamptz not null default now(),
+  unique (code_id, user_id)
+);
+
+create index if not exists platform_access_codes_status_idx on public.platform_access_codes (status, expires_at, created_at desc);
+create index if not exists platform_access_code_redemptions_user_idx on public.platform_access_code_redemptions (user_id, redeemed_at desc);
+alter table public.platform_access_codes enable row level security;
+alter table public.platform_access_code_redemptions enable row level security;
+revoke all on public.platform_access_codes from anon, authenticated;
+revoke all on public.platform_access_code_redemptions from anon, authenticated;
+
+create or replace function public.redeem_platform_access_code(raw_code text)
+returns jsonb language plpgsql security definer set search_path = ''
+as $$
+declare
+  account_id uuid := auth.uid();
+  normalized_code text := regexp_replace(upper(coalesce(raw_code, '')), '[^A-Z0-9]', '', 'g');
+  code_row public.platform_access_codes%rowtype;
+  entitlement_id uuid;
+  entitlement_expiry timestamptz;
+begin
+  if account_id is null then return jsonb_build_object('status', 'signed_out'); end if;
+  if char_length(normalized_code) < 8 or char_length(normalized_code) > 64 then return jsonb_build_object('status', 'invalid'); end if;
+
+  select access_code.* into code_row
+  from public.platform_access_codes access_code
+  where access_code.code_hash = encode(extensions.digest(normalized_code, 'sha256'), 'hex')
+    and access_code.status = 'active'
+    and (access_code.expires_at is null or access_code.expires_at > now())
+  for update;
+  if code_row.id is null then return jsonb_build_object('status', 'invalid'); end if;
+  if exists (select 1 from public.platform_access_code_redemptions redemption where redemption.code_id = code_row.id and redemption.user_id = account_id) then
+    return jsonb_build_object('status', 'already_redeemed', 'product_code', code_row.product_code);
+  end if;
+  if code_row.redemption_count >= code_row.max_redemptions then return jsonb_build_object('status', 'unavailable'); end if;
+  if not exists (select 1 from public.profiles profile where profile.user_id = account_id and (profile.role = 'admin' or (code_row.product_code = 'course_igcse' and profile.curriculum = 'igcse') or (code_row.product_code <> 'course_igcse' and profile.curriculum = 'ib'))) then
+    return jsonb_build_object('status', 'wrong_area');
+  end if;
+  if code_row.product_code = 'teacher_plus_ib' and not exists (select 1 from public.profiles profile where profile.user_id = account_id and profile.role in ('teacher', 'admin')) then
+    return jsonb_build_object('status', 'teacher_required');
+  end if;
+  if exists (select 1 from public.platform_entitlements entitlement where entitlement.user_id = account_id and entitlement.product_code = code_row.product_code and entitlement.status = 'active' and (entitlement.expires_at is null or entitlement.expires_at > now())) then
+    return jsonb_build_object('status', 'already_active', 'product_code', code_row.product_code);
+  end if;
+
+  entitlement_expiry := case when code_row.access_days is null then null else now() + make_interval(days => code_row.access_days) end;
+  insert into public.platform_entitlements (user_id, product_code, status, source, starts_at, expires_at, external_provider, external_reference, metadata)
+  values (account_id, code_row.product_code, 'active', 'promotion', now(), entitlement_expiry, 'access-code', code_row.id::text || ':' || account_id::text, jsonb_build_object('code_id', code_row.id, 'code_hint', code_row.code_hint))
+  returning id into entitlement_id;
+  insert into public.platform_access_code_redemptions (code_id, user_id, entitlement_id) values (code_row.id, account_id, entitlement_id);
+  update public.platform_access_codes set redemption_count = redemption_count + 1, updated_at = now() where id = code_row.id;
+  return jsonb_build_object('status', 'redeemed', 'product_code', code_row.product_code, 'expires_at', entitlement_expiry);
+end;
+$$;
+
+revoke all on function public.redeem_platform_access_code(text) from public;
+revoke execute on function public.redeem_platform_access_code(text) from anon;
+grant execute on function public.redeem_platform_access_code(text) to authenticated;
+
+-- Confirmed accounts from Rob's approved partner-school domains receive
+-- course access automatically. Teacher Plus is activated only after the
+-- separate teacher approval process has promoted the profile role.
+create or replace function public.school_plus_product_for_user(account_id uuid)
+returns text language plpgsql stable security definer set search_path = '' as $$
+declare
+  account_domain text;
+  account_confirmed_at timestamptz;
+  account_metadata jsonb;
+  account_role text;
+  account_curriculum text;
+  selected_course text;
+  joined_course text;
+begin
+  select lower(split_part(coalesce(users.email, ''), '@', 2)), users.email_confirmed_at,
+    coalesce(users.raw_user_meta_data, '{}'::jsonb), coalesce(profiles.role, 'student'),
+    coalesce(profiles.curriculum, case when users.raw_user_meta_data ->> 'curriculum' = 'igcse' then 'igcse' else 'ib' end)
+  into account_domain, account_confirmed_at, account_metadata, account_role, account_curriculum
+  from auth.users users
+  left join public.profiles profiles on profiles.user_id = users.id
+  where users.id = account_id;
+
+  if account_confirmed_at is null
+     or account_domain not in ('jess.sch.ae', 'beausoleil.ch', 'westminsteracademy.org.uk') then
+    return null;
+  end if;
+  if account_curriculum = 'igcse' then return 'course_igcse'; end if;
+  if account_role in ('teacher', 'admin') then return 'teacher_plus_ib'; end if;
+  if account_metadata ->> 'account_type' = 'teacher' then return null; end if;
+
+  selected_course := lower(trim(coalesce(account_metadata ->> 'primary_course', '')));
+  if selected_course in ('aa-hl', 'aa-sl', 'ai-hl', 'ai-sl') then
+    return 'course_ib_' || replace(selected_course, '-', '_');
+  end if;
+
+  select classes.course into joined_course
+  from public.class_memberships memberships
+  join public.classes classes on classes.id = memberships.class_id
+  where memberships.student_id = account_id
+    and classes.bank = 'ib'
+    and not classes.archived
+  order by memberships.joined_at desc
+  limit 1;
+
+  if joined_course in ('AA HL', 'AA SL', 'AI HL', 'AI SL') then
+    return 'course_ib_' || lower(replace(joined_course, ' ', '_'));
+  end if;
+  if account_domain = 'jess.sch.ae' then return 'course_ib_aa_hl'; end if;
+  return null;
+end;
+$$;
+revoke all on function public.school_plus_product_for_user(uuid) from public;
+
+create or replace function public.upsert_school_plus_access(account_id uuid)
+returns integer language plpgsql security definer set search_path = '' as $$
+declare
+  product_code text;
+  account_domain text;
+begin
+  if account_id is null then return 0; end if;
+  product_code := public.school_plus_product_for_user(account_id);
+  if product_code is null then
+    update public.platform_entitlements set status = 'revoked', updated_at = now()
+    where external_provider = 'school-domain'
+      and external_reference = 'school-domain:' || account_id::text
+      and status <> 'revoked';
+    return 0;
+  end if;
+
+  select lower(split_part(coalesce(users.email, ''), '@', 2)) into account_domain
+  from auth.users users where users.id = account_id;
+
+  insert into public.platform_entitlements (
+    user_id, product_code, status, source, starts_at, expires_at,
+    external_provider, external_reference, metadata
+  ) values (
+    account_id, product_code, 'active', 'school', now(), null,
+    'school-domain', 'school-domain:' || account_id::text,
+    jsonb_build_object('domain', account_domain, 'automatic', true)
+  )
+  on conflict (external_provider, external_reference)
+    where external_provider is not null and external_reference is not null
+  do update set
+    product_code = excluded.product_code,
+    status = 'active',
+    source = 'school',
+    expires_at = null,
+    metadata = excluded.metadata,
+    updated_at = now();
+  return 1;
+end;
+$$;
+revoke all on function public.upsert_school_plus_access(uuid) from public;
+
+create or replace function public.claim_school_plus_access()
+returns integer language sql security definer set search_path = '' as $$
+  select public.upsert_school_plus_access(auth.uid());
+$$;
+revoke all on function public.claim_school_plus_access() from public;
+grant execute on function public.claim_school_plus_access() to authenticated;
+
+create or replace function public.sync_school_plus_from_auth_user()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  perform public.upsert_school_plus_access(new.id);
+  return new;
+end;
+$$;
+
+create or replace function public.sync_school_plus_from_profile()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  perform public.upsert_school_plus_access(new.user_id);
+  return new;
+end;
+$$;
+
+revoke all on function public.sync_school_plus_from_auth_user() from public;
+revoke all on function public.sync_school_plus_from_profile() from public;
+
+drop trigger if exists sync_school_plus_on_auth_user on auth.users;
+create trigger sync_school_plus_on_auth_user
+  after insert or update of email_confirmed_at, email, raw_user_meta_data on auth.users
+  for each row execute procedure public.sync_school_plus_from_auth_user();
+
+drop trigger if exists sync_school_plus_on_profile on public.profiles;
+create trigger sync_school_plus_on_profile
+  after insert or update of role, curriculum on public.profiles
+  for each row execute procedure public.sync_school_plus_from_profile();

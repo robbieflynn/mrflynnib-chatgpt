@@ -7,48 +7,39 @@ import { testimonials } from "@/lib/testimonials";
 const mainOffers = [
   {
     number: "01",
-    label: "All four pathways",
-    title: "Online courses",
-    body: "Complete online courses for all IB Mathematics courses.",
-    href: "/courses",
+    label: "Mr Flynn IB Plus",
+    title: "Courses",
+    body: "Complete video courses for AA HL, AA SL, AI HL and AI SL, with extra practice inside the lessons.",
+    href: "/learn/index.html?curriculum=ib&view=courses",
     cta: "Explore the courses",
-    className: "",
+    className: "offer-card-course",
   },
   {
     number: "02",
-    label: null,
+    label: "Independent practice",
     title: "Question bank",
-    body: "Build fluency with focused IB Mathematics questions and clear routes through each topic.",
+    body: "Thousands of IB Mathematics questions organised by course, topic and difficulty.",
     href: "/question-bank",
     cta: "Explore the question bank",
-    className: "",
+    className: "offer-card-bank",
   },
   {
     number: "03",
     label: "For departments",
     title: "Schools",
-    body: "IB Mathematics course access for students, departments and schools.",
+    body: "IB Mathematics course access and support for students, departments and schools.",
     href: "/schools",
     cta: "View school options",
-    className: "",
+    className: "offer-card-school",
   },
   {
     number: "04",
     label: "Personal support",
     title: "Tutoring",
-    body: "Contact Mr Flynn IB directly to discuss focused individual support and current availability.",
+    body: "Contact Mr Flynn IB directly to ask about individual IB Mathematics support.",
     href: "/tutoring",
     cta: "Ask about tutoring",
-    className: "",
-  },
-  {
-    number: "05",
-    label: "With IB Tutors",
-    title: "One-to-One Tuition with IB Tutors",
-    body: "Specialist support in Physics, Chemistry, Biology and Maths.",
-    href: "/go/ib-tutors",
-    cta: "Explore IB Tutors",
-    className: "offer-card-partner",
+    className: "offer-card-support",
   },
 ] as const;
 
@@ -64,23 +55,25 @@ const checklistDownloads = [
 export default function HomePage() {
   return (
     <>
-      <section className="new-hero new-hero-simple">
-        <div className="hero-math hero-math-one" aria-hidden="true">𝑓(𝑥)</div>
-        <div className="hero-math hero-math-two" aria-hidden="true">∫</div>
-        <svg className="hero-graph" viewBox="0 0 640 280" fill="none" aria-hidden="true" focusable="false">
+      <section className="new-hero new-hero-simple home-connected-hero">
+        <svg className="hero-graph hero-graph-refined" viewBox="0 0 760 340" fill="none" aria-hidden="true" focusable="false">
           <defs>
             <linearGradient id="hero-graph-fade" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="white" stopOpacity="0" />
+              <stop offset="0" stopColor="white" stopOpacity="0.08" />
+              <stop offset="0.42" stopColor="white" stopOpacity="0.72" />
               <stop offset="1" stopColor="white" stopOpacity="1" />
             </linearGradient>
             <mask id="hero-graph-mask">
-              <rect width="640" height="280" fill="url(#hero-graph-fade)" />
+              <rect width="760" height="340" fill="url(#hero-graph-fade)" />
             </mask>
           </defs>
           <g mask="url(#hero-graph-mask)" stroke="currentColor">
-            <path d="M0 60H640M0 120H640M0 180H640M0 240H640M100 0V280M200 0V280M300 0V280M400 0V280M500 0V280M600 0V280" strokeOpacity=".07" />
-            <path d="M0 260C150 260 235 235 320 170S505 110 640 10" strokeWidth="1.5" strokeOpacity=".23" />
+            <path d="M0 60H760M0 120H760M0 180H760M0 240H760M0 300H760M80 0V340M160 0V340M240 0V340M320 0V340M400 0V340M480 0V340M560 0V340M640 0V340M720 0V340" strokeOpacity=".055" />
+            <path d="M0 284H760M164 0V340" strokeWidth="1.2" strokeOpacity=".12" />
+            <path d="M20 300C124 296 180 282 244 236C326 177 377 91 454 88C548 84 574 211 742 24" strokeWidth="2" strokeOpacity=".23" />
+            <path d="M88 236C154 164 218 164 284 236C350 308 414 308 480 236C546 164 610 164 676 236" strokeWidth="1.4" strokeOpacity=".11" />
           </g>
+          <g fill="currentColor" opacity=".28"><circle cx="244" cy="236" r="4" /><circle cx="454" cy="88" r="4" /><circle cx="606" cy="159" r="4" /></g>
         </svg>
         <Container className="new-hero-grid new-hero-grid-simple">
           <div className="new-hero-copy">
@@ -89,19 +82,33 @@ export default function HomePage() {
               <span className="hero-title-line hero-title-accent">IB Mathematics.</span>
             </h1>
             <p className="home-hero-lede">
-              Complete IB Mathematics courses, trusted IA guidance and focused support for students, teachers and schools.
+              Complete courses, thousands of practice questions and trusted support, built specifically for IB Mathematics.
             </p>
             <div className="cluster hero-actions">
-              <ButtonLink href="/courses">Find your course</ButtonLink>
+              <ButtonLink href="/account?mode=sign-up">Start here</ButtonLink>
               <Link href="/go/ib-tutors" className="button tuition-button">One-to-One tuition <span aria-hidden="true">↗</span></Link>
             </div>
           </div>
         </Container>
       </section>
 
+      <section className="legacy-course-strip" aria-label="Previous Teachable course access">
+        <Container>
+          <p><strong>Already paid on Teachable?</strong> Sign in or create your new account with the same email address. After you confirm it, a matching active course is added automatically, with no new payment.</p>
+          <div className="legacy-course-actions">
+            <Link href="/account?source=teachable">Use my Teachable email <span aria-hidden="true">→</span></Link>
+            <Link className="legacy-course-secondary" href="/go/my-courses">Open previous course <span aria-hidden="true">↗</span></Link>
+          </div>
+        </Container>
+      </section>
+
       <section className="section offers-section" id="offers">
         <Container className="stack-xl">
-          <h2>What do you need today?</h2>
+          <div className="homepage-route-heading">
+            <Eyebrow>Explore Mr Flynn IB</Eyebrow>
+            <h2>What would you like to do?</h2>
+            <p>Follow a complete course, practise independently, explore access for your school or ask about individual support.</p>
+          </div>
           <div className="offer-grid">
             {mainOffers.map((offer) => (
               <Link className={`offer-card ${offer.className}`.trim()} href={offer.href} key={offer.title}>
@@ -111,6 +118,7 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+          <Link className="home-teacher-note" href="/account?next=/teacher&mode=sign-up"><span><strong>For teachers</strong>Create classes, set assignments and build printable tests for free.</span><b>Create a teacher account <i aria-hidden="true">→</i></b></Link>
         </Container>
       </section>
 

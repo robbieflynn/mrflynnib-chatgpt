@@ -6,6 +6,21 @@ export const metadata: Metadata = { title: "IB Mathematics tutoring", descriptio
 
 export default function TutoringPage() {
   return (
-    <section className="tutoring-simple-page"><Container className="tutoring-simple-card"><div className="tutoring-symbol" aria-hidden="true">1:1</div><div className="stack-lg"><Breadcrumbs items={[{ label: "Tutoring" }]} /><Eyebrow>Private tutoring</Eyebrow><h1>Looking for more personal support?</h1><p className="lede">For more information about tutoring, please email <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p><p>Tell us the student&apos;s course, current situation and time zone so the first reply can be useful.</p><ButtonLink href="/go/tutoring-email">Email about tutoring</ButtonLink></div></Container></section>
+    <section className="tutoring-contact-page">
+      <Container className="tutoring-contact-shell">
+        <div className="stack-lg tutoring-contact-copy">
+          <Breadcrumbs items={[{ label: "Tutoring" }]} />
+          <Eyebrow>Private tutoring enquiries</Eyebrow>
+          <h1>Ask about individual IB Mathematics support.</h1>
+          <p className="lede">For current information about tutoring, email <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.</p>
+          <ButtonLink href="/go/tutoring-email">Email Mr Flynn IB</ButtonLink>
+        </div>
+        <aside className="tutoring-enquiry-note">
+          <small>To help us reply usefully</small>
+          <strong>Please include:</strong>
+          <ul><li>The student&apos;s IB Mathematics course</li><li>The area where support is needed</li><li>The student&apos;s time zone</li></ul>
+        </aside>
+      </Container>
+    </section>
   );
 }

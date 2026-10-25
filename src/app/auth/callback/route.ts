@@ -14,6 +14,10 @@ export async function GET(request: Request) {
     if (!error) {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        await Promise.all([
+          supabase.rpc("claim_verified_course_access"),
+          supabase.rpc("claim_school_plus_access"),
+        ]);
         const { data: profile } = await supabase.from("profiles").select("display_name,teacher_status,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
         if ((profile?.teacher_status === "pending" || profile?.teacher_status === "approved") && !profile.teacher_notification_sent_at && user.email) {
           const sent = await sendTeacherApplicationEmail({ name: profile.display_name, email: user.email });

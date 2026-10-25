@@ -21,30 +21,35 @@ export async function generateMetadata({ params }: { params: Promise<{ course: s
   };
 }
 
-export default async function CourseQuestionBankPage({ params, searchParams }: { params: Promise<{ course: string }>; searchParams: Promise<{ topic?: string | string[]; subtopic?: string | string[] }> }) {
+export default async function CourseQuestionBankPage({ params, searchParams }: { params: Promise<{ course: string }>; searchParams: Promise<{ topic?: string | string[]; subtopic?: string | string[]; review?: string | string[] }> }) {
   const { course: slug } = await params;
   const filters = await searchParams;
   const course = getQuestionBankCourse(slug);
   if (!course || !course.available) notFound();
   const topic = typeof filters.topic === "string" ? filters.topic : undefined;
   const subtopic = typeof filters.subtopic === "string" ? filters.subtopic : undefined;
-  const dashboardLink = await getQuestionBankDashboardLink({ curriculum: "ib", course: course.slug });
+  const accountDashboardLink = await getQuestionBankDashboardLink({ curriculum: "ib", course: course.slug });
+  const dashboardLink = filters.review === "platform"
+    ? { label: "My learning", href: "/platform-review?curriculum=ib&role=student", signedIn: true }
+    : accountDashboardLink;
+  const learningHomeLabel = dashboardLink.label === "Student dashboard" ? "My learning" : dashboardLink.label;
 
   return (
     <>
       <section className="qb-course-page-hero">
         <Container className="stack-lg">
-          <Breadcrumbs items={[dashboardLink, { label: "Question bank", href: "/question-bank" }, { label: course.code }]} />
+          <Breadcrumbs items={[{ ...dashboardLink, label: learningHomeLabel }, { label: "Question bank", href: "/question-bank" }, { label: course.code }]} />
           <div className="qb-course-page-heading">
-            <div className="stack">
-              <Eyebrow>{course.code} question bank</Eyebrow>
+            <div className="stack qb-course-title-block">
+              <div className="qb-course-meta"><Eyebrow>{course.code} question bank</Eyebrow><span>Free access</span></div>
               <h1>{course.pathway} {course.level}</h1>
               <p className="lede">
                 {course.questionCount?.toLocaleString("en-GB")} questions, organised by topic, paper and difficulty, with complete mark schemes.
               </p>
+              <div className="qb-course-highlights" aria-label="Question bank features"><span>All questions free</span><span>Complete mark schemes</span><span>Save your progress</span></div>
             </div>
             <div className="qb-course-page-actions">
-              <Link className="button button-secondary button-small qb-dashboard-return" href={dashboardLink.href}>← Back to dashboard</Link>
+              <Link className="button button-secondary button-small qb-dashboard-return" href={dashboardLink.href}>← {learningHomeLabel}</Link>
               <nav className="qb-course-switcher" aria-label="Change question bank course">
                 <span>Change course</span>
                 <div>

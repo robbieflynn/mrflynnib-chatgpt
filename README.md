@@ -1,14 +1,17 @@
 # Mr Flynn IB website: first production build
 
-A complete first-pass Next.js website for **MrFlynnIB.com**, positioning the business as an expert-led IB Mathematics platform while keeping Teachable as the course delivery and enrolment layer.
+A connected Next.js learning platform for **MrFlynnIB.com**, combining the public website, native Bunny-hosted courses, question banks, assignments, progress and access management under one account experience.
 
 ## Included
 
 - Responsive homepage with four commercial routes: courses, tutoring, school licences and book
 - AA HL, AA SL, AI HL and AI SL course catalogue and dynamic course pages
-- Teachable enrolment links and student-login redirect
+- Native course lessons and past-paper solutions, with Teachable retained as a transition route for existing customers
 - Free IA videos, direct syllabus-checklist downloads and native question bank
 - Student accounts with synced question progress and editable whiteboard working
+- Stripe-ready checkout with webhook-based course fulfilment
+- Existing Teachable customer access-transfer requests
+- Lightweight school licences and student seat allocation
 - Tutoring application form
 - School-licence enquiry form and proposed licence tiers
 - Book, About, Results, Contact and FAQ pages
@@ -31,12 +34,12 @@ Open `http://localhost:3000`.
 
 ## Configure before launch
 
-1. Add the live Teachable school, login and course URLs to `.env.local`.
+1. Keep the live Teachable URLs configured while existing customers are moved across.
 2. Add the live book purchase URL and YouTube channel URL.
 3. Configure the Resend variable described below so school enquiries generate an email notification.
 4. Create a Supabase project, run `supabase/schema.sql`, and add `NEXT_PUBLIC_SUPABASE_URL` plus `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` for student accounts. Add the site and callback URLs in Supabase Auth settings.
 5. Optionally add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for contact and tutoring enquiry storage if those forms are restored later.
-6. Confirm final course availability, access periods and operational terms.
+6. Apply the latest Supabase migrations, configure Bunny token authentication, create the five Stripe Price records, add their IDs and register `/api/stripe/webhook` for `checkout.session.completed`.
 7. Complete legal review and configure consent before non-essential tracking.
 
 ## Resend school-enquiry setup
@@ -60,9 +63,15 @@ Never commit the API key. Store it only as an encrypted environment variable in 
 - Connect `mrflynnib.com` after the preview build and forms have been tested.
 - Confirm the Teachable transition, redirects, analytics events and form retention process.
 
+## Native platform setup
+
+Run `npm run build:course-platform` whenever the reviewed course catalogue changes. This regenerates the server video-access map and publishes only the student-facing course files to `public/learn`.
+
+Stripe course access is granted only by the signed webhook after a completed paid Checkout Session. The success page never grants access. Bunny video URLs are issued by the server after it checks the signed-in user’s entitlement or free-sample eligibility. Course progress is saved in Supabase and retained locally during interruptions.
+
 ## Architecture decision
 
-The public website owns brand, positioning, SEO, audience journeys, question-bank accounts and saved practice data. Teachable owns course checkout, login and lesson delivery. The website serves the checklist PDFs directly. Resend sends transactional school-enquiry notifications. Supabase provides secure student authentication, question progress and whiteboard storage; it is not a duplicate course platform.
+MrFlynnIB.com owns the complete customer and learning journey: brand, discovery, one account, native courses, question banks, assignments, progress and access management. Bunny Stream provides video delivery, Stripe provides checkout, Supabase provides authentication and saved platform data, and Resend provides transactional email. Teachable remains available during the customer transition but is no longer the intended long-term learning platform.
 
 ## Image update
 

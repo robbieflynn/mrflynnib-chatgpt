@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { LogoLockup } from "@/components/logo";
 import { ButtonLink, Container, Eyebrow, PageHero } from "@/components/ui";
 
 export const metadata: Metadata = { title: "About Mr Flynn IB", description: "Meet the IB Mathematics teacher, examiner and moderator behind Mr Flynn IB." };
@@ -24,13 +25,7 @@ export default function AboutPage() {
             <figcaption>Mr Flynn IB: Mathematics teacher, examiner and moderator.</figcaption>
           </figure>
           <div className="brand-lockup-card">
-            <Image
-              src="/images/mr-flynn-ib-lockup.png"
-              width={1400}
-              height={356}
-              alt="Mr Flynn IB: IB Mathematics Video Lessons, IA Guidance and Past Paper Solutions"
-              sizes="(max-width: 900px) 100vw, 48vw"
-            />
+            <LogoLockup />
           </div>
         </div>
         <div className="stack-lg"><Eyebrow>Mr Flynn IB</Eyebrow><h2>Experience matters most when students can feel it in the teaching.</h2><p className="lede">Mr Flynn IB is an experienced IB Mathematics teacher who has also worked as an examiner and moderator. He has taught and supported thousands of students, and his educational videos have received more than one million YouTube views.</p><p>His core strength is not merely knowing the syllabus. It is seeing where a student’s understanding has broken down, then explaining the idea in a way that makes the next question possible.</p></div>
