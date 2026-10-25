@@ -933,6 +933,30 @@
       return Array.isArray(row) && /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""));
     });
     var finalInstruction = finalInstructionText(completePrompt);
+    var requestedInverse = String(prompt || "").match(/([A-Za-z])\s*\^\s*\{\s*-?1\s*\}\s*\(\s*([A-Za-z])\s*\)/);
+    if (requestedInverse
+      && /^(?:find|write down|state|determine|give)\s+(?:an?\s+expression\s+for\s+|the\s+inverse(?:\s+function)?\s+)?[A-Za-z]\s*\^-1\s*\(\s*[A-Za-z]\s*\)/i.test(finalInstruction)) {
+      for (var inverseRowIndex = creditedRows.length - 1; inverseRowIndex >= 0; inverseRowIndex -= 1) {
+        var inverseFragments = mathFragments(String(creditedRows[inverseRowIndex][0] || ""));
+        for (var inverseFragmentIndex = inverseFragments.length - 1; inverseFragmentIndex >= 0; inverseFragmentIndex -= 1) {
+          var inverseSource = String(inverseFragments[inverseFragmentIndex] || "");
+          var inversePattern = new RegExp(
+            requestedInverse[1] + "\\s*\\^\\s*\\{\\s*-?1\\s*\\}\\s*\\(\\s*" + requestedInverse[2]
+              + "\\s*\\)\\s*=\\s*([\\s\\S]+?)(?=\\\\quad|\\\\text|$)",
+            "i",
+          );
+          var inverseMatch = inverseSource.match(inversePattern);
+          if (!inverseMatch) continue;
+          var inverseAnswers = [];
+          addAcceptedAnswer(
+            inverseAnswers,
+            requestedInverse[1] + "^{-1}(" + requestedInverse[2] + ")=" + inverseMatch[1].trim(),
+            prompt,
+          );
+          if (inverseAnswers.length) return inverseAnswers;
+        }
+      }
+    }
     if (/\b(?:expression|formula|equation)\b/i.test(finalInstruction)) {
       for (var placeholderRowIndex = 0; placeholderRowIndex < rows.length; placeholderRowIndex += 1) {
         var placeholderRow = rows[placeholderRowIndex];

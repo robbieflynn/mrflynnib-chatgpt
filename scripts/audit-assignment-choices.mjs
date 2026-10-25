@@ -933,8 +933,26 @@ assert(choices.toLatex("Since n > 1, sqrt(3) is positive").includes(String.raw`\
 
 const inverseFunctionRows = [[String.raw`\(f^{-1}(x) = \dfrac{-3x-1}{x-2}\ \left(= \dfrac{3x+1}{2-x},\ \dfrac{7}{2-x} - 3\right)\) (accept \(y =\))`, "A1"]];
 const inverseFunctionAnswers = choices.extractAcceptedAnswers(inverseFunctionRows, String.raw`Find \(f^{-1}(x)\).`);
-assert.equal(inverseFunctionAnswers[0], "f^-1(x) = (-3x-1)/(x-2)");
+assert.equal(inverseFunctionAnswers[0].replace(/\s/g, ""), "f^-1(x)=(-3x-1)/(x-2)");
 assert(choices.generateChoiceSet(inverseFunctionAnswers, "audit-inverse-function"));
+const workedInverseFunctionRows = [
+  [String.raw`for the inverse, solve for \(x\) in \(y = \dfrac{2x-3}{x-1}\): \(y(x-1) = 2x-3\)`, "M1"],
+  [String.raw`\(yx-2x = y-3\Rightarrow x(y-2) = y-3\)`, "(A1)"],
+  [String.raw`\(x = \dfrac{y-3}{y-2}\Rightarrow f^{-1}(x) = \dfrac{x-3}{x-2}\quad(x\ne2)\)`, "A1"],
+];
+const workedInverseFunctionAnswers = choices.extractAcceptedAnswers(
+  workedInverseFunctionRows,
+  String.raw`Find an expression for \(f^{-1}(x)\).`,
+);
+assert.equal(workedInverseFunctionAnswers[0], "f^-1(x)=(x-3)/(x-2)");
+assert(!workedInverseFunctionAnswers.some((answer) => /^y\s*-\s*3$/i.test(answer)));
+const workedInverseFunctionChoices = choices.generateChoiceSet(
+  workedInverseFunctionAnswers,
+  "audit-worked-inverse-function",
+  String.raw`Find an expression for \(f^{-1}(x)\).`,
+);
+assert(workedInverseFunctionChoices);
+assert(workedInverseFunctionChoices.options.every((option) => option.includes("x")));
 
 const argumentRows = [[String.raw`\(\arg z = 0.9707\) (radians) \((=55.6197^\circ)\)`, "A1"]];
 const argumentAnswers = choices.extractAcceptedAnswers(argumentRows, "Find the argument of z, giving your answer to 4 decimal places.");
@@ -1350,9 +1368,16 @@ for (const [label, path] of banks) {
         verifiedComplexArgumentQuestion = true;
       }
       if (question.id === "M19TZ1SL_P1_Q4" && part === "b") {
-        assert.equal(accepted[0], "f^-1(x) = (-3x-1)/(x-2)");
+        assert.equal(accepted[0].replace(/\s/g, ""), "f^-1(x)=(-3x-1)/(x-2)");
         assert(choices.generateChoiceSet(accepted, `${question.id}:${part}`));
         verifiedInverseFunctionQuestion = true;
+      }
+      if (question.id === "M10TZ2HL_P1_Q10" && part === "a") {
+        assert.equal(accepted[0], "f^-1(x)=(x-3)/(x-2)");
+        assert(!accepted.some((answer) => /^y\s*-\s*3$/i.test(answer)));
+        const inverseSet = choices.generateChoiceSet(accepted, `${question.id}:${part}`, prompt);
+        assert(inverseSet);
+        assert(inverseSet.options.every((option) => option.includes("x")));
       }
       if ((question.id === "M11TZ2SL_P2_Q8" || question.id === "H_M11TZ2SL_P2_Q8") && part === "b") {
         assert(accepted[0] && accepted[0].replace(/\s/g, "").includes("bold(r)="), `Vector-line equation was reduced to a direction vector: ${JSON.stringify(accepted)}`);
