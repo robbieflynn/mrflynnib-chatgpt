@@ -4,14 +4,14 @@ import { ButtonLink, Container, Eyebrow } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "IGCSE Mathematics",
-  description: "Clear Edexcel IGCSE Mathematics support from Mr Flynn IB, including the course, question bank development, schools and tutoring.",
+  description: "Clear Edexcel IGCSE Mathematics support from Mr Flynn, including the course, question bank development, schools and tutoring.",
 };
 
 const routes = [
   { number: "01", label: "Learn the course", title: "Online course", body: "Lessons for every Edexcel IGCSE Mathematics topic, with clear past-paper solutions.", href: "/igcse/courses", cta: "Explore the course" },
   { number: "02", label: "Practise by topic", title: "Question bank", body: "Focused Edexcel IGCSE Mathematics questions with filters and complete mark schemes.", href: "/igcse/question-bank", cta: "Open the question bank" },
   { number: "03", label: "For departments", title: "Schools", body: "Ask about IGCSE Mathematics course access and support for your students.", href: "/igcse/schools", cta: "View school support" },
-  { number: "04", label: "Personal support", title: "Tutoring", body: "Contact Mr Flynn IB directly to discuss IGCSE Mathematics tutoring and availability.", href: "/igcse/tutoring", cta: "Ask about tutoring" },
+  { number: "04", label: "Personal support", title: "Tutoring", body: "Contact Mr Flynn directly to discuss IGCSE Mathematics tutoring and availability.", href: "/igcse/tutoring", cta: "Ask about tutoring" },
 ] as const;
 
 export default function IgcsePage() {
@@ -42,7 +42,7 @@ export default function IgcsePage() {
             <div className="stack">
               <Eyebrow>Edexcel IGCSE Mathematics</Eyebrow>
               <h1>Your home for IGCSE Mathematics.</h1>
-              <p className="lede">Complete video lessons, past-paper solutions and focused question practice, explained clearly by Mr Flynn IB.</p>
+              <p className="lede">Complete video lessons, past-paper solutions and focused question practice, explained clearly by Mr Flynn.</p>
             </div>
             <div className="cluster igcse-landing-actions">
               <ButtonLink href="/igcse/account?mode=sign-up">Start here</ButtonLink>
@@ -72,7 +72,7 @@ export default function IgcsePage() {
 
       <section className="igcse-principles">
         <Container className="igcse-principles-grid">
-          <div className="stack"><Eyebrow>The same teaching approach</Eyebrow><h2>Mathematics made easier to follow.</h2></div>
+          <div className="stack"><Eyebrow>Expert-led teaching</Eyebrow><h2>Mathematics made easier to follow.</h2></div>
           <div className="igcse-principle-list"><p><strong>Clear explanations</strong><span>Ideas broken into manageable steps.</span></p><p><strong>Lessons for every topic</strong><span>Work through the complete Edexcel IGCSE Mathematics course.</span></p><p><strong>Past-paper solutions</strong><span>See complete questions worked through clearly.</span></p></div>
         </Container>
       </section>

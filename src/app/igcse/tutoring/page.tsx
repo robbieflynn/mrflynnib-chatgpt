@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Breadcrumbs, ButtonLink, Container, Eyebrow } from "@/components/ui";
 import { siteConfig } from "@/lib/site";
 
-export const metadata: Metadata = { title: "IGCSE Mathematics tutoring", description: "Contact Mr Flynn IB about IGCSE Mathematics tutoring." };
+export const metadata: Metadata = { title: "IGCSE Mathematics tutoring", description: "Contact Mr Flynn about IGCSE Mathematics tutoring." };
 
 export default function IgcseTutoringPage() {
   return (

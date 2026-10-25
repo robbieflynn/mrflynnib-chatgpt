@@ -50,6 +50,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
   const [error, setError] = useState<string | null>(null);
   const [confirmationNextPath, setConfirmationNextPath] = useState(nextPath);
   const wantsPlus = curriculum === "ib" && accessChoice === "plus";
+  const legalBase = curriculum === "igcse" ? "/igcse" : "";
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -252,7 +253,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         <Link href={curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"}>Open previous course <span aria-hidden="true">↗</span></Link>
       </div>
       <p className="small muted">This is the separate {curriculum === "igcse" ? "IGCSE" : "IB"} Mathematics account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. "}Creating an account does not subscribe you to marketing emails.</p>
-      <p className="small muted">By creating an account, you agree to the <Link className="text-link" href="/terms">Terms of Use</Link> and acknowledge the <Link className="text-link" href="/privacy">Privacy Policy</Link>.</p>
+      <p className="small muted">By creating an account, you agree to the <Link className="text-link" href={`${legalBase}/terms`}>Terms of Use</Link> and acknowledge the <Link className="text-link" href={`${legalBase}/privacy`}>Privacy Policy</Link>.</p>
     </div>
   );
 }
