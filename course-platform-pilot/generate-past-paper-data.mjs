@@ -17,6 +17,13 @@ const courseCodes = ["AA HL", "AA SL", "AI HL", "AI SL"];
 const naturalSort = (a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" });
 const normalizeQuestion = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
+function cleanQuestionTitle(value) {
+  return String(value || "")
+    .replace(/^(?:Qeustion|Quesiton|Quetion|Qusetion)\b/i, "Question")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function cleanBunnyQuestionTitle(video) {
   const prefix = `${video.collectionName} – `;
   return String(video.title || "")
@@ -71,20 +78,30 @@ for (const row of rows) {
   if (row.category !== "past_paper") continue;
   const parsed = parseCollection(row.bunnyCollection);
   if (!parsed) continue;
+  const targetCourse = courseCodes.includes(row.courses) ? row.courses : parsed.course;
   const directMatch = directLiveMatch(row);
   const video = row.status === "verified_match" && row.videoId
     ? { guid: row.videoId, length: Number(row.bunnyLengthSeconds) || 0 }
     : directMatch;
   if (!video?.guid) continue;
-  const setKey = `${parsed.course}|${row.bunnyCollection}`;
-  if (!grouped.has(setKey)) grouped.set(setKey, { ...parsed, collection: row.bunnyCollection, questions: new Map() });
-  const questionKey = normalizeQuestion(row.teachableTitle);
+  const setKey = [targetCourse, parsed.session, parsed.timezone, parsed.paper].join("|");
+  const targetCollection = row.bunnyCollection.replace(` – ${parsed.course} – `, ` – ${targetCourse} – `);
+  if (!grouped.has(setKey)) {
+    grouped.set(setKey, {
+      ...parsed,
+      course: targetCourse,
+      collection: targetCollection,
+      questions: new Map(),
+    });
+  }
+  const questionTitle = cleanQuestionTitle(row.teachableTitle);
+  const questionKey = normalizeQuestion(questionTitle);
   if (!questionKey) continue;
   const set = grouped.get(setKey);
   if (!set.questions.has(questionKey)) {
     set.questions.set(questionKey, {
       id: video.guid,
-      title: row.teachableTitle,
+      title: questionTitle,
       seconds: Number(video.length) || 0,
     });
   }
@@ -114,7 +131,7 @@ const stats = Object.fromEntries(courseCodes.map((course) => [course, {
 
 const output = {
   libraryId: "775873",
-  source: "Verified and exact same-collection Teachable-to-Bunny mappings",
+  source: "Verified Teachable-to-Bunny mappings, including audited cross-course reuse",
   generatedAt: new Date().toISOString(),
   stats,
   courses,
