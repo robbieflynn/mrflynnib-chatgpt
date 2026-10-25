@@ -47,8 +47,11 @@
   html.qb-embedded body{ margin:0; background:transparent; }
   html.qb-embedded #qbank-root{ border:0; border-radius:0; background:transparent; }
   html.qb-embedded .qb-header,
-  html.qb-embedded .qb-controls,
   html.qb-embedded .qb-gate{ display:none !important; }
+  /* Browsing embeds, including the teacher assignment picker, still need the
+     topic, paper and difficulty controls. Only a fixed set of questions inside
+     an actual assignment should hide the toolbar. */
+  html.qb-embedded.qb-fixed-question-set .qb-controls{ display:none !important; }
   html.qb-embedded .qb-list{ padding:14px; }
   html.qb-embedded .qb-card{ box-shadow:none; }
   html.qb-embedded .qb-card-source,
@@ -550465,6 +550468,7 @@ function diagramN11TZ0P2Q1grid(){
   var REQUESTED_SUBTOPIC = EMBED_PARAMS.get('subtopic') || '';
   var REQUESTED_ID_LIST = (EMBED_PARAMS.get('ids') || '').split(',').filter(Boolean);
   var REQUESTED_IDS = new Set(REQUESTED_ID_LIST);
+  var IS_FIXED_QUESTION_SET = REQUESTED_ID_LIST.length > 0 || EMBED_PARAMS.get('assignmentWork') === '1';
   function practiceMap(name){
     var raw = EMBED_PARAMS.get(name);
     if(!raw) return {};
@@ -550498,6 +550502,7 @@ function diagramN11TZ0P2Q1grid(){
   }
   if(IS_EMBEDDED){
     document.documentElement.classList.add('qb-embedded');
+    if(IS_FIXED_QUESTION_SET) document.documentElement.classList.add('qb-fixed-question-set');
     if(IS_PRACTICE) document.documentElement.classList.add('qb-practice');
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
