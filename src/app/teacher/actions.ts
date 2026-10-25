@@ -4,231 +4,22 @@ import { randomBytes } from "node:crypto";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import progressManifest from "@/data/question-bank-progress.json";
-import fixedAssignmentConfigs from "@/data/assignment-answer-configs.json";
 import { requireAdmin, requireTeacher } from "@/lib/account-access";
 import { isAssignmentFeedbackMode } from "@/lib/assignment-feedback";
+import { getFixedAssignmentConfig, type FixedAssignmentConfig } from "@/lib/assignment-answer-config";
 import { orderAssessmentQuestions } from "@/lib/assessment-question-order";
 
 const validCourses = new Set(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
-const validResponseTypes = new Set(["teacher_review", "exact", "numeric", "multiple_choice", "multipart"]);
 
-type ResponsePart = {
-  label: string;
-  mode: "multiple_choice" | "whiteboard";
-  acceptedAnswers: string[];
-  options: string[];
-  correctOption: number | null;
-};
-
-type ResponseConfig = {
-  id: string;
-  type: "teacher_review" | "exact" | "numeric" | "multiple_choice" | "multipart";
-  acceptedAnswers: string[];
-  numericAnswer: number | null;
-  tolerance: number | null;
-  options: string[];
-  correctOption: number | null;
-  parts: ResponsePart[];
-};
-
-function teacherReviewResponseConfig(id: string): ResponseConfig {
+function teacherReviewResponseConfig(id: string): FixedAssignmentConfig {
   return {
     id,
     type: "teacher_review",
     acceptedAnswers: [],
-    numericAnswer: null,
-    tolerance: null,
     options: [],
     correctOption: null,
     parts: [],
   };
-}
-
-function cleanChoiceAnswer(value: string) {
-  return value
-    .replace(/[\u2212\u2013\u2014]/g, "-")
-    .replace(/\\text\s*\{([^{}]*)\}/g, "$1")
-    .replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1")
-    .replace(/\bmathrm(?=[a-z])/gi, "")
-    .replace(/\^\s*\\?circ\b/gi, "°")
-    .replace(/\\?circ\b/gi, "°")
-    .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
-    .replace(/\\sqrt\s*([A-Za-z0-9.]+)/g, "sqrt($1)")
-    .replace(/\bpi\b/gi, "π")
-    .replace(/degrees?/gi, "°")
-    .replace(/²/g, "^2")
-    .replace(/³/g, "^3")
-    .replace(/\s*\(\s*((?:cm|mm|km|m)\s*\^[23])\s*\)\s*$/i, " $1")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function canonicalAnswer(value: string) {
-  return cleanChoiceAnswer(value)
-    .toLowerCase()
-    .replace(/[\s{}]/g, "")
-    .replace(/\*|×|·/g, "×")
-    .replace(/<=/g, "≤")
-    .replace(/>=/g, "≥")
-    .replace(/[.;]+$/, "");
-}
-
-function numericAnswerValue(value: string) {
-  const compact = canonicalAnswer(value)
-    .replace(/^[a-zα-ω](?:\([^)]*\))?=/i, "")
-    .replace(/,/g, "")
-    .replace(/(?:°|%|rad|cm(?:\^[23])?|mm(?:\^[23])?|km(?:\^[23])?|m(?:\^[23])?|kg|minutes?|hours?|mins?|hrs?|g|s)$/i, "");
-  if (/^-?\d+(?:\.\d+)?$/.test(compact)) return Number(compact);
-  const fraction = compact.match(/^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/);
-  if (fraction && Number(fraction[2]) !== 0) return Number(fraction[1]) / Number(fraction[2]);
-  const radical = compact.match(/^sqrt\((-?\d+(?:\.\d+)?)\)$/);
-  if (radical && Number(radical[1]) >= 0) return Math.sqrt(Number(radical[1]));
-  return null;
-}
-
-function answersEquivalent(left: string, right: string) {
-  if (canonicalAnswer(left) === canonicalAnswer(right)) return true;
-  const leftNumber = numericAnswerValue(left);
-  const rightNumber = numericAnswerValue(right);
-  return leftNumber !== null && rightNumber !== null && Math.abs(leftNumber - rightNumber) < 1e-10;
-}
-
-function wrapsWholeExpression(value: string) {
-  if (value[0] !== "(" || value[value.length - 1] !== ")") return false;
-  let depth = 0;
-  for (let index = 0; index < value.length; index += 1) {
-    if (value[index] === "(") depth += 1;
-    if (value[index] === ")") depth -= 1;
-    if (depth === 0 && index < value.length - 1) return false;
-  }
-  return depth === 0;
-}
-
-function topLevelPositions(value: string, matcher: (character: string, index: number) => boolean) {
-  const positions: number[] = [];
-  let depth = 0;
-  for (let index = 0; index < value.length; index += 1) {
-    if (value[index] === "(") depth += 1;
-    else if (value[index] === ")") depth -= 1;
-    else if (depth === 0 && matcher(value[index], index)) positions.push(index);
-  }
-  return positions;
-}
-
-function expressionStructureLooksSafe(value: string): boolean {
-  const expression = value.trim();
-  if (!expression) return false;
-  if (wrapsWholeExpression(expression)) return expressionStructureLooksSafe(expression.slice(1, -1));
-
-  const relations = topLevelPositions(expression, (character) => /[=≤≥≠<>]/.test(character));
-  if (relations.length) {
-    if (relations.length > 1) return false;
-    return expressionStructureLooksSafe(expression.slice(0, relations[0]))
-      && expressionStructureLooksSafe(expression.slice(relations[0] + 1));
-  }
-
-  const additions = topLevelPositions(expression, (character, index) =>
-    index > 0
-      && (character === "+" || character === "-")
-      && !/[=+\-*/^(,]/.test(expression[index - 1] || ""));
-  if (additions.length) {
-    let start = 0;
-    for (const position of additions) {
-      if (!expressionStructureLooksSafe(expression.slice(start, position))) return false;
-      start = position + 1;
-    }
-    return expressionStructureLooksSafe(expression.slice(start));
-  }
-
-  const divisions = topLevelPositions(expression, (character) => character === "/");
-  if (divisions.length) {
-    if (divisions.length > 1) return false;
-    return expressionStructureLooksSafe(expression.slice(0, divisions[0]))
-      && expressionStructureLooksSafe(expression.slice(divisions[0] + 1));
-  }
-  return !expression.includes("/");
-}
-
-function choiceLooksSafe(value: string) {
-  const answer = cleanChoiceAnswer(value);
-  if (!answer || answer.length > 180) return false;
-  if (/\\|\b(?:mathrm|circ)\b|\^\s*$|\/\s*\/|sqrt\s*(?!\()/i.test(answer)) return false;
-  if (/sqrt\(\s*-/.test(answer)) return false;
-  let depth = 0;
-  for (const character of answer) {
-    if (character === "(") depth += 1;
-    if (character === ")") depth -= 1;
-    if (depth < 0) return false;
-  }
-  return depth === 0 && expressionStructureLooksSafe(answer);
-}
-
-function isRatioAnswer(value: string) {
-  const answer = cleanChoiceAnswer(value);
-  if (!answer || /[;=<>≤≥]/.test(answer)) return false;
-  const colons = topLevelPositions(answer, (character) => character === ":");
-  if (colons.length !== 1) return false;
-  const left = answer.slice(0, colons[0]).trim();
-  const right = answer.slice(colons[0] + 1).trim();
-  return Boolean(left && right && expressionStructureLooksSafe(left) && expressionStructureLooksSafe(right));
-}
-
-function validChoiceSet(acceptedAnswers: string[], options: string[], correctOption: number | null) {
-  if (!acceptedAnswers.length || options.length !== 5 || correctOption === null || correctOption < 0 || correctOption >= options.length) return false;
-  if (options.some((option) => !choiceLooksSafe(option))) return false;
-  if (acceptedAnswers.some(isRatioAnswer) && options.some((option) => !isRatioAnswer(option))) return false;
-  for (let left = 0; left < options.length; left += 1) {
-    for (let right = left + 1; right < options.length; right += 1) {
-      if (answersEquivalent(options[left], options[right])) return false;
-    }
-  }
-  if (!acceptedAnswers.some((answer) => answersEquivalent(options[correctOption], answer))) return false;
-  return options.every((option, index) => index === correctOption || !acceptedAnswers.some((answer) => answersEquivalent(option, answer)));
-}
-
-function parseResponseConfig(value: FormDataEntryValue): ResponseConfig | null {
-  try {
-    const raw = JSON.parse(String(value)) as Record<string, unknown>;
-    const id = String(raw.id || "").slice(0, 160);
-    const type = validResponseTypes.has(String(raw.type)) ? String(raw.type) as ResponseConfig["type"] : "teacher_review";
-    const acceptedAnswers = (Array.isArray(raw.acceptedAnswers)
-      ? raw.acceptedAnswers.map(String)
-      : String(raw.acceptedAnswers || "").split("|"))
-      .map((item) => item.trim().slice(0, 180))
-      .filter(Boolean)
-      .slice(0, 12);
-    const numericAnswer = String(raw.numericAnswer ?? "").trim() === "" ? null : Number(raw.numericAnswer);
-    const tolerance = String(raw.tolerance ?? "").trim() === "" ? null : Number(raw.tolerance);
-    const options = Array.isArray(raw.options) ? raw.options.slice(0, 5).map((item) => String(item).trim().slice(0, 180)) : [];
-    const correctOption = Number.isInteger(Number(raw.correctOption)) ? Number(raw.correctOption) : null;
-    const parts = (Array.isArray(raw.parts) ? raw.parts : []).map((part) => {
-      const value = part && typeof part === "object" ? part as Record<string, unknown> : {};
-      const label = String(value.label || "").trim().slice(0, 30);
-      const mode: ResponsePart["mode"] = value.mode === "multiple_choice" ? "multiple_choice" : "whiteboard";
-      const partAnswers = (Array.isArray(value.acceptedAnswers) ? value.acceptedAnswers : [])
-        .map(String)
-        .map((item) => item.trim().slice(0, 180))
-        .filter(Boolean)
-        .slice(0, 12);
-      const partOptions = Array.isArray(value.options) ? value.options.slice(0, 5).map((item) => String(item).trim().slice(0, 180)) : [];
-      const partCorrectOption = Number.isInteger(Number(value.correctOption)) ? Number(value.correctOption) : null;
-      return { label, mode, acceptedAnswers: partAnswers, options: partOptions, correctOption: partCorrectOption };
-    }).slice(0, 30);
-    if (!id) return null;
-    if (type === "exact" && acceptedAnswers.length === 0) return teacherReviewResponseConfig(id);
-    if (type === "numeric" && (!Number.isFinite(numericAnswer) || !Number.isFinite(tolerance) || Number(tolerance) < 0)) return teacherReviewResponseConfig(id);
-    if (type === "multiple_choice" && !validChoiceSet(acceptedAnswers, options, correctOption)) return teacherReviewResponseConfig(id);
-    if (type === "multipart") {
-      if (parts.length < 2 || parts.some((part) => !part.label)) return teacherReviewResponseConfig(id);
-      const safeParts = parts.map((part) => part.mode === "multiple_choice" && !validChoiceSet(part.acceptedAnswers, part.options, part.correctOption)
-        ? { label: part.label, mode: "whiteboard" as const, acceptedAnswers: [], options: [], correctOption: null }
-        : part);
-      return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption, parts: safeParts };
-    }
-    return { id, type, acceptedAnswers, numericAnswer, tolerance, options, correctOption, parts };
-  } catch {
-    return null;
-  }
 }
 
 function messagePath(path: string, key: "error" | "success", message: string) {
@@ -311,12 +102,10 @@ export async function createAssignment(formData: FormData) {
     section: "section" in question && question.section === "B" ? "B" : "A",
   })), classRecord.course as "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher");
   if (selected.length !== questionIds.length) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "One or more questions are no longer available."));
-  const fixedBankConfigs = classRecord.bank === "igcse" ? fixedAssignmentConfigs.igcse : fixedAssignmentConfigs.ib;
-  const responseConfigs = new Map(questionIds.map((id) => {
-    const stored = (fixedBankConfigs as Record<string, unknown>)[id];
-    const parsed = stored ? parseResponseConfig(JSON.stringify(stored)) : null;
-    return [id, parsed ?? teacherReviewResponseConfig(id)];
-  }));
+  const responseConfigs = new Map(questionIds.map((id) => [
+    id,
+    getFixedAssignmentConfig(classRecord.bank, id) ?? teacherReviewResponseConfig(id),
+  ]));
 
   const dueAt = dueDate ? new Date(`${dueDate}T23:59:00`).toISOString() : null;
   const { data: assignment, error } = await supabase.from("assignments").insert({
@@ -373,9 +162,9 @@ export async function createAssignment(formData: FormData) {
     return [{
       assignment_id: assignment.id,
       question_id: question.id,
-      accepted_answers: config.type === "exact" || config.type === "multiple_choice" ? config.acceptedAnswers : multipartAnswers,
-      numeric_answer: config.type === "numeric" ? config.numericAnswer : null,
-      numeric_tolerance: config.type === "numeric" ? config.tolerance : null,
+      accepted_answers: config.type === "multiple_choice" ? config.acceptedAnswers : multipartAnswers,
+      numeric_answer: null,
+      numeric_tolerance: null,
       correct_option: config.type === "multiple_choice" ? config.correctOption : null,
     }];
   });
