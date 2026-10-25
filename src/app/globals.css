@@ -106,6 +106,9 @@ p { margin: 0; }
 .header-inner { min-height: 4.8rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
 .brand { display: inline-flex; align-items: center; gap: .75rem; font-weight: 900; letter-spacing: -.02em; }
 .brand-mark { width: 2.7rem; height: 2.4rem; object-fit: contain; }
+.header-brand-name { display: grid; line-height: 1.02; white-space: nowrap; }
+.header-brand-name small { color: var(--muted); font-size: .62rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+.header-brand-name strong { font-size: 1rem; letter-spacing: -.025em; }
 .desktop-nav { display: flex; align-items: center; gap: 1.25rem; font-size: .94rem; font-weight: 700; }
 .desktop-nav a:not(.button):hover { color: var(--teal-dark); }
 .desktop-nav .header-contact-button { padding: .48rem .75rem; border: 1px solid #aeb8bc; border-radius: 999px; line-height: 1; }
@@ -2455,7 +2458,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 }
 @media (max-width: 650px) {
   .header-inner { gap: .65rem; padding-block: .55rem; }
-  .header-inner .brand-lockup { width: 132px; }
+  .header-inner .brand-mark { width: 2.25rem; height: 2rem; }
+  .header-brand-name small { font-size: .52rem; }
+  .header-brand-name strong { font-size: .86rem; }
   .tuition-partner-logo { width: 95px; height: 29px; }
   .mobile-menu-toggle { font-size: .82rem; }
   .account-menu-trigger { min-height: 2.45rem; }
