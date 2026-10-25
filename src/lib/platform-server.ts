@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { activePlatformEntitlements, platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
-import { courseProductForCode, productsForCurriculum, type CourseProduct } from "@/lib/platform-products";
+import { courseProductForCode, courseProducts, productsForCurriculum, type CourseProduct } from "@/lib/platform-products";
 
 export async function getPlatformSession() {
   const supabase = await createClient();
@@ -34,7 +34,9 @@ export async function getPlatformAccess() {
   const products = productsForCurriculum(session.curriculum);
   const hasTeacherPlus = ["teacher", "admin"].includes(session.profile?.role || "")
     && entitlements.some((item) => item.product_code === "teacher_plus_ib");
-  const entitledCourses = session.profile?.role === "admin" || hasTeacherPlus
+  const entitledCourses = session.profile?.role === "admin"
+    ? courseProducts
+    : hasTeacherPlus
     ? products
     : entitlements.map((item) => courseProductForCode(item.product_code)).filter((item): item is CourseProduct => Boolean(item && item.curriculum === session.curriculum));
   const ownedCourses = Array.from(new Map(entitledCourses.map((course) => [course.id, course])).values());
