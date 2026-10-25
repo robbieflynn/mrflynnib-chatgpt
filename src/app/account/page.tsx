@@ -186,7 +186,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       </Container></section>
     </>;
   }
-  const selectedCourse = getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "") ?? getQuestionBankCourse(preferredCourse) ?? questionBankCourses[0];
+  const selectedCourse = getQuestionBankCourse(preferredCourse) ?? getQuestionBankCourse(typeof requestedCourse === "string" ? requestedCourse : "") ?? questionBankCourses[0];
+  const courseLearningHref = isIgcse ? "/igcse/learn" : `/learn?course=${selectedCourse.slug}`;
   const courseProgress = isIgcse ? progressManifest.igcse : progressManifest.courses[selectedCourse.code];
   const bank = isIgcse ? "igcse" : "ib";
   const questionBankHref = isIgcse ? "/igcse/question-bank" : `/question-bank/${selectedCourse.slug}`;
@@ -344,7 +345,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </p>
           ) : null}
           <nav className="student-platform-nav" aria-label="Your learning areas">
-            <Link href={isIgcse ? "/igcse/learn" : "/learn"}><DashboardIcon name="book" /><span><strong>Courses</strong><small>Lessons and past-paper solutions</small></span><b aria-hidden="true">→</b></Link>
+            <Link href={courseLearningHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>{isIgcse ? "Lessons and past-paper solutions" : `${selectedCourse.code} lessons and past-paper solutions`}</small></span><b aria-hidden="true">→</b></Link>
             <Link href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Independent practice and saved work</small></span><b aria-hidden="true">→</b></Link>
             <Link href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Work set by your teachers</small></span><b aria-hidden="true">↓</b></Link>
             <Link href="#question-bank-progress"><DashboardIcon name="check" /><span><strong>Progress</strong><small>Your learning at a glance</small></span><b aria-hidden="true">↓</b></Link>
@@ -405,16 +406,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               <div><span>Your question bank</span><strong>IGCSE Mathematics</strong></div>
             </div>
           ) : (
-            <div className="dashboard-course-bar">
+            <div className="dashboard-course-bar dashboard-course-bar-single">
               <div>
-                <span>Your course</span>
-                <strong>{selectedCourse.pathway} {selectedCourse.level}</strong>
+                <span>Your question bank</span>
+                <strong>{selectedCourse.code} · {selectedCourse.pathway} {selectedCourse.level}</strong>
               </div>
-              <nav aria-label="Choose your course">
-                {questionBankCourses.map((course) => (
-                  <Link aria-current={course.slug === selectedCourse.slug ? "page" : undefined} href={`/account?course=${course.slug}`} key={course.slug}>{course.code}</Link>
-                ))}
-              </nav>
             </div>
           )}
 

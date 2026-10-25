@@ -28,7 +28,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg>
             <span><strong>My learning</strong><small>Dashboard and assignments</small></span>
           </a>
-          <button class="nav-item is-active" type="button" data-view="dashboard">
+          <button class="nav-item is-active" id="myCourseButton" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg>
             <span>My course</span>
           </button>
@@ -70,7 +70,7 @@
           <button class="icon-button menu-button" id="openMenu" type="button" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
-          <div class="topbar-context"><a class="topbar-home-link" id="topbarLearningHomeLink" href="/account">← My learning</a><span class="topbar-separator" aria-hidden="true"></span><span class="status-dot"></span><span>Your learning space</span><a class="access-pill" id="accessLink" href="/account/access">Free account</a><a class="topbar-legacy-link" id="topbarLegacyCourseLink" href="/go/my-courses">Previous Teachable course ↗</a></div>
+          <div class="topbar-context"><a class="topbar-home-link" id="topbarLearningHomeLink" href="/account">← Learning home</a><span class="topbar-separator" aria-hidden="true"></span><span class="status-dot"></span><span>Your course</span><a class="access-pill" id="accessLink" href="/account/access">Free account</a><a class="topbar-legacy-link" id="topbarLegacyCourseLink" href="/go/my-courses">Previous Teachable course ↗</a></div>
           <button class="account-button" id="accountButton" type="button" aria-haspopup="menu" aria-expanded="false">
             <span class="avatar">RF</span>
             <span><strong id="accountName">Student</strong><small id="accountRole">Student account</small></span>
@@ -164,7 +164,7 @@
 
         <section id="courseView" class="view">
           <header class="course-hero" id="courseHero">
-            <button class="back-button" id="courseBackButton" type="button" data-view="dashboard">← My course</button>
+            <a class="back-button" id="courseBackButton" href="/account">← Learning home</a>
             <div class="course-hero-row">
               <div>
                 <span class="course-code" id="courseCode">AA SL</span>

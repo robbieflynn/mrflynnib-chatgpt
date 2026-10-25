@@ -2478,7 +2478,13 @@ a.teacher-list-row:hover { background: var(--sky); }
 .access-code-card form { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .7rem; }
 .access-code-card label { display: grid; gap: .35rem; color: var(--navy); font-size: .74rem; font-weight: 850; }
 .access-code-card input { width: 100%; min-height: 44px; padding: .7rem .8rem; border: 1px solid #aec7da; border-radius: .65rem; background: white; color: var(--ink); font: inherit; text-transform: uppercase; }
-.course-checkout { margin-top: auto; }
+.course-checkout { margin-top: auto; padding-top: .35rem; gap: .85rem; }
+.course-single-plan { padding: 1rem 1.05rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid #9fc9e8; border-radius: .85rem; background: #edf6ff; }
+.course-single-plan span { display: grid; gap: .2rem; }
+.course-single-plan strong { color: var(--navy); font-size: 1.65rem; line-height: 1; }
+.course-single-plan small { color: var(--muted); font-size: .75rem; }
+.course-single-plan b { padding: .3rem .55rem; border-radius: 999px; background: var(--navy); color: #fff; font-size: .6rem; letter-spacing: .05em; text-transform: uppercase; }
+.course-checkout-button { width: 100%; justify-content: center; }
 .course-plan-options { min-width: 0; padding: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem; border: 0; }
 .course-plan-options legend { margin-bottom: .55rem; color: var(--navy); font-size: .72rem; font-weight: 850; }
 .course-plan-option { position: relative; min-width: 0; padding: .8rem; display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: .55rem; border: 1px solid #cfdae2; border-radius: .8rem; background: #fff; cursor: pointer; }
@@ -2488,7 +2494,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .course-plan-option strong { color: var(--navy); font-size: 1.15rem; line-height: 1; }
 .course-plan-option small { color: var(--muted); font-size: .68rem; }
 .course-plan-option b { position: absolute; top: -.55rem; right: .45rem; padding: .2rem .42rem; border-radius: 999px; background: var(--navy); color: #fff; font-size: .55rem; letter-spacing: .03em; text-transform: uppercase; }
-.checkout-reassurance { color: var(--muted); font-size: .68rem; text-align: center; }
+.checkout-reassurance { display: flex; justify-content: center; gap: 1rem; color: var(--muted); font-size: .7rem; text-align: center; }
+.checkout-reassurance span { display: inline-flex; align-items: center; gap: .3rem; }
+.checkout-reassurance span::before { content: "✓"; color: var(--success); font-weight: 900; }
 .native-course-price { display: grid; gap: .1rem; padding: .9rem 1rem; border-radius: .8rem; background: #edf6ff; }
 .native-course-price strong { color: var(--navy); font-size: 1.7rem; }
 .native-course-price span { color: var(--muted); font-size: .75rem; }
