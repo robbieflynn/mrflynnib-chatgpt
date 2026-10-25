@@ -47,6 +47,18 @@ assert.equal(choices.isAnswerCompatibleWithPrompt("z=(3+t)/2", "Find the paramet
 assert.equal(choices.isAnswerCompatibleWithPrompt("f^-1(x)=arccos(1/(x-2))", "Find f^-1(x), stating its domain."), false);
 assert.equal(choices.isAnswerCompatibleWithPrompt("a=24t", "Find the value of a."), false);
 assert.equal(choices.isAnswerCompatibleWithPrompt("x=3y", "Write down three equations that express the information."), false);
+const compoundInequalityPrompt = String.raw`Find the set of values of \(x\) for which \(\left|0.1x^2-2x+3\right|<\log_{10}x\).`;
+const compoundInequalityAnswer = "(1.52<x<1.79)∪(17.6<x<19.1)";
+assert.equal(choices.isAnswerCompatibleWithPrompt(compoundInequalityAnswer, compoundInequalityPrompt), true);
+const compoundInequalityChoices = choices.generateChoiceSet([compoundInequalityAnswer], "audit-compound-inequality", compoundInequalityPrompt);
+assert(compoundInequalityChoices);
+assert.deepEqual(new Set(compoundInequalityChoices.options), new Set([
+  compoundInequalityAnswer,
+  "(1.52≤x≤1.79)∪(17.6≤x≤19.1)",
+  "(1.52<x<1.79)",
+  "(17.6<x<19.1)",
+  "1.79<x<17.6",
+]));
 assert.equal(choices.isChoiceTextSafe("2*(at B both populations are decreasing)"), false);
 const estimatedProbabilityChoices = choices.generateChoiceSet(["1/6"], "audit-estimated-probability", "Find an estimate for the probability that the height is greater than 82.5 cm.");
 assert(estimatedProbabilityChoices);
