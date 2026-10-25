@@ -16,7 +16,7 @@ export default async function IgcseQuestionBankPage({ searchParams }: { searchPa
     <>
       <section className="igcse-qb-route-bar">
         <Container className="igcse-qb-route-bar-inner">
-          <Breadcrumbs items={[{ label: "IGCSE Mathematics", href: "/igcse" }, { label: "Question bank" }]} />
+          <Breadcrumbs homeHref="/igcse" homeLabel="IGCSE home" items={[{ label: "Question bank" }]} />
           <div className="qb-account-actions">
             {dashboardLink.signedIn ? (
               <Link className="button button-small" href={dashboardLink.href}>{dashboardLink.label}</Link>

@@ -21,18 +21,18 @@ function isIbCourseId(value: string | null): value is IbCourseId {
   return ibCourseChoices.some((course) => course.id === value);
 }
 
-export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: Mode }) {
+export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride }: { initialMode?: Mode; curriculumOverride?: "ib" | "igcse" }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const curriculum = searchParams.get("qualification") === "igcse" ? "igcse" : "ib";
+  const curriculum = curriculumOverride ?? (searchParams.get("qualification") === "igcse" ? "igcse" : "ib");
   const teacherJourney = searchParams.get("next")?.includes("teacher") ?? false;
   const plusJourney = searchParams.get("plan") === "plus" && curriculum === "ib";
   const requestedCourse = searchParams.get("course");
   const requestedNext = searchParams.get("next");
   const nextPath = requestedNext?.startsWith("/")
     ? requestedNext
-    : searchParams.get("qualification") === "igcse"
-      ? "/account?qualification=igcse"
+    : curriculum === "igcse"
+      ? "/igcse/account"
       : searchParams.get("course")
         ? `/account?course=${encodeURIComponent(searchParams.get("course")!)}`
         : "/account";
@@ -50,6 +50,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
   const [error, setError] = useState<string | null>(null);
   const [confirmationNextPath, setConfirmationNextPath] = useState(nextPath);
   const wantsPlus = curriculum === "ib" && accessChoice === "plus";
+  const legalBase = curriculum === "igcse" ? "/igcse" : "";
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -60,7 +61,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
 
     if (mode === "reset") {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?next=/account/update-password`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(curriculum === "igcse" ? "/igcse/account/update-password" : "/account/update-password")}`,
       });
       setPending(false);
       if (resetError) return setError(resetError.message);
@@ -102,7 +103,7 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         ? accountType === "teacher" ? teacherCourses : [studentCourse]
         : ["igcse"];
       const signUpNextPath = curriculum === "igcse"
-        ? "/account?qualification=igcse"
+        ? "/igcse/account"
         : accountType === "teacher"
           ? "/teacher"
           : wantsPlus && studentCourse
@@ -251,8 +252,8 @@ export function StudentAccountForm({ initialMode = "sign-in" }: { initialMode?: 
         <span><strong>Already paid on Teachable?</strong><small>Use the same email address in this form. After confirmation, any matching active course is added automatically without another payment.</small></span>
         <Link href={curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"}>Open previous course <span aria-hidden="true">↗</span></Link>
       </div>
-      <p className="small muted">This is a separate {curriculum === "igcse" ? "IGCSE" : "IB"} account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. "}Creating an account does not subscribe you to marketing emails.</p>
-      <p className="small muted">By creating an account, you agree to the <Link className="text-link" href="/terms">Terms of Use</Link> and acknowledge the <Link className="text-link" href="/privacy">Privacy Policy</Link>.</p>
+      <p className="small muted">This is the separate {curriculum === "igcse" ? "IGCSE" : "IB"} Mathematics account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. "}Creating an account does not subscribe you to marketing emails.</p>
+      <p className="small muted">By creating an account, you agree to the <Link className="text-link" href={`${legalBase}/terms`}>Terms of Use</Link> and acknowledge the <Link className="text-link" href={`${legalBase}/privacy`}>Privacy Policy</Link>.</p>
     </div>
   );
 }

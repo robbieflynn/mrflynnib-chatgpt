@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export function UpdatePasswordForm() {
+export function UpdatePasswordForm({ destination = "/account" }: { destination?: string }) {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +17,7 @@ export function UpdatePasswordForm() {
     const { error: updateError } = await createClient().auth.updateUser({ password });
     setPending(false);
     if (updateError) return setError(updateError.message);
-    router.push("/account");
+    router.push(destination);
     router.refresh();
   }
 

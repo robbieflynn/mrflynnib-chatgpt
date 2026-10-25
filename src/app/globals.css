@@ -305,6 +305,9 @@ textarea { min-height: 130px; resize: vertical; }
 .account-entry-hero { position: relative; overflow: hidden; padding: clamp(2.7rem, 6vw, 4.5rem) 0 clamp(2.2rem, 4vw, 3.2rem); border-bottom: 1px solid rgba(35,127,202,.13); background: radial-gradient(circle at 84% 16%, rgba(35,127,202,.15), transparent 28%), linear-gradient(135deg,#edf7ff,#fbfaf6 72%); }
 .account-entry-hero::after { content: "∑"; position: absolute; right: 5vw; bottom: -4.8rem; color: rgba(17,74,123,.04); font-family: Georgia,serif; font-size: clamp(9rem,20vw,16rem); pointer-events: none; }
 .account-entry-hero.is-plus { background: radial-gradient(circle at 83% 18%, rgba(108,78,196,.16), transparent 27%), linear-gradient(135deg,#f3f0ff,#fbfaf6 74%); }
+.account-entry-hero.is-igcse { background: radial-gradient(circle at 82% 14%, rgba(111,88,190,.17), transparent 28%), linear-gradient(135deg,#edf7ff,#f7f4ff 72%); }
+.account-entry-hero.is-igcse::after { content: "f(x)"; color: rgba(45,91,147,.045); font-size: clamp(7rem,17vw,13rem); }
+.igcse-site .page-hero .breadcrumbs { display: none; }
 .account-entry-hero .container { position: relative; z-index: 1; }
 .account-entry-hero h1 { max-width: 17ch; margin: 0; font-size: clamp(2.25rem,5vw,4.2rem); }
 .account-entry-hero p { max-width: 68ch; margin: 0; color: var(--muted); font-size: clamp(.98rem,1.6vw,1.15rem); }
@@ -1907,20 +1910,45 @@ a.teacher-list-row:hover { background: var(--sky); }
 .tutoring-enquiry-note ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .4rem; color: var(--muted); font-size: .8rem; }
 
 /* IGCSE Mathematics area */
-.igcse-site { --igcse-accent: var(--igcse-red); --igcse-accent-dark: var(--igcse-red-dark); --igcse-accent-soft: var(--igcse-red-soft); background: #fffafa; }
-.igcse-section-nav { position: relative; z-index: 5; border-bottom: 1px solid rgba(179,38,54,.14); background: #fff; }
+.igcse-site { --igcse-accent: #237fca; --igcse-accent-dark: #1267ae; --igcse-accent-soft: #eaf5ff; --igcse-detail: #b65360; --igcse-detail-soft: #faeef0; background: #f8fbfe; }
+.igcse-section-nav { position: relative; z-index: 5; border-bottom: 1px solid rgba(18,103,174,.13); background: rgba(255,255,255,.96); }
 .igcse-section-nav-inner { min-height: 4.1rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
 .igcse-section-brand { display: grid; gap: .05rem; line-height: 1.15; }
 .igcse-section-brand span { color: var(--muted); font-size: .65rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
-.igcse-section-brand strong { color: var(--igcse-accent-dark); font-size: 1.05rem; }
+.igcse-section-brand strong { color: var(--navy); font-size: 1.05rem; }
 .igcse-section-links { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2rem; color: var(--ink-2); font-size: .85rem; font-weight: 800; }
 .igcse-section-links a:hover { color: var(--igcse-accent-dark); }
+.igcse-section-actions { display: flex; align-items: center; gap: .8rem; }
+.igcse-back-to-ib { color: var(--muted); font-size: .72rem; font-weight: 800; white-space: nowrap; }
+.igcse-back-to-ib:hover { color: var(--navy); }
+.igcse-section-actions .button { min-height: 2.6rem; padding-inline: 1rem; }
+.igcse-footer { padding: 2rem 0; border-top: 1px solid rgba(18,103,174,.12); background: #071832; color: rgba(255,255,255,.72); }
+.igcse-footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.igcse-footer p { margin: 0; font-size: .72rem; }
+.igcse-footer div { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .72rem; font-weight: 800; }
+.igcse-footer a:hover { color: white; }
 .igcse-site .eyebrow { color: var(--igcse-accent-dark); }
-.igcse-site .button { background: var(--igcse-accent); box-shadow: 0 10px 30px rgba(179,38,54,.16); }
+.igcse-site .button { background: var(--igcse-accent); box-shadow: 0 10px 30px rgba(18,103,174,.18); }
 .igcse-site .button:hover { background: var(--igcse-accent-dark); }
-.igcse-site .button-secondary { border-color: #bdaeb0; background: transparent; color: var(--ink); box-shadow: none; }
+.igcse-site .button-secondary { border-color: rgba(18,103,174,.32); background: transparent; color: var(--ink); box-shadow: none; }
 .igcse-site .button-secondary:hover { border-color: var(--igcse-accent-dark); background: white; }
 .igcse-site .breadcrumbs a:hover { color: var(--igcse-accent-dark); }
+
+.igcse-landing-hero { position: relative; min-height: 555px; padding: clamp(1.75rem, 3vw, 2.5rem) 0 clamp(4rem, 7vw, 6rem); display: grid; align-items: center; overflow: hidden; background: radial-gradient(circle at 87% 18%, rgba(182,83,96,.16), transparent 24%), radial-gradient(circle at 12% 104%, rgba(35,127,202,.4), transparent 36%), linear-gradient(132deg, #071832 0%, #0d315c 52%, #1267a1 100%); color: white; }
+.igcse-landing-hero::after { content: ""; position: absolute; inset: auto -10% -50% 38%; height: 72%; border: 1px solid rgba(255,255,255,.09); border-radius: 50%; box-shadow: 0 0 0 90px rgba(255,255,255,.025), 0 0 0 180px rgba(182,83,96,.025); pointer-events: none; }
+.igcse-landing-graph { position: absolute; width: min(78vw, 920px); right: -2.5rem; bottom: -2rem; color: white; pointer-events: none; }
+.igcse-landing-points { fill: #df8b93; opacity: .86; }
+.igcse-landing-hero-inner { position: relative; z-index: 2; min-height: 415px; display: grid; align-content: space-between; gap: 3rem; }
+.igcse-landing-hero .breadcrumbs { color: rgba(255,255,255,.62); }
+.igcse-landing-hero .breadcrumbs a { color: white; }
+.igcse-landing-copy { max-width: 720px; }
+.igcse-landing-copy .eyebrow { color: #ffc3c8; }
+.igcse-landing-copy h1 { max-width: 14ch; font-size: clamp(3.4rem, 6vw, 5.9rem); }
+.igcse-landing-copy .lede { max-width: 57ch; color: rgba(255,255,255,.78); }
+.igcse-landing-actions .button { min-width: 142px; background: white; color: var(--navy); box-shadow: 0 14px 35px rgba(3,13,30,.2); }
+.igcse-landing-actions .button:hover { background: #f3f8fc; }
+.igcse-landing-actions .button-secondary { border-color: rgba(255,255,255,.44); background: rgba(255,255,255,.06); color: white; box-shadow: none; }
+.igcse-landing-actions .button-secondary:hover { border-color: white; background: rgba(255,255,255,.13); }
 
 .igcse-hero { position: relative; min-height: 520px; padding: clamp(4rem, 8vw, 6rem) 0; display: grid; align-items: center; overflow: hidden; background: radial-gradient(circle at 86% 18%, rgba(179,38,54,.17), transparent 32%), linear-gradient(135deg, #fff7f8, #fff 58%, #f8edf0); }
 .igcse-hero::after { content: ""; position: absolute; width: 530px; height: 530px; right: -180px; bottom: -260px; border: 1px solid rgba(179,38,54,.15); border-radius: 50%; box-shadow: 0 0 0 70px rgba(179,38,54,.025), 0 0 0 140px rgba(179,38,54,.018); }
@@ -1932,25 +1960,21 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-hero-symbol-one { left: 2%; bottom: 0; font-size: clamp(7rem, 16vw, 14rem); transform: rotate(-8deg); }
 .igcse-hero-symbol-two { right: 2%; top: 2%; font-size: clamp(8rem, 18vw, 16rem); }
 .igcse-route-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #fff; }
-.igcse-route-section-first { background: linear-gradient(180deg, #fff7f8, #fff 38%); }
-.igcse-route-heading { min-height: 132px; padding: 1.45rem clamp(1.35rem, 3vw, 2rem); display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1.25rem; border: 1px solid rgba(179,38,54,.16); border-radius: 1.3rem; background: linear-gradient(120deg, #fff1f3, #fff 64%); text-align: left; }
-.igcse-route-heading > div { gap: .35rem; }
-.igcse-route-heading .eyebrow { margin: 0; }
-.igcse-route-heading h1, .igcse-route-heading h2 { max-width: none; font-size: clamp(2rem, 3.5vw, 3.35rem); }
-.igcse-route-heading p { color: var(--muted); font-size: .9rem; }
-.igcse-route-symbol { width: 3.6rem; height: 3.6rem; display: grid; place-items: center; border-radius: 1rem; background: var(--igcse-red-dark); color: white; font-family: Georgia, serif; font-size: 1.25rem; font-weight: 800; }
+.igcse-route-section-first { background: linear-gradient(180deg, #f4f9fd, #fff 42%); }
+.igcse-route-intro { max-width: 760px; }
+.igcse-route-intro h2 { max-width: none; font-size: clamp(2.4rem, 4.5vw, 4.1rem); }
 .igcse-route-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1rem; }
-.igcse-route-card { min-height: 350px; padding: 1.5rem; display: flex; flex-direction: column; gap: 2rem; border: 1px solid #eadcdf; border-radius: 1.35rem; background: #fffafa; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
-.igcse-route-card:hover { transform: translateY(-5px); border-color: rgba(179,38,54,.45); box-shadow: 0 24px 55px rgba(11,21,48,.09); }
+.igcse-route-card { min-height: 350px; padding: 1.5rem; display: flex; flex-direction: column; gap: 2rem; border: 1px solid rgba(18,103,174,.14); border-radius: 1.35rem; background: linear-gradient(155deg, #fff, #f7fbfe); box-shadow: 0 14px 36px rgba(11,21,48,.045); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.igcse-route-card:hover { transform: translateY(-5px); border-color: rgba(18,103,174,.35); box-shadow: 0 24px 55px rgba(11,21,48,.09); }
 .igcse-route-card-top { display: flex; justify-content: space-between; gap: .75rem; }
-.igcse-route-card-top > span { color: var(--igcse-accent-dark); font-weight: 950; }
+.igcse-route-card-top > span { color: var(--igcse-detail); font-weight: 950; }
 .igcse-route-card-top small { color: var(--muted); text-align: right; font-size: .66rem; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
 .igcse-route-card p { color: var(--muted); font-size: .88rem; }
 .igcse-route-card > strong { margin-top: auto; display: flex; justify-content: space-between; align-items: center; color: var(--igcse-accent-dark); font-size: .8rem; }
 .igcse-route-card > strong i { font-style: normal; }
-.igcse-principles { padding: clamp(4rem, 8vw, 7rem) 0; background: linear-gradient(135deg, #2b0d16, #4b121f); color: white; }
+.igcse-principles { padding: clamp(4rem, 8vw, 7rem) 0; background: radial-gradient(circle at 90% 5%, rgba(182,83,96,.18), transparent 24%), linear-gradient(135deg, #071832, #0c3158); color: white; }
 .igcse-principles-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
-.igcse-principles .eyebrow { color: #ffb7c1; }
+.igcse-principles .eyebrow { color: #ffc3c8; }
 .igcse-principle-list { display: grid; gap: 1px; overflow: hidden; border: 1px solid rgba(255,255,255,.14); border-radius: 1.3rem; background: rgba(255,255,255,.14); }
 .igcse-principle-list p { min-height: 95px; padding: 1.3rem 1.5rem; display: grid; align-content: center; gap: .25rem; background: rgba(255,255,255,.07); }
 .igcse-principle-list span { color: rgba(255,255,255,.68); font-size: .85rem; }
@@ -2073,8 +2097,11 @@ a.teacher-list-row:hover { background: var(--sky); }
   .igcse-home-card { min-height: auto; border-radius: 1.25rem; }
   .igcse-home-routes { display: none; }
   .igcse-section-nav-inner { padding-block: .75rem; align-items: flex-start; flex-direction: column; }
+  .igcse-section-actions { position: absolute; right: 1rem; top: .7rem; }
+  .igcse-back-to-ib { display: none; }
+  .igcse-section-actions .button { min-height: 2.35rem; padding: .55rem .75rem; font-size: .7rem; }
   .igcse-section-links { width: 100%; gap: .45rem; overflow-x: auto; flex-wrap: nowrap; padding-bottom: .15rem; }
-  .igcse-section-links a { padding: .45rem .65rem; border: 1px solid #eadcdf; border-radius: 999px; background: white; white-space: nowrap; }
+  .igcse-section-links a { padding: .45rem .65rem; border: 1px solid #d6e6f2; border-radius: 999px; background: white; white-space: nowrap; }
   .igcse-qb-route-bar-inner { align-items: stretch; flex-direction: column; }
   .igcse-qb-route-bar-inner .qb-account-actions { align-items: stretch; flex-direction: column; width: 100%; }
   .igcse-qb-route-bar-inner .button { width: 100%; }
@@ -2733,6 +2760,34 @@ a.teacher-list-row:hover { background: var(--sky); }
 .platform-review-student-home.student-dashboard-igcse .student-platform-nav-v2 .is-question-bank .dashboard-icon { background: #267fbd; }
 .platform-review-student-home.student-dashboard-igcse .student-platform-nav-v2 .is-assignments .dashboard-icon { background: #d38218; }
 .platform-review-student-home.student-dashboard-igcse .student-platform-nav-v2 .is-progress .dashboard-icon { background: #2b8a6a; }
+/* The approved calm learning palette is the real IGCSE experience, not only a walkthrough skin. */
+.student-home-v2-hero.student-dashboard-hero-igcse,
+.teacher-dashboard-hero-igcse { background: radial-gradient(circle at 75% 10%, rgba(42,126,187,.38), transparent 30%), #071733; }
+.student-home-v2-hero.student-dashboard-hero-igcse .dashboard-role-label,
+.teacher-dashboard-hero-igcse .dashboard-role-label { color: #8dcfff; }
+.student-home-v2.student-dashboard-igcse,
+.igcse-teacher-dashboard { --dashboard-accent: var(--teal); --dashboard-accent-dark: var(--teal-dark); --dashboard-accent-soft: var(--sky); }
+.student-home-v2.student-dashboard-igcse .button,
+.igcse-teacher-dashboard .button { background: var(--teal); box-shadow: 0 10px 30px rgba(32,123,151,.16); }
+.student-home-v2.student-dashboard-igcse .button:hover,
+.igcse-teacher-dashboard .button:hover { background: var(--teal-dark); }
+.student-home-v2.student-dashboard-igcse .student-focus-primary { background: linear-gradient(138deg, #174f98 0%, #0b2148 72%); box-shadow: 0 20px 46px rgba(18,54,105,.17); }
+.student-home-v2.student-dashboard-igcse .student-focus-label { color: #93cfff; }
+.student-home-v2.student-dashboard-igcse .student-focus-button { border-color: white; background: white; color: #113c73; box-shadow: none; }
+.student-home-v2.student-dashboard-igcse .student-focus-button:hover { border-color: white; background: #edf6ff; color: #0a2b58; }
+.student-home-v2.student-dashboard-igcse .student-continue-card { background: linear-gradient(145deg, #f2eeff, #e8f1ff); }
+.student-home-v2.student-dashboard-igcse .student-continue-copy .student-focus-label { color: #6753ad; }
+.student-home-v2.student-dashboard-igcse .student-inline-action { color: #514096; }
+.student-home-v2.student-dashboard-igcse .student-inline-action:hover { color: #2e2468; }
+.student-home-v2.student-dashboard-igcse .student-continue-meter i b { background: linear-gradient(90deg, #6e57c4, #9888df); }
+.student-home-v2.student-dashboard-igcse .student-platform-nav-v2 .is-course .dashboard-icon { background: #6a54b8; }
+.student-home-v2.student-dashboard-igcse .student-platform-nav-v2 .is-question-bank .dashboard-icon { background: #267fbd; }
+.student-home-v2.student-dashboard-igcse .student-platform-nav-v2 .is-assignments .dashboard-icon { background: #d38218; }
+.student-home-v2.student-dashboard-igcse .student-platform-nav-v2 .is-progress .dashboard-icon { background: #2b8a6a; }
+.student-continue-symbol.student-continue-igcse { padding: 1rem; align-content: center; gap: .2rem; background: linear-gradient(145deg, #173c78, #6b58bf); color: white; font-family: inherit; font-size: 1rem; text-align: left; transform: none; }
+.student-continue-igcse strong, .student-continue-igcse span { display: block; }
+.student-continue-igcse strong { font-size: 1.2rem; letter-spacing: .04em; }
+.student-continue-igcse span { color: rgba(255,255,255,.75); font-size: .65rem; }
 .student-home-section { margin-top: .35rem; padding: 2.15rem 0 0; border: 0; border-top: 1px solid rgba(80,97,117,.15); background: transparent; box-shadow: none; scroll-margin-top: 6rem; }
 .student-progress-overview { margin-top: .35rem; }
 .student-section-link { align-self: end; justify-self: end; color: var(--dashboard-accent-dark); font-size: .76rem; font-weight: 900; }
@@ -2773,6 +2828,14 @@ a.teacher-list-row:hover { background: var(--sky); }
 }
 
 @media (max-width: 650px) {
+  .igcse-landing-hero { min-height: auto; padding: 1.5rem 0 4.25rem; }
+  .igcse-landing-hero-inner { min-height: 510px; gap: 2.75rem; }
+  .igcse-landing-copy h1 { font-size: clamp(3rem, 15vw, 4.4rem); }
+  .igcse-landing-graph { width: 165vw; right: -68%; bottom: -4%; opacity: .8; }
+  .igcse-landing-actions { align-items: stretch; flex-direction: column; }
+  .igcse-landing-actions .button { width: 100%; }
+  .igcse-footer-inner { align-items: flex-start; flex-direction: column; }
+  .igcse-route-intro h2 { font-size: clamp(2.2rem, 11vw, 3.2rem); }
   .home-connected-hero { min-height: 540px; }
   .legacy-course-strip .container, .account-legacy-route { padding-block: 1rem; align-items: flex-start; flex-direction: column; }
   .legacy-course-strip .container { gap: .55rem; }
@@ -2782,8 +2845,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .new-hero-grid-simple h1 .hero-title-line { white-space: normal; }
   .home-teacher-note { align-items: flex-start; flex-direction: column; gap: .7rem; }
   .home-teacher-note > b { white-space: normal; }
-  .homepage-route-heading, .igcse-route-heading { min-height: 0; grid-template-columns: 1fr; gap: .85rem; }
-  .homepage-route-heading h2, .igcse-route-heading h1 { font-size: clamp(1.8rem, 9vw, 2.45rem); }
+  .homepage-route-heading { min-height: 0; grid-template-columns: 1fr; gap: .85rem; }
+  .homepage-route-heading h2 { font-size: clamp(1.8rem, 9vw, 2.45rem); }
   .platform-review-bar-inner, .platform-review-upgrade { align-items: stretch; flex-direction: column; }
   .platform-review-bar-inner { padding-top: .7rem; padding-bottom: .7rem; }
   .platform-review-bar-inner > span { align-items: flex-start; flex-direction: column; gap: .15rem; }

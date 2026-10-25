@@ -70,7 +70,7 @@ const courseDefinitions = [
     name: "Edexcel IGCSE Mathematics",
     description: "Lessons for every topic, organised across all six areas of the Edexcel IGCSE Mathematics course.",
     image: null,
-    accent: "red",
+    accent: "indigo",
     topicCount: 6,
     family: "Edexcel IGCSE Mathematics",
   },
@@ -143,6 +143,7 @@ let enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolle
 let enrolledCourseId = defaultCourseId;
 let platformAccount = null;
 let guestMode = false;
+let signOutDestination = "/account";
 
 const storageKey = "mrflynnib-course-platform-v3";
 const practiceDatabaseName = "mrflynnib-course-preview";
@@ -347,8 +348,14 @@ function configurePreviewMode() {
 function configureCurriculumExperience(curriculum) {
   const isIgcse = curriculum === "igcse";
   document.body.classList.toggle("igcse-learning", isIgcse);
+  document.title = isIgcse ? "IGCSE Mathematics course | Mr Flynn" : "My learning | Mr Flynn IB";
+  document.getElementById("courseBrandLogo").hidden = isIgcse;
+  document.getElementById("igcseCourseBrand").hidden = !isIgcse;
+  document.getElementById("brandLearningHomeLink").setAttribute("aria-label", isIgcse ? "Back to IGCSE Mathematics" : "Back to My learning");
+  signOutDestination = isIgcse ? "/igcse/account" : "/account";
   const legacyCourseHref = isIgcse ? "/go/igcse-course" : "/go/my-courses";
   document.getElementById("topbarLegacyCourseLink").href = legacyCourseHref;
+  document.getElementById("topbarLegacyCourseLink").hidden = isIgcse;
   document.getElementById("legacyCourseLink").href = legacyCourseHref;
   const hasPastPapers = enrolledCourseDefinitions.some((definition) => pastPaperLibrary.courses?.[definition.code]);
   document.querySelectorAll('[data-view="pastPapers"]').forEach((element) => { element.hidden = !hasPastPapers; });
@@ -577,24 +584,30 @@ function renderCourse() {
 }
 
 function plusAccessHref() {
-  if (guestMode) return `/plus?course=${encodeURIComponent(currentCourseId)}`;
-  const base = reviewCurriculum === "igcse" ? "/igcse/account/access" : "/account/access";
+  const isIgcse = currentCourseId === "igcse";
+  if (guestMode) return isIgcse ? "/igcse/account?mode=sign-up&next=/igcse/account/access" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
+  const base = isIgcse ? "/igcse/account/access" : "/account/access";
   return `${base}?course=${encodeURIComponent(currentCourseId)}`;
 }
 
 function showPlusPrompt() {
+  const isIgcse = currentCourseId === "igcse";
   const dialog = document.getElementById("plusUpgradeDialog");
   document.getElementById("plusUpgradeLink").href = plusAccessHref();
-  document.getElementById("plusUpgradeLink").textContent = guestMode ? "Create account for Plus" : "Choose Plus access";
+  document.querySelector("#plusUpgradeDialog .eyebrow").textContent = isIgcse ? "IGCSE course access" : "Mr Flynn IB Plus";
+  document.querySelector("#plusUpgradeDialog h2").textContent = isIgcse ? "Open the complete IGCSE lesson." : "Unlock the complete lesson.";
+  document.querySelector("#plusUpgradeDialog h2 + p").textContent = isIgcse ? "Create an IGCSE account to save progress and review the complete course access available to you." : "Plus unlocks the complete video course and all of the extra practice questions inside its lessons.";
+  document.getElementById("plusUpgradeLink").textContent = isIgcse ? guestMode ? "Create IGCSE account" : "View course access" : guestMode ? "Create account for Plus" : "Choose Plus access";
   if (!dialog.open) dialog.showModal();
 }
 
 async function loadProtectedVideo(frame, loading, videoId, kind = "lesson", locked = false) {
   if (kind === "lesson" && locked) {
+    const isIgcse = currentCourseId === "igcse";
     frame.removeAttribute("src");
     loading.classList.remove("is-hidden");
     loading.classList.add("is-plus-locked");
-    loading.innerHTML = `<span aria-hidden="true">+</span><strong>Unlock this video with Mr Flynn IB Plus</strong><p>You can still preview the lesson questions below.</p><button class="primary-button" type="button" data-plus-upgrade>Unlock with Plus</button>`;
+    loading.innerHTML = `<span aria-hidden="true">+</span><strong>${isIgcse ? "Complete IGCSE course lesson" : "Unlock this video with Mr Flynn IB Plus"}</strong><p>You can still preview the lesson questions below.</p><button class="primary-button" type="button" data-plus-upgrade>${isIgcse ? "View course access" : "Unlock with Plus"}</button>`;
     return;
   }
   loading.classList.remove("is-plus-locked");
@@ -610,7 +623,7 @@ async function loadProtectedVideo(frame, loading, videoId, kind = "lesson", lock
     }
   } catch (error) {
     loading.classList.remove("is-hidden");
-    loading.innerHTML = `<p>${escapeHtml(error?.message || "This video could not be opened.")}</p><a class="primary-button" href="${guestMode ? `/plus?course=${encodeURIComponent(currentCourseId)}` : `/account/access?course=${encodeURIComponent(currentCourseId)}`}">View course access</a>`;
+    loading.innerHTML = `<p>${escapeHtml(error?.message || "This video could not be opened.")}</p><a class="primary-button" href="${plusAccessHref()}">View course access</a>`;
   }
 }
 
@@ -635,7 +648,7 @@ function renderLesson(lesson) {
   completeButton.classList.toggle("is-plus-locked", locked);
   completeButton.dataset.plusLocked = locked ? "true" : "false";
   completeButton.firstElementChild.textContent = locked ? "+" : "✓";
-  completeButton.lastElementChild.textContent = locked ? "Unlock with Plus" : complete ? "Completed" : "Mark complete";
+  completeButton.lastElementChild.textContent = locked ? currentCourseId === "igcse" ? "View course access" : "Unlock with Plus" : complete ? "Completed" : "Mark complete";
   const navigationLessons = currentCourse.lessons;
   const navigationIndex = navigationLessons.findIndex((candidate) => candidate.id === lesson.id);
   document.getElementById("previousLesson").disabled = navigationIndex <= 0;
@@ -656,8 +669,10 @@ function renderLessonPractice(lesson, locked = false) {
   const questionCount = practice.questionIds.length;
   document.getElementById("practiceCount").textContent = `${questionCount} question${questionCount === 1 ? "" : "s"}`;
   document.getElementById("lessonPracticeCopy").textContent = locked
-    ? "Preview this lesson here. Mr Flynn IB Plus unlocks the complete video lesson and all of its extra practice questions."
-    : "These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.";
+    ? currentCourseId === "igcse"
+      ? "Preview this lesson here. Complete IGCSE course access unlocks the video lesson and all of its extra practice questions."
+      : "Preview this lesson here. Mr Flynn IB Plus unlocks the complete video lesson and all of its extra practice questions."
+    : `These are questions from the ${currentCourseId === "igcse" ? "IGCSE Mathematics" : "Mr Flynn IB"} question bank, selected for this lesson. Try each one before opening its mark scheme.`;
 
   const frame = document.getElementById("practiceFrame");
   const bankFile = practice.bankPath || "ib-bank.html";
@@ -749,9 +764,11 @@ function renderLessonList(query = "") {
     const complete = state.completed.includes(lesson.id);
     const practice = practiceLibrary?.lessons?.[lesson.id];
     const locked = !lessonIsAvailable(lesson);
-    return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? "Preview Plus lesson: " : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
+    const lockedLabel = currentCourseId === "igcse" ? "Preview complete-course lesson: " : "Preview Plus lesson: ";
+    const lockedMeta = currentCourseId === "igcse" ? "Course access" : "Plus";
+    return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? lockedLabel : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
       <span class="lesson-state">${locked ? "+" : complete ? "✓" : "▶"}</span>
-      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? `${formatDuration(lesson.seconds)}${practice ? " · Practice preview" : ""} · Plus` : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Free lesson" : ""}`}</small></span>
+      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? `${formatDuration(lesson.seconds)}${practice ? " · Practice preview" : ""} · ${lockedMeta}` : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Free lesson" : ""}`}</small></span>
     </button>`;
   }).join("");
 }
@@ -1162,7 +1179,7 @@ document.getElementById("dismissPlusUpgrade").addEventListener("click", () => pl
 
 document.getElementById("signOut").addEventListener("click", async () => {
   await fetch("/api/platform/sign-out", { method: "POST" });
-  window.location.assign("/account");
+  window.location.assign(signOutDestination);
 });
 
 document.addEventListener("keydown", (event) => {
@@ -1175,60 +1192,74 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-function configureGuestExperience() {
-      guestMode = true;
-      enrolledCourseIds = courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => definition.id);
-      ownedCourseIds = [];
-      enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
-      const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId) ? requestedCourseId : "aa-hl";
-      enrolledCourseId = preferred;
-      currentCourseId = preferred;
-      currentCourse = courses[preferred];
-      currentLessonId = salesPreviewLessons(currentCourse)[0]?.id || currentCourse.lessons[0]?.id;
-      currentTopic = getCurrentLesson()?.topic || 1;
-      currentPastPaperCourse = currentCourse.code;
+function configureGuestExperience({ curriculumMismatch = false, currentCurriculum = null } = {}) {
+  const isIgcse = requestedCurriculum === "igcse" || requestedCourseId === "igcse";
+  guestMode = true;
+  enrolledCourseIds = isIgcse
+    ? ["igcse"]
+    : courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => definition.id);
+  ownedCourseIds = [];
+  enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
+  const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId) ? requestedCourseId : isIgcse ? "igcse" : "aa-hl";
+  const accountHref = isIgcse ? "/igcse/account" : "/account";
+  const homeHref = isIgcse ? "/igcse" : "/";
+  enrolledCourseId = preferred;
+  currentCourseId = preferred;
+  currentCourse = courses[preferred];
+  currentLessonId = salesPreviewLessons(currentCourse)[0]?.id || currentCourse.lessons[0]?.id;
+  currentTopic = getCurrentLesson()?.topic || 1;
+  currentPastPaperCourse = currentCourse.code;
+  signOutDestination = accountHref;
 
-      document.body.classList.add("guest-course-browser");
-      document.getElementById("myCourseButton").querySelector("span").textContent = "Courses";
-      document.getElementById("primaryLearningHomeLink").href = "/account?next=/learn";
-      document.getElementById("primaryLearningHomeLink").querySelector("strong").textContent = "Log in";
-      document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = "Save progress and unlock Plus";
-      document.getElementById("assignmentsLink").hidden = true;
-      document.getElementById("brandLearningHomeLink").href = "/";
-      document.getElementById("topbarLearningHomeLink").href = "/";
-      document.getElementById("topbarLearningHomeLink").textContent = "← Mr Flynn IB";
-      document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
-      document.getElementById("accessLink").textContent = requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
-      document.getElementById("accessLink").href = requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
-      document.getElementById("accessLink").classList.add("is-plus");
-      accountButton.classList.add("is-guest");
-      document.querySelector(".avatar").textContent = "";
-      document.getElementById("accountName").textContent = "Log in";
-      document.getElementById("accountRole").textContent = "Save your progress";
-      document.getElementById("learningHomeLink").textContent = "Log in";
-      document.getElementById("learningHomeLink").href = "/account?next=/learn";
-      document.getElementById("manageAccessLink").textContent = "Create free account";
-      document.getElementById("manageAccessLink").href = "/account?mode=sign-up&next=/learn";
-      document.getElementById("signOut").hidden = true;
-      document.getElementById("courseBackButton").textContent = "← All courses";
-      document.getElementById("courseBackButton").href = "/learn/index.html?curriculum=ib&view=courses";
-      document.getElementById("welcomeEyebrow").textContent = "Course preview";
-      document.getElementById("welcomeTitle").textContent = `Explore the ${currentCourse.code} course`;
-      document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic for free.";
-      document.getElementById("libraryStatusText").textContent = `${salesPreviewLessons(currentCourse).length} complete lessons free`;
-      document.getElementById("coursesEyebrow").textContent = "IB Mathematics courses";
-      document.getElementById("coursesTitle").textContent = "Choose your course";
-      document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three free lessons in every syllabus topic.";
-      document.getElementById("teachableMigrationNote").hidden = false;
-      document.getElementById("sidebarCourseLabel").textContent = "IB Mathematics courses";
+  document.body.classList.add("guest-course-browser");
+  document.body.classList.toggle("igcse-learning", isIgcse);
+  document.getElementById("myCourseButton").querySelector("span").textContent = isIgcse ? "My course" : "Courses";
+  document.getElementById("primaryLearningHomeLink").href = accountHref;
+  document.getElementById("primaryLearningHomeLink").querySelector("strong").textContent = curriculumMismatch ? `${currentCurriculum?.toUpperCase() || "Other"} account active` : "Log in";
+  document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = curriculumMismatch ? `Switch to ${isIgcse ? "IGCSE" : "IB"}` : "Save your progress";
+  document.getElementById("assignmentsLink").hidden = true;
+  document.getElementById("brandLearningHomeLink").href = homeHref;
+  document.getElementById("topbarLearningHomeLink").href = homeHref;
+  document.getElementById("topbarLearningHomeLink").textContent = isIgcse ? "← IGCSE home" : "← Mr Flynn IB";
+  document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
+  document.getElementById("accessLink").textContent = isIgcse ? "Create free account" : requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
+  document.getElementById("accessLink").href = isIgcse ? "/igcse/account?mode=sign-up" : requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
+  document.getElementById("accessLink").classList.toggle("is-plus", !isIgcse);
+  accountButton.classList.add("is-guest");
+  document.querySelector(".avatar").textContent = "";
+  document.getElementById("accountName").textContent = curriculumMismatch ? "Switch account" : "Log in";
+  document.getElementById("accountRole").textContent = isIgcse ? "IGCSE Mathematics" : "Save your progress";
+  document.getElementById("learningHomeLink").textContent = curriculumMismatch ? `Switch to ${isIgcse ? "IGCSE" : "IB"}` : "Log in";
+  document.getElementById("learningHomeLink").href = accountHref;
+  document.getElementById("manageAccessLink").textContent = "Create free account";
+  document.getElementById("manageAccessLink").href = `${accountHref}?mode=sign-up`;
+  document.getElementById("signOut").hidden = !curriculumMismatch;
+  document.getElementById("courseBackButton").textContent = isIgcse ? "← IGCSE home" : "← All courses";
+  document.getElementById("courseBackButton").href = isIgcse ? "/igcse" : "/learn/index.html?curriculum=ib&view=courses";
+  document.getElementById("welcomeEyebrow").textContent = "Course preview";
+  document.getElementById("welcomeTitle").textContent = isIgcse ? "Explore the IGCSE Mathematics course" : `Explore the ${currentCourse.code} course`;
+  document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic for free.";
+  document.getElementById("libraryStatusText").textContent = `${salesPreviewLessons(currentCourse).length} complete lessons free`;
+  document.getElementById("coursesEyebrow").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
+  document.getElementById("coursesTitle").textContent = isIgcse ? "Your IGCSE Mathematics course" : "Choose your course";
+  document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three free lessons in every syllabus topic.";
+  document.getElementById("teachableMigrationNote").hidden = isIgcse;
+  document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
 }
 
 async function bootstrapAccount() {
   if (reviewerMode || validPreviewCourseId) return;
   try {
-    const response = await fetch("/api/platform/bootstrap", { cache: "no-store" });
+    const curriculumQuery = requestedCurriculum === "igcse" || requestedCourseId === "igcse" ? "?curriculum=igcse" : "?curriculum=ib";
+    const response = await fetch(`/api/platform/bootstrap${curriculumQuery}`, { cache: "no-store" });
     if (response.status === 401) {
       configureGuestExperience();
+      return;
+    }
+    if (response.status === 409) {
+      const mismatch = await response.json().catch(() => ({}));
+      configureGuestExperience({ curriculumMismatch: true, currentCurriculum: mismatch.currentCurriculum });
+      showToast(`You are signed in to the separate ${String(mismatch.currentCurriculum || "other").toUpperCase()} area.`);
       return;
     }
     if (!response.ok) throw new Error("Your learning space could not be loaded.");

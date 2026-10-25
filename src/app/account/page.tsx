@@ -6,6 +6,7 @@ import { Suspense, type CSSProperties } from "react";
 import { Container, Eyebrow, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
 import { AccountMenu } from "@/components/account-menu";
+import { CurriculumAccountMismatch } from "@/components/curriculum-account-mismatch";
 import { StudentAccountForm } from "@/components/student-account-form";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
@@ -56,6 +57,7 @@ type AccountSearchParams = {
 export default async function AccountPage({ searchParams }: { searchParams: Promise<AccountSearchParams> }) {
   const pageSearchParams = await searchParams;
   const requestedNext = typeof pageSearchParams.next === "string" ? pageSearchParams.next : "";
+  const isIgcseJourney = pageSearchParams.qualification === "igcse" || requestedNext.startsWith("/igcse/");
   const isTeacherJourney = requestedNext.startsWith("/teacher") || requestedNext.startsWith("/igcse/teacher");
   const isSignUpJourney = pageSearchParams.mode === "sign-up";
   const isPlusJourney = pageSearchParams.plan === "plus" && !isTeacherJourney;
@@ -63,7 +65,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (!hasSupabaseBrowserConfig()) {
     return (
       <>
-        <PageHero eyebrow={isTeacherJourney ? "Teacher account" : "Student account"} title="Accounts are being prepared" intro="The account service still needs its secure connection before you can sign in." />
+        <PageHero eyebrow={isTeacherJourney ? "Teacher account" : "Student account"} title="Accounts are being prepared" intro="The account service still needs its secure connection before you can sign in." homeHref={isIgcseJourney ? "/igcse" : "/"} homeLabel={isIgcseJourney ? "IGCSE home" : "Home"} />
         <section className="section-tight"><Container className="narrow"><div className="account-card"><p>No student information is being collected yet.</p></div></Container></section>
       </>
     );
@@ -92,11 +94,11 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           : "Sign in to continue to your learning or teaching space.";
     return (
       <>
-        <section className={`account-entry-hero ${isPlusJourney ? "is-plus" : ""}`}>
-          <Container className="stack-sm"><Eyebrow>{isTeacherJourney ? "Teacher account" : isTeachableJourney ? "Existing Teachable student" : isPlusJourney ? "Mr Flynn IB Plus" : isSignUpJourney ? "Create account" : "Sign in"}</Eyebrow><h1>{title}</h1><p>{intro}</p></Container>
+        <section className={`account-entry-hero ${isPlusJourney ? "is-plus" : ""} ${isIgcseJourney ? "is-igcse" : ""}`}>
+          <Container className="stack-sm"><Eyebrow>{isIgcseJourney ? "IGCSE Mathematics account" : isTeacherJourney ? "Teacher account" : isTeachableJourney ? "Existing Teachable student" : isPlusJourney ? "Mr Flynn IB Plus" : isSignUpJourney ? "Create account" : "Sign in"}</Eyebrow><h1>{title}</h1><p>{isIgcseJourney ? isSignUpJourney ? "Create a separate IGCSE Mathematics student or teacher account." : "Sign in to your separate IGCSE Mathematics learning or teaching space." : intro}</p></Container>
         </section>
         <section className="section-tight account-entry-section"><Container className="stack-xl">
-          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Teacher Plus is optional and follows approval.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and approved teachers.</p><ul><li>Student Plus includes every Free feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses after approval.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
+          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} curriculumOverride={isIgcseJourney ? "igcse" : undefined} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Teacher Plus is optional and follows approval.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and approved teachers.</p><ul><li>Student Plus includes every Free feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses after approval.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
         </Container></section>
       </>
     );
@@ -106,11 +108,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
   const requestedCourse = pageSearchParams.course;
   const requestedQualification = typeof pageSearchParams.qualification === "string" ? pageSearchParams.qualification : "";
-  const isIgcse = requestedQualification === "igcse" || requestedNext.startsWith("/igcse/");
+  const isIgcse = isIgcseJourney || requestedQualification === "igcse";
   const { data: profile } = await supabase.from("profiles").select("role,teacher_status,curriculum").eq("user_id", user.id).maybeSingle();
   if (profile?.role !== "admin" && profile?.curriculum && profile.curriculum !== (isIgcse ? "igcse" : "ib")) {
-    const destination = profile.curriculum === "igcse" ? "/account?qualification=igcse&" : "/account?";
-    redirect(`${destination}error=${encodeURIComponent("IB and IGCSE use separate accounts. Sign out before entering the other account area.")}`);
+    const currentArea = profile.curriculum === "igcse" ? "IGCSE" : "IB";
+    const requestedArea = isIgcse ? "IGCSE" : "IB";
+    return <CurriculumAccountMismatch currentArea={currentArea} requestedArea={requestedArea} />;
   }
   await Promise.all([
     supabase.rpc("claim_verified_course_access"),
@@ -347,7 +350,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               <small>{access.detail}</small>
               <Link href={upgradeHref}>{access.paid ? "Manage access" : isIgcse ? "Course access" : "Explore course access"}</Link>
             </div>
-            <AccountMenu signOutHref={isIgcse ? "/account?qualification=igcse" : "/account"} />
+            <AccountMenu signOutHref={isIgcse ? "/igcse/account" : "/account"} />
           </div>
           <div className="dashboard-hero-layout">
             <div className="dashboard-hero-copy">
@@ -394,7 +397,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </article>
             <article className="student-continue-card">
               <div className="student-continue-copy"><span className="student-focus-label">Continue learning</span><small>{progressLabel}</small><h2>{lastLessonAvailable ? "Continue your last lesson" : "Open your course"}</h2><p>{access.paid ? "Every video lesson and its extra practice are unlocked." : "Three complete lessons in every topic are free."}</p><Link className="student-inline-action" href={courseLearningHref}>{lastLessonAvailable ? "Continue course" : "Choose a lesson"} <span aria-hidden="true">→</span></Link></div>
-              {!isIgcse ? <Image src={`/learn/assets/course-${selectedCourse.slug}.png`} alt="" width={250} height={250} /> : <div className="student-continue-symbol" aria-hidden="true">x²</div>}
+              {!isIgcse ? <Image src={`/learn/assets/course-${selectedCourse.slug}.png`} alt="" width={250} height={250} /> : <div className="student-continue-symbol student-continue-igcse" aria-hidden="true"><strong>IGCSE</strong><span>Mathematics</span></div>}
               <div className="student-continue-meter"><span><strong>{completedLessons} of {availableLessonIds.length}</strong> {courseLessonLabel} complete</span><i><b style={{ width: `${courseLessonPercentage}%` }} /></i></div>
             </article>
           </section>

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
+import { HeaderAccountLink } from "@/components/header-account-link";
 import { Container } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: { default: "IGCSE Mathematics", template: "%s | Mr Flynn IB" },
+  title: { default: "Mr Flynn IGCSE Mathematics", template: "%s | Mr Flynn IGCSE" },
   description: "IGCSE Mathematics courses, question bank development, school support and tutoring from Mr Flynn IB.",
 };
 
@@ -17,19 +19,25 @@ const links = [
 export default function IgcseLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="igcse-site">
-      <nav className="igcse-section-nav" aria-label="IGCSE Mathematics navigation">
+      <header className="igcse-section-nav">
         <Container className="igcse-section-nav-inner">
-          <Link className="igcse-section-brand" href="/igcse"><span>Mr Flynn IB</span><strong>IGCSE Mathematics</strong></Link>
-          <div className="igcse-section-links">
+          <Link className="igcse-section-brand" href="/igcse"><span>Mr Flynn</span><strong>IGCSE Mathematics</strong></Link>
+          <nav className="igcse-section-links" aria-label="IGCSE Mathematics navigation">
             {links.map((link) => (
               <Link href={link.href} key={link.href}>
                 {link.label}
               </Link>
             ))}
+          </nav>
+          <div className="igcse-section-actions">
+            <Suspense fallback={<Link className="button button-small" href="/igcse/account">Log in</Link>}>
+              <HeaderAccountLink className="button button-small" />
+            </Suspense>
           </div>
         </Container>
-      </nav>
+      </header>
       {children}
+      <footer className="igcse-footer"><Container className="igcse-footer-inner"><p>© {new Date().getFullYear()} Mr Flynn IGCSE Mathematics</p><div><Link href="/igcse/privacy">Privacy</Link><Link href="/igcse/terms">Terms</Link><a href="mailto:contact@mrflynnib.com">Contact</a></div></Container></footer>
     </div>
   );
 }

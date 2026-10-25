@@ -31,10 +31,10 @@ export function ButtonLink({
 
 export type BreadcrumbItem = { label: string; href?: string };
 
-export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
+export function Breadcrumbs({ items, homeHref = "/", homeLabel = "Home" }: { items: BreadcrumbItem[]; homeHref?: string; homeLabel?: string }) {
   return (
     <nav className="breadcrumbs" aria-label="Breadcrumb">
-      <Link href="/">Home</Link>
+      <Link href={homeHref}>{homeLabel}</Link>
       {items.map((item, index) => item.href
         ? <Link href={item.href} key={`${item.href}-${item.label}`}>{item.label}</Link>
         : <span aria-current={index === items.length - 1 ? "page" : undefined} key={item.label}>{item.label}</span>)}
@@ -42,11 +42,11 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
   );
 }
 
-export function PageHero({ eyebrow, title, intro, breadcrumbLabel = eyebrow }: { eyebrow: string; title: string; intro?: string; breadcrumbLabel?: string }) {
+export function PageHero({ eyebrow, title, intro, breadcrumbLabel = eyebrow, homeHref = "/", homeLabel = "Home" }: { eyebrow: string; title: string; intro?: string; breadcrumbLabel?: string; homeHref?: string; homeLabel?: string }) {
   return (
     <section className="page-hero">
       <Container className="stack-lg">
-        <Breadcrumbs items={[{ label: breadcrumbLabel }]} />
+        <Breadcrumbs homeHref={homeHref} homeLabel={homeLabel} items={[{ label: breadcrumbLabel }]} />
         <div className="stack">
           <Eyebrow>{eyebrow}</Eyebrow>
           <h1>{title}</h1>
