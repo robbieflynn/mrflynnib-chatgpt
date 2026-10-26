@@ -27,6 +27,11 @@ export async function choosePrimaryCourse(formData: FormData) {
 
   if (error) redirect(`/account?error=${encodeURIComponent("Your course choice could not be saved. Please try again.")}`);
 
+  // Older school accounts may pre-date course selection. Claim again after
+  // saving the choice so an approved school-domain account receives the
+  // matching Plus course before its learning home opens.
+  await supabase.rpc("claim_school_plus_access");
+
   revalidatePath("/account");
   redirect(destination === "plus" ? `/account/access?course=${course.slug}` : `/account?course=${course.slug}`);
 }
@@ -71,6 +76,9 @@ export async function joinClass(formData: FormData) {
   if (!code) redirect(errorPath("Enter your class code."));
   const { data: classId, error } = await supabase.rpc("join_class_by_code", { raw_code: code });
   if (error) redirect(errorPath(error.message || "That class code could not be used."));
+  // A legacy school account may obtain its course from the class it has just
+  // joined rather than from account metadata.
+  await supabase.rpc("claim_school_plus_access");
   const { data: classRecord } = classId
     ? await supabase.from("classes").select("name,bank").eq("id", classId).maybeSingle()
     : { data: null };
