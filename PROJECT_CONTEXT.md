@@ -63,6 +63,8 @@ IB and IGCSE must use completely separate public identities and entry journeys. 
 
 On 26 October 2026, Rob superseded the earlier duplicate-account requirement. Authentication is shared: one email address and password identify the same person in both IB and IGCSE. The route used to sign in determines which curriculum dashboard opens. The two products must still keep their classes, assignments, course access, progress and whiteboards separated through explicit curriculum keys, and neither customer-facing area should advertise or switch into the other. Password reset changes the one shared password. If someone tries to create another account with an existing email, explain that the account already exists and direct them to sign in or reset the password instead of claiming that a confirmation email was sent.
 
+The shared-login explanation belongs only in the IGCSE account journey. IB-facing sign-in, account-creation and password screens must not mention IGCSE; an IB student should experience Mr Flynn IB as a complete standalone product without being introduced to the secondary IGCSE offer during account access.
+
 ### Online courses
 
 Courses cover the IB Mathematics pathways AA HL, AA SL, AI HL, and AI SL. Teachable hosts course checkout, enrollment, login, and learning delivery. MrFlynnIB.com should provide premium course landing pages, previews, curriculum information, FAQs, evidence, and clear calls to action, then send customers deliberately and seamlessly to the correct Teachable destination. Existing students need an obvious Teachable login route.
