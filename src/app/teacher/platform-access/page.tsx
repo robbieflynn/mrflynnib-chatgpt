@@ -4,7 +4,7 @@ import { AccountMenu } from "@/components/account-menu";
 import { AccessCodeCreator } from "@/components/platform/access-code-creator";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { requireSignedIn } from "@/lib/account-access";
-import { courseProducts, teacherPlusProduct } from "@/lib/platform-products";
+import { courseProducts, studentAllCoursesProduct, teacherPlusProduct } from "@/lib/platform-products";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { grantCourseAccess, revokeCourseAccess, setAccessCodeStatus } from "./actions";
 
@@ -15,7 +15,7 @@ type EntitlementRow = { id: string; user_id: string; product_code: string; statu
 type PurchaseRow = { id: string; user_id: string; product_code: string; status: string; amount_total: number; amount_refunded: number; currency: string; purchased_at: string | null; created_at: string };
 type AccessCodeRow = { id: string; code_hint: string; product_code: string; status: string; access_days: number | null; max_redemptions: number; redemption_count: number; expires_at: string | null; note: string; created_at: string };
 
-const products = [...courseProducts, teacherPlusProduct];
+const products = [...courseProducts, studentAllCoursesProduct, teacherPlusProduct];
 const productLabels = new Map(products.map((product) => [product.productCode, product.shortTitle]));
 const productOptions = products.map((product) => ({ productCode: product.productCode, label: `${product.shortTitle} — ${product.title}` }));
 const dateFormatter = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Dubai" });
