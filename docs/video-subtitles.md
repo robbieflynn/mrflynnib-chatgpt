@@ -12,6 +12,12 @@ The Bunny player can display English captions without paying Bunny to transcribe
 
 The script is safe by default. `plan` makes no external changes, paid transcription needs `--confirm-paid`, uploads need `--confirm-upload`, and an existing English track is never replaced unless `--replace-existing` is supplied.
 
+## Pilot result
+
+A local `small.en` pilot completed successfully on the 5 minute 49 second lesson **Proof by contradiction (root 2)**. It produced valid WebVTT captions in about two minutes on the M1 MacBook Air, with no transcription charge. The ordinary English was strong, but two spoken algebra phrases needed a quick manual correction. Captions must therefore pass a maths review before upload; generation is automated, mathematical approval is not.
+
+The source manifest contains 2,025 videos. Some originals are on the external R2 archive, so the full run should start when that drive is mounted. The caption job is resumable and can process locally available files first.
+
 ## Local transcription (no API transcription charge)
 
 Install `ffmpeg` and `whisper.cpp`, then download an English whisper.cpp model. `small.en` is a practical test model on an 8 GB Apple Silicon Mac; use the pilot to decide whether its maths accuracy is sufficient.
