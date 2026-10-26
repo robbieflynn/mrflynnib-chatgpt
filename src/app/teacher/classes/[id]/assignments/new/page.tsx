@@ -77,9 +77,12 @@ export default async function NewAssignmentPage({ params, searchParams }: { para
   }
   const creatingShadow = shadowSources.length > 0;
   const assignmentDraftId = creatingShadow ? `${id}-shadow-${message.shadowOf}` : id;
+  const shadowDescription = classRecord.bank === "igcse"
+    ? "Each source question is replaced with a different question matched by difficulty and subtopic. Review the choices before publishing."
+    : "Each source question is replaced with a different question matched by paper, section, difficulty and subtopic. Review the choices before publishing.";
   return <>
     <main className={workspaceClass}>
-    <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name, href: `/teacher/classes/${id}` }, { label: creatingShadow ? "Shadow task" : "New assignment" }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord.course}</p><h1>{creatingShadow ? "Create a shadow task" : "Set an assignment"}</h1><p>{creatingShadow ? "Each source question is replaced with a different question matched by paper, section, difficulty and subtopic. Review the choices before publishing." : `Choose questions and publish the work to ${classRecord.name}. Answer checking is set automatically.`}</p></div><span className="teacher-workspace-icon" aria-hidden="true">＋</span></div></Container></section>
+    <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Teacher dashboard", href: dashboardHref }, { label: classRecord.name, href: `/teacher/classes/${id}` }, { label: creatingShadow ? "Shadow task" : "New assignment" }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord.course}</p><h1>{creatingShadow ? "Create a shadow task" : "Set an assignment"}</h1><p>{creatingShadow ? shadowDescription : `Choose questions and publish the work to ${classRecord.name}. Answer checking is set automatically.`}</p></div><span className="teacher-workspace-icon" aria-hidden="true">＋</span></div></Container></section>
     <section className="section-tight"><Container>
       <form action={createAssignment} className="assignment-builder stack-xl"><input name="classId" type="hidden" value={id} />
         {message.error ? <p className="form-message form-error">{message.error}</p> : null}
