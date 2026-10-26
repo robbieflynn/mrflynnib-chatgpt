@@ -21,6 +21,13 @@ function isIbCourseId(value: string | null): value is IbCourseId {
   return ibCourseChoices.some((course) => course.id === value);
 }
 
+async function claimExistingAccess(supabase: ReturnType<typeof createClient>) {
+  await Promise.all([
+    supabase.rpc("claim_verified_course_access"),
+    supabase.rpc("claim_school_plus_access"),
+  ]);
+}
+
 export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride }: { initialMode?: Mode; curriculumOverride?: "ib" | "igcse" }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -139,6 +146,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         return setError("An account already exists with this email address. Sign in with your existing password, or use Forgotten your password?");
       }
       if (data.session) {
+        await claimExistingAccess(supabase);
         router.push(signUpNextPath);
         router.refresh();
       } else {
@@ -161,6 +169,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
       }
       return setError("That email address and password did not match.");
     }
+    await claimExistingAccess(supabase);
     window.location.replace(nextPath);
   }
 
