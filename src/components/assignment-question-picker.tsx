@@ -203,7 +203,12 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
           <ol className="assignment-selection-list">
             {selectedIds.map((id, index) => {
               const summary = questionSummaries[id];
-              const details = [summary?.paper, summary?.topic, summary?.subtopic, summary?.difficulty].filter(Boolean);
+              const details = [
+                bank === "ib" ? summary?.paper : "",
+                summary?.topic,
+                summary?.subtopic,
+                summary?.difficulty,
+              ].filter(Boolean);
               return (
                 <li key={id}>
                   <span className="assignment-selection-number">{index + 1}</span>

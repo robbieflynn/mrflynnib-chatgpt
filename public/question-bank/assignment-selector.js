@@ -4,6 +4,7 @@
 
   var MAX_SELECTED = 100;
   var DRAFT_VERSION = 18;
+  var includePaperMetadata = params.get("course") !== "IGCSE Higher";
   var draftId = String(params.get("draft") || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
   var draftKey = draftId ? "mrflynnib-assignment-draft:" + draftId : "";
   var restoredSelection = [];
@@ -122,7 +123,7 @@
       title: plainText(question.title) || existing && existing.title || "Selected question",
       topic: meta && meta.topic || text(".qb-badge.topic .main") || existing && existing.topic || "",
       subtopic: meta && meta.subtopic || text(".qb-badge.topic .subs") || existing && existing.subtopic || "",
-      paper: meta && meta.paper || text(".qb-badge.course") || existing && existing.paper || "",
+      paper: includePaperMetadata ? meta && meta.paper || text(".qb-badge.course") || existing && existing.paper || "" : "",
       section: meta && meta.section === "B" || question.section === "B" ? "B" : "A",
       difficulty: meta && meta.difficulty || text(".qb-badge:not(.course):not(.topic):not(.marks)") || existing && existing.difficulty || "",
       marks: Number(question.marks) || existing && existing.marks || null
