@@ -3620,6 +3620,25 @@
     });
   }
 
+  function factorisedExpressionCandidates(correct, prompt, list) {
+    if (!/\bfactori[sz]e\b/i.test(finalInstructionText(prompt))) return;
+    var match = clean(correct).match(/^(-?\d+)([A-Za-z])\((-?\d+)([+-])(\d+)([A-Za-z])\)$/);
+    if (!match) return;
+    var outside = Number(match[1]);
+    var firstInside = Number(match[3]);
+    var secondInside = Number(match[5]);
+    var outsideVariable = match[2];
+    var insideVariable = match[6];
+    var sign = match[4];
+    var outsideWithoutCoefficient = (outside < 0 ? "-" : "") + outsideVariable;
+    addCandidate(list, outside + outsideVariable + "(" + (firstInside + Math.max(1, Math.abs(firstInside))) + sign + secondInside + insideVariable + ")");
+    addCandidate(list, outside + outsideVariable + "(" + firstInside + sign + (secondInside + Math.max(1, Math.abs(secondInside))) + insideVariable + ")");
+    addCandidate(list, outsideWithoutCoefficient + "(" + firstInside + sign + secondInside + insideVariable + ")");
+    if (outsideVariable.toLowerCase() !== insideVariable.toLowerCase()) {
+      addCandidate(list, outside + insideVariable + "(" + firstInside + sign + secondInside + outsideVariable + ")");
+    }
+  }
+
   function functionValueCandidates(correct, list) {
     var match = clean(correct).match(/^(sin|cos|tan|ln|log|exp)\s+(-?\d+(?:\.\d+)?)$/i);
     if (!match) return;
@@ -4107,7 +4126,8 @@
       && !/\b(?:range|interval)\b/i.test(instruction)) return false;
     if (/\([^)]*(?:\d|sqrt|π|pi)[^)]*\)\s*(?:[A-Za-z]+(?:\^[23])?)?$/.test(candidate)
       && /(?:\d|sqrt|π|pi)[^;]*\s+\([^)]*(?:\d|sqrt|π|pi)/.test(candidate)) return false;
-    if (/^\s*-?\d+(?:\.\d+)?\s*(?:\([^)]*\)|[A-Za-z]+(?:\^[23])?)\s*\(\s*-?\d+(?:\.\d+)?/i.test(candidate)) return false;
+    if (/^\s*-?\d+(?:\.\d+)?\s*(?:\([^)]*\)|[A-Za-z]+(?:\^[23])?)\s*\(\s*-?\d+(?:\.\d+)?/i.test(candidate)
+      && !/\bfactori[sz]e\b/i.test(instruction)) return false;
     if (/^(?:latex:)?H_?[01]$/i.test(candidate.replace(/\s/g, ""))) return false;
 
     var coordinateOnly = /^(?:[A-Z]\s*=\s*)?\([^,]+,[^,]+(?:,[^,]+)?\)(?:\s*;\s*\([^,]+,[^,]+(?:,[^,]+)?\))*$/.test(candidate);
@@ -4246,6 +4266,7 @@
     var compoundInequalitySet = compoundInequalityChoiceSet(accepted, correct, seed, prompt);
     if (compoundInequalitySet) return compoundInequalitySet;
     var candidates = [];
+    factorisedExpressionCandidates(correct, prompt, candidates);
     ratioDistractorCandidates(correct, candidates);
     functionEvaluationResultCandidates(correct, candidates);
     interceptCoordinateCandidates(correct, prompt, candidates);

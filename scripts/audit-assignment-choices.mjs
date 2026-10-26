@@ -69,6 +69,18 @@ assert(estimatedProbabilityChoices.options.every((option) => {
 const fragmentProbabilityChoices = choices.generateChoiceSet(["0.145"], "audit-fragment-probability", "less than 4.5 kg;");
 assert(fragmentProbabilityChoices);
 assert(fragmentProbabilityChoices.options.every((option) => Number(option) >= 0 && Number(option) <= 1));
+const igcseFactorisingPrompt = String.raw`Factorise fully \(4p+6pq\).`;
+const igcseFactorisingAnswer = "2p(2+3q)";
+assert.equal(choices.isAnswerCompatibleWithPrompt(igcseFactorisingAnswer, igcseFactorisingPrompt), true);
+const igcseFactorisingChoices = choices.generateChoiceSet([igcseFactorisingAnswer], "4MA1_2019J_1H_Q1:a", igcseFactorisingPrompt);
+assert(igcseFactorisingChoices);
+assert.deepEqual(new Set(igcseFactorisingChoices.options), new Set([
+  "2p(2+3q)",
+  "2p(4+3q)",
+  "2p(2+6q)",
+  "p(2+3q)",
+  "2q(2+3p)",
+]));
 const repairedCoefficientChoices = choices.repairStoredChoiceOptions([
   "1/2r^2sintheta", "-1/2r^2sintheta", "3/2r^2sintheta", "1/0r^2sintheta", "1/4r^2sintheta",
 ]);
