@@ -50,7 +50,16 @@ export const teacherPlusProduct = {
   plans: [{ id: "one-year" as const, label: "12 months", priceUsd: 99, accessDays: 365, stripePriceEnv: "STRIPE_PRICE_TEACHER_PLUS_IB_ONE_YEAR" }],
 };
 
-export type PaidProduct = CourseProduct | typeof teacherPlusProduct;
+export const studentAllCoursesProduct = {
+  id: "student-all-courses" as const,
+  curriculum: "ib" as const,
+  productCode: "student_all_courses_ib",
+  shortTitle: "Student — all four IB courses",
+  title: "All four IB Mathematics courses without teacher access",
+  plans: [],
+};
+
+export type PaidProduct = CourseProduct | typeof teacherPlusProduct | typeof studentAllCoursesProduct;
 
 export function getCourseProduct(id: string | null | undefined) {
   return courseProducts.find((product) => product.id === id);
@@ -61,7 +70,9 @@ export function courseProductForCode(productCode: string) {
 }
 
 export function paidProductForCode(productCode: string): PaidProduct | undefined {
-  return courseProductForCode(productCode) ?? (teacherPlusProduct.productCode === productCode ? teacherPlusProduct : undefined);
+  return courseProductForCode(productCode)
+    ?? (teacherPlusProduct.productCode === productCode ? teacherPlusProduct : undefined)
+    ?? (studentAllCoursesProduct.productCode === productCode ? studentAllCoursesProduct : undefined);
 }
 
 export function getCoursePlan(product: CourseProduct | undefined, planId: string | null | undefined) {

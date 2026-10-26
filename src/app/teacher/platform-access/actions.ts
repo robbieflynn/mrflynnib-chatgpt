@@ -4,10 +4,10 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/account-access";
-import { courseProducts, paidProductForCode, teacherPlusProduct } from "@/lib/platform-products";
+import { courseProducts, paidProductForCode, studentAllCoursesProduct, teacherPlusProduct } from "@/lib/platform-products";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-const adminProducts = [...courseProducts, teacherPlusProduct];
+const adminProducts = [...courseProducts, studentAllCoursesProduct, teacherPlusProduct];
 const validProductCodes = new Set(adminProducts.map((product) => product.productCode));
 const adminPath = "/teacher/platform-access";
 

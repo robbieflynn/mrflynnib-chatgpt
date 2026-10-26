@@ -8,6 +8,7 @@ export const platformProductLabels: Record<string, string> = {
   question_bank_plus_igcse: "Question Bank Plus",
   teacher_plus_ib: "Teacher Plus",
   teacher_plus_igcse: "Teacher Plus",
+  student_all_courses_ib: "Student Plus — all four IB courses",
 };
 
 export type PlatformEntitlement = {
@@ -72,7 +73,9 @@ export function platformAccessSummary(
   };
   const active = [...personalAccess, ...schoolAccess].filter(matchesCurriculum);
   const courseAccess = active
-    .filter((entitlement) => entitlement.product_code.startsWith("course_") || entitlement.product_code.startsWith("teacher_plus"))
+    .filter((entitlement) => entitlement.product_code.startsWith("course_")
+      || entitlement.product_code.startsWith("teacher_plus")
+      || entitlement.product_code === "student_all_courses_ib")
     .sort((first, second) => {
       const firstExpiry = first.expires_at ? new Date(first.expires_at).getTime() : Number.POSITIVE_INFINITY;
       const secondExpiry = second.expires_at ? new Date(second.expires_at).getTime() : Number.POSITIVE_INFINITY;
