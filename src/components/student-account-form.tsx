@@ -179,7 +179,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         <button type="button" role="tab" aria-selected={mode === "sign-in"} onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Sign in</button>
         <button type="button" role="tab" aria-selected={mode === "sign-up"} onClick={() => { setMode("sign-up"); setError(null); setMessage(null); }}>Create account</button>
       </div>
-      <p className="account-shared-login-note">Your email and password work in both IB and IGCSE. This page opens your {curriculum === "igcse" ? "IGCSE" : "IB"} learning area.</p>
+      {curriculum === "igcse" ? <p className="account-shared-login-note">Your email and password work in both IB and IGCSE. This page opens your IGCSE learning area.</p> : null}
       <form className="stack" onSubmit={submit}>
         {mode === "sign-up" ? (
           <>
