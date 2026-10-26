@@ -61,10 +61,16 @@ export function platformAccessSummary(
   entitlements: PlatformEntitlement[] | null | undefined,
   schoolSeats: PlatformLicenseSeat[] | null | undefined,
   now = new Date(),
+  curriculum?: "ib" | "igcse",
 ) {
   const personalAccess = activePlatformEntitlements(entitlements, now);
   const schoolAccess = activePlatformEntitlements(activeSchoolEntitlements(schoolSeats), now);
-  const active = [...personalAccess, ...schoolAccess];
+  const matchesCurriculum = (entitlement: PlatformEntitlement) => {
+    if (!curriculum) return true;
+    if (curriculum === "igcse") return entitlement.product_code === "course_igcse" || entitlement.product_code.endsWith("_igcse");
+    return entitlement.product_code.startsWith("course_ib_") || entitlement.product_code.endsWith("_ib");
+  };
+  const active = [...personalAccess, ...schoolAccess].filter(matchesCurriculum);
   const courseAccess = active
     .filter((entitlement) => entitlement.product_code.startsWith("course_") || entitlement.product_code.startsWith("teacher_plus"))
     .sort((first, second) => {

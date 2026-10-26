@@ -95,6 +95,8 @@ export function AccountMenu({
       const access = platformAccessSummary(
         entitlements as PlatformEntitlement[] | null,
         schoolSeats as PlatformLicenseSeat[] | null,
+        new Date(),
+        routeCurriculum,
       );
 
       const metadata = user.user_metadata || {};
