@@ -18,9 +18,8 @@ export async function GET(request: Request) {
     ? map.samples.includes(videoId)
     : Boolean(map.freePastPapers?.includes(videoId));
   if (!isSample) {
-    const session = await getPlatformAccess();
+    const session = await getPlatformAccess(course.curriculum);
     if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
-    if (course.curriculum !== session.curriculum && session.profile?.role !== "admin") return NextResponse.json({ error: "Video not found" }, { status: 404 });
     const ownsCourse = session.ownedCourses.some((item) => item.id === courseId);
     if (!ownsCourse) return NextResponse.json({ error: "Full course access required", upgrade: course.curriculum === "igcse" ? "/igcse/account/access" : "/account/access" }, { status: 403 });
   }

@@ -3,7 +3,7 @@ import AccountPage from "@/app/account/page";
 
 export const metadata: Metadata = {
   title: "IGCSE Mathematics account",
-  description: "Sign in to your separate Mr Flynn IGCSE Mathematics student or teacher account.",
+  description: "Sign in to your Mr Flynn account for the IGCSE Mathematics learning area.",
   robots: { index: false, follow: false },
 };
 

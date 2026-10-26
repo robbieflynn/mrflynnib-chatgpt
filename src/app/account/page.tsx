@@ -6,7 +6,6 @@ import { Suspense, type CSSProperties } from "react";
 import { Container, Eyebrow, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
 import { AccountMenu } from "@/components/account-menu";
-import { CurriculumAccountMismatch } from "@/components/curriculum-account-mismatch";
 import { StudentAccountForm } from "@/components/student-account-form";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
@@ -95,7 +94,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     return (
       <>
         <section className={`account-entry-hero ${isPlusJourney ? "is-plus" : ""} ${isIgcseJourney ? "is-igcse" : ""}`}>
-          <Container className="stack-sm"><Eyebrow>{isIgcseJourney ? "IGCSE Mathematics account" : isTeacherJourney ? "Teacher account" : isTeachableJourney ? "Existing Teachable student" : isPlusJourney ? "Mr Flynn IB Plus" : isSignUpJourney ? "Create account" : "Sign in"}</Eyebrow><h1>{title}</h1><p>{isIgcseJourney ? isSignUpJourney ? "Create a separate IGCSE Mathematics student or teacher account." : "Sign in to your separate IGCSE Mathematics learning or teaching space." : intro}</p></Container>
+          <Container className="stack-sm"><Eyebrow>{isIgcseJourney ? "IGCSE Mathematics account" : isTeacherJourney ? "Teacher account" : isTeachableJourney ? "Existing Teachable student" : isPlusJourney ? "Mr Flynn IB Plus" : isSignUpJourney ? "Create account" : "Sign in"}</Eyebrow><h1>{title}</h1><p>{isIgcseJourney ? isSignUpJourney ? "Create your account, or sign in with the same email and password you use for Mr Flynn IB." : "Sign in with your Mr Flynn account to open the IGCSE learning or teaching area." : intro}</p></Container>
         </section>
         <section className="section-tight account-entry-section"><Container className="stack-xl">
           <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} curriculumOverride={isIgcseJourney ? "igcse" : undefined} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Teacher Plus is optional and follows approval.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and approved teachers.</p><ul><li>Student Plus includes every Free feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses after approval.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
@@ -110,11 +109,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const requestedQualification = typeof pageSearchParams.qualification === "string" ? pageSearchParams.qualification : "";
   const isIgcse = isIgcseJourney || requestedQualification === "igcse";
   const { data: profile } = await supabase.from("profiles").select("role,teacher_status,curriculum").eq("user_id", user.id).maybeSingle();
-  if (profile?.role !== "admin" && profile?.curriculum && profile.curriculum !== (isIgcse ? "igcse" : "ib")) {
-    const currentArea = profile.curriculum === "igcse" ? "IGCSE" : "IB";
-    const requestedArea = isIgcse ? "IGCSE" : "IB";
-    return <CurriculumAccountMismatch currentArea={currentArea} requestedArea={requestedArea} />;
-  }
   await Promise.all([
     supabase.rpc("claim_verified_course_access"),
     supabase.rpc("claim_school_plus_access"),
@@ -151,7 +145,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               </div>
               {requestPending ? <p className="teacher-pending-note"><strong>Approval pending</strong><span>No further action is needed. You can return here to check the status.</span></p> : null}
               <div className="teacher-access-gate-actions">
-                {!requestPending ? <form action={requestTeacherAccess}><button className="button" type="submit">Request teacher access</button></form> : null}
+                {!requestPending ? <form action={requestTeacherAccess}><input name="curriculum" type="hidden" value={isIgcse ? "igcse" : "ib"} /><button className="button" type="submit">Request teacher access</button></form> : null}
                 <Link className="button button-secondary" href={studentDashboardHref}>Return to student dashboard</Link>
               </div>
             </div>

@@ -27,18 +27,17 @@ async function createCheckout(request: Request) {
     return NextResponse.json({ error: "Checkout request was rejected." }, { status: 403 });
   }
 
-  const session = await getPlatformAccess();
-  if (!session.user || !session.curriculum) {
-    return NextResponse.json({ error: "Sign in required" }, { status: 401 });
-  }
-
   const body = await request.json().catch(() => ({}));
   const teacherBundleRequested = body.productId === teacherPlusProduct.id;
   const product = teacherBundleRequested
     ? teacherPlusProduct
     : getCourseProduct(typeof body.courseId === "string" ? body.courseId : "");
+  const session = await getPlatformAccess(product?.curriculum);
+  if (!session.user || !session.curriculum) {
+    return NextResponse.json({ error: "Sign in required" }, { status: 401 });
+  }
   const plan = getPaidProductPlan(product, typeof body.planId === "string" ? body.planId : "");
-  if (!product || product.curriculum !== session.curriculum) {
+  if (!product) {
     return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
   }
   if (teacherBundleRequested && !["teacher", "admin"].includes(session.profile?.role || "")) {

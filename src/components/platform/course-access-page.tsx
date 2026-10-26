@@ -14,14 +14,11 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
   const accountPath = curriculum === "igcse" ? "/igcse/account" : "/account";
   const accessPath = curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
   const learnPath = curriculum === "igcse" ? "/igcse/learn" : "/learn";
-  const session = await getPlatformAccess();
+  const session = await getPlatformAccess(curriculum);
   if (!session.user || !session.curriculum) {
     const accountQuery = new URLSearchParams({ next: accessPath });
     if (curriculum === "ib") accountQuery.set("plan", "plus");
     redirect(`${accountPath}?${accountQuery.toString()}`);
-  }
-  if (session.profile?.role !== "admin" && session.curriculum !== curriculum) {
-    redirect(`${accountPath}?error=${encodeURIComponent(`This is a separate ${curriculum === "igcse" ? "IGCSE" : "IB"} account area. Sign out of the other account first.`)}`);
   }
   const products = productsForCurriculum(curriculum);
   const requestedProduct = getCourseProduct(typeof query.course === "string" ? query.course : "");
@@ -35,7 +32,7 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
   const successCourseHref = selectedProduct ? `${learnPath}?course=${selectedProduct.id}` : `${learnPath}?view=courses`;
   return <>
     <section className={`dashboard-hero student-dashboard-hero access-page-hero ${curriculum === "igcse" ? "student-dashboard-hero-igcse" : ""}`}>
-      <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">{checkoutSucceeded ? "Purchase complete" : curriculum === "igcse" ? "IGCSE course access" : "Mr Flynn IB Plus"}</span><h1>{checkoutSucceeded ? "Thank you — your Plus course is ready." : curriculum === "igcse" ? "Your Edexcel IGCSE Mathematics course" : selectedProduct ? `Unlock the complete ${selectedProduct.shortTitle} course` : "Choose your complete course"}</h1><p>{checkoutSucceeded ? "Your payment was successful. This account now has access to the complete course." : curriculum === "igcse" ? "Your IGCSE course, question bank, classes and assignments stay together in this separate IGCSE Mathematics area." : "Every video lesson and the full set of extra practice attached to the course. Two years of access with one payment and no automatic renewal."}</p></div></Container>
+      <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">{checkoutSucceeded ? "Purchase complete" : curriculum === "igcse" ? "IGCSE course access" : "Mr Flynn IB Plus"}</span><h1>{checkoutSucceeded ? "Thank you — your Plus course is ready." : curriculum === "igcse" ? "Your Edexcel IGCSE Mathematics course" : selectedProduct ? `Unlock the complete ${selectedProduct.shortTitle} course` : "Choose your complete course"}</h1><p>{checkoutSucceeded ? "Your payment was successful. This account now has access to the complete course." : curriculum === "igcse" ? "Your IGCSE course, question bank, classes and assignments stay together in the IGCSE Mathematics area." : "Every video lesson and the full set of extra practice attached to the course. Two years of access with one payment and no automatic renewal."}</p></div></Container>
     </section>
     <section className="section-tight platform-access-page"><Container className="stack-xl">
       {checkoutSucceeded ? <CheckoutActivationNotice sessionId={checkoutSessionId} accessPath={accessPath} title={selectedProduct ? `The complete ${selectedProduct.shortTitle} course` : "Your complete course"} openHref={successCourseHref} /> : null}
@@ -47,7 +44,6 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
       {codeStatus === "already_active" ? <p className="form-message form-success">Your account already has this course access.</p> : null}
       {codeStatus === "already_redeemed" ? <p className="form-message">This account has already used that access code.</p> : null}
       {codeStatus === "teacher_required" ? <p className="form-message form-error">That code is for an approved teacher account.</p> : null}
-      {codeStatus === "wrong_area" ? <p className="form-message form-error">That code belongs to the separate {curriculum === "igcse" ? "IB" : "IGCSE"} account area.</p> : null}
       {["invalid", "unavailable", "error"].includes(codeStatus) ? <p className="form-message form-error">That access code is invalid, expired or no longer available.</p> : null}
       <div className="platform-access-intro"><div><Eyebrow>Current access</Eyebrow><h2>{session.access?.label || "Free account"}</h2><p>{session.access?.detail || "Complete question bank and classroom tools"}</p></div>{session.access?.paid ? <div className="access-plus-summary"><strong>Plus is active</strong><span>Complete lessons and lesson practice are unlocked for your course.</span></div> : <div className="access-free-summary"><strong>Free account</strong><span>Question bank, classes, assignments and saved work</span></div>}</div>
       {curriculum === "ib" ? <nav className="access-course-selector" aria-label="Choose course">{products.map((product) => <Link aria-current={product.id === selectedProduct?.id ? "page" : undefined} className={product.id === selectedProduct?.id ? "is-selected" : ""} href={`${accessPath}?course=${product.id}`} key={product.id}><strong>{product.shortTitle}</strong><span>{product.title}</span></Link>)}</nav> : null}

@@ -12,9 +12,6 @@ export async function requireSignedIn(nextPath = "/teacher", curriculum?: Curric
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`${accountPath(curriculum || (nextPath.startsWith("/igcse") ? "igcse" : "ib"))}?next=${encodeURIComponent(nextPath)}`);
   const { data: accountProfile } = await supabase.from("profiles").select("role,display_name,curriculum").eq("user_id", user.id).maybeSingle();
-  if (curriculum && accountProfile?.role !== "admin" && accountProfile?.curriculum && accountProfile.curriculum !== curriculum) {
-    redirect(`${accountPath(curriculum)}?error=${encodeURIComponent(`This is a separate ${curriculum === "igcse" ? "IGCSE" : "IB"} account area. Sign out of the other account first.`)}`);
-  }
   return { supabase, user, profile: accountProfile };
 }
 

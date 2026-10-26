@@ -57,11 +57,6 @@ export async function POST(request: Request) {
   if (!courses.has(course) || !papers.has(paper) || questions.length !== rawQuestions.length || questions.length === 0) {
     return NextResponse.json({ message: "Choose at least one valid Mathematics question first." }, { status: 400 });
   }
-  const requiredCurriculum = course === "IGCSE Higher" ? "igcse" : "ib";
-  if (profile.role !== "admin" && profile.curriculum && profile.curriculum !== requiredCurriculum) {
-    return NextResponse.json({ message: `Teacher access to the ${requiredCurriculum === "igcse" ? "IGCSE" : "IB"} Test Maker is required.` }, { status: 403 });
-  }
-
   try {
     const buffer = await buildTestAnalysisWorkbook({
       title,

@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { getPlatformSession } from "@/lib/platform-server";
 
 export async function POST(request: Request) {
-  const session = await getPlatformSession();
-  if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const body = await request.json().catch(() => ({}));
+  const curriculum = body.curriculum === "igcse" ? "igcse" : "ib";
+  const session = await getPlatformSession(curriculum);
+  if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const questionId = typeof body.questionId === "string" ? body.questionId.slice(0, 160) : "";
   if (!questionId) return NextResponse.json({ error: "Invalid question" }, { status: 400 });
   const completed = Boolean(body.completed);

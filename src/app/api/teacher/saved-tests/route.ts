@@ -85,11 +85,6 @@ export async function POST(request: Request) {
   if (!courses.has(course) || !papers.has(paper) || !payload || questionCount !== payload.questions.length || !Number.isInteger(totalMarks) || totalMarks < 1 || totalMarks > 1000) {
     return NextResponse.json({ message: "Choose at least one valid question before saving the test." }, { status: 400 });
   }
-  const requiredCurriculum = course === "IGCSE Higher" ? "igcse" : "ib";
-  if (access.profile.role !== "admin" && access.profile.curriculum && access.profile.curriculum !== requiredCurriculum) {
-    return NextResponse.json({ message: `Teacher access to the ${requiredCurriculum === "igcse" ? "IGCSE" : "IB"} Test Maker is required.` }, { status: 403 });
-  }
-
   const values = {
     teacher_id: access.user.id,
     title,

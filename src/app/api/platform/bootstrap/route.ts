@@ -5,14 +5,11 @@ import { productsForCurriculum } from "@/lib/platform-products";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const session = await getPlatformAccess();
-  if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const requestedCurriculum = new URL(request.url).searchParams.get("curriculum") === "igcse" ? "igcse" : "ib";
+  const session = await getPlatformAccess(requestedCurriculum);
+  if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const isAdmin = session.profile?.role === "admin";
-  if (!isAdmin && requestedCurriculum !== session.curriculum) {
-    return NextResponse.json({ error: "This account belongs to the other curriculum area", code: "curriculum_mismatch", currentCurriculum: session.curriculum }, { status: 409 });
-  }
-  const curriculum = isAdmin ? requestedCurriculum : session.curriculum;
+  const curriculum = requestedCurriculum;
   const [progressResult, courseStateResult] = await Promise.all([
     session.supabase.from("course_lesson_progress").select("course_id,lesson_id,completed,last_viewed_at").eq("user_id", session.user.id).eq("curriculum", curriculum),
     session.supabase.from("course_platform_state").select("last_course_id,last_lesson_id").eq("user_id", session.user.id).eq("curriculum", curriculum).maybeSingle(),

@@ -133,6 +133,11 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
       });
       setPending(false);
       if (signUpError) return setError(signUpError.message);
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        setMode("sign-in");
+        setPassword("");
+        return setError("An account already exists with this email address. Sign in with your existing password, or use Forgotten your password?");
+      }
       if (data.session) {
         router.push(signUpNextPath);
         router.refresh();
@@ -147,7 +152,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
       return;
     }
 
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     if (signInError) {
       setPending(false);
       if (signInError.code === "email_not_confirmed") {
@@ -155,17 +160,6 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         return setError("Your email address has not been confirmed yet. Send a new confirmation email below.");
       }
       return setError("That email address and password did not match.");
-    }
-    const { data: signedInProfile } = await supabase
-      .from("profiles")
-      .select("role,curriculum")
-      .eq("user_id", signInData.user.id)
-      .maybeSingle();
-    const signedInCurriculum = signedInProfile?.curriculum === "igcse" ? "igcse" : "ib";
-    if (signedInProfile?.role !== "admin" && signedInCurriculum !== curriculum) {
-      await supabase.auth.signOut({ scope: "local" });
-      setPending(false);
-      return setError(`That email address belongs to the separate ${signedInCurriculum === "igcse" ? "IGCSE" : "IB"} account area. Use your ${curriculum === "igcse" ? "IGCSE" : "IB"} account details or create an account for this area.`);
     }
     window.location.replace(nextPath);
   }
@@ -176,6 +170,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         <button type="button" role="tab" aria-selected={mode === "sign-in"} onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Sign in</button>
         <button type="button" role="tab" aria-selected={mode === "sign-up"} onClick={() => { setMode("sign-up"); setError(null); setMessage(null); }}>Create account</button>
       </div>
+      <p className="account-shared-login-note">Your email and password work in both IB and IGCSE. This page opens your {curriculum === "igcse" ? "IGCSE" : "IB"} learning area.</p>
       <form className="stack" onSubmit={submit}>
         {mode === "sign-up" ? (
           <>
