@@ -17,7 +17,7 @@ export async function requireSignedIn(nextPath = "/teacher", curriculum?: Curric
 
 export async function requireTeacher(nextPath = "/teacher", curriculum?: Curriculum) {
   const { supabase, user, profile } = await requireSignedIn(nextPath, curriculum);
-  if (profile?.role !== "teacher" && profile?.role !== "admin") redirect(`${accountPath(curriculum || (nextPath.startsWith("/igcse") ? "igcse" : "ib"))}?teacher=approval-required`);
+  if (profile?.role !== "teacher" && profile?.role !== "admin") redirect(`${accountPath(curriculum || (nextPath.startsWith("/igcse") ? "igcse" : "ib"))}?teacher=access-required`);
   return { supabase, user, profile };
 }
 

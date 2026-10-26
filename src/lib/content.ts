@@ -104,7 +104,7 @@ export const faqs = [
   {
     question: "What access plans are available?",
     answer:
-      "Each student course costs US$79 for 24 months of access. It is one payment and does not renew automatically. Approved teachers can optionally choose Teacher Plus for US$99 for 12 months of access to all four IB Mathematics courses.",
+      "Each student course costs US$79 for 24 months of access. It is one payment and does not renew automatically. Teachers can optionally choose Teacher Plus for US$99 for 12 months of access to all four IB Mathematics courses.",
   },
   {
     question: "Does each access plan include the complete course?",

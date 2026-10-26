@@ -399,14 +399,13 @@ set search_path = ''
 as $$
 declare
   account_role text;
-  request_status text;
 begin
   if auth.uid() is null then
-    raise exception 'You must be signed in to request teacher access.';
+    raise exception 'You must be signed in to create a teacher account.';
   end if;
 
-  select role, teacher_status
-  into account_role, request_status
+  select role
+  into account_role
   from public.profiles
   where user_id = auth.uid()
   for update;
@@ -419,19 +418,16 @@ begin
     return 'approved';
   end if;
 
-  if request_status = 'pending' then
-    return 'pending';
-  end if;
-
   update public.profiles
-  set teacher_status = 'pending',
-      teacher_requested_at = now(),
-      teacher_notification_sent_at = null,
+  set role = 'teacher',
+      teacher_status = 'approved',
+      teacher_requested_at = coalesce(teacher_requested_at, now()),
+      teacher_notification_sent_at = coalesce(teacher_notification_sent_at, now()),
       updated_at = now()
   where user_id = auth.uid()
     and role = 'student';
 
-  return 'pending';
+  return 'approved';
 end;
 $$;
 
@@ -804,7 +800,7 @@ language plpgsql
 security definer set search_path = ''
 as $$
 begin
-  insert into public.profiles (user_id, display_name, email, curriculum, teacher_status, teacher_requested_at)
+  insert into public.profiles (user_id, display_name, email, role, curriculum, teacher_status, teacher_requested_at, teacher_notification_sent_at)
   values (
     new.id,
     left(coalesce(
@@ -813,8 +809,10 @@ begin
       ''
     ), 80),
     left(coalesce(new.email, ''), 254),
+    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then 'teacher' else 'student' end,
     case when new.raw_user_meta_data ->> 'curriculum' = 'igcse' then 'igcse' else 'ib' end,
-    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then 'pending' else 'none' end,
+    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then 'approved' else 'none' end,
+    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then now() else null end,
     case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then now() else null end
   )
   on conflict (user_id) do nothing;
@@ -1213,8 +1211,8 @@ revoke execute on function public.redeem_platform_access_code(text) from anon;
 grant execute on function public.redeem_platform_access_code(text) to authenticated;
 
 -- Confirmed accounts from Rob's approved partner-school domains receive
--- course access automatically. Teacher Plus is activated only after the
--- separate teacher approval process has promoted the profile role.
+-- course access automatically. Teachers receive Teacher Plus for all four
+-- IB courses as soon as their teacher account is created.
 create or replace function public.school_plus_product_for_user(account_id uuid)
 returns text language plpgsql stable security definer set search_path = '' as $$
 declare

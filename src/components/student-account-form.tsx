@@ -109,10 +109,14 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
       const selectedCourses = curriculum === "ib"
         ? accountType === "teacher" ? teacherCourses : [studentCourse]
         : ["igcse"];
-      const signUpNextPath = curriculum === "igcse"
-        ? "/igcse/account"
-        : accountType === "teacher"
-          ? "/teacher"
+      const signUpNextPath = accountType === "teacher"
+        ? curriculum === "igcse"
+          ? "/igcse/teacher"
+          : wantsPlus
+            ? "/teacher/access"
+            : "/teacher"
+        : curriculum === "igcse"
+          ? "/igcse/account"
           : wantsPlus && studentCourse
             ? `/account/access?course=${encodeURIComponent(studentCourse)}`
             : requestedNext?.startsWith("/") && !requestedNext.startsWith("/teacher")
@@ -153,8 +157,8 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         setMode("resend");
         setMessage(accountType === "teacher"
           ? wantsPlus
-            ? "Check your email to confirm your account. Your teacher access request will then be sent for approval, and Teacher Plus will be available once approved."
-            : "Check your email to confirm your account. Your teacher access request will then be sent for approval."
+            ? "Check your email to confirm your account. You can then continue straight to secure Teacher Plus checkout."
+            : "Check your email to confirm your account. Your teacher dashboard will open as soon as it is confirmed."
           : "Check your email to confirm your account, then return here to sign in.");
       }
       return;
@@ -185,7 +189,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
           <>
             <fieldset className="account-type-field"><legend>First, who is the account for?</legend><div className="account-type-options">
               <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => { setAccountType("student"); setError(null); }} type="radio" value="student" /><span><strong>Student</strong><small>Choose the one course you are studying.</small></span></label>
-              <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => { setAccountType("teacher"); setError(null); }} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Choose every course you teach. Approval is required.</small></span></label>
+              <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => { setAccountType("teacher"); setError(null); }} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Create classes, set assignments and use the Test Maker.</small></span></label>
             </div></fieldset>
             {curriculum === "ib" ? <fieldset className="account-access-field"><legend>Then, choose your access</legend><div className="account-access-options">
               <label className={accessChoice === "free" ? "is-selected" : ""}>
@@ -198,7 +202,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
                 <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "Everything in Free, plus every lesson and its extra practice in all four IB courses" : "Everything in Free, plus every lesson and its extra practice in one IB course"}</small></span>
                 <b>{accountType === "teacher" ? "$99 · 1 year" : "$79 · 2 years"}</b>
               </label>
-            </div>{wantsPlus ? <small className="account-access-note">No payment is taken when you create the account. {accountType === "teacher" ? "Teacher approval comes first, then you can activate Teacher Plus." : "Secure checkout follows after your email is confirmed."}</small> : null}</fieldset> : null}
+            </div>{wantsPlus ? <small className="account-access-note">No payment is taken when you create the account. Secure checkout follows after your email is confirmed.</small> : null}</fieldset> : null}
             {curriculum === "ib" ? accountType === "student" ? (
               <fieldset className="account-course-field">
                 <legend>Which course are you studying?</legend>
@@ -266,7 +270,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         <span><strong>Already paid on Teachable?</strong><small>Use the same email address in this form. After confirmation, any matching active course is added automatically without another payment.</small></span>
         <Link href={curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"}>Open previous course <span aria-hidden="true">↗</span></Link>
       </div>
-      <p className="small muted">This is the separate {curriculum === "igcse" ? "IGCSE" : "IB"} Mathematics account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts require approval. "}Creating an account does not subscribe you to marketing emails.</p>
+      <p className="small muted">This is the separate {curriculum === "igcse" ? "IGCSE" : "IB"} Mathematics account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts open the teacher dashboard and classroom tools. "}Creating an account does not subscribe you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href={`${legalBase}/terms`}>Terms of Use</Link> and acknowledge the <Link className="text-link" href={`${legalBase}/privacy`}>Privacy Policy</Link>.</p>
     </div>
   );
