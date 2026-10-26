@@ -606,7 +606,8 @@ async function loadProtectedVideo(frame, loading, videoId, kind = "lesson", lock
     frame.removeAttribute("src");
     loading.classList.remove("is-hidden");
     loading.classList.add("is-plus-locked");
-    loading.innerHTML = `<span aria-hidden="true">+</span><strong>${isIgcse ? "Complete IGCSE course lesson" : "Unlock this video with Mr Flynn IB Plus"}</strong><p>You can still preview the lesson questions below.</p><button class="primary-button" type="button" data-plus-upgrade>${isIgcse ? "View course access" : "Unlock with Plus"}</button>`;
+    const posterUrl = `/api/platform/video-poster?course=${encodeURIComponent(currentCourseId)}&video=${encodeURIComponent(videoId)}&kind=lesson`;
+    loading.innerHTML = `<img class="locked-video-poster" src="${posterUrl}" alt="Opening screen for this lesson" loading="eager"><span aria-hidden="true">+</span><strong>${isIgcse ? "Complete IGCSE course lesson" : "Unlock this video with Mr Flynn IB Plus"}</strong><p>You can preview the lesson questions below. Upgrade to watch the video.</p><button class="primary-button" type="button" data-plus-upgrade>${isIgcse ? "View course access" : "Unlock with Plus"}</button>`;
     return;
   }
   loading.classList.remove("is-plus-locked");
@@ -1265,6 +1266,9 @@ async function bootstrapAccount() {
     platformAccount = await response.json();
     enrolledCourseIds = platformAccount.availableCourseIds.filter((id) => courses[id]);
     ownedCourseIds = platformAccount.ownedCourseIds.filter((id) => courses[id]);
+    if (!enrolledCourseIds.length && platformAccount.curriculum === "igcse" && courses.igcse) {
+      enrolledCourseIds = ["igcse"];
+    }
     enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
     const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId)
       ? requestedCourseId
@@ -1276,6 +1280,7 @@ async function bootstrapAccount() {
     enrolledCourseId = preferred;
     currentCourseId = preferred;
     currentCourse = courses[currentCourseId];
+    if (!currentCourse) throw new Error("Your course could not be selected.");
     const savedLesson = platformAccount.state?.last_lesson_id || state.lastLesson;
     currentLessonId = currentCourse.lessons.some((lesson) => lesson.id === savedLesson) ? savedLesson : currentCourse.lessons[0]?.id;
     currentTopic = getCurrentLesson()?.topic || 1;

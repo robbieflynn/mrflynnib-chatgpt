@@ -168,7 +168,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   ]);
   const personalEntitlements = personalAccessResult.data as PlatformEntitlement[] | null;
   const schoolSeats = schoolAccessResult.data as PlatformLicenseSeat[] | null;
-  const access = platformAccessSummary(personalEntitlements, schoolSeats);
+  const access = platformAccessSummary(personalEntitlements, schoolSeats, new Date(), isIgcse ? "igcse" : "ib");
   const ownedCourseIds = Array.from(new Set(activePlatformEntitlements(personalEntitlements)
     .map((entitlement) => courseProductForCode(entitlement.product_code)?.id)
     .filter((courseId): courseId is "aa-hl" | "aa-sl" | "ai-hl" | "ai-sl" => Boolean(courseId && courseId !== "igcse"))));

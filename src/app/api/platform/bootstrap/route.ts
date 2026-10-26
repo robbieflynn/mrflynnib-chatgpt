@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const products = productsForCurriculum(curriculum);
   const preferredCourseId = typeof session.user.user_metadata.primary_course === "string" ? session.user.user_metadata.primary_course : null;
   const role = session.profile?.role || "student";
-  const availableCourseIds = role === "teacher" || role === "admin"
+  const availableCourseIds = curriculum === "igcse" || role === "teacher" || role === "admin"
     ? products.map((product) => product.id)
     : Array.from(new Set([
       ...(preferredCourseId && products.some((product) => product.id === preferredCourseId) ? [preferredCourseId] : []),

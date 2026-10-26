@@ -221,7 +221,9 @@ body.practice-expanded::before { content: ""; position: fixed; z-index: 119; ins
 .lesson-item.is-locked small { color: #6656a5; font-weight: 800; }
 .complete-button.is-plus-locked { border-color: #cfc5ef; background: #f5f2ff; color: #5944aa; }
 .complete-button.is-plus-locked .checkmark { border-color: #9a89d8; background: #6550b9; color: #fff; }
-.video-loading.is-plus-locked { padding: 28px; text-align: center; pointer-events: auto; }
+.video-loading.is-plus-locked { z-index: 1; overflow: hidden; padding: 28px; text-align: center; pointer-events: auto; background: rgba(6,23,45,.72); }
+.video-loading.is-plus-locked::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg,rgba(3,15,29,.2),rgba(3,15,29,.9)); }
+.locked-video-poster { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
 .video-loading.is-plus-locked > span { width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.1); color: #fff; font-size: 25px; font-weight: 700; animation: none; }
 .video-loading.is-plus-locked strong { color: #fff; font-size: clamp(16px, 2vw, 22px); }
 .video-loading.is-plus-locked p { max-width: 380px; margin: 0; color: #bdd3e5; font-size: 11px; line-height: 1.5; }

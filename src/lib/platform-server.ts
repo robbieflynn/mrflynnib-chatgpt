@@ -34,13 +34,14 @@ export async function getPlatformAccess(requestedCurriculum?: PlatformCurriculum
   }) as PlatformEntitlement[];
   const entitlements = activePlatformEntitlements([...personal, ...schoolEntitlements]);
   const products = productsForCurriculum(session.curriculum);
+  const teacherPlusProductCode = session.curriculum === "igcse" ? "teacher_plus_igcse" : "teacher_plus_ib";
   const hasTeacherPlus = ["teacher", "admin"].includes(session.profile?.role || "")
-    && entitlements.some((item) => item.product_code === "teacher_plus_ib");
+    && entitlements.some((item) => item.product_code === teacherPlusProductCode);
   const entitledCourses = session.profile?.role === "admin"
     ? courseProducts
     : hasTeacherPlus
     ? products
     : entitlements.map((item) => courseProductForCode(item.product_code)).filter((item): item is CourseProduct => Boolean(item && item.curriculum === session.curriculum));
   const ownedCourses = Array.from(new Map(entitledCourses.map((course) => [course.id, course])).values());
-  return { ...session, access: platformAccessSummary(personal, seats), entitlements, ownedCourses };
+  return { ...session, access: platformAccessSummary(personal, seats, new Date(), session.curriculum), entitlements, ownedCourses };
 }
