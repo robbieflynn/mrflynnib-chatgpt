@@ -505,7 +505,6 @@
       if (activePointer !== null) return;
       activePointer = event.pointerId;
       activePointerType = event.pointerType;
-      try { canvas.focus({ preventScroll: true }); } catch { canvas.focus(); }
       capturePointer(event.pointerId);
       var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'eraser' : mode;
       if (pointerMode === 'pan') {

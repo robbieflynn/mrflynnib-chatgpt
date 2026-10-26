@@ -278,6 +278,8 @@ Use visible breadcrumb navigation on internal pages so visitors can move through
 
 On 26 October 2026, Rob requested a highlighter on the shared student whiteboard. Keep a translucent yellow highlighter alongside the pen and eraser in both IB and IGCSE question-bank and assignment whiteboards, and preserve highlighter strokes in saved work.
 
+The IGCSE Courses route must always open the single Edexcel IGCSE Mathematics course, including for paid and school-access accounts that may also hold IB entitlements. Keep IGCSE course navigation on the canonical `/igcse/learn` route and do not let IB preferences select the course inside that area. The whiteboard must also preserve the surrounding page's scroll position when a student begins writing, especially with an Apple Pencil or touch device.
+
 Repository: `robbieflynn/mrflynnib-chatgpt`
 
 Public website previously supplied by Rob: `https://mrflynnib-chatgpt.vercel.app/`

@@ -105,6 +105,7 @@
 .qb-whiteboard {
   min-width: 0;
   overflow: hidden;
+  overflow-anchor: none;
   border: 1px solid #d9e2ed;
   border-radius: 12px;
   background: #fff;
@@ -242,6 +243,7 @@
 .qb-whiteboard-viewport {
   max-height: 620px;
   overflow: auto;
+  overflow-anchor: none;
   overscroll-behavior: contain;
 }
 
@@ -375,6 +377,8 @@
 .qb-whiteboard-surface {
   position: relative;
   height: 4480px;
+  contain: layout paint;
+  overflow-anchor: none;
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
