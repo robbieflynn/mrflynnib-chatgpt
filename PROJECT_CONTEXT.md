@@ -276,6 +276,8 @@ Use visible breadcrumb navigation on internal pages so visitors can move through
 
 ## Current website and technology
 
+On 26 October 2026, Rob requested a highlighter on the shared student whiteboard. Keep a translucent yellow highlighter alongside the pen and eraser in both IB and IGCSE question-bank and assignment whiteboards, and preserve highlighter strokes in saved work.
+
 Repository: `robbieflynn/mrflynnib-chatgpt`
 
 Public website previously supplied by Rob: `https://mrflynnib-chatgpt.vercel.app/`
