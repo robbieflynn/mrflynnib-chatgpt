@@ -20,7 +20,7 @@
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-body.igcse-learning { --blue-700: #9b2f3f; --blue-600: #b33a4d; --blue-100: #f8e9ec; }
+body.igcse-learning { --blue-700: #3f4ca3; --blue-600: #5365c7; --blue-100: #edf0ff; }
 button, input { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid rgba(36, 147, 238, 0.35); outline-offset: 2px; }
