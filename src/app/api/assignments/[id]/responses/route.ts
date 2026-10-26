@@ -26,6 +26,38 @@ function normalizedAnswer(value: unknown) {
   return String(value ?? "").trim().replace(/\s+/g, "").toLowerCase();
 }
 
+async function savedMultipartPartResult({
+  assignmentId,
+  partKey,
+  questionId,
+  studentId,
+  supabase,
+}: {
+  assignmentId: string;
+  partKey: string;
+  questionId: string;
+  studentId: string;
+  supabase: Awaited<ReturnType<typeof createClient>>;
+}) {
+  const { data, error } = await supabase
+    .from("assignment_responses")
+    .select("response")
+    .eq("assignment_id", assignmentId)
+    .eq("student_id", studentId)
+    .eq("question_id", questionId)
+    .maybeSingle();
+  if (error) throw error;
+  const response = objectValue(data?.response);
+  const states = objectValue(response._partStates);
+  const state = objectValue(states[partKey]) as PartState;
+  const result = String(state.result || "");
+  if (!["correct", "incorrect_final", "saved"].includes(result)) return null;
+  return {
+    isCorrect: state.isCorrect === true ? true : state.isCorrect === false ? false : null,
+    result,
+  };
+}
+
 async function repairFixedMultipleChoiceConfiguration({
   assignmentId,
   questionId,
@@ -160,7 +192,7 @@ async function saveMultipartPart({
   if (["correct", "incorrect_final"].includes(priorResult) || (priorResult === "saved" && config.mode === "whiteboard")) {
     return {
       isCorrect: priorResult === "correct" ? true : priorResult === "incorrect_final" ? false : null,
-      result: "locked",
+      result: priorResult,
     };
   }
 
@@ -318,8 +350,22 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     });
     if (!partError) {
       const partResult = Array.isArray(partData) ? partData[0] as { is_correct?: boolean | null; result?: string | null } : null;
+      let resolvedPartResult = { isCorrect: partResult?.is_correct ?? null, result: partResult?.result ?? null };
+      if (partResult?.result === "locked") {
+        try {
+          const savedResult = await savedMultipartPartResult({ assignmentId: id, partKey: multipartPartKey, questionId, studentId, supabase });
+          if (savedResult) resolvedPartResult = savedResult;
+        } catch (lockedResultError) {
+          console.error("Could not resolve saved assignment part state", {
+            assignmentId: id,
+            questionId,
+            studentId,
+            message: lockedResultError instanceof Error ? lockedResultError.message : "Unknown error",
+          });
+        }
+      }
       console.warn("Used assignment part compatibility save", { assignmentId: id, questionId, studentId });
-      return NextResponse.json({ isCorrect: partResult?.is_correct ?? null, result: partResult?.result ?? null }, {
+      return NextResponse.json(resolvedPartResult, {
         headers: { "Cache-Control": "no-store, max-age=0" },
       });
     }
