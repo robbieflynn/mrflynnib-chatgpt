@@ -1266,8 +1266,11 @@ async function bootstrapAccount() {
     platformAccount = await response.json();
     enrolledCourseIds = platformAccount.availableCourseIds.filter((id) => courses[id]);
     ownedCourseIds = platformAccount.ownedCourseIds.filter((id) => courses[id]);
-    if (!enrolledCourseIds.length && platformAccount.curriculum === "igcse" && courses.igcse) {
+    // The IGCSE route owns one course. Keep it isolated from any IB course
+    // preferences or entitlements that may also belong to this login.
+    if (platformAccount.curriculum === "igcse" && courses.igcse) {
       enrolledCourseIds = ["igcse"];
+      ownedCourseIds = ownedCourseIds.filter((id) => id === "igcse");
     }
     enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
     const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId)

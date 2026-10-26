@@ -164,7 +164,9 @@ export function AccountMenu({
     : displayedAccount.curriculum === "igcse"
     ? isTeacher ? "/igcse/teacher" : "/igcse/account"
     : isTeacher ? "/teacher" : "/account";
-  const coursesHref = `/learn/index.html?curriculum=${displayedAccount.curriculum}&view=courses`;
+  const coursesHref = displayedAccount.curriculum === "igcse"
+    ? "/igcse/learn"
+    : "/learn/index.html?curriculum=ib&view=courses";
   const accessHref = displayedAccount.curriculum === "igcse"
     ? "/igcse/account"
     : isTeacher ? "/teacher/access" : "/account/access";
