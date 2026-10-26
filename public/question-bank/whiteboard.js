@@ -80,6 +80,7 @@
             toolButton('blank-paper', 'Blank', false) +
           '</div>' +
           toolButton('pen', 'Pen', true) +
+          toolButton('highlighter', 'Highlighter', false) +
           toolButton('eraser', 'Eraser', false) +
           toolButton('pan', 'Pan', false) +
           toolButton('move-image', 'Move image', false) +
@@ -187,14 +188,14 @@
 
     function serialiseDocument() {
       return {
-        version: 2,
+        version: 3,
         paper: paperStyle,
         pages: pageCount,
         actions: actions.map(function (action) {
           if (action.type === 'clear') return { type: 'clear' };
           if (action.type === 'stroke') return {
             type: 'stroke',
-            mode: action.mode === 'eraser' ? 'eraser' : 'pen',
+            mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
             colour: action.colour,
             straightened: Boolean(action.straightened),
             points: action.points.map(function (point) { return { x: point.x, y: point.y }; })
@@ -308,11 +309,12 @@
       var height = canvas.clientHeight;
       ctx.save();
       ctx.globalCompositeOperation = stroke.mode === 'eraser' ? 'destination-out' : 'source-over';
+      ctx.globalAlpha = stroke.mode === 'highlighter' ? .32 : 1;
       // Older saved documents used a very dark blue-grey as "black". Render
       // those strokes as true black too, so existing work becomes clearer.
       ctx.strokeStyle = stroke.colour === '#0d152e' ? '#000000' : stroke.colour;
       // Tool widths are measured on the paper, so existing and new ink scale together.
-      ctx.lineWidth = (stroke.mode === 'eraser' ? 24 : 3.6) * zoom;
+      ctx.lineWidth = (stroke.mode === 'eraser' ? 24 : stroke.mode === 'highlighter' ? 26 : 3.6) * zoom;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.beginPath();
@@ -534,7 +536,12 @@
         }
         return;
       }
-      activeStroke = { type: 'stroke', mode: pointerMode, colour: colour, points: [pointFromEvent(event)] };
+      activeStroke = {
+        type: 'stroke',
+        mode: pointerMode,
+        colour: pointerMode === 'highlighter' ? '#facc15' : colour,
+        points: [pointFromEvent(event)]
+      };
       actions.push(activeStroke);
       drawStrokeIncrement(activeStroke, activeStroke.points);
       updateButtons();
@@ -615,6 +622,7 @@
       }
       if (event.pointerId !== activePointer) return;
       if (activeStroke) appendStrokeSamples(event);
+      if (activeStroke && activeStroke.mode === 'highlighter') redraw();
       var changed = Boolean(activeStroke || activeImage);
       activePointer = null;
       activePointerType = null;
@@ -642,6 +650,7 @@
       resetInteraction();
       mode = nextMode;
       board.querySelector('[data-whiteboard-action="pen"]').setAttribute('aria-pressed', String(mode === 'pen'));
+      board.querySelector('[data-whiteboard-action="highlighter"]').setAttribute('aria-pressed', String(mode === 'highlighter'));
       board.querySelector('[data-whiteboard-action="eraser"]').setAttribute('aria-pressed', String(mode === 'eraser'));
       board.querySelector('[data-whiteboard-action="pan"]').setAttribute('aria-pressed', String(mode === 'pan'));
       board.querySelector('[data-whiteboard-action="move-image"]').setAttribute('aria-pressed', String(mode === 'move-image'));
@@ -769,7 +778,7 @@
       var button = event.target.closest('[data-whiteboard-action]');
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
-      if (action === 'pen' || action === 'eraser' || action === 'pan' || action === 'move-image') setMode(action);
+      if (action === 'pen' || action === 'highlighter' || action === 'eraser' || action === 'pan' || action === 'move-image') setMode(action);
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
       if (action === 'zoom-out') setZoom(zoom - .25);
@@ -948,7 +957,7 @@
           if (action.type === 'stroke' && Array.isArray(action.points)) {
             restored.push({
               type: 'stroke',
-              mode: action.mode === 'eraser' ? 'eraser' : 'pen',
+              mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
               colour: typeof action.colour === 'string' ? action.colour : '#000000',
               straightened: Boolean(action.straightened),
               points: action.points.slice(0, 10000).map(function (point) {

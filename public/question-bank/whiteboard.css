@@ -319,6 +319,11 @@
   background: var(--flynn-blue, #407dc4);
   border-color: var(--flynn-blue, #407dc4);
 }
+.qb-whiteboard-tool[data-whiteboard-action="highlighter"][aria-pressed="true"] {
+  color: #594600;
+  background: #fde047;
+  border-color: #eab308;
+}
 .qb-whiteboard-tool:disabled { cursor: default; opacity: .42; }
 .qb-whiteboard-tool.qb-whiteboard-close { font-size: 17px; line-height: 1; padding-inline: 9px; }
 
