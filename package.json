@@ -13,7 +13,8 @@
     "audit:past-papers": "node scripts/validate-past-paper-data.mjs",
     "import:teachable-access": "node scripts/import-teachable-access.mjs",
     "test:smoke": "node scripts/smoke-platform.mjs",
-    "test:load": "node scripts/smoke-platform.mjs --load"
+    "test:load": "node scripts/smoke-platform.mjs --load",
+    "captions": "node scripts/manage-video-captions.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
