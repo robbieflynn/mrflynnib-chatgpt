@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
-import { getFixedAssignmentConfig } from "@/lib/assignment-answer-config";
+import { getFixedAssignmentConfig, responseOptionsForFixedConfig } from "@/lib/assignment-answer-config";
 
 export const dynamic = "force-dynamic";
 
@@ -113,6 +113,7 @@ async function repairFixedMultipleChoiceConfiguration({
 
 async function saveMultipartPart({
   assignmentId,
+  canonicalRepairOnly = false,
   questionId,
   requestId,
   response,
@@ -120,6 +121,7 @@ async function saveMultipartPart({
   supabase,
 }: {
   assignmentId: string;
+  canonicalRepairOnly?: boolean;
   questionId: string;
   requestId: string;
   response: Record<string, unknown>;
@@ -154,7 +156,9 @@ async function saveMultipartPart({
     .eq("student_id", studentId)
     .eq("request_id", requestId)
     .maybeSingle();
-  if (priorRequest?.result) return { isCorrect: priorRequest.is_correct as boolean | null, result: priorRequest.result as string };
+  if (priorRequest?.result && !canonicalRepairOnly) {
+    return { isCorrect: priorRequest.is_correct as boolean | null, result: priorRequest.result as string };
+  }
 
   const { error: requestError } = await admin.from("assignment_response_requests").upsert({
     student_id: studentId,
@@ -184,26 +188,34 @@ async function saveMultipartPart({
     : objectValue(accepted[partKey]) as PartConfig;
   if (!Object.keys(config).length) throw new Error("That question part was not found.");
 
-  const existingResponse = objectValue(existing?.response);
-  const parts = { ...objectValue(existingResponse.parts) };
-  const states = { ...objectValue(existingResponse._partStates) } as Record<string, PartState>;
-  const priorState = objectValue(states[partKey]) as PartState;
-  const priorResult = String(priorState.result || "");
-  if (["correct", "incorrect_final"].includes(priorResult) || (priorResult === "saved" && config.mode === "whiteboard")) {
-    return {
-      isCorrect: priorResult === "correct" ? true : priorResult === "incorrect_final" ? false : null,
-      result: priorResult,
-    };
-  }
-
   const partAnswer = shortText(response.partAnswer, 500);
   const whiteboard = config.mode === "whiteboard";
   if (whiteboard && partAnswer !== "__whiteboard__") throw new Error("Confirm that this part is on the whiteboard or paper.");
   if (!whiteboard && !partAnswer) throw new Error("Choose or enter an answer for this part.");
 
   const allowed = Array.isArray(config.answers) ? config.answers : [];
-  const isCorrect = whiteboard ? null : allowed.some((answer) => normalizedAnswer(answer) === normalizedAnswer(partAnswer));
-  const attemptCount = whiteboard ? 0 : Math.min(Number(priorState.attemptCount || 0) + 1, 2);
+  const canonicalAnswerIsCorrect = !whiteboard
+    && allowed.some((answer) => normalizedAnswer(answer) === normalizedAnswer(partAnswer));
+  if (canonicalRepairOnly && (!fixedPart || !canonicalAnswerIsCorrect)) return null;
+
+  const existingResponse = objectValue(existing?.response);
+  const parts = { ...objectValue(existingResponse.parts) };
+  const states = { ...objectValue(existingResponse._partStates) } as Record<string, PartState>;
+  const priorState = objectValue(states[partKey]) as PartState;
+  const priorResult = String(priorState.result || "");
+  if (!canonicalRepairOnly && (["correct", "incorrect_final"].includes(priorResult) || (priorResult === "saved" && config.mode === "whiteboard"))) {
+    return {
+      isCorrect: priorResult === "correct" ? true : priorResult === "incorrect_final" ? false : null,
+      result: priorResult,
+    };
+  }
+
+  const isCorrect = whiteboard ? null : canonicalAnswerIsCorrect;
+  const attemptCount = whiteboard
+    ? 0
+    : canonicalRepairOnly
+      ? Math.max(1, Number(priorState.attemptCount || 0))
+      : Math.min(Number(priorState.attemptCount || 0) + 1, 2);
   const result = whiteboard ? "saved" : isCorrect ? "correct" : attemptCount < 2 ? "retry" : "incorrect_final";
   parts[partKey] = partAnswer;
   states[partKey] = { attemptCount, isCorrect, result };
@@ -235,12 +247,33 @@ async function saveMultipartPart({
     updated_at: now,
   };
   const submissionRecord = { assignment_id: assignmentId, student_id: studentId, status: "in_progress", submitted_at: null, updated_at: now };
-  const [{ error: responseError }, { error: progressError }, { error: submissionError }] = await Promise.all([
+  const configurationWrites = canonicalRepairOnly && fixedConfig?.type === "multipart"
+    ? [
+        admin.from("assignment_answer_keys").upsert({
+          assignment_id: assignmentId,
+          question_id: questionId,
+          accepted_answers: accepted,
+          numeric_answer: null,
+          numeric_tolerance: null,
+          correct_option: null,
+          updated_at: now,
+        }, { onConflict: "assignment_id,question_id" }),
+        admin.from("assignment_questions").update({
+          response_type: "multipart",
+          response_options: responseOptionsForFixedConfig(fixedConfig),
+        }).eq("assignment_id", assignmentId).eq("question_id", questionId),
+      ]
+    : [];
+  const [{ error: responseError }, { error: progressError }, { error: submissionError }, ...configurationResults] = await Promise.all([
     admin.from("assignment_responses").upsert(responseRecord, { onConflict: "assignment_id,student_id,question_id" }),
     admin.from("assignment_question_progress").upsert(progressRecord, { onConflict: "assignment_id,student_id,question_id" }),
     admin.from("assignment_submissions").upsert(submissionRecord, { onConflict: "assignment_id,student_id" }),
+    ...configurationWrites,
   ]);
-  if (responseError || progressError || submissionError) throw responseError || progressError || submissionError;
+  const configurationError = configurationResults.find((result) => result.error)?.error;
+  if (responseError || progressError || submissionError || configurationError) {
+    throw responseError || progressError || submissionError || configurationError;
+  }
 
   const { error: requestUpdateError } = await admin
     .from("assignment_response_requests")
@@ -294,10 +327,36 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   // access itself. Avoid a second remote auth lookup on the successful path;
   // it made every answer check wait for auth before the actual save began.
   // We still resolve the verified user before any compatibility or repair path.
-  if (error || (multipartPartKey && reliableResult?.result === "locked")) {
+  const canonicalMultipartRepair = Boolean(multipartPartKey && ["retry", "incorrect_final"].includes(reliableResult?.result || ""));
+  if (error || (multipartPartKey && (reliableResult?.result === "locked" || canonicalMultipartRepair))) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ message: "Please sign in again before saving.", retryable: false }, { status: 401 });
     studentId = user.id;
+  }
+
+  if (canonicalMultipartRepair && multipartResponse) {
+    try {
+      const repairedResult = await saveMultipartPart({
+        assignmentId: id,
+        canonicalRepairOnly: true,
+        questionId,
+        requestId,
+        response: multipartResponse,
+        studentId,
+        supabase,
+      });
+      if (repairedResult?.result === "correct") {
+        console.warn("Repaired stale multipart assignment answer configuration", { assignmentId: id, questionId, studentId, partKey: multipartPartKey });
+        return NextResponse.json(repairedResult, { headers: { "Cache-Control": "no-store, max-age=0" } });
+      }
+    } catch (repairError) {
+      console.error("Multipart assignment answer configuration repair failed", {
+        assignmentId: id,
+        questionId,
+        studentId,
+        message: repairError instanceof Error ? repairError.message : "Unknown error",
+      });
+    }
   }
 
   if (error && multipartResponse && !multipartPartKey) {
