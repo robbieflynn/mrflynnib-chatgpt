@@ -4,13 +4,37 @@ import { joinClass } from "@/app/account/actions";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { createClient } from "@/lib/supabase/server";
 
-export const metadata: Metadata = {
-  title: "Join a class",
-  robots: { index: false, follow: false },
-};
-
 function normaliseCode(value: string) {
   return value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 10);
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ code: string }> }): Promise<Metadata> {
+  const { code: rawCode } = await params;
+  const code = normaliseCode(rawCode);
+  const invitationPath = `/join/${encodeURIComponent(code)}`;
+  const title = "Join your class";
+  const description = "Open your Mr Flynn IB class invitation, sign in and join your teacher's class.";
+
+  return {
+    title,
+    description,
+    robots: { index: false, follow: false },
+    alternates: { canonical: invitationPath },
+    openGraph: {
+      type: "website",
+      siteName: "Mr Flynn IB",
+      title: `${title} | Mr Flynn IB`,
+      description,
+      url: invitationPath,
+      images: [{ url: "/images/mr-flynn-ib-preview.png", width: 1200, height: 630, type: "image/png", alt: "Join your class on Mr Flynn IB" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | Mr Flynn IB`,
+      description,
+      images: ["/images/mr-flynn-ib-preview.png"],
+    },
+  };
 }
 
 export default async function JoinClassPage({ params, searchParams }: { params: Promise<{ code: string }>; searchParams: Promise<{ error?: string }> }) {
