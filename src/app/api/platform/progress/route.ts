@@ -3,12 +3,12 @@ import { getPlatformAccess } from "@/lib/platform-server";
 import { getCourseProduct } from "@/lib/platform-products";
 
 export async function POST(request: Request) {
-  const session = await getPlatformAccess();
-  if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const body = await request.json().catch(() => ({}));
   const course = getCourseProduct(typeof body.courseId === "string" ? body.courseId : "");
+  const session = await getPlatformAccess(course?.curriculum);
+  if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const lessonId = typeof body.lessonId === "string" ? body.lessonId.slice(0, 100) : "";
-  if (!course || course.curriculum !== session.curriculum || !lessonId) return NextResponse.json({ error: "Invalid lesson" }, { status: 400 });
+  if (!course || !lessonId) return NextResponse.json({ error: "Invalid lesson" }, { status: 400 });
   if (!session.ownedCourses.some((item) => item.id === course.id)) return NextResponse.json({ error: "Full course access required" }, { status: 403 });
   const completed = Boolean(body.completed);
   const now = new Date().toISOString();

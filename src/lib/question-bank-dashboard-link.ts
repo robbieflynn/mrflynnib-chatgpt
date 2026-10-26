@@ -24,13 +24,6 @@ export async function getQuestionBankDashboardLink({ curriculum, course }: Dashb
     .select("role,curriculum")
     .eq("user_id", user.id)
     .maybeSingle();
-  const isAdministrator = profile?.role === "admin";
-  const isMatchingCurriculum = isAdministrator || profile?.curriculum === curriculum;
-
-  if (!isMatchingCurriculum) {
-    return { label: "Student dashboard", href: studentHref, signedIn: false };
-  }
-
   const isTeacher = profile?.role === "teacher" || profile?.role === "admin";
 
   if (isTeacher) {

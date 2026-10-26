@@ -15,7 +15,7 @@ type HeaderAccountLinkProps = {
 export function HeaderAccountLink({ className = "", onNavigate, showSignedOut = true }: HeaderAccountLinkProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [account, setAccount] = useState<{ role: "student" | "teacher" | "admin"; curriculum: "ib" | "igcse" } | null>(null);
+  const [account, setAccount] = useState<{ role: "student" | "teacher" | "admin" } | null>(null);
   const isIgcse = pathname.startsWith("/igcse");
   const reviewCurriculum = searchParams.get("curriculum") === "igcse" ? "igcse" : "ib";
   const reviewRole = searchParams.get("role") === "teacher" ? "teacher" : "student";
@@ -32,11 +32,10 @@ export function HeaderAccountLink({ className = "", onNavigate, showSignedOut = 
         setAccount(null);
         return;
       }
-      const { data: profile } = await supabase.from("profiles").select("role,curriculum").eq("user_id", user.id).maybeSingle();
+      const { data: profile } = await supabase.from("profiles").select("role").eq("user_id", user.id).maybeSingle();
       if (!active) return;
       setAccount({
         role: profile?.role === "teacher" || profile?.role === "admin" ? profile.role : "student",
-        curriculum: profile?.curriculum === "igcse" ? "igcse" : "ib",
       });
     }
     void loadAccount();
@@ -45,16 +44,13 @@ export function HeaderAccountLink({ className = "", onNavigate, showSignedOut = 
   }, [pathname]);
 
   const accountIsTeacher = account?.role === "teacher" || account?.role === "admin";
-  const accountMatchesArea = !account || account.role === "admin" || (isIgcse ? account.curriculum === "igcse" : account.curriculum === "ib");
   const accountHref = isIgcse
     ? accountIsTeacher ? "/igcse/teacher" : "/igcse/account"
-    : account?.curriculum === "igcse"
-      ? accountIsTeacher ? "/igcse/teacher" : "/igcse/account"
-      : accountIsTeacher ? "/teacher" : "/account";
-  const href = pathname === "/platform-review" ? reviewHref : account && accountMatchesArea ? accountHref : isIgcse ? "/igcse/account" : "/account";
+    : accountIsTeacher ? "/teacher" : "/account";
+  const href = pathname === "/platform-review" ? reviewHref : account ? accountHref : isIgcse ? "/igcse/account" : "/account";
   const label = pathname === "/platform-review"
     ? reviewRole === "teacher" ? "Teacher home" : "My learning"
-    : account && accountMatchesArea ? accountIsTeacher ? "Teacher home" : "My learning"
+    : account ? accountIsTeacher ? "Teacher home" : "My learning"
       : "Log in";
 
   if (!account && !showSignedOut && pathname !== "/platform-review") return null;

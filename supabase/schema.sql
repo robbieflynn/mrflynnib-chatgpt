@@ -454,31 +454,31 @@ create policy "Admins update teacher applications" on public.profiles for update
 
 drop policy if exists "Students read own progress" on public.question_progress;
 create policy "Students read own progress" on public.question_progress for select
-  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
+  using ((select auth.uid()) = user_id);
 drop policy if exists "Students insert own progress" on public.question_progress;
 create policy "Students insert own progress" on public.question_progress for insert
-  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
+  with check ((select auth.uid()) = user_id and bank in ('ib', 'igcse'));
 drop policy if exists "Students update own progress" on public.question_progress;
 create policy "Students update own progress" on public.question_progress for update
-  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()))
-  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id and bank in ('ib', 'igcse'));
 drop policy if exists "Students delete own progress" on public.question_progress;
 create policy "Students delete own progress" on public.question_progress for delete
-  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
+  using ((select auth.uid()) = user_id);
 
 drop policy if exists "Students read own whiteboards" on public.whiteboard_documents;
 create policy "Students read own whiteboards" on public.whiteboard_documents for select
-  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
+  using ((select auth.uid()) = user_id);
 drop policy if exists "Students insert own whiteboards" on public.whiteboard_documents;
 create policy "Students insert own whiteboards" on public.whiteboard_documents for insert
-  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
+  with check ((select auth.uid()) = user_id and bank in ('ib', 'igcse'));
 drop policy if exists "Students update own whiteboards" on public.whiteboard_documents;
 create policy "Students update own whiteboards" on public.whiteboard_documents for update
-  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()))
-  with check ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id and bank in ('ib', 'igcse'));
 drop policy if exists "Students delete own whiteboards" on public.whiteboard_documents;
 create policy "Students delete own whiteboards" on public.whiteboard_documents for delete
-  using ((select auth.uid()) = user_id and (bank = public.profile_curriculum() or public.is_admin()));
+  using ((select auth.uid()) = user_id);
 
 drop policy if exists "Teachers read assigned whiteboards" on public.whiteboard_documents;
 create policy "Teachers read assigned whiteboards" on public.whiteboard_documents for select using (
@@ -1191,9 +1191,6 @@ begin
     return jsonb_build_object('status', 'already_redeemed', 'product_code', code_row.product_code);
   end if;
   if code_row.redemption_count >= code_row.max_redemptions then return jsonb_build_object('status', 'unavailable'); end if;
-  if not exists (select 1 from public.profiles profile where profile.user_id = account_id and (profile.role = 'admin' or (code_row.product_code = 'course_igcse' and profile.curriculum = 'igcse') or (code_row.product_code <> 'course_igcse' and profile.curriculum = 'ib'))) then
-    return jsonb_build_object('status', 'wrong_area');
-  end if;
   if code_row.product_code = 'teacher_plus_ib' and not exists (select 1 from public.profiles profile where profile.user_id = account_id and profile.role in ('teacher', 'admin')) then
     return jsonb_build_object('status', 'teacher_required');
   end if;

@@ -31,17 +31,17 @@ export async function choosePrimaryCourse(formData: FormData) {
   redirect(destination === "plus" ? `/account/access?course=${course.slug}` : `/account?course=${course.slug}`);
 }
 
-export async function requestTeacherAccess() {
-  const { supabase, user } = await requireSignedIn("/account");
+export async function requestTeacherAccess(formData: FormData) {
+  const curriculum = formData.get("curriculum") === "igcse" ? "igcse" : "ib";
+  const accountPath = curriculum === "igcse" ? "/igcse/account" : "/account";
+  const { supabase, user } = await requireSignedIn(accountPath, curriculum);
   const { data: profile } = await supabase
     .from("profiles")
     .select("display_name,curriculum,role,teacher_status")
     .eq("user_id", user.id)
     .maybeSingle();
-  const accountPath = profile?.curriculum === "igcse" ? "/igcse/account" : "/account";
-
   if (profile?.role === "teacher" || profile?.role === "admin") {
-    redirect(profile.curriculum === "igcse" ? "/igcse/teacher" : "/teacher");
+    redirect(curriculum === "igcse" ? "/igcse/teacher" : "/teacher");
   }
   if (profile?.teacher_status === "pending") redirect(`${accountPath}?teacher=requested`);
 

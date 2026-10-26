@@ -20,6 +20,7 @@ const previewCourseId = salesPreviewMode
 const requestedCourseId = previewParameters.get("course");
 const requestedView = previewParameters.get("view");
 const previewTopic = Number(previewParameters.get("topic"));
+const activeCurriculum = () => platformAccount?.curriculum || (requestedCurriculum === "igcse" || requestedCourseId === "igcse" ? "igcse" : "ib");
 
 const courseDefinitions = [
   {
@@ -803,7 +804,7 @@ window.addEventListener("message", async (event) => {
     let synced = true;
     if (platformAccount && !reviewerMode) {
       try {
-        const response = await fetch("/api/platform/question-progress", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), completed: Boolean(message.completed) }) });
+        const response = await fetch("/api/platform/question-progress", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), completed: Boolean(message.completed), curriculum: activeCurriculum() }) });
         synced = response.ok;
       } catch { synced = false; }
     }
@@ -822,7 +823,7 @@ window.addEventListener("message", async (event) => {
       let document = await getSavedWhiteboard(String(message.questionId));
       if (platformAccount && !reviewerMode) {
         try {
-          const response = await fetch(`/api/platform/whiteboard?questionId=${encodeURIComponent(String(message.questionId))}`);
+          const response = await fetch(`/api/platform/whiteboard?questionId=${encodeURIComponent(String(message.questionId))}&curriculum=${encodeURIComponent(activeCurriculum())}`);
           const result = await response.json();
           if (response.ok && result.document) document = result.document;
         } catch {}
@@ -850,7 +851,7 @@ window.addEventListener("message", async (event) => {
       let synced = true;
       if (platformAccount && !reviewerMode) {
         try {
-          const response = await fetch("/api/platform/whiteboard", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), document: message.document }) });
+          const response = await fetch("/api/platform/whiteboard", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), document: message.document, curriculum: activeCurriculum() }) });
           synced = response.ok;
         } catch { synced = false; }
       }

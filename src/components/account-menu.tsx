@@ -50,6 +50,7 @@ export function AccountMenu({
   const isPlatformReview = pathname === "/platform-review";
   const previewRole = searchParams.get("role") === "teacher" ? "teacher" : "student";
   const previewCurriculum = searchParams.get("curriculum") === "igcse" ? "igcse" : "ib";
+  const routeCurriculum = pathname.startsWith("/igcse") || searchParams.get("curriculum") === "igcse" ? "igcse" : "ib";
   const previewAccount: AccountSummary | null = isPlatformReview ? {
     displayName: previewRole === "teacher" ? "Mr Flynn" : "Maya Flynn",
     email: previewRole === "teacher" ? "teacher@example.com" : "student@example.com",
@@ -76,7 +77,7 @@ export function AccountMenu({
       const [{ data: profile }, { data: entitlements }, { data: schoolSeats }] = await Promise.all([
         supabase
           .from("profiles")
-          .select("role,display_name,curriculum")
+          .select("role,display_name")
           .eq("user_id", user.id)
           .maybeSingle(),
         supabase
@@ -107,7 +108,7 @@ export function AccountMenu({
         displayName: profile?.display_name || metadataName || email.split("@")[0] || "Your account",
         email,
         role,
-        curriculum: profile?.curriculum === "igcse" ? "igcse" : "ib",
+        curriculum: routeCurriculum,
         accessLabel: access.paid ? access.label : null,
       });
     }
@@ -122,7 +123,7 @@ export function AccountMenu({
       authListener.subscription.unsubscribe();
       window.removeEventListener("platform-access-updated", refreshAccess);
     };
-  }, [isPlatformReview]);
+  }, [isPlatformReview, routeCurriculum]);
 
   useEffect(() => {
     if (!open) return;
