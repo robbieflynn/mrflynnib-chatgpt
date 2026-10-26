@@ -15,9 +15,11 @@
   --muted: #647080;
   --danger: #9f2f2f;
   --success: #176b50;
-  --igcse-red: #b32636;
-  --igcse-red-dark: #801b28;
-  --igcse-red-soft: #fff0f2;
+  /* Legacy variable names retained for compatibility; the approved IGCSE
+     interface is now cool blue/indigo rather than burgundy. */
+  --igcse-red: #5365c7;
+  --igcse-red-dark: #3f4ca3;
+  --igcse-red-soft: #edf0ff;
   --shadow: 0 24px 70px rgba(11, 21, 48, 0.11);
   --radius-sm: 0.7rem;
   --radius-md: 1.15rem;
@@ -342,7 +344,7 @@ textarea { min-height: 130px; resize: vertical; }
 .account-actions { display: flex; flex-wrap: wrap; gap: .8rem; }
 .student-dashboard { --dashboard-accent: var(--teal); --dashboard-accent-dark: var(--teal-dark); --dashboard-accent-soft: var(--sky); padding: 1.5rem 0 4rem; background: #f4f6f8; }
 .student-dashboard-igcse { --dashboard-accent: var(--igcse-red); --dashboard-accent-dark: var(--igcse-red-dark); --dashboard-accent-soft: var(--igcse-red-soft); }
-.student-dashboard-igcse .button { background: var(--igcse-red); box-shadow: 0 10px 30px rgba(179,38,54,.16); }
+.student-dashboard-igcse .button { background: var(--igcse-red); box-shadow: 0 10px 30px rgba(63,76,163,.16); }
 .student-dashboard-igcse .button:hover { background: var(--igcse-red-dark); }
 .dashboard-course-bar { padding: 1rem 1.1rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; border: 1px solid #dce2e5; border-radius: .9rem; background: white; box-shadow: 0 6px 20px rgba(11,21,48,.035); }
 .dashboard-course-bar > div { display: grid; gap: .1rem; }
@@ -354,7 +356,7 @@ textarea { min-height: 130px; resize: vertical; }
 .dashboard-course-bar nav a:hover { border-color: var(--teal); color: var(--teal-dark); }
 .dashboard-course-bar nav a[aria-current="page"] { border-color: var(--ink); background: var(--ink); color: white; }
 .dashboard-overview { padding: 1rem 1.1rem; display: grid; grid-template-columns: minmax(210px, auto) minmax(160px, 1fr) auto auto; gap: 1.25rem; align-items: center; overflow: hidden; border: 1px solid rgba(255,255,255,.08); border-radius: .9rem; color: white; background: #0c1b39; box-shadow: 0 10px 28px rgba(11,21,48,.1); }
-.student-dashboard-igcse .dashboard-overview { background: linear-gradient(135deg, #5a1723, #310c14); }
+.student-dashboard-igcse .dashboard-overview { background: linear-gradient(135deg, #3f4ca3, #1f2b66); }
 .dashboard-overview-title { display: grid; gap: .08rem; line-height: 1.25; }
 .dashboard-overview-title span { color: rgba(255,255,255,.62); font-size: .68rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .dashboard-overview-title strong { font-size: .96rem; }
@@ -397,7 +399,7 @@ textarea { min-height: 130px; resize: vertical; }
 .teacher-dashboard > .container.stack-xl, .student-dashboard > .container.stack-xl { gap: 1.5rem; }
 .teacher-dashboard > .container { position: relative; z-index: 1; }
 .igcse-teacher-dashboard { --dashboard-accent: var(--igcse-red); --dashboard-accent-dark: var(--igcse-red-dark); --dashboard-accent-soft: var(--igcse-red-soft); }
-.igcse-teacher-dashboard .button { background: var(--igcse-red); box-shadow: 0 10px 30px rgba(179,38,54,.16); }
+.igcse-teacher-dashboard .button { background: var(--igcse-red); box-shadow: 0 10px 30px rgba(63,76,163,.16); }
 .igcse-teacher-dashboard .button:hover { background: var(--igcse-red-dark); }
 .igcse-teacher-dashboard .badge { background: var(--igcse-red-soft); color: var(--igcse-red-dark); }
 .igcse-teacher-dashboard .text-link, .igcse-teacher-dashboard .eyebrow { color: var(--igcse-red-dark); }
@@ -829,8 +831,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .dashboard-hero-stats strong { color: white; font-size: 1.35rem; line-height: 1; }
 .dashboard-hero-stats span { color: rgba(255,255,255,.58); font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
 .student-dashboard-hero { background: radial-gradient(circle at 75% 10%, rgba(35,127,202,.35), transparent 28%), #071733; }
-.student-dashboard-hero-igcse, .teacher-dashboard-hero-igcse { background: radial-gradient(circle at 75% 10%, rgba(179,38,54,.4), transparent 30%), #2b0d16; }
-.student-dashboard-hero-igcse .dashboard-role-label, .teacher-dashboard-hero-igcse .dashboard-role-label { color: #ffbdc6; }
+.student-dashboard-hero-igcse, .teacher-dashboard-hero-igcse { background: radial-gradient(circle at 75% 10%, rgba(83,101,199,.4), transparent 30%), #10183d; }
+.student-dashboard-hero-igcse .dashboard-role-label, .teacher-dashboard-hero-igcse .dashboard-role-label { color: #dce3ff; }
 .student-dashboard-hero .dashboard-hero-shell { gap: .35rem; }
 .student-dashboard-hero .dashboard-account-row { min-height: 2.25rem; }
 .student-dashboard-hero .dashboard-hero-layout { min-height: 118px; }
@@ -846,17 +848,17 @@ a.teacher-list-row:hover { background: var(--sky); }
 @keyframes dashboard-loading-shimmer { to { background-position: -220% 0; } }
 @media (prefers-reduced-motion: reduce) { .account-route-loading-card span, .account-route-loading-card strong, .account-route-loading-card i { animation: none; } }
 .teacher-dashboard-hero { background: radial-gradient(circle at 78% 12%, rgba(31,151,139,.2), transparent 30%), #091831; }
-.teacher-dashboard-hero-igcse { border-bottom-color: rgba(179,38,54,.6); }
+.teacher-dashboard-hero-igcse { border-bottom-color: rgba(83,101,199,.6); }
 .student-next-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(290px, .65fr); gap: 1.25rem; align-items: stretch; }
 .student-next-grid.is-single { grid-template-columns: 1fr; }
 .student-next-card { position: relative; min-height: 300px; padding: clamp(1.4rem, 3vw, 2.2rem); display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "copy copy" "progress action"; align-content: space-between; gap: 1.5rem 2rem; overflow: hidden; border-radius: 1.35rem; color: white; background: linear-gradient(135deg, #174f98, #0b2148 68%); box-shadow: 0 18px 48px rgba(11,33,72,.18); }
 .student-next-card::before { content: ""; position: absolute; width: 280px; height: 280px; right: -95px; top: -135px; border: 1px solid rgba(255,255,255,.14); border-radius: 50%; box-shadow: 0 0 0 42px rgba(255,255,255,.035), 0 0 0 86px rgba(255,255,255,.025); }
 .student-next-card > * { position: relative; z-index: 1; }
-.student-dashboard-igcse .student-next-card { background: linear-gradient(135deg, #9d2635, #3a101b 70%); }
+.student-dashboard-igcse .student-next-card { background: linear-gradient(135deg, #5365c7, #202e69 70%); }
 .student-next-card-copy { grid-area: copy; display: grid; align-content: start; gap: .55rem; }
 .student-dashboard-kicker { color: var(--dashboard-accent-dark); font-size: .72rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
 .student-next-card .student-dashboard-kicker { color: #a9dcff; }
-.student-dashboard-igcse .student-next-card .student-dashboard-kicker { color: #ffc1c9; }
+.student-dashboard-igcse .student-next-card .student-dashboard-kicker { color: #e1e7ff; }
 .student-next-context { color: rgba(255,255,255,.72); font-size: .82rem; font-weight: 750; }
 .student-next-card h2 { max-width: 17ch; color: white; font-size: clamp(2rem, 4vw, 3.2rem); }
 .student-next-card-copy > p:last-child { max-width: 52ch; color: rgba(255,255,255,.72); font-size: .92rem; }
@@ -868,7 +870,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-next-button { grid-area: action; align-self: end; gap: .65rem; border-color: rgba(255,255,255,.1); background: white; color: #123b72; box-shadow: none; white-space: nowrap; }
 .student-next-button:hover { border-color: white; background: #eef7ff; color: #0b2c59; }
 .student-dashboard-igcse .student-next-button { background: white; color: var(--igcse-red-dark); box-shadow: none; }
-.student-dashboard-igcse .student-next-button:hover { background: #fff0f2; color: #5a1723; }
+.student-dashboard-igcse .student-next-button:hover { background: #edf0ff; color: #29366f; }
 .student-progress-summary { min-height: 300px; padding: 1.35rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: space-between; gap: 1.25rem; border: 1px solid #dce2e5; border-radius: 1.35rem; background: white; box-shadow: 0 10px 30px rgba(11,21,48,.055); }
 .student-progress-summary > div:first-child { display: grid; align-content: start; gap: .12rem; }
 .student-progress-number { margin-top: .3rem; color: var(--ink); font-size: clamp(2rem, 4vw, 3rem); line-height: 1; }
@@ -1439,9 +1441,9 @@ a.teacher-list-row:hover { background: var(--sky); }
 .home-teacher-note:hover i { transform: translateX(4px); }
 
 .igcse-home-entry { padding: clamp(4.5rem, 7vw, 6.5rem) 0; background: #fbfaf6; }
-.igcse-home-card { min-height: 290px; padding: clamp(1.8rem, 4vw, 3rem); display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; overflow: hidden; position: relative; border: 1px solid rgba(179,38,54,.2); border-radius: 1.6rem; background: radial-gradient(circle at 94% 12%, rgba(179,38,54,.14), transparent 32%), linear-gradient(135deg, #fff, #fff7f8); box-shadow: 0 20px 55px rgba(11,21,48,.06); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
-.igcse-home-card::after { content: "IGCSE"; position: absolute; right: -1rem; bottom: -4.2rem; color: rgba(179,38,54,.035); font-size: clamp(6rem, 15vw, 11rem); font-weight: 950; letter-spacing: -.08em; pointer-events: none; }
-.igcse-home-card:hover { transform: translateY(-4px); border-color: rgba(179,38,54,.42); box-shadow: 0 28px 70px rgba(11,21,48,.1); }
+.igcse-home-card { min-height: 290px; padding: clamp(1.8rem, 4vw, 3rem); display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; overflow: hidden; position: relative; border: 1px solid rgba(83,101,199,.2); border-radius: 1.6rem; background: radial-gradient(circle at 94% 12%, rgba(83,101,199,.14), transparent 32%), linear-gradient(135deg, #fff, #f7f8ff); box-shadow: 0 20px 55px rgba(11,21,48,.06); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.igcse-home-card::after { content: "IGCSE"; position: absolute; right: -1rem; bottom: -4.2rem; color: rgba(83,101,199,.035); font-size: clamp(6rem, 15vw, 11rem); font-weight: 950; letter-spacing: -.08em; pointer-events: none; }
+.igcse-home-card:hover { transform: translateY(-4px); border-color: rgba(83,101,199,.42); box-shadow: 0 28px 70px rgba(11,21,48,.1); }
 .igcse-home-copy { position: relative; z-index: 1; align-content: center; }
 .igcse-home-copy h2 { max-width: 17ch; font-size: clamp(2rem, 4vw, 3.6rem); }
 .igcse-home-copy p { max-width: 52ch; color: var(--muted); }
@@ -1450,7 +1452,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-home-card:hover .igcse-home-copy > strong i { margin-left: .7rem; }
 .igcse-kicker { width: fit-content; padding: .4rem .65rem; border-radius: 999px; background: var(--igcse-red-soft); color: var(--igcse-red-dark); font-size: .7rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
 .igcse-home-routes { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .75rem; }
-.igcse-home-routes span { min-height: 82px; padding: 1rem; display: grid; place-items: center; border: 1px solid rgba(179,38,54,.16); border-radius: 1rem; background: rgba(255,255,255,.86); color: var(--ink-2); text-align: center; font-size: .8rem; font-weight: 850; }
+.igcse-home-routes span { min-height: 82px; padding: 1rem; display: grid; place-items: center; border: 1px solid rgba(83,101,199,.16); border-radius: 1rem; background: rgba(255,255,255,.86); color: var(--ink-2); text-align: center; font-size: .8rem; font-weight: 850; }
 
 .checklist-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: radial-gradient(circle at 12% 15%, rgba(35,127,202,.35), transparent 34%), #071024; color: white; }
 .checklist-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(2.5rem, 5vw, 5rem); align-items: center; }
@@ -1927,7 +1929,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .tutoring-enquiry-note ul { margin: 0; padding-left: 1.1rem; display: grid; gap: .4rem; color: var(--muted); font-size: .8rem; }
 
 /* IGCSE Mathematics area */
-.igcse-site { --igcse-accent: #237fca; --igcse-accent-dark: #1267ae; --igcse-accent-soft: #eaf5ff; --igcse-detail: #b65360; --igcse-detail-soft: #faeef0; background: #f8fbfe; }
+.igcse-site { --igcse-accent: #237fca; --igcse-accent-dark: #1267ae; --igcse-accent-soft: #eaf5ff; --igcse-detail: #6154b8; --igcse-detail-soft: #f0efff; background: #f8fbfe; }
 .igcse-section-nav { position: relative; z-index: 5; border-bottom: 1px solid rgba(18,103,174,.13); background: rgba(255,255,255,.96); }
 .igcse-section-nav-inner { min-height: 4.1rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
 .igcse-section-brand { display: flex; align-items: center; gap: .75rem; line-height: 1.15; }
@@ -1950,15 +1952,15 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-site .button-secondary:hover { border-color: var(--igcse-accent-dark); background: white; }
 .igcse-site .breadcrumbs a:hover { color: var(--igcse-accent-dark); }
 
-.igcse-landing-hero { position: relative; min-height: 555px; padding: clamp(1.75rem, 3vw, 2.5rem) 0 clamp(4rem, 7vw, 6rem); display: grid; align-items: center; overflow: hidden; background: radial-gradient(circle at 87% 18%, rgba(182,83,96,.16), transparent 24%), radial-gradient(circle at 12% 104%, rgba(35,127,202,.4), transparent 36%), linear-gradient(132deg, #071832 0%, #0d315c 52%, #1267a1 100%); color: white; }
-.igcse-landing-hero::after { content: ""; position: absolute; inset: auto -10% -50% 38%; height: 72%; border: 1px solid rgba(255,255,255,.09); border-radius: 50%; box-shadow: 0 0 0 90px rgba(255,255,255,.025), 0 0 0 180px rgba(182,83,96,.025); pointer-events: none; }
+.igcse-landing-hero { position: relative; min-height: 555px; padding: clamp(1.75rem, 3vw, 2.5rem) 0 clamp(4rem, 7vw, 6rem); display: grid; align-items: center; overflow: hidden; background: radial-gradient(circle at 87% 18%, rgba(97,84,184,.18), transparent 24%), radial-gradient(circle at 12% 104%, rgba(35,127,202,.4), transparent 36%), linear-gradient(132deg, #071832 0%, #0d315c 52%, #1267a1 100%); color: white; }
+.igcse-landing-hero::after { content: ""; position: absolute; inset: auto -10% -50% 38%; height: 72%; border: 1px solid rgba(255,255,255,.09); border-radius: 50%; box-shadow: 0 0 0 90px rgba(255,255,255,.025), 0 0 0 180px rgba(97,84,184,.025); pointer-events: none; }
 .igcse-landing-graph { position: absolute; width: min(78vw, 920px); right: -2.5rem; bottom: -2rem; color: white; pointer-events: none; }
-.igcse-landing-points { fill: #df8b93; opacity: .86; }
+.igcse-landing-points { fill: #8f9de6; opacity: .86; }
 .igcse-landing-hero-inner { position: relative; z-index: 2; min-height: 415px; display: grid; align-content: space-between; gap: 3rem; }
 .igcse-landing-hero .breadcrumbs { color: rgba(255,255,255,.62); }
 .igcse-landing-hero .breadcrumbs a { color: white; }
 .igcse-landing-copy { max-width: 720px; }
-.igcse-landing-copy .eyebrow { color: #ffc3c8; }
+.igcse-landing-copy .eyebrow { color: #dcd8ff; }
 .igcse-landing-copy h1 { max-width: 14ch; font-size: clamp(3.4rem, 6vw, 5.9rem); }
 .igcse-landing-copy .lede { max-width: 57ch; color: rgba(255,255,255,.78); }
 .igcse-landing-actions .button { min-width: 142px; background: white; color: var(--navy); box-shadow: 0 14px 35px rgba(3,13,30,.2); }
@@ -1966,13 +1968,13 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-landing-actions .button-secondary { border-color: rgba(255,255,255,.44); background: rgba(255,255,255,.06); color: white; box-shadow: none; }
 .igcse-landing-actions .button-secondary:hover { border-color: white; background: rgba(255,255,255,.13); }
 
-.igcse-hero { position: relative; min-height: 520px; padding: clamp(4rem, 8vw, 6rem) 0; display: grid; align-items: center; overflow: hidden; background: radial-gradient(circle at 86% 18%, rgba(179,38,54,.17), transparent 32%), linear-gradient(135deg, #fff7f8, #fff 58%, #f8edf0); }
-.igcse-hero::after { content: ""; position: absolute; width: 530px; height: 530px; right: -180px; bottom: -260px; border: 1px solid rgba(179,38,54,.15); border-radius: 50%; box-shadow: 0 0 0 70px rgba(179,38,54,.025), 0 0 0 140px rgba(179,38,54,.018); }
+.igcse-hero { position: relative; min-height: 520px; padding: clamp(4rem, 8vw, 6rem) 0; display: grid; align-items: center; overflow: hidden; background: radial-gradient(circle at 86% 18%, rgba(83,101,199,.17), transparent 32%), linear-gradient(135deg, #f7f8ff, #fff 58%, #eef2ff); }
+.igcse-hero::after { content: ""; position: absolute; width: 530px; height: 530px; right: -180px; bottom: -260px; border: 1px solid rgba(83,101,199,.15); border-radius: 50%; box-shadow: 0 0 0 70px rgba(83,101,199,.025), 0 0 0 140px rgba(83,101,199,.018); }
 .igcse-hero-grid { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 850px); align-items: center; }
 .igcse-hero h1 { max-width: 13ch; font-size: clamp(3.5rem, 6.5vw, 6.5rem); color: var(--ink); }
 .igcse-hero .lede { max-width: 54ch; }
 .igcse-hero-actions { margin-top: .5rem; }
-.igcse-hero-symbol { position: absolute; color: rgba(179,38,54,.06); font-family: Georgia, serif; line-height: 1; pointer-events: none; }
+.igcse-hero-symbol { position: absolute; color: rgba(83,101,199,.06); font-family: Georgia, serif; line-height: 1; pointer-events: none; }
 .igcse-hero-symbol-one { left: 2%; bottom: 0; font-size: clamp(7rem, 16vw, 14rem); transform: rotate(-8deg); }
 .igcse-hero-symbol-two { right: 2%; top: 2%; font-size: clamp(8rem, 18vw, 16rem); }
 .igcse-route-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #fff; }
@@ -1988,48 +1990,48 @@ a.teacher-list-row:hover { background: var(--sky); }
 .igcse-route-card p { color: var(--muted); font-size: .88rem; }
 .igcse-route-card > strong { margin-top: auto; display: flex; justify-content: space-between; align-items: center; color: var(--igcse-accent-dark); font-size: .8rem; }
 .igcse-route-card > strong i { font-style: normal; }
-.igcse-principles { padding: clamp(4rem, 8vw, 7rem) 0; background: radial-gradient(circle at 90% 5%, rgba(182,83,96,.18), transparent 24%), linear-gradient(135deg, #071832, #0c3158); color: white; }
+.igcse-principles { padding: clamp(4rem, 8vw, 7rem) 0; background: radial-gradient(circle at 90% 5%, rgba(97,84,184,.2), transparent 24%), linear-gradient(135deg, #071832, #0c3158); color: white; }
 .igcse-principles-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
-.igcse-principles .eyebrow { color: #ffc3c8; }
+.igcse-principles .eyebrow { color: #dcd8ff; }
 .igcse-principle-list { display: grid; gap: 1px; overflow: hidden; border: 1px solid rgba(255,255,255,.14); border-radius: 1.3rem; background: rgba(255,255,255,.14); }
 .igcse-principle-list p { min-height: 95px; padding: 1.3rem 1.5rem; display: grid; align-content: center; gap: .25rem; background: rgba(255,255,255,.07); }
 .igcse-principle-list span { color: rgba(255,255,255,.68); font-size: .85rem; }
 
-.igcse-page-hero { padding: clamp(4rem, 8vw, 7rem) 0; background: radial-gradient(circle at 87% 15%, rgba(179,38,54,.19), transparent 30%), linear-gradient(135deg, #fff4f5, #fff); }
+.igcse-page-hero { padding: clamp(4rem, 8vw, 7rem) 0; background: radial-gradient(circle at 87% 15%, rgba(83,101,199,.19), transparent 30%), linear-gradient(135deg, #f3f6ff, #fff); }
 .igcse-page-hero-grid { display: grid; grid-template-columns: 1fr auto; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
 .igcse-page-hero h1 { max-width: 12ch; font-size: clamp(3.2rem, 6vw, 5.7rem); }
 .igcse-course-page { min-height: 680px; display: grid; align-items: center; }
 .igcse-course-page h1 { max-width: 15ch; }
-.igcse-page-marker { width: clamp(190px, 22vw, 290px); aspect-ratio: 1; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-radius: 50%; background: var(--igcse-accent-dark); color: rgba(255,255,255,.75); font-size: .8rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 0 0 30px rgba(179,38,54,.06); }
+.igcse-page-marker { width: clamp(190px, 22vw, 290px); aspect-ratio: 1; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-radius: 50%; background: var(--igcse-accent-dark); color: rgba(255,255,255,.75); font-size: .8rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; box-shadow: 0 0 0 30px rgba(83,101,199,.06); }
 .igcse-page-marker span { color: white; text-align: right; font-size: clamp(3rem, 7vw, 6rem); line-height: 1; letter-spacing: -.08em; }
 .igcse-content-section { padding: clamp(4.5rem, 8vw, 7rem) 0; background: #fff; }
 .igcse-content-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; }
-.igcse-qb-hero { padding: clamp(3.5rem, 7vw, 5.5rem) 0; background: radial-gradient(circle at 87% 15%, rgba(179,38,54,.16), transparent 30%), linear-gradient(135deg, #fff4f5, #fff); }
+.igcse-qb-hero { padding: clamp(3.5rem, 7vw, 5.5rem) 0; background: radial-gradient(circle at 87% 15%, rgba(83,101,199,.16), transparent 30%), linear-gradient(135deg, #f3f6ff, #fff); }
 .igcse-qb-hero h1 { max-width: 17ch; font-size: clamp(3rem, 5.5vw, 5.4rem); }
 .igcse-qb-hero .lede { max-width: 65ch; }
-.igcse-qb-route-bar { padding: .85rem 0; border-bottom: 1px solid #eadcdf; background: #fff; }
+.igcse-qb-route-bar { padding: .85rem 0; border-bottom: 1px solid #d8deef; background: #fff; }
 .igcse-qb-route-bar-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .igcse-qb-content { background: #f4f7f8; }
 .igcse-qb-frame { width: 100%; display: block; overflow: hidden; border: 0; background: #f4f7f8; }
-.igcse-detail-card { padding: clamp(1.7rem, 4vw, 2.8rem); border: 1px solid #e8d5d9; border-radius: 1.5rem; background: #fff7f8; box-shadow: 0 22px 60px rgba(11,21,48,.07); }
+.igcse-detail-card { padding: clamp(1.7rem, 4vw, 2.8rem); border: 1px solid #d7deef; border-radius: 1.5rem; background: #f7f8ff; box-shadow: 0 22px 60px rgba(11,21,48,.07); }
 .igcse-detail-card > span { color: var(--igcse-accent-dark); font-size: .72rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
 .igcse-detail-card > strong { font-size: 1.6rem; }
-.igcse-detail-card p { padding-top: 1rem; border-top: 1px solid #eadcdf; color: var(--muted); }
+.igcse-detail-card p { padding-top: 1rem; border-top: 1px solid #d8deef; color: var(--muted); }
 
-.igcse-coming-page { min-height: 680px; padding: clamp(4rem, 8vw, 7rem) 0; display: grid; align-items: center; background: linear-gradient(135deg, #fff7f8, #fff); }
-.igcse-coming-card { padding: clamp(2rem, 5vw, 4.5rem); display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; border: 1px solid #eadcdf; border-radius: 2rem; background: white; box-shadow: 0 30px 80px rgba(11,21,48,.08); }
+.igcse-coming-page { min-height: 680px; padding: clamp(4rem, 8vw, 7rem) 0; display: grid; align-items: center; background: linear-gradient(135deg, #f7f8ff, #fff); }
+.igcse-coming-card { padding: clamp(2rem, 5vw, 4.5rem); display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(3rem, 7vw, 7rem); align-items: center; border: 1px solid #d8deef; border-radius: 2rem; background: white; box-shadow: 0 30px 80px rgba(11,21,48,.08); }
 .igcse-coming-card h1 { max-width: 12ch; font-size: clamp(3rem, 5.6vw, 5.3rem); }
 .igcse-coming-visual { display: grid; gap: .7rem; transform: rotate(1deg); }
-.igcse-coming-visual span { padding: 1rem 1.2rem; border: 1px solid rgba(179,38,54,.18); border-radius: .9rem; background: var(--igcse-accent-soft); color: var(--igcse-accent-dark); font-weight: 850; }
+.igcse-coming-visual span { padding: 1rem 1.2rem; border: 1px solid rgba(83,101,199,.18); border-radius: .9rem; background: var(--igcse-accent-soft); color: var(--igcse-accent-dark); font-weight: 850; }
 .igcse-coming-visual span:nth-child(2), .igcse-coming-visual span:nth-child(4) { margin-left: 2.5rem; background: white; }
 
-.igcse-school-form-section { background: #fffafa; }
-.igcse-school-form-section .card { border-color: #eadcdf; box-shadow: 0 20px 55px rgba(11,21,48,.06); }
-.igcse-school-form-section input:focus, .igcse-school-form-section textarea:focus, .igcse-school-form-section select:focus { border-color: var(--igcse-accent); outline-color: rgba(179,38,54,.2); }
+.igcse-school-form-section { background: #f8faff; }
+.igcse-school-form-section .card { border-color: #d8deef; box-shadow: 0 20px 55px rgba(11,21,48,.06); }
+.igcse-school-form-section input:focus, .igcse-school-form-section textarea:focus, .igcse-school-form-section select:focus { border-color: var(--igcse-accent); outline-color: rgba(83,101,199,.2); }
 
-.igcse-tutoring-page { min-height: 700px; padding: clamp(4rem, 9vw, 8rem) 0; display: grid; align-items: center; background: radial-gradient(circle at 86% 15%, rgba(179,38,54,.17), transparent 30%), linear-gradient(135deg, #fff1f3, #fff); }
-.igcse-tutoring-card { padding: clamp(2rem, 6vw, 5rem); display: grid; grid-template-columns: auto 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; border: 1px solid rgba(179,38,54,.2); border-radius: 2rem; background: white; box-shadow: 0 30px 80px rgba(11,21,48,.1); }
-.igcse-tutoring-symbol { width: clamp(130px, 18vw, 220px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--igcse-accent-dark); color: white; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 950; box-shadow: 0 0 0 28px rgba(179,38,54,.08); }
+.igcse-tutoring-page { min-height: 700px; padding: clamp(4rem, 9vw, 8rem) 0; display: grid; align-items: center; background: radial-gradient(circle at 86% 15%, rgba(83,101,199,.17), transparent 30%), linear-gradient(135deg, #f1f4ff, #fff); }
+.igcse-tutoring-card { padding: clamp(2rem, 6vw, 5rem); display: grid; grid-template-columns: auto 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; border: 1px solid rgba(83,101,199,.2); border-radius: 2rem; background: white; box-shadow: 0 30px 80px rgba(11,21,48,.1); }
+.igcse-tutoring-symbol { width: clamp(130px, 18vw, 220px); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--igcse-accent-dark); color: white; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 950; box-shadow: 0 0 0 28px rgba(83,101,199,.08); }
 .igcse-tutoring-card .lede a { color: var(--igcse-accent-dark); text-decoration: underline; text-underline-offset: .2em; }
 .igcse-tutoring-card p:not(.lede) { color: var(--muted); }
 
@@ -2617,7 +2619,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 
 /* Private connected-platform walkthrough. Example data only. */
 .platform-review-bar { position: relative; z-index: 5; border-bottom: 1px solid #c8dded; background: #edf7ff; color: var(--navy); }
-.platform-review-bar.is-igcse { border-bottom-color: #e8b7be; background: #fff1f3; }
+.platform-review-bar.is-igcse { border-bottom-color: #cbd3ee; background: #f1f4ff; }
 .platform-review-bar-inner { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .platform-review-bar-inner > span { display: flex; align-items: baseline; gap: .65rem; }
 .platform-review-bar-inner strong { font-size: .78rem; }
@@ -2633,7 +2635,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .platform-review-study-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; }
 .platform-review-study-card { min-height: 245px; padding: 1.4rem; display: flex; flex-direction: column; align-items: flex-start; gap: .7rem; overflow: hidden; border: 1px solid #d6e0e5; border-radius: 1.15rem; background: white; box-shadow: 0 8px 26px rgba(11,21,48,.045); }
 .platform-review-study-card.is-course { border-color: #bdd9ec; background: linear-gradient(140deg, #fff, #edf7ff); }
-.student-dashboard-igcse .platform-review-study-card.is-course { border-color: #e5bbc1; background: linear-gradient(140deg, #fff, #fff2f4); }
+.student-dashboard-igcse .platform-review-study-card.is-course { border-color: #ccd4ed; background: linear-gradient(140deg, #fff, #f1f4ff); }
 .platform-review-card-label { color: var(--dashboard-accent-dark); font-size: .67rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
 .platform-review-study-card h2 { font-size: clamp(1.35rem, 2.1vw, 1.8rem); }
 .platform-review-study-card p { max-width: 55ch; color: var(--muted); font-size: .83rem; }
@@ -2703,11 +2705,11 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-focus-primary, .student-continue-card { position: relative; min-height: 290px; overflow: hidden; border-radius: 1.4rem; }
 .student-focus-primary { padding: clamp(1.35rem, 3vw, 2rem); display: flex; flex-direction: column; color: white; background: linear-gradient(138deg, #174f98 0%, #0b2148 72%); box-shadow: 0 20px 46px rgba(18,54,105,.17); }
 .student-focus-primary::after { content: ""; position: absolute; width: 280px; height: 280px; right: -110px; top: -155px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; box-shadow: 0 0 0 45px rgba(255,255,255,.035), 0 0 0 92px rgba(255,255,255,.02); }
-.student-dashboard-igcse .student-focus-primary { background: linear-gradient(138deg, #a02b3a 0%, #48121e 74%); box-shadow: 0 20px 46px rgba(113,28,41,.16); }
+.student-dashboard-igcse .student-focus-primary { background: linear-gradient(138deg, #5365c7 0%, #25336f 74%); box-shadow: 0 20px 46px rgba(37,51,111,.16); }
 .student-focus-primary > * { position: relative; z-index: 1; }
 .student-focus-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .student-focus-label { color: #93cfff; font-size: .68rem; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; }
-.student-dashboard-igcse .student-focus-label { color: #ffc0c8; }
+.student-dashboard-igcse .student-focus-label { color: #dce3ff; }
 .student-due-pill { padding: .34rem .62rem; border-radius: 999px; background: #ffd27b; color: #6b4300; font-size: .66rem; font-weight: 900; }
 .student-focus-copy { margin-block: auto; display: grid; gap: .4rem; }
 .student-focus-copy > span { color: rgba(255,255,255,.67); font-size: .78rem; font-weight: 750; }
@@ -2723,7 +2725,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-focus-button:hover { border-color: white; background: #edf6ff; color: #0a2b58; }
 .student-dashboard-igcse .student-focus-button { border-color: white; background: white; color: var(--igcse-red-dark); box-shadow: none; }
 .student-continue-card { padding: 1.35rem; display: grid; grid-template-columns: minmax(0, 1fr) 108px; grid-template-rows: 1fr auto; gap: 1rem; background: linear-gradient(145deg, #f2eeff, #e8f1ff); box-shadow: 0 12px 34px rgba(56,50,125,.09); }
-.student-dashboard-igcse .student-continue-card { background: linear-gradient(145deg, #fff0f2, #fff8f2); }
+.student-dashboard-igcse .student-continue-card { background: linear-gradient(145deg, #edf0ff, #f7f8ff); }
 .student-continue-copy { position: relative; z-index: 1; display: grid; align-content: start; gap: .32rem; }
 .student-continue-copy .student-focus-label { color: #6753ad; }
 .student-dashboard-igcse .student-continue-copy .student-focus-label { color: var(--igcse-red-dark); }
@@ -2740,7 +2742,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-continue-meter strong { color: #282348; }
 .student-continue-meter i { background: rgba(73,59,140,.12); }
 .student-continue-meter i b { background: linear-gradient(90deg, #6e57c4, #9888df); }
-.student-dashboard-igcse .student-continue-meter i b { background: linear-gradient(90deg, var(--igcse-red), #e27684); }
+.student-dashboard-igcse .student-continue-meter i b { background: linear-gradient(90deg, var(--igcse-red), #8d9bea); }
 .student-platform-nav-v2 { margin-top: 2.75rem; gap: .7rem; }
 .student-platform-nav-v2 > a { min-height: 78px; border: 0; box-shadow: none; }
 .student-platform-nav-v2 > a:hover { box-shadow: 0 10px 24px rgba(11,21,48,.07); }
