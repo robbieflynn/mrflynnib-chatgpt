@@ -7,6 +7,12 @@ const choices = require("../public/question-bank/assignment-choice-utils.js");
 
 assert.equal(choices.latexToPlain(String.raw`\dfrac12r^2\sin\theta`), "(1/2)*r^2sintheta");
 assert.equal(choices.toLatex("(1/2)*r^2sintheta"), String.raw`\left(\frac{1}{2}\right)\times r^{2}\sin \theta `);
+assert.equal(choices.latexToPlain(String.raw`\varnothing`), "∅");
+assert.equal(choices.toLatex("∅"), String.raw`\varnothing`);
+const emptySetChoices = choices.generateChoiceSet(["∅"], "audit-empty-set", "Write a symbol from the box to make the statement true.");
+assert(emptySetChoices);
+assert.equal(emptySetChoices.options[emptySetChoices.correctOption], "∅");
+assert(emptySetChoices.options.every((option) => ["∅", "∈", "∉", "∩", "∪", "E"].includes(option)));
 assert.equal(choices.toLatex("a_1+3a_3x^2+5a_5x^4"), String.raw`a_{1}+3a_{3}x^{2}+5a_{5}x^{4}`);
 assert.equal(choices.toLatex("1+a_1^2x^2+2a_1a_3x^4"), String.raw`1+a_{1}^{2}x^{2}+2a_{1}a_{3}x^{4}`);
 assert.equal(choices.latexToPlain(String.raw`x^{\frac12}`), "x^(1/2)");
@@ -255,6 +261,9 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
       qualityIssue(`${role}: unrounded value joined to final answer`, meta, prompt, option, rendered);
     }
     if (option.length > 260) qualityIssue(`${role}: too long`, meta, prompt, option, rendered);
+    if (/\b(?:varnothing|emptyset)\b|(?:-\s*\(?\s*∅|∅\s*[+-])/i.test(option)) {
+      qualityIssue(`${role}: malformed set symbol`, meta, prompt, option, rendered);
+    }
     if (/\b(\w{3,})\s+\1\b/i.test(option)
       || /\bon the floor on the floor\b|\bbecause because\b|\bmight have (?:received no report|refused to respond|finished responding) to\b/i.test(option)
       || /^(?:\([ivxlcdm]+\)\s*)?(?:(?:biased|invalid|inconclusive|unreliable|valid|correct|appropriate|reasonable|consistent)\s+)?reason(?:ing)?\s+with reference to\b/i.test(option)

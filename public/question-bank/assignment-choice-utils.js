@@ -211,6 +211,7 @@
       .replace(/\\mapsto\b/g, "↦").replace(/\\to\b/g, "→")
       .replace(/\\notin(?=\\?\{|blackboard|cal|\s|$)/g, "∉").replace(/\\in(?!fty)(?=\\?\{|blackboard|cal|\s|$)/g, "∈")
       .replace(/\\cup\b/g, "∪").replace(/\\cap\b/g, "∩")
+      .replace(/\\(?:varnothing|emptyset)\b/g, "∅")
       .replace(/\\pm/g, "±").replace(/\\infty/g, "∞").replace(/\\pounds\b/g, "£")
       .replace(/\\varphi\b/g, "φ").replace(/\\phi\b/g, "φ")
       .replace(/\\pi/g, "π").replace(/\\times/g, "×").replace(/\\cdot/g, "·")
@@ -3158,6 +3159,7 @@
 
   function isChoiceTextSafe(value) {
     var answer = clean(value);
+    if (/^(?:∅|∈|∉|∩|∪)$/.test(answer)) return true;
     if (isRawLatexAnswer(answer)) return isSafeRawLatex(answer);
     if (!isDisplaySafe(answer) || hasMarkingLanguage(answer) || hasAwkwardWording(answer)
       || isGenericAnswerPlaceholder(answer) || /\d\.\d+(?:…|\.\.\.)/.test(answer)) return false;
@@ -3190,6 +3192,7 @@
 
   function isDisplaySafe(value) {
     var answer = clean(value);
+    if (/^(?:∅|∈|∉|∩|∪)$/.test(answer)) return true;
     if (isRawLatexAnswer(answer)) return isSafeRawLatex(answer);
     if (!answer || answer.length > 360) return false;
     if (/\\|\b(?:mathrm|circ|ldots|cdots)\b|\^\s*$|\/\s*\/|\bsqrt\b\s*(?!\()|\broot\b\s*(?!\()/i.test(answer)
@@ -3901,6 +3904,14 @@
     addCandidate(list, "(" + expression + ")'");
   }
 
+  function setSymbolCandidates(correct, list) {
+    var symbol = clean(correct);
+    if (!["∅", "∈", "∉", "∩", "∪"].includes(symbol)) return;
+    ["∅", "∈", "∉", "∩", "∪", "E"].forEach(function (candidate) {
+      if (candidate !== symbol) addCandidate(list, candidate);
+    });
+  }
+
   function symbolicCandidates(correct, list) {
     var expression = clean(correct);
     if (expression.length > 110 || /;/.test(expression)) return;
@@ -4266,6 +4277,7 @@
     var compoundInequalitySet = compoundInequalityChoiceSet(accepted, correct, seed, prompt);
     if (compoundInequalitySet) return compoundInequalitySet;
     var candidates = [];
+    setSymbolCandidates(correct, candidates);
     factorisedExpressionCandidates(correct, prompt, candidates);
     ratioDistractorCandidates(correct, candidates);
     functionEvaluationResultCandidates(correct, candidates);
@@ -5042,6 +5054,7 @@
   function toLatex(value) {
     var answer = clean(value);
     if (isRawLatexAnswer(answer)) return rawLatexValue(answer);
+    if (answer === "∅") return "\\varnothing";
     if (/\b(?:displaystyle)?int[_^(]/i.test(answer)) {
       var integralPieces = answer.split(/\s*;\s*/);
       var integralExpression = expressionToLatex(integralPieces.shift());
