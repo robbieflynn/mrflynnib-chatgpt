@@ -18,6 +18,7 @@
   var revealActiveNavigation = false;
   var partDrafts = {};
   var collapsedParts = {};
+  var completedQuestionIds = new Set();
   var list = document.getElementById("qb-list");
   if (!list) return;
 
@@ -212,6 +213,7 @@
 
   function isQuestionFinished(item) {
     if (!item) return false;
+    if (item.questionId && completedQuestionIds.has(String(item.questionId))) return true;
     if (item.responseType === "teacher_review") return Boolean(item.response);
     if (item.responseType === "multipart") {
       var definitions = multipartDefinitions(item);
@@ -652,6 +654,12 @@
 
   window.addEventListener("message", function (event) {
     if (event.origin !== window.location.origin || event.source !== window.parent || !event.data) return;
+    if (event.data.type === "mrflynnib-account-state") {
+      completedQuestionIds = new Set(Array.isArray(event.data.completedQuestionIds) ? event.data.completedQuestionIds.map(String) : []);
+      renderVersion += 1;
+      decorateAll();
+      return;
+    }
     if (event.data.type === "mrflynnib-assignment-response-state" && Array.isArray(event.data.questions)) {
       state = {};
       feedbackMode = String(event.data.feedbackMode || "immediate");
@@ -692,15 +700,24 @@
           item.response._partStates = item.response._partStates && typeof item.response._partStates === "object" ? item.response._partStates : {};
           item.response.parts[submittedPart] = String(event.data.response.partAnswer || "");
           var previousPartState = item.response._partStates[submittedPart] || {};
+          var returnedPartResult = event.data.result;
+          var preservedTerminalState = false;
+          if (returnedPartResult === "locked" && ["correct", "incorrect_final", "saved"].indexOf(previousPartState.result) !== -1) {
+            returnedPartResult = previousPartState.result;
+            preservedTerminalState = true;
+          }
           item.response._partStates[submittedPart] = {
-            result: event.data.result,
-            isCorrect: event.data.isCorrect,
-            attemptCount: event.data.result === "correct" || event.data.result === "retry" || event.data.result === "incorrect_final" ? Number(previousPartState.attemptCount || 0) + 1 : 0
+            result: returnedPartResult,
+            isCorrect: preservedTerminalState ? previousPartState.isCorrect : event.data.isCorrect,
+            attemptCount: preservedTerminalState
+              ? Number(previousPartState.attemptCount || 0)
+              : returnedPartResult === "correct" || returnedPartResult === "retry" || returnedPartResult === "incorrect_final" ? Number(previousPartState.attemptCount || 0) + 1 : 0
           };
         } else {
           item.response = event.data.response; item.isCorrect = event.data.isCorrect;
           if (event.data.result === "retry" || event.data.result === "incorrect_final" || event.data.result === "correct") item.attemptCount = Number(item.attemptCount || 0) + 1;
         }
+        if (isQuestionFinished(item)) completedQuestionIds.add(String(event.data.questionId));
         if (event.data.result === "correct") playFeedback(true);
         if (event.data.result === "retry" || event.data.result === "incorrect_final") playFeedback(false);
       }
