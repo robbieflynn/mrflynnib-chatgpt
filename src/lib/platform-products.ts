@@ -22,9 +22,9 @@ const ibStudentPlans: CoursePlan[] = [
   { id: "two-years", label: "24 months", priceUsd: 79, accessDays: 730, stripePriceEnv: "", badge: "Complete access" },
 ];
 
-// IGCSE native-course pricing has not been approved. Keep checkout unavailable
-// until Rob confirms a separate IGCSE offer.
-const igcsePlans: CoursePlan[] = [];
+const igcsePlans: CoursePlan[] = [
+  { id: "two-years", label: "24 months", priceUsd: 79, accessDays: 730, stripePriceEnv: "", badge: "Complete access" },
+];
 
 function plansFor(plans: CoursePlan[], envPrefix: string): CoursePlan[] {
   return plans.map((plan) => ({

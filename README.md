@@ -39,7 +39,7 @@ Open `http://localhost:3000`.
 3. Configure the Resend variable described below so school enquiries generate an email notification.
 4. Create a Supabase project, run `supabase/schema.sql`, and add `NEXT_PUBLIC_SUPABASE_URL` plus `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` for student accounts. Add the site and callback URLs in Supabase Auth settings.
 5. Optionally add `SUPABASE_URL` plus `SUPABASE_SERVICE_ROLE_KEY` for contact and tutoring enquiry storage if those forms are restored later.
-6. Apply the latest Supabase migrations, configure Bunny token authentication, create the five Stripe Price records, add their IDs and register `/api/stripe/webhook` for `checkout.session.completed`.
+6. Apply the latest Supabase migrations, configure Bunny token authentication, create the six Stripe Price records, add their IDs and register `/api/stripe/webhook` for `checkout.session.completed`.
 7. Complete legal review and configure consent before non-essential tracking.
 
 ## Resend school-enquiry setup
