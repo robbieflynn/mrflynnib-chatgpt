@@ -220,8 +220,14 @@
     var ids = subtopic ? filteredQuestionIds() : [];
     var unselectedCount = ids.filter(function (id) { return !selected.has(id); }).length;
     var remaining = Math.max(0, MAX_SELECTED - selected.size);
-    bulkControl.hidden = !subtopic;
-    if (!subtopic) return;
+    bulkControl.hidden = false;
+    if (!subtopic) {
+      bulkHeading.textContent = "Select a whole subtopic";
+      bulkDetail.textContent = "Choose a topic and subtopic above, then add every matching question in one action.";
+      bulkButton.textContent = "Choose a subtopic";
+      bulkButton.disabled = true;
+      return;
+    }
     bulkHeading.textContent = subtopic;
     if (!ids.length) {
       bulkDetail.textContent = "No questions match the other filters currently selected.";
@@ -230,8 +236,8 @@
       return;
     }
     bulkDetail.textContent = ids.length + (ids.length === 1 ? " question matches" : " questions match") + " the filters above.";
-    bulkButton.textContent = !remaining && unselectedCount ? "100-question limit reached" : unselectedCount ? "Select all " + ids.length : "All " + ids.length + " selected";
-    bulkButton.disabled = unselectedCount === 0 || remaining === 0;
+    bulkButton.textContent = !unselectedCount ? "Clear all " + ids.length : !remaining ? "100-question limit reached" : "Select all " + ids.length;
+    bulkButton.disabled = unselectedCount > 0 && remaining === 0;
   }
 
   function installBulkControl() {
@@ -239,7 +245,7 @@
     if (!controls || document.querySelector(".qb-assignment-bulk")) return;
     bulkControl = document.createElement("div");
     bulkControl.className = "qb-assignment-bulk";
-    bulkControl.hidden = true;
+    bulkControl.hidden = false;
     var copy = document.createElement("div");
     copy.className = "qb-assignment-bulk-copy";
     bulkHeading = document.createElement("strong");
@@ -251,6 +257,16 @@
     bulkButton.addEventListener("click", function () {
       var ids = filteredQuestionIds();
       var available = ids.filter(function (id) { return !selected.has(id); });
+      if (ids.length && !available.length) {
+        ids.forEach(function (id) {
+          selected.delete(id);
+          delete summaries[id];
+        });
+        syncRenderedCards();
+        publish();
+        updateBulkControl();
+        return;
+      }
       var remaining = Math.max(0, MAX_SELECTED - selected.size);
       var additions = available.slice(0, remaining);
       additions.forEach(function (id) {
