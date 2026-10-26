@@ -7,22 +7,18 @@ import { PendingSubmitButton } from "@/components/pending-submit-button";
 import { requireTeacher } from "@/lib/account-access";
 import { activePlatformEntitlements, type PlatformEntitlement } from "@/lib/platform-access";
 import { teacherPlusProduct } from "@/lib/platform-products";
-import { teacherAccountSummaries } from "@/lib/teacher-accounts";
-import { createClass, reviewTeacherApplication } from "./actions";
+import { createClass } from "./actions";
 
 export const metadata: Metadata = { title: "Teacher dashboard", robots: { index: false, follow: false } };
 
 export default async function TeacherPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
   const { supabase, user, profile } = await requireTeacher("/teacher", "ib");
   const message = await searchParams;
-  const [classesResult, teacherAccountsResult, teacherPlusResult] = await Promise.all([
+  const [classesResult, teacherPlusResult] = await Promise.all([
     supabase.from("classes").select("id,name,course,join_code,created_at,class_memberships(count),assignments(count)").eq("teacher_id", user.id).eq("bank", "ib").eq("archived", false).order("created_at", { ascending: false }),
-    profile.role === "admin" ? supabase.rpc("admin_teacher_accounts") : Promise.resolve({ data: [], error: null }),
     supabase.from("platform_entitlements").select("product_code,status,starts_at,expires_at").eq("user_id", user.id).eq("product_code", teacherPlusProduct.productCode),
   ]);
   const { data: classes } = classesResult;
-  const { data: teacherAccountRows, error: teacherAccountError } = teacherAccountsResult;
-  const teacherApplications = teacherAccountSummaries(teacherAccountRows).filter((account) => account.teacher_status === "pending" && account.email_confirmed_at);
   const activeTeacherPlus = activePlatformEntitlements(teacherPlusResult.data as PlatformEntitlement[] | null)[0];
   const teacherPlusDetail = activeTeacherPlus?.expires_at
     ? `All four IB courses included · Active until ${new Date(activeTeacherPlus.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
@@ -35,8 +31,7 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
     <section className="section-tight teacher-dashboard"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}
       {message.success ? <p className="form-message form-success">{message.success}</p> : null}
-      {profile.role === "admin" ? <section className="teacher-approval-panel stack-lg"><div className="dashboard-section-heading"><div><p className="eyebrow">Account administration</p><h2>{teacherApplications.length ? `${teacherApplications.length} teacher ${teacherApplications.length === 1 ? "approval" : "approvals"} awaiting review` : "Approvals are up to date"}</h2></div><div className="teacher-approval-heading-actions"><p className="muted">Review teacher requests or open either complete account directory.</p><div className="cluster"><Link className="button button-secondary button-small" href="/teacher/accounts">Teacher accounts</Link><Link className="button button-secondary button-small" href="/teacher/students">Student accounts</Link></div></div></div>
-        {teacherAccountError ? <p className="form-message form-error">Teacher approvals could not be refreshed just now.</p> : teacherApplications.length ? <div className="teacher-approval-list">{teacherApplications.map((application) => <div className="teacher-approval-row" key={application.user_id}><span><strong>{application.display_name || "Teacher applicant"}</strong><small>{application.email}{application.teacher_requested_at ? ` · Requested ${new Date(application.teacher_requested_at).toLocaleDateString("en-GB")}` : ""}</small></span><form action={reviewTeacherApplication} className="cluster"><input name="applicantId" type="hidden" value={application.user_id} /><button className="button button-small" name="decision" type="submit" value="approve">Approve</button><button className="button button-secondary button-small" name="decision" type="submit" value="decline">Decline</button></form></div>)}</div> : <div className="dashboard-approval-empty"><DashboardIcon name="check" /><span><strong>No requests need your attention</strong><small>New applications will appear here after email confirmation.</small></span></div>}
+      {profile.role === "admin" ? <section className="teacher-approval-panel stack-lg"><div className="dashboard-section-heading"><div><p className="eyebrow">Account administration</p><h2>Manage platform accounts and access</h2></div><div className="teacher-approval-heading-actions"><p className="muted">Teacher accounts are created immediately when a user chooses Teacher.</p><div className="cluster"><Link className="button button-secondary button-small" href="/teacher/accounts">Teacher accounts</Link><Link className="button button-secondary button-small" href="/teacher/students">Student accounts</Link></div></div></div>
         <div className="cluster"><Link className="text-link" href="/teacher/platform-access">Manage payments and course access</Link><Link className="text-link" href="/teacher/access-claims">Review Teachable access transfers</Link><Link className="text-link" href="/school/access">Manage school licences</Link></div>
       </section> : null}
       <section className="teacher-tool-banner">

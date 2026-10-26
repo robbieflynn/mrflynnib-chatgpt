@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
           .maybeSingle();
 
         if (
-          (profile?.teacher_status === "pending" || profile?.teacher_status === "approved") &&
+          profile?.teacher_status === "pending" &&
           !profile.teacher_notification_sent_at &&
           user.email
         ) {

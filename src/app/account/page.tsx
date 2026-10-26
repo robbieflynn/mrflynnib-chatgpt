@@ -83,7 +83,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         ? isSignUpJourney ? "Create your account for Plus" : "Sign in to continue to Plus"
         : isSignUpJourney ? "Create your account" : "Welcome back";
     const intro = isTeacherJourney
-      ? "Sign in to manage classes and assignments, or create a teacher account to request approval."
+      ? "Sign in to manage classes and assignments, or create a teacher account and begin straight away."
       : isTeachableJourney
         ? "Sign in or create an account with the same email address you used on Teachable. After you confirm it, any matching active course is added automatically without another payment."
       : isPlusJourney
@@ -97,7 +97,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <Container className="stack-sm"><Eyebrow>{isIgcseJourney ? "IGCSE Mathematics account" : isTeacherJourney ? "Teacher account" : isTeachableJourney ? "Existing Teachable student" : isPlusJourney ? "Mr Flynn IB Plus" : isSignUpJourney ? "Create account" : "Sign in"}</Eyebrow><h1>{title}</h1><p>{isIgcseJourney ? isSignUpJourney ? "Create your account, or sign in with the same email and password you use for Mr Flynn IB." : "Sign in with your Mr Flynn account to open the IGCSE learning or teaching area." : intro}</p></Container>
         </section>
         <section className="section-tight account-entry-section"><Container className="stack-xl">
-          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} curriculumOverride={isIgcseJourney ? "igcse" : undefined} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Teacher Plus is optional and follows approval.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and approved teachers.</p><ul><li>Student Plus includes every Free feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses after approval.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
+          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} curriculumOverride={isIgcseJourney ? "igcse" : undefined} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Add Teacher Plus at any time for all four IB courses.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and teachers.</p><ul><li>Student Plus includes every Free feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
         </Container></section>
       </>
     );
@@ -116,36 +116,28 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (profile?.role === "teacher" || profile?.role === "admin") redirect(isIgcse ? "/igcse/teacher" : "/teacher");
   const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
   const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
-  const teacherApprovalRequired = pageSearchParams.teacher === "approval-required";
-  const teacherRequested = pageSearchParams.teacher === "requested";
-  const teacherApprovalPending = profile?.teacher_status === "pending";
+  const teacherAccessRequired = pageSearchParams.teacher === "access-required" || pageSearchParams.teacher === "approval-required";
 
-  if (teacherApprovalRequired || teacherRequested) {
-    const requestPending = profile?.teacher_status === "pending" || teacherRequested;
+  if (teacherAccessRequired) {
     const studentDashboardHref = isIgcse ? "/igcse/account" : "/account";
 
     return (
       <>
         <PageHero
           eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"}
-          title={requestPending ? "Teacher access requested" : "Looking for the teacher dashboard?"}
-          intro={requestPending
-            ? "Your request is waiting for approval. You can continue using your student dashboard while it is reviewed."
-            : "Your account is currently set up as a student. You can request teacher access using this same account."}
+          title="Create your teacher account"
+          intro="Use this same account for the teacher dashboard, classes, assignments and Test Maker."
         />
         <section className="section-tight">
           <Container className="narrow">
             <div className="account-card teacher-access-gate stack-lg">
               {accountError ? <p className="form-message form-error">{accountError}</p> : null}
               <div className="stack-sm">
-                <h2>{requestPending ? "What happens next?" : "Keep everything in one account"}</h2>
-                <p>{requestPending
-                  ? "Once an administrator approves the request, this account will open the teacher dashboard."
-                  : "Your question-bank progress and saved work will remain in place. Your account will stay as a student account until an administrator approves the request."}</p>
+                <h2>Keep everything in one account</h2>
+                <p>Your question-bank progress and saved work will remain in place. Creating the teacher account takes effect immediately.</p>
               </div>
-              {requestPending ? <p className="teacher-pending-note"><strong>Approval pending</strong><span>No further action is needed. You can return here to check the status.</span></p> : null}
               <div className="teacher-access-gate-actions">
-                {!requestPending ? <form action={requestTeacherAccess}><input name="curriculum" type="hidden" value={isIgcse ? "igcse" : "ib"} /><button className="button" type="submit">Request teacher access</button></form> : null}
+                <form action={requestTeacherAccess}><input name="curriculum" type="hidden" value={isIgcse ? "igcse" : "ib"} /><button className="button" type="submit">Create teacher account</button></form>
                 <Link className="button button-secondary" href={studentDashboardHref}>Return to student dashboard</Link>
               </div>
             </div>
@@ -348,15 +340,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           </div>
           <div className="dashboard-hero-layout">
             <div className="dashboard-hero-copy">
-              <span className="dashboard-role-label">
-                {teacherApprovalPending ? "Teacher status: waiting approval" : "My learning"}
-              </span>
+              <span className="dashboard-role-label">My learning</span>
               <h1>{displayName ? `Welcome back, ${displayName}` : "Your learning dashboard"}</h1>
-              <p>
-                {teacherApprovalPending
-                  ? "Your teacher account is being reviewed. You can use the question bank while you wait."
-                  : "Here's what to focus on next."}
-              </p>
+              <p>Here is what to focus on next.</p>
             </div>
             <div className="student-home-course-chip">
               <span>Current course</span>
@@ -370,12 +356,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         <Container className="stack-2xl">
           {accountError ? <p className="form-message form-error">{accountError}</p> : null}
           {accountSuccess ? <p className="form-message form-success">{accountSuccess}</p> : null}
-          {teacherApprovalPending ? (
-            <p className="teacher-pending-note">
-              <strong>Teacher status: waiting approval</strong>
-              <span>You do not need to apply again. Once approved, this account will open your teacher dashboard automatically.</span>
-            </p>
-          ) : null}
           <section className="student-focus-grid" aria-labelledby="student-focus-heading">
             <article className="student-focus-primary">
               <div className="student-focus-top"><span className="student-focus-label">{nextAssignment ? "Your next task" : "You're up to date"}</span>{nextAssignment?.due_at ? <span className="student-due-pill">{dueDateLabel(nextAssignment.due_at)}</span> : null}</div>

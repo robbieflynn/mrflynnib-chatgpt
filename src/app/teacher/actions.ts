@@ -286,8 +286,8 @@ export async function reviewTeacherApplication(formData: FormData) {
     ? { role: "teacher", teacher_status: "approved", updated_at: new Date().toISOString() }
     : { role: "student", teacher_status: "rejected", updated_at: new Date().toISOString() };
   const { error } = await supabase.from("profiles").update(values).eq("user_id", applicantId).eq("teacher_status", "pending");
-  if (error) redirect(`${returnTo}?error=${encodeURIComponent("The teacher request could not be updated.")}`);
+  if (error) redirect(`${returnTo}?error=${encodeURIComponent("The teacher account could not be updated.")}`);
   revalidatePath("/teacher");
   revalidatePath("/teacher/accounts");
-  redirect(`${returnTo}?success=${encodeURIComponent(decision === "approve" ? "Teacher access approved." : "Teacher request declined.")}`);
+  redirect(`${returnTo}?success=${encodeURIComponent(decision === "approve" ? "Teacher account activated." : "The account remains a student account.")}`);
 }

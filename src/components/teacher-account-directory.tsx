@@ -23,9 +23,9 @@ function dateTime(value: string | null) {
 }
 
 function accessLabel(status: TeacherAccountSummary["teacher_status"]) {
-  if (status === "approved") return "Approved";
+  if (status === "approved") return "Active teacher";
   if (status === "rejected") return "Declined";
-  return "Awaiting approval";
+  return "Legacy pending";
 }
 
 export function TeacherAccountDirectory({ accounts }: { accounts: TeacherAccountSummary[] }) {
@@ -91,8 +91,8 @@ export function TeacherAccountDirectory({ accounts }: { accounts: TeacherAccount
         <span>Access</span>
         <select value={access} onChange={(event) => setAccess(event.target.value as AccessFilter)}>
           <option value="all">All access states</option>
-          <option value="pending">Awaiting approval</option>
-          <option value="approved">Approved</option>
+          <option value="pending">Legacy pending</option>
+          <option value="approved">Active teacher</option>
           <option value="rejected">Declined</option>
         </select>
       </label>
@@ -125,7 +125,7 @@ export function TeacherAccountDirectory({ accounts }: { accounts: TeacherAccount
             <td><strong>{account.display_name || "Teacher applicant"}</strong><small>Registered {dateTime(account.created_at)}</small></td>
             <td><span className="status-pill">{account.curriculum === "igcse" ? "IGCSE" : "IB"}</span></td>
             <td><strong className="teacher-account-email">{account.email}</strong><span className={`account-state-badge ${account.email_confirmed_at ? "is-positive" : "is-waiting"}`}>{account.email_confirmed_at ? "Confirmed" : "Awaiting confirmation"}</span></td>
-            <td><span className={`account-state-badge is-${account.teacher_status}`}>{accessLabel(account.teacher_status)}</span>{account.teacher_status === "pending" && account.email_confirmed_at ? <form action={reviewTeacherApplication} className="teacher-account-actions"><input name="applicantId" type="hidden" value={account.user_id} /><input name="returnTo" type="hidden" value="/teacher/accounts" /><button className="text-button" name="decision" type="submit" value="approve">Approve</button><button className="text-button is-danger" name="decision" type="submit" value="decline">Decline</button></form> : null}</td>
+            <td><span className={`account-state-badge is-${account.teacher_status}`}>{accessLabel(account.teacher_status)}</span>{account.teacher_status === "pending" && account.email_confirmed_at ? <form action={reviewTeacherApplication} className="teacher-account-actions"><input name="applicantId" type="hidden" value={account.user_id} /><input name="returnTo" type="hidden" value="/teacher/accounts" /><button className="text-button" name="decision" type="submit" value="approve">Activate</button><button className="text-button is-danger" name="decision" type="submit" value="decline">Keep as student</button></form> : null}</td>
             <td>{dateTime(account.last_sign_in_at)}</td>
             <td><strong>{Number(account.class_count) || 0} classes</strong><small>{Number(account.assignment_count) || 0} assignments · {Number(account.saved_test_count) || 0} saved tests</small></td>
             <td>{account.teacher_notification_sent_at ? <><span className="account-state-badge is-positive">Sent</span><small>{dateTime(account.teacher_notification_sent_at)}</small></> : <span className="account-state-badge is-waiting">Not sent</span>}</td>

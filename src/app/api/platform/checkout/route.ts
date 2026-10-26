@@ -41,7 +41,7 @@ async function createCheckout(request: Request) {
     return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
   }
   if (teacherBundleRequested && !["teacher", "admin"].includes(session.profile?.role || "")) {
-    return NextResponse.json({ error: "Approved teacher access is required." }, { status: 403 });
+    return NextResponse.json({ error: "A teacher account is required." }, { status: 403 });
   }
   if (!plan) return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
   const alreadyOwned = teacherBundleRequested

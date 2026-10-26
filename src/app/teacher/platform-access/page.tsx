@@ -32,7 +32,7 @@ function messageFor(query: Record<string, string | string[] | undefined>) {
   if (query.success === "access-granted") return { kind: "success", text: "Course access was added to the account." };
   if (query.success === "already-active") return { kind: "success", text: "That account already has active access to the selected product." };
   if (query.error === "account-not-found") return { kind: "error", text: "No Mr Flynn IB account was found for that email address. Ask the user to create and confirm their account first." };
-  if (query.error === "teacher-required") return { kind: "error", text: "Teacher Plus can only be granted to an approved teacher account." };
+  if (query.error === "teacher-required") return { kind: "error", text: "Teacher Plus can only be granted to a teacher account." };
   if (query.error) return { kind: "error", text: "The access change could not be completed. Please try again." };
   return null;
 }
