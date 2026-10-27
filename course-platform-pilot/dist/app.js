@@ -363,6 +363,32 @@ function syncQuestionBankLink() {
   document.getElementById("questionBankLink").href = questionBankHrefForCourse();
 }
 
+function isIbTeacherAccount() {
+  return platformAccount?.curriculum === "ib" && ["teacher", "admin"].includes(platformAccount.user?.role);
+}
+
+function configureTeacherCourseSwitcher() {
+  const switcher = document.getElementById("teacherCourseSwitcher");
+  const select = document.getElementById("teacherCourseSelect");
+  const visible = isIbTeacherAccount() && enrolledCourseDefinitions.length > 1;
+  switcher.hidden = !visible;
+  if (!visible) return;
+  select.innerHTML = enrolledCourseDefinitions.map((definition) => `<option value="${definition.id}">${escapeHtml(definition.code)}</option>`).join("");
+  select.value = currentCourseId;
+  document.getElementById("sidebar").setAttribute("aria-label", "Teacher course navigation");
+}
+
+async function persistActiveCourse(courseId, lessonId) {
+  if (!platformAccount || reviewerMode || salesPreviewMode) return;
+  try {
+    await fetch("/api/platform/state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ courseId, lessonId }),
+    });
+  } catch {}
+}
+
 function getCurrentLesson() {
   return currentCourse.lessons.find((lesson) => lesson.id === currentLessonId) || currentCourse.lessons[0];
 }
@@ -489,7 +515,7 @@ function courseCard(course, large = false) {
 }
 
 function renderCourseCards() {
-  const visibleCourses = guestMode
+  const visibleCourses = guestMode || isIbTeacherAccount()
     ? courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => courses[definition.id])
     : [currentCourse];
   const markup = visibleCourses.map((course) => courseCard(course, true)).join("");
@@ -523,6 +549,7 @@ function renderDashboard() {
 
 function openCourse(courseId, lessonId = null) {
   if (!courses[courseId] || !enrolledCourseIds.includes(courseId)) return;
+  if (isIbTeacherAccount()) enrolledCourseId = courseId;
   currentCourseId = courseId;
   currentCourse = courses[courseId];
   const freeDefaultLesson = hasCompleteCourseAccess(currentCourse) ? null : salesPreviewLessons(currentCourse)[0]?.id;
@@ -534,6 +561,13 @@ function openCourse(courseId, lessonId = null) {
   state.lastLesson = currentLessonId;
   saveState();
   syncQuestionBankLink();
+  configureTeacherCourseSwitcher();
+  if (isIbTeacherAccount()) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("course", courseId);
+    window.history.replaceState({}, "", url);
+    void persistActiveCourse(courseId, currentLessonId);
+  }
   document.getElementById("lessonSearch").value = "";
   renderCourse();
   setView("course");
@@ -929,8 +963,9 @@ function renderPastPaperTabs() {
   tabs.classList.toggle("is-single-course", definitions.length === 1);
   tabs.innerHTML = definitions.map((definition) => {
     const stats = pastPaperLibrary.stats[definition.code];
-    const Tag = reviewerMode ? "button" : "div";
-    const attributes = reviewerMode ? `type="button" data-past-course="${definition.code}"` : `aria-label="Your enrolled course"`;
+    const canSwitch = reviewerMode || definitions.length > 1;
+    const Tag = canSwitch ? "button" : "div";
+    const attributes = canSwitch ? `type="button" data-past-course="${definition.code}"` : `aria-label="Your enrolled course"`;
     return `<${Tag} class="past-paper-course-tab ${definition.code === currentPastPaperCourse ? "is-active" : ""}" ${attributes}>
       <span>${definition.code}</span>
       <strong>${escapeHtml(definition.name)}</strong>
@@ -1129,6 +1164,9 @@ document.getElementById("pastPaperSessionFilter").addEventListener("change", (ev
   renderPastPaperCatalog();
   renderPastPaperQuestions();
 });
+document.getElementById("teacherCourseSelect").addEventListener("change", (event) => {
+  openCourse(event.target.value);
+});
 
 const accountButton = document.getElementById("accountButton");
 const accountMenu = document.getElementById("accountMenu");
@@ -1256,6 +1294,7 @@ async function bootstrapAccount() {
     document.getElementById("brandLearningHomeLink").href = platformAccount.links.account;
     syncQuestionBankLink();
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
+    configureTeacherCourseSwitcher();
     void flushLessonProgress();
   } catch {
     configureGuestExperience();

@@ -57,7 +57,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 
 .sidebar-scrim { display: none; }
 .main-stage { min-width: 0; }
-.topbar { position: sticky; z-index: 20; top: 0; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(28px, 4vw, 62px); border-bottom: 1px solid rgba(219,228,237,.9); background: rgba(255,255,255,.91); backdrop-filter: blur(14px); }
+.topbar { position: sticky; z-index: 20; top: 0; height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 0 clamp(28px, 4vw, 62px); border-bottom: 1px solid rgba(219,228,237,.9); background: rgba(255,255,255,.91); backdrop-filter: blur(14px); }
 .topbar-context { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 10px; font-weight: 700; }
 .topbar-home-link { display: inline-flex; align-items: center; min-height: 34px; padding: 0 11px; border: 1px solid #cbd9e5; border-radius: 9px; background: #fff; color: var(--navy-900); text-decoration: none; font-weight: 850; }
 .topbar-home-link:hover { border-color: #8db8db; background: var(--blue-100); color: var(--blue-700); }
@@ -73,6 +73,9 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .access-pill { margin-left: 10px; padding: 5px 8px; border-radius: 999px; background: #eef6ff; color: var(--blue-700); text-decoration: none; font-size: 8px; font-weight: 850; }
 .topbar-legacy-link { margin-left: 2px; color: #56687a; text-decoration: none; font-size: 8px; font-weight: 800; }
 .topbar-legacy-link:hover { color: var(--blue-700); text-decoration: underline; text-underline-offset: 2px; }
+.teacher-course-switcher { display: flex; align-items: center; gap: 8px; margin-left: auto; padding: 5px 6px 5px 10px; border: 1px solid #cbd9e5; border-radius: 10px; background: #fff; color: var(--muted); font-size: 8px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+.teacher-course-switcher select { min-width: 88px; height: 31px; padding: 0 27px 0 9px; border: 0; border-radius: 7px; background: var(--blue-100); color: var(--navy-900); font: inherit; font-size: 9px; letter-spacing: .02em; cursor: pointer; }
+.teacher-course-switcher select:focus-visible { outline: 3px solid rgba(36,147,238,.35); outline-offset: 1px; }
 
 .view { display: none; padding: 48px clamp(28px, 4vw, 62px) 76px; }
 .view.is-visible { display: block; }
@@ -182,7 +185,7 @@ body.practice-expanded::before { content: ""; position: fixed; z-index: 119; ins
   .sidebar.is-open { transform: translateX(0); }
   .sidebar-scrim { position: fixed; z-index: 25; inset: 0; display: block; background: rgba(5,24,47,.46); opacity: 0; pointer-events: none; transition: opacity .25s; }.sidebar-scrim.is-open { opacity: 1; pointer-events: auto; }
   .mobile-close, .menu-button { display: grid; }
-  .topbar { height: 64px; padding-inline: 20px; }.topbar-context { display: flex; }.topbar-context > :not(.topbar-home-link) { display: none; }.account-menu { right: 20px; top: 57px; }
+  .topbar { height: 64px; padding-inline: 20px; }.topbar-context { display: flex; }.topbar-context > :not(.topbar-home-link) { display: none; }.teacher-course-switcher { margin-left: auto; padding-left: 6px; }.teacher-course-switcher > span { display: none; }.teacher-course-switcher select { min-width: 82px; }.account-menu { right: 20px; top: 57px; }
   .view { padding: 34px 20px 58px; }
   .course-hero { margin: -34px -20px 24px; padding-inline: 20px; }
   .continue-card { grid-template-columns: 1fr; }.continue-art { min-height: 0; margin: 18px 18px 0; aspect-ratio: 16 / 9; }
