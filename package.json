@@ -9,6 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "generate:assignment-configs": "WRITE_ASSIGNMENT_CONFIGS=1 node scripts/audit-assignment-choices.mjs",
+    "question-bank:optimize": "node scripts/optimize-question-bank-delivery.mjs && node scripts/verify-question-bank-delivery.mjs",
+    "question-bank:verify": "node scripts/verify-question-bank-delivery.mjs",
     "audit:assignment-choices": "node scripts/audit-assignment-choices.mjs",
     "audit:past-papers": "node scripts/validate-past-paper-data.mjs",
     "import:teachable-access": "node scripts/import-teachable-access.mjs",

@@ -1,0 +1,24 @@
+{
+  "ib": {
+    "sourceQuestions": 4012,
+    "assets": {
+      "aahl": "/question-bank/data/ib-aa-hl.6a783b24deda.js",
+      "aasl": "/question-bank/data/ib-aa-sl.8defe2bfb027.js",
+      "aihl": "/question-bank/data/ib-ai-hl.fdd556c5bb5e.js",
+      "aisl": "/question-bank/data/ib-ai-sl.3b8df050a738.js"
+    },
+    "counts": {
+      "AA HL": 2380,
+      "AA SL": 1462,
+      "AI HL": 2109,
+      "AI SL": 1284
+    }
+  },
+  "igcse": {
+    "sourceQuestions": 1344,
+    "assets": {},
+    "counts": {
+      "IGCSE Higher": 1344
+    }
+  }
+}
