@@ -8,7 +8,7 @@ import { teacherAccountSummaries } from "@/lib/teacher-accounts";
 
 export const metadata: Metadata = { title: "Teacher accounts", robots: { index: false, follow: false } };
 
-export default async function TeacherAccountsPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
+export default async function TeacherAccountsPage({ searchParams }: { searchParams: Promise<{ access?: string; error?: string; success?: string }> }) {
   const { supabase } = await requireAdmin();
   const message = await searchParams;
   const { data, error } = await supabase.rpc("admin_teacher_accounts");
@@ -16,6 +16,7 @@ export default async function TeacherAccountsPage({ searchParams }: { searchPara
   const confirmedCount = accounts.filter((account) => account.email_confirmed_at).length;
   const approvedCount = accounts.filter((account) => account.teacher_status === "approved").length;
   const signedInCount = accounts.filter((account) => account.last_sign_in_at).length;
+  const initialAccess = message.access === "pending" ? "pending" : "all";
 
   return <>
     <section className="dashboard-hero teacher-dashboard-hero">
@@ -36,7 +37,7 @@ export default async function TeacherAccountsPage({ searchParams }: { searchPara
         {message.success ? <p className="form-message form-success">{message.success}</p> : null}
         <div className="dashboard-section-heading"><div><p className="eyebrow">Account directory</p><h2>All teacher registrations</h2></div><p className="muted">{confirmedCount} of {accounts.length} have confirmed their email address. Times are shown in Dubai time.</p></div>
         {error ? <p className="form-message form-error">Teacher accounts could not be loaded just now. Please reload the page.</p> : null}
-        {!error ? <TeacherAccountDirectory accounts={accounts} /> : null}
+        {!error ? <TeacherAccountDirectory accounts={accounts} initialAccess={initialAccess} /> : null}
         <div className="cluster"><Link className="button button-secondary button-small" href="/teacher">Back to teacher dashboard</Link><Link className="button button-secondary button-small" href="/teacher/students">View student accounts</Link></div>
       </Container>
     </section>
