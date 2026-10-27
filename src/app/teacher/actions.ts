@@ -180,6 +180,26 @@ export async function createAssignment(formData: FormData) {
   redirect(`/teacher/assignments/${assignment.id}?success=${encodeURIComponent("Assignment published.")}`);
 }
 
+export async function reuseAssignment(formData: FormData) {
+  const { supabase, user } = await requireTeacher();
+  const assignmentId = String(formData.get("assignmentId") || "");
+  const targetClassId = String(formData.get("targetClassId") || "");
+  if (!assignmentId || !targetClassId) redirect(messagePath("/teacher", "error", "Choose a class for the reused assignment."));
+
+  const [{ data: assignment }, { data: targetClass }] = await Promise.all([
+    supabase.from("assignments").select("id,class_id").eq("id", assignmentId).eq("teacher_id", user.id).maybeSingle(),
+    supabase.from("classes").select("id,bank,course").eq("id", targetClassId).eq("teacher_id", user.id).eq("archived", false).maybeSingle(),
+  ]);
+  if (!assignment || !targetClass) redirect(messagePath("/teacher", "error", "The assignment or class could not be found."));
+
+  const { data: sourceClass } = await supabase.from("classes").select("bank,course").eq("id", assignment.class_id).eq("teacher_id", user.id).maybeSingle();
+  if (!sourceClass || sourceClass.bank !== targetClass.bank || sourceClass.course !== targetClass.course) {
+    redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "Choose another class studying the same course."));
+  }
+
+  redirect(`/teacher/classes/${targetClassId}/assignments/new?reuseOf=${encodeURIComponent(assignmentId)}`);
+}
+
 export async function deleteAssignment(formData: FormData) {
   const { supabase, user } = await requireTeacher();
   const assignmentId = String(formData.get("assignmentId") || "");

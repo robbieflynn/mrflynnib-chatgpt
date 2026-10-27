@@ -80,6 +80,10 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .access-pill { margin-left: 10px; padding: 5px 8px; border-radius: 999px; background: #eef6ff; color: var(--blue-700); text-decoration: none; font-size: 8px; font-weight: 850; }
 .topbar-legacy-link { margin-left: 2px; color: #56687a; text-decoration: none; font-size: 8px; font-weight: 800; }
 .topbar-legacy-link:hover { color: var(--blue-700); text-decoration: underline; text-underline-offset: 2px; }
+.teacher-course-switcher { display: flex; align-items: center; gap: 8px; margin-left: auto; padding: 5px 6px 5px 10px; border: 1px solid #cbd9e5; border-radius: 10px; background: #fff; color: var(--muted); font-size: 8px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+.teacher-course-switcher[hidden] { display: none; }
+.teacher-course-switcher select { min-width: 88px; height: 31px; padding: 0 27px 0 9px; border: 0; border-radius: 7px; background: var(--blue-100); color: var(--navy-900); font: inherit; font-size: 9px; letter-spacing: .02em; cursor: pointer; }
+.teacher-course-switcher select:focus-visible { outline: 3px solid rgba(36,147,238,.35); outline-offset: 1px; }
 .access-pill.is-plus { background: #f0ebff; color: #6248b3; }
 .teacher-course-switcher { display: flex; align-items: center; gap: 8px; margin-left: auto; padding: 5px 6px 5px 10px; border: 1px solid #cbd9e5; border-radius: 10px; background: #fff; color: var(--muted); font-size: 8px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
 .teacher-course-switcher select { min-width: 88px; height: 31px; padding: 0 27px 0 9px; border: 0; border-radius: 7px; background: var(--blue-100); color: var(--navy-900); font: inherit; font-size: 9px; letter-spacing: .02em; cursor: pointer; }

@@ -9,12 +9,16 @@
     <link rel="icon" href="assets/mr-flynn-mark.png" />
     <link rel="stylesheet" href="styles.css?v=20261027-1" />
   </head>
-  <body>
+  <body class="is-booting">
+    <div class="learning-boot" id="learningBoot" role="status" aria-live="polite">
+      <img src="assets/mr-flynn-mark.png" alt="" />
+      <span>Loading courses…</span>
+    </div>
     <div class="app-shell">
       <aside class="sidebar" id="sidebar" aria-label="Student navigation">
         <div class="sidebar-head">
           <a class="brand" id="brandLearningHomeLink" href="/account" aria-label="Back to My learning">
-            <img src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" />
+            <img id="courseBrandLogo" src="assets/mr-flynn-ib-lockup.png" alt="Mr Flynn IB" />
           </a>
           <button class="icon-button mobile-close" id="closeMenu" type="button" aria-label="Close navigation">×</button>
         </div>
@@ -24,7 +28,7 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg>
             <span><strong>My learning</strong><small>Dashboard and assignments</small></span>
           </a>
-          <button class="nav-item is-active" type="button" data-view="dashboard">
+          <button class="nav-item is-active" id="myCourseButton" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V20H4z"/><path d="M9 20v-6h6v6"/></svg>
             <span>My course</span>
           </button>
@@ -54,7 +58,7 @@
 
         <button class="help-card" type="button" id="helpButton">
           <span class="help-icon">?</span>
-          <span><strong>Need help?</strong><small>Contact Mr Flynn IB</small></span>
+          <span><strong>Need help?</strong><small>Contact Mr Flynn</small></span>
           <span aria-hidden="true">→</span>
         </button>
       </aside>
@@ -66,7 +70,7 @@
           <button class="icon-button menu-button" id="openMenu" type="button" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
-          <div class="topbar-context"><a class="topbar-home-link" id="topbarLearningHomeLink" href="/account">← My learning</a><span class="topbar-separator" aria-hidden="true"></span><span class="status-dot"></span><span>Your learning space</span><a class="access-pill" id="accessLink" href="/account/access">Free account</a><a class="topbar-legacy-link" id="topbarLegacyCourseLink" href="/go/my-courses">Previous Teachable course ↗</a></div>
+          <div class="topbar-context"><a class="topbar-home-link" id="topbarLearningHomeLink" href="/account">← Learning home</a><span class="topbar-separator" aria-hidden="true"></span><span class="status-dot"></span><span>Your course</span><a class="access-pill" id="accessLink" href="/account/access">Free account</a><a class="topbar-legacy-link" id="topbarLegacyCourseLink" href="/go/my-courses">Previous Teachable course ↗</a></div>
           <label class="teacher-course-switcher" id="teacherCourseSwitcher" hidden>
             <span>Viewing course</span>
             <select id="teacherCourseSelect" aria-label="Change IB Mathematics course"></select>
@@ -84,7 +88,7 @@
           </div>
         </header>
 
-        <section id="dashboardView" class="view is-visible">
+        <section id="dashboardView" class="view">
           <div class="welcome-row">
             <div>
               <p class="eyebrow" id="welcomeEyebrow">Welcome back</p>
@@ -164,7 +168,7 @@
 
         <section id="courseView" class="view">
           <header class="course-hero" id="courseHero">
-            <button class="back-button" id="courseBackButton" type="button" data-view="dashboard">← My course</button>
+            <a class="back-button" id="courseBackButton" href="/account">← Learning home</a>
             <div class="course-hero-row">
               <div>
                 <span class="course-code" id="courseCode">AA SL</span>
@@ -279,7 +283,7 @@
                 </div>
                 <span class="paper-badge" id="pastPaperBadge">AA HL</span>
               </div>
-              <div class="paper-question-panel">
+              <div class="paper-question-panel" id="pastPaperQuestionPanel">
                 <div class="paper-question-head">
                   <strong id="pastPaperSetTitle">Questions</strong>
                   <span id="pastPaperQuestionCount"></span>
@@ -323,7 +327,8 @@
     <script src="library-data.js"></script>
     <script src="igcse-library-data.js"></script>
     <script src="past-paper-data.js"></script>
+    <script src="igcse-past-paper-data.js"></script>
     <script src="practice-data.js?v=20261021-9"></script>
-    <script src="app.js?v=20261027-1"></script>
+    <script src="app.js?v=20261027-2"></script>
   </body>
 </html>
