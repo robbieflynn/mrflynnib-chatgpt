@@ -399,16 +399,23 @@ set search_path = ''
 as $$
 declare
   account_role text;
+  account_status text;
+  account_domain text;
+  requested_plan text;
+  immediate_teacher boolean;
 begin
   if auth.uid() is null then
-    raise exception 'You must be signed in to create a teacher account.';
+    raise exception 'You must be signed in to request teacher access.';
   end if;
 
-  select role
-  into account_role
-  from public.profiles
-  where user_id = auth.uid()
-  for update;
+  select profile.role, profile.teacher_status,
+         lower(split_part(coalesce(account.email, ''), '@', 2)),
+         account.raw_user_meta_data ->> 'requested_plan'
+  into account_role, account_status, account_domain, requested_plan
+  from public.profiles profile
+  join auth.users account on account.id = profile.user_id
+  where profile.user_id = auth.uid()
+  for update of profile;
 
   if not found then
     raise exception 'Your account profile could not be found.';
@@ -418,16 +425,39 @@ begin
     return 'approved';
   end if;
 
-  update public.profiles
-  set role = 'teacher',
-      teacher_status = 'approved',
-      teacher_requested_at = coalesce(teacher_requested_at, now()),
-      teacher_notification_sent_at = coalesce(teacher_notification_sent_at, now()),
-      updated_at = now()
-  where user_id = auth.uid()
-    and role = 'student';
+  immediate_teacher := account_domain in ('jess.sch.ae', 'beausoleil.ch', 'westminsteracademy.org.uk')
+    or requested_plan = 'teacher-plus'
+    or exists (
+      select 1 from public.platform_entitlements entitlement
+      where entitlement.user_id = auth.uid()
+        and entitlement.product_code = 'teacher_plus_ib'
+        and entitlement.status = 'active'
+        and (entitlement.expires_at is null or entitlement.expires_at > now())
+    );
 
-  return 'approved';
+  update auth.users
+  set raw_user_meta_data = coalesce(raw_user_meta_data, '{}'::jsonb) || jsonb_build_object('account_type', 'teacher')
+  where id = auth.uid();
+
+  if immediate_teacher then
+    update public.profiles
+    set role = 'teacher',
+        teacher_status = 'approved',
+        teacher_requested_at = coalesce(teacher_requested_at, now()),
+        teacher_notification_sent_at = coalesce(teacher_notification_sent_at, now()),
+        updated_at = now()
+    where user_id = auth.uid();
+    return 'approved';
+  end if;
+
+  update public.profiles
+  set teacher_status = 'pending',
+      teacher_requested_at = coalesce(teacher_requested_at, now()),
+      teacher_notification_sent_at = case when account_status = 'pending' then teacher_notification_sent_at else null end,
+      updated_at = now()
+  where user_id = auth.uid();
+
+  return 'pending';
 end;
 $$;
 
@@ -799,7 +829,16 @@ returns trigger
 language plpgsql
 security definer set search_path = ''
 as $$
+declare
+  teacher_selected boolean := new.raw_user_meta_data ->> 'account_type' = 'teacher';
+  account_domain text := lower(split_part(coalesce(new.email, ''), '@', 2));
+  immediate_teacher boolean;
 begin
+  immediate_teacher := teacher_selected and (
+    account_domain in ('jess.sch.ae', 'beausoleil.ch', 'westminsteracademy.org.uk')
+    or new.raw_user_meta_data ->> 'requested_plan' = 'teacher-plus'
+  );
+
   insert into public.profiles (user_id, display_name, email, role, curriculum, teacher_status, teacher_requested_at, teacher_notification_sent_at)
   values (
     new.id,
@@ -809,11 +848,11 @@ begin
       ''
     ), 80),
     left(coalesce(new.email, ''), 254),
-    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then 'teacher' else 'student' end,
+    case when immediate_teacher then 'teacher' else 'student' end,
     case when new.raw_user_meta_data ->> 'curriculum' = 'igcse' then 'igcse' else 'ib' end,
-    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then 'approved' else 'none' end,
-    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then now() else null end,
-    case when new.raw_user_meta_data ->> 'account_type' = 'teacher' then now() else null end
+    case when immediate_teacher then 'approved' when teacher_selected then 'pending' else 'none' end,
+    case when teacher_selected then now() else null end,
+    case when immediate_teacher then now() else null end
   )
   on conflict (user_id) do nothing;
   return new;

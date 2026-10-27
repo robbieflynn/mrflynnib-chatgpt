@@ -117,6 +117,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const accountError = typeof pageSearchParams.error === "string" ? pageSearchParams.error : "";
   const accountSuccess = typeof pageSearchParams.success === "string" ? pageSearchParams.success : "";
   const teacherAccessRequired = pageSearchParams.teacher === "access-required" || pageSearchParams.teacher === "approval-required";
+  const teacherRequested = pageSearchParams.teacher === "requested";
 
   if (teacherAccessRequired) {
     const studentDashboardHref = isIgcse ? "/igcse/account" : "/account";
@@ -134,10 +135,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               {accountError ? <p className="form-message form-error">{accountError}</p> : null}
               <div className="stack-sm">
                 <h2>Keep everything in one account</h2>
-                <p>Your question-bank progress and saved work will remain in place. Creating the teacher account takes effect immediately.</p>
+                <p>Your question-bank progress and saved work will remain in place. Approved-school teachers activate immediately; other free teacher accounts are sent to Mr Flynn for approval.</p>
               </div>
               <div className="teacher-access-gate-actions">
-                <form action={requestTeacherAccess}><input name="curriculum" type="hidden" value={isIgcse ? "igcse" : "ib"} /><button className="button" type="submit">Create teacher account</button></form>
+                <form action={requestTeacherAccess}><input name="curriculum" type="hidden" value={isIgcse ? "igcse" : "ib"} /><button className="button" type="submit">Request teacher access</button></form>
                 <Link className="button button-secondary" href={studentDashboardHref}>Return to student dashboard</Link>
               </div>
             </div>
@@ -145,6 +146,14 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         </section>
       </>
     );
+  }
+
+  if (teacherRequested) {
+    const studentDashboardHref = isIgcse ? "/igcse/account" : "/account";
+    return <>
+      <PageHero eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"} title="Your teacher request has been sent" intro="Mr Flynn will review your free teacher account request. You will receive access after it is approved." />
+      <section className="section-tight"><Container className="narrow"><div className="account-card teacher-access-gate stack-lg"><h2>Your existing work is safe</h2><p>You can continue using your student learning area while the request is waiting.</p><Link className="button button-secondary" href={studentDashboardHref}>Return to learning</Link></div></Container></section>
+    </>;
   }
 
   const [personalAccessResult, schoolAccessResult] = await Promise.all([

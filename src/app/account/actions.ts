@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireSignedIn } from "@/lib/account-access";
 import { getQuestionBankCourse } from "@/lib/question-bank-courses";
+import { sendTeacherApplicationEmail } from "@/lib/teacher-application-email";
 
 export async function choosePrimaryCourse(formData: FormData) {
   const { supabase, user } = await requireSignedIn("/account", "ib");
@@ -41,7 +42,7 @@ export async function requestTeacherAccess(formData: FormData) {
   const { supabase, user } = await requireSignedIn(accountPath, curriculum);
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role")
+    .select("role,display_name,teacher_notification_sent_at")
     .eq("user_id", user.id)
     .maybeSingle();
   if (profile?.role === "teacher" || profile?.role === "admin") {
@@ -49,8 +50,19 @@ export async function requestTeacherAccess(formData: FormData) {
   }
 
   const { data: status, error } = await supabase.rpc("request_teacher_access");
-  if (error || status !== "approved") {
+  if (error) {
     redirect(`${accountPath}?teacher=access-required&error=${encodeURIComponent("Your teacher account could not be created. Please try again.")}`);
+  }
+  if (status === "pending") {
+    if (!profile?.teacher_notification_sent_at && user.email) {
+      const sent = await sendTeacherApplicationEmail({ name: profile?.display_name || "", email: user.email });
+      if (sent) await supabase.rpc("mark_teacher_notification_sent");
+    }
+    revalidatePath("/teacher/accounts");
+    redirect(`${accountPath}?teacher=requested`);
+  }
+  if (status !== "approved") {
+    redirect(`${accountPath}?teacher=access-required&error=${encodeURIComponent("Your teacher request returned an unexpected result. Please try again.")}`);
   }
 
   revalidatePath("/account");
