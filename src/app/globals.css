@@ -2507,6 +2507,16 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-platform-nav b { color: var(--blue); }
 .platform-access-page { background: #f5f7f9; }
 .access-page-hero { padding-bottom: 2.4rem; }
+.access-page-hero.is-checkout-complete { padding-bottom: 1.7rem; }
+.access-page-hero.is-checkout-complete .dashboard-hero-copy { max-width: 760px; }
+.platform-access-complete { min-height: 230px; padding-block: 1.5rem 3rem; }
+.checkout-complete-shell { width: min(100%, 920px); }
+.checkout-complete-actions { padding: 1rem 0 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; border-bottom: 1px solid #d5e0e6; }
+.checkout-complete-status { display: flex; align-items: center; gap: .8rem; }
+.checkout-complete-status > span { width: 2.35rem; height: 2.35rem; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: #1f8f69; color: white; font-weight: 950; }
+.checkout-complete-status p { margin: 0; display: grid; gap: .15rem; }
+.checkout-complete-status strong { color: var(--navy); font-size: .95rem; }
+.checkout-complete-status small { color: var(--muted); font-size: .76rem; }
 .platform-access-intro { padding: 1.4rem 1.5rem; display: flex; justify-content: space-between; gap: 1.5rem; align-items: center; border: 1px solid #dce4e9; border-radius: 1rem; background: white; }
 .platform-access-intro h2 { margin: 0; }
 .platform-access-intro p { margin: .35rem 0 0; color: var(--muted); }
@@ -2609,6 +2619,8 @@ a.teacher-list-row:hover { background: var(--sky); }
   .access-free-summary, .access-plus-summary { max-width: none; }
   .checkout-success-card { grid-template-columns: auto minmax(0,1fr); }
   .checkout-success-actions { grid-column: 1 / -1; justify-content: flex-start; }
+  .checkout-complete-actions { align-items: stretch; flex-direction: column; }
+  .checkout-complete-actions .cluster { align-items: stretch; flex-direction: column; }
   .access-claim-row, .school-seat-form { grid-template-columns: 1fr; }
   .access-claim-row form { flex-wrap: wrap; }
   .course-plan-options { grid-template-columns: 1fr; }
