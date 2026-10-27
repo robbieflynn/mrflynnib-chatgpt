@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex,nofollow" />
     <title>My learning | Mr Flynn IB</title>
     <link rel="icon" href="assets/mr-flynn-mark.png" />
-    <link rel="stylesheet" href="styles.css?v=20261023-2" />
+    <link rel="stylesheet" href="styles.css?v=20261027-1" />
   </head>
   <body>
     <div class="app-shell">
@@ -67,6 +67,10 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
           <div class="topbar-context"><a class="topbar-home-link" id="topbarLearningHomeLink" href="/account">← My learning</a><span class="topbar-separator" aria-hidden="true"></span><span class="status-dot"></span><span>Your learning space</span><a class="access-pill" id="accessLink" href="/account/access">Free account</a><a class="topbar-legacy-link" id="topbarLegacyCourseLink" href="/go/my-courses">Previous Teachable course ↗</a></div>
+          <label class="teacher-course-switcher" id="teacherCourseSwitcher" hidden>
+            <span>Viewing course</span>
+            <select id="teacherCourseSelect" aria-label="Change IB Mathematics course"></select>
+          </label>
           <button class="account-button" id="accountButton" type="button" aria-haspopup="menu" aria-expanded="false">
             <span class="avatar">RF</span>
             <span><strong id="accountName">Student</strong><small id="accountRole">Student account</small></span>
@@ -320,6 +324,6 @@
     <script src="igcse-library-data.js"></script>
     <script src="past-paper-data.js"></script>
     <script src="practice-data.js?v=20261021-9"></script>
-    <script src="app.js?v=20261024-6"></script>
+    <script src="app.js?v=20261027-1"></script>
   </body>
 </html>
