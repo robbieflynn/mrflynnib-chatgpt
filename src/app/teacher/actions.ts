@@ -280,14 +280,18 @@ export async function reviewTeacherApplication(formData: FormData) {
   const { supabase, user } = await requireAdmin();
   const applicantId = String(formData.get("applicantId") || "");
   const decision = String(formData.get("decision") || "");
-  const returnTo = String(formData.get("returnTo") || "") === "/teacher/accounts" ? "/teacher/accounts" : "/teacher";
-  if (!applicantId || applicantId === user.id || !new Set(["approve", "decline"]).has(decision)) redirect(`${returnTo}?error=That%20request%20could%20not%20be%20reviewed.`);
+  const requestedReturnTo = String(formData.get("returnTo") || "");
+  const returnTo = new Set(["/teacher/accounts", "/teacher/accounts?access=pending"]).has(requestedReturnTo)
+    ? requestedReturnTo
+    : "/teacher";
+  const reviewMessagePath = (key: "error" | "success", message: string) => `${returnTo}${returnTo.includes("?") ? "&" : "?"}${key}=${encodeURIComponent(message)}`;
+  if (!applicantId || applicantId === user.id || !new Set(["approve", "decline"]).has(decision)) redirect(reviewMessagePath("error", "That request could not be reviewed."));
   const values = decision === "approve"
     ? { role: "teacher", teacher_status: "approved", updated_at: new Date().toISOString() }
     : { role: "student", teacher_status: "rejected", updated_at: new Date().toISOString() };
   const { error } = await supabase.from("profiles").update(values).eq("user_id", applicantId).eq("teacher_status", "pending");
-  if (error) redirect(`${returnTo}?error=${encodeURIComponent("The teacher account could not be updated.")}`);
+  if (error) redirect(reviewMessagePath("error", "The teacher account could not be updated."));
   revalidatePath("/teacher");
   revalidatePath("/teacher/accounts");
-  redirect(`${returnTo}?success=${encodeURIComponent(decision === "approve" ? "Teacher account activated." : "The account remains a student account.")}`);
+  redirect(reviewMessagePath("success", decision === "approve" ? "Teacher account activated." : "The account remains a student account."));
 }

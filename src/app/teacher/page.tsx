@@ -7,6 +7,7 @@ import { PendingSubmitButton } from "@/components/pending-submit-button";
 import { requireTeacher } from "@/lib/account-access";
 import { activePlatformEntitlements, type PlatformEntitlement } from "@/lib/platform-access";
 import { teacherPlusProduct } from "@/lib/platform-products";
+import { teacherAccountSummaries } from "@/lib/teacher-accounts";
 import { createClass } from "./actions";
 
 export const metadata: Metadata = { title: "Teacher dashboard", robots: { index: false, follow: false } };
@@ -20,6 +21,12 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
   ]);
   const { data: classes } = classesResult;
   const activeTeacherPlus = activePlatformEntitlements(teacherPlusResult.data as PlatformEntitlement[] | null)[0];
+  const teacherAccountsResult = profile.role === "admin"
+    ? await supabase.rpc("admin_teacher_accounts")
+    : { data: null };
+  const pendingTeacherApprovals = teacherAccountSummaries(teacherAccountsResult.data)
+    .filter((account) => account.role !== "admin" && account.teacher_status === "pending" && account.email_confirmed_at)
+    .length;
   const teacherPlusDetail = activeTeacherPlus?.expires_at
     ? `All four IB courses included · Active until ${new Date(activeTeacherPlus.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
     : "All four IB Mathematics courses included";
@@ -31,7 +38,7 @@ export default async function TeacherPage({ searchParams }: { searchParams: Prom
     <section className="section-tight teacher-dashboard"><Container className="stack-xl">
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}
       {message.success ? <p className="form-message form-success">{message.success}</p> : null}
-      {profile.role === "admin" ? <section className="teacher-approval-panel stack-lg"><div className="dashboard-section-heading"><div><p className="eyebrow">Account administration</p><h2>Manage platform accounts and access</h2></div><div className="teacher-approval-heading-actions"><p className="muted">Teacher accounts are created immediately when a user chooses Teacher.</p><div className="cluster"><Link className="button button-secondary button-small" href="/teacher/accounts">Teacher accounts</Link><Link className="button button-secondary button-small" href="/teacher/students">Student accounts</Link></div></div></div>
+      {profile.role === "admin" ? <section className="teacher-approval-panel stack-lg"><div className="dashboard-section-heading"><div><p className="eyebrow">Account administration</p><h2>{pendingTeacherApprovals ? `${pendingTeacherApprovals} teacher ${pendingTeacherApprovals === 1 ? "request" : "requests"} waiting` : "Manage platform accounts and access"}</h2></div><div className="teacher-approval-heading-actions"><p className="muted">{pendingTeacherApprovals ? "These confirmed accounts still need your decision." : "New teacher sign-ups activate automatically; older requests remain available to review."}</p><div className="cluster"><Link className="button button-secondary button-small" href="/teacher/accounts?access=pending">{pendingTeacherApprovals ? "Review teacher requests" : "Teacher approvals"}</Link><Link className="button button-secondary button-small" href="/teacher/students">Student accounts</Link></div></div></div>
         <div className="cluster"><Link className="text-link" href="/teacher/platform-access">Manage payments and course access</Link><Link className="text-link" href="/teacher/access-claims">Review Teachable access transfers</Link><Link className="text-link" href="/school/access">Manage school licences</Link></div>
       </section> : null}
       <section className="teacher-tool-banner">

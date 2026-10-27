@@ -1,3 +1,5 @@
+import { siteConfig } from "@/lib/site";
+
 export async function sendTeacherApplicationEmail({ name, email }: { name: string; email: string }) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return false;
@@ -17,7 +19,8 @@ export async function sendTeacherApplicationEmail({ name, email }: { name: strin
         `Email: ${email}`,
         `Requested: ${new Date().toISOString()}`,
         "",
-        "Sign in to your Mr Flynn IB teacher dashboard to approve or decline the request.",
+        "Open Teacher approvals to approve or decline the request:",
+        `${siteConfig.url}/teacher/accounts?access=pending`,
       ].join("\n"),
     }),
     cache: "no-store",
