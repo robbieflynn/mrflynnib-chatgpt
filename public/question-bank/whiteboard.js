@@ -399,6 +399,49 @@
       redraw();
     }
 
+    function imageUrlForSource(source) {
+      var trimmed = typeof source === 'string' ? source.trim() : '';
+      if (!/^<svg(?:\s|>)/i.test(trimmed)) return { url: source, revoke: false };
+      return {
+        url: URL.createObjectURL(new Blob([source], { type: 'image/svg+xml' })),
+        revoke: true
+      };
+    }
+
+    function loadWhiteboardImage(source, onLoad, onError) {
+      var image = new Image();
+      var imageUrl = imageUrlForSource(source);
+      function releaseUrl() {
+        if (imageUrl.revoke) URL.revokeObjectURL(imageUrl.url);
+      }
+      image.onload = function () {
+        releaseUrl();
+        onLoad(image);
+      };
+      image.onerror = function () {
+        releaseUrl();
+        if (onError) onError();
+      };
+      image.src = imageUrl.url;
+      return image;
+    }
+
+    function whenWhiteboardIsReady(callback, attemptsLeft) {
+      if (board.hidden) open.click();
+      requestAnimationFrame(function () {
+        resize();
+        if (canvas.clientWidth > 20 && canvas.clientHeight > 20) {
+          callback();
+          return;
+        }
+        if (attemptsLeft > 0) {
+          whenWhiteboardIsReady(callback, attemptsLeft - 1);
+          return;
+        }
+        callback(new Error('Whiteboard did not finish opening'));
+      });
+    }
+
     function pointFromEvent(event) {
       var rect = canvas.getBoundingClientRect();
       return {
@@ -795,60 +838,79 @@
     });
 
     function importDiagram(svg) {
+      if (svg.getAttribute('data-whiteboard-importing') === '1') return;
+      svg.setAttribute('data-whiteboard-importing', '1');
       if (board.hidden) open.click();
+      var diagram = svg.closest('.qb-diagram');
+      var hint = diagram && diagram.querySelector('.qb-diagram-copy-hint');
+      var originalHint = hint ? hint.textContent : '';
+      if (hint) hint.textContent = 'Adding to whiteboard…';
       var copy = svg.cloneNode(true);
       var sourceRect = svg.getBoundingClientRect();
       if (!copy.getAttribute('xmlns')) copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       if (!copy.getAttribute('width')) copy.setAttribute('width', Math.max(1, sourceRect.width));
       if (!copy.getAttribute('height')) copy.setAttribute('height', Math.max(1, sourceRect.height));
       var source = new XMLSerializer().serializeToString(copy);
-      var url = URL.createObjectURL(new Blob([source], { type: 'image/svg+xml' }));
-      var image = new Image();
-      image.onload = function () {
-        var availableWidth = Math.max(1, canvas.clientWidth * .84);
-        var naturalWidth = image.naturalWidth || sourceRect.width || availableWidth;
-        var naturalHeight = image.naturalHeight || sourceRect.height || 240;
-        var scale = Math.min(1, availableWidth / naturalWidth, 380 / naturalHeight);
-        var drawWidth = naturalWidth * scale;
-        var drawHeight = naturalHeight * scale;
-        var visibleTop = Math.max(18, viewport.scrollTop + 24);
-        var drawTop = Math.min(visibleTop, canvas.clientHeight - drawHeight - 18);
-        var drawLeft = (canvas.clientWidth - drawWidth) / 2;
-        var placedImages = visibleImages();
-        var overlap = true;
-        while (overlap && drawTop + drawHeight <= canvas.clientHeight - 18) {
-          overlap = false;
-          for (var i = 0; i < placedImages.length; i++) {
-            var placed = placedImages[i];
-            var placedLeft = placed.x * canvas.clientWidth;
-            var placedTop = placed.y * canvas.clientHeight;
-            var placedRight = placedLeft + placed.width * canvas.clientWidth;
-            var placedBottom = placedTop + placed.height * canvas.clientHeight;
-            if (drawLeft < placedRight + 18 && drawLeft + drawWidth > placedLeft - 18 &&
-                drawTop < placedBottom + 18 && drawTop + drawHeight > placedTop - 18) {
-              drawTop = placedBottom + 24;
-              overlap = true;
-              break;
+      loadWhiteboardImage(source, function (image) {
+        whenWhiteboardIsReady(function (layoutError) {
+          if (layoutError) {
+            finishImport(false);
+            return;
+          }
+          var availableWidth = Math.max(1, canvas.clientWidth * .84);
+          var naturalWidth = image.naturalWidth || sourceRect.width || availableWidth;
+          var naturalHeight = image.naturalHeight || sourceRect.height || 240;
+          var scale = Math.min(1, availableWidth / naturalWidth, 380 / naturalHeight);
+          var drawWidth = naturalWidth * scale;
+          var drawHeight = naturalHeight * scale;
+          var visibleTop = Math.max(18, viewport.scrollTop + 24);
+          var drawTop = Math.min(visibleTop, canvas.clientHeight - drawHeight - 18);
+          var drawLeft = (canvas.clientWidth - drawWidth) / 2;
+          var placedImages = visibleImages();
+          var overlap = true;
+          while (overlap && drawTop + drawHeight <= canvas.clientHeight - 18) {
+            overlap = false;
+            for (var i = 0; i < placedImages.length; i++) {
+              var placed = placedImages[i];
+              var placedLeft = placed.x * canvas.clientWidth;
+              var placedTop = placed.y * canvas.clientHeight;
+              var placedRight = placedLeft + placed.width * canvas.clientWidth;
+              var placedBottom = placedTop + placed.height * canvas.clientHeight;
+              if (drawLeft < placedRight + 18 && drawLeft + drawWidth > placedLeft - 18 &&
+                  drawTop < placedBottom + 18 && drawTop + drawHeight > placedTop - 18) {
+                drawTop = placedBottom + 24;
+                overlap = true;
+                break;
+              }
             }
           }
-        }
-        drawTop = Math.min(drawTop, canvas.clientHeight - drawHeight - 18);
-        actions.push({
-          type: 'image',
-          image: image,
-          source: source,
-          x: drawLeft / canvas.clientWidth,
-          y: drawTop / canvas.clientHeight,
-          width: drawWidth / canvas.clientWidth,
-          height: drawHeight / canvas.clientHeight
-        });
-        URL.revokeObjectURL(url);
-        redraw();
-        updateButtons();
-        scheduleSave();
-      };
-      image.onerror = function () { URL.revokeObjectURL(url); };
-      image.src = url;
+          drawTop = Math.min(drawTop, canvas.clientHeight - drawHeight - 18);
+          actions.push({
+            type: 'image',
+            image: image,
+            source: source,
+            x: drawLeft / canvas.clientWidth,
+            y: drawTop / canvas.clientHeight,
+            width: drawWidth / canvas.clientWidth,
+            height: drawHeight / canvas.clientHeight
+          });
+          redraw();
+          updateButtons();
+          scheduleSave();
+          finishImport(true);
+        }, 8);
+      }, function () { finishImport(false); });
+
+      function finishImport(succeeded) {
+        svg.removeAttribute('data-whiteboard-importing');
+        if (!hint) return;
+        hint.textContent = succeeded ? 'Added to whiteboard' : 'Could not add image — try again';
+        window.setTimeout(function () {
+          if (hint.textContent === 'Added to whiteboard' || hint.textContent === 'Could not add image — try again') {
+            hint.textContent = originalHint;
+          }
+        }, succeeded ? 1600 : 3000);
+      }
     }
 
     function prepareDiagram(diagram) {
@@ -871,7 +933,9 @@
 
     Array.prototype.forEach.call(card.querySelectorAll('.qb-diagram'), prepareDiagram);
     card.querySelector('.qb-question-pane').addEventListener('click', function (event) {
+      var diagram = event.target.closest && event.target.closest('.qb-diagram[data-whiteboard-source]');
       var svg = event.target.closest && event.target.closest('.qb-diagram svg');
+      if (!svg && diagram) svg = diagram.querySelector('svg');
       if (svg) importDiagram(svg);
     });
     card.querySelector('.qb-question-pane').addEventListener('keydown', function (event) {
@@ -965,14 +1029,12 @@
             });
           }
           if (action.type === 'image' && typeof action.source === 'string') {
-            var restoredImage = new Image();
             var imageAction = {
-              type: 'image', image: restoredImage, source: action.source,
+              type: 'image', image: null, source: action.source,
               x: Number(action.x) || 0, y: Number(action.y) || 0,
               width: Number(action.width) || .5, height: Number(action.height) || .2
             };
-            restoredImage.onload = redraw;
-            restoredImage.src = action.source;
+            imageAction.image = loadWhiteboardImage(action.source, function () { redraw(); });
             restored.push(imageAction);
           }
         });
