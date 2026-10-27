@@ -14,6 +14,7 @@ function readBrowserData(file, key) {
 const library = readBrowserData("library-data.js", "MR_FLYNN_LIBRARY");
 const igcse = readBrowserData("igcse-library-data.js", "MR_FLYNN_IGCSE_LIBRARY");
 const papers = readBrowserData("past-paper-data.js", "MR_FLYNN_PAST_PAPERS");
+const igcsePapers = readBrowserData("igcse-past-paper-data.js", "MR_FLYNN_IGCSE_PAST_PAPERS");
 const practice = readBrowserData("practice-data.js", "MR_FLYNN_PRACTICE");
 const courses = {};
 
@@ -86,7 +87,8 @@ for (const [code, lessons] of Object.entries(library.courses || {})) {
 courses.igcse = {
   lessons: (igcse.lessons || []).map((lesson) => lesson.id),
   samples: sampleLessons("igcse", igcse.lessons || [], 6),
-  pastPapers: (papers.courses?.IGCSE || []).flatMap((paper) => paper.questions.map((question) => question.id)),
+  pastPapers: (igcsePapers.courses?.IGCSE || []).flatMap((paper) => paper.questions.map((question) => question.id)),
+  freePastPapers: [],
 };
 
 fs.mkdirSync(path.join(root, "src", "data"), { recursive: true });

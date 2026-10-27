@@ -9,6 +9,7 @@ type AssignmentQuestionPickerProps = {
   bank: "ib" | "igcse";
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL" | "IGCSE Higher";
   draftId: string;
+  initialQuestions?: SelectedQuestionSummary[];
   shadowSources?: ShadowSource[];
 };
 
@@ -68,18 +69,20 @@ function cleanSummary(value: unknown): SelectedQuestionSummary | null {
   };
 }
 
-export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources }: AssignmentQuestionPickerProps) {
+export function AssignmentQuestionPicker({ bank, course, draftId, initialQuestions, shadowSources }: AssignmentQuestionPickerProps) {
   const shadowQuestions = useMemo(() => shadowSources ?? [], [shadowSources]);
   const shadowIds = useMemo(() => shadowQuestions.map((sourceQuestion) => sourceQuestion.id), [shadowQuestions]);
+  const copiedQuestions = useMemo(() => initialQuestions ?? [], [initialQuestions]);
   const initialFrameHeight = bank === "igcse" ? 760 : 620;
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(initialFrameHeight);
   const loadingMoreRef = useRef(false);
   const hasMoreRef = useRef(true);
   const shadowRequestedRef = useRef(false);
+  const copiedQuestionsRequestedRef = useRef(false);
   const [frameHeight, setFrameHeight] = useState(initialFrameHeight);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [questionSummaries, setQuestionSummaries] = useState<Record<string, SelectedQuestionSummary>>({});
+  const [selectedIds, setSelectedIds] = useState<string[]>(() => copiedQuestions.map((question) => question.id));
+  const [questionSummaries, setQuestionSummaries] = useState<Record<string, SelectedQuestionSummary>>(() => Object.fromEntries(copiedQuestions.map((question) => [question.id, question])));
   const [shadowStatus, setShadowStatus] = useState(shadowIds.length ? "Finding matched questions for the shadow task…" : "");
   const source = useMemo(() => {
     const query = new URLSearchParams({ course, embedded: "1", assignment: "1", draft: draftId });
@@ -126,6 +129,10 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
         if (shadowIds.length && !shadowRequestedRef.current && Number(event.data.total) > 0) {
           shadowRequestedRef.current = true;
           frame.contentWindow?.postMessage({ type: "mrflynnib-assignment-create-shadow", sources: shadowQuestions }, window.location.origin);
+        }
+        if (copiedQuestions.length && !copiedQuestionsRequestedRef.current && Number(event.data.total) > 0) {
+          copiedQuestionsRequestedRef.current = true;
+          frame.contentWindow?.postMessage({ type: "mrflynnib-assignment-set-selection", questions: copiedQuestions }, window.location.origin);
         }
         cancelAnimationFrame(animationFrame);
         animationFrame = requestAnimationFrame(loadMoreIfNeeded);
@@ -184,7 +191,7 @@ export function AssignmentQuestionPicker({ bank, course, draftId, shadowSources 
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [bank, course, loadMoreIfNeeded, shadowIds, shadowQuestions]);
+  }, [bank, copiedQuestions, course, loadMoreIfNeeded, shadowIds, shadowQuestions]);
 
   return (
     <div className="assignment-picker stack">

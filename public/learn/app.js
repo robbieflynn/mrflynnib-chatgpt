@@ -1,6 +1,12 @@
 const library = window.MR_FLYNN_LIBRARY;
 const igcseLibrary = window.MR_FLYNN_IGCSE_LIBRARY;
-const pastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
+const ibPastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
+const igcsePastPaperLibrary = window.MR_FLYNN_IGCSE_PAST_PAPERS || { stats: {}, courses: {} };
+const pastPaperLibrary = {
+  libraryId: ibPastPaperLibrary.libraryId,
+  stats: { ...ibPastPaperLibrary.stats, ...igcsePastPaperLibrary.stats },
+  courses: { ...ibPastPaperLibrary.courses, ...igcsePastPaperLibrary.courses },
+};
 const practiceLibrary = window.MR_FLYNN_PRACTICE;
 const previewParameters = new URLSearchParams(window.location.search);
 const previewMode = previewParameters.get("v");
@@ -523,9 +529,11 @@ function courseCard(course, large = false) {
 }
 
 function renderCourseCards() {
-  const visibleCourses = guestMode || isIbTeacherAccount()
+  const visibleCourses = isIbTeacherAccount()
     ? courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => courses[definition.id])
-    : [currentCourse];
+    : guestMode && activeCurriculum() === "ib"
+      ? courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => courses[definition.id])
+      : [currentCourse];
   const markup = visibleCourses.map((course) => courseCard(course, true)).join("");
   document.getElementById("allCourseGrid").innerHTML = markup;
 }
@@ -973,6 +981,7 @@ function pastPaperSets() {
 }
 
 function pastPaperSetIsFree(set) {
+  if (set.fullPaper) return false;
   return set.session === "Specimen" || set.session === "May 2021";
 }
 
@@ -1041,7 +1050,7 @@ function renderPastPaperCatalog() {
       ${sessionGroup.sets.map((set) => {
         const meta = [set.timezone, set.paper].filter(Boolean).join(" · ");
         return `<button class="paper-set-card ${set.id === currentPastPaperSetId ? "is-active" : ""}" type="button" data-paper-set-id="${set.id}">
-          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Free</b>' : ""}</strong><em>${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}</em></span>
+          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Free</b>' : ""}</strong><em>${set.fullPaper ? "Complete worked video" : `${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}`}</em></span>
           <i aria-hidden="true">→</i>
         </button>`;
       }).join("")}
@@ -1063,7 +1072,8 @@ function renderPastPaperQuestions() {
   }
   if (!set.questions.some((question) => question.id === currentPastPaperQuestionId)) currentPastPaperQuestionId = set.questions[0]?.id || null;
   document.getElementById("pastPaperSetTitle").textContent = [set.session, set.timezone, set.paper].filter(Boolean).join(" · ");
-  document.getElementById("pastPaperQuestionCount").textContent = `${set.questions.length} solution${set.questions.length === 1 ? "" : "s"}`;
+  document.getElementById("pastPaperQuestionCount").textContent = set.fullPaper ? "Complete paper" : `${set.questions.length} solution${set.questions.length === 1 ? "" : "s"}`;
+  document.getElementById("pastPaperQuestionPanel").hidden = Boolean(set.fullPaper);
   document.getElementById("pastPaperQuestionList").innerHTML = set.questions.map((question, index) => `<button class="paper-question-button ${question.id === currentPastPaperQuestionId ? "is-active" : ""}" type="button" data-paper-question-id="${question.id}">
     <span>${index + 1}</span><strong>${escapeHtml(question.title)}</strong><small>${formatDuration(question.seconds)}</small>
   </button>`).join("");
@@ -1076,7 +1086,7 @@ function renderPastPaperQuestion(question) {
   if (!set || !question) return;
   currentPastPaperQuestionId = question.id;
   const index = set.questions.findIndex((candidate) => candidate.id === question.id);
-  document.getElementById("pastPaperQuestionPosition").textContent = `Solution ${index + 1} of ${set.questions.length}`;
+  document.getElementById("pastPaperQuestionPosition").textContent = set.fullPaper ? "Full-paper solution" : `Solution ${index + 1} of ${set.questions.length}`;
   document.getElementById("pastPaperQuestionTitle").textContent = question.title;
   document.getElementById("pastPaperQuestionMeta").textContent = [set.session, set.timezone, set.paper, formatDuration(question.seconds)].filter(Boolean).join(" · ");
   document.getElementById("pastPaperBadge").textContent = currentPastPaperCourse;
@@ -1087,11 +1097,15 @@ function renderPastPaperQuestion(question) {
 }
 
 function renderPastPapers() {
-  if (!pastPaperLibrary.stats[currentPastPaperCourse]) currentPastPaperCourse = "AA HL";
+  if (!pastPaperLibrary.stats[currentPastPaperCourse]) currentPastPaperCourse = activeCurriculum() === "igcse" ? "IGCSE" : "AA HL";
   const stats = pastPaperLibrary.stats[currentPastPaperCourse];
+  const isIgcsePapers = currentPastPaperCourse === "IGCSE";
+  document.querySelector("#pastPapersView .past-paper-intro > p:last-child").textContent = isIgcsePapers
+    ? "Choose an exam session and open the complete worked video for the paper you need."
+    : "Find your exam session, paper and the worked solution for the exact question you need. Specimen papers and every May 2021 paper are free to watch.";
   renderPastPaperTabs();
   renderPastPaperSessionFilter();
-  document.getElementById("pastPaperCourseStats").innerHTML = `<strong>${currentPastPaperCourse}</strong><span>${stats.papers} papers with ${stats.questions} verified worked solutions</span>`;
+  document.getElementById("pastPaperCourseStats").innerHTML = `<strong>${currentPastPaperCourse}</strong><span>${isIgcsePapers ? `${stats.papers} complete paper solution videos` : `${stats.papers} papers with ${stats.questions} verified worked solutions`}</span>`;
   renderPastPaperCatalog();
   renderPastPaperQuestions();
 }
