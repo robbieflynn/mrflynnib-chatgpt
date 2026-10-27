@@ -158,13 +158,13 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         setMessage(accountType === "teacher"
           ? wantsPlus
             ? "Check your email to confirm your account. You can then continue straight to secure Teacher Plus checkout."
-            : "Check your email to confirm your account. Your teacher dashboard will open as soon as it is confirmed."
+            : "Check your email to confirm your account. Approved-school teachers open immediately; other free teacher accounts are sent to Mr Flynn for approval."
           : "Check your email to confirm your account, then return here to sign in.");
       }
       return;
     }
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     if (signInError) {
       setPending(false);
       if (signInError.code === "email_not_confirmed") {
@@ -173,8 +173,19 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
       }
       return setError("That email address and password did not match.");
     }
+    if (accountType === "teacher" && (teacherJourney || confirmationNextPath.includes("/teacher"))) {
+      await supabase.auth.updateUser({
+        data: {
+          ...data.user?.user_metadata,
+          account_type: "teacher",
+          curriculum,
+          access_choice: wantsPlus ? "plus" : "free",
+          requested_plan: wantsPlus ? "teacher-plus" : null,
+        },
+      });
+    }
     await claimExistingAccess(supabase);
-    window.location.replace(nextPath);
+    window.location.replace(confirmationNextPath);
   }
 
   return (

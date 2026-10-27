@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
         ]);
         const { data: profile } = await supabase
           .from("profiles")
-          .select("display_name,teacher_status,teacher_notification_sent_at")
+          .select("display_name,curriculum,teacher_status,teacher_notification_sent_at")
           .eq("user_id", user.id)
           .maybeSingle();
 
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
           });
           if (sent) await supabase.rpc("mark_teacher_notification_sent");
           return NextResponse.redirect(
-            new URL("/account?teacher=requested", request.nextUrl.origin),
+            new URL(profile.curriculum === "igcse" ? "/igcse/account?teacher=requested" : "/account?teacher=requested", request.nextUrl.origin),
           );
         }
       }

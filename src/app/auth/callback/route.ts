@@ -18,11 +18,11 @@ export async function GET(request: Request) {
           supabase.rpc("claim_verified_course_access"),
           supabase.rpc("claim_school_plus_access"),
         ]);
-        const { data: profile } = await supabase.from("profiles").select("display_name,teacher_status,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
+        const { data: profile } = await supabase.from("profiles").select("display_name,curriculum,teacher_status,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
         if (profile?.teacher_status === "pending" && !profile.teacher_notification_sent_at && user.email) {
           const sent = await sendTeacherApplicationEmail({ name: profile.display_name, email: user.email });
           if (sent) await supabase.rpc("mark_teacher_notification_sent");
-          return NextResponse.redirect(new URL("/account?teacher=requested", requestUrl.origin));
+          return NextResponse.redirect(new URL(profile.curriculum === "igcse" ? "/igcse/account?teacher=requested" : "/account?teacher=requested", requestUrl.origin));
         }
       }
       return NextResponse.redirect(new URL(next, requestUrl.origin));
