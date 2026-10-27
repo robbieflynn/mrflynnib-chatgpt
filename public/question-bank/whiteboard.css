@@ -36,7 +36,7 @@
 }
 
 .qb-card.qb-whiteboard-open .qb-question-workspace {
-  grid-template-columns: minmax(280px, 1fr) 8px minmax(320px, var(--whiteboard-width, .9fr));
+  grid-template-columns: minmax(280px, .78fr) 8px minmax(460px, var(--whiteboard-width, 1.42fr));
   gap: 10px;
 }
 
@@ -113,7 +113,7 @@
 }
 
 .qb-card.qb-whiteboard-expanded .qb-question-workspace {
-  grid-template-columns: minmax(280px, .7fr) minmax(520px, 1.55fr);
+  grid-template-columns: minmax(280px, .58fr) minmax(620px, 1.68fr);
   gap: 18px;
 }
 .qb-card.qb-whiteboard-expanded .qb-whiteboard-resizer { display: none; }
@@ -123,7 +123,7 @@
   width: 100vw;
   height: 100vh;
   padding: 16px;
-  grid-template-columns: minmax(300px, .72fr) minmax(520px, 1.45fr) !important;
+  grid-template-columns: minmax(300px, .58fr) minmax(620px, 1.72fr) !important;
   gap: 16px !important;
   align-items: stretch;
   overflow: hidden;
@@ -159,7 +159,7 @@
   width: 100vw;
   height: 100vh;
   padding: 16px;
-  grid-template-columns: minmax(300px, .72fr) minmax(520px, 1.45fr) !important;
+  grid-template-columns: minmax(300px, .58fr) minmax(620px, 1.72fr) !important;
   gap: 16px !important;
   align-items: stretch;
   overflow: hidden;
@@ -196,7 +196,7 @@
   width: 100vw;
   height: 100vh;
   padding: 16px;
-  grid-template-columns: minmax(300px, .72fr) minmax(520px, 1.45fr) !important;
+  grid-template-columns: minmax(300px, .58fr) minmax(620px, 1.72fr) !important;
   gap: 16px !important;
   align-items: stretch;
   overflow: hidden;
@@ -464,7 +464,7 @@
   .qb-question-workspace:fullscreen,
   .qb-question-workspace:-webkit-full-screen,
   .qb-whiteboard-fullscreen .qb-card.qb-whiteboard-expanded .qb-question-workspace {
-    grid-template-columns: minmax(230px, .72fr) minmax(360px, 1.28fr) !important;
+    grid-template-columns: minmax(230px, .6fr) minmax(360px, 1.4fr) !important;
     padding: 10px;
     gap: 10px !important;
   }
@@ -495,7 +495,7 @@
 }
 
 @media (min-width: 821px) and (max-width: 1120px) {
-  .qb-card.qb-whiteboard-expanded .qb-question-workspace { grid-template-columns: minmax(240px, .75fr) minmax(420px, 1.25fr); }
+  .qb-card.qb-whiteboard-expanded .qb-question-workspace { grid-template-columns: minmax(240px, .62fr) minmax(440px, 1.38fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {
