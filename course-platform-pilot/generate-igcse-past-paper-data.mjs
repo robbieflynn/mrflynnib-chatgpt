@@ -55,9 +55,10 @@ const papers = rows.map((row) => {
   if (!match) throw new Error(`Unrecognised paper title: ${row.title}`);
   const [, year, month, paperNumber, tier] = match;
   const paper = `Paper ${paperNumber}${tier.toUpperCase()}`;
+  const sessionName = month === "May" || month === "June" ? "Summer" : month;
   return {
     id: `igcse-${slug(`${month}-${year}-${paper}`)}`,
-    session: `${month} ${year}`,
+    session: `${sessionName} ${year}`,
     timezone: "",
     paper,
     collection: row.bunnyCollection,

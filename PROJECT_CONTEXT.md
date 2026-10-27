@@ -604,4 +604,6 @@ On 27 October 2026, Rob confirmed that an IB teacher needs an obvious course swi
 
 The IGCSE past-paper solution library consists of 45 verified full-paper worked-solution videos already uploaded and ready in Bunny. Present these as a dedicated IGCSE past-paper area, organised by session and paper, and use the existing protected video-access route. Do not rebuild or duplicate these videos as question-by-question solutions.
 
+IGCSE past papers use the session names **January**, **Summer** and **November**. Display years from oldest to newest, sessions within a year in January–Summer–November order, and papers within a session as **1H, 2H, 1HR, 2HR**, omitting paper variants that do not exist.
+
 Teachers can reuse an existing assignment in another compatible class. Reuse copies the exact question list, title, instructions and feedback setting into a new editable draft, while leaving the due date and audience for the teacher to choose again. Never copy student answers, progress, submissions or whiteboards. Keep **Create shadow task** separate: shadow tasks deliberately choose different matched questions, while reuse preserves the original questions.

@@ -976,6 +976,16 @@ function pastPaperSets() {
     const firstYear = Number(first.session.match(/\b20\d{2}\b/)?.[0] || 0);
     const secondYear = Number(second.session.match(/\b20\d{2}\b/)?.[0] || 0);
     if (firstYear !== secondYear) return firstYear - secondYear;
+    if (currentPastPaperCourse === "IGCSE") {
+      const sessionOrder = { January: 0, Summer: 1, November: 2 };
+      const firstSession = first.session.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const secondSession = second.session.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const sessionDifference = (sessionOrder[firstSession] ?? 99) - (sessionOrder[secondSession] ?? 99);
+      if (sessionDifference) return sessionDifference;
+      const paperOrder = { "Paper 1H": 0, "Paper 2H": 1, "Paper 1HR": 2, "Paper 2HR": 3 };
+      const paperDifference = (paperOrder[first.paper] ?? 99) - (paperOrder[second.paper] ?? 99);
+      if (paperDifference) return paperDifference;
+    }
     return `${first.session} ${first.paper} ${first.timezone}`.localeCompare(`${second.session} ${second.paper} ${second.timezone}`, undefined, { numeric: true, sensitivity: "base" });
   });
 }
@@ -1009,7 +1019,14 @@ function renderPastPaperSessionFilter() {
   const sessions = [...new Set((pastPaperLibrary.courses[currentPastPaperCourse] || []).map((set) => set.session))].sort((first, second) => {
     const firstYear = Number(first.match(/\b20\d{2}\b/)?.[0] || 0);
     const secondYear = Number(second.match(/\b20\d{2}\b/)?.[0] || 0);
-    return firstYear - secondYear || first.localeCompare(second, undefined, { numeric: true, sensitivity: "base" });
+    if (firstYear !== secondYear) return firstYear - secondYear;
+    if (currentPastPaperCourse === "IGCSE") {
+      const sessionOrder = { January: 0, Summer: 1, November: 2 };
+      const firstName = first.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const secondName = second.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      return (sessionOrder[firstName] ?? 99) - (sessionOrder[secondName] ?? 99);
+    }
+    return first.localeCompare(second, undefined, { numeric: true, sensitivity: "base" });
   });
   select.innerHTML = `<option value="all">All sessions</option>${sessions.map((session) => `<option value="${escapeHtml(session)}">${escapeHtml(session)}</option>`).join("")}`;
   if (!sessions.includes(currentPastPaperSession)) currentPastPaperSession = "all";
