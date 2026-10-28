@@ -2,6 +2,7 @@ import { type EmailOtpType } from "@supabase/supabase-js";
 import { type NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { sendTeacherApplicationEmail } from "@/lib/teacher-application-email";
+import { ensurePartnerSchoolTeacherRole } from "@/lib/partner-school-teacher";
 
 function isSafeRelativePath(value: string | null): value is string {
   return Boolean(value?.startsWith("/") && !value.startsWith("//"));
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest) {
       } = await supabase.auth.getUser();
 
       if (user) {
+        await ensurePartnerSchoolTeacherRole(user);
         await Promise.all([
           supabase.rpc("claim_verified_course_access"),
           supabase.rpc("claim_school_plus_access"),
