@@ -245,6 +245,7 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
   set.options.forEach((option, index) => {
     const rendered = choices.toLatex(option);
     const role = index === set.correctOption ? "correct" : "wrong";
+    assert(!/\b[A-Za-z]\^?prime\b/i.test(`${option} ${rendered}`), `Leaked prime command for ${meta}: ${JSON.stringify(option)} -> ${JSON.stringify(rendered)}`);
     if (rendered.includes("/") || /\\text\{[^}]*\b(?:sqrt|root|matrix|blackboard|math(?:bf|rm|cal|bb|frak)|mathrm|ldots|cdots|circ)\b/i.test(rendered)) {
       qualityIssue(`${role}: rendered notation`, meta, prompt, option, rendered);
     }
@@ -562,6 +563,10 @@ assert.equal(choices.generateChoiceSet(["1/4/2"], "audit-malformed"), null);
 assert.equal(choices.isDisplaySafe("(a)(x))"), false);
 assert.equal(choices.toLatex("2*x"), String.raw`2\times x`);
 assert.equal(choices.toLatex("y - x"), "y-x");
+assert.equal(choices.latexToPlain(String.raw`n(C^\prime\cap D^\prime)=14`), "n(C'∩ D')=14");
+assert.equal(choices.clean("n(C^prime∩ D^prime)=14"), "n(C'∩ D')=14");
+assert.equal(choices.clean("n(CPrime ∩ DPrime) = 14"), "n(C' ∩ D') = 14");
+assert.equal(choices.toLatex("n(C^prime∩ D^prime)=14"), "n(C'∩D')=14");
 assert.equal(choices.toLatex("ln x"), String.raw`\ln\left(x\right)`);
 assert.equal(choices.latexToPlain(String.raw`\cos\varphi`), "cos(φ)");
 assert.equal(choices.toLatex("sqrt(181 - 180cos(φ))"), String.raw`\sqrt{181-180\cos\left(\varphi \right)}`);
