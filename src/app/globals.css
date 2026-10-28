@@ -559,6 +559,8 @@ a.teacher-list-row:hover { background: var(--sky); }
 .test-instructions li { padding-left: 1mm; font-size: 9pt; line-height: 1.35; }
 .test-paper-footer { position: absolute; right: 18mm; bottom: 7mm; left: 18mm; display: flex; justify-content: space-between; color: #555; font-size: 7pt; }
 .test-paper-footer span:last-child { margin-left: auto; }
+.test-paper-credit { color: rgba(22, 64, 105, .54); font-size: 6.3pt; letter-spacing: .012em; }
+.test-paper-credit strong { color: inherit; font-weight: 700; }
 .test-exam-opening { margin-bottom: 8mm; font-size: 9.5pt; line-height: 1.42; }
 .test-exam-opening p { margin: 0; }
 .test-exam-opening .test-working-notice { margin-bottom: 9mm; }
