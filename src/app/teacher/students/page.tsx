@@ -8,8 +8,9 @@ import { studentAccountSummaries } from "@/lib/student-accounts";
 
 export const metadata: Metadata = { title: "Student accounts", robots: { index: false, follow: false } };
 
-export default async function StudentAccountsPage() {
+export default async function StudentAccountsPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
   const { supabase } = await requireAdmin();
+  const message = await searchParams;
   const { data, error } = await supabase.rpc("admin_student_accounts");
   const accounts = studentAccountSummaries(data);
   const confirmedCount = accounts.filter((account) => account.email_confirmed_at).length;
@@ -31,6 +32,8 @@ export default async function StudentAccountsPage() {
     </section>
     <section className="section-tight teacher-dashboard teacher-accounts-page">
       <Container className="stack-xl">
+        {message.error ? <p className="form-message form-error">{message.error}</p> : null}
+        {message.success ? <p className="form-message form-success">{message.success}</p> : null}
         <div className="dashboard-section-heading"><div><p className="eyebrow">Account directory</p><h2>All student accounts</h2></div><p className="muted">{confirmedCount} of {accounts.length} have confirmed their email address. Times are shown in Dubai time.</p></div>
         {error ? <p className="form-message form-error">Student accounts could not be loaded just now. Please reload the page.</p> : null}
         {!error ? <StudentAccountDirectory accounts={accounts} /> : null}
