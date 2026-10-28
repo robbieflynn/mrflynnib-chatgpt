@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { sendTeacherApplicationEmail } from "@/lib/teacher-application-email";
+import { ensurePartnerSchoolTeacherRole } from "@/lib/partner-school-teacher";
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -14,6 +15,7 @@ export async function GET(request: Request) {
     if (!error) {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        await ensurePartnerSchoolTeacherRole(user);
         await Promise.all([
           supabase.rpc("claim_verified_course_access"),
           supabase.rpc("claim_school_plus_access"),
