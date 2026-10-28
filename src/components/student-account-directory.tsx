@@ -1,6 +1,7 @@
 "use client";
 
 import { useDeferredValue, useMemo, useState } from "react";
+import { changeAccountRole } from "@/app/teacher/actions";
 import type { StudentAccountSummary } from "@/lib/student-accounts";
 
 type CurriculumFilter = "all" | "ib" | "igcse";
@@ -103,7 +104,7 @@ export function StudentAccountDirectory({ accounts }: { accounts: StudentAccount
     </div>
     <div className="teacher-account-table-wrap">
       <table className="teacher-account-table student-account-table">
-        <thead><tr><th>Student</th><th>Area</th><th>Email</th><th>Last sign-in</th><th>Classes</th><th>Learning activity</th></tr></thead>
+        <thead><tr><th>Student</th><th>Area</th><th>Email</th><th>Last sign-in</th><th>Classes</th><th>Learning activity</th><th>Account type</th></tr></thead>
         <tbody>
           {filteredAccounts.map((account) => <tr key={account.user_id}>
             <td><strong>{account.display_name || "Student"}</strong><small>Registered {dateTime(account.created_at)}</small></td>
@@ -112,8 +113,9 @@ export function StudentAccountDirectory({ accounts }: { accounts: StudentAccount
             <td>{dateTime(account.last_sign_in_at)}</td>
             <td><strong>{Number(account.class_count) || 0}</strong><small>{Number(account.class_count) === 1 ? "class joined" : "classes joined"}</small></td>
             <td><strong>{Number(account.completed_question_count) || 0} completed questions</strong><small>{Number(account.submitted_assignment_count) || 0} submitted assignments</small></td>
+            <td><form action={changeAccountRole} className="teacher-account-actions"><input name="accountId" type="hidden" value={account.user_id} /><input name="role" type="hidden" value="teacher" /><input name="returnTo" type="hidden" value="/teacher/students" /><button className="text-button" type="submit" onClick={(event) => { if (!window.confirm(`Change ${account.display_name || account.email} to a teacher account? Their existing progress, classes and access will be kept.`)) event.preventDefault(); }}>Make teacher</button></form></td>
           </tr>)}
-          {!filteredAccounts.length ? <tr><td className="teacher-account-empty" colSpan={6}>{accounts.length ? "No student accounts match those filters." : "No student accounts have been recorded."}</td></tr> : null}
+          {!filteredAccounts.length ? <tr><td className="teacher-account-empty" colSpan={7}>{accounts.length ? "No student accounts match those filters." : "No student accounts have been recorded."}</td></tr> : null}
         </tbody>
       </table>
     </div>

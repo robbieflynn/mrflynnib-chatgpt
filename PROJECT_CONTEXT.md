@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 25 October 2026
+Last updated: 28 October 2026
 
 On 25 October 2026, the production server architecture was aligned with the existing West EU Ireland Supabase project. Keep Vercel dynamic functions pinned to the Dublin `dub1` region through the version-controlled `vercel.json`; static assets continue to use Vercel's global CDN. Do not move or recreate the Supabase project merely to make this alignment. The repository includes read-only smoke and staged load checks for the public website, native course catalogue and assignment-save health path. Run those checks after infrastructure changes and before classroom use; they supplement rather than replace real authenticated assignment testing.
 
@@ -351,6 +351,8 @@ Accuracy and transparency are especially important. Earlier assistance incorrect
 ## Current production state
 
 The first complete content-led website redesign was approved and merged through pull request #2 on 7 August 2026. The follow-up headline change to **“Your Home for IB Mathematics.”** was merged through pull request #3 the same day. Use **“Mr Flynn IB | Your Home for IB Mathematics”** as the homepage browser and search title so the metadata matches the approved brand positioning. The production website is live on Vercel at `https://www.mrflynnib.com`; `https://mrflynnib.com` has a valid secure connection and redirects to the `www` address. The production site includes the redesigned homepage and complete course, IA, school, book, tutoring, testimonial, navigation, metadata, legal-draft and conversion-tracking journeys. The supplied 1,710-question package is integrated into the AA HL and AA SL routes, with course-specific filtering, progressive rendering and one natural page scroll. The completed Edexcel IGCSE Mathematics area was approved for public restoration on 27 August 2026, with a compact homepage entry and sitemap coverage but no global-navigation link.
+
+On 28 October 2026, Rob confirmed that administrators need to be able to change an existing account between student and teacher from the account administration directories. A role change must preserve the same user ID and all existing progress, class records, assignments, purchases, entitlements and saved work. It changes only the account role and the corresponding teacher-access state. Administrator accounts cannot be changed through this control.
 
 A launch-readiness pass covering QA, conversion measurement and basic error/security hardening was completed locally on 30 July 2026. The complete public route set was rendered at a 390-pixel mobile viewport, and the homepage was also checked at a 1280-pixel desktop viewport. The audit found no unintended horizontal overflow, missing image alternative text or duplicate HTML IDs. The mobile navigation and all four correct individual-course routes were verified. The custom 404 page, runtime error fallback, school-enquiry thank-you page and outbound destination fallback were also verified. Lint passed with one pre-existing PostCSS warning and no errors, and the Next.js production build passed. The generated route count may change as features are added or removed.
 
