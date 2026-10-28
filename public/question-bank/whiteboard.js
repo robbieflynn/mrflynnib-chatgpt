@@ -98,8 +98,9 @@
             toolButton('zoom-in', '+') +
           '</div>' +
           '<div class="qb-whiteboard-page-tools" role="group" aria-label="Whiteboard pages">' +
-            '<span class="qb-whiteboard-page-count" aria-live="polite">2 pages</span>' +
-            toolButton('add-page', 'Add page') +
+            '<span class="qb-whiteboard-page-count" aria-live="polite">4 sheets</span>' +
+            toolButton('add-page', 'Add below') +
+            toolButton('add-space-right', 'Add right') +
           '</div>' +
           toolButton('expand', 'Expand', false) +
           toolButton('undo', 'Undo') +
@@ -155,9 +156,11 @@
     var mode = 'pen';
     var colour = '#000000';
     var zoom = 1;
-    var baseWidth = 1400;
+    var pageWidth = 1400;
     var pageHeight = 2240;
+    var columnCount = 2;
     var pageCount = 2;
+    var baseWidth = pageWidth * columnCount;
     var baseHeight = pageHeight * pageCount;
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
@@ -187,10 +190,14 @@
     }
 
     function serialiseDocument() {
+      function compactCoordinate(value) {
+        return Math.round(Number(value) * 100000) / 100000;
+      }
       return {
-        version: 3,
+        version: 4,
         paper: paperStyle,
         pages: pageCount,
+        columns: columnCount,
         actions: actions.map(function (action) {
           if (action.type === 'clear') return { type: 'clear' };
           if (action.type === 'stroke') return {
@@ -198,11 +205,12 @@
             mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
             colour: action.colour,
             straightened: Boolean(action.straightened),
-            points: action.points.map(function (point) { return { x: point.x, y: point.y }; })
+            points: action.points.map(function (point) { return { x: compactCoordinate(point.x), y: compactCoordinate(point.y) }; })
           };
           return {
             type: 'image', source: action.source,
-            x: action.x, y: action.y, width: action.width, height: action.height
+            x: compactCoordinate(action.x), y: compactCoordinate(action.y),
+            width: compactCoordinate(action.width), height: compactCoordinate(action.height)
           };
         })
       };
@@ -478,7 +486,7 @@
           (point.x - last.x) * canvas.clientWidth,
           (point.y - last.y) * canvas.clientHeight
         );
-        if (distance < .2) return;
+        if (distance < .75) return;
         activeStroke.points.push(point);
         segment.push(point);
       });
@@ -665,6 +673,7 @@
       if (event.pointerId !== activePointer) return;
       if (activeStroke) appendStrokeSamples(event);
       if (activeStroke && activeStroke.mode === 'highlighter') redraw();
+      var completedAction = activeStroke || (activeImage && activeImage.action);
       var changed = Boolean(activeStroke || activeImage);
       activePointer = null;
       activePointerType = null;
@@ -673,7 +682,10 @@
       activeStroke = null;
       activePan = null;
       activeImage = null;
-      if (changed) scheduleSave();
+      if (changed) {
+        extendWorkspaceFor(completedAction);
+        scheduleSave();
+      }
     }
     window.addEventListener('pointerup', endStroke);
     window.addEventListener('pointercancel', endStroke);
@@ -712,12 +724,21 @@
       pageGuides.innerHTML = '';
       for (var index = 1; index < pageCount; index++) {
         var guide = document.createElement('span');
+        guide.className = 'qb-whiteboard-guide-horizontal';
         guide.style.top = (index * pageHeight * zoom) + 'px';
         pageGuides.appendChild(guide);
       }
+      for (var column = 1; column < columnCount; column++) {
+        var columnGuide = document.createElement('span');
+        columnGuide.className = 'qb-whiteboard-guide-vertical';
+        columnGuide.style.left = (column * pageWidth * zoom) + 'px';
+        pageGuides.appendChild(columnGuide);
+      }
       var label = board.querySelector('.qb-whiteboard-page-count');
-      label.textContent = pageCount + (pageCount === 1 ? ' page' : ' pages');
+      var sheets = pageCount * columnCount;
+      label.textContent = sheets + (sheets === 1 ? ' sheet' : ' sheets');
       board.querySelector('[data-whiteboard-action="add-page"]').disabled = pageCount >= 8;
+      board.querySelector('[data-whiteboard-action="add-space-right"]').disabled = columnCount >= 4;
     }
 
     function updateSurfaceSize() {
@@ -752,6 +773,29 @@
       updateSurfaceSize();
     }
 
+    function setColumnCount(nextCount, preserveExistingWork) {
+      var next = Math.max(1, Math.min(4, Math.round(Number(nextCount) || 1)));
+      if (next === columnCount) {
+        updateSurfaceSize();
+        return;
+      }
+      var oldWidth = baseWidth;
+      var nextWidth = pageWidth * next;
+      if (preserveExistingWork && oldWidth > 0) {
+        var ratio = oldWidth / nextWidth;
+        actions.forEach(function (action) {
+          if (action.type === 'stroke') action.points.forEach(function (point) { point.x *= ratio; });
+          if (action.type === 'image') {
+            action.x *= ratio;
+            action.width *= ratio;
+          }
+        });
+      }
+      columnCount = next;
+      baseWidth = nextWidth;
+      updateSurfaceSize();
+    }
+
     function addPage() {
       if (pageCount >= 8) return;
       var previousPages = pageCount;
@@ -760,6 +804,36 @@
       requestAnimationFrame(function () {
         viewport.scrollTop = previousPages * pageHeight * zoom;
       });
+    }
+
+    function addSpaceRight() {
+      if (columnCount >= 4) return;
+      var previousColumns = columnCount;
+      setColumnCount(columnCount + 1, true);
+      scheduleSave();
+      requestAnimationFrame(function () {
+        viewport.scrollLeft = previousColumns * pageWidth * zoom;
+      });
+    }
+
+    function extendWorkspaceFor(action) {
+      if (!action) return;
+      var rightEdge = 0;
+      var bottomEdge = 0;
+      if (action.type === 'stroke' && action.points.length) {
+        action.points.forEach(function (point) {
+          rightEdge = Math.max(rightEdge, point.x);
+          bottomEdge = Math.max(bottomEdge, point.y);
+        });
+      }
+      if (action.type === 'image') {
+        rightEdge = action.x + action.width;
+        bottomEdge = action.y + action.height;
+      }
+      // Grow only after the stroke or image move finishes. Existing work is
+      // rescaled so it stays exactly where the student drew it.
+      if (rightEdge >= .96 && columnCount < 4) setColumnCount(columnCount + 1, true);
+      if (bottomEdge >= .96 && pageCount < 8) setPageCount(pageCount + 1, true);
     }
 
     function setZoom(nextZoom) {
@@ -826,6 +900,7 @@
       if (action === 'zoom-out') setZoom(zoom - .25);
       if (action === 'zoom-in') setZoom(zoom + .25);
       if (action === 'add-page') addPage();
+      if (action === 'add-space-right') addSpaceRight();
       if (action === 'expand') setExpanded(!card.classList.contains('qb-whiteboard-expanded'));
       if (action === 'undo') undoLastAction();
       if (action === 'clear' && hasVisibleWork()) {
@@ -857,7 +932,7 @@
             finishImport(false);
             return;
           }
-          var availableWidth = Math.max(1, canvas.clientWidth * .84);
+          var availableWidth = Math.max(1, Math.min(canvas.clientWidth, viewport.clientWidth) * .84);
           var naturalWidth = image.naturalWidth || sourceRect.width || availableWidth;
           var naturalHeight = image.naturalHeight || sourceRect.height || 240;
           var scale = Math.min(1, availableWidth / naturalWidth, 380 / naturalHeight);
@@ -865,7 +940,8 @@
           var drawHeight = naturalHeight * scale;
           var visibleTop = Math.max(18, viewport.scrollTop + 24);
           var drawTop = Math.min(visibleTop, canvas.clientHeight - drawHeight - 18);
-          var drawLeft = (canvas.clientWidth - drawWidth) / 2;
+          var visibleLeft = Math.max(18, viewport.scrollLeft + 24);
+          var drawLeft = Math.min(visibleLeft, canvas.clientWidth - drawWidth - 18);
           var placedImages = visibleImages();
           var overlap = true;
           while (overlap && drawTop + drawHeight <= canvas.clientHeight - 18) {
@@ -1040,6 +1116,10 @@
         });
         actions = restored;
         setPageCount(Number(stored.pages) || 1, false);
+        setColumnCount(Number(stored.columns) || 1, false);
+        // Older documents were one sheet wide. Preserve their exact drawing
+        // size and add a new blank sheet to the right.
+        if (columnCount < 2) setColumnCount(2, true);
         setPaper(stored.paper === 'blank' ? 'blank' : 'squared');
         localDirty = Boolean(event.data.pending);
         window.clearTimeout(saveTimer);
