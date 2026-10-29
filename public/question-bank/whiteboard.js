@@ -48,7 +48,12 @@
   }
 
   function setupCard(card) {
-    if (card.getAttribute('data-whiteboard-ready')) return;
+    // A fixed assignment can take longer than the old one-second retry window
+    // to render on a school device. It can also replace a card body while the
+    // outer card survives. Only treat the card as ready when the actual
+    // workspace is still present; otherwise rebuild it from the new body.
+    if (card.getAttribute('data-whiteboard-ready') && card.querySelector('.qb-question-workspace')) return;
+    card.removeAttribute('data-whiteboard-ready');
     var body = card.querySelector('.qb-body');
     if (!body) return;
     card.setAttribute('data-whiteboard-ready', '1');
@@ -1252,9 +1257,25 @@
   window.setTimeout(scan, 0);
   window.setTimeout(scan, 250);
   window.setTimeout(scan, 1000);
-  // The bank appends cards after filter changes and load-more messages. These
-  // hooks run after its own handlers and cover every append path without a
-  // permanent DOM observer across thousands of questions.
+  // Keep watching for cards after the initial retries. On a slower device the
+  // fixed assignment list may arrive later than one second, and assignment
+  // navigation can replace a rendered card after this script has run.
+  var scanScheduled = false;
+  new MutationObserver(function (mutations) {
+    var needsScan = mutations.some(function (mutation) {
+      return mutation.type === 'childList' && mutation.addedNodes.length > 0;
+    });
+    if (!needsScan || scanScheduled) return;
+    scanScheduled = true;
+    window.requestAnimationFrame(function () {
+      scanScheduled = false;
+      scan();
+    });
+  }).observe(list, { childList: true, subtree: true });
+
+  // The bank also appends cards after filter changes and load-more messages.
+  // These hooks run after its own handlers and provide an immediate scan in
+  // addition to the observer fallback.
   document.addEventListener('input', function () { window.setTimeout(scan, 0); });
   document.addEventListener('change', function () { window.setTimeout(scan, 0); });
   window.addEventListener('message', function (event) {
