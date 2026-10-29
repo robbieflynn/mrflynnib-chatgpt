@@ -405,21 +405,19 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           if (data.length < 1000) break;
           pageStart += 1000;
         }
-        if (!assignmentId) {
-          pageStart = 0;
-          while (true) {
-            const { data, error } = await clientRef.current
-              .from("question_stars")
-              .select("question_id")
-              .eq("user_id", user.id)
-              .eq("bank", bank)
-              .range(pageStart, pageStart + 999);
-            if (cancelled) return;
-            if (error || !data) break;
-            data.forEach((row) => starredRef.current.add(String(row.question_id)));
-            if (data.length < 1000) break;
-            pageStart += 1000;
-          }
+        pageStart = 0;
+        while (true) {
+          const { data, error } = await clientRef.current
+            .from("question_stars")
+            .select("question_id")
+            .eq("user_id", user.id)
+            .eq("bank", bank)
+            .range(pageStart, pageStart + 999);
+          if (cancelled) return;
+          if (error || !data) break;
+          data.forEach((row) => starredRef.current.add(String(row.question_id)));
+          if (data.length < 1000) break;
+          pageStart += 1000;
         }
       }
       send({
@@ -468,7 +466,6 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       if (!questionId || !clientRef.current || !userRef.current) return;
 
       if (message.type === "mrflynnib-star-set") {
-        if (assignmentId || viewedStudentId) return;
         const starred = Boolean(message.starred);
         const result = starred
           ? await clientRef.current.from("question_stars").insert({
