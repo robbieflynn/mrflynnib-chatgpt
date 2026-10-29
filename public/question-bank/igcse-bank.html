@@ -227,6 +227,17 @@
     color:#7a5c10; background:#fff3d6; padding:3px 8px; border-radius:5px; border:1px solid #e9d69f;
     white-space:nowrap;
   }
+  .qb-ms-final{
+    margin-top:14px; padding:12px 14px; border:1px solid #b8d6f3; border-radius:8px;
+    background:#eef7ff; color:var(--ink);
+  }
+  .qb-ms-final-title{
+    margin-bottom:7px; font-family:var(--ui); font-size:11px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--flynn-blue-dark);
+  }
+  .qb-ms-final-row{ display:flex; gap:8px; align-items:baseline; margin-top:5px; }
+  .qb-ms-final-label{ flex:0 0 auto; font-family:var(--ui); font-weight:700; color:var(--flynn-blue-dark); }
+  .qb-ms-final-loading{ font-family:var(--ui); font-size:13px; color:#5a6478; }
 
   .qb-body{ font-size: 15.5px; }
   .qb-body p{ margin: 8px 0; }
@@ -176733,6 +176744,20 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     return out.join('');
   }
 
+  function finalAnswerHTML(data){
+    var sol = data && data.s;
+    if(!sol || !Array.isArray(sol.solution)) return '';
+    var rows = [];
+    sol.solution.forEach(function(part){
+      if(!part.answer) return;
+      var label = part.part ? '<span class="qb-ms-final-label">(' + safeHTML(part.part) + ')</span>' : '';
+      rows.push('<div class="qb-ms-final-row">' + label + '<span>' + safeHTML(part.answer) + '</span></div>');
+    });
+    return rows.length
+      ? '<div class="qb-ms-final"><div class="qb-ms-final-title">Clear final answer</div>' + rows.join('') + '</div>'
+      : '';
+  }
+
   function markschemeHTML(q){
     // q.markscheme: array of [partLabel, lines] groups.
     // partLabel "" (no lettered part) renders without a bold prefix.
@@ -177482,8 +177507,16 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       if(!panel.getAttribute('data-built')){
         var q = state.byId[id];
         if(q && q.markscheme){
-          panel.innerHTML = markschemeHTML(q);
+          panel.innerHTML = markschemeHTML(q) + '<div class="qb-ms-final qb-ms-final-loading">Loading the clear final answer…</div>';
           typeset(panel);
+          loadSolution(q, function(data){
+            var loading = panel.querySelector('.qb-ms-final-loading');
+            if(loading) loading.outerHTML = finalAnswerHTML(data);
+            typeset(panel);
+          }, function(){
+            var loading = panel.querySelector('.qb-ms-final-loading');
+            if(loading) loading.remove();
+          });
         }
         panel.setAttribute('data-built','1');
       }
