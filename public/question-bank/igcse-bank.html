@@ -409,6 +409,7 @@
 </style>
 
 <link rel="stylesheet" href="/question-bank/whiteboard.css?v=19">
+<link rel="stylesheet" href="/question-bank/starred.css?v=1">
 </head>
 <body>
 <div id="qbank-root">
@@ -177299,6 +177300,8 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       // available even if a later bank update moves them out of the public
       // course, off syllabus, or into a provisional holding state.
       if(REQUESTED_IDS.size) return REQUESTED_IDS.has(String(item.id));
+      if(window.__mrflynnibStarredOnly &&
+          (!window.__mrflynnibStarredQuestionIds || !window.__mrflynnibStarredQuestionIds.has(String(item.id)))) return false;
       var itemTopics = topicsOf(item);
       // A question banked for a course Rob isn't drawing from is its own
       // category: "show held" reveals it on its own, without also needing the
@@ -177370,7 +177373,9 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     if(out.length === 0){
       state.filtered = [];
       state.rendered = 0;
-      list.innerHTML = '<div class="qb-empty">No questions match those filters yet.</div>';
+      list.innerHTML = '<div class="qb-empty">' +
+        (window.__mrflynnibStarredOnly ? 'No starred questions match these filters yet.' : 'No questions match those filters yet.') +
+        '</div>';
       return;
     }
     // Render a batch at a time. Building all 1600+ cards at once produced
@@ -177381,6 +177386,8 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     list.innerHTML = '';
     renderNextBatch();
   }
+
+  window.mrflynnibRefreshQuestionFilters = applyFilters;
 
   function typeset(el){
     if(window.renderMathInElement){
@@ -177524,6 +177531,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 </script>
 
 <script src="/question-bank/progress.js?v=2"></script>
+<script src="/question-bank/starred.js?v=1"></script>
 <script src="/question-bank/whiteboard.js?v=27"></script>
 <script src="/question-bank/assignment-choice-utils.js?v=26"></script>
 <script src="/question-bank/assignment-selector.js?v=32"></script>
