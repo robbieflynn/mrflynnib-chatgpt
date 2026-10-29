@@ -269,10 +269,10 @@ function sendPracticeAccountState(target) {
   target.postMessage({
     type: "mrflynnib-account-state",
     configured: true,
-    signedIn: true,
+    signedIn: Boolean(platformAccount),
     readOnly: false,
-    localOnly: !platformAccount,
     completedQuestionIds: completedPracticeQuestionIds(),
+    starredQuestionIds: platformAccount?.starredQuestionIds || [],
   }, window.location.origin);
 }
 
@@ -829,6 +829,44 @@ window.addEventListener("message", async (event) => {
 
   if (message.type === "mrflynnib-question-bank-ready") {
     sendPracticeAccountState(event.source);
+    return;
+  }
+
+  if (message.type === "mrflynnib-account-required") {
+    const accountPath = activeCurriculum() === "igcse" ? "/igcse/account" : "/account";
+    const next = `${window.location.pathname}${window.location.search}`;
+    // This standalone course shell cannot use Next's client router.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign(`${accountPath}?next=${encodeURIComponent(next)}`);
+    return;
+  }
+
+  if (message.type === "mrflynnib-star-set") {
+    const questionId = String(message.questionId || "").slice(0, 160);
+    const starred = Boolean(message.starred);
+    let succeeded = false;
+    if (platformAccount && questionId && !reviewerMode && !salesPreviewMode) {
+      try {
+        const response = await fetch("/api/platform/question-star", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionId, starred, curriculum: activeCurriculum() }),
+        });
+        succeeded = response.ok;
+      } catch {}
+    }
+    if (succeeded) {
+      const saved = new Set((platformAccount.starredQuestionIds || []).map(String));
+      if (starred) saved.add(questionId);
+      else saved.delete(questionId);
+      platformAccount.starredQuestionIds = [...saved];
+    }
+    event.source.postMessage({
+      type: "mrflynnib-star-result",
+      questionId,
+      starred,
+      ok: succeeded,
+    }, window.location.origin);
     return;
   }
 
