@@ -13,6 +13,7 @@ type QuestionBankMessage = {
   type?: string;
   questionId?: string;
   completed?: boolean;
+  starred?: boolean;
   document?: unknown;
   response?: unknown;
 };
@@ -108,6 +109,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
   const clientRef = useRef<SupabaseClient | null>(null);
   const userRef = useRef<User | null>(null);
   const completedRef = useRef<Set<string>>(new Set());
+  const starredRef = useRef<Set<string>>(new Set());
   const assignmentQuestionsRef = useRef<AssignmentQuestionState[]>(initialQuestions);
 
   useEffect(() => {
@@ -386,6 +388,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
     async function publishAccountState(user: User | null) {
       userRef.current = user;
       completedRef.current = new Set();
+      starredRef.current = new Set();
       if (user && clientRef.current) {
         let pageStart = 0;
         while (true) {
@@ -402,6 +405,22 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           if (data.length < 1000) break;
           pageStart += 1000;
         }
+        if (!assignmentId) {
+          pageStart = 0;
+          while (true) {
+            const { data, error } = await clientRef.current
+              .from("question_stars")
+              .select("question_id")
+              .eq("user_id", user.id)
+              .eq("bank", bank)
+              .range(pageStart, pageStart + 999);
+            if (cancelled) return;
+            if (error || !data) break;
+            data.forEach((row) => starredRef.current.add(String(row.question_id)));
+            if (data.length < 1000) break;
+            pageStart += 1000;
+          }
+        }
       }
       send({
         type: "mrflynnib-account-state",
@@ -409,6 +428,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         signedIn: Boolean(user),
         readOnly: Boolean(viewedStudentId) || Boolean(assignmentId && assignmentSubmitted),
         completedQuestionIds: Array.from(completedRef.current),
+        starredQuestionIds: Array.from(starredRef.current),
       });
       if (assignmentId) await publishAssignmentState();
       if (user) void flushPendingSaves();
@@ -446,6 +466,33 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
 
       if (!questionId || !clientRef.current || !userRef.current) return;
+
+      if (message.type === "mrflynnib-star-set") {
+        if (assignmentId || viewedStudentId) return;
+        const starred = Boolean(message.starred);
+        const result = starred
+          ? await clientRef.current.from("question_stars").upsert({
+              user_id: userRef.current.id,
+              bank,
+              question_id: questionId,
+            }, { onConflict: "user_id,bank,question_id", ignoreDuplicates: true })
+          : await clientRef.current.from("question_stars").delete()
+              .eq("user_id", userRef.current.id)
+              .eq("bank", bank)
+              .eq("question_id", questionId);
+        if (!result.error) {
+          if (starred) starredRef.current.add(questionId);
+          else starredRef.current.delete(questionId);
+        }
+        send({
+          type: "mrflynnib-star-result",
+          questionId,
+          starred,
+          ok: !result.error,
+          error: result.error?.message ?? null,
+        });
+        return;
+      }
 
       if (message.type === "mrflynnib-assignment-response-save") {
         if (!assignmentId || viewedStudentId) return;
