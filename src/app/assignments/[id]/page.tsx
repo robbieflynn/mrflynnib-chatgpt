@@ -48,6 +48,8 @@ export default async function StudentAssignmentPage({ params, searchParams }: { 
   const workspaceClass = classRecord?.bank === "igcse" ? "student-assignment-workspace student-assignment-workspace-igcse" : "student-assignment-workspace";
   const feedbackMode = assignmentFeedbackModeFromRecord(assignment);
   const isSubmitted = submission?.status === "submitted";
+  const learningHome = classRecord?.bank === "igcse" ? "/igcse/account" : "/account";
+  const assignmentsHref = classRecord?.bank === "igcse" ? "/assignments?curriculum=igcse" : "/assignments";
   const initialQuestions: AssignmentQuestionState[] = effectiveQuestions.map((question) => {
     const saved = responseByQuestion.get(question.question_id);
     return {
@@ -67,7 +69,7 @@ export default async function StudentAssignmentPage({ params, searchParams }: { 
   const dueLabel = assignment.due_at ? new Date(assignment.due_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "No due date";
   return <>
     <main className={workspaceClass}>
-    <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Student dashboard", href: "/account" }, { label: assignment.title }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord?.name || "Assignment"}</p><h1>{assignment.title}</h1>{assignment.instructions ? <p>{assignment.instructions}</p> : <p>Complete the questions below and show your working on the whiteboard or paper.</p>}</div><AssignmentHeroProgress assignmentId={id} initialAnswered={answered} initialCompleted={completed} total={total} /></div></Container></section>
+    <section className="teacher-workspace-hero"><Container className="stack-lg"><Breadcrumbs items={[{ label: "Learning home", href: learningHome }, { label: "Assignments", href: assignmentsHref }, { label: assignment.title }]} /><div className="teacher-workspace-title"><div className="stack-sm"><p className="dashboard-role-label">{classRecord?.name || "Assignment"}</p><h1>{assignment.title}</h1>{assignment.instructions ? <p>{assignment.instructions}</p> : <p>Complete the questions below and show your working on the whiteboard or paper.</p>}</div><AssignmentHeroProgress assignmentId={id} initialAnswered={answered} initialCompleted={completed} total={total} /></div></Container></section>
     <section className="section-tight student-dashboard"><Container className="stack-xl">
       <AssignmentConnectionStatus />
       {message.error ? <p className="form-message form-error">{message.error}</p> : null}{message.success ? <p className="form-message form-success">{message.success}</p> : null}
@@ -78,7 +80,7 @@ export default async function StudentAssignmentPage({ params, searchParams }: { 
     <section className="question-bank-embed-section"><Container>
       {classRecord?.bank === "igcse" ? <IgcseQuestionBankEmbed assignmentId={id} questionIds={questionIds} feedbackMode={feedbackMode} assignmentSubmitted={isSubmitted} assignmentView="step" initialQuestions={initialQuestions} /> : course ? <QuestionBankEmbed assignmentId={id} course={course.code} questionIds={questionIds} feedbackMode={feedbackMode} assignmentSubmitted={isSubmitted} assignmentView="step" initialQuestions={initialQuestions} /> : <p>These questions are not available.</p>}
     </Container></section>
-    <section className="section-tight"><Container><Link className="text-link" href="/account">Back to student dashboard</Link></Container></section>
+    <section className="section-tight"><Container><Link className="text-link" href={assignmentsHref}>Back to assignments</Link></Container></section>
     </main>
   </>;
 }

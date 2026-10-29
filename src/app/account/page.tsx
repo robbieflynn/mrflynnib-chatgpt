@@ -279,7 +279,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     ? await Promise.all([
       supabase.from("assignment_questions").select("assignment_id").in("assignment_id", assignmentIds),
       supabase.from("assignment_question_progress").select("assignment_id").in("assignment_id", assignmentIds).eq("student_id", user.id).eq("completed", true),
-      supabase.from("assignment_submissions").select("assignment_id,status").in("assignment_id", assignmentIds).eq("student_id", user.id),
+      supabase.from("assignment_submissions").select("assignment_id,status,submitted_at").in("assignment_id", assignmentIds).eq("student_id", user.id),
     ])
     : [
       { data: [], error: null },
@@ -290,7 +290,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   (questionRows.data ?? []).forEach((row) => questionCountByAssignment.set(row.assignment_id, (questionCountByAssignment.get(row.assignment_id) || 0) + 1));
   const progressCountByAssignment = new Map<string, number>();
   (progressRows.data ?? []).forEach((row) => progressCountByAssignment.set(row.assignment_id, (progressCountByAssignment.get(row.assignment_id) || 0) + 1));
-  const submissionByAssignment = new Map((submissionRows.data ?? []).map((row) => [row.assignment_id, row.status]));
+  const submissionByAssignment = new Map((submissionRows.data ?? []).map((row) => [row.assignment_id, row]));
   const assignmentLoadError = assignmentResult.error || questionRows.error || progressRows.error || submissionRows.error;
   const classNames = new Map(activeMemberships.map((membership) => {
     const classRecord = Array.isArray(membership.classes) ? membership.classes[0] : membership.classes;
@@ -301,12 +301,13 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const studentAssignments = assignments.map((assignment) => {
     const questionCount = questionCountByAssignment.get(assignment.id) || 0;
     const progressCount = progressCountByAssignment.get(assignment.id) || 0;
-    const submissionStatus = submissionByAssignment.get(assignment.id);
+    const submission = submissionByAssignment.get(assignment.id);
     return {
       ...assignment,
       questionCount,
       progressCount,
-      submissionStatus,
+      submissionStatus: submission?.status,
+      submittedAt: submission?.submitted_at ?? null,
       assignmentPercentage: percentage(progressCount, questionCount),
     };
   });
@@ -318,7 +319,10 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       if (!second.due_at) return -1;
       return new Date(first.due_at).getTime() - new Date(second.due_at).getTime();
     });
-  const completedAssignments = studentAssignments.filter((assignment) => assignment.submissionStatus === "submitted");
+  const completedAssignments = studentAssignments
+    .filter((assignment) => assignment.submissionStatus === "submitted")
+    .sort((first, second) => new Date(second.submittedAt || 0).getTime() - new Date(first.submittedAt || 0).getTime());
+  const assignmentsHref = isIgcse ? "/assignments?curriculum=igcse" : "/assignments";
   const nextAssignment = activeAssignments[0];
   const firstIncompleteTopic = courseProgress.topics.find((topic) => topic.questionIds.some((id) => !completedQuestionIds.has(id)));
   const firstIncompleteSubtopic = firstIncompleteTopic?.subtopics.find((subtopic) => subtopic.questionIds.some((id) => !completedQuestionIds.has(id)));
@@ -388,12 +392,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <nav className="student-platform-nav student-platform-nav-v2" aria-label="Your learning areas">
             <Link className="is-course" href={courseLearningHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>{isIgcse ? "Lessons and past-paper solutions" : `${selectedCourse.code} lessons and past-paper solutions`}</small></span><b aria-hidden="true">→</b></Link>
             <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>All questions free</small></span><b aria-hidden="true">→</b></Link>
-            <Link className="is-assignments" href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>{activeAssignments.length ? `${activeAssignments.length} ${activeAssignments.length === 1 ? "task" : "tasks"} due` : "No work due"}</small></span><b aria-hidden="true">↓</b></Link>
+            <Link className="is-assignments" href={assignmentsHref}><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>{activeAssignments.length ? `${activeAssignments.length} ${activeAssignments.length === 1 ? "task" : "tasks"} due` : completedAssignments.length ? `${completedAssignments.length} past ${completedAssignments.length === 1 ? "assignment" : "assignments"}` : "No work due"}</small></span><b aria-hidden="true">→</b></Link>
             <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
           </nav>
 
           <section className="student-assignments student-home-section stack-lg" id="assignments">
-            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>{activeAssignments.length ? "Due soon" : "You're up to date"}</h2></div><p className="muted">Your current work is ordered by due date, so the most important task is always easy to find.</p></div>
+            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>{activeAssignments.length ? "Due soon" : "You're up to date"}</h2></div><div className="student-section-heading-actions"><p className="muted">Your current work is ordered by due date, so the most important task is always easy to find.</p><Link className="student-section-link" href={assignmentsHref}>View all assignments →</Link></div></div>
             {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
             <div className="student-assignment-list">
               {activeAssignments.map((assignment, assignmentIndex) => {
@@ -407,7 +411,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               })}
               {!activeAssignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>{assignments.length ? "Everything is submitted" : "No assignments yet"}</strong><p>{assignments.length ? "Nice work. Your next assignment will appear here when it is set." : "Your teacher's assignments will appear here."}</p></div></div> : null}
             </div>
-            {completedAssignments.length ? <details className="student-completed-assignments"><summary>Submitted assignments ({completedAssignments.length})<span aria-hidden="true">+</span></summary><div className="student-assignment-list">{completedAssignments.map((assignment) => <Link className="student-assignment-card is-complete" href={`/assignments/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>Submitted</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Submitted</span><span aria-hidden="true">→</span></Link>)}</div></details> : null}
+            {completedAssignments.length ? <div className="student-past-assignments stack"><div className="student-past-assignments-heading"><div><span>Past assignments</span><strong>Review your submitted work</strong></div><Link href={assignmentsHref}>View all {completedAssignments.length} →</Link></div><div className="student-assignment-list">{completedAssignments.slice(0, 3).map((assignment) => <Link className="student-assignment-card is-complete" href={`/assignments/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{assignment.submittedAt ? `Submitted ${new Date(assignment.submittedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "Submitted"}</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Review</span><span aria-hidden="true">→</span></Link>)}</div></div> : null}
           </section>
 
           <section className="student-progress-overview student-home-section stack-lg" id="progress" aria-labelledby="student-progress-heading">
