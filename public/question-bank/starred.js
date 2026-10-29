@@ -6,16 +6,15 @@
   if (!list || !controls || window.parent === window) return;
 
   var params = new URLSearchParams(window.location.search);
-  var fixedQuestionSet = Boolean(params.get('ids')) ||
-    params.get('assignmentWork') === '1' ||
-    params.get('assignment') === '1' ||
-    params.get('test') === '1';
-  if (fixedQuestionSet) return;
+  var teacherQuestionSelector = params.get('assignment') === '1' || params.get('test') === '1';
+  if (teacherQuestionSelector) return;
+  var fixedQuestionSet = Boolean(params.get('ids')) || params.get('assignmentWork') === '1';
 
   var account = { configured: false, signedIn: false };
   var starred = new Set();
   var pending = Object.create(null);
   var starredOnly = false;
+  var filterButton = null;
 
   window.__mrflynnibStarredQuestionIds = starred;
   window.__mrflynnibStarredOnly = starredOnly;
@@ -29,6 +28,7 @@
   }
 
   function updateFilterButton() {
+    if (!filterButton) return;
     filterButton.setAttribute('aria-pressed', String(starredOnly));
     filterButton.title = account.signedIn
       ? (starredOnly ? 'Show all questions' : 'Show only your starred questions')
@@ -75,25 +75,27 @@
     window.setTimeout(scan, 0);
   }
 
-  var filterButton = document.createElement('button');
-  filterButton.type = 'button';
-  filterButton.id = 'qb-starred-filter';
-  filterButton.className = 'qb-star-filter';
-  filterButton.innerHTML = '<span class="qb-star-filter-icon" aria-hidden="true">\u2605</span><span>Starred</span>';
-  var count = controls.querySelector('.qb-count');
-  controls.insertBefore(filterButton, count || null);
-  updateFilterButton();
-
-  filterButton.addEventListener('click', function () {
-    if (!account.configured) return;
-    if (!account.signedIn) {
-      post({ type: 'mrflynnib-account-required' });
-      return;
-    }
-    starredOnly = !starredOnly;
+  if (!fixedQuestionSet) {
+    filterButton = document.createElement('button');
+    filterButton.type = 'button';
+    filterButton.id = 'qb-starred-filter';
+    filterButton.className = 'qb-star-filter';
+    filterButton.innerHTML = '<span class="qb-star-filter-icon" aria-hidden="true">\u2605</span><span>Starred</span>';
+    var count = controls.querySelector('.qb-count');
+    controls.insertBefore(filterButton, count || null);
     updateFilterButton();
-    refreshQuestions();
-  });
+
+    filterButton.addEventListener('click', function () {
+      if (!account.configured) return;
+      if (!account.signedIn) {
+        post({ type: 'mrflynnib-account-required' });
+        return;
+      }
+      starredOnly = !starredOnly;
+      updateFilterButton();
+      refreshQuestions();
+    });
+  }
 
   list.addEventListener('click', function (event) {
     var button = event.target.closest && event.target.closest('.qb-star-toggle');
