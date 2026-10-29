@@ -136,6 +136,10 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       });
     }
 
+    function handleFrameLoad() {
+      if (assignmentId) sendAssignmentState();
+    }
+
     function scheduleAssignmentStateRetry() {
       if (cancelled || assignmentRetryTimer) return;
       const delay = Math.min(30_000, 1_500 * Math.pow(2, Math.min(assignmentRetryAttempts, 4)));
@@ -447,6 +451,11 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         return;
       }
 
+      if (message.type === "mrflynnib-assignment-state-request") {
+        sendAssignmentState();
+        return;
+      }
+
       if (message.type === "mrflynnib-account-required") {
         const next = `${window.location.pathname}${window.location.search}`;
         router.push(`${bank === "igcse" ? "/igcse/account" : "/account"}?next=${encodeURIComponent(next)}`);
@@ -649,10 +658,15 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
     }
 
     window.addEventListener("message", handleMessage);
+    frame?.addEventListener("load", handleFrameLoad);
+    if (assignmentId) sendAssignmentState();
 
     if (!hasSupabaseBrowserConfig()) {
       publishAccountState(null);
-      return () => window.removeEventListener("message", handleMessage);
+      return () => {
+        window.removeEventListener("message", handleMessage);
+        frame?.removeEventListener("load", handleFrameLoad);
+      };
     }
 
     const client = createClient();
@@ -671,6 +685,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       if (retryTimer) window.clearTimeout(retryTimer);
       if (assignmentRetryTimer) window.clearTimeout(assignmentRetryTimer);
       window.removeEventListener("message", handleMessage);
+      frame?.removeEventListener("load", handleFrameLoad);
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
       authListener.subscription.unsubscribe();

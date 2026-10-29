@@ -16,6 +16,8 @@
   var activeId = null;
   var activePartKey = null;
   var revealActiveNavigation = false;
+  var assignmentStateReceived = false;
+  var assignmentStateRetryTimer = null;
   var partDrafts = {};
   var collapsedParts = {};
   var completedQuestionIds = new Set();
@@ -89,6 +91,10 @@
     ".qb-response-part.is-correct{border-color:#86cbae;background:linear-gradient(135deg,#f0faf5,#fff);box-shadow:0 6px 16px rgba(23,112,79,.08)}",
     ".qb-response-part.is-correct>.qb-response-part-summary{color:#11633f;font-size:14px;font-weight:850}",
     ".qb-assignment-response.is-readonly{background:#f7f8f9}",
+    ".qb-assignment-response-loading{min-height:96px;display:flex;align-items:center;justify-content:center;gap:11px;color:#526b7c}",
+    ".qb-assignment-response-loading:before{content:'';width:22px;height:22px;flex:0 0 22px;border:3px solid #c8dce9;border-top-color:var(--flynn-blue);border-radius:50%;animation:qb-assignment-loading .8s linear infinite}",
+    ".qb-assignment-response-loading strong{color:var(--flynn-blue-dark);font-size:14px}",
+    "@keyframes qb-assignment-loading{to{transform:rotate(360deg)}}",
     ".qb-response-readonly{padding:10px 12px;border-radius:8px;background:#fff;border:1px solid #d6dee2;white-space:pre-wrap}",
     ".qb-response-readonly-parts{display:grid;gap:8px}",
     ".qb-response-readonly-part{display:grid;grid-template-columns:minmax(48px,auto) minmax(0,1fr) auto;align-items:center;gap:10px}",
@@ -513,7 +519,18 @@
     var id = card.dataset.id;
     var item = state[id];
     var existing = card.querySelector(".qb-assignment-response");
-    if (!item) { if (existing) existing.remove(); delete card.dataset.responseVersion; return; }
+    if (!item) {
+      if (!assignmentStateReceived && view === "step") {
+        var firstCard = document.querySelector("#qb-list>.qb-card");
+        card.classList.toggle("qb-assignment-current", card === firstCard);
+        if (card === firstCard && !existing) {
+          var loadingPanel = document.createElement("div"); loadingPanel.className = "qb-assignment-response qb-assignment-response-loading"; loadingPanel.setAttribute("role", "status"); loadingPanel.setAttribute("aria-live", "polite");
+          var loadingCopy = document.createElement("strong"); loadingCopy.textContent = "Loading your answer…"; loadingPanel.appendChild(loadingCopy); card.appendChild(loadingPanel);
+        } else if (card !== firstCard && existing && existing.classList.contains("qb-assignment-response-loading")) existing.remove();
+      } else if (existing) existing.remove();
+      delete card.dataset.responseVersion;
+      return;
+    }
     var sourceNumber = card.querySelector(".qb-card-num");
     if (sourceNumber) {
       var assignmentPosition = orderedIds.indexOf(id) + 1;
@@ -703,6 +720,8 @@
       return;
     }
     if (event.data.type === "mrflynnib-assignment-response-state" && Array.isArray(event.data.questions)) {
+      assignmentStateReceived = true;
+      if (assignmentStateRetryTimer) { window.clearTimeout(assignmentStateRetryTimer); assignmentStateRetryTimer = null; }
       state = {};
       feedbackMode = String(event.data.feedbackMode || "immediate");
       assignmentSubmitted = Boolean(event.data.assignmentSubmitted);
@@ -787,5 +806,10 @@
   window.setTimeout(decorateAll, 0);
   window.setTimeout(decorateAll, 300);
   window.setTimeout(decorateAll, 1000);
-  window.parent.postMessage({ type: "mrflynnib-assignment-responses-ready" }, window.location.origin);
+  function requestAssignmentState(initial) {
+    if (assignmentStateReceived) return;
+    window.parent.postMessage({ type: initial ? "mrflynnib-assignment-responses-ready" : "mrflynnib-assignment-state-request" }, window.location.origin);
+    assignmentStateRetryTimer = window.setTimeout(function () { requestAssignmentState(false); }, 700);
+  }
+  requestAssignmentState(true);
 }());
