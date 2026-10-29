@@ -471,16 +471,20 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         if (assignmentId || viewedStudentId) return;
         const starred = Boolean(message.starred);
         const result = starred
-          ? await clientRef.current.from("question_stars").upsert({
+          ? await clientRef.current.from("question_stars").insert({
               user_id: userRef.current.id,
               bank,
               question_id: questionId,
-            }, { onConflict: "user_id,bank,question_id", ignoreDuplicates: true })
+            })
           : await clientRef.current.from("question_stars").delete()
               .eq("user_id", userRef.current.id)
               .eq("bank", bank)
               .eq("question_id", questionId);
-        if (!result.error) {
+        // A duplicate means this question was already starred in another tab.
+        // Treat it as success so the account state remains consistent without
+        // requiring UPDATE access for what is otherwise an insert-only action.
+        const succeeded = !result.error || (starred && result.error.code === "23505");
+        if (succeeded) {
           if (starred) starredRef.current.add(questionId);
           else starredRef.current.delete(questionId);
         }
@@ -488,7 +492,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           type: "mrflynnib-star-result",
           questionId,
           starred,
-          ok: !result.error,
+          ok: succeeded,
           error: result.error?.message ?? null,
         });
         return;
