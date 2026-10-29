@@ -31,7 +31,13 @@
     ".qb-assignment-nav{margin:0 0 18px;padding:14px 16px;display:grid;gap:11px;border:1px solid #c9d7df;border-radius:14px;background:#fff;box-shadow:0 10px 28px rgba(13,21,46,.06);font-family:var(--ui)}",
     ".qb-assignment-nav-head{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#526b7c;font-size:12px;font-weight:750}",
     ".qb-assignment-nav-head strong{color:var(--flynn-blue-dark);font-size:14px}",
-    ".qb-assignment-tabs{display:flex;align-items:stretch;gap:7px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}",
+    ".qb-assignment-tabs-row{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px}",
+    ".qb-assignment-tabs{min-width:0;display:flex;align-items:stretch;gap:7px;overflow-x:auto;padding:4px 3px 7px;scrollbar-width:thin;scroll-behavior:smooth;scroll-snap-type:x proximity;touch-action:pan-x;-webkit-overflow-scrolling:touch}",
+    ".qb-assignment-tabs>*{scroll-snap-align:center}",
+    ".qb-assignment-scroll-button{width:44px;height:44px;padding:0!important;display:grid!important;place-items:center;border:1px solid #9bbdd2!important;border-radius:50%!important;background:#eef7fd!important;color:var(--flynn-blue-dark)!important;font:900 22px/1 var(--ui)!important;box-shadow:0 5px 14px rgba(25,83,126,.12);cursor:pointer}",
+    ".qb-assignment-scroll-button:hover:not(:disabled){border-color:var(--flynn-blue)!important;background:#dceef9!important;transform:translateY(-1px)}",
+    ".qb-assignment-scroll-button:focus-visible{outline:3px solid rgba(35,127,202,.24);outline-offset:2px}",
+    ".qb-assignment-scroll-button:disabled{opacity:.28!important;box-shadow:none;cursor:default}",
     ".qb-assignment-tab{min-width:44px;height:40px;padding:0 10px;border:1px solid #c8d5dc;border-radius:10px;background:#f7fafb;color:#526b7c;font:800 13px/1 var(--ui);cursor:pointer}",
     ".qb-assignment-tab:hover{border-color:var(--flynn-blue);color:var(--flynn-blue-dark)}",
     ".qb-assignment-tab.is-active{border-color:var(--flynn-blue);background:var(--flynn-blue);color:#fff;box-shadow:0 6px 14px rgba(35,127,202,.2)}",
@@ -113,7 +119,7 @@
     ".qb-assignment-overview-mode .qb-assignment-response{margin-top:10px;padding:11px}",
     ".qb-assignment-overview-mode .qb-response-readonly{max-height:92px;overflow:auto}",
     ".qb-assignment-detail-mode .qb-whiteboard-open-button{display:none}",
-    "@media(max-width:720px){.qb-assignment-overview-mode #qb-list{grid-template-columns:1fr!important}.qb-assignment-response-head{align-items:flex-start;flex-direction:column}.qb-assignment-nav{padding:12px}.qb-assignment-question-group{padding:3px}.qb-assignment-part-tab{min-width:28px;padding:0 5px}}"
+    "@media(max-width:720px){.qb-assignment-overview-mode #qb-list{grid-template-columns:1fr!important}.qb-assignment-response-head{align-items:flex-start;flex-direction:column}.qb-assignment-nav{padding:12px 10px}.qb-assignment-nav-head{padding:0 2px}.qb-assignment-tabs-row{grid-template-columns:46px minmax(0,1fr) 46px;gap:5px}.qb-assignment-scroll-button{width:46px;height:46px}.qb-assignment-tabs{padding-inline:2px}.qb-assignment-question-group{padding:3px}.qb-assignment-part-tab{min-width:28px;padding:0 5px}}"
   ].join("");
   document.head.appendChild(style);
 
@@ -405,7 +411,10 @@
     var heading = document.createElement("strong"); heading.textContent = activeId ? "Question " + (orderedIds.indexOf(activeId) + 1) + " of " + orderedIds.length + (activePartKey ? " · Part " + partLabel(activePartKey) : "") : "Assignment questions";
     var summary = document.createElement("span"); summary.textContent = orderedIds.filter(function (id) { return isQuestionFinished(state[id]); }).length + " completed";
     head.appendChild(heading); head.appendChild(summary); navigation.appendChild(head);
-    var tabs = document.createElement("div"); tabs.className = "qb-assignment-tabs";
+    var tabsRow = document.createElement("div"); tabsRow.className = "qb-assignment-tabs-row";
+    var scrollPrevious = document.createElement("button"); scrollPrevious.type = "button"; scrollPrevious.className = "qb-assignment-scroll-button"; scrollPrevious.textContent = "←"; scrollPrevious.setAttribute("aria-label", "Show earlier questions"); scrollPrevious.setAttribute("title", "Earlier questions");
+    var tabs = document.createElement("div"); tabs.className = "qb-assignment-tabs"; tabs.setAttribute("role", "group"); tabs.setAttribute("aria-label", "Question number navigation"); tabs.setAttribute("tabindex", "0");
+    var scrollNext = document.createElement("button"); scrollNext.type = "button"; scrollNext.className = "qb-assignment-scroll-button"; scrollNext.textContent = "→"; scrollNext.setAttribute("aria-label", "Show later questions"); scrollNext.setAttribute("title", "Later questions");
     orderedIds.forEach(function (id, index) {
       var item = state[id];
       var definitions = multipartDefinitions(item);
@@ -425,16 +434,33 @@
       });
       group.appendChild(partTabs); tabs.appendChild(group);
     });
-    navigation.appendChild(tabs);
+    function updateScrollButtons() {
+      var maxScroll = Math.max(0, tabs.scrollWidth - tabs.clientWidth);
+      scrollPrevious.disabled = tabs.scrollLeft <= 3;
+      scrollNext.disabled = tabs.scrollLeft >= maxScroll - 3;
+    }
+    function moveQuestionTabs(direction) {
+      var distance = Math.max(180, Math.round(tabs.clientWidth * .72));
+      tabs.scrollBy({ left: direction * distance, behavior: "smooth" });
+      window.setTimeout(updateScrollButtons, 360);
+    }
+    scrollPrevious.addEventListener("click", function () { moveQuestionTabs(-1); });
+    scrollNext.addEventListener("click", function () { moveQuestionTabs(1); });
+    tabs.addEventListener("scroll", updateScrollButtons, { passive: true });
+    tabsRow.appendChild(scrollPrevious); tabsRow.appendChild(tabs); tabsRow.appendChild(scrollNext); navigation.appendChild(tabsRow);
     if (revealActiveNavigation) {
       revealActiveNavigation = false;
       window.requestAnimationFrame(function () {
         var activeTab = tabs.querySelector(".qb-assignment-question-group.is-active") || tabs.querySelector(".qb-assignment-tab.is-active");
-        if (!activeTab) return;
+        if (!activeTab) { updateScrollButtons(); return; }
         var targetLeft = activeTab.offsetLeft - (tabs.clientWidth - activeTab.clientWidth) / 2;
         tabs.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" });
+        window.setTimeout(updateScrollButtons, 360);
       });
-    } else tabs.scrollLeft = previousScrollLeft;
+    } else {
+      tabs.scrollLeft = previousScrollLeft;
+      window.requestAnimationFrame(updateScrollButtons);
+    }
   }
 
   function appendStepControls(panel, id) {
