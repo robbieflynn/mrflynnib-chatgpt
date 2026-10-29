@@ -77,8 +77,11 @@
     ".qb-response-option input{width:18px;height:18px;accent-color:var(--flynn-blue)}",
     ".qb-response-part-options{width:100%}",
     ".qb-response-status{min-height:20px;color:#5f7180;font-size:13px}",
-    ".qb-response-status.is-correct{color:#18704f}",
+    ".qb-response-status.is-correct{min-height:48px;padding:10px 13px;display:flex;align-items:center;gap:9px;border:1px solid #79c8a4;border-radius:10px;background:linear-gradient(135deg,#e6f8ef,#f4fcf8);color:#11633f;font-size:15px;font-weight:850;box-shadow:0 7px 18px rgba(23,112,79,.1)}",
+    ".qb-response-status.is-correct:before{content:'✓';width:27px;height:27px;flex:0 0 27px;display:grid;place-items:center;border-radius:50%;background:#18704f;color:#fff;font-size:16px;line-height:1}",
     ".qb-response-status.is-incorrect{color:#9f2f2f}",
+    ".qb-response-part.is-correct{border-color:#86cbae;background:linear-gradient(135deg,#f0faf5,#fff);box-shadow:0 6px 16px rgba(23,112,79,.08)}",
+    ".qb-response-part.is-correct>.qb-response-part-summary{color:#11633f;font-size:14px;font-weight:850}",
     ".qb-assignment-response.is-readonly{background:#f7f8f9}",
     ".qb-response-readonly{padding:10px 12px;border-radius:8px;background:#fff;border:1px solid #d6dee2;white-space:pre-wrap}",
     ".qb-response-readonly-parts{display:grid;gap:8px}",
@@ -133,17 +136,30 @@
   function playFeedback(correct) {
     if (!audioContext) return;
     var now = audioContext.currentTime;
-    var notes = correct ? [[523.25, 0], [659.25, .11], [783.99, .22]] : [[220, 0], [174.61, .16]];
-    notes.forEach(function (note) {
+    var notes = correct
+      ? [[523.25, 0, .2], [659.25, .09, .2], [783.99, .18, .22], [1046.5, .3, .38]]
+      : [[220, 0, .18], [174.61, .16, .22]];
+    notes.forEach(function (note, index) {
       var oscillator = audioContext.createOscillator();
       var gain = audioContext.createGain();
-      oscillator.type = correct ? "sine" : "triangle";
+      oscillator.type = correct ? (index === notes.length - 1 ? "sine" : "triangle") : "triangle";
       oscillator.frequency.value = note[0];
       gain.gain.setValueAtTime(.0001, now + note[1]);
-      gain.gain.exponentialRampToValueAtTime(correct ? .12 : .08, now + note[1] + .025);
-      gain.gain.exponentialRampToValueAtTime(.0001, now + note[1] + .18);
+      gain.gain.exponentialRampToValueAtTime(correct ? .075 : .055, now + note[1] + .018);
+      gain.gain.exponentialRampToValueAtTime(.0001, now + note[1] + note[2]);
       oscillator.connect(gain); gain.connect(audioContext.destination);
-      oscillator.start(now + note[1]); oscillator.stop(now + note[1] + .2);
+      oscillator.start(now + note[1]); oscillator.stop(now + note[1] + note[2] + .02);
+      if (correct && index === notes.length - 1) {
+        var shimmer = audioContext.createOscillator();
+        var shimmerGain = audioContext.createGain();
+        shimmer.type = "sine";
+        shimmer.frequency.value = note[0] * 2;
+        shimmerGain.gain.setValueAtTime(.0001, now + note[1]);
+        shimmerGain.gain.exponentialRampToValueAtTime(.018, now + note[1] + .015);
+        shimmerGain.gain.exponentialRampToValueAtTime(.0001, now + note[1] + .3);
+        shimmer.connect(shimmerGain); shimmerGain.connect(audioContext.destination);
+        shimmer.start(now + note[1]); shimmer.stop(now + note[1] + .32);
+      }
     });
   }
 
@@ -158,7 +174,7 @@
   function statusCopy(item) {
     if (item && item.submitted) return "Submitted. This answer is final.";
     if (!item.response) return "";
-    if (item.isCorrect === true) return "Correct. Well done!";
+    if (item.isCorrect === true) return "Correct! Well done.";
     if (item.isCorrect === false && Number(item.attemptCount || 0) >= 2) return "That was your second try. Your answer has been saved for your teacher.";
     if (item.isCorrect === false) return "Oops, that’s not right. Try again. You have one attempt left.";
     return item.readOnly ? "Saved for teacher review" : "Saved. Your teacher can review your whiteboard or paper working.";
@@ -233,7 +249,7 @@
   }
 
   function partStatusCopy(partState, readOnly) {
-    if (partState.result === "correct") return "Correct. Well done!";
+    if (partState.result === "correct") return "Correct! Well done.";
     if (partState.result === "retry") return "Not quite. Try this part once more.";
     if (partState.result === "incorrect_final") return "Second try saved for your teacher.";
     if (partState.result === "saved") return readOnly ? "Saved for teacher review." : "Saved. Your teacher can review this part.";
@@ -548,7 +564,7 @@
         var savedPartState = multipartPartState(item, definition.label);
         var actions = document.createElement("div"); actions.className = "qb-response-part-actions";
         var partButton = document.createElement("button"); partButton.type = "button"; partButton.textContent = (definition.mode === "whiteboard" ? "Save " : "Check ") + partLabel(definition.label);
-        var partStatus = document.createElement("div"); partStatus.className = "qb-response-status" + (savedPartState.isCorrect === true ? " is-correct" : savedPartState.isCorrect === false ? " is-incorrect" : ""); partStatus.textContent = partStatusCopy(savedPartState, false);
+        var partStatus = document.createElement("div"); partStatus.className = "qb-response-status" + (savedPartState.isCorrect === true ? " is-correct" : savedPartState.isCorrect === false ? " is-incorrect" : ""); partStatus.setAttribute("role", "status"); partStatus.setAttribute("aria-live", "polite"); partStatus.textContent = partStatusCopy(savedPartState, false);
         var partLocked = savedPartState.result === "correct" || savedPartState.result === "incorrect_final" || savedPartState.result === "saved";
         if (partLocked) { partButton.disabled = true; content.querySelectorAll("input").forEach(function (partInput) { partInput.disabled = true; }); }
         partButton.addEventListener("click", function () {
@@ -569,8 +585,8 @@
         actions.appendChild(partButton); actions.appendChild(partStatus); content.appendChild(actions);
         row.appendChild(labelBadge); row.appendChild(content);
         if (savedPartState.result === "correct") {
-          row.classList.add("has-toggle");
-          var summary = document.createElement("span"); summary.className = "qb-response-part-summary"; summary.textContent = "Correct ✓"; row.appendChild(summary);
+          row.classList.add("has-toggle", "is-correct");
+          var summary = document.createElement("span"); summary.className = "qb-response-part-summary"; summary.textContent = "✓ Correct"; row.appendChild(summary);
           var toggle = document.createElement("button"); toggle.type = "button"; toggle.className = "qb-response-part-toggle";
           var isCollapsed = collapsedParts[draftKey] !== false;
           function updateCollapsedPart() {
@@ -609,7 +625,7 @@
     appendMathKeyboard(panel, mathInputs);
     if (!isMultipart) {
       var button = document.createElement("button"); button.type = "button"; button.textContent = item.responseType === "teacher_review" ? "Save completion" : "Check answer";
-      var status = document.createElement("div"); status.className = "qb-response-status" + (item.isCorrect === true ? " is-correct" : item.isCorrect === false ? " is-incorrect" : ""); status.textContent = statusCopy(item);
+      var status = document.createElement("div"); status.className = "qb-response-status" + (item.isCorrect === true ? " is-correct" : item.isCorrect === false ? " is-incorrect" : ""); status.setAttribute("role", "status"); status.setAttribute("aria-live", "polite"); status.textContent = statusCopy(item);
       var locked = item.responseType !== "teacher_review" && isQuestionFinished(item);
       if (locked) { button.disabled = true; panel.querySelectorAll("input").forEach(function (input) { input.disabled = true; }); }
       button.addEventListener("click", function () {
