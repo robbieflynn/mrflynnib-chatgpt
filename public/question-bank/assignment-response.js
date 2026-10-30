@@ -18,6 +18,7 @@
   var revealActiveNavigation = false;
   var assignmentStateReceived = false;
   var assignmentStateRetryTimer = null;
+  var lastNavigationSignature = "";
   var partDrafts = {};
   var collapsedParts = {};
   var completedQuestionIds = new Set();
@@ -408,10 +409,29 @@
 
   function renderNavigation() {
     if (!navigation) return;
-    var previousTabs = navigation.querySelector(".qb-assignment-tabs");
-    var previousScrollLeft = previousTabs ? previousTabs.scrollLeft : 0;
     var visibleIds = orderedIds.filter(function (id) { return document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]'); });
     if (!activeId || visibleIds.indexOf(activeId) === -1) activeId = visibleIds.find(function (id) { return !isQuestionFinished(state[id]); }) || visibleIds[0] || null;
+    var navigationSignature = [
+      orderedIds.join("\u0000"),
+      visibleIds.join("\u0000"),
+      activeId || "",
+      activePartKey || "",
+      orderedIds.map(function (id) {
+        var item = state[id];
+        return questionState(item) + ":" + multipartDefinitions(item).map(function (definition) {
+          return definition.label + "=" + partNavigationState(item, definition.label);
+        }).join(",");
+      }).join("|")
+    ].join("\u0001");
+    // Question cards can finish their own whiteboard/layout setup after the
+    // assignment controls have rendered. Those DOM changes used to rebuild the
+    // complete navigator repeatedly, detaching a question button between the
+    // student's press and click. Keep the existing controls when their actual
+    // state has not changed.
+    if (navigationSignature === lastNavigationSignature && navigation.childElementCount) return;
+    lastNavigationSignature = navigationSignature;
+    var previousTabs = navigation.querySelector(".qb-assignment-tabs");
+    var previousScrollLeft = previousTabs ? previousTabs.scrollLeft : 0;
     navigation.replaceChildren();
     var head = document.createElement("div"); head.className = "qb-assignment-nav-head";
     var heading = document.createElement("strong"); heading.textContent = activeId ? "Question " + (orderedIds.indexOf(activeId) + 1) + " of " + orderedIds.length + (activePartKey ? " · Part " + partLabel(activePartKey) : "") : "Assignment questions";
@@ -421,12 +441,33 @@
     var scrollPrevious = document.createElement("button"); scrollPrevious.type = "button"; scrollPrevious.className = "qb-assignment-scroll-button"; scrollPrevious.textContent = "←"; scrollPrevious.setAttribute("aria-label", "Show earlier questions"); scrollPrevious.setAttribute("title", "Earlier questions");
     var tabs = document.createElement("div"); tabs.className = "qb-assignment-tabs"; tabs.setAttribute("role", "group"); tabs.setAttribute("aria-label", "Question number navigation"); tabs.setAttribute("tabindex", "0");
     var scrollNext = document.createElement("button"); scrollNext.type = "button"; scrollNext.className = "qb-assignment-scroll-button"; scrollNext.textContent = "→"; scrollNext.setAttribute("aria-label", "Show later questions"); scrollNext.setAttribute("title", "Later questions");
+    function bindQuestionActivation(button, id, partKey) {
+      var pointerStart = null;
+      var handledPointer = false;
+      button.addEventListener("pointerdown", function (event) {
+        pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+        handledPointer = false;
+      });
+      button.addEventListener("pointerup", function (event) {
+        if (!pointerStart || pointerStart.id !== event.pointerId) return;
+        var moved = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+        pointerStart = null;
+        if (moved > 10) return;
+        handledPointer = true;
+        goToQuestion(id, true, partKey);
+      });
+      button.addEventListener("pointercancel", function () { pointerStart = null; });
+      button.addEventListener("click", function () {
+        if (handledPointer) { handledPointer = false; return; }
+        goToQuestion(id, true, partKey);
+      });
+    }
     orderedIds.forEach(function (id, index) {
       var item = state[id];
       var definitions = multipartDefinitions(item);
       var isGrouped = definitions.length > 1;
       var button = document.createElement("button"); button.type = "button"; button.className = "qb-assignment-tab is-" + questionState(item) + (id === activeId && !activePartKey ? " is-active" : ""); button.textContent = "Q" + (index + 1); button.setAttribute("aria-label", "Open question " + (index + 1)); button.setAttribute("aria-current", id === activeId && !activePartKey ? "step" : "false"); button.disabled = !document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
-      button.addEventListener("click", function () { goToQuestion(id, true); });
+      bindQuestionActivation(button, id, null);
       if (!isGrouped) { tabs.appendChild(button); return; }
       var group = document.createElement("div"); group.className = "qb-assignment-question-group" + (id === activeId ? " is-active" : "");
       group.setAttribute("role", "group"); group.setAttribute("aria-label", "Question " + (index + 1) + " parts"); group.appendChild(button);
@@ -436,7 +477,7 @@
         var partButton = document.createElement("button"); partButton.type = "button"; partButton.className = "qb-assignment-part-tab is-" + status + (id === activeId && activePartKey === definition.label ? " is-active" : ""); partButton.textContent = partNavLabel(definition.label);
         partButton.setAttribute("aria-label", "Open question " + (index + 1) + ", part " + partLabel(definition.label) + ", " + partNavigationDescription(status));
         partButton.setAttribute("aria-current", id === activeId && activePartKey === definition.label ? "step" : "false"); partButton.disabled = button.disabled;
-        partButton.addEventListener("click", function () { goToQuestion(id, true, definition.label); }); partTabs.appendChild(partButton);
+        bindQuestionActivation(partButton, id, definition.label); partTabs.appendChild(partButton);
       });
       group.appendChild(partTabs); tabs.appendChild(group);
     });
@@ -797,8 +838,28 @@
     }
   });
 
+  function mutationNeedsDecoration(record) {
+    if (record.target === list) {
+      return Array.from(record.addedNodes).concat(Array.from(record.removedNodes)).some(function (node) {
+        return node instanceof HTMLElement && (node.classList.contains("qb-card") || Boolean(node.querySelector && node.querySelector(".qb-card")));
+      });
+    }
+    var card = record.target instanceof HTMLElement ? record.target.closest(".qb-card") : null;
+    if (!card || !state[card.dataset.id]) return false;
+    // If the bank replaces a card body on a slow device, restore the response
+    // controls. Ignore mutations made by those controls themselves.
+    if (!card.querySelector(".qb-assignment-response")) return true;
+    if (view === "overview" || view === "detail") {
+      return Array.from(record.addedNodes).some(function (node) {
+        return node instanceof HTMLElement && (node.matches(".qb-whiteboard-open-button") || Boolean(node.querySelector(".qb-whiteboard-open-button")));
+      });
+    }
+    return false;
+  }
+
   var decorateScheduled = false;
-  new MutationObserver(function () {
+  new MutationObserver(function (records) {
+    if (!records.some(mutationNeedsDecoration)) return;
     if (decorateScheduled) return;
     decorateScheduled = true;
     window.requestAnimationFrame(function () { decorateScheduled = false; decorateAll(); });
