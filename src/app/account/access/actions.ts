@@ -33,6 +33,7 @@ export async function redeemAccessCode(formData: FormData) {
   const { data, error } = await supabase.rpc("redeem_platform_access_code_for_product", {
     raw_code: code,
     requested_product_code: requestedProductCode,
+    required_code_product: null,
   });
   const result = data && typeof data === "object" ? data as { status?: string; product_code?: string } : null;
   if (error) redirect(destination("error"));
