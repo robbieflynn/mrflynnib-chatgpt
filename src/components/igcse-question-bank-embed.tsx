@@ -52,11 +52,12 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
 
       const nextHeight = Number(event.data.height);
       if (Number.isFinite(nextHeight)) {
-        // The teacher overview ends directly above the website footer. Keep a
-        // small safety area inside the frame so the last card cannot be clipped
-        // by sub-pixel height rounding while its answer or whiteboard loads.
-        const overviewClearance = assignmentView === "overview" ? 32 : 0;
-        frameHeightRef.current = Math.max(760, Math.ceil(nextHeight) + overviewClearance);
+        // Keep the final question safely above the website footer. Diagrams,
+        // worked solutions and whiteboards can finish laying out after the
+        // embedded bank first reports its height, so an exact fit can clip the
+        // bottom of the card on some student devices.
+        const bottomClearance = assignmentView === "overview" ? 80 : 96;
+        frameHeightRef.current = Math.max(760, Math.ceil(nextHeight) + bottomClearance);
         setFrameHeight(frameHeightRef.current);
       }
 

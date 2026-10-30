@@ -96504,7 +96504,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     "topics": [
       {
         "main": "Geometry and trigonometry",
-        "sub": "Right-angled trigonometry"
+        "sub": "Non-right-angled trigonometry"
       }
     ],
     "body": "A triangle has sides of length 8 cm, 10 cm and 14 cm.\n\nWork out the size of the largest angle of the triangle.<br>Give your answer correct to 1 decimal place.",
@@ -104237,7 +104237,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     "topics": [
       {
         "main": "Geometry and trigonometry",
-        "sub": "Right-angled trigonometry"
+        "sub": "Non-right-angled trigonometry"
       }
     ],
     "body": "\\(ABCD\\) is a quadrilateral.\n\nFind the area of quadrilateral \\(ABCD\\).<br>Give your answer correct to 3 significant figures.",
@@ -111520,7 +111520,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       },
       {
         "main": "Geometry and trigonometry",
-        "sub": "Right-angled trigonometry"
+        "sub": "Non-right-angled trigonometry"
       }
     ],
     "body": "The diagram shows parallelogram \\(EFGH\\).\n\n\\(EF=9.3\\text{ cm}\\).<br>\\(FG=14.7\\text{ cm}\\).<br>Angle \\(EFG=106^\\circ\\).",
@@ -131029,7 +131029,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
       },
       {
         "main": "Geometry and trigonometry",
-        "sub": "Right-angled trigonometry"
+        "sub": "Non-right-angled trigonometry"
       }
     ],
     "body": "\\(ABCD\\) is a quadrilateral where \\(A\\), \\(B\\), \\(C\\) and \\(D\\) are points on a circle.\n\n\\(AB=8\\) cm<br>\\(BC=7.5\\) cm<br>Angle \\(ABC=98^\\circ\\)<br>Angle \\(ACD=35^\\circ\\)\n\nWork out the perimeter of quadrilateral \\(ABCD\\).<br>Give your answer correct to one decimal place.",
@@ -133694,7 +133694,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     "topics": [
       {
         "main": "Geometry and trigonometry",
-        "sub": "Right-angled trigonometry"
+        "sub": "Non-right-angled trigonometry"
       }
     ],
     "body": "Here is a quadrilateral \\(ABCD\\).\n\nCalculate the area of quadrilateral \\(ABCD\\).<br>Give your answer correct to 3 significant figures.<br>Show your working clearly.",
@@ -141353,7 +141353,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     "topics": [
       {
         "main": "Geometry and trigonometry",
-        "sub": "Right-angled trigonometry"
+        "sub": "Non-right-angled trigonometry"
       }
     ],
     "markscheme": [
@@ -142583,7 +142583,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     "topics": [
       {
         "main": "Geometry and trigonometry",
-        "sub": "Right-angled trigonometry"
+        "sub": "Non-right-angled trigonometry"
       }
     ],
     "body": "Here is a parallelogram \\(PQRS\\), in which angle \\(SPQ\\) is acute.<br>\\(PQ=6.1\\) cm and \\(PS=3.8\\) cm.<br>The area of the parallelogram is \\(18\\text{ cm}^2\\).\n\nWork out the length of \\(QS\\).<br>Give your answer correct to \\(3\\) significant figures.",
@@ -146718,7 +146718,7 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     "topics": [
       {
         "main": "Geometry and trigonometry",
-        "sub": "Right-angled trigonometry"
+        "sub": "Non-right-angled trigonometry"
       }
     ],
     "body": "Here is a shape formed from two triangles \\(ABC\\) and \\(CDE\\).<br>\\(ACD\\) and \\(BCE\\) are straight lines.\n\n\\(AC=24\\) cm, \\(BC=31\\) cm, \\(CE=19\\) cm and \\(CD=16\\) cm.\n\nAngle \\(BAC=64^\\circ\\).\n\nWork out the length of \\(DE\\).<br>Give your answer correct to \\(3\\) significant figures.",
@@ -176502,7 +176502,14 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
   function reportEmbeddedHeight(){
     if(!IS_EMBEDDED || window.parent === window) return;
     var root = document.getElementById('qbank-root');
-    var contentHeight = root ? Math.ceil(root.getBoundingClientRect().bottom + window.scrollY) : document.body.scrollHeight;
+    var rootHeight = root
+      ? Math.max(root.getBoundingClientRect().bottom + window.scrollY, root.offsetTop + root.scrollHeight)
+      : 0;
+    var contentHeight = Math.ceil(Math.max(
+      rootHeight,
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    ) + 48);
     window.parent.postMessage({
       type: 'mrflynnib-question-bank-height',
       height: contentHeight,
@@ -176514,7 +176521,10 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     if(typeof ResizeObserver !== 'undefined'){
-      new ResizeObserver(reportEmbeddedHeight).observe(document.body);
+      var embeddedHeightObserver = new ResizeObserver(reportEmbeddedHeight);
+      embeddedHeightObserver.observe(document.body);
+      var embeddedRoot = document.getElementById('qbank-root');
+      if(embeddedRoot) embeddedHeightObserver.observe(embeddedRoot);
     }
     window.addEventListener('load', reportEmbeddedHeight);
     window.addEventListener('message', function(event){

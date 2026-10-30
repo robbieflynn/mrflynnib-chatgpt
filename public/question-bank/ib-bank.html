@@ -550505,7 +550505,14 @@ function diagramN11TZ0P2Q1grid(){
   function reportEmbeddedHeight(){
     if(!IS_EMBEDDED || window.parent === window) return;
     var root = document.getElementById('qbank-root');
-    var contentHeight = root ? Math.ceil(root.getBoundingClientRect().bottom + window.scrollY) : document.body.scrollHeight;
+    var rootHeight = root
+      ? Math.max(root.getBoundingClientRect().bottom + window.scrollY, root.offsetTop + root.scrollHeight)
+      : 0;
+    var contentHeight = Math.ceil(Math.max(
+      rootHeight,
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    ) + 48);
     window.parent.postMessage({
       type: 'mrflynnib-question-bank-height',
       height: contentHeight,
@@ -550520,7 +550527,10 @@ function diagramN11TZ0P2Q1grid(){
     document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     if(typeof ResizeObserver !== 'undefined'){
-      new ResizeObserver(reportEmbeddedHeight).observe(document.body);
+      var embeddedHeightObserver = new ResizeObserver(reportEmbeddedHeight);
+      embeddedHeightObserver.observe(document.body);
+      var embeddedRoot = document.getElementById('qbank-root');
+      if(embeddedRoot) embeddedHeightObserver.observe(embeddedRoot);
     }
     window.addEventListener('load', reportEmbeddedHeight);
     window.addEventListener('message', function(event){
