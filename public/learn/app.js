@@ -1,6 +1,12 @@
 const library = window.MR_FLYNN_LIBRARY;
 const igcseLibrary = window.MR_FLYNN_IGCSE_LIBRARY;
-const pastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
+const ibPastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
+const igcsePastPaperLibrary = window.MR_FLYNN_IGCSE_PAST_PAPERS || { stats: {}, courses: {} };
+const pastPaperLibrary = {
+  libraryId: ibPastPaperLibrary.libraryId,
+  stats: { ...ibPastPaperLibrary.stats, ...igcsePastPaperLibrary.stats },
+  courses: { ...ibPastPaperLibrary.courses, ...igcsePastPaperLibrary.courses },
+};
 const practiceLibrary = window.MR_FLYNN_PRACTICE;
 const previewParameters = new URLSearchParams(window.location.search);
 const previewMode = previewParameters.get("v");
@@ -263,10 +269,10 @@ function sendPracticeAccountState(target) {
   target.postMessage({
     type: "mrflynnib-account-state",
     configured: true,
-    signedIn: true,
+    signedIn: Boolean(platformAccount),
     readOnly: false,
-    localOnly: !platformAccount,
     completedQuestionIds: completedPracticeQuestionIds(),
+    starredQuestionIds: platformAccount?.starredQuestionIds || [],
   }, window.location.origin);
 }
 
@@ -368,6 +374,32 @@ function questionBankHrefForCourse(courseId = currentCourseId) {
 
 function syncQuestionBankLink() {
   document.getElementById("questionBankLink").href = questionBankHrefForCourse();
+}
+
+function isIbTeacherAccount() {
+  return platformAccount?.curriculum === "ib" && ["teacher", "admin"].includes(platformAccount.user?.role);
+}
+
+function configureTeacherCourseSwitcher() {
+  const switcher = document.getElementById("teacherCourseSwitcher");
+  const select = document.getElementById("teacherCourseSelect");
+  const visible = isIbTeacherAccount() && enrolledCourseDefinitions.length > 1;
+  switcher.hidden = !visible;
+  if (!visible) return;
+  select.innerHTML = enrolledCourseDefinitions.map((definition) => `<option value="${definition.id}">${escapeHtml(definition.code)}</option>`).join("");
+  select.value = currentCourseId;
+  document.getElementById("sidebar").setAttribute("aria-label", "Teacher course navigation");
+}
+
+async function persistActiveCourse(courseId, lessonId) {
+  if (!platformAccount || reviewerMode || salesPreviewMode) return;
+  try {
+    await fetch("/api/platform/state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ courseId, lessonId }),
+    });
+  } catch {}
 }
 
 function getCurrentLesson() {
@@ -497,9 +529,11 @@ function courseCard(course, large = false) {
 }
 
 function renderCourseCards() {
-  const visibleCourses = guestMode
+  const visibleCourses = isIbTeacherAccount()
     ? courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => courses[definition.id])
-    : [currentCourse];
+    : guestMode && activeCurriculum() === "ib"
+      ? courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => courses[definition.id])
+      : [currentCourse];
   const markup = visibleCourses.map((course) => courseCard(course, true)).join("");
   document.getElementById("allCourseGrid").innerHTML = markup;
 }
@@ -531,6 +565,7 @@ function renderDashboard() {
 
 function openCourse(courseId, lessonId = null) {
   if (!courses[courseId] || !enrolledCourseIds.includes(courseId)) return;
+  if (isIbTeacherAccount()) enrolledCourseId = courseId;
   currentCourseId = courseId;
   currentCourse = courses[courseId];
   const freeDefaultLesson = hasCompleteCourseAccess(currentCourse) ? null : salesPreviewLessons(currentCourse)[0]?.id;
@@ -542,6 +577,13 @@ function openCourse(courseId, lessonId = null) {
   state.lastLesson = currentLessonId;
   saveState();
   syncQuestionBankLink();
+  configureTeacherCourseSwitcher();
+  if (isIbTeacherAccount()) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("course", courseId);
+    window.history.replaceState({}, "", url);
+    void persistActiveCourse(courseId, currentLessonId);
+  }
   document.getElementById("lessonSearch").value = "";
   renderCourse();
   setView("course");
@@ -790,6 +832,44 @@ window.addEventListener("message", async (event) => {
     return;
   }
 
+  if (message.type === "mrflynnib-account-required") {
+    const accountPath = activeCurriculum() === "igcse" ? "/igcse/account" : "/account";
+    const next = `${window.location.pathname}${window.location.search}`;
+    // This standalone course shell cannot use Next's client router.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign(`${accountPath}?next=${encodeURIComponent(next)}`);
+    return;
+  }
+
+  if (message.type === "mrflynnib-star-set") {
+    const questionId = String(message.questionId || "").slice(0, 160);
+    const starred = Boolean(message.starred);
+    let succeeded = false;
+    if (platformAccount && questionId && !reviewerMode && !salesPreviewMode) {
+      try {
+        const response = await fetch("/api/platform/question-star", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionId, starred, curriculum: activeCurriculum() }),
+        });
+        succeeded = response.ok;
+      } catch {}
+    }
+    if (succeeded) {
+      const saved = new Set((platformAccount.starredQuestionIds || []).map(String));
+      if (starred) saved.add(questionId);
+      else saved.delete(questionId);
+      platformAccount.starredQuestionIds = [...saved];
+    }
+    event.source.postMessage({
+      type: "mrflynnib-star-result",
+      questionId,
+      starred,
+      ok: succeeded,
+    }, window.location.origin);
+    return;
+  }
+
   if (message.type === "mrflynnib-plus-required") {
     showPlusPrompt();
     return;
@@ -934,11 +1014,22 @@ function pastPaperSets() {
     const firstYear = Number(first.session.match(/\b20\d{2}\b/)?.[0] || 0);
     const secondYear = Number(second.session.match(/\b20\d{2}\b/)?.[0] || 0);
     if (firstYear !== secondYear) return firstYear - secondYear;
+    if (currentPastPaperCourse === "IGCSE") {
+      const sessionOrder = { January: 0, Summer: 1, November: 2 };
+      const firstSession = first.session.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const secondSession = second.session.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const sessionDifference = (sessionOrder[firstSession] ?? 99) - (sessionOrder[secondSession] ?? 99);
+      if (sessionDifference) return sessionDifference;
+      const paperOrder = { "Paper 1H": 0, "Paper 2H": 1, "Paper 1HR": 2, "Paper 2HR": 3 };
+      const paperDifference = (paperOrder[first.paper] ?? 99) - (paperOrder[second.paper] ?? 99);
+      if (paperDifference) return paperDifference;
+    }
     return `${first.session} ${first.paper} ${first.timezone}`.localeCompare(`${second.session} ${second.paper} ${second.timezone}`, undefined, { numeric: true, sensitivity: "base" });
   });
 }
 
 function pastPaperSetIsFree(set) {
+  if (set.fullPaper) return false;
   return set.session === "Specimen" || set.session === "May 2021";
 }
 
@@ -948,7 +1039,7 @@ function renderPastPaperTabs() {
   tabs.classList.toggle("is-single-course", definitions.length === 1);
   tabs.innerHTML = definitions.map((definition) => {
     const stats = pastPaperLibrary.stats[definition.code];
-    const canChooseCourse = reviewerMode || guestMode;
+    const canChooseCourse = reviewerMode || guestMode || isIbTeacherAccount();
     const Tag = canChooseCourse ? "button" : "div";
     const attributes = canChooseCourse
       ? `type="button" data-past-course="${definition.code}" aria-label="View ${escapeHtml(definition.name)} past-paper previews"`
@@ -966,7 +1057,14 @@ function renderPastPaperSessionFilter() {
   const sessions = [...new Set((pastPaperLibrary.courses[currentPastPaperCourse] || []).map((set) => set.session))].sort((first, second) => {
     const firstYear = Number(first.match(/\b20\d{2}\b/)?.[0] || 0);
     const secondYear = Number(second.match(/\b20\d{2}\b/)?.[0] || 0);
-    return firstYear - secondYear || first.localeCompare(second, undefined, { numeric: true, sensitivity: "base" });
+    if (firstYear !== secondYear) return firstYear - secondYear;
+    if (currentPastPaperCourse === "IGCSE") {
+      const sessionOrder = { January: 0, Summer: 1, November: 2 };
+      const firstName = first.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const secondName = second.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      return (sessionOrder[firstName] ?? 99) - (sessionOrder[secondName] ?? 99);
+    }
+    return first.localeCompare(second, undefined, { numeric: true, sensitivity: "base" });
   });
   select.innerHTML = `<option value="all">All sessions</option>${sessions.map((session) => `<option value="${escapeHtml(session)}">${escapeHtml(session)}</option>`).join("")}`;
   if (!sessions.includes(currentPastPaperSession)) currentPastPaperSession = "all";
@@ -1007,7 +1105,7 @@ function renderPastPaperCatalog() {
       ${sessionGroup.sets.map((set) => {
         const meta = [set.timezone, set.paper].filter(Boolean).join(" · ");
         return `<button class="paper-set-card ${set.id === currentPastPaperSetId ? "is-active" : ""}" type="button" data-paper-set-id="${set.id}">
-          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Free</b>' : ""}</strong><em>${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}</em></span>
+          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Free</b>' : ""}</strong><em>${set.fullPaper ? "Complete worked video" : `${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}`}</em></span>
           <i aria-hidden="true">→</i>
         </button>`;
       }).join("")}
@@ -1029,7 +1127,8 @@ function renderPastPaperQuestions() {
   }
   if (!set.questions.some((question) => question.id === currentPastPaperQuestionId)) currentPastPaperQuestionId = set.questions[0]?.id || null;
   document.getElementById("pastPaperSetTitle").textContent = [set.session, set.timezone, set.paper].filter(Boolean).join(" · ");
-  document.getElementById("pastPaperQuestionCount").textContent = `${set.questions.length} solution${set.questions.length === 1 ? "" : "s"}`;
+  document.getElementById("pastPaperQuestionCount").textContent = set.fullPaper ? "Complete paper" : `${set.questions.length} solution${set.questions.length === 1 ? "" : "s"}`;
+  document.getElementById("pastPaperQuestionPanel").hidden = Boolean(set.fullPaper);
   document.getElementById("pastPaperQuestionList").innerHTML = set.questions.map((question, index) => `<button class="paper-question-button ${question.id === currentPastPaperQuestionId ? "is-active" : ""}" type="button" data-paper-question-id="${question.id}">
     <span>${index + 1}</span><strong>${escapeHtml(question.title)}</strong><small>${formatDuration(question.seconds)}</small>
   </button>`).join("");
@@ -1042,7 +1141,7 @@ function renderPastPaperQuestion(question) {
   if (!set || !question) return;
   currentPastPaperQuestionId = question.id;
   const index = set.questions.findIndex((candidate) => candidate.id === question.id);
-  document.getElementById("pastPaperQuestionPosition").textContent = `Solution ${index + 1} of ${set.questions.length}`;
+  document.getElementById("pastPaperQuestionPosition").textContent = set.fullPaper ? "Full-paper solution" : `Solution ${index + 1} of ${set.questions.length}`;
   document.getElementById("pastPaperQuestionTitle").textContent = question.title;
   document.getElementById("pastPaperQuestionMeta").textContent = [set.session, set.timezone, set.paper, formatDuration(question.seconds)].filter(Boolean).join(" · ");
   document.getElementById("pastPaperBadge").textContent = currentPastPaperCourse;
@@ -1053,11 +1152,15 @@ function renderPastPaperQuestion(question) {
 }
 
 function renderPastPapers() {
-  if (!pastPaperLibrary.stats[currentPastPaperCourse]) currentPastPaperCourse = "AA HL";
+  if (!pastPaperLibrary.stats[currentPastPaperCourse]) currentPastPaperCourse = activeCurriculum() === "igcse" ? "IGCSE" : "AA HL";
   const stats = pastPaperLibrary.stats[currentPastPaperCourse];
+  const isIgcsePapers = currentPastPaperCourse === "IGCSE";
+  document.querySelector("#pastPapersView .past-paper-intro > p:last-child").textContent = isIgcsePapers
+    ? "Choose an exam session and open the complete worked video for the paper you need."
+    : "Find your exam session, paper and the worked solution for the exact question you need. Specimen papers and every May 2021 paper are free to watch.";
   renderPastPaperTabs();
   renderPastPaperSessionFilter();
-  document.getElementById("pastPaperCourseStats").innerHTML = `<strong>${currentPastPaperCourse}</strong><span>${stats.papers} papers with ${stats.questions} verified worked solutions</span>`;
+  document.getElementById("pastPaperCourseStats").innerHTML = `<strong>${currentPastPaperCourse}</strong><span>${isIgcsePapers ? `${stats.papers} complete paper solution videos` : `${stats.papers} papers with ${stats.questions} verified worked solutions`}</span>`;
   renderPastPaperCatalog();
   renderPastPaperQuestions();
 }
@@ -1158,6 +1261,9 @@ document.getElementById("pastPaperSessionFilter").addEventListener("change", (ev
   currentPastPaperQuestionId = null;
   renderPastPaperCatalog();
   renderPastPaperQuestions();
+});
+document.getElementById("teacherCourseSelect").addEventListener("change", (event) => {
+  openCourse(event.target.value);
 });
 
 const accountButton = document.getElementById("accountButton");
@@ -1310,6 +1416,7 @@ async function bootstrapAccount() {
     document.getElementById("brandLearningHomeLink").href = platformAccount.links.account;
     syncQuestionBankLink();
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
+    configureTeacherCourseSwitcher();
     void flushLessonProgress();
   } catch {
     configureGuestExperience();

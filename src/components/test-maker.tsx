@@ -346,7 +346,10 @@ function formatIgcseQuestionHtml(html: string) {
 }
 
 function PageFooter({ label }: { label: string }) {
-  return <footer className="test-paper-footer"><span>{label}</span></footer>;
+  return <footer className="test-paper-footer">
+    <span>{label}</span>
+    <span className="test-paper-credit">Created with <strong>Mr Flynn IB</strong> · mrflynnib.com</span>
+  </footer>;
 }
 
 function SectionAIntro({ calculatorAllowed = false }: { calculatorAllowed?: boolean }) {

@@ -10,9 +10,24 @@ export async function GET(request: Request) {
   if (!session.user || !session.curriculum) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   const isAdmin = session.profile?.role === "admin";
   const curriculum = requestedCurriculum;
-  const [progressResult, courseStateResult] = await Promise.all([
+  const [progressResult, courseStateResult, questionStarsResult] = await Promise.all([
     session.supabase.from("course_lesson_progress").select("course_id,lesson_id,completed,last_viewed_at").eq("user_id", session.user.id).eq("curriculum", curriculum),
     session.supabase.from("course_platform_state").select("last_course_id,last_lesson_id").eq("user_id", session.user.id).eq("curriculum", curriculum).maybeSingle(),
+    (async () => {
+      const questionIds: string[] = [];
+      for (let pageStart = 0; ; pageStart += 1000) {
+        const { data, error } = await session.supabase
+          .from("question_stars")
+          .select("question_id")
+          .eq("user_id", session.user.id)
+          .eq("bank", curriculum)
+          .range(pageStart, pageStart + 999);
+        if (error || !data) break;
+        questionIds.push(...data.map((row) => String(row.question_id)));
+        if (data.length < 1000) break;
+      }
+      return questionIds;
+    })(),
   ]);
   const { data: progress } = progressResult;
   const { data: courseState } = courseStateResult;
@@ -34,6 +49,7 @@ export async function GET(request: Request) {
     ownedCourseIds: (isAdmin ? products : session.ownedCourses).filter((product) => product.curriculum === curriculum).map((product) => product.id),
     preferredCourseId,
     progress: progress || [],
+    starredQuestionIds: questionStarsResult,
     state: courseState || null,
     links: {
       account: curriculum === "igcse" ? "/igcse/account" : "/account",

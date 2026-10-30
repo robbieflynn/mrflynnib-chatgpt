@@ -8,6 +8,7 @@ import { requireAdmin, requireTeacher } from "@/lib/account-access";
 import { isAssignmentFeedbackMode } from "@/lib/assignment-feedback";
 import { getFixedAssignmentConfig, type FixedAssignmentConfig } from "@/lib/assignment-answer-config";
 import { orderAssessmentQuestions } from "@/lib/assessment-question-order";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const validCourses = new Set(["AA HL", "AA SL", "AI HL", "AI SL", "IGCSE Higher"]);
 
@@ -180,6 +181,26 @@ export async function createAssignment(formData: FormData) {
   redirect(`/teacher/assignments/${assignment.id}?success=${encodeURIComponent("Assignment published.")}`);
 }
 
+export async function reuseAssignment(formData: FormData) {
+  const { supabase, user } = await requireTeacher();
+  const assignmentId = String(formData.get("assignmentId") || "");
+  const targetClassId = String(formData.get("targetClassId") || "");
+  if (!assignmentId || !targetClassId) redirect(messagePath("/teacher", "error", "Choose a class for the reused assignment."));
+
+  const [{ data: assignment }, { data: targetClass }] = await Promise.all([
+    supabase.from("assignments").select("id,class_id").eq("id", assignmentId).eq("teacher_id", user.id).maybeSingle(),
+    supabase.from("classes").select("id,bank,course").eq("id", targetClassId).eq("teacher_id", user.id).eq("archived", false).maybeSingle(),
+  ]);
+  if (!assignment || !targetClass) redirect(messagePath("/teacher", "error", "The assignment or class could not be found."));
+
+  const { data: sourceClass } = await supabase.from("classes").select("bank,course").eq("id", assignment.class_id).eq("teacher_id", user.id).maybeSingle();
+  if (!sourceClass || sourceClass.bank !== targetClass.bank || sourceClass.course !== targetClass.course) {
+    redirect(messagePath(`/teacher/assignments/${assignmentId}`, "error", "Choose another class studying the same course."));
+  }
+
+  redirect(`/teacher/classes/${targetClassId}/assignments/new?reuseOf=${encodeURIComponent(assignmentId)}`);
+}
+
 export async function deleteAssignment(formData: FormData) {
   const { supabase, user } = await requireTeacher();
   const assignmentId = String(formData.get("assignmentId") || "");
@@ -294,4 +315,73 @@ export async function reviewTeacherApplication(formData: FormData) {
   revalidatePath("/teacher");
   revalidatePath("/teacher/accounts");
   redirect(reviewMessagePath("success", decision === "approve" ? "Teacher account activated." : "The account remains a student account."));
+}
+
+export async function changeAccountRole(formData: FormData) {
+  const { user } = await requireAdmin();
+  const accountId = String(formData.get("accountId") || "");
+  const role = String(formData.get("role") || "");
+  const requestedReturnTo = String(formData.get("returnTo") || "");
+  const returnTo = new Set(["/teacher/accounts", "/teacher/students"]).has(requestedReturnTo)
+    ? requestedReturnTo
+    : "/teacher";
+  const roleMessagePath = (key: "error" | "success", message: string) => `${returnTo}?${key}=${encodeURIComponent(message)}`;
+
+  if (!accountId || accountId === user.id || !new Set(["student", "teacher"]).has(role)) {
+    redirect(roleMessagePath("error", "That account type could not be changed."));
+  }
+
+  const admin = createAdminClient();
+  const [{ data: profile, error: profileError }, { data: authRecord, error: authError }] = await Promise.all([
+    admin.from("profiles").select("role,display_name,email").eq("user_id", accountId).maybeSingle(),
+    admin.auth.admin.getUserById(accountId),
+  ]);
+
+  if (profileError || authError || !profile || !authRecord.user || profile.role === "admin") {
+    redirect(roleMessagePath("error", "That account could not be changed."));
+  }
+
+  const previousMetadata = authRecord.user.user_metadata || {};
+  const { error: metadataError } = await admin.auth.admin.updateUserById(accountId, {
+    user_metadata: { ...previousMetadata, account_type: role },
+  });
+  if (metadataError) redirect(roleMessagePath("error", "That account could not be changed."));
+
+  const now = new Date().toISOString();
+  const values = role === "teacher"
+    ? {
+        role: "teacher",
+        teacher_status: "approved",
+        teacher_requested_at: now,
+        teacher_notification_sent_at: now,
+        updated_at: now,
+      }
+    : {
+        role: "student",
+        teacher_status: "none",
+        teacher_requested_at: null,
+        teacher_notification_sent_at: null,
+        updated_at: now,
+      };
+  const { data: updatedProfile, error: updateError } = await admin.from("profiles")
+    .update(values)
+    .eq("user_id", accountId)
+    .neq("role", "admin")
+    .select("user_id")
+    .maybeSingle();
+
+  if (updateError || !updatedProfile) {
+    await admin.auth.admin.updateUserById(accountId, { user_metadata: previousMetadata });
+    redirect(roleMessagePath("error", "That account could not be changed."));
+  }
+
+  revalidatePath("/teacher");
+  revalidatePath("/teacher/accounts");
+  revalidatePath("/teacher/students");
+  revalidatePath("/account");
+  revalidatePath("/igcse/account");
+  const accountName = profile.display_name || profile.email || "Account";
+  redirect(roleMessagePath("success", role === "teacher"
+    ? `${accountName} is now a teacher. Their existing work and access have been kept.`
+    : `${accountName} is now a student. Their existing work and access have been kept.`));
 }

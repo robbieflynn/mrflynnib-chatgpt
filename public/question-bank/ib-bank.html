@@ -243,6 +243,17 @@
     color:#7a5c10; background:#fff3d6; padding:3px 8px; border-radius:5px; border:1px solid #e9d69f;
     white-space:nowrap;
   }
+  .qb-ms-final{
+    margin-top:14px; padding:12px 14px; border:1px solid #b8d6f3; border-radius:8px;
+    background:#eef7ff; color:var(--ink);
+  }
+  .qb-ms-final-title{
+    margin-bottom:7px; font-family:var(--ui); font-size:11px; font-weight:800;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--flynn-blue-dark);
+  }
+  .qb-ms-final-row{ display:flex; gap:8px; align-items:baseline; margin-top:5px; }
+  .qb-ms-final-label{ flex:0 0 auto; font-family:var(--ui); font-weight:700; color:var(--flynn-blue-dark); }
+  .qb-ms-final-loading{ font-family:var(--ui); font-size:13px; color:#5a6478; }
 
   .qb-body{ font-size: 15.5px; }
   .qb-body p{ margin: 8px 0; }
@@ -424,7 +435,8 @@
   .qb-more-msg{ text-align:center; padding:14px 0 2px; font-size:12px; color:var(--ink-soft); }
 </style>
 
-<link rel="stylesheet" href="/question-bank/whiteboard.css?v=18">
+<link rel="stylesheet" href="/question-bank/whiteboard.css?v=20">
+<link rel="stylesheet" href="/question-bank/starred.css?v=1">
 <style>
 /* Keep long worked equations inside their panel on narrow screens. */
 .qb-question-workspace { grid-template-columns: minmax(0, 1fr); }
@@ -79262,6 +79274,24 @@ function diagramN11TZ0P2Q1grid(){
     return out.join('');
   }
 
+  function finalAnswerHTML(data, q){
+    var sol = data && data.s;
+    if(!sol || !Array.isArray(sol.solution)) return '';
+    var wantedParts = q && q._practiceParts ? new Set(q._practiceParts.map(String)) : null;
+    var rows = [];
+    sol.solution.forEach(function(part){
+      if(wantedParts && !wantedParts.has(String(part.part || ''))) return;
+      if(!part.answer) return;
+      var label = part.part && !hidePracticePartLabel(q)
+        ? '<span class="qb-ms-final-label">(' + safeHTML(part.part) + ')</span>'
+        : '';
+      rows.push('<div class="qb-ms-final-row">' + label + '<span>' + safeHTML(part.answer) + '</span></div>');
+    });
+    return rows.length
+      ? '<div class="qb-ms-final"><div class="qb-ms-final-title">Clear final answer</div>' + rows.join('') + '</div>'
+      : '';
+  }
+
   function markschemeHTML(q){
     // q.markscheme: array of [partLabel, lines] groups.
     // partLabel "" (no lettered part) renders without a bold prefix.
@@ -79862,6 +79892,8 @@ function diagramN11TZ0P2Q1grid(){
       // available even if a later bank update moves them out of the public
       // course, off syllabus, or into a provisional holding state.
       if(REQUESTED_IDS.size) return REQUESTED_IDS.has(String(item.id));
+      if(window.__mrflynnibStarredOnly &&
+          (!window.__mrflynnibStarredQuestionIds || !window.__mrflynnibStarredQuestionIds.has(String(item.id)))) return false;
       var itemTopics = topicsOf(item);
       // A question banked for a course Rob isn't drawing from is its own
       // category: "show held" reveals it on its own, without also needing the
@@ -79937,7 +79969,9 @@ function diagramN11TZ0P2Q1grid(){
     if(out.length === 0){
       state.filtered = [];
       state.rendered = 0;
-      list.innerHTML = '<div class="qb-empty">No questions match those filters yet.</div>';
+      list.innerHTML = '<div class="qb-empty">' +
+        (window.__mrflynnibStarredOnly ? 'No starred questions match these filters yet.' : 'No questions match those filters yet.') +
+        '</div>';
       return;
     }
     // Render a batch at a time. Building all 1600+ cards at once produced
@@ -79948,6 +79982,8 @@ function diagramN11TZ0P2Q1grid(){
     list.innerHTML = '';
     renderNextBatch();
   }
+
+  window.mrflynnibRefreshQuestionFilters = applyFilters;
 
   function typeset(el){
     if(window.renderMathInElement){
@@ -80049,8 +80085,16 @@ function diagramN11TZ0P2Q1grid(){
       if(!panel.getAttribute('data-built')){
         var q = state.byId[id];
         if(q && q.markscheme){
-          panel.innerHTML = markschemeHTML(q);
+          panel.innerHTML = markschemeHTML(q) + '<div class="qb-ms-final qb-ms-final-loading">Loading the clear final answer…</div>';
           typeset(panel);
+          loadSolution(q, function(data){
+            var loading = panel.querySelector('.qb-ms-final-loading');
+            if(loading) loading.outerHTML = finalAnswerHTML(data, q);
+            typeset(panel);
+          }, function(){
+            var loading = panel.querySelector('.qb-ms-final-loading');
+            if(loading) loading.remove();
+          });
         }
         panel.setAttribute('data-built','1');
       }
@@ -80091,11 +80135,12 @@ function diagramN11TZ0P2Q1grid(){
 </script>
 
 <script src="/question-bank/progress.js?v=2"></script>
-<script src="/question-bank/whiteboard.js?v=25"></script>
-<script src="/question-bank/assignment-choice-utils.js?v=25"></script>
+<script src="/question-bank/starred.js?v=2"></script>
+<script src="/question-bank/whiteboard.js?v=29"></script>
+<script src="/question-bank/assignment-choice-utils.js?v=26"></script>
 <script src="/question-bank/assignment-selector.js?v=32"></script>
 <script src="/question-bank/test-selector.js?v=11"></script>
-<script src="/question-bank/assignment-response.js?v=13"></script>
+<script src="/question-bank/assignment-response.js?v=17"></script>
 <script src="/question-bank/course-preview-lock.js?v=3"></script>
 </body>
 </html>

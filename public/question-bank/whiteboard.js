@@ -8,6 +8,12 @@
   var assignmentWhiteboard = whiteboardParams.get('assignmentWork') === '1';
   var layoutStorageKey = assignmentWhiteboard ? 'mrflynnib-whiteboard-layout-assignment' : 'mrflynnib-whiteboard-layout-question-bank';
   var whiteboardLayout = assignmentWhiteboard ? 'below' : 'side';
+  var strokeSequence = 0;
+
+  function nextStrokeId() {
+    strokeSequence += 1;
+    return 'stroke-' + Date.now().toString(36) + '-' + strokeSequence.toString(36);
+  }
 
   try {
     var storedLayout = window.localStorage.getItem(layoutStorageKey);
@@ -28,9 +34,11 @@
     window.dispatchEvent(new Event('resize'));
   }
 
-  function toolButton(action, label, pressed) {
+  function toolButton(action, label, pressed, description) {
     return '<button type="button" class="qb-whiteboard-tool" data-whiteboard-action="' + action + '"' +
-      (pressed !== undefined ? ' aria-pressed="' + pressed + '"' : '') + '>' + label + '</button>';
+      (pressed !== undefined ? ' aria-pressed="' + pressed + '"' : '') +
+      (description ? ' aria-label="' + description + '" title="' + description + '"' : '') +
+      '>' + label + '</button>';
   }
 
   function colourButton(value, label, selected) {
@@ -40,7 +48,12 @@
   }
 
   function setupCard(card) {
-    if (card.getAttribute('data-whiteboard-ready')) return;
+    // A fixed assignment can take longer than the old one-second retry window
+    // to render on a school device. It can also replace a card body while the
+    // outer card survives. Only treat the card as ready when the actual
+    // workspace is still present; otherwise rebuild it from the new body.
+    if (card.getAttribute('data-whiteboard-ready') && card.querySelector('.qb-question-workspace')) return;
+    card.removeAttribute('data-whiteboard-ready');
     var body = card.querySelector('.qb-body');
     if (!body) return;
     card.setAttribute('data-whiteboard-ready', '1');
@@ -81,7 +94,11 @@
           '</div>' +
           toolButton('pen', 'Pen', true) +
           toolButton('highlighter', 'Highlighter', false) +
-          toolButton('eraser', 'Eraser', false) +
+          '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type">' +
+            '<span>Erase</span>' +
+            toolButton('precision-eraser', 'Part', false, 'Precision eraser: remove only the area you rub over') +
+            toolButton('stroke-eraser', 'Stroke', false, 'Stroke eraser: remove a whole pen or highlighter stroke') +
+          '</div>' +
           toolButton('pan', 'Pan', false) +
           toolButton('move-image', 'Move image', false) +
           '<div class="qb-whiteboard-colours" role="group" aria-label="Pen colour">' +
@@ -98,8 +115,9 @@
             toolButton('zoom-in', '+') +
           '</div>' +
           '<div class="qb-whiteboard-page-tools" role="group" aria-label="Whiteboard pages">' +
-            '<span class="qb-whiteboard-page-count" aria-live="polite">2 pages</span>' +
-            toolButton('add-page', 'Add page') +
+            '<span class="qb-whiteboard-page-count" aria-live="polite">4 sheets</span>' +
+            toolButton('add-page', 'Add below') +
+            toolButton('add-space-right', 'Add right') +
           '</div>' +
           toolButton('expand', 'Expand', false) +
           toolButton('undo', 'Undo') +
@@ -144,6 +162,7 @@
     var documentLoaded = false;
     var localDirty = false;
     var activeStroke = null;
+    var activeStrokeErase = null;
     var activePan = null;
     var activeImage = null;
     var straightTimer = null;
@@ -155,9 +174,11 @@
     var mode = 'pen';
     var colour = '#000000';
     var zoom = 1;
-    var baseWidth = 1400;
+    var pageWidth = 1400;
     var pageHeight = 2240;
+    var columnCount = 2;
     var pageCount = 2;
+    var baseWidth = pageWidth * columnCount;
     var baseHeight = pageHeight * pageCount;
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
@@ -187,22 +208,32 @@
     }
 
     function serialiseDocument() {
+      function compactCoordinate(value) {
+        return Math.round(Number(value) * 100000) / 100000;
+      }
       return {
-        version: 3,
+        version: 5,
         paper: paperStyle,
         pages: pageCount,
+        columns: columnCount,
         actions: actions.map(function (action) {
           if (action.type === 'clear') return { type: 'clear' };
+          if (action.type === 'stroke-erase') return {
+            type: 'stroke-erase',
+            strokeIds: action.strokeIds.slice(0, 1000)
+          };
           if (action.type === 'stroke') return {
             type: 'stroke',
+            id: action.id,
             mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
             colour: action.colour,
             straightened: Boolean(action.straightened),
-            points: action.points.map(function (point) { return { x: point.x, y: point.y }; })
+            points: action.points.map(function (point) { return { x: compactCoordinate(point.x), y: compactCoordinate(point.y) }; })
           };
           return {
             type: 'image', source: action.source,
-            x: action.x, y: action.y, width: action.width, height: action.height
+            x: compactCoordinate(action.x), y: compactCoordinate(action.y),
+            width: compactCoordinate(action.width), height: compactCoordinate(action.height)
           };
         })
       };
@@ -253,6 +284,7 @@
       if (activePointer !== null) ids.push(activePointer);
       window.clearTimeout(straightTimer);
       activeStroke = null;
+      activeStrokeErase = null;
       activePan = null;
       activeImage = null;
       activePointer = null;
@@ -281,10 +313,27 @@
       undoLastAction();
     });
 
-    function hasVisibleWork() {
+    function visibleStrokeState() {
+      var start = 0;
+      var hidden = new Set();
       for (var i = actions.length - 1; i >= 0; i--) {
-        if (actions[i].type === 'clear') return false;
-        if (actions[i].type === 'stroke' || actions[i].type === 'image') return true;
+        if (actions[i].type === 'clear') {
+          start = i + 1;
+          break;
+        }
+      }
+      for (var index = start; index < actions.length; index++) {
+        if (actions[index].type !== 'stroke-erase') continue;
+        actions[index].strokeIds.forEach(function (id) { hidden.add(id); });
+      }
+      return { start: start, hidden: hidden };
+    }
+
+    function hasVisibleWork() {
+      var visible = visibleStrokeState();
+      for (var i = visible.start; i < actions.length; i++) {
+        if (actions[i].type === 'image') return true;
+        if (actions[i].type === 'stroke' && actions[i].mode !== 'eraser' && !visible.hidden.has(actions[i].id)) return true;
       }
       return false;
     }
@@ -361,13 +410,10 @@
       imageCtx.save();
       ctx.scale(canvas.width / canvas.clientWidth, canvas.height / canvas.clientHeight);
       imageCtx.scale(imageCanvas.width / imageCanvas.clientWidth, imageCanvas.height / imageCanvas.clientHeight);
-      actions.forEach(function (action) {
-        if (action.type === 'clear') {
-          ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-          imageCtx.clearRect(0, 0, imageCanvas.clientWidth, imageCanvas.clientHeight);
-        }
-        else if (action.type === 'image') drawImage(action);
-        else drawStroke(action);
+      var visible = visibleStrokeState();
+      actions.slice(visible.start).forEach(function (action) {
+        if (action.type === 'image') drawImage(action);
+        else if (action.type === 'stroke' && !visible.hidden.has(action.id)) drawStroke(action);
       });
       ctx.restore();
       imageCtx.restore();
@@ -397,6 +443,49 @@
       imageCanvas.width = width;
       imageCanvas.height = height;
       redraw();
+    }
+
+    function imageUrlForSource(source) {
+      var trimmed = typeof source === 'string' ? source.trim() : '';
+      if (!/^<svg(?:\s|>)/i.test(trimmed)) return { url: source, revoke: false };
+      return {
+        url: URL.createObjectURL(new Blob([source], { type: 'image/svg+xml' })),
+        revoke: true
+      };
+    }
+
+    function loadWhiteboardImage(source, onLoad, onError) {
+      var image = new Image();
+      var imageUrl = imageUrlForSource(source);
+      function releaseUrl() {
+        if (imageUrl.revoke) URL.revokeObjectURL(imageUrl.url);
+      }
+      image.onload = function () {
+        releaseUrl();
+        onLoad(image);
+      };
+      image.onerror = function () {
+        releaseUrl();
+        if (onError) onError();
+      };
+      image.src = imageUrl.url;
+      return image;
+    }
+
+    function whenWhiteboardIsReady(callback, attemptsLeft) {
+      if (board.hidden) open.click();
+      requestAnimationFrame(function () {
+        resize();
+        if (canvas.clientWidth > 20 && canvas.clientHeight > 20) {
+          callback();
+          return;
+        }
+        if (attemptsLeft > 0) {
+          whenWhiteboardIsReady(callback, attemptsLeft - 1);
+          return;
+        }
+        callback(new Error('Whiteboard did not finish opening'));
+      });
     }
 
     function pointFromEvent(event) {
@@ -435,11 +524,63 @@
           (point.x - last.x) * canvas.clientWidth,
           (point.y - last.y) * canvas.clientHeight
         );
-        if (distance < .2) return;
+        if (distance < .75) return;
         activeStroke.points.push(point);
         segment.push(point);
       });
       if (segment.length > 1) drawStrokeIncrement(activeStroke, segment);
+    }
+
+    function distanceToSegment(point, start, end) {
+      var dx = end.x - start.x;
+      var dy = end.y - start.y;
+      if (!dx && !dy) return Math.hypot(point.x - start.x, point.y - start.y);
+      var progress = Math.max(0, Math.min(1,
+        ((point.x - start.x) * dx + (point.y - start.y) * dy) / (dx * dx + dy * dy)
+      ));
+      return Math.hypot(point.x - (start.x + progress * dx), point.y - (start.y + progress * dy));
+    }
+
+    function strokeTouchesPoint(stroke, point, radius) {
+      if (!stroke.points.length) return false;
+      var pixelPoints = stroke.points.map(function (strokePoint) {
+        return { x: strokePoint.x * canvas.clientWidth, y: strokePoint.y * canvas.clientHeight };
+      });
+      if (pixelPoints.length === 1) return Math.hypot(point.x - pixelPoints[0].x, point.y - pixelPoints[0].y) <= radius;
+      for (var i = 1; i < pixelPoints.length; i++) {
+        if (distanceToSegment(point, pixelPoints[i - 1], pixelPoints[i]) <= radius) return true;
+      }
+      return false;
+    }
+
+    function eraseWholeStrokes(event) {
+      if (!activeStrokeErase) return false;
+      var visible = visibleStrokeState();
+      var newlyErased = false;
+      eventSamples(event).forEach(function (sample) {
+        var rect = canvas.getBoundingClientRect();
+        var point = { x: sample.clientX - rect.left, y: sample.clientY - rect.top };
+        var radius = 14 * zoom;
+        for (var i = actions.length - 1; i >= visible.start; i--) {
+          var candidate = actions[i];
+          if (candidate.type !== 'stroke' || candidate.mode === 'eraser' || visible.hidden.has(candidate.id)) continue;
+          if (activeStrokeErase.strokeIds.indexOf(candidate.id) >= 0) continue;
+          if (!strokeTouchesPoint(candidate, point, radius)) continue;
+          activeStrokeErase.strokeIds.push(candidate.id);
+          visible.hidden.add(candidate.id);
+          newlyErased = true;
+          // Remove the topmost matching stroke for this pointer sample. As the
+          // eraser moves, subsequent samples can remove other touched strokes
+          // without repeatedly scanning every overlapping line at one point.
+          break;
+        }
+      });
+      if (newlyErased) {
+        if (actions.indexOf(activeStrokeErase) < 0) actions.push(activeStrokeErase);
+        redraw();
+        updateButtons();
+      }
+      return newlyErased;
     }
 
     function startPinch() {
@@ -463,11 +604,16 @@
         var index = actions.indexOf(activeStroke);
         if (index >= 0) actions.splice(index, 1);
       }
+      if (activeStrokeErase) {
+        var eraseIndex = actions.indexOf(activeStrokeErase);
+        if (eraseIndex >= 0) actions.splice(eraseIndex, 1);
+      }
       if (activeImage) {
         activeImage.action.x = activeImage.originalX;
         activeImage.action.y = activeImage.originalY;
       }
       activeStroke = null;
+      activeStrokeErase = null;
       activePan = null;
       activeImage = null;
       activePointer = null;
@@ -506,7 +652,7 @@
       activePointer = event.pointerId;
       activePointerType = event.pointerType;
       capturePointer(event.pointerId);
-      var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'eraser' : mode;
+      var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'precision-eraser' : mode;
       if (pointerMode === 'pan') {
         activePan = {
           x: event.clientX,
@@ -535,9 +681,15 @@
         }
         return;
       }
+      if (pointerMode === 'stroke-eraser') {
+        activeStrokeErase = { type: 'stroke-erase', strokeIds: [] };
+        eraseWholeStrokes(event);
+        return;
+      }
       activeStroke = {
         type: 'stroke',
-        mode: pointerMode,
+        id: nextStrokeId(),
+        mode: pointerMode === 'precision-eraser' ? 'eraser' : pointerMode,
         colour: pointerMode === 'highlighter' ? '#facc15' : colour,
         points: [pointFromEvent(event)]
       };
@@ -590,6 +742,11 @@
         redraw();
         return;
       }
+      if (activeStrokeErase) {
+        event.preventDefault();
+        eraseWholeStrokes(event);
+        return;
+      }
       if (!activeStroke) return;
       event.preventDefault();
       appendStrokeSamples(event);
@@ -621,16 +778,22 @@
       }
       if (event.pointerId !== activePointer) return;
       if (activeStroke) appendStrokeSamples(event);
+      if (activeStrokeErase) eraseWholeStrokes(event);
       if (activeStroke && activeStroke.mode === 'highlighter') redraw();
-      var changed = Boolean(activeStroke || activeImage);
+      var completedAction = activeStroke || activeStrokeErase || (activeImage && activeImage.action);
+      var changed = Boolean(activeStroke || activeImage || (activeStrokeErase && activeStrokeErase.strokeIds.length));
       activePointer = null;
       activePointerType = null;
       window.clearTimeout(straightTimer);
       if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
       activeStroke = null;
+      activeStrokeErase = null;
       activePan = null;
       activeImage = null;
-      if (changed) scheduleSave();
+      if (changed) {
+        extendWorkspaceFor(completedAction);
+        scheduleSave();
+      }
     }
     window.addEventListener('pointerup', endStroke);
     window.addEventListener('pointercancel', endStroke);
@@ -650,11 +813,13 @@
       mode = nextMode;
       board.querySelector('[data-whiteboard-action="pen"]').setAttribute('aria-pressed', String(mode === 'pen'));
       board.querySelector('[data-whiteboard-action="highlighter"]').setAttribute('aria-pressed', String(mode === 'highlighter'));
-      board.querySelector('[data-whiteboard-action="eraser"]').setAttribute('aria-pressed', String(mode === 'eraser'));
+      board.querySelector('[data-whiteboard-action="precision-eraser"]').setAttribute('aria-pressed', String(mode === 'precision-eraser'));
+      board.querySelector('[data-whiteboard-action="stroke-eraser"]').setAttribute('aria-pressed', String(mode === 'stroke-eraser'));
       board.querySelector('[data-whiteboard-action="pan"]').setAttribute('aria-pressed', String(mode === 'pan'));
       board.querySelector('[data-whiteboard-action="move-image"]').setAttribute('aria-pressed', String(mode === 'move-image'));
       canvas.classList.toggle('qb-whiteboard-panning', mode === 'pan');
       canvas.classList.toggle('qb-whiteboard-moving-image', mode === 'move-image');
+      canvas.classList.toggle('qb-whiteboard-erasing', mode === 'precision-eraser' || mode === 'stroke-eraser');
     }
 
     function setPaper(style) {
@@ -669,12 +834,21 @@
       pageGuides.innerHTML = '';
       for (var index = 1; index < pageCount; index++) {
         var guide = document.createElement('span');
+        guide.className = 'qb-whiteboard-guide-horizontal';
         guide.style.top = (index * pageHeight * zoom) + 'px';
         pageGuides.appendChild(guide);
       }
+      for (var column = 1; column < columnCount; column++) {
+        var columnGuide = document.createElement('span');
+        columnGuide.className = 'qb-whiteboard-guide-vertical';
+        columnGuide.style.left = (column * pageWidth * zoom) + 'px';
+        pageGuides.appendChild(columnGuide);
+      }
       var label = board.querySelector('.qb-whiteboard-page-count');
-      label.textContent = pageCount + (pageCount === 1 ? ' page' : ' pages');
+      var sheets = pageCount * columnCount;
+      label.textContent = sheets + (sheets === 1 ? ' sheet' : ' sheets');
       board.querySelector('[data-whiteboard-action="add-page"]').disabled = pageCount >= 8;
+      board.querySelector('[data-whiteboard-action="add-space-right"]').disabled = columnCount >= 4;
     }
 
     function updateSurfaceSize() {
@@ -709,6 +883,29 @@
       updateSurfaceSize();
     }
 
+    function setColumnCount(nextCount, preserveExistingWork) {
+      var next = Math.max(1, Math.min(4, Math.round(Number(nextCount) || 1)));
+      if (next === columnCount) {
+        updateSurfaceSize();
+        return;
+      }
+      var oldWidth = baseWidth;
+      var nextWidth = pageWidth * next;
+      if (preserveExistingWork && oldWidth > 0) {
+        var ratio = oldWidth / nextWidth;
+        actions.forEach(function (action) {
+          if (action.type === 'stroke') action.points.forEach(function (point) { point.x *= ratio; });
+          if (action.type === 'image') {
+            action.x *= ratio;
+            action.width *= ratio;
+          }
+        });
+      }
+      columnCount = next;
+      baseWidth = nextWidth;
+      updateSurfaceSize();
+    }
+
     function addPage() {
       if (pageCount >= 8) return;
       var previousPages = pageCount;
@@ -717,6 +914,36 @@
       requestAnimationFrame(function () {
         viewport.scrollTop = previousPages * pageHeight * zoom;
       });
+    }
+
+    function addSpaceRight() {
+      if (columnCount >= 4) return;
+      var previousColumns = columnCount;
+      setColumnCount(columnCount + 1, true);
+      scheduleSave();
+      requestAnimationFrame(function () {
+        viewport.scrollLeft = previousColumns * pageWidth * zoom;
+      });
+    }
+
+    function extendWorkspaceFor(action) {
+      if (!action) return;
+      var rightEdge = 0;
+      var bottomEdge = 0;
+      if (action.type === 'stroke' && action.points.length) {
+        action.points.forEach(function (point) {
+          rightEdge = Math.max(rightEdge, point.x);
+          bottomEdge = Math.max(bottomEdge, point.y);
+        });
+      }
+      if (action.type === 'image') {
+        rightEdge = action.x + action.width;
+        bottomEdge = action.y + action.height;
+      }
+      // Grow only after the stroke or image move finishes. Existing work is
+      // rescaled so it stays exactly where the student drew it.
+      if (rightEdge >= .96 && columnCount < 4) setColumnCount(columnCount + 1, true);
+      if (bottomEdge >= .96 && pageCount < 8) setPageCount(pageCount + 1, true);
     }
 
     function setZoom(nextZoom) {
@@ -777,12 +1004,13 @@
       var button = event.target.closest('[data-whiteboard-action]');
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
-      if (action === 'pen' || action === 'highlighter' || action === 'eraser' || action === 'pan' || action === 'move-image') setMode(action);
+      if (action === 'pen' || action === 'highlighter' || action === 'precision-eraser' || action === 'stroke-eraser' || action === 'pan' || action === 'move-image') setMode(action);
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
       if (action === 'zoom-out') setZoom(zoom - .25);
       if (action === 'zoom-in') setZoom(zoom + .25);
       if (action === 'add-page') addPage();
+      if (action === 'add-space-right') addSpaceRight();
       if (action === 'expand') setExpanded(!card.classList.contains('qb-whiteboard-expanded'));
       if (action === 'undo') undoLastAction();
       if (action === 'clear' && hasVisibleWork()) {
@@ -795,60 +1023,80 @@
     });
 
     function importDiagram(svg) {
+      if (svg.getAttribute('data-whiteboard-importing') === '1') return;
+      svg.setAttribute('data-whiteboard-importing', '1');
       if (board.hidden) open.click();
+      var diagram = svg.closest('.qb-diagram');
+      var hint = diagram && diagram.querySelector('.qb-diagram-copy-hint');
+      var originalHint = hint ? hint.textContent : '';
+      if (hint) hint.textContent = 'Adding to whiteboard…';
       var copy = svg.cloneNode(true);
       var sourceRect = svg.getBoundingClientRect();
       if (!copy.getAttribute('xmlns')) copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
       if (!copy.getAttribute('width')) copy.setAttribute('width', Math.max(1, sourceRect.width));
       if (!copy.getAttribute('height')) copy.setAttribute('height', Math.max(1, sourceRect.height));
       var source = new XMLSerializer().serializeToString(copy);
-      var url = URL.createObjectURL(new Blob([source], { type: 'image/svg+xml' }));
-      var image = new Image();
-      image.onload = function () {
-        var availableWidth = Math.max(1, canvas.clientWidth * .84);
-        var naturalWidth = image.naturalWidth || sourceRect.width || availableWidth;
-        var naturalHeight = image.naturalHeight || sourceRect.height || 240;
-        var scale = Math.min(1, availableWidth / naturalWidth, 380 / naturalHeight);
-        var drawWidth = naturalWidth * scale;
-        var drawHeight = naturalHeight * scale;
-        var visibleTop = Math.max(18, viewport.scrollTop + 24);
-        var drawTop = Math.min(visibleTop, canvas.clientHeight - drawHeight - 18);
-        var drawLeft = (canvas.clientWidth - drawWidth) / 2;
-        var placedImages = visibleImages();
-        var overlap = true;
-        while (overlap && drawTop + drawHeight <= canvas.clientHeight - 18) {
-          overlap = false;
-          for (var i = 0; i < placedImages.length; i++) {
-            var placed = placedImages[i];
-            var placedLeft = placed.x * canvas.clientWidth;
-            var placedTop = placed.y * canvas.clientHeight;
-            var placedRight = placedLeft + placed.width * canvas.clientWidth;
-            var placedBottom = placedTop + placed.height * canvas.clientHeight;
-            if (drawLeft < placedRight + 18 && drawLeft + drawWidth > placedLeft - 18 &&
-                drawTop < placedBottom + 18 && drawTop + drawHeight > placedTop - 18) {
-              drawTop = placedBottom + 24;
-              overlap = true;
-              break;
+      loadWhiteboardImage(source, function (image) {
+        whenWhiteboardIsReady(function (layoutError) {
+          if (layoutError) {
+            finishImport(false);
+            return;
+          }
+          var availableWidth = Math.max(1, Math.min(canvas.clientWidth, viewport.clientWidth) * .84);
+          var naturalWidth = image.naturalWidth || sourceRect.width || availableWidth;
+          var naturalHeight = image.naturalHeight || sourceRect.height || 240;
+          var scale = Math.min(1, availableWidth / naturalWidth, 380 / naturalHeight);
+          var drawWidth = naturalWidth * scale;
+          var drawHeight = naturalHeight * scale;
+          var visibleTop = Math.max(18, viewport.scrollTop + 24);
+          var drawTop = Math.min(visibleTop, canvas.clientHeight - drawHeight - 18);
+          var visibleLeft = Math.max(18, viewport.scrollLeft + 24);
+          var drawLeft = Math.min(visibleLeft, canvas.clientWidth - drawWidth - 18);
+          var placedImages = visibleImages();
+          var overlap = true;
+          while (overlap && drawTop + drawHeight <= canvas.clientHeight - 18) {
+            overlap = false;
+            for (var i = 0; i < placedImages.length; i++) {
+              var placed = placedImages[i];
+              var placedLeft = placed.x * canvas.clientWidth;
+              var placedTop = placed.y * canvas.clientHeight;
+              var placedRight = placedLeft + placed.width * canvas.clientWidth;
+              var placedBottom = placedTop + placed.height * canvas.clientHeight;
+              if (drawLeft < placedRight + 18 && drawLeft + drawWidth > placedLeft - 18 &&
+                  drawTop < placedBottom + 18 && drawTop + drawHeight > placedTop - 18) {
+                drawTop = placedBottom + 24;
+                overlap = true;
+                break;
+              }
             }
           }
-        }
-        drawTop = Math.min(drawTop, canvas.clientHeight - drawHeight - 18);
-        actions.push({
-          type: 'image',
-          image: image,
-          source: source,
-          x: drawLeft / canvas.clientWidth,
-          y: drawTop / canvas.clientHeight,
-          width: drawWidth / canvas.clientWidth,
-          height: drawHeight / canvas.clientHeight
-        });
-        URL.revokeObjectURL(url);
-        redraw();
-        updateButtons();
-        scheduleSave();
-      };
-      image.onerror = function () { URL.revokeObjectURL(url); };
-      image.src = url;
+          drawTop = Math.min(drawTop, canvas.clientHeight - drawHeight - 18);
+          actions.push({
+            type: 'image',
+            image: image,
+            source: source,
+            x: drawLeft / canvas.clientWidth,
+            y: drawTop / canvas.clientHeight,
+            width: drawWidth / canvas.clientWidth,
+            height: drawHeight / canvas.clientHeight
+          });
+          redraw();
+          updateButtons();
+          scheduleSave();
+          finishImport(true);
+        }, 8);
+      }, function () { finishImport(false); });
+
+      function finishImport(succeeded) {
+        svg.removeAttribute('data-whiteboard-importing');
+        if (!hint) return;
+        hint.textContent = succeeded ? 'Added to whiteboard' : 'Could not add image — try again';
+        window.setTimeout(function () {
+          if (hint.textContent === 'Added to whiteboard' || hint.textContent === 'Could not add image — try again') {
+            hint.textContent = originalHint;
+          }
+        }, succeeded ? 1600 : 3000);
+      }
     }
 
     function prepareDiagram(diagram) {
@@ -871,7 +1119,9 @@
 
     Array.prototype.forEach.call(card.querySelectorAll('.qb-diagram'), prepareDiagram);
     card.querySelector('.qb-question-pane').addEventListener('click', function (event) {
+      var diagram = event.target.closest && event.target.closest('.qb-diagram[data-whiteboard-source]');
       var svg = event.target.closest && event.target.closest('.qb-diagram svg');
+      if (!svg && diagram) svg = diagram.querySelector('svg');
       if (svg) importDiagram(svg);
     });
     card.querySelector('.qb-question-pane').addEventListener('keydown', function (event) {
@@ -953,9 +1203,16 @@
         storedActions.slice(0, 3000).forEach(function (action) {
           if (!action || typeof action !== 'object') return;
           if (action.type === 'clear') restored.push({ type: 'clear' });
+          if (action.type === 'stroke-erase' && Array.isArray(action.strokeIds)) {
+            restored.push({
+              type: 'stroke-erase',
+              strokeIds: action.strokeIds.slice(0, 1000).map(String)
+            });
+          }
           if (action.type === 'stroke' && Array.isArray(action.points)) {
             restored.push({
               type: 'stroke',
+              id: typeof action.id === 'string' && action.id ? action.id : nextStrokeId(),
               mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
               colour: typeof action.colour === 'string' ? action.colour : '#000000',
               straightened: Boolean(action.straightened),
@@ -965,19 +1222,21 @@
             });
           }
           if (action.type === 'image' && typeof action.source === 'string') {
-            var restoredImage = new Image();
             var imageAction = {
-              type: 'image', image: restoredImage, source: action.source,
+              type: 'image', image: null, source: action.source,
               x: Number(action.x) || 0, y: Number(action.y) || 0,
               width: Number(action.width) || .5, height: Number(action.height) || .2
             };
-            restoredImage.onload = redraw;
-            restoredImage.src = action.source;
+            imageAction.image = loadWhiteboardImage(action.source, function () { redraw(); });
             restored.push(imageAction);
           }
         });
         actions = restored;
         setPageCount(Number(stored.pages) || 1, false);
+        setColumnCount(Number(stored.columns) || 1, false);
+        // Older documents were one sheet wide. Preserve their exact drawing
+        // size and add a new blank sheet to the right.
+        if (columnCount < 2) setColumnCount(2, true);
         setPaper(stored.paper === 'blank' ? 'blank' : 'squared');
         localDirty = Boolean(event.data.pending);
         window.clearTimeout(saveTimer);
@@ -998,9 +1257,25 @@
   window.setTimeout(scan, 0);
   window.setTimeout(scan, 250);
   window.setTimeout(scan, 1000);
-  // The bank appends cards after filter changes and load-more messages. These
-  // hooks run after its own handlers and cover every append path without a
-  // permanent DOM observer across thousands of questions.
+  // Keep watching for cards after the initial retries. On a slower device the
+  // fixed assignment list may arrive later than one second, and assignment
+  // navigation can replace a rendered card after this script has run.
+  var scanScheduled = false;
+  new MutationObserver(function (mutations) {
+    var needsScan = mutations.some(function (mutation) {
+      return mutation.type === 'childList' && mutation.addedNodes.length > 0;
+    });
+    if (!needsScan || scanScheduled) return;
+    scanScheduled = true;
+    window.requestAnimationFrame(function () {
+      scanScheduled = false;
+      scan();
+    });
+  }).observe(list, { childList: true, subtree: true });
+
+  // The bank also appends cards after filter changes and load-more messages.
+  // These hooks run after its own handlers and provide an immediate scan in
+  // addition to the observer fallback.
   document.addEventListener('input', function () { window.setTimeout(scan, 0); });
   document.addEventListener('change', function () { window.setTimeout(scan, 0); });
   window.addEventListener('message', function (event) {

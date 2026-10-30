@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { deleteAssignment, updateAssignmentFeedbackMode } from "@/app/teacher/actions";
+import { deleteAssignment, reuseAssignment, updateAssignmentFeedbackMode } from "@/app/teacher/actions";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { requireTeacher } from "@/lib/account-access";
 import { assignmentFeedbackModeFromRecord, assignmentFeedbackOptions } from "@/lib/assignment-feedback";
@@ -143,6 +143,14 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
   const awaitingReview = allStates.filter((state) => state === "review").length;
   const workspaceClass = classRecord?.bank === "igcse" ? "teacher-workspace teacher-workspace-igcse" : "teacher-workspace";
   const feedbackMode = assignmentFeedbackModeFromRecord(assignment);
+  const { data: reusableClasses } = await supabase.from("classes")
+    .select("id,name")
+    .eq("teacher_id", user.id)
+    .eq("bank", classRecord?.bank || "ib")
+    .eq("course", classRecord?.course || "")
+    .eq("archived", false)
+    .neq("id", assignment.class_id)
+    .order("name");
 
   return <main className={workspaceClass}>
     <AssignmentDraftClearer classId={assignment.class_id} enabled={message.success === "Assignment published."} />
@@ -160,6 +168,12 @@ export default async function TeacherAssignmentPage({ params, searchParams }: { 
       </div>
 
       <div className="assignment-builder-actions"><p className="muted small">Need a second version for practice or recovery? Create a new task with the same question pattern and different questions.</p><Link className="button button-secondary" href={`/teacher/classes/${assignment.class_id}/assignments/new?shadowOf=${encodeURIComponent(id)}`}>Create shadow task</Link></div>
+
+      <form action={reuseAssignment} className="assignment-reuse-card">
+        <input name="assignmentId" type="hidden" value={id} />
+        <span><strong>Reuse this assignment</strong><small>Copy the exact questions and settings into another {classRecord?.course} class. Student answers and working are never copied.</small></span>
+        {reusableClasses?.length ? <><label><span>Choose class</span><select name="targetClassId" required defaultValue=""><option value="" disabled>Select a class</option>{reusableClasses.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label><button className="button button-secondary button-small" type="submit">Reuse assignment</button></> : <small className="muted">Create another {classRecord?.course} class to reuse this assignment there.</small>}
+      </form>
 
       <div className="assignment-management-row"><div><strong>Task audience</strong><small>{isTargeted ? `${assignedMemberships.length} selected ${assignedMemberships.length === 1 ? "student" : "students"}` : "Whole class, including students who join later"}</small></div><form action={deleteAssignment}><input name="assignmentId" type="hidden" value={id} /><ConfirmSubmitButton className="button button-danger button-small" confirmation={`Delete “${assignment.title}”? This permanently removes the task, its submissions, saved answers and assignment-specific whiteboard copies. This cannot be undone.`} idleLabel="Delete task" pendingLabel="Deleting…" /></form></div>
 

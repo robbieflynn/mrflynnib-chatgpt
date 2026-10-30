@@ -1,7 +1,7 @@
 "use client";
 
 import { useDeferredValue, useMemo, useState } from "react";
-import { reviewTeacherApplication } from "@/app/teacher/actions";
+import { changeAccountRole, reviewTeacherApplication } from "@/app/teacher/actions";
 import type { TeacherAccountSummary } from "@/lib/teacher-accounts";
 
 type CurriculumFilter = "all" | "ib" | "igcse";
@@ -119,7 +119,7 @@ export function TeacherAccountDirectory({ accounts, initialAccess = "all" }: { a
     </div>
     <div className="teacher-account-table-wrap">
       <table className="teacher-account-table">
-        <thead><tr><th>Teacher</th><th>Area</th><th>Email</th><th>Access</th><th>Last sign-in</th><th>Activity</th><th>Admin notice</th></tr></thead>
+        <thead><tr><th>Teacher</th><th>Area</th><th>Email</th><th>Access</th><th>Last sign-in</th><th>Activity</th><th>Admin notice</th><th>Account type</th></tr></thead>
         <tbody>
           {filteredAccounts.map((account) => <tr key={account.user_id}>
             <td><strong>{account.display_name || "Teacher applicant"}</strong><small>Registered {dateTime(account.created_at)}</small></td>
@@ -129,8 +129,9 @@ export function TeacherAccountDirectory({ accounts, initialAccess = "all" }: { a
             <td>{dateTime(account.last_sign_in_at)}</td>
             <td><strong>{Number(account.class_count) || 0} classes</strong><small>{Number(account.assignment_count) || 0} assignments · {Number(account.saved_test_count) || 0} saved tests</small></td>
             <td>{account.teacher_notification_sent_at ? <><span className="account-state-badge is-positive">Sent</span><small>{dateTime(account.teacher_notification_sent_at)}</small></> : <span className="account-state-badge is-waiting">Not sent</span>}</td>
+            <td>{account.role === "teacher" ? <form action={changeAccountRole} className="teacher-account-actions"><input name="accountId" type="hidden" value={account.user_id} /><input name="role" type="hidden" value="student" /><input name="returnTo" type="hidden" value="/teacher/accounts" /><button className="text-button is-danger" type="submit" onClick={(event) => { if (!window.confirm(`Change ${account.display_name || account.email} to a student account? Their existing progress, classes and access will be kept.`)) event.preventDefault(); }}>Change to student</button></form> : <span className="muted">Student</span>}</td>
           </tr>)}
-          {!filteredAccounts.length ? <tr><td className="teacher-account-empty" colSpan={7}>{accounts.length ? "No teacher registrations match those filters." : "No teacher registrations have been recorded."}</td></tr> : null}
+          {!filteredAccounts.length ? <tr><td className="teacher-account-empty" colSpan={8}>{accounts.length ? "No teacher registrations match those filters." : "No teacher registrations have been recorded."}</td></tr> : null}
         </tbody>
       </table>
     </div>

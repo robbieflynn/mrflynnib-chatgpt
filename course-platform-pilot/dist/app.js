@@ -1,6 +1,12 @@
 const library = window.MR_FLYNN_LIBRARY;
 const igcseLibrary = window.MR_FLYNN_IGCSE_LIBRARY;
-const pastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
+const ibPastPaperLibrary = window.MR_FLYNN_PAST_PAPERS;
+const igcsePastPaperLibrary = window.MR_FLYNN_IGCSE_PAST_PAPERS || { stats: {}, courses: {} };
+const pastPaperLibrary = {
+  libraryId: ibPastPaperLibrary.libraryId,
+  stats: { ...ibPastPaperLibrary.stats, ...igcsePastPaperLibrary.stats },
+  courses: { ...ibPastPaperLibrary.courses, ...igcsePastPaperLibrary.courses },
+};
 const practiceLibrary = window.MR_FLYNN_PRACTICE;
 const previewParameters = new URLSearchParams(window.location.search);
 const previewMode = previewParameters.get("v");
@@ -20,6 +26,7 @@ const previewCourseId = salesPreviewMode
 const requestedCourseId = previewParameters.get("course");
 const requestedView = previewParameters.get("view");
 const previewTopic = Number(previewParameters.get("topic"));
+const activeCurriculum = () => platformAccount?.curriculum || (requestedCurriculum === "igcse" || requestedCourseId === "igcse" ? "igcse" : "ib");
 
 const courseDefinitions = [
   {
@@ -70,7 +77,7 @@ const courseDefinitions = [
     name: "Edexcel IGCSE Mathematics",
     description: "Lessons for every topic, organised across all six areas of the Edexcel IGCSE Mathematics course.",
     image: null,
-    accent: "red",
+    accent: "indigo",
     topicCount: 6,
     family: "Edexcel IGCSE Mathematics",
   },
@@ -143,6 +150,7 @@ let enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolle
 let enrolledCourseId = defaultCourseId;
 let platformAccount = null;
 let guestMode = false;
+let signOutDestination = "/account";
 
 const storageKey = "mrflynnib-course-platform-v3";
 const practiceDatabaseName = "mrflynnib-course-preview";
@@ -261,10 +269,10 @@ function sendPracticeAccountState(target) {
   target.postMessage({
     type: "mrflynnib-account-state",
     configured: true,
-    signedIn: true,
+    signedIn: Boolean(platformAccount),
     readOnly: false,
-    localOnly: !platformAccount,
     completedQuestionIds: completedPracticeQuestionIds(),
+    starredQuestionIds: platformAccount?.starredQuestionIds || [],
   }, window.location.origin);
 }
 
@@ -329,10 +337,11 @@ function configurePreviewMode() {
   document.getElementById("coursesEyebrow").textContent = "My course";
   document.getElementById("coursesTitle").textContent = courses[currentCourseId].name;
   document.getElementById("coursesDescription").textContent = "Free lessons are ready to watch. The complete syllabus stays visible so you can see exactly what full course access includes.";
-  document.getElementById("courseBackButton").textContent = "← My course";
+  document.getElementById("courseBackButton").textContent = "← Learning home";
   document.getElementById("summaryTopics").textContent = String(enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].topics.length, 0));
   document.getElementById("summaryTopicsLabel").textContent = "course topics";
   const reviewHome = `/platform-review?curriculum=${isIgcse ? "igcse" : "ib"}&role=student`;
+  document.getElementById("courseBackButton").href = reviewHome;
   syncQuestionBankLink();
   document.getElementById("assignmentsLink").href = `${reviewHome}&screen=assignment`;
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
@@ -346,8 +355,12 @@ function configurePreviewMode() {
 function configureCurriculumExperience(curriculum) {
   const isIgcse = curriculum === "igcse";
   document.body.classList.toggle("igcse-learning", isIgcse);
+  document.title = isIgcse ? "IGCSE Mathematics course | Mr Flynn" : "My learning | Mr Flynn IB";
+  document.getElementById("brandLearningHomeLink").setAttribute("aria-label", isIgcse ? "Back to IGCSE Mathematics" : "Back to My learning");
+  signOutDestination = isIgcse ? "/igcse/account" : "/account";
   const legacyCourseHref = isIgcse ? "/go/igcse-course" : "/go/my-courses";
   document.getElementById("topbarLegacyCourseLink").href = legacyCourseHref;
+  document.getElementById("topbarLegacyCourseLink").hidden = isIgcse;
   document.getElementById("legacyCourseLink").href = legacyCourseHref;
   const hasPastPapers = enrolledCourseDefinitions.some((definition) => pastPaperLibrary.courses?.[definition.code]);
   document.querySelectorAll('[data-view="pastPapers"]').forEach((element) => { element.hidden = !hasPastPapers; });
@@ -361,6 +374,32 @@ function questionBankHrefForCourse(courseId = currentCourseId) {
 
 function syncQuestionBankLink() {
   document.getElementById("questionBankLink").href = questionBankHrefForCourse();
+}
+
+function isIbTeacherAccount() {
+  return platformAccount?.curriculum === "ib" && ["teacher", "admin"].includes(platformAccount.user?.role);
+}
+
+function configureTeacherCourseSwitcher() {
+  const switcher = document.getElementById("teacherCourseSwitcher");
+  const select = document.getElementById("teacherCourseSelect");
+  const visible = isIbTeacherAccount() && enrolledCourseDefinitions.length > 1;
+  switcher.hidden = !visible;
+  if (!visible) return;
+  select.innerHTML = enrolledCourseDefinitions.map((definition) => `<option value="${definition.id}">${escapeHtml(definition.code)}</option>`).join("");
+  select.value = currentCourseId;
+  document.getElementById("sidebar").setAttribute("aria-label", "Teacher course navigation");
+}
+
+async function persistActiveCourse(courseId, lessonId) {
+  if (!platformAccount || reviewerMode || salesPreviewMode) return;
+  try {
+    await fetch("/api/platform/state", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ courseId, lessonId }),
+    });
+  } catch {}
 }
 
 function getCurrentLesson() {
@@ -458,6 +497,7 @@ function setView(viewName) {
   document.querySelectorAll(".view").forEach((view) => {
     view.classList.toggle("is-visible", view.id === `${viewName}View`);
   });
+  document.getElementById("myCourseButton").classList.toggle("is-active", ["dashboard", "courses", "course"].includes(viewName));
   document.querySelectorAll(".nav-item[data-view]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.view === viewName || (viewName === "course" && button.dataset.view === "courses"));
   });
@@ -489,9 +529,11 @@ function courseCard(course, large = false) {
 }
 
 function renderCourseCards() {
-  const visibleCourses = guestMode
+  const visibleCourses = isIbTeacherAccount()
     ? courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => courses[definition.id])
-    : [currentCourse];
+    : guestMode && activeCurriculum() === "ib"
+      ? courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => courses[definition.id])
+      : [currentCourse];
   const markup = visibleCourses.map((course) => courseCard(course, true)).join("");
   document.getElementById("allCourseGrid").innerHTML = markup;
 }
@@ -523,6 +565,7 @@ function renderDashboard() {
 
 function openCourse(courseId, lessonId = null) {
   if (!courses[courseId] || !enrolledCourseIds.includes(courseId)) return;
+  if (isIbTeacherAccount()) enrolledCourseId = courseId;
   currentCourseId = courseId;
   currentCourse = courses[courseId];
   const freeDefaultLesson = hasCompleteCourseAccess(currentCourse) ? null : salesPreviewLessons(currentCourse)[0]?.id;
@@ -534,6 +577,13 @@ function openCourse(courseId, lessonId = null) {
   state.lastLesson = currentLessonId;
   saveState();
   syncQuestionBankLink();
+  configureTeacherCourseSwitcher();
+  if (isIbTeacherAccount()) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("course", courseId);
+    window.history.replaceState({}, "", url);
+    void persistActiveCourse(courseId, currentLessonId);
+  }
   document.getElementById("lessonSearch").value = "";
   renderCourse();
   setView("course");
@@ -575,24 +625,31 @@ function renderCourse() {
 }
 
 function plusAccessHref() {
-  if (guestMode) return `/plus?course=${encodeURIComponent(currentCourseId)}`;
-  const base = reviewCurriculum === "igcse" ? "/igcse/account/access" : "/account/access";
+  const isIgcse = currentCourseId === "igcse";
+  if (guestMode) return isIgcse ? "/igcse/account?mode=sign-up&next=/igcse/account/access" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
+  const base = isIgcse ? "/igcse/account/access" : "/account/access";
   return `${base}?course=${encodeURIComponent(currentCourseId)}`;
 }
 
 function showPlusPrompt() {
+  const isIgcse = currentCourseId === "igcse";
   const dialog = document.getElementById("plusUpgradeDialog");
   document.getElementById("plusUpgradeLink").href = plusAccessHref();
-  document.getElementById("plusUpgradeLink").textContent = guestMode ? "Create account for Plus" : "Choose Plus access";
+  document.querySelector("#plusUpgradeDialog .eyebrow").textContent = isIgcse ? "IGCSE course access" : "Mr Flynn IB Plus";
+  document.querySelector("#plusUpgradeDialog h2").textContent = isIgcse ? "Open the complete IGCSE lesson." : "Unlock the complete lesson.";
+  document.querySelector("#plusUpgradeDialog h2 + p").textContent = isIgcse ? "Create an IGCSE account to save progress and review the complete course access available to you." : "Plus unlocks the complete video course and all of the extra practice questions inside its lessons.";
+  document.getElementById("plusUpgradeLink").textContent = isIgcse ? guestMode ? "Create IGCSE account" : "View course access" : guestMode ? "Create account for Plus" : "Choose Plus access";
   if (!dialog.open) dialog.showModal();
 }
 
 async function loadProtectedVideo(frame, loading, videoId, kind = "lesson", locked = false) {
   if (kind === "lesson" && locked) {
+    const isIgcse = currentCourseId === "igcse";
     frame.removeAttribute("src");
     loading.classList.remove("is-hidden");
     loading.classList.add("is-plus-locked");
-    loading.innerHTML = `<span aria-hidden="true">+</span><strong>Unlock this video with Mr Flynn IB Plus</strong><p>You can still preview the lesson questions below.</p><button class="primary-button" type="button" data-plus-upgrade>Unlock with Plus</button>`;
+    const posterUrl = `/api/platform/video-poster?course=${encodeURIComponent(currentCourseId)}&video=${encodeURIComponent(videoId)}&kind=lesson`;
+    loading.innerHTML = `<img class="locked-video-poster" src="${posterUrl}" alt="Opening screen for this lesson" loading="eager"><span aria-hidden="true">+</span><strong>${isIgcse ? "Complete IGCSE course lesson" : "Unlock this video with Mr Flynn IB Plus"}</strong><p>You can preview the lesson questions below. Upgrade to watch the video.</p><button class="primary-button" type="button" data-plus-upgrade>${isIgcse ? "View course access" : "Unlock with Plus"}</button>`;
     return;
   }
   loading.classList.remove("is-plus-locked");
@@ -608,7 +665,7 @@ async function loadProtectedVideo(frame, loading, videoId, kind = "lesson", lock
     }
   } catch (error) {
     loading.classList.remove("is-hidden");
-    loading.innerHTML = `<p>${escapeHtml(error?.message || "This video could not be opened.")}</p><a class="primary-button" href="${guestMode ? `/plus?course=${encodeURIComponent(currentCourseId)}` : `/account/access?course=${encodeURIComponent(currentCourseId)}`}">View course access</a>`;
+    loading.innerHTML = `<p>${escapeHtml(error?.message || "This video could not be opened.")}</p><a class="primary-button" href="${plusAccessHref()}">View course access</a>`;
   }
 }
 
@@ -633,7 +690,7 @@ function renderLesson(lesson) {
   completeButton.classList.toggle("is-plus-locked", locked);
   completeButton.dataset.plusLocked = locked ? "true" : "false";
   completeButton.firstElementChild.textContent = locked ? "+" : "✓";
-  completeButton.lastElementChild.textContent = locked ? "Unlock with Plus" : complete ? "Completed" : "Mark complete";
+  completeButton.lastElementChild.textContent = locked ? currentCourseId === "igcse" ? "View course access" : "Unlock with Plus" : complete ? "Completed" : "Mark complete";
   const navigationLessons = currentCourse.lessons;
   const navigationIndex = navigationLessons.findIndex((candidate) => candidate.id === lesson.id);
   document.getElementById("previousLesson").disabled = navigationIndex <= 0;
@@ -654,8 +711,10 @@ function renderLessonPractice(lesson, locked = false) {
   const questionCount = practice.questionIds.length;
   document.getElementById("practiceCount").textContent = `${questionCount} question${questionCount === 1 ? "" : "s"}`;
   document.getElementById("lessonPracticeCopy").textContent = locked
-    ? "Preview this lesson here. Mr Flynn IB Plus unlocks the complete video lesson and all of its extra practice questions."
-    : "These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.";
+    ? currentCourseId === "igcse"
+      ? "Preview this lesson here. Complete IGCSE course access unlocks the video lesson and all of its extra practice questions."
+      : "Preview this lesson here. Mr Flynn IB Plus unlocks the complete video lesson and all of its extra practice questions."
+    : `These are questions from the ${currentCourseId === "igcse" ? "IGCSE Mathematics" : "Mr Flynn IB"} question bank, selected for this lesson. Try each one before opening its mark scheme.`;
 
   const frame = document.getElementById("practiceFrame");
   const bankFile = practice.bankPath || "ib-bank.html";
@@ -747,9 +806,11 @@ function renderLessonList(query = "") {
     const complete = state.completed.includes(lesson.id);
     const practice = practiceLibrary?.lessons?.[lesson.id];
     const locked = !lessonIsAvailable(lesson);
-    return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? "Preview Plus lesson: " : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
+    const lockedLabel = currentCourseId === "igcse" ? "Preview complete-course lesson: " : "Preview Plus lesson: ";
+    const lockedMeta = currentCourseId === "igcse" ? "Course access" : "Plus";
+    return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? lockedLabel : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
       <span class="lesson-state">${locked ? "+" : complete ? "✓" : "▶"}</span>
-      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? `${formatDuration(lesson.seconds)}${practice ? " · Practice preview" : ""} · Plus` : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Free lesson" : ""}`}</small></span>
+      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? `${formatDuration(lesson.seconds)}${practice ? " · Practice preview" : ""} · ${lockedMeta}` : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Free lesson" : ""}`}</small></span>
     </button>`;
   }).join("");
 }
@@ -771,6 +832,44 @@ window.addEventListener("message", async (event) => {
     return;
   }
 
+  if (message.type === "mrflynnib-account-required") {
+    const accountPath = activeCurriculum() === "igcse" ? "/igcse/account" : "/account";
+    const next = `${window.location.pathname}${window.location.search}`;
+    // This standalone course shell cannot use Next's client router.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign(`${accountPath}?next=${encodeURIComponent(next)}`);
+    return;
+  }
+
+  if (message.type === "mrflynnib-star-set") {
+    const questionId = String(message.questionId || "").slice(0, 160);
+    const starred = Boolean(message.starred);
+    let succeeded = false;
+    if (platformAccount && questionId && !reviewerMode && !salesPreviewMode) {
+      try {
+        const response = await fetch("/api/platform/question-star", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ questionId, starred, curriculum: activeCurriculum() }),
+        });
+        succeeded = response.ok;
+      } catch {}
+    }
+    if (succeeded) {
+      const saved = new Set((platformAccount.starredQuestionIds || []).map(String));
+      if (starred) saved.add(questionId);
+      else saved.delete(questionId);
+      platformAccount.starredQuestionIds = [...saved];
+    }
+    event.source.postMessage({
+      type: "mrflynnib-star-result",
+      questionId,
+      starred,
+      ok: succeeded,
+    }, window.location.origin);
+    return;
+  }
+
   if (message.type === "mrflynnib-plus-required") {
     showPlusPrompt();
     return;
@@ -786,7 +885,7 @@ window.addEventListener("message", async (event) => {
     let synced = true;
     if (platformAccount && !reviewerMode) {
       try {
-        const response = await fetch("/api/platform/question-progress", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), completed: Boolean(message.completed) }) });
+        const response = await fetch("/api/platform/question-progress", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), completed: Boolean(message.completed), curriculum: activeCurriculum() }) });
         synced = response.ok;
       } catch { synced = false; }
     }
@@ -805,7 +904,7 @@ window.addEventListener("message", async (event) => {
       let document = await getSavedWhiteboard(String(message.questionId));
       if (platformAccount && !reviewerMode) {
         try {
-          const response = await fetch(`/api/platform/whiteboard?questionId=${encodeURIComponent(String(message.questionId))}`);
+          const response = await fetch(`/api/platform/whiteboard?questionId=${encodeURIComponent(String(message.questionId))}&curriculum=${encodeURIComponent(activeCurriculum())}`);
           const result = await response.json();
           if (response.ok && result.document) document = result.document;
         } catch {}
@@ -833,7 +932,7 @@ window.addEventListener("message", async (event) => {
       let synced = true;
       if (platformAccount && !reviewerMode) {
         try {
-          const response = await fetch("/api/platform/whiteboard", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), document: message.document }) });
+          const response = await fetch("/api/platform/whiteboard", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questionId: String(message.questionId), document: message.document, curriculum: activeCurriculum() }) });
           synced = response.ok;
         } catch { synced = false; }
       }
@@ -915,11 +1014,22 @@ function pastPaperSets() {
     const firstYear = Number(first.session.match(/\b20\d{2}\b/)?.[0] || 0);
     const secondYear = Number(second.session.match(/\b20\d{2}\b/)?.[0] || 0);
     if (firstYear !== secondYear) return firstYear - secondYear;
+    if (currentPastPaperCourse === "IGCSE") {
+      const sessionOrder = { January: 0, Summer: 1, November: 2 };
+      const firstSession = first.session.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const secondSession = second.session.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const sessionDifference = (sessionOrder[firstSession] ?? 99) - (sessionOrder[secondSession] ?? 99);
+      if (sessionDifference) return sessionDifference;
+      const paperOrder = { "Paper 1H": 0, "Paper 2H": 1, "Paper 1HR": 2, "Paper 2HR": 3 };
+      const paperDifference = (paperOrder[first.paper] ?? 99) - (paperOrder[second.paper] ?? 99);
+      if (paperDifference) return paperDifference;
+    }
     return `${first.session} ${first.paper} ${first.timezone}`.localeCompare(`${second.session} ${second.paper} ${second.timezone}`, undefined, { numeric: true, sensitivity: "base" });
   });
 }
 
 function pastPaperSetIsFree(set) {
+  if (set.fullPaper) return false;
   return set.session === "Specimen" || set.session === "May 2021";
 }
 
@@ -929,8 +1039,11 @@ function renderPastPaperTabs() {
   tabs.classList.toggle("is-single-course", definitions.length === 1);
   tabs.innerHTML = definitions.map((definition) => {
     const stats = pastPaperLibrary.stats[definition.code];
-    const Tag = reviewerMode ? "button" : "div";
-    const attributes = reviewerMode ? `type="button" data-past-course="${definition.code}"` : `aria-label="Your enrolled course"`;
+    const canChooseCourse = reviewerMode || guestMode || isIbTeacherAccount();
+    const Tag = canChooseCourse ? "button" : "div";
+    const attributes = canChooseCourse
+      ? `type="button" data-past-course="${definition.code}" aria-label="View ${escapeHtml(definition.name)} past-paper previews"`
+      : `aria-label="Your enrolled course"`;
     return `<${Tag} class="past-paper-course-tab ${definition.code === currentPastPaperCourse ? "is-active" : ""}" ${attributes}>
       <span>${definition.code}</span>
       <strong>${escapeHtml(definition.name)}</strong>
@@ -944,7 +1057,14 @@ function renderPastPaperSessionFilter() {
   const sessions = [...new Set((pastPaperLibrary.courses[currentPastPaperCourse] || []).map((set) => set.session))].sort((first, second) => {
     const firstYear = Number(first.match(/\b20\d{2}\b/)?.[0] || 0);
     const secondYear = Number(second.match(/\b20\d{2}\b/)?.[0] || 0);
-    return firstYear - secondYear || first.localeCompare(second, undefined, { numeric: true, sensitivity: "base" });
+    if (firstYear !== secondYear) return firstYear - secondYear;
+    if (currentPastPaperCourse === "IGCSE") {
+      const sessionOrder = { January: 0, Summer: 1, November: 2 };
+      const firstName = first.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      const secondName = second.replace(/\s*\b20\d{2}\b\s*/, "").trim();
+      return (sessionOrder[firstName] ?? 99) - (sessionOrder[secondName] ?? 99);
+    }
+    return first.localeCompare(second, undefined, { numeric: true, sensitivity: "base" });
   });
   select.innerHTML = `<option value="all">All sessions</option>${sessions.map((session) => `<option value="${escapeHtml(session)}">${escapeHtml(session)}</option>`).join("")}`;
   if (!sessions.includes(currentPastPaperSession)) currentPastPaperSession = "all";
@@ -985,7 +1105,7 @@ function renderPastPaperCatalog() {
       ${sessionGroup.sets.map((set) => {
         const meta = [set.timezone, set.paper].filter(Boolean).join(" · ");
         return `<button class="paper-set-card ${set.id === currentPastPaperSetId ? "is-active" : ""}" type="button" data-paper-set-id="${set.id}">
-          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Free</b>' : ""}</strong><em>${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}</em></span>
+          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Free</b>' : ""}</strong><em>${set.fullPaper ? "Complete worked video" : `${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}`}</em></span>
           <i aria-hidden="true">→</i>
         </button>`;
       }).join("")}
@@ -1007,7 +1127,8 @@ function renderPastPaperQuestions() {
   }
   if (!set.questions.some((question) => question.id === currentPastPaperQuestionId)) currentPastPaperQuestionId = set.questions[0]?.id || null;
   document.getElementById("pastPaperSetTitle").textContent = [set.session, set.timezone, set.paper].filter(Boolean).join(" · ");
-  document.getElementById("pastPaperQuestionCount").textContent = `${set.questions.length} solution${set.questions.length === 1 ? "" : "s"}`;
+  document.getElementById("pastPaperQuestionCount").textContent = set.fullPaper ? "Complete paper" : `${set.questions.length} solution${set.questions.length === 1 ? "" : "s"}`;
+  document.getElementById("pastPaperQuestionPanel").hidden = Boolean(set.fullPaper);
   document.getElementById("pastPaperQuestionList").innerHTML = set.questions.map((question, index) => `<button class="paper-question-button ${question.id === currentPastPaperQuestionId ? "is-active" : ""}" type="button" data-paper-question-id="${question.id}">
     <span>${index + 1}</span><strong>${escapeHtml(question.title)}</strong><small>${formatDuration(question.seconds)}</small>
   </button>`).join("");
@@ -1020,7 +1141,7 @@ function renderPastPaperQuestion(question) {
   if (!set || !question) return;
   currentPastPaperQuestionId = question.id;
   const index = set.questions.findIndex((candidate) => candidate.id === question.id);
-  document.getElementById("pastPaperQuestionPosition").textContent = `Solution ${index + 1} of ${set.questions.length}`;
+  document.getElementById("pastPaperQuestionPosition").textContent = set.fullPaper ? "Full-paper solution" : `Solution ${index + 1} of ${set.questions.length}`;
   document.getElementById("pastPaperQuestionTitle").textContent = question.title;
   document.getElementById("pastPaperQuestionMeta").textContent = [set.session, set.timezone, set.paper, formatDuration(question.seconds)].filter(Boolean).join(" · ");
   document.getElementById("pastPaperBadge").textContent = currentPastPaperCourse;
@@ -1031,11 +1152,15 @@ function renderPastPaperQuestion(question) {
 }
 
 function renderPastPapers() {
-  if (!pastPaperLibrary.stats[currentPastPaperCourse]) currentPastPaperCourse = "AA HL";
+  if (!pastPaperLibrary.stats[currentPastPaperCourse]) currentPastPaperCourse = activeCurriculum() === "igcse" ? "IGCSE" : "AA HL";
   const stats = pastPaperLibrary.stats[currentPastPaperCourse];
+  const isIgcsePapers = currentPastPaperCourse === "IGCSE";
+  document.querySelector("#pastPapersView .past-paper-intro > p:last-child").textContent = isIgcsePapers
+    ? "Choose an exam session and open the complete worked video for the paper you need."
+    : "Find your exam session, paper and the worked solution for the exact question you need. Specimen papers and every May 2021 paper are free to watch.";
   renderPastPaperTabs();
   renderPastPaperSessionFilter();
-  document.getElementById("pastPaperCourseStats").innerHTML = `<strong>${currentPastPaperCourse}</strong><span>${stats.papers} papers with ${stats.questions} verified worked solutions</span>`;
+  document.getElementById("pastPaperCourseStats").innerHTML = `<strong>${currentPastPaperCourse}</strong><span>${isIgcsePapers ? `${stats.papers} complete paper solution videos` : `${stats.papers} papers with ${stats.questions} verified worked solutions`}</span>`;
   renderPastPaperCatalog();
   renderPastPaperQuestions();
 }
@@ -1105,6 +1230,14 @@ document.addEventListener("click", (event) => {
   }
 });
 
+document.getElementById("myCourseButton").addEventListener("click", () => {
+  if (guestMode) {
+    setView("courses");
+    return;
+  }
+  openCourse(currentCourseId, currentLessonId);
+});
+
 document.getElementById("openMenu").addEventListener("click", () => {
   document.getElementById("sidebar").classList.add("is-open");
   document.getElementById("sidebarScrim").classList.add("is-open");
@@ -1129,6 +1262,9 @@ document.getElementById("pastPaperSessionFilter").addEventListener("change", (ev
   renderPastPaperCatalog();
   renderPastPaperQuestions();
 });
+document.getElementById("teacherCourseSelect").addEventListener("change", (event) => {
+  openCourse(event.target.value);
+});
 
 const accountButton = document.getElementById("accountButton");
 const accountMenu = document.getElementById("accountMenu");
@@ -1152,7 +1288,7 @@ document.getElementById("dismissPlusUpgrade").addEventListener("click", () => pl
 
 document.getElementById("signOut").addEventListener("click", async () => {
   await fetch("/api/platform/sign-out", { method: "POST" });
-  window.location.assign("/account");
+  window.location.assign(signOutDestination);
 });
 
 document.addEventListener("keydown", (event) => {
@@ -1165,65 +1301,86 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-function configureGuestExperience() {
-      guestMode = true;
-      enrolledCourseIds = courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => definition.id);
-      ownedCourseIds = [];
-      enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
-      const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId) ? requestedCourseId : "aa-hl";
-      enrolledCourseId = preferred;
-      currentCourseId = preferred;
-      currentCourse = courses[preferred];
-      currentLessonId = salesPreviewLessons(currentCourse)[0]?.id || currentCourse.lessons[0]?.id;
-      currentTopic = getCurrentLesson()?.topic || 1;
-      currentPastPaperCourse = currentCourse.code;
+function configureGuestExperience({ curriculumMismatch = false, currentCurriculum = null } = {}) {
+  const isIgcse = requestedCurriculum === "igcse" || requestedCourseId === "igcse";
+  guestMode = true;
+  enrolledCourseIds = isIgcse
+    ? ["igcse"]
+    : courseDefinitions.filter((definition) => definition.id !== "igcse").map((definition) => definition.id);
+  ownedCourseIds = [];
+  enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
+  const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId) ? requestedCourseId : isIgcse ? "igcse" : "aa-hl";
+  const accountHref = isIgcse ? "/igcse/account" : "/account";
+  const homeHref = isIgcse ? "/igcse" : "/";
+  enrolledCourseId = preferred;
+  currentCourseId = preferred;
+  currentCourse = courses[preferred];
+  currentLessonId = salesPreviewLessons(currentCourse)[0]?.id || currentCourse.lessons[0]?.id;
+  currentTopic = getCurrentLesson()?.topic || 1;
+  currentPastPaperCourse = currentCourse.code;
+  signOutDestination = accountHref;
 
-      document.body.classList.add("guest-course-browser");
-      document.querySelector(".nav-item[data-view='dashboard'] span").textContent = "Courses";
-      document.querySelector(".nav-item[data-view='dashboard']").dataset.view = "courses";
-      document.getElementById("primaryLearningHomeLink").href = "/account?next=/learn";
-      document.getElementById("primaryLearningHomeLink").querySelector("strong").textContent = "Log in";
-      document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = "Save progress and unlock Plus";
-      document.getElementById("assignmentsLink").hidden = true;
-      document.getElementById("brandLearningHomeLink").href = "/";
-      document.getElementById("topbarLearningHomeLink").href = "/";
-      document.getElementById("topbarLearningHomeLink").textContent = "← Mr Flynn IB";
-      document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
-      document.getElementById("accessLink").textContent = requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
-      document.getElementById("accessLink").href = requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
-      document.querySelector(".avatar").textContent = "+";
-      document.getElementById("accountName").textContent = "Log in";
-      document.getElementById("accountRole").textContent = "Save your progress";
-      document.getElementById("learningHomeLink").textContent = "Log in";
-      document.getElementById("learningHomeLink").href = "/account?next=/learn";
-      document.getElementById("manageAccessLink").textContent = "Create free account";
-      document.getElementById("manageAccessLink").href = "/account?mode=sign-up&next=/learn";
-      document.getElementById("signOut").hidden = true;
-      document.getElementById("courseBackButton").textContent = "← All courses";
-      document.getElementById("courseBackButton").dataset.view = "courses";
-      document.getElementById("welcomeEyebrow").textContent = "Course preview";
-      document.getElementById("welcomeTitle").textContent = `Explore the ${currentCourse.code} course`;
-      document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic for free.";
-      document.getElementById("libraryStatusText").textContent = `${salesPreviewLessons(currentCourse).length} complete lessons free`;
-      document.getElementById("coursesEyebrow").textContent = "IB Mathematics courses";
-      document.getElementById("coursesTitle").textContent = "Choose your course";
-      document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three free lessons in every syllabus topic.";
-      document.getElementById("teachableMigrationNote").hidden = false;
-      document.getElementById("sidebarCourseLabel").textContent = "IB Mathematics courses";
+  document.body.classList.add("guest-course-browser");
+  document.body.classList.toggle("igcse-learning", isIgcse);
+  document.getElementById("myCourseButton").querySelector("span").textContent = isIgcse ? "My course" : "Courses";
+  document.getElementById("primaryLearningHomeLink").href = accountHref;
+  document.getElementById("primaryLearningHomeLink").querySelector("strong").textContent = curriculumMismatch ? `${currentCurriculum?.toUpperCase() || "Other"} account active` : "Log in";
+  document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = curriculumMismatch ? `Switch to ${isIgcse ? "IGCSE" : "IB"}` : "Save your progress";
+  document.getElementById("assignmentsLink").hidden = true;
+  document.getElementById("brandLearningHomeLink").href = homeHref;
+  document.getElementById("topbarLearningHomeLink").href = homeHref;
+  document.getElementById("topbarLearningHomeLink").textContent = isIgcse ? "← IGCSE home" : "← Mr Flynn IB";
+  document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
+  document.getElementById("accessLink").textContent = isIgcse ? "Create free account" : requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
+  document.getElementById("accessLink").href = isIgcse ? "/igcse/account?mode=sign-up" : requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
+  document.getElementById("accessLink").classList.toggle("is-plus", !isIgcse);
+  accountButton.classList.add("is-guest");
+  document.querySelector(".avatar").textContent = "";
+  document.getElementById("accountName").textContent = curriculumMismatch ? "Switch account" : "Log in";
+  document.getElementById("accountRole").textContent = isIgcse ? "IGCSE Mathematics" : "Save your progress";
+  document.getElementById("learningHomeLink").textContent = curriculumMismatch ? `Switch to ${isIgcse ? "IGCSE" : "IB"}` : "Log in";
+  document.getElementById("learningHomeLink").href = accountHref;
+  document.getElementById("manageAccessLink").textContent = "Create free account";
+  document.getElementById("manageAccessLink").href = `${accountHref}?mode=sign-up`;
+  document.getElementById("signOut").hidden = !curriculumMismatch;
+  document.getElementById("courseBackButton").textContent = isIgcse ? "← IGCSE home" : "← All courses";
+  document.getElementById("courseBackButton").href = isIgcse ? "/igcse" : "/learn/index.html?curriculum=ib&view=courses";
+  document.getElementById("welcomeEyebrow").textContent = "Course preview";
+  document.getElementById("welcomeTitle").textContent = isIgcse ? "Explore the IGCSE Mathematics course" : `Explore the ${currentCourse.code} course`;
+  document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic for free.";
+  document.getElementById("libraryStatusText").textContent = `${salesPreviewLessons(currentCourse).length} complete lessons free`;
+  document.getElementById("coursesEyebrow").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
+  document.getElementById("coursesTitle").textContent = isIgcse ? "Your IGCSE Mathematics course" : "Choose your course";
+  document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three free lessons in every syllabus topic.";
+  document.getElementById("teachableMigrationNote").hidden = isIgcse;
+  document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
 }
 
 async function bootstrapAccount() {
   if (reviewerMode || validPreviewCourseId) return;
   try {
-    const response = await fetch("/api/platform/bootstrap", { cache: "no-store" });
+    const curriculumQuery = requestedCurriculum === "igcse" || requestedCourseId === "igcse" ? "?curriculum=igcse" : "?curriculum=ib";
+    const response = await fetch(`/api/platform/bootstrap${curriculumQuery}`, { cache: "no-store" });
     if (response.status === 401) {
       configureGuestExperience();
+      return;
+    }
+    if (response.status === 409) {
+      const mismatch = await response.json().catch(() => ({}));
+      configureGuestExperience({ curriculumMismatch: true, currentCurriculum: mismatch.currentCurriculum });
+      showToast(`You are signed in to the separate ${String(mismatch.currentCurriculum || "other").toUpperCase()} area.`);
       return;
     }
     if (!response.ok) throw new Error("Your learning space could not be loaded.");
     platformAccount = await response.json();
     enrolledCourseIds = platformAccount.availableCourseIds.filter((id) => courses[id]);
     ownedCourseIds = platformAccount.ownedCourseIds.filter((id) => courses[id]);
+    // The IGCSE route owns one course. Keep it isolated from any IB course
+    // preferences or entitlements that may also belong to this login.
+    if (platformAccount.curriculum === "igcse" && courses.igcse) {
+      enrolledCourseIds = ["igcse"];
+      ownedCourseIds = ownedCourseIds.filter((id) => id === "igcse");
+    }
     enrolledCourseDefinitions = courseDefinitions.filter((definition) => enrolledCourseIds.includes(definition.id));
     const preferred = requestedCourseId && enrolledCourseIds.includes(requestedCourseId)
       ? requestedCourseId
@@ -1235,6 +1392,7 @@ async function bootstrapAccount() {
     enrolledCourseId = preferred;
     currentCourseId = preferred;
     currentCourse = courses[currentCourseId];
+    if (!currentCourse) throw new Error("Your course could not be selected.");
     const savedLesson = platformAccount.state?.last_lesson_id || state.lastLesson;
     currentLessonId = currentCourse.lessons.some((lesson) => lesson.id === savedLesson) ? savedLesson : currentCourse.lessons[0]?.id;
     currentTopic = getCurrentLesson()?.topic || 1;
@@ -1245,9 +1403,11 @@ async function bootstrapAccount() {
     state.lastLesson = currentLessonId;
     saveState();
     document.querySelector(".avatar").textContent = platformAccount.user.initials;
+    accountButton.classList.remove("is-guest");
     document.getElementById("accountName").textContent = platformAccount.user.displayName;
     document.getElementById("accountRole").textContent = `${platformAccount.user.role === "admin" ? "Administrator" : platformAccount.user.role === "teacher" ? "Teacher" : "Student"} account`;
     document.getElementById("accessLink").textContent = platformAccount.access?.label || "Free account";
+    document.getElementById("accessLink").classList.toggle("is-plus", Boolean(platformAccount.access?.label?.includes("Plus")));
     document.getElementById("accessLink").href = platformAccount.links.access;
     document.getElementById("manageAccessLink").href = platformAccount.links.access;
     document.getElementById("learningHomeLink").href = platformAccount.links.account;
@@ -1256,6 +1416,7 @@ async function bootstrapAccount() {
     document.getElementById("brandLearningHomeLink").href = platformAccount.links.account;
     syncQuestionBankLink();
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
+    configureTeacherCourseSwitcher();
     void flushLessonProgress();
   } catch {
     configureGuestExperience();
@@ -1264,30 +1425,43 @@ async function bootstrapAccount() {
 }
 
 async function initialize() {
-  await bootstrapAccount();
-  const enrolledCourse = courses[enrolledCourseId];
-  const visibleLessonCount = guestMode
-    ? enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0)
-    : enrolledCourse.lessons.length;
-  document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
-  document.getElementById("summaryVideos").textContent = visibleLessonCount;
-  configurePreviewMode();
-  configureCurriculumExperience(platformAccount?.curriculum || reviewCurriculum || (enrolledCourseId === "igcse" ? "igcse" : "ib"));
-  renderDashboard();
-  renderCourseCards();
-  renderProgress();
-  if (reviewerMode) {
-    setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
-  } else if (requestedView === "courses") {
-    setView("courses");
-  } else if (validPreviewCourseId || requestedCourseId) {
-    const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
-    const requestedLesson = !hasCompleteCourseAccess(enrolledCourse)
-      ? salesPreviewLessons(enrolledCourse).find((lesson) => lesson.topic === requestedTopic) || salesPreviewLessons(enrolledCourse)[0]
-      : enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
-    openCourse(enrolledCourseId, requestedLesson?.id || currentLessonId);
+  try {
+    await bootstrapAccount();
+    const enrolledCourse = courses[enrolledCourseId];
+    const visibleLessonCount = guestMode
+      ? enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].lessons.length, 0)
+      : enrolledCourse.lessons.length;
+    document.getElementById("sidebarVideoCount").textContent = visibleLessonCount;
+    document.getElementById("summaryVideos").textContent = visibleLessonCount;
+    configurePreviewMode();
+    configureCurriculumExperience(platformAccount?.curriculum || reviewCurriculum || (enrolledCourseId === "igcse" ? "igcse" : "ib"));
+    renderDashboard();
+    renderCourseCards();
+    renderProgress();
+    if (reviewerMode) {
+      setView(requestedView === "past-papers" ? "pastPapers" : "dashboard");
+    } else if (guestMode && (requestedView === "courses" || requestedView === "past-papers")) {
+      setView(requestedView === "past-papers" ? "pastPapers" : "courses");
+    } else if (validPreviewCourseId || requestedCourseId) {
+      const requestedTopic = Number.isInteger(previewTopic) && previewTopic > 0 ? previewTopic : 1;
+      const requestedLesson = !hasCompleteCourseAccess(enrolledCourse)
+        ? salesPreviewLessons(enrolledCourse).find((lesson) => lesson.topic === requestedTopic) || salesPreviewLessons(enrolledCourse)[0]
+        : enrolledCourse.topics.find((topic) => topic.number === requestedTopic)?.lessons[0];
+      openCourse(enrolledCourseId, requestedLesson?.id || currentLessonId);
+    } else if (guestMode) {
+      setView("courses");
+    } else {
+      openCourse(enrolledCourseId, currentLessonId);
+    }
+  } finally {
+    document.body.classList.remove("is-booting");
+    document.getElementById("learningBoot")?.setAttribute("hidden", "");
   }
 }
 
 window.addEventListener("online", () => void flushLessonProgress());
-void initialize();
+void initialize().catch(() => {
+  document.body.classList.remove("is-booting");
+  document.getElementById("learningBoot")?.setAttribute("hidden", "");
+  showToast("The course area could not be loaded. Please refresh and try again.");
+});

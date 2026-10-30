@@ -201,6 +201,8 @@
       .replace(/\\(?:ldots|cdots|dots)\b/g, "…")
       .replace(/\\(?:lvert|rvert|vert)\b/g, "|")
       .replace(/\\(?:big|Big|bigg|Bigg)l?\b/g, "")
+      .replace(/\^\s*(?:\\prime\b|\(\s*\\prime\s*\))/g, "'")
+      .replace(/\\prime\b/g, "'")
       .replace(/\\sim\b/g, "~")
       .replace(/\\mid\b/g, "|")
       .replace(/\\\$/g, "$")
@@ -242,6 +244,9 @@
       .replace(/√\s*\{([^{}]+)\}/g, "sqrt($1)")
       .replace(/\\sqrt\s*\{([^{}]+)\}/g, "sqrt($1)")
       .replace(/\\sqrt\s*([A-Za-z]|[0-9]+(?:\.[0-9]+)?)/g, "sqrt($1)")
+      .replace(/\b([A-Za-z])\s*\^\s*(?:\{\s*\\?prime\s*\}|\\?prime\b|\(\s*\\?prime\s*\))/gi, "$1'")
+      .replace(/\b([A-Za-z])\\prime\b/g, "$1'")
+      .replace(/\b([A-Za-z])prime\b/gi, "$1'")
       .replace(/\bpi\b/gi, "π")
       .replace(/\s*±\s*/g, "±")
       .replace(/\+\s*-/g, "-")
@@ -934,6 +939,33 @@
       return Array.isArray(row) && /(?:A\d|B\d|G\d|N\d|E\d|R\d|AG)/.test(String(row[1] || ""));
     });
     var finalInstruction = finalInstructionText(completePrompt);
+    // Some official mark schemes award separate lines for each required case
+    // without ever restating the combined final answer.  Reading only the last
+    // inequality loses cases such as "k = 3 or k >= 6".  When a question asks
+    // for plural values of one variable and the credited rows contain both an
+    // equality case and an inequality case, retain both as one precise answer.
+    var pluralValueTarget = finalInstruction.match(/\b(?:all\s+|the\s+|possible\s+|two\s+possible\s+)?values\s+of\s+([A-Za-z\u03b1-\u03c9])\b/i);
+    if (pluralValueTarget) {
+      var targetName = pluralValueTarget[1];
+      var targetConditions = [];
+      creditedRows.forEach(function (row) {
+        mathFragments(String(row[0] || "")).forEach(function (fragment) {
+          var condition = clean(latexToPlain(fragment));
+          var relation = condition.match(new RegExp("^" + targetName + "\\s*(=|<=|>=|≤|≥|<|>)\\s*(.+)$", "i"));
+          if (!relation) return;
+          var operator = relation[1].replace("<=", "≤").replace(">=", "≥");
+          var rightSide = clean(relation[2]);
+          if (operator === "=" && rightSide.indexOf("=") >= 0) rightSide = clean(rightSide.slice(rightSide.lastIndexOf("=") + 1));
+          rightSide = rightSide.replace(/\s*\((?:accept|do not accept)[\s\S]*$/i, "").replace(/[.;]\s*$/, "").trim();
+          var candidate = targetName + operator + rightSide;
+          if (!rightSide || candidate.length > 100 || !isChoiceTextSafe(candidate)) return;
+          if (!targetConditions.some(function (existing) { return equivalent(existing, candidate); })) targetConditions.push(candidate);
+        });
+      });
+      var equalityCases = targetConditions.filter(function (condition) { return condition.indexOf("=") >= 0 && !/[≤≥<>]/.test(condition); });
+      var inequalityCases = targetConditions.filter(function (condition) { return /[≤≥<>]/.test(condition); });
+      if (equalityCases.length && inequalityCases.length) return [equalityCases.concat(inequalityCases).join(" or ")];
+    }
     var requestedInverse = String(prompt || "").match(/([A-Za-z])\s*\^\s*\{\s*-?1\s*\}\s*\(\s*([A-Za-z])\s*\)/);
     if (requestedInverse
       && /^(?:find|write down|state|determine|give)\s+(?:an?\s+expression\s+for\s+|the\s+inverse(?:\s+function)?\s+)?[A-Za-z]\s*\^-1\s*\(\s*[A-Za-z]\s*\)/i.test(finalInstruction)) {

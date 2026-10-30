@@ -93,10 +93,32 @@
     publish();
   }
 
+  function setSelection(questions) {
+    var copied = Array.isArray(questions) ? questions.slice(0, MAX_SELECTED) : [];
+    selected = new Set(copied.map(function (question) { return String(question && question.id || ""); }).filter(Boolean));
+    summaries = {};
+    copied.forEach(function (question) {
+      var id = String(question && question.id || "");
+      if (id) summaries[id] = question;
+    });
+    document.querySelectorAll(".qb-card").forEach(function (card) {
+      var id = String(card.dataset.id || "");
+      var isSelected = selected.has(id);
+      var checkbox = card.querySelector(".qb-assignment-select input[type=checkbox]");
+      var copy = card.querySelector(".qb-assignment-select span");
+      if (checkbox) checkbox.checked = isSelected;
+      if (copy) copy.textContent = isSelected ? "Selected for assignment" : "Add to assignment";
+      card.classList.toggle("qb-assignment-selected", isSelected);
+    });
+    updateBulkControl();
+    publish();
+  }
+
   window.addEventListener("message", function (event) {
     if (event.origin !== window.location.origin || event.source !== window.parent) return;
     if (event.data && event.data.type === "mrflynnib-assignment-clear") clearSelection();
     if (event.data && event.data.type === "mrflynnib-assignment-remove") removeSelection(String(event.data.id || ""));
+    if (event.data && event.data.type === "mrflynnib-assignment-set-selection") setSelection(event.data.questions);
     if (event.data && event.data.type === "mrflynnib-assignment-create-shadow") createShadowSelection(Array.isArray(event.data.sources) ? event.data.sources : []);
   });
 

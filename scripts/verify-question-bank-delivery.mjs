@@ -23,6 +23,12 @@ assert.equal(manifest.ib.sourceQuestions, ibQuestions.length);
 assert.equal(manifest.igcse.sourceQuestions, igcseQuestions.length);
 assert.equal((ibHtml.match(/QUESTION_BANK_DATA_LOADER/g) || []).length, 1, "IB must contain one data loader");
 assert.equal((igcseHtml.match(/QUESTION_BANK_DATA_LOADER/g) || []).length, 0, "IGCSE must stay self-contained");
+assert(ibHtml.includes('/question-bank/starred.js'), "IB shell lost the account-wide starred-question feature");
+assert(igcseHtml.includes('/question-bank/starred.js'), "IGCSE shell lost the account-wide starred-question feature");
+assert(ibHtml.includes('/question-bank/whiteboard.js'), "IB shell lost the shared whiteboard");
+assert(igcseHtml.includes('/question-bank/whiteboard.js'), "IGCSE shell lost the shared whiteboard");
+assert(ibHtml.includes('id="qb-search"'), "IB shell lost question search");
+assert(igcseHtml.includes('id="qb-search"'), "IGCSE shell lost question search");
 
 const courses = {
   "AA HL": "aahl",
@@ -43,6 +49,7 @@ for (const [course, key] of Object.entries(courses)) {
 
   const expectedIds = ibQuestions.filter((question) => banksOf(question).includes(course)).map((question) => question.id);
   assert.deepEqual(Array.from(delivered, (question) => question.id), expectedIds, `${course} IDs or ordering changed`);
+  assert(delivered.some((question) => question.id === "N12TZ0HL_P1_Q7") === expectedIds.includes("N12TZ0HL_P1_Q7"), `${course} lost retained assignment question IDs`);
   console.log(`${course}: ${delivered.length} source records preserved`);
 }
 

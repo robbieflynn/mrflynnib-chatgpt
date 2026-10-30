@@ -192,6 +192,23 @@ function choiceSetForRows(rows, prompt, seed) {
 }
 
 function manualChoiceSet(questionId, label) {
+  if (questionId === "N12TZ0HL_P1_Q7" && label === "b") {
+    return {
+      acceptedAnswers: [
+        String.raw`latex:k=3\text{ or }k\ge 6`,
+        "k=3 or k>=6",
+        "k=3 or k≥6",
+      ],
+      options: [
+        String.raw`latex:k=3\text{ or }k\ge 6`,
+        "k>3",
+        "3≤k≤6",
+        "k=3; k>6",
+        "k≥6",
+      ],
+      correctOption: 0,
+    };
+  }
   if (questionId === "A_N24TZ0HL_P1_Q11" && label === "c(ii)") {
     return {
       acceptedAnswers: [
@@ -249,6 +266,7 @@ function inspectChoiceQuality(set, meta, prompt, rows = []) {
   set.options.forEach((option, index) => {
     const rendered = choices.toLatex(option);
     const role = index === set.correctOption ? "correct" : "wrong";
+    assert(!/\b[A-Za-z]\^?prime\b/i.test(`${option} ${rendered}`), `Leaked prime command for ${meta}: ${JSON.stringify(option)} -> ${JSON.stringify(rendered)}`);
     if (rendered.includes("/") || /\\text\{[^}]*\b(?:sqrt|root|matrix|blackboard|math(?:bf|rm|cal|bb|frak)|mathrm|ldots|cdots|circ)\b/i.test(rendered)) {
       qualityIssue(`${role}: rendered notation`, meta, prompt, option, rendered);
     }
@@ -566,6 +584,10 @@ assert.equal(choices.generateChoiceSet(["1/4/2"], "audit-malformed"), null);
 assert.equal(choices.isDisplaySafe("(a)(x))"), false);
 assert.equal(choices.toLatex("2*x"), String.raw`2\times x`);
 assert.equal(choices.toLatex("y - x"), "y-x");
+assert.equal(choices.latexToPlain(String.raw`n(C^\prime\cap D^\prime)=14`), "n(C'∩ D')=14");
+assert.equal(choices.clean("n(C^prime∩ D^prime)=14"), "n(C'∩ D')=14");
+assert.equal(choices.clean("n(CPrime ∩ DPrime) = 14"), "n(C' ∩ D') = 14");
+assert.equal(choices.toLatex("n(C^prime∩ D^prime)=14"), "n(C'∩D')=14");
 assert.equal(choices.toLatex("ln x"), String.raw`\ln\left(x\right)`);
 assert.equal(choices.latexToPlain(String.raw`\cos\varphi`), "cos(φ)");
 assert.equal(choices.toLatex("sqrt(181 - 180cos(φ))"), String.raw`\sqrt{181-180\cos\left(\varphi \right)}`);
@@ -1258,6 +1280,15 @@ const nestedRadicalAnswers = choices.extractAcceptedAnswers(
 assert(nestedRadicalAnswers[0].includes("sqrt"));
 assert(choices.generateChoiceSet(nestedRadicalAnswers, "audit-nested-radical"));
 
+const multiCaseValueAnswers = choices.extractAcceptedAnswers(
+  [
+    [String.raw`\(k\ge6\)`, "A1"],
+    [String.raw`\(k=6\sin30^\circ=3\)`, "M1A1"],
+  ],
+  String.raw`Determine the values of \(k\) for which the conditions define a unique triangle.`,
+);
+assert.deepEqual(multiCaseValueAnswers, ["k=3 or k≥6"]);
+
 assert.deepEqual(choices.extractAcceptedAnswers([["one", "A1"]], "Write down the number of points of inflexion."), ["1"]);
 assert.deepEqual(choices.extractAcceptedAnswers([[String.raw`\(=5.63\) cm\(^2\)`, "A1"]], "Find the area."), ["5.63"]);
 
@@ -1502,6 +1533,15 @@ for (const [label, path] of banks) {
       assert(nestedSolution?.choices, "The separately labelled IGCSE c(ii) mark scheme did not produce choices.");
       assert(nestedSolution.choices.acceptedAnswers.some((answer) => /y=8/.test(answer) && /y=-6/.test(answer)), "The IGCSE c(ii) solution set was incomplete.");
       verifiedIgcseNestedMarkschemeLabels = true;
+    }
+    if (label === "IB" && question.id === "N12TZ0HL_P1_Q7") {
+      const uniqueTriangle = configs.find((config) => config.label === "b");
+      assert(uniqueTriangle?.choices, "The unique-triangle answer did not produce fixed choices.");
+      assert.equal(
+        uniqueTriangle.choices.options[uniqueTriangle.choices.correctOption],
+        String.raw`latex:k=3\text{ or }k\ge 6`,
+        "The unique-triangle answer lost one of its two valid cases.",
+      );
     }
     for (const config of configs.filter((part) => part.choices)) {
       inspectChoiceQuality(config.choices, `${label} ${question.id} ${config.label}`, config.prompt, config.rows);
