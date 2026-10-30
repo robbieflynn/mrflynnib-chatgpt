@@ -59,7 +59,16 @@ export const studentAllCoursesProduct = {
   plans: [],
 };
 
-export type PaidProduct = CourseProduct | typeof teacherPlusProduct | typeof studentAllCoursesProduct;
+export const studentChooseOneCourseCodeProduct = {
+  id: "student-choose-one-course" as const,
+  curriculum: "ib" as const,
+  productCode: "student_choose_one_ib",
+  shortTitle: "Student — choose one IB course",
+  title: "Any one IB Mathematics course, selected when the code is redeemed",
+  plans: [],
+};
+
+export type PaidProduct = CourseProduct | typeof teacherPlusProduct | typeof studentAllCoursesProduct | typeof studentChooseOneCourseCodeProduct;
 
 export function getCourseProduct(id: string | null | undefined) {
   return courseProducts.find((product) => product.id === id);
@@ -72,7 +81,8 @@ export function courseProductForCode(productCode: string) {
 export function paidProductForCode(productCode: string): PaidProduct | undefined {
   return courseProductForCode(productCode)
     ?? (teacherPlusProduct.productCode === productCode ? teacherPlusProduct : undefined)
-    ?? (studentAllCoursesProduct.productCode === productCode ? studentAllCoursesProduct : undefined);
+    ?? (studentAllCoursesProduct.productCode === productCode ? studentAllCoursesProduct : undefined)
+    ?? (studentChooseOneCourseCodeProduct.productCode === productCode ? studentChooseOneCourseCodeProduct : undefined);
 }
 
 export function getCoursePlan(product: CourseProduct | undefined, planId: string | null | undefined) {
