@@ -1125,6 +1125,7 @@ a.teacher-list-row:hover { background: var(--sky); }
 .student-work-overview-note strong, .student-work-detail-bar > div { display: grid; gap: .08rem; }
 .student-work-overview-note span, .student-work-detail-bar span { color: var(--muted); font-size: .76rem; }
 .student-work-detail-bar strong { color: var(--ink); }
+.teacher-student-work-review { padding-bottom: clamp(3.5rem, 7vw, 6rem); }
 .visibility-dot { width: .75rem; height: .75rem; flex: 0 0 auto; border-radius: 50%; background: #8b9aa3; box-shadow: 0 0 0 5px #edf1f3; }
 .visibility-dot.is-visible { background: #269367; box-shadow: 0 0 0 5px #e4f5ed; }
 .assignment-matrix-legend { display: flex; flex-wrap: wrap; gap: .55rem; }

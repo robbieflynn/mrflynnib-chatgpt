@@ -65,7 +65,11 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
 
       const nextHeight = Number(event.data.height);
       if (Number.isFinite(nextHeight)) {
-        frameHeightRef.current = Math.max(620, Math.ceil(nextHeight));
+        // The teacher overview ends directly above the website footer. Keep a
+        // small safety area inside the frame so the last card cannot be clipped
+        // by sub-pixel height rounding while its answer or whiteboard loads.
+        const overviewClearance = assignmentView === "overview" ? 32 : 0;
+        frameHeightRef.current = Math.max(620, Math.ceil(nextHeight) + overviewClearance);
         setFrameHeight(frameHeightRef.current);
       }
 
@@ -95,7 +99,7 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [loadMoreIfNeeded]);
+  }, [assignmentView, loadMoreIfNeeded]);
 
   return (
     <iframe
