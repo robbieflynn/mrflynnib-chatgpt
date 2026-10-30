@@ -1,5 +1,5 @@
 import { createRequire } from "node:module";
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import assert from "node:assert/strict";
 
 const require = createRequire(import.meta.url);
@@ -94,6 +94,10 @@ assert.equal(repairedCoefficientChoices[0], "(1/2)*r^2sintheta");
 assert(repairedCoefficientChoices.every((choice) => !choice.includes("/0")));
 
 function extractSeed(path) {
+  const canonicalPath = path.includes("igcse-bank")
+    ? "question-bank-data/igcse-seed.json"
+    : "question-bank-data/ib-seed.json";
+  if (existsSync(canonicalPath)) return JSON.parse(readFileSync(canonicalPath, "utf8"));
   const source = readFileSync(path, "utf8");
   const marker = "var SEED = [";
   const markerIndex = source.indexOf(marker);

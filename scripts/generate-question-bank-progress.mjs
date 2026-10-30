@@ -68,7 +68,7 @@ function buildCourseProgress(questions, topicStructure, course, topicOrder) {
 }
 
 const ibSource = await readFile(resolve(root, "public/question-bank/ib-bank.html"), "utf8");
-const ibQuestions = parseAssignedJson(ibSource, "var SEED = ", "\n];");
+const ibQuestions = JSON.parse(await readFile(resolve(root, "question-bank-data/ib-seed.json"), "utf8"));
 const ibTopicStructure = parseAssignedJson(ibSource, "var TOPIC_STRUCTURE = ", ";\n\n  function orderedUnique");
 const courses = ["AA HL", "AA SL", "AI HL", "AI SL"];
 const ibTopicOrder = [
@@ -86,7 +86,7 @@ for (const course of courses) {
 }
 
 const igcseSource = await readFile(resolve(root, "public/question-bank/igcse-bank.html"), "utf8");
-const igcseQuestions = parseAssignedJson(igcseSource, "var SEED = ", "\n];");
+const igcseQuestions = JSON.parse(await readFile(resolve(root, "question-bank-data/igcse-seed.json"), "utf8"));
 const igcseTopicStructure = parseAssignedJson(igcseSource, "var TOPIC_STRUCTURE = ", ";\n\n  function orderedUnique");
 const igcseTopicOrder = [
   "Numbers and the number system",

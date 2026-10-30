@@ -6,6 +6,7 @@ import { delimiter, dirname } from "node:path";
 const checks = [
   ["Lint", "node_modules/eslint/bin/eslint.js", "."],
   ["Fixed assignment-answer audit", "scripts/audit-assignment-choices.mjs"],
+  ["Question-bank delivery audit", "scripts/verify-question-bank-delivery.mjs"],
   ["Production build", "node_modules/next/dist/bin/next", "build", "--webpack"],
 ];
 
@@ -28,4 +29,4 @@ for (const [label, ...argumentsList] of checks) {
   }
 }
 
-console.log("\nRelease verification passed: lint, fixed-answer audit and production build all succeeded.");
+console.log("\nRelease verification passed: lint, fixed-answer audit, question-bank delivery audit and production build all succeeded.");

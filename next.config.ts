@@ -32,6 +32,18 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/question-bank/data/:asset*.js",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        source: "/question-bank/data/manifest.json",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+        ],
+      },
+      {
         source: "/(.*)",
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },

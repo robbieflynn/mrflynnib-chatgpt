@@ -10,7 +10,7 @@ Run:
 npm run verify:release
 ```
 
-This must finish successfully. It checks code quality, audits every fixed assignment-answer set, and creates a complete production build.
+This must finish successfully. It checks code quality, audits every fixed assignment-answer set, proves the optimized question-bank delivery preserves the canonical question IDs and ordering, and creates a complete production build.
 
 ## Branch and data safety
 

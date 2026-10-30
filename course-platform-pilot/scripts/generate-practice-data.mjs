@@ -6,8 +6,8 @@ import { fileURLToPath } from "node:url";
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(scriptDir, "../..");
 const distDir = path.join(rootDir, "course-platform-pilot/dist");
-const ibBankPath = path.join(rootDir, "public/question-bank/ib-bank.html");
-const igcseBankPath = path.join(rootDir, "public/question-bank/igcse-bank.html");
+const ibSeedPath = path.join(rootDir, "question-bank-data/ib-seed.json");
+const igcseSeedPath = path.join(rootDir, "question-bank-data/igcse-seed.json");
 const igcseLessonsPath = path.join(rootDir, "course-platform-pilot/igcse-lessons.json");
 const outputPath = path.join(distDir, "practice-data.js");
 const auditPath = path.join(rootDir, "course-platform-pilot/practice-audit.csv");
@@ -59,32 +59,9 @@ function loadWindowValue(filePath, key) {
   return sandbox.window[key];
 }
 
-function parseSeed(html) {
-  const marker = "var SEED = ";
-  const markerAt = html.indexOf(marker);
-  const start = html.indexOf("[", markerAt);
-  if (markerAt < 0 || start < 0) throw new Error("Question-bank SEED was not found");
-  let depth = 0;
-  let inString = false;
-  let escaped = false;
-  for (let index = start; index < html.length; index += 1) {
-    const character = html[index];
-    if (inString) {
-      if (escaped) escaped = false;
-      else if (character === "\\") escaped = true;
-      else if (character === '"') inString = false;
-      continue;
-    }
-    if (character === '"') inString = true;
-    else if (character === "[") depth += 1;
-    else if (character === "]" && --depth === 0) return JSON.parse(html.slice(start, index + 1));
-  }
-  throw new Error("Question-bank SEED is incomplete");
-}
-
 const library = loadWindowValue(path.join(distDir, "library-data.js"), "MR_FLYNN_LIBRARY");
-const ibSeed = parseSeed(fs.readFileSync(ibBankPath, "utf8")).map((question) => ({ ...question, sourceBank: "ib" }));
-const igcseSeed = parseSeed(fs.readFileSync(igcseBankPath, "utf8")).map((question) => ({ ...question, sourceBank: "igcse" }));
+const ibSeed = JSON.parse(fs.readFileSync(ibSeedPath, "utf8")).map((question) => ({ ...question, sourceBank: "ib" }));
+const igcseSeed = JSON.parse(fs.readFileSync(igcseSeedPath, "utf8")).map((question) => ({ ...question, sourceBank: "igcse" }));
 // A few AI HL syllabus skills have no clean standalone source in the verified
 // archive. These short Mr Flynn practice questions fill those exact gaps
 // without mislabelling them as past-paper questions or borrowing a later skill.
