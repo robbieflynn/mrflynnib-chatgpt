@@ -926,6 +926,20 @@
     return tuples;
   }
 
+  function expandNumericOneOfCollection(value) {
+    var source = clean(latexToPlain(value)).replace(/[.;]\s*$/, "");
+    var match = source.match(/^(-?\d+(?:\.\d+)?(?:\s*,\s*-?\d+(?:\.\d+)?)+)\s+and\s+one\s+of\s+(-?\d+(?:\.\d+)?(?:\s+or\s+-?\d+(?:\.\d+)?)+)$/i);
+    if (!match) return [];
+    var fixedValues = match[1].split(/\s*,\s*/).filter(Boolean);
+    var alternatives = match[2].split(/\s+or\s+/i).filter(Boolean);
+    if (fixedValues.length < 2 || alternatives.length < 2) return [];
+    return alternatives.map(function (alternative) {
+      return fixedValues.concat(alternative).sort(function (left, right) {
+        return Number(left) - Number(right);
+      }).join("; ");
+    });
+  }
+
   function extractAcceptedAnswers(rows, prompt) {
     if (!Array.isArray(rows) || requiresWhiteboard(prompt)) return [];
     if (/\bmaximum or minimum\b|\bminimum or maximum\b/i.test(plainText(prompt))) {
@@ -2420,6 +2434,12 @@
     var finalContent = String(selectedAnswerRow[0] || "")
       .replace(/\s*<b>\s*(?:Note|Notes)\s*:\s*<\/b>[\s\S]*$/i, "")
       .replace(/\s*(?:Note|Notes)\s*:[\s\S]*$/i, "");
+    // A quantified alternative belongs to the collection, not to the answer as a
+    // whole. For example, "3, 7, 8, 8 and one of 4 or 5 or 6" describes three
+    // complete five-number sets. Splitting on every "or" truncated this to
+    // "3, 7, 8, 8 and one of 4", "5" and "6".
+    var numericOneOfCollections = expandNumericOneOfCollection(finalContent);
+    if (numericOneOfCollections.length) return numericOneOfCollections;
     var alternatives = finalContent.split(/(?:<br\s*\/?>\s*<b>\s*OR\s*<\/b>\s*<br\s*\/?>|(?:\(\s*|,\s*|\s+)or\s+)/i);
     function isSignedExactAndDecimalPair(alternative) {
       var maths = mathFragments(alternative);
@@ -4287,6 +4307,41 @@
       || wordCount >= 5;
   }
 
+  function numericCollectionChoiceSet(accepted, correct, seed, prompt) {
+    if (accepted.length < 2) return null;
+    var instruction = finalInstructionText(prompt);
+    if (!/\b(?:possible\s+(?:set|value\s+for\s+each)|set\s+of\s+(?:values|numbers)|(?:three|four|five|six|seven|eight|nine|ten)\s+numbers)\b/i.test(instruction)) return null;
+    function parts(value) {
+      var tokens = String(value || "").split(";").map(function (token) { return token.trim(); }).filter(Boolean);
+      if (tokens.length < 3 || tokens.some(function (token) { return numericValue(token) === null; })) return null;
+      return tokens.map(numericValue);
+    }
+    var correctParts = parts(correct);
+    if (!correctParts || accepted.some(function (answer) {
+      var answerParts = parts(answer);
+      return !answerParts || answerParts.length !== correctParts.length;
+    })) return null;
+    var places = Math.max.apply(null, correctParts.map(function (_value, index) {
+      return decimalPlaces(String(correct).split(";")[index] || "");
+    }));
+    var candidates = [];
+    [-2, -1, 1, 2].forEach(function (delta) {
+      correctParts.forEach(function (_value, index) {
+        var changed = correctParts.slice();
+        changed[index] += delta;
+        changed.sort(function (left, right) { return left - right; });
+        var candidate = changed.map(function (value) { return formatNumber(value, places); }).join("; ");
+        if (!accepted.some(function (answer) { return equivalent(candidate, answer); })) addCandidate(candidates, candidate);
+      });
+    });
+    if (candidates.length < 4) return null;
+    var options = shuffled([correct].concat(candidates.slice(0, 4)), seed);
+    var correctOption = options.indexOf(correct);
+    return validateChoiceSet(accepted, options, correctOption)
+      ? { acceptedAnswers: accepted, options: options, correctOption: correctOption }
+      : null;
+  }
+
   function generateChoiceSet(acceptedAnswers, seed, prompt) {
     var accepted = (Array.isArray(acceptedAnswers) ? acceptedAnswers : []).map(clean).filter(isChoiceTextSafe);
     if (!accepted.length) return null;
@@ -4306,6 +4361,8 @@
       && !/[;±]|\band\b/i.test(correct)) return null;
     if (/\b(?:null\s+and\s+alternative\s+hypotheses|hypotheses)\b/i.test(finalInstruction)
       && !/;/.test(correct)) return null;
+    var numericCollectionSet = numericCollectionChoiceSet(accepted, correct, seed, prompt);
+    if (numericCollectionSet) return numericCollectionSet;
     var compoundInequalitySet = compoundInequalityChoiceSet(accepted, correct, seed, prompt);
     if (compoundInequalitySet) return compoundInequalitySet;
     var candidates = [];
