@@ -4,33 +4,30 @@ begin;
 -- lines.  The original assignment snapshot retained only k >= 6 and omitted
 -- the right-angled boundary case k = 3.  Keep both cases together in every
 -- existing assignment that contains this question.
-update public.assignment_questions
+update public.assignment_questions aq
 set response_type = 'multipart',
-    response_options = '[
-      {
-        "label":"a",
-        "mode":"multiple_choice",
-        "options":[
-          "QR=3*sqrt(3)+sqrt(7); QR=1*sqrt(3)-sqrt(7)",
-          "QR=3*sqrt(3)+sqrt(7); QR=5*sqrt(3)-sqrt(7)",
-          "QR=1*sqrt(3)+sqrt(7); QR=3*sqrt(3)-sqrt(7)",
-          "QR=3*sqrt(3)+sqrt(7); QR=3*sqrt(3)-sqrt(7)",
-          "QR=5*sqrt(3)+sqrt(7); QR=3*sqrt(3)-sqrt(7)"
-        ]
-      },
-      {
-        "label":"b",
-        "mode":"multiple_choice",
-        "options":[
-          "latex:k=3\\text{ or }k\\ge 6",
-          "k>3",
-          "3≤k≤6",
-          "k=3; k>6",
-          "k≥6"
-        ]
-      }
-    ]'::jsonb
-where question_id = 'N12TZ0HL_P1_Q7';
+    response_options = (
+      select jsonb_agg(
+        case when part.value->>'label' = 'b' then
+          jsonb_set(
+            jsonb_set(part.value, '{mode}', '"multiple_choice"'::jsonb, true),
+            '{options}',
+            '[
+              "latex:k=3\\text{ or }k\\ge 6",
+              "k>3",
+              "3≤k≤6",
+              "k=3; k>6",
+              "k≥6"
+            ]'::jsonb,
+            true
+          )
+        else part.value end
+        order by part.ordinality
+      )
+      from jsonb_array_elements(coalesce(aq.response_options, '[]'::jsonb))
+        with ordinality as part(value, ordinality)
+    )
+where aq.question_id = 'N12TZ0HL_P1_Q7';
 
 update public.assignment_answer_keys
 set accepted_answers = jsonb_set(
