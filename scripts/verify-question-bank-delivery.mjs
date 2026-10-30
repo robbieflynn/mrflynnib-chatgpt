@@ -29,6 +29,10 @@ assert(ibHtml.includes('/question-bank/whiteboard.js'), "IB shell lost the share
 assert(igcseHtml.includes('/question-bank/whiteboard.js'), "IGCSE shell lost the shared whiteboard");
 assert(ibHtml.includes('id="qb-search"'), "IB shell lost question search");
 assert(igcseHtml.includes('id="qb-search"'), "IGCSE shell lost question search");
+assert(ibHtml.includes("root.offsetTop + root.scrollHeight"), "IB shell lost the footer-clipping height guard");
+assert(igcseHtml.includes("root.offsetTop + root.scrollHeight"), "IGCSE shell lost the footer-clipping height guard");
+assert(ibHtml.includes("var deliveryCounts = window.__MR_FLYNN_QB_COUNTS__"), "IB course chooser lost full-bank counts");
+assert(ibHtml.includes("return loader(c).then(function(questions)"), "IB course switching no longer loads the selected bank");
 
 const courses = {
   "AA HL": "aahl",
@@ -54,5 +58,25 @@ for (const [course, key] of Object.entries(courses)) {
 }
 
 assert(igcseHtml.includes(`var SEED = [{`), "IGCSE compact seed is missing");
+
+const correctedNonRightIds = [
+  "4MA1_2018M_2H_Q18",
+  "4MA1_2019J_2HR_Q19",
+  "4MA1_2020J_1H_Q14",
+  "4MA1_2021M_2H_Q18",
+  "4MA1_2021N_2H_Q18",
+  "4MA1_2022M_1H_Q18",
+  "4MA1_2022M_1HR_Q17",
+  "4MA1_2023J_1H_Q16",
+];
+for (const id of correctedNonRightIds) {
+  const question = igcseQuestions.find((candidate) => candidate.id === id);
+  assert(question, `IGCSE classification audit lost ${id}`);
+  assert(
+    question.topics?.some((topic) => topic.sub === "Non-right-angled trigonometry"),
+    `IGCSE classification audit put ${id} back into right-angled trigonometry`,
+  );
+}
+
 console.log(`IGCSE: ${igcseQuestions.length} source records preserved`);
 console.log("Question-bank delivery verification passed.");

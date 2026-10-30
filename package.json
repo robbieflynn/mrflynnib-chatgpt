@@ -13,6 +13,7 @@
     "question-bank:verify": "node scripts/verify-question-bank-delivery.mjs",
     "audit:assignment-choices": "node scripts/audit-assignment-choices.mjs",
     "audit:past-papers": "node scripts/validate-past-paper-data.mjs",
+    "verify:release": "node scripts/verify-release.mjs",
     "import:teachable-access": "node scripts/import-teachable-access.mjs",
     "test:smoke": "node scripts/smoke-platform.mjs",
     "test:load": "node scripts/smoke-platform.mjs --load",

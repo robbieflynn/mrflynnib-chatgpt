@@ -65,7 +65,12 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
 
       const nextHeight = Number(event.data.height);
       if (Number.isFinite(nextHeight)) {
-        frameHeightRef.current = Math.max(620, Math.ceil(nextHeight));
+        // Keep the final question safely above the website footer. Diagrams,
+        // worked solutions and whiteboards can finish laying out after the
+        // embedded bank first reports its height, so an exact fit can clip the
+        // bottom of the card on some student devices.
+        const bottomClearance = assignmentView === "overview" ? 80 : 96;
+        frameHeightRef.current = Math.max(620, Math.ceil(nextHeight) + bottomClearance);
         setFrameHeight(frameHeightRef.current);
       }
 
@@ -95,7 +100,7 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
       window.removeEventListener("scroll", handleViewportChange);
       window.removeEventListener("resize", handleViewportChange);
     };
-  }, [loadMoreIfNeeded]);
+  }, [assignmentView, loadMoreIfNeeded]);
 
   return (
     <iframe
