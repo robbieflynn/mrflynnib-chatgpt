@@ -13,6 +13,7 @@ type QuestionBankMessage = {
   type?: string;
   questionId?: string;
   completed?: boolean;
+  starred?: boolean;
   document?: unknown;
   response?: unknown;
 };
@@ -108,6 +109,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
   const clientRef = useRef<SupabaseClient | null>(null);
   const userRef = useRef<User | null>(null);
   const completedRef = useRef<Set<string>>(new Set());
+  const starredRef = useRef<Set<string>>(new Set());
   const assignmentQuestionsRef = useRef<AssignmentQuestionState[]>(initialQuestions);
 
   useEffect(() => {
@@ -132,6 +134,10 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         assignmentSubmitted,
         questions: assignmentQuestionsRef.current,
       });
+    }
+
+    function handleFrameLoad() {
+      if (assignmentId) sendAssignmentState();
     }
 
     function scheduleAssignmentStateRetry() {
@@ -386,6 +392,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
     async function publishAccountState(user: User | null) {
       userRef.current = user;
       completedRef.current = new Set();
+      starredRef.current = new Set();
       if (user && clientRef.current) {
         let pageStart = 0;
         while (true) {
@@ -402,6 +409,20 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
           if (data.length < 1000) break;
           pageStart += 1000;
         }
+        pageStart = 0;
+        while (true) {
+          const { data, error } = await clientRef.current
+            .from("question_stars")
+            .select("question_id")
+            .eq("user_id", user.id)
+            .eq("bank", bank)
+            .range(pageStart, pageStart + 999);
+          if (cancelled) return;
+          if (error || !data) break;
+          data.forEach((row) => starredRef.current.add(String(row.question_id)));
+          if (data.length < 1000) break;
+          pageStart += 1000;
+        }
       }
       send({
         type: "mrflynnib-account-state",
@@ -409,6 +430,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         signedIn: Boolean(user),
         readOnly: Boolean(viewedStudentId) || Boolean(assignmentId && assignmentSubmitted),
         completedQuestionIds: Array.from(completedRef.current),
+        starredQuestionIds: Array.from(starredRef.current),
       });
       if (assignmentId) await publishAssignmentState();
       if (user) void flushPendingSaves();
@@ -429,6 +451,11 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         return;
       }
 
+      if (message.type === "mrflynnib-assignment-state-request") {
+        sendAssignmentState();
+        return;
+      }
+
       if (message.type === "mrflynnib-account-required") {
         const next = `${window.location.pathname}${window.location.search}`;
         router.push(`${bank === "igcse" ? "/igcse/account" : "/account"}?next=${encodeURIComponent(next)}`);
@@ -446,6 +473,36 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       }
 
       if (!questionId || !clientRef.current || !userRef.current) return;
+
+      if (message.type === "mrflynnib-star-set") {
+        const starred = Boolean(message.starred);
+        const result = starred
+          ? await clientRef.current.from("question_stars").insert({
+              user_id: userRef.current.id,
+              bank,
+              question_id: questionId,
+            })
+          : await clientRef.current.from("question_stars").delete()
+              .eq("user_id", userRef.current.id)
+              .eq("bank", bank)
+              .eq("question_id", questionId);
+        // A duplicate means this question was already starred in another tab.
+        // Treat it as success so the account state remains consistent without
+        // requiring UPDATE access for what is otherwise an insert-only action.
+        const succeeded = !result.error || (starred && result.error.code === "23505");
+        if (succeeded) {
+          if (starred) starredRef.current.add(questionId);
+          else starredRef.current.delete(questionId);
+        }
+        send({
+          type: "mrflynnib-star-result",
+          questionId,
+          starred,
+          ok: succeeded,
+          error: result.error?.message ?? null,
+        });
+        return;
+      }
 
       if (message.type === "mrflynnib-assignment-response-save") {
         if (!assignmentId || viewedStudentId) return;
@@ -601,10 +658,15 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
     }
 
     window.addEventListener("message", handleMessage);
+    frame?.addEventListener("load", handleFrameLoad);
+    if (assignmentId) sendAssignmentState();
 
     if (!hasSupabaseBrowserConfig()) {
       publishAccountState(null);
-      return () => window.removeEventListener("message", handleMessage);
+      return () => {
+        window.removeEventListener("message", handleMessage);
+        frame?.removeEventListener("load", handleFrameLoad);
+      };
     }
 
     const client = createClient();
@@ -623,6 +685,7 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       if (retryTimer) window.clearTimeout(retryTimer);
       if (assignmentRetryTimer) window.clearTimeout(assignmentRetryTimer);
       window.removeEventListener("message", handleMessage);
+      frame?.removeEventListener("load", handleFrameLoad);
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
       authListener.subscription.unsubscribe();

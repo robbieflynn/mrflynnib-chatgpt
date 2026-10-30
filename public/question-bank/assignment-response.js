@@ -16,6 +16,9 @@
   var activeId = null;
   var activePartKey = null;
   var revealActiveNavigation = false;
+  var assignmentStateReceived = false;
+  var assignmentStateRetryTimer = null;
+  var lastNavigationSignature = "";
   var partDrafts = {};
   var collapsedParts = {};
   var completedQuestionIds = new Set();
@@ -31,7 +34,13 @@
     ".qb-assignment-nav{margin:0 0 18px;padding:14px 16px;display:grid;gap:11px;border:1px solid #c9d7df;border-radius:14px;background:#fff;box-shadow:0 10px 28px rgba(13,21,46,.06);font-family:var(--ui)}",
     ".qb-assignment-nav-head{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#526b7c;font-size:12px;font-weight:750}",
     ".qb-assignment-nav-head strong{color:var(--flynn-blue-dark);font-size:14px}",
-    ".qb-assignment-tabs{display:flex;align-items:stretch;gap:7px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}",
+    ".qb-assignment-tabs-row{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px}",
+    ".qb-assignment-tabs{min-width:0;display:flex;align-items:stretch;gap:7px;overflow-x:auto;padding:4px 3px 7px;scrollbar-width:thin;scroll-behavior:smooth;scroll-snap-type:x proximity;touch-action:pan-x;-webkit-overflow-scrolling:touch}",
+    ".qb-assignment-tabs>*{scroll-snap-align:center}",
+    ".qb-assignment-scroll-button{width:44px;height:44px;padding:0!important;display:grid!important;place-items:center;border:1px solid #9bbdd2!important;border-radius:50%!important;background:#eef7fd!important;color:var(--flynn-blue-dark)!important;font:900 22px/1 var(--ui)!important;box-shadow:0 5px 14px rgba(25,83,126,.12);cursor:pointer}",
+    ".qb-assignment-scroll-button:hover:not(:disabled){border-color:var(--flynn-blue)!important;background:#dceef9!important;transform:translateY(-1px)}",
+    ".qb-assignment-scroll-button:focus-visible{outline:3px solid rgba(35,127,202,.24);outline-offset:2px}",
+    ".qb-assignment-scroll-button:disabled{opacity:.28!important;box-shadow:none;cursor:default}",
     ".qb-assignment-tab{min-width:44px;height:40px;padding:0 10px;border:1px solid #c8d5dc;border-radius:10px;background:#f7fafb;color:#526b7c;font:800 13px/1 var(--ui);cursor:pointer}",
     ".qb-assignment-tab:hover{border-color:var(--flynn-blue);color:var(--flynn-blue-dark)}",
     ".qb-assignment-tab.is-active{border-color:var(--flynn-blue);background:var(--flynn-blue);color:#fff;box-shadow:0 6px 14px rgba(35,127,202,.2)}",
@@ -77,9 +86,16 @@
     ".qb-response-option input{width:18px;height:18px;accent-color:var(--flynn-blue)}",
     ".qb-response-part-options{width:100%}",
     ".qb-response-status{min-height:20px;color:#5f7180;font-size:13px}",
-    ".qb-response-status.is-correct{color:#18704f}",
+    ".qb-response-status.is-correct{min-height:48px;padding:10px 13px;display:flex;align-items:center;gap:9px;border:1px solid #79c8a4;border-radius:10px;background:linear-gradient(135deg,#e6f8ef,#f4fcf8);color:#11633f;font-size:15px;font-weight:850;box-shadow:0 7px 18px rgba(23,112,79,.1)}",
+    ".qb-response-status.is-correct:before{content:'✓';width:27px;height:27px;flex:0 0 27px;display:grid;place-items:center;border-radius:50%;background:#18704f;color:#fff;font-size:16px;line-height:1}",
     ".qb-response-status.is-incorrect{color:#9f2f2f}",
+    ".qb-response-part.is-correct{border-color:#86cbae;background:linear-gradient(135deg,#f0faf5,#fff);box-shadow:0 6px 16px rgba(23,112,79,.08)}",
+    ".qb-response-part.is-correct>.qb-response-part-summary{color:#11633f;font-size:14px;font-weight:850}",
     ".qb-assignment-response.is-readonly{background:#f7f8f9}",
+    ".qb-assignment-response-loading{min-height:96px;display:flex;align-items:center;justify-content:center;gap:11px;color:#526b7c}",
+    ".qb-assignment-response-loading:before{content:'';width:22px;height:22px;flex:0 0 22px;border:3px solid #c8dce9;border-top-color:var(--flynn-blue);border-radius:50%;animation:qb-assignment-loading .8s linear infinite}",
+    ".qb-assignment-response-loading strong{color:var(--flynn-blue-dark);font-size:14px}",
+    "@keyframes qb-assignment-loading{to{transform:rotate(360deg)}}",
     ".qb-response-readonly{padding:10px 12px;border-radius:8px;background:#fff;border:1px solid #d6dee2;white-space:pre-wrap}",
     ".qb-response-readonly-parts{display:grid;gap:8px}",
     ".qb-response-readonly-part{display:grid;grid-template-columns:minmax(48px,auto) minmax(0,1fr) auto;align-items:center;gap:10px}",
@@ -110,7 +126,7 @@
     ".qb-assignment-overview-mode .qb-assignment-response{margin-top:10px;padding:11px}",
     ".qb-assignment-overview-mode .qb-response-readonly{max-height:92px;overflow:auto}",
     ".qb-assignment-detail-mode .qb-whiteboard-open-button{display:none}",
-    "@media(max-width:720px){.qb-assignment-overview-mode #qb-list{grid-template-columns:1fr!important}.qb-assignment-response-head{align-items:flex-start;flex-direction:column}.qb-assignment-nav{padding:12px}.qb-assignment-question-group{padding:3px}.qb-assignment-part-tab{min-width:28px;padding:0 5px}}"
+    "@media(max-width:720px){.qb-assignment-overview-mode #qb-list{grid-template-columns:1fr!important}.qb-assignment-response-head{align-items:flex-start;flex-direction:column}.qb-assignment-nav{padding:12px 10px}.qb-assignment-nav-head{padding:0 2px}.qb-assignment-tabs-row{grid-template-columns:46px minmax(0,1fr) 46px;gap:5px}.qb-assignment-scroll-button{width:46px;height:46px}.qb-assignment-tabs{padding-inline:2px}.qb-assignment-question-group{padding:3px}.qb-assignment-part-tab{min-width:28px;padding:0 5px}}"
   ].join("");
   document.head.appendChild(style);
 
@@ -133,17 +149,30 @@
   function playFeedback(correct) {
     if (!audioContext) return;
     var now = audioContext.currentTime;
-    var notes = correct ? [[523.25, 0], [659.25, .11], [783.99, .22]] : [[220, 0], [174.61, .16]];
-    notes.forEach(function (note) {
+    var notes = correct
+      ? [[523.25, 0, .2], [659.25, .09, .2], [783.99, .18, .22], [1046.5, .3, .38]]
+      : [[220, 0, .18], [174.61, .16, .22]];
+    notes.forEach(function (note, index) {
       var oscillator = audioContext.createOscillator();
       var gain = audioContext.createGain();
-      oscillator.type = correct ? "sine" : "triangle";
+      oscillator.type = correct ? (index === notes.length - 1 ? "sine" : "triangle") : "triangle";
       oscillator.frequency.value = note[0];
       gain.gain.setValueAtTime(.0001, now + note[1]);
-      gain.gain.exponentialRampToValueAtTime(correct ? .12 : .08, now + note[1] + .025);
-      gain.gain.exponentialRampToValueAtTime(.0001, now + note[1] + .18);
+      gain.gain.exponentialRampToValueAtTime(correct ? .075 : .055, now + note[1] + .018);
+      gain.gain.exponentialRampToValueAtTime(.0001, now + note[1] + note[2]);
       oscillator.connect(gain); gain.connect(audioContext.destination);
-      oscillator.start(now + note[1]); oscillator.stop(now + note[1] + .2);
+      oscillator.start(now + note[1]); oscillator.stop(now + note[1] + note[2] + .02);
+      if (correct && index === notes.length - 1) {
+        var shimmer = audioContext.createOscillator();
+        var shimmerGain = audioContext.createGain();
+        shimmer.type = "sine";
+        shimmer.frequency.value = note[0] * 2;
+        shimmerGain.gain.setValueAtTime(.0001, now + note[1]);
+        shimmerGain.gain.exponentialRampToValueAtTime(.018, now + note[1] + .015);
+        shimmerGain.gain.exponentialRampToValueAtTime(.0001, now + note[1] + .3);
+        shimmer.connect(shimmerGain); shimmerGain.connect(audioContext.destination);
+        shimmer.start(now + note[1]); shimmer.stop(now + note[1] + .32);
+      }
     });
   }
 
@@ -158,7 +187,7 @@
   function statusCopy(item) {
     if (item && item.submitted) return "Submitted. This answer is final.";
     if (!item.response) return "";
-    if (item.isCorrect === true) return "Correct. Well done!";
+    if (item.isCorrect === true) return "Correct! Well done.";
     if (item.isCorrect === false && Number(item.attemptCount || 0) >= 2) return "That was your second try. Your answer has been saved for your teacher.";
     if (item.isCorrect === false) return "Oops, that’s not right. Try again. You have one attempt left.";
     return item.readOnly ? "Saved for teacher review" : "Saved. Your teacher can review your whiteboard or paper working.";
@@ -233,7 +262,7 @@
   }
 
   function partStatusCopy(partState, readOnly) {
-    if (partState.result === "correct") return "Correct. Well done!";
+    if (partState.result === "correct") return "Correct! Well done.";
     if (partState.result === "retry") return "Not quite. Try this part once more.";
     if (partState.result === "incorrect_final") return "Second try saved for your teacher.";
     if (partState.result === "saved") return readOnly ? "Saved for teacher review." : "Saved. Your teacher can review this part.";
@@ -380,22 +409,65 @@
 
   function renderNavigation() {
     if (!navigation) return;
-    var previousTabs = navigation.querySelector(".qb-assignment-tabs");
-    var previousScrollLeft = previousTabs ? previousTabs.scrollLeft : 0;
     var visibleIds = orderedIds.filter(function (id) { return document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]'); });
     if (!activeId || visibleIds.indexOf(activeId) === -1) activeId = visibleIds.find(function (id) { return !isQuestionFinished(state[id]); }) || visibleIds[0] || null;
+    var navigationSignature = [
+      orderedIds.join("\u0000"),
+      visibleIds.join("\u0000"),
+      activeId || "",
+      activePartKey || "",
+      orderedIds.map(function (id) {
+        var item = state[id];
+        return questionState(item) + ":" + multipartDefinitions(item).map(function (definition) {
+          return definition.label + "=" + partNavigationState(item, definition.label);
+        }).join(",");
+      }).join("|")
+    ].join("\u0001");
+    // Question cards can finish their own whiteboard/layout setup after the
+    // assignment controls have rendered. Those DOM changes used to rebuild the
+    // complete navigator repeatedly, detaching a question button between the
+    // student's press and click. Keep the existing controls when their actual
+    // state has not changed.
+    if (navigationSignature === lastNavigationSignature && navigation.childElementCount) return;
+    lastNavigationSignature = navigationSignature;
+    var previousTabs = navigation.querySelector(".qb-assignment-tabs");
+    var previousScrollLeft = previousTabs ? previousTabs.scrollLeft : 0;
     navigation.replaceChildren();
     var head = document.createElement("div"); head.className = "qb-assignment-nav-head";
     var heading = document.createElement("strong"); heading.textContent = activeId ? "Question " + (orderedIds.indexOf(activeId) + 1) + " of " + orderedIds.length + (activePartKey ? " · Part " + partLabel(activePartKey) : "") : "Assignment questions";
     var summary = document.createElement("span"); summary.textContent = orderedIds.filter(function (id) { return isQuestionFinished(state[id]); }).length + " completed";
     head.appendChild(heading); head.appendChild(summary); navigation.appendChild(head);
-    var tabs = document.createElement("div"); tabs.className = "qb-assignment-tabs";
+    var tabsRow = document.createElement("div"); tabsRow.className = "qb-assignment-tabs-row";
+    var scrollPrevious = document.createElement("button"); scrollPrevious.type = "button"; scrollPrevious.className = "qb-assignment-scroll-button"; scrollPrevious.textContent = "←"; scrollPrevious.setAttribute("aria-label", "Show earlier questions"); scrollPrevious.setAttribute("title", "Earlier questions");
+    var tabs = document.createElement("div"); tabs.className = "qb-assignment-tabs"; tabs.setAttribute("role", "group"); tabs.setAttribute("aria-label", "Question number navigation"); tabs.setAttribute("tabindex", "0");
+    var scrollNext = document.createElement("button"); scrollNext.type = "button"; scrollNext.className = "qb-assignment-scroll-button"; scrollNext.textContent = "→"; scrollNext.setAttribute("aria-label", "Show later questions"); scrollNext.setAttribute("title", "Later questions");
+    function bindQuestionActivation(button, id, partKey) {
+      var pointerStart = null;
+      var handledPointer = false;
+      button.addEventListener("pointerdown", function (event) {
+        pointerStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+        handledPointer = false;
+      });
+      button.addEventListener("pointerup", function (event) {
+        if (!pointerStart || pointerStart.id !== event.pointerId) return;
+        var moved = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+        pointerStart = null;
+        if (moved > 10) return;
+        handledPointer = true;
+        goToQuestion(id, true, partKey);
+      });
+      button.addEventListener("pointercancel", function () { pointerStart = null; });
+      button.addEventListener("click", function () {
+        if (handledPointer) { handledPointer = false; return; }
+        goToQuestion(id, true, partKey);
+      });
+    }
     orderedIds.forEach(function (id, index) {
       var item = state[id];
       var definitions = multipartDefinitions(item);
       var isGrouped = definitions.length > 1;
       var button = document.createElement("button"); button.type = "button"; button.className = "qb-assignment-tab is-" + questionState(item) + (id === activeId && !activePartKey ? " is-active" : ""); button.textContent = "Q" + (index + 1); button.setAttribute("aria-label", "Open question " + (index + 1)); button.setAttribute("aria-current", id === activeId && !activePartKey ? "step" : "false"); button.disabled = !document.querySelector('.qb-card[data-id="' + CSS.escape(id) + '"]');
-      button.addEventListener("click", function () { goToQuestion(id, true); });
+      bindQuestionActivation(button, id, null);
       if (!isGrouped) { tabs.appendChild(button); return; }
       var group = document.createElement("div"); group.className = "qb-assignment-question-group" + (id === activeId ? " is-active" : "");
       group.setAttribute("role", "group"); group.setAttribute("aria-label", "Question " + (index + 1) + " parts"); group.appendChild(button);
@@ -405,20 +477,37 @@
         var partButton = document.createElement("button"); partButton.type = "button"; partButton.className = "qb-assignment-part-tab is-" + status + (id === activeId && activePartKey === definition.label ? " is-active" : ""); partButton.textContent = partNavLabel(definition.label);
         partButton.setAttribute("aria-label", "Open question " + (index + 1) + ", part " + partLabel(definition.label) + ", " + partNavigationDescription(status));
         partButton.setAttribute("aria-current", id === activeId && activePartKey === definition.label ? "step" : "false"); partButton.disabled = button.disabled;
-        partButton.addEventListener("click", function () { goToQuestion(id, true, definition.label); }); partTabs.appendChild(partButton);
+        bindQuestionActivation(partButton, id, definition.label); partTabs.appendChild(partButton);
       });
       group.appendChild(partTabs); tabs.appendChild(group);
     });
-    navigation.appendChild(tabs);
+    function updateScrollButtons() {
+      var maxScroll = Math.max(0, tabs.scrollWidth - tabs.clientWidth);
+      scrollPrevious.disabled = tabs.scrollLeft <= 3;
+      scrollNext.disabled = tabs.scrollLeft >= maxScroll - 3;
+    }
+    function moveQuestionTabs(direction) {
+      var distance = Math.max(180, Math.round(tabs.clientWidth * .72));
+      tabs.scrollBy({ left: direction * distance, behavior: "smooth" });
+      window.setTimeout(updateScrollButtons, 360);
+    }
+    scrollPrevious.addEventListener("click", function () { moveQuestionTabs(-1); });
+    scrollNext.addEventListener("click", function () { moveQuestionTabs(1); });
+    tabs.addEventListener("scroll", updateScrollButtons, { passive: true });
+    tabsRow.appendChild(scrollPrevious); tabsRow.appendChild(tabs); tabsRow.appendChild(scrollNext); navigation.appendChild(tabsRow);
     if (revealActiveNavigation) {
       revealActiveNavigation = false;
       window.requestAnimationFrame(function () {
         var activeTab = tabs.querySelector(".qb-assignment-question-group.is-active") || tabs.querySelector(".qb-assignment-tab.is-active");
-        if (!activeTab) return;
+        if (!activeTab) { updateScrollButtons(); return; }
         var targetLeft = activeTab.offsetLeft - (tabs.clientWidth - activeTab.clientWidth) / 2;
         tabs.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" });
+        window.setTimeout(updateScrollButtons, 360);
       });
-    } else tabs.scrollLeft = previousScrollLeft;
+    } else {
+      tabs.scrollLeft = previousScrollLeft;
+      window.requestAnimationFrame(updateScrollButtons);
+    }
   }
 
   function appendStepControls(panel, id) {
@@ -471,7 +560,18 @@
     var id = card.dataset.id;
     var item = state[id];
     var existing = card.querySelector(".qb-assignment-response");
-    if (!item) { if (existing) existing.remove(); delete card.dataset.responseVersion; return; }
+    if (!item) {
+      if (!assignmentStateReceived && view === "step") {
+        var firstCard = document.querySelector("#qb-list>.qb-card");
+        card.classList.toggle("qb-assignment-current", card === firstCard);
+        if (card === firstCard && !existing) {
+          var loadingPanel = document.createElement("div"); loadingPanel.className = "qb-assignment-response qb-assignment-response-loading"; loadingPanel.setAttribute("role", "status"); loadingPanel.setAttribute("aria-live", "polite");
+          var loadingCopy = document.createElement("strong"); loadingCopy.textContent = "Loading your answer…"; loadingPanel.appendChild(loadingCopy); card.appendChild(loadingPanel);
+        } else if (card !== firstCard && existing && existing.classList.contains("qb-assignment-response-loading")) existing.remove();
+      } else if (existing) existing.remove();
+      delete card.dataset.responseVersion;
+      return;
+    }
     var sourceNumber = card.querySelector(".qb-card-num");
     if (sourceNumber) {
       var assignmentPosition = orderedIds.indexOf(id) + 1;
@@ -548,7 +648,7 @@
         var savedPartState = multipartPartState(item, definition.label);
         var actions = document.createElement("div"); actions.className = "qb-response-part-actions";
         var partButton = document.createElement("button"); partButton.type = "button"; partButton.textContent = (definition.mode === "whiteboard" ? "Save " : "Check ") + partLabel(definition.label);
-        var partStatus = document.createElement("div"); partStatus.className = "qb-response-status" + (savedPartState.isCorrect === true ? " is-correct" : savedPartState.isCorrect === false ? " is-incorrect" : ""); partStatus.textContent = partStatusCopy(savedPartState, false);
+        var partStatus = document.createElement("div"); partStatus.className = "qb-response-status" + (savedPartState.isCorrect === true ? " is-correct" : savedPartState.isCorrect === false ? " is-incorrect" : ""); partStatus.setAttribute("role", "status"); partStatus.setAttribute("aria-live", "polite"); partStatus.textContent = partStatusCopy(savedPartState, false);
         var partLocked = savedPartState.result === "correct" || savedPartState.result === "incorrect_final" || savedPartState.result === "saved";
         if (partLocked) { partButton.disabled = true; content.querySelectorAll("input").forEach(function (partInput) { partInput.disabled = true; }); }
         partButton.addEventListener("click", function () {
@@ -569,8 +669,8 @@
         actions.appendChild(partButton); actions.appendChild(partStatus); content.appendChild(actions);
         row.appendChild(labelBadge); row.appendChild(content);
         if (savedPartState.result === "correct") {
-          row.classList.add("has-toggle");
-          var summary = document.createElement("span"); summary.className = "qb-response-part-summary"; summary.textContent = "Correct ✓"; row.appendChild(summary);
+          row.classList.add("has-toggle", "is-correct");
+          var summary = document.createElement("span"); summary.className = "qb-response-part-summary"; summary.textContent = "✓ Correct"; row.appendChild(summary);
           var toggle = document.createElement("button"); toggle.type = "button"; toggle.className = "qb-response-part-toggle";
           var isCollapsed = collapsedParts[draftKey] !== false;
           function updateCollapsedPart() {
@@ -609,7 +709,7 @@
     appendMathKeyboard(panel, mathInputs);
     if (!isMultipart) {
       var button = document.createElement("button"); button.type = "button"; button.textContent = item.responseType === "teacher_review" ? "Save completion" : "Check answer";
-      var status = document.createElement("div"); status.className = "qb-response-status" + (item.isCorrect === true ? " is-correct" : item.isCorrect === false ? " is-incorrect" : ""); status.textContent = statusCopy(item);
+      var status = document.createElement("div"); status.className = "qb-response-status" + (item.isCorrect === true ? " is-correct" : item.isCorrect === false ? " is-incorrect" : ""); status.setAttribute("role", "status"); status.setAttribute("aria-live", "polite"); status.textContent = statusCopy(item);
       var locked = item.responseType !== "teacher_review" && isQuestionFinished(item);
       if (locked) { button.disabled = true; panel.querySelectorAll("input").forEach(function (input) { input.disabled = true; }); }
       button.addEventListener("click", function () {
@@ -661,6 +761,8 @@
       return;
     }
     if (event.data.type === "mrflynnib-assignment-response-state" && Array.isArray(event.data.questions)) {
+      assignmentStateReceived = true;
+      if (assignmentStateRetryTimer) { window.clearTimeout(assignmentStateRetryTimer); assignmentStateRetryTimer = null; }
       state = {};
       feedbackMode = String(event.data.feedbackMode || "immediate");
       assignmentSubmitted = Boolean(event.data.assignmentSubmitted);
@@ -736,8 +838,28 @@
     }
   });
 
+  function mutationNeedsDecoration(record) {
+    if (record.target === list) {
+      return Array.from(record.addedNodes).concat(Array.from(record.removedNodes)).some(function (node) {
+        return node instanceof HTMLElement && (node.classList.contains("qb-card") || Boolean(node.querySelector && node.querySelector(".qb-card")));
+      });
+    }
+    var card = record.target instanceof HTMLElement ? record.target.closest(".qb-card") : null;
+    if (!card || !state[card.dataset.id]) return false;
+    // If the bank replaces a card body on a slow device, restore the response
+    // controls. Ignore mutations made by those controls themselves.
+    if (!card.querySelector(".qb-assignment-response")) return true;
+    if (view === "overview" || view === "detail") {
+      return Array.from(record.addedNodes).some(function (node) {
+        return node instanceof HTMLElement && (node.matches(".qb-whiteboard-open-button") || Boolean(node.querySelector(".qb-whiteboard-open-button")));
+      });
+    }
+    return false;
+  }
+
   var decorateScheduled = false;
-  new MutationObserver(function () {
+  new MutationObserver(function (records) {
+    if (!records.some(mutationNeedsDecoration)) return;
     if (decorateScheduled) return;
     decorateScheduled = true;
     window.requestAnimationFrame(function () { decorateScheduled = false; decorateAll(); });
@@ -745,5 +867,10 @@
   window.setTimeout(decorateAll, 0);
   window.setTimeout(decorateAll, 300);
   window.setTimeout(decorateAll, 1000);
-  window.parent.postMessage({ type: "mrflynnib-assignment-responses-ready" }, window.location.origin);
+  function requestAssignmentState(initial) {
+    if (assignmentStateReceived) return;
+    window.parent.postMessage({ type: initial ? "mrflynnib-assignment-responses-ready" : "mrflynnib-assignment-state-request" }, window.location.origin);
+    assignmentStateRetryTimer = window.setTimeout(function () { requestAssignmentState(false); }, 700);
+  }
+  requestAssignmentState(true);
 }());

@@ -8,6 +8,12 @@
   var assignmentWhiteboard = whiteboardParams.get('assignmentWork') === '1';
   var layoutStorageKey = assignmentWhiteboard ? 'mrflynnib-whiteboard-layout-assignment' : 'mrflynnib-whiteboard-layout-question-bank';
   var whiteboardLayout = assignmentWhiteboard ? 'below' : 'side';
+  var strokeSequence = 0;
+
+  function nextStrokeId() {
+    strokeSequence += 1;
+    return 'stroke-' + Date.now().toString(36) + '-' + strokeSequence.toString(36);
+  }
 
   try {
     var storedLayout = window.localStorage.getItem(layoutStorageKey);
@@ -28,9 +34,11 @@
     window.dispatchEvent(new Event('resize'));
   }
 
-  function toolButton(action, label, pressed) {
+  function toolButton(action, label, pressed, description) {
     return '<button type="button" class="qb-whiteboard-tool" data-whiteboard-action="' + action + '"' +
-      (pressed !== undefined ? ' aria-pressed="' + pressed + '"' : '') + '>' + label + '</button>';
+      (pressed !== undefined ? ' aria-pressed="' + pressed + '"' : '') +
+      (description ? ' aria-label="' + description + '" title="' + description + '"' : '') +
+      '>' + label + '</button>';
   }
 
   function colourButton(value, label, selected) {
@@ -40,7 +48,12 @@
   }
 
   function setupCard(card) {
-    if (card.getAttribute('data-whiteboard-ready')) return;
+    // A fixed assignment can take longer than the old one-second retry window
+    // to render on a school device. It can also replace a card body while the
+    // outer card survives. Only treat the card as ready when the actual
+    // workspace is still present; otherwise rebuild it from the new body.
+    if (card.getAttribute('data-whiteboard-ready') && card.querySelector('.qb-question-workspace')) return;
+    card.removeAttribute('data-whiteboard-ready');
     var body = card.querySelector('.qb-body');
     if (!body) return;
     card.setAttribute('data-whiteboard-ready', '1');
@@ -81,7 +94,11 @@
           '</div>' +
           toolButton('pen', 'Pen', true) +
           toolButton('highlighter', 'Highlighter', false) +
-          toolButton('eraser', 'Eraser', false) +
+          '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type">' +
+            '<span>Erase</span>' +
+            toolButton('precision-eraser', 'Part', false, 'Precision eraser: remove only the area you rub over') +
+            toolButton('stroke-eraser', 'Stroke', false, 'Stroke eraser: remove a whole pen or highlighter stroke') +
+          '</div>' +
           toolButton('pan', 'Pan', false) +
           toolButton('move-image', 'Move image', false) +
           '<div class="qb-whiteboard-colours" role="group" aria-label="Pen colour">' +
@@ -145,6 +162,7 @@
     var documentLoaded = false;
     var localDirty = false;
     var activeStroke = null;
+    var activeStrokeErase = null;
     var activePan = null;
     var activeImage = null;
     var straightTimer = null;
@@ -194,14 +212,19 @@
         return Math.round(Number(value) * 100000) / 100000;
       }
       return {
-        version: 4,
+        version: 5,
         paper: paperStyle,
         pages: pageCount,
         columns: columnCount,
         actions: actions.map(function (action) {
           if (action.type === 'clear') return { type: 'clear' };
+          if (action.type === 'stroke-erase') return {
+            type: 'stroke-erase',
+            strokeIds: action.strokeIds.slice(0, 1000)
+          };
           if (action.type === 'stroke') return {
             type: 'stroke',
+            id: action.id,
             mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
             colour: action.colour,
             straightened: Boolean(action.straightened),
@@ -261,6 +284,7 @@
       if (activePointer !== null) ids.push(activePointer);
       window.clearTimeout(straightTimer);
       activeStroke = null;
+      activeStrokeErase = null;
       activePan = null;
       activeImage = null;
       activePointer = null;
@@ -289,10 +313,27 @@
       undoLastAction();
     });
 
-    function hasVisibleWork() {
+    function visibleStrokeState() {
+      var start = 0;
+      var hidden = new Set();
       for (var i = actions.length - 1; i >= 0; i--) {
-        if (actions[i].type === 'clear') return false;
-        if (actions[i].type === 'stroke' || actions[i].type === 'image') return true;
+        if (actions[i].type === 'clear') {
+          start = i + 1;
+          break;
+        }
+      }
+      for (var index = start; index < actions.length; index++) {
+        if (actions[index].type !== 'stroke-erase') continue;
+        actions[index].strokeIds.forEach(function (id) { hidden.add(id); });
+      }
+      return { start: start, hidden: hidden };
+    }
+
+    function hasVisibleWork() {
+      var visible = visibleStrokeState();
+      for (var i = visible.start; i < actions.length; i++) {
+        if (actions[i].type === 'image') return true;
+        if (actions[i].type === 'stroke' && actions[i].mode !== 'eraser' && !visible.hidden.has(actions[i].id)) return true;
       }
       return false;
     }
@@ -369,13 +410,10 @@
       imageCtx.save();
       ctx.scale(canvas.width / canvas.clientWidth, canvas.height / canvas.clientHeight);
       imageCtx.scale(imageCanvas.width / imageCanvas.clientWidth, imageCanvas.height / imageCanvas.clientHeight);
-      actions.forEach(function (action) {
-        if (action.type === 'clear') {
-          ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-          imageCtx.clearRect(0, 0, imageCanvas.clientWidth, imageCanvas.clientHeight);
-        }
-        else if (action.type === 'image') drawImage(action);
-        else drawStroke(action);
+      var visible = visibleStrokeState();
+      actions.slice(visible.start).forEach(function (action) {
+        if (action.type === 'image') drawImage(action);
+        else if (action.type === 'stroke' && !visible.hidden.has(action.id)) drawStroke(action);
       });
       ctx.restore();
       imageCtx.restore();
@@ -493,6 +531,58 @@
       if (segment.length > 1) drawStrokeIncrement(activeStroke, segment);
     }
 
+    function distanceToSegment(point, start, end) {
+      var dx = end.x - start.x;
+      var dy = end.y - start.y;
+      if (!dx && !dy) return Math.hypot(point.x - start.x, point.y - start.y);
+      var progress = Math.max(0, Math.min(1,
+        ((point.x - start.x) * dx + (point.y - start.y) * dy) / (dx * dx + dy * dy)
+      ));
+      return Math.hypot(point.x - (start.x + progress * dx), point.y - (start.y + progress * dy));
+    }
+
+    function strokeTouchesPoint(stroke, point, radius) {
+      if (!stroke.points.length) return false;
+      var pixelPoints = stroke.points.map(function (strokePoint) {
+        return { x: strokePoint.x * canvas.clientWidth, y: strokePoint.y * canvas.clientHeight };
+      });
+      if (pixelPoints.length === 1) return Math.hypot(point.x - pixelPoints[0].x, point.y - pixelPoints[0].y) <= radius;
+      for (var i = 1; i < pixelPoints.length; i++) {
+        if (distanceToSegment(point, pixelPoints[i - 1], pixelPoints[i]) <= radius) return true;
+      }
+      return false;
+    }
+
+    function eraseWholeStrokes(event) {
+      if (!activeStrokeErase) return false;
+      var visible = visibleStrokeState();
+      var newlyErased = false;
+      eventSamples(event).forEach(function (sample) {
+        var rect = canvas.getBoundingClientRect();
+        var point = { x: sample.clientX - rect.left, y: sample.clientY - rect.top };
+        var radius = 14 * zoom;
+        for (var i = actions.length - 1; i >= visible.start; i--) {
+          var candidate = actions[i];
+          if (candidate.type !== 'stroke' || candidate.mode === 'eraser' || visible.hidden.has(candidate.id)) continue;
+          if (activeStrokeErase.strokeIds.indexOf(candidate.id) >= 0) continue;
+          if (!strokeTouchesPoint(candidate, point, radius)) continue;
+          activeStrokeErase.strokeIds.push(candidate.id);
+          visible.hidden.add(candidate.id);
+          newlyErased = true;
+          // Remove the topmost matching stroke for this pointer sample. As the
+          // eraser moves, subsequent samples can remove other touched strokes
+          // without repeatedly scanning every overlapping line at one point.
+          break;
+        }
+      });
+      if (newlyErased) {
+        if (actions.indexOf(activeStrokeErase) < 0) actions.push(activeStrokeErase);
+        redraw();
+        updateButtons();
+      }
+      return newlyErased;
+    }
+
     function startPinch() {
       var points = Array.from(touches.values()).slice(0, 2);
       var rect = canvas.getBoundingClientRect();
@@ -514,11 +604,16 @@
         var index = actions.indexOf(activeStroke);
         if (index >= 0) actions.splice(index, 1);
       }
+      if (activeStrokeErase) {
+        var eraseIndex = actions.indexOf(activeStrokeErase);
+        if (eraseIndex >= 0) actions.splice(eraseIndex, 1);
+      }
       if (activeImage) {
         activeImage.action.x = activeImage.originalX;
         activeImage.action.y = activeImage.originalY;
       }
       activeStroke = null;
+      activeStrokeErase = null;
       activePan = null;
       activeImage = null;
       activePointer = null;
@@ -557,7 +652,7 @@
       activePointer = event.pointerId;
       activePointerType = event.pointerType;
       capturePointer(event.pointerId);
-      var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'eraser' : mode;
+      var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'precision-eraser' : mode;
       if (pointerMode === 'pan') {
         activePan = {
           x: event.clientX,
@@ -586,9 +681,15 @@
         }
         return;
       }
+      if (pointerMode === 'stroke-eraser') {
+        activeStrokeErase = { type: 'stroke-erase', strokeIds: [] };
+        eraseWholeStrokes(event);
+        return;
+      }
       activeStroke = {
         type: 'stroke',
-        mode: pointerMode,
+        id: nextStrokeId(),
+        mode: pointerMode === 'precision-eraser' ? 'eraser' : pointerMode,
         colour: pointerMode === 'highlighter' ? '#facc15' : colour,
         points: [pointFromEvent(event)]
       };
@@ -641,6 +742,11 @@
         redraw();
         return;
       }
+      if (activeStrokeErase) {
+        event.preventDefault();
+        eraseWholeStrokes(event);
+        return;
+      }
       if (!activeStroke) return;
       event.preventDefault();
       appendStrokeSamples(event);
@@ -672,14 +778,16 @@
       }
       if (event.pointerId !== activePointer) return;
       if (activeStroke) appendStrokeSamples(event);
+      if (activeStrokeErase) eraseWholeStrokes(event);
       if (activeStroke && activeStroke.mode === 'highlighter') redraw();
-      var completedAction = activeStroke || (activeImage && activeImage.action);
-      var changed = Boolean(activeStroke || activeImage);
+      var completedAction = activeStroke || activeStrokeErase || (activeImage && activeImage.action);
+      var changed = Boolean(activeStroke || activeImage || (activeStrokeErase && activeStrokeErase.strokeIds.length));
       activePointer = null;
       activePointerType = null;
       window.clearTimeout(straightTimer);
       if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
       activeStroke = null;
+      activeStrokeErase = null;
       activePan = null;
       activeImage = null;
       if (changed) {
@@ -705,11 +813,13 @@
       mode = nextMode;
       board.querySelector('[data-whiteboard-action="pen"]').setAttribute('aria-pressed', String(mode === 'pen'));
       board.querySelector('[data-whiteboard-action="highlighter"]').setAttribute('aria-pressed', String(mode === 'highlighter'));
-      board.querySelector('[data-whiteboard-action="eraser"]').setAttribute('aria-pressed', String(mode === 'eraser'));
+      board.querySelector('[data-whiteboard-action="precision-eraser"]').setAttribute('aria-pressed', String(mode === 'precision-eraser'));
+      board.querySelector('[data-whiteboard-action="stroke-eraser"]').setAttribute('aria-pressed', String(mode === 'stroke-eraser'));
       board.querySelector('[data-whiteboard-action="pan"]').setAttribute('aria-pressed', String(mode === 'pan'));
       board.querySelector('[data-whiteboard-action="move-image"]').setAttribute('aria-pressed', String(mode === 'move-image'));
       canvas.classList.toggle('qb-whiteboard-panning', mode === 'pan');
       canvas.classList.toggle('qb-whiteboard-moving-image', mode === 'move-image');
+      canvas.classList.toggle('qb-whiteboard-erasing', mode === 'precision-eraser' || mode === 'stroke-eraser');
     }
 
     function setPaper(style) {
@@ -894,7 +1004,7 @@
       var button = event.target.closest('[data-whiteboard-action]');
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
-      if (action === 'pen' || action === 'highlighter' || action === 'eraser' || action === 'pan' || action === 'move-image') setMode(action);
+      if (action === 'pen' || action === 'highlighter' || action === 'precision-eraser' || action === 'stroke-eraser' || action === 'pan' || action === 'move-image') setMode(action);
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
       if (action === 'zoom-out') setZoom(zoom - .25);
@@ -1093,9 +1203,16 @@
         storedActions.slice(0, 3000).forEach(function (action) {
           if (!action || typeof action !== 'object') return;
           if (action.type === 'clear') restored.push({ type: 'clear' });
+          if (action.type === 'stroke-erase' && Array.isArray(action.strokeIds)) {
+            restored.push({
+              type: 'stroke-erase',
+              strokeIds: action.strokeIds.slice(0, 1000).map(String)
+            });
+          }
           if (action.type === 'stroke' && Array.isArray(action.points)) {
             restored.push({
               type: 'stroke',
+              id: typeof action.id === 'string' && action.id ? action.id : nextStrokeId(),
               mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
               colour: typeof action.colour === 'string' ? action.colour : '#000000',
               straightened: Boolean(action.straightened),
@@ -1140,9 +1257,25 @@
   window.setTimeout(scan, 0);
   window.setTimeout(scan, 250);
   window.setTimeout(scan, 1000);
-  // The bank appends cards after filter changes and load-more messages. These
-  // hooks run after its own handlers and cover every append path without a
-  // permanent DOM observer across thousands of questions.
+  // Keep watching for cards after the initial retries. On a slower device the
+  // fixed assignment list may arrive later than one second, and assignment
+  // navigation can replace a rendered card after this script has run.
+  var scanScheduled = false;
+  new MutationObserver(function (mutations) {
+    var needsScan = mutations.some(function (mutation) {
+      return mutation.type === 'childList' && mutation.addedNodes.length > 0;
+    });
+    if (!needsScan || scanScheduled) return;
+    scanScheduled = true;
+    window.requestAnimationFrame(function () {
+      scanScheduled = false;
+      scan();
+    });
+  }).observe(list, { childList: true, subtree: true });
+
+  // The bank also appends cards after filter changes and load-more messages.
+  // These hooks run after its own handlers and provide an immediate scan in
+  // addition to the observer fallback.
   document.addEventListener('input', function () { window.setTimeout(scan, 0); });
   document.addEventListener('change', function () { window.setTimeout(scan, 0); });
   window.addEventListener('message', function (event) {
