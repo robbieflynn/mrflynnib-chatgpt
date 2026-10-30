@@ -4,8 +4,7 @@
 
 create or replace function public.redeem_platform_access_code_for_product(
   raw_code text,
-  requested_product_code text default null,
-  required_code_product text default null
+  requested_product_code text default null
 )
 returns jsonb
 language plpgsql
@@ -38,10 +37,6 @@ begin
   for update;
 
   if code_row.id is null then
-    return jsonb_build_object('status', 'invalid');
-  end if;
-
-  if required_code_product is not null and code_row.product_code <> required_code_product then
     return jsonb_build_object('status', 'invalid');
   end if;
 
@@ -143,6 +138,6 @@ begin
 end;
 $$;
 
-revoke all on function public.redeem_platform_access_code_for_product(text, text, text) from public;
-revoke execute on function public.redeem_platform_access_code_for_product(text, text, text) from anon;
-grant execute on function public.redeem_platform_access_code_for_product(text, text, text) to authenticated;
+revoke all on function public.redeem_platform_access_code_for_product(text, text) from public;
+revoke execute on function public.redeem_platform_access_code_for_product(text, text) from anon;
+grant execute on function public.redeem_platform_access_code_for_product(text, text) to authenticated;

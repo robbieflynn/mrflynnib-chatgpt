@@ -1253,8 +1253,7 @@ grant execute on function public.redeem_platform_access_code(text) to authentica
 -- resulting entitlement is the selected course, never the all-courses product.
 create or replace function public.redeem_platform_access_code_for_product(
   raw_code text,
-  requested_product_code text default null,
-  required_code_product text default null
+  requested_product_code text default null
 )
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
@@ -1277,7 +1276,6 @@ begin
   for update;
 
   if code_row.id is null then return jsonb_build_object('status', 'invalid'); end if;
-  if required_code_product is not null and code_row.product_code <> required_code_product then return jsonb_build_object('status', 'invalid'); end if;
   if exists (select 1 from public.platform_access_code_redemptions redemption where redemption.code_id = code_row.id and redemption.user_id = account_id) then
     return jsonb_build_object('status', 'already_redeemed', 'product_code', code_row.product_code);
   end if;
@@ -1315,9 +1313,9 @@ begin
 end;
 $$;
 
-revoke all on function public.redeem_platform_access_code_for_product(text, text, text) from public;
-revoke execute on function public.redeem_platform_access_code_for_product(text, text, text) from anon;
-grant execute on function public.redeem_platform_access_code_for_product(text, text, text) to authenticated;
+revoke all on function public.redeem_platform_access_code_for_product(text, text) from public;
+revoke execute on function public.redeem_platform_access_code_for_product(text, text) from anon;
+grant execute on function public.redeem_platform_access_code_for_product(text, text) to authenticated;
 
 -- Confirmed accounts from Rob's approved partner-school domains receive
 -- course access automatically. Teachers receive Teacher Plus for all four
