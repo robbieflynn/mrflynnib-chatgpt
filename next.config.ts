@@ -21,6 +21,10 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   async redirects() {
     return [
+      // These two self-contained banks were superseded by the current course-aware
+      // IB and IGCSE shells. Keep old bookmarks useful without deploying duplicate data.
+      { source: "/question-bank/ai-bank.html", destination: "/question-bank", permanent: false },
+      { source: "/question-bank/bank.html", destination: "/question-bank", permanent: false },
       { source: "/p/aa-hl", destination: "https://learn.mrflynnib.com/p/aa-hl", permanent: false },
       { source: "/p/aa-sl", destination: "https://learn.mrflynnib.com/p/aa-sl", permanent: false },
       { source: "/p/ai-hl", destination: "https://learn.mrflynnib.com/p/ai-hl", permanent: false },
@@ -31,6 +35,18 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      {
+        source: "/question-bank/ib-bank.html",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" },
+        ],
+      },
+      {
+        source: "/question-bank/igcse-bank.html",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" },
+        ],
+      },
       {
         source: "/question-bank/data/:asset*.js",
         headers: [
