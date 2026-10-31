@@ -87,6 +87,23 @@ assert.deepEqual(new Set(igcseFactorisingChoices.options), new Set([
   "p(2+3q)",
   "2q(2+3p)",
 ]));
+const numericOneOfCollectionPrompt = "Find a possible value for each of Ava's five numbers.";
+const numericOneOfCollectionAnswers = choices.extractAcceptedAnswers([
+  ["3, 7, 8, 8 and one of 4 or 5 or 6", "A1"],
+], numericOneOfCollectionPrompt);
+assert.deepEqual(numericOneOfCollectionAnswers, [
+  "3; 4; 7; 8; 8",
+  "3; 5; 7; 8; 8",
+  "3; 6; 7; 8; 8",
+]);
+const numericOneOfCollectionChoices = choices.generateChoiceSet(
+  numericOneOfCollectionAnswers,
+  "4MA1_2021J_2H_Q2",
+  numericOneOfCollectionPrompt,
+);
+assert(numericOneOfCollectionChoices);
+assert.equal(numericOneOfCollectionChoices.options[numericOneOfCollectionChoices.correctOption], "3; 4; 7; 8; 8");
+assert(numericOneOfCollectionChoices.options.every((option) => !/\bone of\b/i.test(option)));
 const repairedCoefficientChoices = choices.repairStoredChoiceOptions([
   "1/2r^2sintheta", "-1/2r^2sintheta", "3/2r^2sintheta", "1/0r^2sintheta", "1/4r^2sintheta",
 ]);
@@ -1520,6 +1537,7 @@ const whiteboardReasonCounts = new Map();
 let objectiveWhiteboardParts = 0;
 const objectiveWhiteboardQuestions = new Set();
 let verifiedIgcseNestedMarkschemeLabels = false;
+let verifiedIgcseNumericOneOfCollection = false;
 for (const [label, path] of banks) {
   const questions = extractSeed(path).filter((question) => activeQuestionIds[label].has(String(question.id || "")));
   let bankAnswerParts = 0;
@@ -1533,6 +1551,18 @@ for (const [label, path] of banks) {
       assert(nestedSolution?.choices, "The separately labelled IGCSE c(ii) mark scheme did not produce choices.");
       assert(nestedSolution.choices.acceptedAnswers.some((answer) => /y=8/.test(answer) && /y=-6/.test(answer)), "The IGCSE c(ii) solution set was incomplete.");
       verifiedIgcseNestedMarkschemeLabels = true;
+    }
+    if (label === "IGCSE" && question.id === "4MA1_2021J_2H_Q2") {
+      const collectionAnswer = configs.find((config) => config.label === "answer");
+      assert(collectionAnswer?.choices, "The IGCSE five-number set did not produce fixed choices.");
+      assert.deepEqual(collectionAnswer.choices.acceptedAnswers, [
+        "3; 4; 7; 8; 8",
+        "3; 5; 7; 8; 8",
+        "3; 6; 7; 8; 8",
+      ]);
+      assert.equal(collectionAnswer.choices.options[collectionAnswer.choices.correctOption], "3; 4; 7; 8; 8");
+      assert(collectionAnswer.choices.options.every((option) => !/\bone of\b/i.test(option)));
+      verifiedIgcseNumericOneOfCollection = true;
     }
     if (label === "IB" && question.id === "N12TZ0HL_P1_Q7") {
       const uniqueTriangle = configs.find((config) => config.label === "b");
@@ -1591,6 +1621,7 @@ for (const [label, path] of banks) {
   console.log(`${label} assignment inventory: ${bankWhiteboardParts}/${bankAnswerParts} answer parts use whiteboard or paper, across ${bankQuestionsWithWhiteboard}/${questions.length} active questions.`);
 }
 assert(verifiedIgcseNestedMarkschemeLabels, "The IGCSE nested mark-scheme label regression question was not audited.");
+assert(verifiedIgcseNumericOneOfCollection, "The real IGCSE quantified collection answer was not audited.");
 console.log(`Combined assignment inventory: ${allWhiteboardParts}/${allAnswerParts} answer parts use whiteboard or paper, across ${allQuestionsWithWhiteboard}/${allActiveQuestions} active questions.`);
 const qualityIssueCounts = new Map();
 choiceQualityIssues.forEach((issue) => qualityIssueCounts.set(issue.kind, (qualityIssueCounts.get(issue.kind) || 0) + 1));
