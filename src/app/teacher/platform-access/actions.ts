@@ -4,11 +4,13 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/account-access";
-import { courseProducts, paidProductForCode, studentAllCoursesProduct, teacherPlusProduct } from "@/lib/platform-products";
+import { courseProducts, paidProductForCode, studentAllCoursesProduct, studentChooseOneCourseCodeProduct, teacherPlusProduct } from "@/lib/platform-products";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-const adminProducts = [...courseProducts, studentAllCoursesProduct, teacherPlusProduct];
-const validProductCodes = new Set(adminProducts.map((product) => product.productCode));
+const adminProducts = [...courseProducts, studentChooseOneCourseCodeProduct, studentAllCoursesProduct, teacherPlusProduct];
+const grantProducts = [...courseProducts, studentAllCoursesProduct, teacherPlusProduct];
+const validAccessCodeProductCodes = new Set(adminProducts.map((product) => product.productCode));
+const validGrantProductCodes = new Set(grantProducts.map((product) => product.productCode));
 const adminPath = "/teacher/platform-access";
 
 export type AccessCodeActionState = {
@@ -41,7 +43,7 @@ function accessDaysFromForm(value: FormDataEntryValue | null, fallback: number) 
 export async function createAccessCode(_: AccessCodeActionState, formData: FormData): Promise<AccessCodeActionState> {
   const { user } = await requireAdmin();
   const productCode = String(formData.get("productCode") || "");
-  if (!validProductCodes.has(productCode)) return { status: "error", message: "Choose a valid product." };
+  if (!validAccessCodeProductCodes.has(productCode)) return { status: "error", message: "Choose a valid product." };
 
   const product = paidProductForCode(productCode);
   const defaultDays = productCode === teacherPlusProduct.productCode ? 365 : 730;
@@ -84,7 +86,7 @@ export async function grantCourseAccess(formData: FormData) {
   const { user } = await requireAdmin();
   const productCode = String(formData.get("productCode") || "");
   const email = String(formData.get("email") || "").trim().toLowerCase();
-  if (!validProductCodes.has(productCode) || !email.includes("@")) redirect(`${adminPath}?error=invalid-grant`);
+  if (!validGrantProductCodes.has(productCode) || !email.includes("@")) redirect(`${adminPath}?error=invalid-grant`);
 
   const admin = createAdminClient();
   const { data: profile } = await admin.from("profiles").select("user_id,role").ilike("email", email).maybeSingle();

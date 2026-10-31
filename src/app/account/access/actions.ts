@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireSignedIn } from "@/lib/account-access";
-import { getCourseProduct } from "@/lib/platform-products";
+import { courseProductForCode, getCourseProduct } from "@/lib/platform-products";
 
 export async function requestTeachableTransfer(formData: FormData) {
   const course = getCourseProduct(String(formData.get("courseId") || ""));
@@ -21,14 +21,25 @@ export async function redeemAccessCode(formData: FormData) {
   const accessPath = curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
   const { supabase } = await requireSignedIn(accessPath, curriculum);
   const code = String(formData.get("accessCode") || "").trim();
-  if (!code) redirect(`${accessPath}?code=invalid`);
-  const { data, error } = await supabase.rpc("redeem_platform_access_code", { raw_code: code });
-  const result = data && typeof data === "object" ? data as { status?: string } : null;
-  if (error) redirect(`${accessPath}?code=error`);
+  const selectedCourse = getCourseProduct(String(formData.get("courseId") || ""));
+  const requestedProductCode = selectedCourse?.curriculum === curriculum ? selectedCourse.productCode : null;
+  const destination = (status: string, productCode?: string) => {
+    const params = new URLSearchParams({ code: status });
+    const course = productCode ? courseProductForCode(productCode) ?? selectedCourse : selectedCourse;
+    if (course?.curriculum === curriculum) params.set("course", course.id);
+    return `${accessPath}?${params.toString()}`;
+  };
+  if (!code) redirect(destination("invalid"));
+  const { data, error } = await supabase.rpc("redeem_platform_access_code_for_product", {
+    raw_code: code,
+    requested_product_code: requestedProductCode,
+  });
+  const result = data && typeof data === "object" ? data as { status?: string; product_code?: string } : null;
+  if (error) redirect(destination("error"));
   const status = result?.status || "error";
   if (status === "redeemed") {
     revalidatePath(accessPath);
     revalidatePath(curriculum === "igcse" ? "/igcse/account" : "/account");
   }
-  redirect(`${accessPath}?code=${encodeURIComponent(status)}`);
+  redirect(destination(status, result?.product_code));
 }
