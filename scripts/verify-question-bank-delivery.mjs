@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import vm from "node:vm";
 
 const manifest = JSON.parse(await readFile("public/question-bank/data/manifest.json", "utf8"));
@@ -7,6 +7,23 @@ const ibQuestions = JSON.parse(await readFile("question-bank-data/ib-seed.json",
 const igcseQuestions = JSON.parse(await readFile("question-bank-data/igcse-seed.json", "utf8"));
 const ibHtml = await readFile("public/question-bank/ib-bank.html", "utf8");
 const igcseHtml = await readFile("public/question-bank/igcse-bank.html", "utf8");
+const nextConfig = await readFile("next.config.ts", "utf8");
+
+async function exists(path) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+assert.equal(await exists("public/question-bank/ai-bank.html"), false, "Legacy AI bank must not be deployed as a duplicate payload");
+assert.equal(await exists("public/question-bank/bank.html"), false, "Legacy generic bank must not be deployed as a duplicate payload");
+assert(nextConfig.includes('{ source: "/question-bank/ai-bank.html", destination: "/question-bank", permanent: false }'), "Legacy AI bank lost its safe redirect");
+assert(nextConfig.includes('{ source: "/question-bank/bank.html", destination: "/question-bank", permanent: false }'), "Legacy generic bank lost its safe redirect");
+assert(nextConfig.includes('source: "/question-bank/ib-bank.html"'), "IB bank lost its CDN cache policy");
+assert(nextConfig.includes('source: "/question-bank/igcse-bank.html"'), "IGCSE bank lost its CDN cache policy");
 
 function banksOf(question) {
   return question.banks === undefined ? [question.course] : question.banks;
