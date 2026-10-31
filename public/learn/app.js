@@ -346,6 +346,7 @@ function configurePreviewMode() {
   document.getElementById("assignmentsLink").href = `${reviewHome}&screen=assignment`;
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
   document.getElementById("manageAccessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
+  document.getElementById("accountSettingsLink").href = isIgcse ? "/igcse/account/settings" : "/account/settings";
   document.getElementById("learningHomeLink").href = reviewHome;
   document.getElementById("primaryLearningHomeLink").href = reviewHome;
   document.getElementById("topbarLearningHomeLink").href = reviewHome;
@@ -1340,6 +1341,7 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("accountRole").textContent = isIgcse ? "IGCSE Mathematics" : "Save your progress";
   document.getElementById("learningHomeLink").textContent = curriculumMismatch ? `Switch to ${isIgcse ? "IGCSE" : "IB"}` : "Log in";
   document.getElementById("learningHomeLink").href = accountHref;
+  document.getElementById("accountSettingsLink").hidden = true;
   document.getElementById("manageAccessLink").textContent = "Create free account";
   document.getElementById("manageAccessLink").href = `${accountHref}?mode=sign-up`;
   document.getElementById("signOut").hidden = !curriculumMismatch;
@@ -1410,6 +1412,8 @@ async function bootstrapAccount() {
     document.getElementById("accessLink").classList.toggle("is-plus", Boolean(platformAccount.access?.label?.includes("Plus")));
     document.getElementById("accessLink").href = platformAccount.links.access;
     document.getElementById("manageAccessLink").href = platformAccount.links.access;
+    document.getElementById("accountSettingsLink").hidden = false;
+    document.getElementById("accountSettingsLink").href = platformAccount.links.account.startsWith("/igcse") ? "/igcse/account/settings" : "/account/settings";
     document.getElementById("learningHomeLink").href = platformAccount.links.account;
     document.getElementById("primaryLearningHomeLink").href = platformAccount.links.account;
     document.getElementById("topbarLearningHomeLink").href = platformAccount.links.account;
