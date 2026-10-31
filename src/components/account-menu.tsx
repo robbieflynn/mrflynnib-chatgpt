@@ -168,8 +168,9 @@ export function AccountMenu({
     ? "/igcse/learn"
     : "/learn/index.html?curriculum=ib&view=courses";
   const accessHref = displayedAccount.curriculum === "igcse"
-    ? "/igcse/account"
+    ? "/igcse/account/access"
     : isTeacher ? "/teacher/access" : "/account/access";
+  const settingsHref = displayedAccount.curriculum === "igcse" ? "/igcse/account/settings" : "/account/settings";
 
   async function signOut() {
     setSigningOut(true);
@@ -207,11 +208,12 @@ export function AccountMenu({
             <span className="account-menu-avatar account-menu-avatar-large" aria-hidden="true">{initials(displayedAccount.displayName, displayedAccount.email)}</span>
             <span><small>{displayedAccount.accessLabel ? `${displayedAccount.accessLabel} · ${roleLabel}` : `${isPlatformReview ? "Example" : "Signed in as"} ${roleLabel.toLowerCase()}`}</small><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span></span>
           </div>
-          {showNavigation ? <nav className="account-menu-navigation" aria-label="Account navigation">
+          {!isPlatformReview ? <nav className="account-menu-navigation" aria-label="Account navigation">
             <Link href={accountHome} role="menuitem" onClick={() => setOpen(false)}>{isTeacher ? "Teacher home" : "Learning home"}</Link>
-            <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link>
+            {showNavigation ? <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link> : null}
+            <Link href={settingsHref} role="menuitem" onClick={() => setOpen(false)}>Account settings</Link>
             <Link href={accessHref} role="menuitem" onClick={() => setOpen(false)}>Manage access</Link>
-            {!isPlatformReview ? <Link href={displayedAccount.curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"} role="menuitem" onClick={() => setOpen(false)}>Previous Teachable course</Link> : null}
+            {showNavigation ? <Link href={displayedAccount.curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"} role="menuitem" onClick={() => setOpen(false)}>Previous Teachable course</Link> : null}
           </nav> : null}
           {!isPlatformReview ? <button className="account-menu-signout" type="button" role="menuitem" disabled={signingOut} onClick={signOut}>
             <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8 4H4v12h4M12 6l4 4-4 4M16 10H8" /></svg>
