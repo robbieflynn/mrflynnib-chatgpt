@@ -133,6 +133,8 @@ p { margin: 0; }
 }
 .account-menu-trigger:hover, .account-menu-trigger[aria-expanded="true"] { border-color: #91a3ac; background: white; box-shadow: 0 8px 22px rgba(11,21,48,.09); }
 .account-menu-trigger:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.account-menu-trigger.is-teacher-pending { max-width: 220px; border-color: #dfc27d; background: #fff8e7; }
+.account-menu-trigger.is-teacher-pending .account-menu-trigger-copy small { color: #76530a; font-weight: 850; }
 .account-menu-avatar { width: 2rem; height: 2rem; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(145deg, #237fca, #155b9a); color: white; font-size: .68rem; font-weight: 900; letter-spacing: .02em; }
 .account-menu-trigger-copy { min-width: 0; display: grid; text-align: left; line-height: 1.12; }
 .account-menu-trigger-copy strong { overflow: hidden; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
@@ -145,6 +147,9 @@ p { margin: 0; }
 .account-menu-identity small { color: var(--teal-dark); font-size: .65rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
 .account-menu-identity strong { overflow: hidden; font-size: .92rem; text-overflow: ellipsis; white-space: nowrap; }
 .account-menu-identity span span { overflow-wrap: anywhere; color: var(--muted); font-size: .75rem; }
+.account-menu-pending-note { padding: .8rem 1rem; display: grid; gap: .18rem; border-bottom: 1px solid #ead8ab; background: #fff8e7; color: var(--ink-2); }
+.account-menu-pending-note strong { color: #76530a; font-size: .78rem; }
+.account-menu-pending-note span { color: #6f6250; font-size: .72rem; line-height: 1.45; }
 .account-menu-navigation { padding: .4rem; display: grid; border-bottom: 1px solid #e2e7e9; }
 .account-menu-navigation a { min-height: 2.55rem; padding: .62rem .7rem; display: flex; align-items: center; border-radius: .65rem; color: var(--ink); font-size: .8rem; font-weight: 800; }
 .account-menu-navigation a:hover { background: #eef6fb; color: var(--teal-dark); }

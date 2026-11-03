@@ -8,7 +8,7 @@ export async function getPlatformSession(requestedCurriculum?: PlatformCurriculu
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { supabase, user: null, profile: null, curriculum: null };
-  const { data: profile } = await supabase.from("profiles").select("display_name,role,curriculum").eq("user_id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("profiles").select("display_name,role,curriculum,teacher_status").eq("user_id", user.id).maybeSingle();
   const curriculum = requestedCurriculum || (profile?.curriculum === "igcse" ? "igcse" : "ib");
   return { supabase, user, profile, curriculum } as const;
 }
