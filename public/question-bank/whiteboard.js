@@ -92,7 +92,7 @@
             toolButton('squared-paper', 'Squared', true) +
             toolButton('blank-paper', 'Blank', false) +
           '</div>' +
-          toolButton('pen', 'Pen', true) +
+          toolButton('pen', 'Pen', true, 'Pen: draw, then hold at the end to make a straight line') +
           toolButton('highlighter', 'Highlighter', false) +
           '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type">' +
             '<span>Erase</span>' +
@@ -166,6 +166,8 @@
     var activePan = null;
     var activeImage = null;
     var straightTimer = null;
+    var straightHoldPoint = null;
+    var straightHoldStrokeId = null;
     var activePointer = null;
     var activePointerType = null;
     var touches = new Map();
@@ -279,10 +281,17 @@
       if (canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
     }
 
+    function clearStraightHold() {
+      window.clearTimeout(straightTimer);
+      straightTimer = null;
+      straightHoldPoint = null;
+      straightHoldStrokeId = null;
+    }
+
     function resetInteraction() {
       var ids = Array.from(touches.keys());
       if (activePointer !== null) ids.push(activePointer);
-      window.clearTimeout(straightTimer);
+      clearStraightHold();
       activeStroke = null;
       activeStrokeErase = null;
       activePan = null;
@@ -531,6 +540,51 @@
       if (segment.length > 1) drawStrokeIncrement(activeStroke, segment);
     }
 
+    function armStraightHold() {
+      if (!activeStroke || activeStroke.mode !== 'pen' || activeStroke.straightened || activeStroke.points.length < 2) {
+        clearStraightHold();
+        return;
+      }
+      var first = activeStroke.points[0];
+      var last = activeStroke.points[activeStroke.points.length - 1];
+      var length = Math.hypot(
+        (last.x - first.x) * canvas.clientWidth,
+        (last.y - first.y) * canvas.clientHeight
+      );
+      if (length < 24) {
+        clearStraightHold();
+        return;
+      }
+
+      // Wacom and some other stylus drivers keep reporting tiny pointer moves
+      // while the nib is held still. Treat movement within this screen-pixel
+      // radius as the same hold, instead of restarting the timer forever.
+      var holdTolerance = 8;
+      var stayedWithinHold = straightHoldPoint && straightHoldStrokeId === activeStroke.id && Math.hypot(
+        (last.x - straightHoldPoint.x) * canvas.clientWidth,
+        (last.y - straightHoldPoint.y) * canvas.clientHeight
+      ) <= holdTolerance;
+      if (stayedWithinHold && straightTimer !== null) return;
+
+      clearStraightHold();
+      straightHoldPoint = { x: last.x, y: last.y };
+      straightHoldStrokeId = activeStroke.id;
+      var heldStroke = activeStroke;
+      straightTimer = window.setTimeout(function () {
+        straightTimer = null;
+        if (!activeStroke || activeStroke !== heldStroke || activeStroke.mode !== 'pen' || activeStroke.straightened) return;
+        var endpoint = activeStroke.points[activeStroke.points.length - 1];
+        var movementDuringHold = Math.hypot(
+          (endpoint.x - straightHoldPoint.x) * canvas.clientWidth,
+          (endpoint.y - straightHoldPoint.y) * canvas.clientHeight
+        );
+        if (movementDuringHold > holdTolerance) return;
+        activeStroke.straightened = true;
+        activeStroke.points = [activeStroke.points[0], endpoint];
+        redraw();
+      }, 500);
+    }
+
     function distanceToSegment(point, start, end) {
       var dx = end.x - start.x;
       var dy = end.y - start.y;
@@ -597,7 +651,7 @@
     }
 
     function cancelTouchAction() {
-      window.clearTimeout(straightTimer);
+      clearStraightHold();
       // The first finger may have started drawing before the second arrived.
       // Remove only that unfinished action, preserving all previous work.
       if (activeStroke) {
@@ -750,19 +804,7 @@
       if (!activeStroke) return;
       event.preventDefault();
       appendStrokeSamples(event);
-      window.clearTimeout(straightTimer);
-      if (activeStroke.mode === 'pen' && activeStroke.points.length > 1) {
-        straightTimer = window.setTimeout(function () {
-          if (!activeStroke || activeStroke.mode !== 'pen') return;
-          var first = activeStroke.points[0];
-          var last = activeStroke.points[activeStroke.points.length - 1];
-          var distance = Math.hypot((last.x - first.x) * canvas.clientWidth, (last.y - first.y) * canvas.clientHeight);
-          if (distance < 24) return;
-          activeStroke.straightened = true;
-          activeStroke.points = [first, last];
-          redraw();
-        }, 500);
-      }
+      armStraightHold();
     }, { passive: false });
 
     function endStroke(event) {
@@ -784,7 +826,7 @@
       var changed = Boolean(activeStroke || activeImage || (activeStrokeErase && activeStrokeErase.strokeIds.length));
       activePointer = null;
       activePointerType = null;
-      window.clearTimeout(straightTimer);
+      clearStraightHold();
       if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
       activeStroke = null;
       activeStrokeErase = null;
