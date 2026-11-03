@@ -92090,14 +92090,12 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
   function reportEmbeddedHeight(){
     if(!IS_EMBEDDED || window.parent === window) return;
     var root = document.getElementById('qbank-root');
-    var rootHeight = root
-      ? Math.max(root.getBoundingClientRect().bottom + window.scrollY, root.offsetTop + root.scrollHeight)
-      : 0;
-    var contentHeight = Math.ceil(Math.max(
-      rootHeight,
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight
-    ) + 48);
+    // The parent sizes the iframe from this value. Measuring body or document
+    // here feeds the old iframe viewport back into the calculation and creates
+    // an empty stretch below the rendered cards. Measure the bank itself only.
+    var contentHeight = Math.ceil(root
+      ? Math.max(root.getBoundingClientRect().bottom + window.scrollY, root.offsetTop + root.scrollHeight) + 32
+      : 760);
     window.parent.postMessage({
       type: 'mrflynnib-question-bank-height',
       height: contentHeight,

@@ -48,6 +48,17 @@ assert(ibHtml.includes('id="qb-search"'), "IB shell lost question search");
 assert(igcseHtml.includes('id="qb-search"'), "IGCSE shell lost question search");
 assert(ibHtml.includes("root.offsetTop + root.scrollHeight"), "IB shell lost the footer-clipping height guard");
 assert(igcseHtml.includes("root.offsetTop + root.scrollHeight"), "IGCSE shell lost the footer-clipping height guard");
+function embeddedHeightReporter(html) {
+  const start = html.indexOf("function reportEmbeddedHeight(){");
+  const end = html.indexOf("\n  if(IS_EMBEDDED){", start);
+  assert(start >= 0 && end > start, "Embedded height reporter is missing");
+  return html.slice(start, end);
+}
+for (const [label, html] of [["IB", ibHtml], ["IGCSE", igcseHtml]]) {
+  const reporter = embeddedHeightReporter(html);
+  assert(!reporter.includes("document.body.scrollHeight"), `${label} reporter must not feed the iframe viewport back into its height`);
+  assert(!reporter.includes("document.documentElement.scrollHeight"), `${label} reporter must measure question content, not the iframe viewport`);
+}
 assert(ibHtml.includes("var deliveryCounts = window.__MR_FLYNN_QB_COUNTS__"), "IB course chooser lost full-bank counts");
 assert(ibHtml.includes("return loader(c).then(function(questions)"), "IB course switching no longer loads the selected bank");
 

@@ -29,7 +29,8 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
 
     const distanceFromViewport =
       frame.getBoundingClientRect().top + frameHeightRef.current - window.innerHeight;
-    if (distanceFromViewport > 1400) return;
+    // Start before the final card; a single large diagram can exceed 1400px.
+    if (distanceFromViewport > 4000) return;
 
     loadingMoreRef.current = true;
     frame.contentWindow?.postMessage(
