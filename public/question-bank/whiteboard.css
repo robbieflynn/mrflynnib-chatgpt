@@ -245,6 +245,7 @@
   overflow: auto;
   overflow-anchor: none;
   overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .qb-card.qb-whiteboard-expanded .qb-whiteboard-viewport { max-height: 1000px; }
@@ -261,6 +262,7 @@
 
 .qb-whiteboard-heading-row {
   width: 100%;
+  min-height: 34px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -268,9 +270,60 @@
 }
 
 .qb-whiteboard-title small {
+  width: 150px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  white-space: nowrap;
   color: var(--ink-soft, #5a6478);
   font-size: 10.5px;
   font-weight: 500;
+}
+
+.qb-whiteboard-part-tools {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qb-whiteboard-part-tools[hidden] { display: none; }
+
+.qb-whiteboard-part-tools > span,
+.qb-whiteboard-straight-hint {
+  color: var(--ink-soft, #5a6478);
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+.qb-whiteboard-part-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.qb-whiteboard-part-button {
+  min-width: 38px;
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid #b8c9d8;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--flynn-blue-dark, #2c5f9e);
+  font: 750 12px/1 var(--ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  cursor: pointer;
+}
+
+.qb-whiteboard-part-button[aria-pressed="true"] {
+  border-color: var(--flynn-blue, #407dc4);
+  background: var(--flynn-blue, #407dc4);
+  color: #fff;
+}
+
+.qb-whiteboard-straight-hint {
+  width: 100%;
+  min-height: 16px;
 }
 
 .qb-whiteboard-tools {

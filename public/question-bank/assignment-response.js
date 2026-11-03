@@ -75,6 +75,8 @@
     ".qb-response-part strong{min-width:48px;height:34px;padding:0 8px;display:grid;place-items:center;border-radius:999px;background:#e8f2f8;color:var(--flynn-blue-dark);white-space:nowrap}",
     ".qb-response-part-content{min-width:0;display:grid;gap:9px}",
     ".qb-response-part-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}",
+    ".qb-assignment-response .qb-response-whiteboard-button{border:1px solid #9bbdd2;background:#fff;color:var(--flynn-blue-dark)}",
+    ".qb-assignment-response .qb-response-whiteboard-button:hover{background:#eef7fd}",
     ".qb-response-part-actions .qb-response-status{flex:1;min-width:190px}",
     ".qb-response-part-summary{display:none;align-self:center;color:#18704f;font-weight:800}",
     ".qb-assignment-response .qb-response-part-toggle{align-self:center;min-height:34px;padding:7px 10px;border:1px solid #a9c8de;background:#fff;color:var(--flynn-blue-dark)}",
@@ -190,7 +192,10 @@
     if (item.isCorrect === true) return "Correct! Well done.";
     if (item.isCorrect === false && Number(item.attemptCount || 0) >= 2) return "That was your second try. Your answer has been saved for your teacher.";
     if (item.isCorrect === false) return "Oops, that’s not right. Try again. You have one attempt left.";
-    return item.readOnly ? "Saved for teacher review" : "Saved. Your teacher can review your whiteboard or paper working.";
+    if (item.readOnly) return "Saved for teacher review";
+    return feedbackMode === "after_question"
+      ? "Saved. The mark scheme and worked solution are now available."
+      : "Saved. Your teacher can review your whiteboard or paper working.";
   }
 
   function renderAnswer(element, value) {
@@ -278,6 +283,17 @@
     var value = String(label || "").trim();
     if (/^[a-z]$/i.test(value)) return value.toUpperCase();
     return value.replace(/^([a-z])/i, function (letter) { return letter.toUpperCase(); });
+  }
+
+  function announceWhiteboardParts(questionId, definitions, partKey, open) {
+    window.dispatchEvent(new CustomEvent("mrflynnib-whiteboard-parts", {
+      detail: {
+        questionId: questionId,
+        parts: (definitions || []).map(function (definition) { return definition.label; }),
+        partKey: partKey || "",
+        open: Boolean(open)
+      }
+    }));
   }
 
   function multipartDefinitions(item) {
@@ -390,6 +406,7 @@
     if (!state[id]) return;
     activeId = id;
     activePartKey = partKey || null;
+    announceWhiteboardParts(id, multipartDefinitions(state[id]), activePartKey, false);
     revealActiveNavigation = Boolean(shouldScroll);
     renderNavigation();
     document.querySelectorAll("#qb-list>.qb-card").forEach(function (card) {
@@ -606,6 +623,7 @@
     var partDefinitions = multipartDefinitions(item);
     if (!partDefinitions.length && item.responseType === "teacher_review" && legacyPartLabels.length > 1) partDefinitions = legacyPartLabels.map(function (label) { return { label: label, mode: "exact" }; });
     var isMultipart = partDefinitions.length > 1;
+    announceWhiteboardParts(id, partDefinitions, activeId === id ? activePartKey : null, false);
     var textInput = null;
     var partInputs = {};
     var mathInputs = [];
@@ -647,6 +665,8 @@
         }
         var savedPartState = multipartPartState(item, definition.label);
         var actions = document.createElement("div"); actions.className = "qb-response-part-actions";
+        var openPartBoard = document.createElement("button"); openPartBoard.type = "button"; openPartBoard.className = "qb-response-whiteboard-button"; openPartBoard.textContent = "Whiteboard " + partLabel(definition.label);
+        openPartBoard.addEventListener("click", function () { announceWhiteboardParts(id, partDefinitions, definition.label, true); });
         var partButton = document.createElement("button"); partButton.type = "button"; partButton.textContent = (definition.mode === "whiteboard" ? "Save " : "Check ") + partLabel(definition.label);
         var partStatus = document.createElement("div"); partStatus.className = "qb-response-status" + (savedPartState.isCorrect === true ? " is-correct" : savedPartState.isCorrect === false ? " is-incorrect" : ""); partStatus.setAttribute("role", "status"); partStatus.setAttribute("aria-live", "polite"); partStatus.textContent = partStatusCopy(savedPartState, false);
         var partLocked = savedPartState.result === "correct" || savedPartState.result === "incorrect_final" || savedPartState.result === "saved";
@@ -666,7 +686,7 @@
           partStatus.className = "qb-response-status"; partStatus.textContent = "Saving…";
           window.parent.postMessage({ type: "mrflynnib-assignment-response-save", questionId: id, response: { partKey: definition.label, partAnswer: answer } }, window.location.origin);
         });
-        actions.appendChild(partButton); actions.appendChild(partStatus); content.appendChild(actions);
+        actions.appendChild(openPartBoard); actions.appendChild(partButton); actions.appendChild(partStatus); content.appendChild(actions);
         row.appendChild(labelBadge); row.appendChild(content);
         if (savedPartState.result === "correct") {
           row.classList.add("has-toggle", "is-correct");

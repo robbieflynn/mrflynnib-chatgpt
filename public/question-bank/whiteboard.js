@@ -86,13 +86,17 @@
             '<button type="button" class="qb-whiteboard-tool" data-whiteboard-layout="below" aria-pressed="' + (whiteboardLayout === 'below') + '">Below</button>' +
           '</div>' +
         '</div>' +
+        '<div class="qb-whiteboard-part-tools" role="group" aria-label="Whiteboard question part" hidden>' +
+          '<span>Working on</span>' +
+          '<div class="qb-whiteboard-part-buttons"></div>' +
+        '</div>' +
         '<div class="qb-whiteboard-tools" role="toolbar" aria-label="Whiteboard tools">' +
           '<div class="qb-whiteboard-paper-tools" role="group" aria-label="Paper style">' +
             '<span>Paper</span>' +
             toolButton('squared-paper', 'Squared', true) +
             toolButton('blank-paper', 'Blank', false) +
           '</div>' +
-          toolButton('pen', 'Pen', true) +
+          toolButton('pen', 'Pen', true, 'Pen: draw, then hold at the end to make a straight line') +
           toolButton('highlighter', 'Highlighter', false) +
           '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type">' +
             '<span>Erase</span>' +
@@ -101,6 +105,7 @@
           '</div>' +
           toolButton('pan', 'Pan', false) +
           toolButton('move-image', 'Move image', false) +
+          toolButton('copy-question', 'Copy question', false, 'Copy the complete question onto this whiteboard') +
           '<div class="qb-whiteboard-colours" role="group" aria-label="Pen colour">' +
             colourButton('#000000', 'Black', true) +
             colourButton('#2563eb', 'Blue', false) +
@@ -124,6 +129,7 @@
           toolButton('clear', 'Clear') +
           '<button type="button" class="qb-whiteboard-tool qb-whiteboard-close" data-whiteboard-action="close" aria-label="Close whiteboard">&times;</button>' +
         '</div>' +
+        '<div class="qb-whiteboard-straight-hint">Draw a line, then hold the pen still at the end to straighten it.</div>' +
       '</div>' +
       '<div class="qb-whiteboard-viewport">' +
         '<div class="qb-whiteboard-surface">' +
@@ -166,6 +172,8 @@
     var activePan = null;
     var activeImage = null;
     var straightTimer = null;
+    var straightHoldPoint = null;
+    var straightHoldStrokeId = null;
     var activePointer = null;
     var activePointerType = null;
     var touches = new Map();
@@ -180,6 +188,12 @@
     var pageCount = 2;
     var baseWidth = pageWidth * columnCount;
     var baseHeight = pageHeight * pageCount;
+    var availableParts = [];
+    var activePartKey = '';
+    var partDocuments = {};
+    var partViewports = {};
+    var partTools = board.querySelector('.qb-whiteboard-part-tools');
+    var partButtons = board.querySelector('.qb-whiteboard-part-buttons');
     var undo = board.querySelector('[data-whiteboard-action="undo"]');
     var clear = board.querySelector('[data-whiteboard-action="clear"]');
     var saveStatus = board.querySelector('.qb-whiteboard-save-status');
@@ -200,14 +214,14 @@
       var account = accountState();
       var readOnly = Boolean(account.readOnly);
       board.classList.toggle('is-read-only', readOnly);
-      Array.prototype.forEach.call(board.querySelectorAll('button:not(.qb-whiteboard-close):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
+      Array.prototype.forEach.call(board.querySelectorAll('button:not(.qb-whiteboard-close):not(.qb-whiteboard-part-button):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
       if (readOnly) setSaveStatus('Teacher view', 'saved');
       else if (!account.configured) setSaveStatus('Saving coming soon', 'idle');
       else if (!account.signedIn) setSaveStatus('Sign in to save', 'idle');
       else if (!localDirty) setSaveStatus(documentLoaded ? 'Saved' : 'Ready to save', 'saved');
     }
 
-    function serialiseDocument() {
+    function serialiseCurrentDocument() {
       function compactCoordinate(value) {
         return Math.round(Number(value) * 100000) / 100000;
       }
@@ -237,6 +251,22 @@
           };
         })
       };
+    }
+
+    function serialiseDocument() {
+      if (availableParts.length < 2) return serialiseCurrentDocument();
+      if (activePartKey) partDocuments[activePartKey] = serialiseCurrentDocument();
+      var savedParts = {};
+      availableParts.forEach(function (partKey) {
+        savedParts[partKey] = partDocuments[partKey] || {
+          version: 5,
+          paper: 'squared',
+          pages: 2,
+          columns: 2,
+          actions: []
+        };
+      });
+      return { version: 6, parts: savedParts };
     }
 
     function saveNow() {
@@ -279,10 +309,17 @@
       if (canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
     }
 
+    function clearStraightHold() {
+      window.clearTimeout(straightTimer);
+      straightTimer = null;
+      straightHoldPoint = null;
+      straightHoldStrokeId = null;
+    }
+
     function resetInteraction() {
       var ids = Array.from(touches.keys());
       if (activePointer !== null) ids.push(activePointer);
-      window.clearTimeout(straightTimer);
+      clearStraightHold();
       activeStroke = null;
       activeStrokeErase = null;
       activePan = null;
@@ -531,6 +568,51 @@
       if (segment.length > 1) drawStrokeIncrement(activeStroke, segment);
     }
 
+    function armStraightHold() {
+      if (!activeStroke || activeStroke.mode !== 'pen' || activeStroke.straightened || activeStroke.points.length < 2) {
+        clearStraightHold();
+        return;
+      }
+      var first = activeStroke.points[0];
+      var last = activeStroke.points[activeStroke.points.length - 1];
+      var length = Math.hypot(
+        (last.x - first.x) * canvas.clientWidth,
+        (last.y - first.y) * canvas.clientHeight
+      );
+      if (length < 24) {
+        clearStraightHold();
+        return;
+      }
+
+      // Wacom and some other stylus drivers keep reporting tiny pointer moves
+      // while the nib is held still. Treat movement within this screen-pixel
+      // radius as the same hold, instead of restarting the timer forever.
+      var holdTolerance = 8;
+      var stayedWithinHold = straightHoldPoint && straightHoldStrokeId === activeStroke.id && Math.hypot(
+        (last.x - straightHoldPoint.x) * canvas.clientWidth,
+        (last.y - straightHoldPoint.y) * canvas.clientHeight
+      ) <= holdTolerance;
+      if (stayedWithinHold && straightTimer !== null) return;
+
+      clearStraightHold();
+      straightHoldPoint = { x: last.x, y: last.y };
+      straightHoldStrokeId = activeStroke.id;
+      var heldStroke = activeStroke;
+      straightTimer = window.setTimeout(function () {
+        straightTimer = null;
+        if (!activeStroke || activeStroke !== heldStroke || activeStroke.mode !== 'pen' || activeStroke.straightened) return;
+        var endpoint = activeStroke.points[activeStroke.points.length - 1];
+        var movementDuringHold = Math.hypot(
+          (endpoint.x - straightHoldPoint.x) * canvas.clientWidth,
+          (endpoint.y - straightHoldPoint.y) * canvas.clientHeight
+        );
+        if (movementDuringHold > holdTolerance) return;
+        activeStroke.straightened = true;
+        activeStroke.points = [activeStroke.points[0], endpoint];
+        redraw();
+      }, 500);
+    }
+
     function distanceToSegment(point, start, end) {
       var dx = end.x - start.x;
       var dy = end.y - start.y;
@@ -597,7 +679,7 @@
     }
 
     function cancelTouchAction() {
-      window.clearTimeout(straightTimer);
+      clearStraightHold();
       // The first finger may have started drawing before the second arrived.
       // Remove only that unfinished action, preserving all previous work.
       if (activeStroke) {
@@ -750,19 +832,7 @@
       if (!activeStroke) return;
       event.preventDefault();
       appendStrokeSamples(event);
-      window.clearTimeout(straightTimer);
-      if (activeStroke.mode === 'pen' && activeStroke.points.length > 1) {
-        straightTimer = window.setTimeout(function () {
-          if (!activeStroke || activeStroke.mode !== 'pen') return;
-          var first = activeStroke.points[0];
-          var last = activeStroke.points[activeStroke.points.length - 1];
-          var distance = Math.hypot((last.x - first.x) * canvas.clientWidth, (last.y - first.y) * canvas.clientHeight);
-          if (distance < 24) return;
-          activeStroke.straightened = true;
-          activeStroke.points = [first, last];
-          redraw();
-        }, 500);
-      }
+      armStraightHold();
     }, { passive: false });
 
     function endStroke(event) {
@@ -784,7 +854,7 @@
       var changed = Boolean(activeStroke || activeImage || (activeStrokeErase && activeStrokeErase.strokeIds.length));
       activePointer = null;
       activePointerType = null;
-      window.clearTimeout(straightTimer);
+      clearStraightHold();
       if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
       activeStroke = null;
       activeStrokeErase = null;
@@ -822,12 +892,12 @@
       canvas.classList.toggle('qb-whiteboard-erasing', mode === 'precision-eraser' || mode === 'stroke-eraser');
     }
 
-    function setPaper(style) {
+    function setPaper(style, shouldSave) {
       paperStyle = style === 'blank' ? 'blank' : 'squared';
       surface.classList.toggle('qb-paper-blank', style === 'blank');
       board.querySelector('[data-whiteboard-action="squared-paper"]').setAttribute('aria-pressed', String(style === 'squared'));
       board.querySelector('[data-whiteboard-action="blank-paper"]').setAttribute('aria-pressed', String(style === 'blank'));
-      scheduleSave();
+      if (shouldSave !== false) scheduleSave();
     }
 
     function updatePageGuides() {
@@ -904,6 +974,121 @@
       columnCount = next;
       baseWidth = nextWidth;
       updateSurfaceSize();
+    }
+
+    function blankDocument() {
+      return { version: 5, paper: 'squared', pages: 2, columns: 2, actions: [] };
+    }
+
+    function restoreSingleDocument(stored) {
+      resetInteraction();
+      stored = stored && typeof stored === 'object' ? stored : blankDocument();
+      var storedActions = Array.isArray(stored.actions) ? stored.actions : [];
+      var restored = [];
+      storedActions.slice(0, 3000).forEach(function (action) {
+        if (!action || typeof action !== 'object') return;
+        if (action.type === 'clear') restored.push({ type: 'clear' });
+        if (action.type === 'stroke-erase' && Array.isArray(action.strokeIds)) {
+          restored.push({
+            type: 'stroke-erase',
+            strokeIds: action.strokeIds.slice(0, 1000).map(String)
+          });
+        }
+        if (action.type === 'stroke' && Array.isArray(action.points)) {
+          restored.push({
+            type: 'stroke',
+            id: typeof action.id === 'string' && action.id ? action.id : nextStrokeId(),
+            mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
+            colour: typeof action.colour === 'string' ? action.colour : '#000000',
+            straightened: Boolean(action.straightened),
+            points: action.points.slice(0, 10000).map(function (point) {
+              return { x: Number(point.x) || 0, y: Number(point.y) || 0 };
+            })
+          });
+        }
+        if (action.type === 'image' && typeof action.source === 'string') {
+          var imageAction = {
+            type: 'image', image: null, source: action.source,
+            x: Number(action.x) || 0, y: Number(action.y) || 0,
+            width: Number(action.width) || .5, height: Number(action.height) || .2
+          };
+          imageAction.image = loadWhiteboardImage(action.source, function () { redraw(); });
+          restored.push(imageAction);
+        }
+      });
+      actions = restored;
+      setPageCount(Number(stored.pages) || 2, false);
+      setColumnCount(Number(stored.columns) || 2, false);
+      // Older documents were one sheet wide. Preserve their exact drawing
+      // size and add a new blank sheet to the right.
+      if (columnCount < 2) setColumnCount(2, true);
+      setPaper(stored.paper === 'blank' ? 'blank' : 'squared', false);
+      redraw();
+      updateButtons();
+    }
+
+    function updatePartButtons() {
+      if (!partTools || !partButtons) return;
+      partTools.hidden = availableParts.length < 2;
+      partButtons.replaceChildren();
+      availableParts.forEach(function (partKey) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'qb-whiteboard-part-button';
+        button.textContent = '(' + partKey.replace('(', ')(') + ')';
+        button.setAttribute('aria-pressed', String(partKey === activePartKey));
+        button.addEventListener('click', function () { switchPart(partKey); });
+        partButtons.appendChild(button);
+      });
+    }
+
+    function switchPart(nextPartKey) {
+      nextPartKey = String(nextPartKey || '').trim();
+      if (!nextPartKey || availableParts.indexOf(nextPartKey) === -1 || nextPartKey === activePartKey) {
+        updatePartButtons();
+        return;
+      }
+      resetInteraction();
+      if (activePartKey) {
+        partDocuments[activePartKey] = serialiseCurrentDocument();
+        partViewports[activePartKey] = { left: viewport.scrollLeft, top: viewport.scrollTop };
+      }
+      activePartKey = nextPartKey;
+      restoreSingleDocument(partDocuments[activePartKey] || blankDocument());
+      updatePartButtons();
+      var savedViewport = partViewports[activePartKey] || { left: 0, top: 0 };
+      window.requestAnimationFrame(function () {
+        viewport.scrollLeft = savedViewport.left;
+        viewport.scrollTop = savedViewport.top;
+        resize();
+      });
+    }
+
+    function configureParts(rawParts, preferredPartKey) {
+      var nextParts = [];
+      (Array.isArray(rawParts) ? rawParts : []).forEach(function (part) {
+        var key = String(part || '').trim();
+        if (key && nextParts.indexOf(key) === -1) nextParts.push(key);
+      });
+      if (nextParts.length < 2) {
+        availableParts = [];
+        activePartKey = '';
+        updatePartButtons();
+        return;
+      }
+      var previousDocument = serialiseCurrentDocument();
+      if (activePartKey) partDocuments[activePartKey] = previousDocument;
+      availableParts = nextParts;
+      var preferred = String(preferredPartKey || '').trim();
+      var nextActive = availableParts.indexOf(preferred) !== -1
+        ? preferred
+        : availableParts.indexOf(activePartKey) !== -1 ? activePartKey : availableParts[0];
+      if (!activePartKey && documentLoaded && !partDocuments[nextActive]) partDocuments[nextActive] = previousDocument;
+      if (nextActive !== activePartKey) {
+        activePartKey = nextActive;
+        restoreSingleDocument(partDocuments[activePartKey] || blankDocument());
+      }
+      updatePartButtons();
     }
 
     function addPage() {
@@ -986,6 +1171,14 @@
       if (willOpen) requestSavedDocument();
     });
 
+    window.addEventListener('mrflynnib-whiteboard-parts', function (event) {
+      var detail = event && event.detail;
+      if (!detail || String(detail.questionId || '') !== questionId) return;
+      configureParts(detail.parts, detail.partKey);
+      if (detail.partKey) switchPart(detail.partKey);
+      if (detail.open && board.hidden) open.click();
+    });
+
     board.addEventListener('click', function (event) {
       var layoutChoice = event.target.closest('[data-whiteboard-layout]');
       if (layoutChoice) {
@@ -1011,6 +1204,7 @@
       if (action === 'zoom-in') setZoom(zoom + .25);
       if (action === 'add-page') addPage();
       if (action === 'add-space-right') addSpaceRight();
+      if (action === 'copy-question') importQuestion(button);
       if (action === 'expand') setExpanded(!card.classList.contains('qb-whiteboard-expanded'));
       if (action === 'undo') undoLastAction();
       if (action === 'clear' && hasVisibleWork()) {
@@ -1022,30 +1216,18 @@
       if (action === 'close') open.click();
     });
 
-    function importDiagram(svg) {
-      if (svg.getAttribute('data-whiteboard-importing') === '1') return;
-      svg.setAttribute('data-whiteboard-importing', '1');
+    function placeSourceOnBoard(source, sourceWidth, sourceHeight, maximumHeight, callback) {
       if (board.hidden) open.click();
-      var diagram = svg.closest('.qb-diagram');
-      var hint = diagram && diagram.querySelector('.qb-diagram-copy-hint');
-      var originalHint = hint ? hint.textContent : '';
-      if (hint) hint.textContent = 'Adding to whiteboard…';
-      var copy = svg.cloneNode(true);
-      var sourceRect = svg.getBoundingClientRect();
-      if (!copy.getAttribute('xmlns')) copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      if (!copy.getAttribute('width')) copy.setAttribute('width', Math.max(1, sourceRect.width));
-      if (!copy.getAttribute('height')) copy.setAttribute('height', Math.max(1, sourceRect.height));
-      var source = new XMLSerializer().serializeToString(copy);
       loadWhiteboardImage(source, function (image) {
         whenWhiteboardIsReady(function (layoutError) {
           if (layoutError) {
-            finishImport(false);
+            callback(false);
             return;
           }
           var availableWidth = Math.max(1, Math.min(canvas.clientWidth, viewport.clientWidth) * .84);
-          var naturalWidth = image.naturalWidth || sourceRect.width || availableWidth;
-          var naturalHeight = image.naturalHeight || sourceRect.height || 240;
-          var scale = Math.min(1, availableWidth / naturalWidth, 380 / naturalHeight);
+          var naturalWidth = image.naturalWidth || sourceWidth || availableWidth;
+          var naturalHeight = image.naturalHeight || sourceHeight || 240;
+          var scale = Math.min(1, availableWidth / naturalWidth, (maximumHeight || 380) / naturalHeight);
           var drawWidth = naturalWidth * scale;
           var drawHeight = naturalHeight * scale;
           var visibleTop = Math.max(18, viewport.scrollTop + 24);
@@ -1083,9 +1265,95 @@
           redraw();
           updateButtons();
           scheduleSave();
-          finishImport(true);
+          callback(true);
         }, 8);
-      }, function () { finishImport(false); });
+      }, function () { callback(false); });
+    }
+
+    function questionSnapshotSource() {
+      var pane = card.querySelector('.qb-question-pane');
+      if (!pane) return null;
+      var clone = pane.cloneNode(true);
+      clone.querySelectorAll([
+        'button', 'input', 'select', 'textarea', 'script',
+        '.qb-ms-toggle', '.qb-sol-toggle', '.qb-markscheme', '.qb-solution',
+        '.qb-progress-toggle', '.qb-feedback-lock-note', '.qb-diagram-copy-hint'
+      ].join(',')).forEach(function (node) { node.remove(); });
+      // KaTeX's visible HTML relies on hundreds of page-level positioning
+      // rules which are not carried into an SVG image. Its parallel MathML is
+      // self-contained, however, so use that for a clean copied question
+      // instead of rasterising overlapping numerator/denominator fragments.
+      clone.querySelectorAll('.katex').forEach(function (node) {
+        var math = node.querySelector('.katex-mathml math');
+        if (math) {
+          var replacement = math.cloneNode(true);
+          replacement.removeAttribute('aria-hidden');
+          node.replaceWith(replacement);
+        } else {
+          var fallback = document.createElement('span');
+          fallback.textContent = node.textContent || '';
+          node.replaceWith(fallback);
+        }
+      });
+      clone.querySelectorAll('[id]').forEach(function (node) { node.removeAttribute('id'); });
+      clone.querySelectorAll('[role],[tabindex],[title],[aria-label]').forEach(function (node) {
+        node.removeAttribute('role');
+        node.removeAttribute('tabindex');
+        node.removeAttribute('title');
+        node.removeAttribute('aria-label');
+      });
+      clone.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+      clone.style.width = '900px';
+      clone.style.padding = '28px';
+      clone.style.background = '#ffffff';
+      clone.style.color = '#0d152e';
+      clone.style.fontFamily = 'Georgia, Times New Roman, serif';
+      clone.style.fontSize = '22px';
+      clone.style.lineHeight = '1.55';
+      var measure = document.createElement('div');
+      measure.style.position = 'fixed';
+      measure.style.left = '-10000px';
+      measure.style.top = '0';
+      measure.style.width = '900px';
+      measure.style.pointerEvents = 'none';
+      measure.appendChild(clone);
+      document.body.appendChild(measure);
+      var height = Math.max(180, Math.ceil(clone.scrollHeight));
+      measure.remove();
+      var content = new XMLSerializer().serializeToString(clone);
+      var source = '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="' + height + '" viewBox="0 0 900 ' + height + '">' +
+        '<foreignObject width="900" height="' + height + '">' + content + '</foreignObject></svg>';
+      return { source: source, width: 900, height: height };
+    }
+
+    function importQuestion(button) {
+      if (button.getAttribute('data-whiteboard-importing') === '1') return;
+      var snapshot = questionSnapshotSource();
+      if (!snapshot) return;
+      button.setAttribute('data-whiteboard-importing', '1');
+      var originalCopy = button.textContent;
+      button.textContent = 'Adding question…';
+      placeSourceOnBoard(snapshot.source, snapshot.width, snapshot.height, 680, function (succeeded) {
+        button.removeAttribute('data-whiteboard-importing');
+        button.textContent = succeeded ? 'Question added' : 'Could not copy question';
+        window.setTimeout(function () { button.textContent = originalCopy; }, succeeded ? 1600 : 3000);
+      });
+    }
+
+    function importDiagram(svg) {
+      if (svg.getAttribute('data-whiteboard-importing') === '1') return;
+      svg.setAttribute('data-whiteboard-importing', '1');
+      var diagram = svg.closest('.qb-diagram');
+      var hint = diagram && diagram.querySelector('.qb-diagram-copy-hint');
+      var originalHint = hint ? hint.textContent : '';
+      if (hint) hint.textContent = 'Adding to whiteboard…';
+      var copy = svg.cloneNode(true);
+      var sourceRect = svg.getBoundingClientRect();
+      if (!copy.getAttribute('xmlns')) copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      if (!copy.getAttribute('width')) copy.setAttribute('width', Math.max(1, sourceRect.width));
+      if (!copy.getAttribute('height')) copy.setAttribute('height', Math.max(1, sourceRect.height));
+      var source = new XMLSerializer().serializeToString(copy);
+      placeSourceOnBoard(source, sourceRect.width, sourceRect.height, 380, finishImport);
 
       function finishImport(succeeded) {
         svg.removeAttribute('data-whiteboard-importing');
@@ -1198,50 +1466,28 @@
           return;
         }
         var stored = event.data.document;
-        var storedActions = Array.isArray(stored.actions) ? stored.actions : [];
-        var restored = [];
-        storedActions.slice(0, 3000).forEach(function (action) {
-          if (!action || typeof action !== 'object') return;
-          if (action.type === 'clear') restored.push({ type: 'clear' });
-          if (action.type === 'stroke-erase' && Array.isArray(action.strokeIds)) {
-            restored.push({
-              type: 'stroke-erase',
-              strokeIds: action.strokeIds.slice(0, 1000).map(String)
-            });
+        if (stored && stored.parts && typeof stored.parts === 'object' && !Array.isArray(stored.parts)) {
+          partDocuments = {};
+          Object.keys(stored.parts).forEach(function (partKey) {
+            if (stored.parts[partKey] && typeof stored.parts[partKey] === 'object') partDocuments[String(partKey)] = stored.parts[partKey];
+          });
+          var storedPartKeys = Object.keys(partDocuments);
+          var restoredPartKey = availableParts.find(function (partKey) { return partDocuments[partKey]; }) || storedPartKeys[0] || '';
+          if (restoredPartKey) {
+            activePartKey = restoredPartKey;
+            restoreSingleDocument(partDocuments[restoredPartKey]);
+            updatePartButtons();
+          } else restoreSingleDocument(blankDocument());
+        } else {
+          restoreSingleDocument(stored);
+          if (availableParts.length > 1) {
+            activePartKey = availableParts.indexOf(activePartKey) !== -1 ? activePartKey : availableParts[0];
+            partDocuments[activePartKey] = serialiseCurrentDocument();
+            updatePartButtons();
           }
-          if (action.type === 'stroke' && Array.isArray(action.points)) {
-            restored.push({
-              type: 'stroke',
-              id: typeof action.id === 'string' && action.id ? action.id : nextStrokeId(),
-              mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
-              colour: typeof action.colour === 'string' ? action.colour : '#000000',
-              straightened: Boolean(action.straightened),
-              points: action.points.slice(0, 10000).map(function (point) {
-                return { x: Number(point.x) || 0, y: Number(point.y) || 0 };
-              })
-            });
-          }
-          if (action.type === 'image' && typeof action.source === 'string') {
-            var imageAction = {
-              type: 'image', image: null, source: action.source,
-              x: Number(action.x) || 0, y: Number(action.y) || 0,
-              width: Number(action.width) || .5, height: Number(action.height) || .2
-            };
-            imageAction.image = loadWhiteboardImage(action.source, function () { redraw(); });
-            restored.push(imageAction);
-          }
-        });
-        actions = restored;
-        setPageCount(Number(stored.pages) || 1, false);
-        setColumnCount(Number(stored.columns) || 1, false);
-        // Older documents were one sheet wide. Preserve their exact drawing
-        // size and add a new blank sheet to the right.
-        if (columnCount < 2) setColumnCount(2, true);
-        setPaper(stored.paper === 'blank' ? 'blank' : 'squared');
+        }
         localDirty = Boolean(event.data.pending);
         window.clearTimeout(saveTimer);
-        redraw();
-        updateButtons();
         setSaveStatus(localDirty ? 'Saved on this device — reconnecting' : 'Saved', localDirty ? 'saving' : 'saved');
       }
     });
