@@ -1,6 +1,6 @@
 # Mr Flynn IB release safety
 
-Use this gate before publishing a change that can affect students, teachers, assignments, question banks, accounts, courses or checkout.
+Use this gate before every update. Apply the checks in proportion to what the update can affect, but do not treat a successful build or initial page load as proof that a repeated, delayed or progressive interaction still works.
 
 ## Automated gate
 
@@ -30,6 +30,8 @@ Run the journeys affected by the change in a preview or local production build. 
 5. Open IB and IGCSE independently. Confirm IB still has Paper 1 and Paper 2 filters while IGCSE does not expose paper labels.
 6. Search, filter, switch every available course, reveal a mark scheme and a worked solution, and star a question.
 7. Check the relevant teacher flow: open a class, create an assignment, select questions, publish, and reopen the task.
+
+For any question-bank delivery, embedding, filtering or progressive-rendering change, also perform a long-scroll regression in both IB and IGCSE. Load at least 200 questions in each bank, confirm that every successive batch becomes visible, and verify that the distance between the final rendered card and the embedded frame does not grow into a blank area. Repeat this same long-scroll check on the public site after deployment.
 
 Checkout, account-role, email or video changes require their own complete end-to-end test as well as the checks above that overlap with their code.
 
