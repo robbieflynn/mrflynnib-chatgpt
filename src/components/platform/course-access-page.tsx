@@ -31,6 +31,7 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
   const checkoutSucceeded = query.checkout === "success";
   const checkoutProduct = selectedProduct ?? (curriculum === "igcse" ? products[0] : null);
   const checkoutReady = Boolean(checkoutSucceeded && checkoutProduct && owned.has(checkoutProduct.id));
+  const teacherApprovalPending = session.profile?.role === "student" && session.profile?.teacher_status === "pending";
   const successCourseHref = checkoutProduct ? `${learnPath}?course=${checkoutProduct.id}` : `${learnPath}?view=courses`;
   const checkoutCourseName = checkoutProduct?.shortTitle ?? (curriculum === "igcse" ? "IGCSE Mathematics" : "Plus");
   return <>
@@ -51,6 +52,7 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
       {codeStatus === "student_required" ? <p className="form-message form-error">That code is for a student account.</p> : null}
       {codeStatus === "course_required" ? <p className="form-message form-error">Choose the one IB course you want this code to unlock, then try again.</p> : null}
       {["invalid", "unavailable", "error"].includes(codeStatus) ? <p className="form-message form-error">That access code is invalid, expired or no longer available.</p> : null}
+      {teacherApprovalPending ? <div className="teacher-pending-note" role="status"><strong>Your teacher request is awaiting approval.</strong><span>You can keep using the student learning area while you wait. This account will change to a teacher account as soon as it is approved.</span></div> : null}
       <div className="platform-access-intro"><div><Eyebrow>Current access</Eyebrow><h2>{session.access?.label || "Free account"}</h2><p>{session.access?.detail || "Complete question bank and classroom tools"}</p></div>{session.access?.paid ? <div className="access-plus-summary"><strong>Plus is active</strong><span>Complete lessons and lesson practice are unlocked for your course.</span></div> : <div className="access-free-summary"><strong>Free account</strong><span>Question bank, classes, assignments and saved work</span></div>}</div>
       {curriculum === "ib" ? <nav className="access-course-selector" aria-label="Choose course">{products.map((product) => <Link aria-current={product.id === selectedProduct?.id ? "page" : undefined} className={product.id === selectedProduct?.id ? "is-selected" : ""} href={`${accessPath}?course=${product.id}`} key={product.id}><strong>{product.shortTitle}</strong><span>{product.title}</span></Link>)}</nav> : null}
       <div className={`access-course-grid ${selectedProduct ? "is-focused" : ""}`}>{visibleProducts.map((product) => {

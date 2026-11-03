@@ -18,7 +18,7 @@ export async function AccountSettingsPage({ curriculum }: AccountSettingsPagePro
   const signInHref = curriculum === "igcse" ? "/igcse/account?next=/igcse/account/settings" : "/account?next=/account/settings";
   if (!user) redirect(signInHref);
 
-  const { data: profile } = await supabase.from("profiles").select("display_name,role").eq("user_id", user.id).maybeSingle();
+  const { data: profile } = await supabase.from("profiles").select("display_name,role,teacher_status").eq("user_id", user.id).maybeSingle();
   const metadata = user.user_metadata || {};
   const metadataName = typeof metadata.display_name === "string"
     ? metadata.display_name
@@ -26,6 +26,7 @@ export async function AccountSettingsPage({ curriculum }: AccountSettingsPagePro
   const email = user.email || "No email address";
   const displayName = profile?.display_name || metadataName || email.split("@")[0] || "Your account";
   const isTeacher = profile?.role === "teacher" || profile?.role === "admin";
+  const teacherApprovalPending = profile?.role === "student" && profile?.teacher_status === "pending";
   const homeHref = curriculum === "igcse" ? isTeacher ? "/igcse/teacher" : "/igcse/account" : isTeacher ? "/teacher" : "/account";
   const accessHref = curriculum === "igcse" ? "/igcse/account/access" : isTeacher ? "/teacher/access" : "/account/access";
 
@@ -42,7 +43,9 @@ export async function AccountSettingsPage({ curriculum }: AccountSettingsPagePro
               <div><dt>Name</dt><dd>{displayName}</dd></div>
               <div><dt>Email address</dt><dd>{email}</dd></div>
               <div><dt>Account type</dt><dd>{accountTypeLabel(profile?.role)}</dd></div>
+              {teacherApprovalPending ? <div><dt>Teacher access</dt><dd>Awaiting approval</dd></div> : null}
             </dl>
+            {teacherApprovalPending ? <div className="teacher-pending-note" role="status"><strong>Your teacher request is waiting for approval.</strong><span>You can continue using the student learning area until it is approved.</span></div> : null}
             <p className="small muted">Contact Mr Flynn IB if your name or email address needs to be corrected.</p>
           </div>
           <AccountSettingsPasswordForm />

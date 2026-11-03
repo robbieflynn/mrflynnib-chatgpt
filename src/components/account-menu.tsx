@@ -12,6 +12,7 @@ type AccountSummary = {
   email: string;
   role: "student" | "teacher" | "admin";
   curriculum: "ib" | "igcse";
+  teacherStatus?: "none" | "pending" | "approved" | "rejected" | null;
   accessLabel?: string | null;
 };
 
@@ -77,7 +78,7 @@ export function AccountMenu({
       const [{ data: profile }, { data: entitlements }, { data: schoolSeats }] = await Promise.all([
         supabase
           .from("profiles")
-          .select("role,display_name")
+          .select("role,display_name,teacher_status")
           .eq("user_id", user.id)
           .maybeSingle(),
         supabase
@@ -111,6 +112,7 @@ export function AccountMenu({
         email,
         role,
         curriculum: routeCurriculum,
+        teacherStatus: profile?.teacher_status,
         accessLabel: access.paid ? access.label : null,
       });
     }
@@ -157,7 +159,8 @@ export function AccountMenu({
   }
 
   const roleLabel = displayedAccount.role === "admin" ? "Administrator" : displayedAccount.role === "teacher" ? "Teacher" : "Student";
-  const accountStatusLabel = displayedAccount.accessLabel || roleLabel;
+  const teacherApprovalPending = displayedAccount.role === "student" && displayedAccount.teacherStatus === "pending";
+  const accountStatusLabel = teacherApprovalPending ? "Awaiting teacher approval" : displayedAccount.accessLabel || roleLabel;
   const isTeacher = displayedAccount.role === "teacher" || displayedAccount.role === "admin";
   const accountHome = isPlatformReview
     ? `/platform-review?curriculum=${displayedAccount.curriculum}&role=${isTeacher ? "teacher" : "student"}`
@@ -189,7 +192,7 @@ export function AccountMenu({
     <div className={`account-menu ${className}`.trim()} ref={menuRef}>
       <button
         ref={triggerRef}
-        className="account-menu-trigger"
+        className={`account-menu-trigger ${teacherApprovalPending ? "is-teacher-pending" : ""}`.trim()}
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
@@ -206,8 +209,9 @@ export function AccountMenu({
         <div className="account-menu-panel" id={panelId} role="menu">
           <div className="account-menu-identity">
             <span className="account-menu-avatar account-menu-avatar-large" aria-hidden="true">{initials(displayedAccount.displayName, displayedAccount.email)}</span>
-            <span><small>{displayedAccount.accessLabel ? `${displayedAccount.accessLabel} · ${roleLabel}` : `${isPlatformReview ? "Example" : "Signed in as"} ${roleLabel.toLowerCase()}`}</small><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span></span>
+            <span><small>{teacherApprovalPending ? "Awaiting teacher approval" : displayedAccount.accessLabel ? `${displayedAccount.accessLabel} · ${roleLabel}` : `${isPlatformReview ? "Example" : "Signed in as"} ${roleLabel.toLowerCase()}`}</small><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span></span>
           </div>
+          {teacherApprovalPending ? <div className="account-menu-pending-note" role="status"><strong>Your teacher request is waiting for approval.</strong><span>You can keep using the student learning area while you wait.</span></div> : null}
           {!isPlatformReview ? <nav className="account-menu-navigation" aria-label="Account navigation">
             <Link href={accountHome} role="menuitem" onClick={() => setOpen(false)}>{isTeacher ? "Teacher home" : "Learning home"}</Link>
             {showNavigation ? <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link> : null}
