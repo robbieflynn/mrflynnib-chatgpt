@@ -7,6 +7,7 @@ const checks = [
   ["Lint", "node_modules/eslint/bin/eslint.js", "."],
   ["Assignment whiteboard regression", "scripts/test-assignment-whiteboards.mjs"],
   ["Delayed whiteboard initialisation", "scripts/test-assignment-whiteboards.mjs", "--late-board"],
+  ["Question-bank navigation regression", "scripts/test-bank-navigation.mjs"],
   ["Fixed assignment-answer audit", "scripts/audit-assignment-choices.mjs"],
   ["Question-bank delivery audit", "scripts/verify-question-bank-delivery.mjs"],
   ["Production build", "node_modules/next/dist/bin/next", "build", "--webpack"],

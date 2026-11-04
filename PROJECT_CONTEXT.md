@@ -6,6 +6,8 @@ On 25 October 2026, the production server architecture was aligned with the exis
 
 On 4 November 2026, Rob requested focused fixes from the live assignment audit: multipart whiteboards must remain navigable in teacher and submitted-student review, delayed saved-work loading must preserve the selected part, submission messages must match the current submission state, and saved-answer counts must clearly identify that they count questions. This repair is explicitly preview-only until Rob has checked and approved the preview. Preserve existing answers, progress, whiteboard documents and unrelated working features.
 
+On 4 November 2026, Rob requested that returning to a public question bank preserve the current question, position within it and filters, including browser Back/Forward navigation. Keep this browser-tab memory scoped to the relevant curriculum and course; do not change assignment, practice or Test Maker navigation. This fix shares the preview-only review gate above.
+
 ## Purpose of this file
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.
