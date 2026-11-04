@@ -23,6 +23,16 @@
     window.parent.postMessage(message, window.location.origin);
   }
 
+  window.mrflynnibRestoreStarredFilter = function () {
+    if (!account.configured) return false;
+    if (account.signedIn && !starredOnly) {
+      starredOnly = true;
+      updateFilterButton();
+      refreshQuestions();
+    }
+    return true;
+  };
+
   function labelFor(questionId, isStarred) {
     return (isStarred ? 'Remove question from' : 'Save question to') + ' starred questions';
   }
@@ -67,9 +77,10 @@
   }
 
   function refreshQuestions() {
+    var filterChanged = window.__mrflynnibStarredOnly !== starredOnly;
     window.__mrflynnibStarredQuestionIds = starred;
     window.__mrflynnibStarredOnly = starredOnly;
-    if (typeof window.mrflynnibRefreshQuestionFilters === 'function') {
+    if ((starredOnly || filterChanged) && typeof window.mrflynnibRefreshQuestionFilters === 'function') {
       window.mrflynnibRefreshQuestionFilters();
     }
     window.setTimeout(scan, 0);

@@ -59,7 +59,7 @@ export function AssignmentHeroProgress({ assignmentId, initialAnswered, initialC
     correct: 0,
   });
 
-  return <div className="teacher-workspace-stats"><span><strong>{progress.completed}/{total}</strong> completed</span><span><strong>{progress.answered}</strong> answers</span></div>;
+  return <div className="teacher-workspace-stats"><span><strong>{progress.completed}/{total}</strong> completed</span><span><strong>{progress.answered}</strong> questions with saved answers</span></div>;
 }
 
 export function AssignmentStatusBar({ assignmentId, dueLabel, initialAnswered, initialCompleted, initialCorrect, isSubmitted, total }: {
@@ -83,7 +83,7 @@ export function AssignmentStatusBar({ assignmentId, dueLabel, initialAnswered, i
   return <div className="assignment-status-bar">
     <div><span>Your progress</span><strong>{progress.completed} of {total} questions completed</strong></div>
     <div className="dashboard-progress"><span style={{ width: `${total ? Math.round(progress.completed / total * 100) : 0}%` }} /></div>
-    <div><span>Answers saved</span><strong>{progress.answered} of {total}{progress.correct ? ` · ${progress.correct} correct` : ""}</strong></div>
+    <div><span>Questions with saved answers</span><strong>{progress.answered} of {total}{progress.correct ? ` · ${progress.correct} correct` : ""}</strong></div>
     <div><span>Due</span><strong>{dueLabel}</strong></div>
     {isSubmitted
       ? <div className="assignment-submitted-status" role="status"><span aria-hidden="true">✓</span><strong>Submitted</strong></div>

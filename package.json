@@ -17,7 +17,8 @@
     "import:teachable-access": "node scripts/import-teachable-access.mjs",
     "test:smoke": "node scripts/smoke-platform.mjs",
     "test:load": "node scripts/smoke-platform.mjs --load",
-    "captions": "node scripts/manage-video-captions.mjs"
+    "captions": "node scripts/manage-video-captions.mjs",
+    "test:assignment-whiteboards": "node scripts/test-assignment-whiteboards.mjs && node scripts/test-assignment-whiteboards.mjs --late-board"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -38,7 +39,8 @@
     "eslint-config-next": "^16.0.0",
     "postcss": "^8.5.0",
     "tailwindcss": "^4.1.0",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "jsdom": "^30.1.3"
   },
   "engines": {
     "node": ">=22"

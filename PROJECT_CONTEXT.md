@@ -1,8 +1,12 @@
 # MrFlynnIB permanent project context
 
-Last updated: 30 October 2026
+Last updated: 4 November 2026
 
 On 25 October 2026, the production server architecture was aligned with the existing West EU Ireland Supabase project. Keep Vercel dynamic functions pinned to the Dublin `dub1` region through the version-controlled `vercel.json`; static assets continue to use Vercel's global CDN. Do not move or recreate the Supabase project merely to make this alignment. The repository includes read-only smoke and staged load checks for the public website, native course catalogue and assignment-save health path. Run those checks after infrastructure changes and before classroom use; they supplement rather than replace real authenticated assignment testing.
+
+On 4 November 2026, Rob requested focused fixes from the live assignment audit: multipart whiteboards must remain navigable in teacher and submitted-student review, delayed saved-work loading must preserve the selected part, submission messages must match the current submission state, and saved-answer counts must clearly identify that they count questions. This repair is explicitly preview-only until Rob has checked and approved the preview. Preserve existing answers, progress, whiteboard documents and unrelated working features.
+
+On 4 November 2026, Rob requested that returning to a public question bank preserve the current question, position within it and filters, including browser Back/Forward navigation. Keep this browser-tab memory scoped to the relevant curriculum and course; do not change assignment, practice or Test Maker navigation. This fix shares the preview-only review gate above.
 
 ## Purpose of this file
 
