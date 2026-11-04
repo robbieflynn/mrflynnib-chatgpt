@@ -214,8 +214,15 @@
       var account = accountState();
       var readOnly = Boolean(account.readOnly);
       board.classList.toggle('is-read-only', readOnly);
-      Array.prototype.forEach.call(board.querySelectorAll('button:not(.qb-whiteboard-close):not(.qb-whiteboard-part-button):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
-      if (readOnly) setSaveStatus('Teacher view', 'saved');
+      card.classList.toggle('qb-whiteboard-read-only', readOnly);
+      canvas.setAttribute('aria-label', readOnly ? 'Saved working (read only)' : 'Draw your working here');
+      card.querySelectorAll('.qb-diagram[data-whiteboard-source] svg').forEach(function (svg) {
+        svg.setAttribute('tabindex', readOnly ? '-1' : '0');
+        svg.setAttribute('aria-disabled', String(readOnly));
+      });
+      Array.prototype.forEach.call(board.querySelectorAll('button:not([data-whiteboard-layout]):not(.qb-whiteboard-close):not(.qb-whiteboard-part-button):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
+      updateButtons();
+      if (readOnly) setSaveStatus('Read only', 'saved');
       else if (!account.configured) setSaveStatus('Saving coming soon', 'idle');
       else if (!account.signedIn) setSaveStatus('Sign in to save', 'idle');
       else if (!localDirty) setSaveStatus(documentLoaded ? 'Saved' : 'Ready to save', 'saved');
@@ -333,7 +340,7 @@
     }
 
     function undoLastAction() {
-      if (!actions.length) return;
+      if (accountState().readOnly || !actions.length) return;
       resetInteraction();
       actions.pop();
       redraw();
@@ -385,8 +392,8 @@
     }
 
     function updateButtons() {
-      undo.disabled = actions.length === 0;
-      clear.disabled = !hasVisibleWork();
+      undo.disabled = Boolean(accountState().readOnly) || actions.length === 0;
+      clear.disabled = Boolean(accountState().readOnly) || !hasVisibleWork();
     }
 
     function drawStrokePoints(stroke, points) {
@@ -917,8 +924,8 @@
       var label = board.querySelector('.qb-whiteboard-page-count');
       var sheets = pageCount * columnCount;
       label.textContent = sheets + (sheets === 1 ? ' sheet' : ' sheets');
-      board.querySelector('[data-whiteboard-action="add-page"]').disabled = pageCount >= 8;
-      board.querySelector('[data-whiteboard-action="add-space-right"]').disabled = columnCount >= 4;
+      board.querySelector('[data-whiteboard-action="add-page"]').disabled = Boolean(accountState().readOnly) || pageCount >= 8;
+      board.querySelector('[data-whiteboard-action="add-space-right"]').disabled = Boolean(accountState().readOnly) || columnCount >= 4;
     }
 
     function updateSurfaceSize() {
@@ -1185,6 +1192,7 @@
         applyWhiteboardLayout(layoutChoice.getAttribute('data-whiteboard-layout'), true);
         return;
       }
+      if (accountState().readOnly && !event.target.closest('[data-whiteboard-action="zoom-in"], [data-whiteboard-action="zoom-out"], [data-whiteboard-action="expand"], [data-whiteboard-action="close"]')) return;
       var colourChoice = event.target.closest('[data-whiteboard-colour]');
       if (colourChoice) {
         colour = colourChoice.getAttribute('data-whiteboard-colour');
@@ -1217,6 +1225,7 @@
     });
 
     function placeSourceOnBoard(source, sourceWidth, sourceHeight, maximumHeight, callback) {
+      if (accountState().readOnly) { callback(false); return; }
       if (board.hidden) open.click();
       loadWhiteboardImage(source, function (image) {
         whenWhiteboardIsReady(function (layoutError) {
@@ -1341,6 +1350,7 @@
     }
 
     function importDiagram(svg) {
+      if (accountState().readOnly) return;
       if (svg.getAttribute('data-whiteboard-importing') === '1') return;
       svg.setAttribute('data-whiteboard-importing', '1');
       var diagram = svg.closest('.qb-diagram');
@@ -1472,7 +1482,11 @@
             if (stored.parts[partKey] && typeof stored.parts[partKey] === 'object') partDocuments[String(partKey)] = stored.parts[partKey];
           });
           var storedPartKeys = Object.keys(partDocuments);
-          var restoredPartKey = availableParts.find(function (partKey) { return partDocuments[partKey]; }) || storedPartKeys[0] || '';
+          // A student may have chosen a part while the saved document was loading.
+          // Keep that choice even when that part does not have working yet.
+          var restoredPartKey = availableParts.indexOf(activePartKey) !== -1
+            ? activePartKey
+            : availableParts.find(function (partKey) { return partDocuments[partKey]; }) || storedPartKeys[0] || '';
           if (restoredPartKey) {
             activePartKey = restoredPartKey;
             restoreSingleDocument(partDocuments[restoredPartKey]);

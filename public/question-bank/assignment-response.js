@@ -602,6 +602,17 @@
     }
     applyFeedbackPolicy(card, item);
     addDetailButton(card, id);
+    // Read-only review needs the same part navigation as editable working.
+    var legacyPartLabels = Array.from(card.querySelectorAll(".qb-parts > li > b")).map(function (node) { return String(node.textContent || "").replace(/[()]/g, "").trim(); }).filter(Boolean);
+    var partDefinitions = multipartDefinitions(item);
+    if (!partDefinitions.length && item.responseType === "teacher_review" && legacyPartLabels.length > 1) partDefinitions = legacyPartLabels.map(function (label) { return { label: label, mode: "exact" }; });
+    var isMultipart = partDefinitions.length > 1;
+    var whiteboard = card.querySelector(".qb-whiteboard");
+    if (whiteboard && whiteboard.dataset.partConfigVersion !== String(renderVersion)) {
+      announceWhiteboardParts(id, partDefinitions, activeId === id ? activePartKey : null, false);
+      whiteboard.dataset.partConfigVersion = String(renderVersion);
+    }
+
     openWhiteboardPreview(card);
     if (card.dataset.responseVersion === String(renderVersion) && existing) return;
     if (existing) existing.remove();
@@ -619,11 +630,6 @@
       card.appendChild(panel); return;
     }
 
-    var legacyPartLabels = Array.from(card.querySelectorAll(".qb-parts > li > b")).map(function (node) { return String(node.textContent || "").replace(/[()]/g, "").trim(); }).filter(Boolean);
-    var partDefinitions = multipartDefinitions(item);
-    if (!partDefinitions.length && item.responseType === "teacher_review" && legacyPartLabels.length > 1) partDefinitions = legacyPartLabels.map(function (label) { return { label: label, mode: "exact" }; });
-    var isMultipart = partDefinitions.length > 1;
-    announceWhiteboardParts(id, partDefinitions, activeId === id ? activePartKey : null, false);
     var textInput = null;
     var partInputs = {};
     var mathInputs = [];
