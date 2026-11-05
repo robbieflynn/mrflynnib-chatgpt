@@ -276,7 +276,7 @@
 
   function partLabel(label) {
     if (!label || label === "answer") return "Answer";
-    return "(" + String(label).replace("(", ")(") + ")";
+    return "(" + String(label).replace(/\)$/, "").replace("(", ")(") + ")";
   }
 
   function partNavLabel(label) {

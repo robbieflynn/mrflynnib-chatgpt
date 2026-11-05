@@ -1042,7 +1042,7 @@
         var button = document.createElement('button');
         button.type = 'button';
         button.className = 'qb-whiteboard-part-button';
-        button.textContent = '(' + partKey.replace('(', ')(') + ')';
+        button.textContent = '(' + partKey.replace(/\)$/, '').replace('(', ')(') + ')';
         button.setAttribute('aria-pressed', String(partKey === activePartKey));
         button.addEventListener('click', function () { switchPart(partKey); });
         partButtons.appendChild(button);
