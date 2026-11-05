@@ -158,7 +158,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         setMessage(accountType === "teacher"
           ? wantsPlus
             ? "Check your email to confirm your account. You can then continue straight to secure Teacher Plus checkout."
-            : "Check your email to confirm your account. Approved-school teachers open immediately; other free teacher accounts are sent to Mr Flynn for approval."
+            : "Check your email to confirm your account. Approved-school teachers open immediately; other teacher accounts are sent to Mr Flynn for approval."
           : "Check your email to confirm your account, then return here to sign in.");
       }
       return;
@@ -205,12 +205,12 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
             {curriculum === "ib" ? <fieldset className="account-access-field"><legend>Then, choose your access</legend><div className="account-access-options">
               <label className={accessChoice === "free" ? "is-selected" : ""}>
                 <input checked={accessChoice === "free"} name="accessChoice" onChange={() => { setAccessChoice("free"); setError(null); }} type="radio" value="free" />
-                <span><strong>Free account</strong><small>{accountType === "teacher" ? "Question bank, classes, assignments and Test Maker" : "Question bank, whiteboards, classes and assignments"}</small></span>
-                <b>Free</b>
+                <span><strong>Standard account</strong><small>{accountType === "teacher" ? "Question bank, classes, assignments and Test Maker" : "Question bank, whiteboards, classes and assignments"}</small></span>
+                <b>US$0</b>
               </label>
               <label className={accessChoice === "plus" ? "is-selected is-plus" : "is-plus"}>
                 <input checked={accessChoice === "plus"} name="accessChoice" onChange={() => { setAccessChoice("plus"); setError(null); }} type="radio" value="plus" />
-                <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "Everything in Free, plus every lesson and its extra practice in all four IB courses" : "Everything in Free, plus every lesson and its extra practice in one IB course"}</small></span>
+                <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "Everything in Standard, plus every lesson and its extra practice in all four IB courses" : "Everything in Standard, plus every lesson and its extra practice in one IB course"}</small></span>
                 <b>{accountType === "teacher" ? "$99 · 1 year" : "$79 · 2 years"}</b>
               </label>
             </div>{wantsPlus ? <small className="account-access-note">No payment is taken when you create the account. Secure checkout follows after your email is confirmed.</small> : null}</fieldset> : null}
@@ -270,8 +270,8 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         <button className="button" type="submit" disabled={pending}>
           {pending ? "Please wait…" : mode === "sign-up"
             ? accountType === "teacher"
-              ? wantsPlus ? "Create teacher account and request Plus" : "Create my free teacher account"
-              : wantsPlus ? "Create account and continue to Plus" : "Create my free account"
+              ? wantsPlus ? "Create teacher account and request Plus" : "Create my teacher account"
+              : wantsPlus ? "Create account and continue to Plus" : "Create my account"
             : mode === "reset" ? "Send reset link" : mode === "resend" ? "Resend confirmation email" : plusJourney ? "Sign in and continue" : "Sign in"}
         </button>
       </form>
@@ -281,7 +281,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         <span><strong>Already paid on Teachable?</strong><small>Use the same email address in this form. After confirmation, any matching active course is added automatically without another payment.</small></span>
         <Link href={curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"}>Open previous course <span aria-hidden="true">↗</span></Link>
       </div>
-      <p className="small muted">This is the separate {curriculum === "igcse" ? "IGCSE" : "IB"} Mathematics account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts open the teacher dashboard and classroom tools. "}Creating an account does not subscribe you to marketing emails.</p>
+      <p className="small muted">This is the separate {curriculum === "igcse" ? "IGCSE" : "IB"} Mathematics account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Standard or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts open the teacher dashboard and classroom tools. "}Creating an account does not subscribe you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href={`${legalBase}/terms`}>Terms of Use</Link> and acknowledge the <Link className="text-link" href={`${legalBase}/privacy`}>Privacy Policy</Link>.</p>
     </div>
   );

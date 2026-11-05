@@ -40,7 +40,7 @@ export function generateStaticParams() { return courses.map(({ slug }) => ({ slu
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const course = courses.find((item) => item.slug === slug);
-  return course ? { title: course.title, description: `${course.description} Try free lessons or unlock one year of complete course access.` } : {};
+  return course ? { title: course.title, description: `${course.description} Try sample lessons or unlock one year of complete course access.` } : {};
 }
 
 export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {

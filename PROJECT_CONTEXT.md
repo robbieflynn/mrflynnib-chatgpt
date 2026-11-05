@@ -1,6 +1,6 @@
 # MrFlynnIB permanent project context
 
-Last updated: 4 November 2026
+Last updated: 5 November 2026
 
 On 25 October 2026, the production server architecture was aligned with the existing West EU Ireland Supabase project. Keep Vercel dynamic functions pinned to the Dublin `dub1` region through the version-controlled `vercel.json`; static assets continue to use Vercel's global CDN. Do not move or recreate the Supabase project merely to make this alignment. The repository includes read-only smoke and staged load checks for the public website, native course catalogue and assignment-save health path. Run those checks after infrastructure changes and before classroom use; they supplement rather than replace real authenticated assignment testing.
 
@@ -9,6 +9,8 @@ On 4 November 2026, Rob requested focused fixes from the live assignment audit: 
 On 4 November 2026, Rob requested that returning to a public question bank preserve the current question, position within it and filters, including browser Back/Forward navigation. Keep this browser-tab memory scoped to the relevant curriculum and course; do not change assignment, practice or Test Maker navigation. This fix shares the preview-only review gate above.
 
 On 5 November 2026, Rob requested removing the “All questions free” highlight and “Free access” badge from all four IB course question-bank pages. Questions remain free for now; this is wording only, with no access restriction or pricing change. Keep “Complete mark schemes” and “Save your progress”.
+
+On 5 November 2026, Rob expanded the wording cleanup to all website mentions of “free”, including search-engine titles and descriptions, dashboards, account entry, course samples, teacher pages and supporting resources. Use neutral wording: Standard for the non-Plus account tier, sample lessons for course previews, and complimentary access for administrator codes. Preserve the existing US$0 signup option, all access rules, prices, approved sample selections and internal `free` identifiers. This supersedes older instructions to promote these features as free; it does not introduce a paywall or change entitlements. Mathematical question and solution wording is not marketing copy and must remain unchanged.
 
 ## Purpose of this file
 
