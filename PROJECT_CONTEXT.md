@@ -10,6 +10,8 @@ On 4 November 2026, Rob requested that returning to a public question bank prese
 
 On 5 November 2026, Rob requested removing the “All questions free” highlight and “Free access” badge from all four IB course question-bank pages. Questions remain free for now; this is wording only, with no access restriction or pricing change. Keep “Complete mark schemes” and “Save your progress”.
 
+On 5 November 2026, Rob requested repairing missing course lesson-practice questions before publishing the separate wording cleanup. Preserve the approved question selections, canonical records, saved-work IDs, course-specific difficulty and sample/Plus rules. Explicit lesson practice must load its selected records even when they belong to another IB course, and reuse their available worked solutions without changing the viewing course. Ordinary public question-bank and assignment delivery must remain unchanged.
+
 ## Purpose of this file
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.

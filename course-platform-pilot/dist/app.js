@@ -719,7 +719,7 @@ function renderLessonPractice(lesson, locked = false) {
   const frame = document.getElementById("practiceFrame");
   const bankFile = practice.bankPath || "ib-bank.html";
   const url = new URL(`/question-bank/${bankFile}`, window.location.href);
-  url.searchParams.set("renderer", "20261021-2");
+  url.searchParams.set("renderer", "20261105-practice");
   url.searchParams.set("embedded", "1");
   url.searchParams.set("practice", "1");
   // Shared SL-and-HL lessons reuse the same question IDs, but each bank
