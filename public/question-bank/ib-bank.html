@@ -506,15 +506,14 @@
 <script>
 (function(){
   window.__MR_FLYNN_QB_DATA__ = window.__MR_FLYNN_QB_DATA__ || {};
-  window.__MR_FLYNN_QB_ASSETS__ = {"aahl":"/question-bank/data/ib-aa-hl.6a783b24deda.js","aasl":"/question-bank/data/ib-aa-sl.8defe2bfb027.js","aihl":"/question-bank/data/ib-ai-hl.fdd556c5bb5e.js","aisl":"/question-bank/data/ib-ai-sl.3b8df050a738.js"};
+  window.__MR_FLYNN_QB_ASSETS__ = {"aahl":"/question-bank/data/ib-aa-hl.6a783b24deda.js","aasl":"/question-bank/data/ib-aa-sl.8defe2bfb027.js","aihl":"/question-bank/data/ib-ai-hl.fdd556c5bb5e.js","aisl":"/question-bank/data/ib-ai-sl.3b8df050a738.js","practice":"/question-bank/data/ib-practice.4f1a4ea8c8d3.js"};
   window.__MR_FLYNN_QB_COUNTS__ = {"AA HL":2380,"AA SL":1462,"AI HL":2109,"AI SL":1284};
   window.__MR_FLYNN_QB_FAMILIES__ = {"AA HL":"aahl","AA SL":"aasl","AI HL":"aihl","AI SL":"aisl"};
   window.__MR_FLYNN_QB_DEFAULT_COURSE__ = "AA HL";
   var pending = {};
   function familyFor(course){ return window.__MR_FLYNN_QB_FAMILIES__[course] || ''; }
-  window.__MR_FLYNN_QB_LOAD_COURSE__ = function(course){
-    var family = familyFor(course);
-    if(!family) return Promise.reject(new Error('Unknown question bank: ' + course));
+  function loadFamily(family){
+    if(!window.__MR_FLYNN_QB_ASSETS__[family]) return Promise.reject(new Error('Unknown question bank'));
     if(window.__MR_FLYNN_QB_DATA__[family]) return Promise.resolve(window.__MR_FLYNN_QB_DATA__[family]);
     if(pending[family]) return pending[family];
     pending[family] = new Promise(function(resolve, reject){
@@ -522,10 +521,32 @@
       script.src = window.__MR_FLYNN_QB_ASSETS__[family];
       script.async = true;
       script.onload = function(){ resolve(window.__MR_FLYNN_QB_DATA__[family] || []); };
-      script.onerror = function(){ reject(new Error('Could not load the selected question bank. Please try again.')); };
+      script.onerror = function(){ delete pending[family]; reject(new Error('Could not load the selected question bank. Please try again.')); };
       document.head.appendChild(script);
     });
     return pending[family];
+  }
+
+  window.__MR_FLYNN_QB_LOAD_COURSE__ = function(course){
+    return loadFamily(familyFor(course)).then(function(questions){
+      if(params.get('practice') !== '1' || !params.get('ids')) return questions;
+      var ids = new Set(params.get('ids').split(',').filter(Boolean));
+      var available = new Set(questions.map(function(question){ return question.id; }));
+      var authored = (window.MR_FLYNN_AUTHORED_PRACTICE || []).filter(function(question){
+        return ids.has(question.id) && !available.has(question.id);
+      });
+      authored.forEach(function(question){ available.add(question.id); });
+      var selected = questions.concat(authored);
+      var missing = Array.from(ids).filter(function(id){ return !available.has(id); });
+      if(!missing.length) return selected;
+      return loadFamily('practice').then(function(extra){
+        var needed = new Set(missing);
+        var additions = extra.filter(function(question){ return needed.has(question.id); });
+        if(additions.length !== needed.size) throw new Error('Some lesson practice questions could not be loaded.');
+        // Never mutate the cached public course array with another course's data.
+        return selected.concat(additions);
+      });
+    });
   };
 
   var params = new URLSearchParams(window.location.search);
@@ -79587,12 +79608,25 @@ function diagramN11TZ0P2Q1grid(){
     (SOLUTION_WAIT[key] || []).forEach(function(w){ w.ok(data); });
     delete SOLUTION_WAIT[key];
   };
-  function solutionFor(q){
+  function solutionCourse(q){
     var s = SOLUTION_HAS[state.course];
-    return !!(s && s[q.id]);
+    if(s && s[q.id]) return state.course;
+    // A deliberately selected lesson question can belong to another bank.
+    // Reuse its existing worked solution without changing the viewing course.
+    if(IS_PRACTICE && REQUESTED_IDS.has(String(q.id))){
+      return [q.course].concat(banksOf(q), COURSE_ORDER).find(function(course){
+        return SOLUTION_HAS[course] && SOLUTION_HAS[course][q.id];
+      }) || '';
+    }
+    return '';
+  }
+  function solutionFor(q){
+    return !!solutionCourse(q);
   }
   function loadSolution(q, ok, fail){
-    var course = state.course, key = course + '|' + q.id;
+    var course = solutionCourse(q);
+    if(!course) return fail();
+    var key = course + '|' + q.id;
     if(SOLUTION_CACHE[key]) return ok(SOLUTION_CACHE[key]);
     if(SOLUTION_WAIT[key]){ SOLUTION_WAIT[key].push({ok: ok, fail: fail}); return; }
     SOLUTION_WAIT[key] = [{ok: ok, fail: fail}];
