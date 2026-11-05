@@ -326,17 +326,17 @@ function configurePreviewMode() {
   document.body.classList.toggle("igcse-learning", isIgcse);
   document.title = `${isIgcse ? "IGCSE" : "IB"} platform review | Mr Flynn IB`;
   document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : courses[currentCourseId].name;
-  document.getElementById("welcomeEyebrow").textContent = "Free course preview";
+  document.getElementById("welcomeEyebrow").textContent = "Course preview";
   document.getElementById("welcomeTitle").textContent = isIgcse ? "Try the IGCSE course" : `Try the ${courses[currentCourseId].code} course`;
   const freeLessonCount = salesPreviewLessons(courses[currentCourseId]).length;
-  document.getElementById("welcomeCopy").textContent = "Three carefully chosen lessons in every topic are free. Each includes the video and its attached practice questions.";
-  document.getElementById("libraryStatusText").textContent = `${freeLessonCount} complete lessons free`;
+  document.getElementById("welcomeCopy").textContent = "Try three carefully chosen sample lessons in every topic. Each includes the video and its attached practice questions.";
+  document.getElementById("libraryStatusText").textContent = `${freeLessonCount} sample lessons available`;
   document.getElementById("enrolmentEyebrow").textContent = "Your selected course";
   document.getElementById("dashboardCoursesTitle").textContent = courses[currentCourseId].name;
   document.getElementById("dashboardCoursesButton").textContent = "View syllabus →";
   document.getElementById("coursesEyebrow").textContent = "My course";
   document.getElementById("coursesTitle").textContent = courses[currentCourseId].name;
-  document.getElementById("coursesDescription").textContent = "Free lessons are ready to watch. The complete syllabus stays visible so you can see exactly what full course access includes.";
+  document.getElementById("coursesDescription").textContent = "Sample lessons are ready to watch. The complete syllabus stays visible so you can see exactly what full course access includes.";
   document.getElementById("courseBackButton").textContent = "← Learning home";
   document.getElementById("summaryTopics").textContent = String(enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].topics.length, 0));
   document.getElementById("summaryTopicsLabel").textContent = "course topics";
@@ -523,7 +523,7 @@ function courseCard(course, large = false) {
       <h3>${course.name}</h3>
       <p>${course.description}</p>
       <div class="course-card-progress"><span style="width:${percentage}%"></span></div>
-      <div class="course-card-footer"><small>${owned ? `${completed} of ${course.lessons.length} completed` : `${salesPreviewLessons(course).length} complete lessons free`}</small><span class="course-card-link">${owned ? "Open course" : "Try free lessons"} →</span></div>
+      <div class="course-card-footer"><small>${owned ? `${completed} of ${course.lessons.length} completed` : `${salesPreviewLessons(course).length} sample lessons available`}</small><span class="course-card-link">${owned ? "Open course" : "Try sample lessons"} →</span></div>
     </div>
   </button>`;
 }
@@ -548,7 +548,7 @@ function renderDashboard() {
   document.getElementById("continueLessonTitle").textContent = `${nextLesson.code} ${nextLesson.title}`;
   document.getElementById("continueLessonMeta").textContent = `Topic ${nextLesson.topic}: ${topicName(course, nextLesson.topic)} · ${formatDuration(nextLesson.seconds)}`;
   document.getElementById("continueProgressLabel").textContent = `${percentage}% complete`;
-  document.getElementById("continueProgressCount").textContent = `${completedIn(progressLessons)} of ${progressLessons.length} ${hasCompleteCourseAccess(course) ? "lessons" : "free lessons"}`;
+  document.getElementById("continueProgressCount").textContent = `${completedIn(progressLessons)} of ${progressLessons.length} ${hasCompleteCourseAccess(course) ? "lessons" : "sample lessons"}`;
   document.getElementById("continueProgressBar").style.width = `${percentage}%`;
   document.getElementById("continueButton").dataset.courseId = course.id;
   document.getElementById("continueButton").dataset.lessonId = nextLesson.id;
@@ -598,7 +598,7 @@ function renderTopicStrip() {
     return `<button class="topic-button ${topic.number === currentTopic ? "is-active" : ""}" type="button" data-topic="${topic.number}">
       <span>Topic ${topic.number}</span>
       <strong>${escapeHtml(topic.name)}</strong>
-      <small>${completed} / ${progressLessons.length} ${owned ? "complete" : "free lessons"}</small>
+      <small>${completed} / ${progressLessons.length} ${owned ? "complete" : "sample lessons"}</small>
     </button>`;
   }).join("");
 }
@@ -810,7 +810,7 @@ function renderLessonList(query = "") {
     const lockedMeta = currentCourseId === "igcse" ? "Course access" : "Plus";
     return `${heading}<button class="lesson-item ${lesson.id === currentLessonId ? "is-active" : ""} ${complete ? "is-complete" : ""} ${locked ? "is-locked" : ""}" type="button" data-lesson-id="${lesson.id}" aria-label="${locked ? lockedLabel : "Open lesson: "}${escapeHtml(`${lesson.code} ${lesson.title}`)}">
       <span class="lesson-state">${locked ? "+" : complete ? "✓" : "▶"}</span>
-      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? `${formatDuration(lesson.seconds)}${practice ? " · Practice preview" : ""} · ${lockedMeta}` : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Free lesson" : ""}`}</small></span>
+      <span><strong>${escapeHtml(`${lesson.code} ${lesson.title}`)}</strong><small>${locked ? `${formatDuration(lesson.seconds)}${practice ? " · Practice preview" : ""} · ${lockedMeta}` : `${formatDuration(lesson.seconds)}${lesson.status === 4 ? "" : " · Processing"}${practice ? " · Practice included" : ""}${isSampleLesson(lesson) ? " · Sample lesson" : ""}`}</small></span>
     </button>`;
   }).join("");
 }
@@ -998,7 +998,7 @@ function renderProgress() {
     return `<article class="progress-course-card accent-${course.accent}">
       <div class="progress-course-head"><span>${course.code}</span><div><strong>${percentage}%</strong><small>complete</small></div></div>
       <h2>${course.name}</h2>
-      <p>${complete} of ${progressLessons.length} ${owned ? "lessons" : "free lessons"} completed</p>
+      <p>${complete} of ${progressLessons.length} ${owned ? "lessons" : "sample lessons"} completed</p>
       <div class="topic-progress-list">${topicRows}</div>
       <button class="primary-button" type="button" data-course-id="${course.id}">Continue course</button>
     </article>`;
@@ -1105,7 +1105,7 @@ function renderPastPaperCatalog() {
       ${sessionGroup.sets.map((set) => {
         const meta = [set.timezone, set.paper].filter(Boolean).join(" · ");
         return `<button class="paper-set-card ${set.id === currentPastPaperSetId ? "is-active" : ""}" type="button" data-paper-set-id="${set.id}">
-          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Free</b>' : ""}</strong><em>${set.fullPaper ? "Complete worked video" : `${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}`}</em></span>
+          <span><strong>${escapeHtml(meta)}${pastPaperSetIsFree(set) ? '<b class="paper-free-badge">Sample</b>' : ""}</strong><em>${set.fullPaper ? "Complete worked video" : `${set.questions.length} worked solution${set.questions.length === 1 ? "" : "s"}`}</em></span>
           <i aria-hidden="true">→</i>
         </button>`;
       }).join("")}
@@ -1157,7 +1157,7 @@ function renderPastPapers() {
   const isIgcsePapers = currentPastPaperCourse === "IGCSE";
   document.querySelector("#pastPapersView .past-paper-intro > p:last-child").textContent = isIgcsePapers
     ? "Choose an exam session and open the complete worked video for the paper you need."
-    : "Find your exam session, paper and the worked solution for the exact question you need. Specimen papers and every May 2021 paper are free to watch.";
+    : "Find your exam session, paper and the worked solution for the exact question you need. Watch sample solutions from specimen papers and May 2021.";
   renderPastPaperTabs();
   renderPastPaperSessionFilter();
   document.getElementById("pastPaperCourseStats").innerHTML = `<strong>${currentPastPaperCourse}</strong><span>${isIgcsePapers ? `${stats.papers} complete paper solution videos` : `${stats.papers} papers with ${stats.questions} verified worked solutions`}</span>`;
@@ -1331,7 +1331,7 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("topbarLearningHomeLink").href = homeHref;
   document.getElementById("topbarLearningHomeLink").textContent = isIgcse ? "← IGCSE home" : "← Mr Flynn IB";
   document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
-  document.getElementById("accessLink").textContent = isIgcse ? "Create free account" : requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
+  document.getElementById("accessLink").textContent = isIgcse ? "Create account" : requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account?mode=sign-up" : requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
   document.getElementById("accessLink").classList.toggle("is-plus", !isIgcse);
   accountButton.classList.add("is-guest");
@@ -1340,18 +1340,18 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("accountRole").textContent = isIgcse ? "IGCSE Mathematics" : "Save your progress";
   document.getElementById("learningHomeLink").textContent = curriculumMismatch ? `Switch to ${isIgcse ? "IGCSE" : "IB"}` : "Log in";
   document.getElementById("learningHomeLink").href = accountHref;
-  document.getElementById("manageAccessLink").textContent = "Create free account";
+  document.getElementById("manageAccessLink").textContent = "Create account";
   document.getElementById("manageAccessLink").href = `${accountHref}?mode=sign-up`;
   document.getElementById("signOut").hidden = !curriculumMismatch;
   document.getElementById("courseBackButton").textContent = isIgcse ? "← IGCSE home" : "← All courses";
   document.getElementById("courseBackButton").href = isIgcse ? "/igcse" : "/learn/index.html?curriculum=ib&view=courses";
   document.getElementById("welcomeEyebrow").textContent = "Course preview";
   document.getElementById("welcomeTitle").textContent = isIgcse ? "Explore the IGCSE Mathematics course" : `Explore the ${currentCourse.code} course`;
-  document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic for free.";
-  document.getElementById("libraryStatusText").textContent = `${salesPreviewLessons(currentCourse).length} complete lessons free`;
+  document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic.";
+  document.getElementById("libraryStatusText").textContent = `${salesPreviewLessons(currentCourse).length} sample lessons available`;
   document.getElementById("coursesEyebrow").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
   document.getElementById("coursesTitle").textContent = isIgcse ? "Your IGCSE Mathematics course" : "Choose your course";
-  document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three free lessons in every syllabus topic.";
+  document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three sample lessons in every syllabus topic.";
   document.getElementById("teachableMigrationNote").hidden = isIgcse;
   document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
 }
@@ -1406,7 +1406,7 @@ async function bootstrapAccount() {
     accountButton.classList.remove("is-guest");
     document.getElementById("accountName").textContent = platformAccount.user.displayName;
     document.getElementById("accountRole").textContent = `${platformAccount.user.role === "admin" ? "Administrator" : platformAccount.user.role === "teacher" ? "Teacher" : "Student"} account`;
-    document.getElementById("accessLink").textContent = platformAccount.access?.label || "Free account";
+    document.getElementById("accessLink").textContent = platformAccount.access?.label || "Standard account";
     document.getElementById("accessLink").classList.toggle("is-plus", Boolean(platformAccount.access?.label?.includes("Plus")));
     document.getElementById("accessLink").href = platformAccount.links.access;
     document.getElementById("manageAccessLink").href = platformAccount.links.access;
@@ -1420,7 +1420,7 @@ async function bootstrapAccount() {
     void flushLessonProgress();
   } catch {
     configureGuestExperience();
-    showToast("You can still browse the free course preview.");
+    showToast("You can still browse the course preview.");
   }
 }
 
