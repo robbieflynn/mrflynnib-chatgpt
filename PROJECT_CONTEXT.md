@@ -8,6 +8,8 @@ On 4 November 2026, Rob requested focused fixes from the live assignment audit: 
 
 On 4 November 2026, Rob requested that returning to a public question bank preserve the current question, position within it and filters, including browser Back/Forward navigation. Keep this browser-tab memory scoped to the relevant curriculum and course; do not change assignment, practice or Test Maker navigation. This fix shares the preview-only review gate above.
 
+On 5 November 2026, Rob requested removing the “All questions free” highlight and “Free access” badge from all four IB course question-bank pages. Questions remain free for now; this is wording only, with no access restriction or pricing change. Keep “Complete mark schemes” and “Save your progress”.
+
 ## Purpose of this file
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.
