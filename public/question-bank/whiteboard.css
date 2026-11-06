@@ -378,12 +378,14 @@
 }
 
 .qb-whiteboard-tool:hover:not(:disabled) { background: #e9f1fa; }
-.qb-whiteboard-tool[aria-pressed="true"] {
+.qb-whiteboard-tool[aria-pressed="true"],
+.qb-whiteboard-tool[aria-pressed="true"]:hover:not(:disabled) {
   color: #fff;
   background: var(--flynn-blue, #407dc4);
   border-color: var(--flynn-blue, #407dc4);
 }
-.qb-whiteboard-tool[data-whiteboard-action="highlighter"][aria-pressed="true"] {
+.qb-whiteboard-tool[data-whiteboard-action="highlighter"][aria-pressed="true"],
+.qb-whiteboard-tool[data-whiteboard-action="highlighter"][aria-pressed="true"]:hover:not(:disabled) {
   color: #594600;
   background: #fde047;
   border-color: #eab308;
@@ -578,3 +580,17 @@
 
 .qb-whiteboard.is-read-only .qb-whiteboard-straight-hint,
 .qb-card.qb-whiteboard-read-only .qb-diagram-copy-hint { display: none; }
+
+/* Keep the everyday drawing actions together, ahead of paper and layout settings. */
+.qb-whiteboard-quick-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+.qb-whiteboard-quick-tools .qb-whiteboard-tool {
+  min-height: 44px;
+  min-width: 76px;
+  font-weight: 700;
+  border-radius: 8px;
+}

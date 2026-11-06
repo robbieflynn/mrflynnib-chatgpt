@@ -53,6 +53,23 @@ load({version:6,parts:{a:data.parts.a}});assert.equal(selected(),'(c)','unsaved 
 assert.equal(action('undo').disabled,true,'new part is blank');
 buttons()[0].click();assert.equal(action('undo').disabled,false,'student drawing controls remain available');
 console.log('PASS: delayed load preserves selected and unsaved parts; student controls restore');
+// Tool shortcuts must remain local and must never consume a student's typed answer.
+const canvas = child.document.querySelector('.qb-whiteboard-canvas');
+const key = (target, value, options = {}) => target.dispatchEvent(new child.KeyboardEvent('keydown', { key: value, bubbles: true, cancelable: true, ...options }));
+key(canvas, 'e');
+assert.equal(action('precision-eraser').getAttribute('aria-pressed'), 'true');
+key(canvas, 'p');
+assert.equal(action('pen').getAttribute('aria-pressed'), 'true');
+key(child.document.querySelector('input'), 'e');
+assert.equal(action('pen').getAttribute('aria-pressed'), 'true', 'typing an answer does not select eraser');
+key(canvas, 'e', { ctrlKey: true });
+assert.equal(action('pen').getAttribute('aria-pressed'), 'true', 'browser shortcuts remain untouched');
+account(true);
+key(canvas, 'e');
+assert.equal(action('pen').getAttribute('aria-pressed'), 'true', 'read-only reviews cannot switch drawing tools');
+account(false);
+console.log('PASS: eraser/pen shortcuts, typing safety, modifier safety and read-only restrictions');
+
 // Re-rendering a checked answer must preserve an unsent neighbouring part.
 const partInput = key => child.document.querySelector(`.qb-response-part[data-part-key="${key}"] input`);
 partInput('b').value='unsent B';
