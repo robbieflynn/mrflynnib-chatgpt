@@ -14,6 +14,8 @@ On 5 November 2026, Rob requested repairing missing course lesson-practice quest
 
 On 6 November 2026, Rob requested easier access to erasing while writing on the whiteboard. Keep the everyday Pen, Eraser and Undo controls prominent and grouped together, retain whole-stroke erasing, and scope keyboard shortcuts to the active question without intercepting typing in answer fields. This work remains unpublished during the current preview-only review.
 
+On 6 November 2026, Rob clarified that easier erasing primarily means using the back of a compatible pen and scribbling over existing writing, as in GoodNotes. Preserve temporary hardware eraser handling, add conservative undoable scribble-to-erase, and keep it in preview until reviewed. Hardware behaviour must be checked with Rob’s actual pen rather than claimed from simulated events.
+
 ## Purpose of this file
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.

@@ -130,7 +130,8 @@
           toolButton('clear', 'Clear') +
           '<button type="button" class="qb-whiteboard-tool qb-whiteboard-close" data-whiteboard-action="close" aria-label="Close whiteboard">&times;</button>' +
         '</div>' +
-        '<div class="qb-whiteboard-straight-hint">Hold at the end to straighten a line. Keyboard: E for eraser, P for pen.</div>' +
+        '<div class="qb-whiteboard-straight-hint">Scribble back and forth over writing to erase it. Undo restores it. Hold at the end to straighten a line.</div>' +
+        '<div class="qb-whiteboard-gesture-status" role="status" aria-live="polite"></div>' +
       '</div>' +
       '<div class="qb-whiteboard-viewport">' +
         '<div class="qb-whiteboard-surface">' +
@@ -343,7 +344,8 @@
     function undoLastAction() {
       if (accountState().readOnly || !actions.length) return;
       resetInteraction();
-      actions.pop();
+      var undone = actions.pop();
+      board.querySelector('.qb-whiteboard-gesture-status').textContent = undone.type === 'stroke-erase' ? 'Erasure undone. Your writing is restored.' : '';
       redraw();
       updateButtons();
       scheduleSave();
@@ -718,7 +720,7 @@
 
     canvas.addEventListener('pointerdown', function (event) {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      if (board.hidden) return;
+      if (board.hidden || accountState().readOnly) return;
       // A pen takes priority over a finger/palm that landed first. Never let
       // stale touch state lock out the next stylus stroke.
       if (event.pointerType === 'pen') {
@@ -731,6 +733,7 @@
       if (event.pointerType === 'touch' && activePointerType === 'pen') return;
       if (event.pointerType !== 'touch' && (touchGesture || touches.size)) return;
       event.preventDefault();
+      board.querySelector('.qb-whiteboard-gesture-status').textContent = '';
       if (event.pointerType === 'touch') {
         touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
         capturePointer(event.pointerId);
@@ -863,6 +866,23 @@
       if (activeStroke) appendStrokeSamples(event);
       if (activeStrokeErase) eraseWholeStrokes(event);
       if (activeStroke && activeStroke.mode === 'highlighter') redraw();
+      if (event.type === 'pointerup' && activeStroke && activeStroke.mode === 'pen' &&
+          !activeStroke.straightened && window.MrFlynnWhiteboardGestures) {
+        var visible = visibleStrokeState();
+        var paperPoint = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight }; };
+        var candidates = actions.slice(visible.start).filter(function (candidate) {
+          return candidate !== activeStroke && candidate.type === 'stroke' && candidate.mode !== 'eraser' && !visible.hidden.has(candidate.id);
+        }).map(function (candidate) { return { id: candidate.id, points: candidate.points.map(paperPoint) }; });
+        var erased = window.MrFlynnWhiteboardGestures.scribbleTargets(activeStroke.points.map(paperPoint), candidates);
+        if (erased.length) {
+          // Replace the gesture with one ordinary, persistent undoable erasure.
+          activeStrokeErase = { type: 'stroke-erase', strokeIds: erased };
+          actions.splice(actions.indexOf(activeStroke), 1, activeStrokeErase);
+          activeStroke = null;
+          redraw();
+          board.querySelector('.qb-whiteboard-gesture-status').textContent = 'Scribble erased. Undo restores your writing.';
+        }
+      }
       var completedAction = activeStroke || activeStrokeErase || (activeImage && activeImage.action);
       var changed = Boolean(activeStroke || activeImage || (activeStrokeErase && activeStrokeErase.strokeIds.length));
       activePointer = null;

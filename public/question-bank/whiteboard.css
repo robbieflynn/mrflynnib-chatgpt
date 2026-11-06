@@ -594,3 +594,6 @@
   font-weight: 700;
   border-radius: 8px;
 }
+
+.qb-whiteboard-gesture-status { color: #175a3f; font-size: 12px; font-weight: 600; }
+.qb-whiteboard-gesture-status:empty { display: none; }
