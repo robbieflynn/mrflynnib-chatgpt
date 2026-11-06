@@ -1,4 +1,3 @@
-import { SpanishListeningPreview } from "@/components/spanish-listening-preview";
 import { SpanishReadingPreview } from "@/components/spanish-reading-preview";
 import Image from "next/image";
 import Link from "next/link";
@@ -57,7 +56,6 @@ const checklistDownloads = [
 export default function HomePage() {
   return (
     <>
-      <SpanishListeningPreview />
       <SpanishReadingPreview />
       <section className="new-hero new-hero-simple home-connected-hero">
         <svg className="hero-graph hero-graph-refined" viewBox="0 0 760 340" fill="none" aria-hidden="true" focusable="false">
