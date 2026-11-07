@@ -90,18 +90,20 @@
           '<span>Working on</span>' +
           '<div class="qb-whiteboard-part-buttons"></div>' +
         '</div>' +
+        '<div class="qb-whiteboard-quick-tools" role="toolbar" aria-label="Drawing tools">' +
+          toolButton('pen', 'Pen', true, 'Pen (P): draw, then hold at the end to make a straight line') +
+          toolButton('precision-eraser', 'Eraser', false, 'Eraser (E): rub out part of your writing') +
+          toolButton('undo', 'Undo', undefined, 'Undo the last change (Ctrl+Z or Command+Z)') +
+        '</div>' +
         '<div class="qb-whiteboard-tools" role="toolbar" aria-label="Whiteboard tools">' +
           '<div class="qb-whiteboard-paper-tools" role="group" aria-label="Paper style">' +
             '<span>Paper</span>' +
             toolButton('squared-paper', 'Squared', true) +
             toolButton('blank-paper', 'Blank', false) +
           '</div>' +
-          toolButton('pen', 'Pen', true, 'Pen: draw, then hold at the end to make a straight line') +
           toolButton('highlighter', 'Highlighter', false) +
           '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type">' +
-            '<span>Erase</span>' +
-            toolButton('precision-eraser', 'Part', false, 'Precision eraser: remove only the area you rub over') +
-            toolButton('stroke-eraser', 'Stroke', false, 'Stroke eraser: remove a whole pen or highlighter stroke') +
+            toolButton('stroke-eraser', 'Erase whole stroke', false, 'Remove a whole pen or highlighter stroke') +
           '</div>' +
           toolButton('pan', 'Pan', false) +
           toolButton('move-image', 'Move image', false) +
@@ -125,17 +127,17 @@
             toolButton('add-space-right', 'Add right') +
           '</div>' +
           toolButton('expand', 'Expand', false) +
-          toolButton('undo', 'Undo') +
           toolButton('clear', 'Clear') +
           '<button type="button" class="qb-whiteboard-tool qb-whiteboard-close" data-whiteboard-action="close" aria-label="Close whiteboard">&times;</button>' +
         '</div>' +
-        '<div class="qb-whiteboard-straight-hint">Draw a line, then hold the pen still at the end to straighten it.</div>' +
+        '<div class="qb-whiteboard-straight-hint">Scribble back and forth over writing to erase it. Undo restores it. Hold at the end to straighten a line.</div>' +
+        '<div class="qb-whiteboard-gesture-status" role="status" aria-live="polite"></div>' +
       '</div>' +
       '<div class="qb-whiteboard-viewport">' +
         '<div class="qb-whiteboard-surface">' +
           '<div class="qb-whiteboard-page-guides" aria-hidden="true"></div>' +
           '<canvas class="qb-whiteboard-image-layer" aria-hidden="true"></canvas>' +
-          '<canvas class="qb-whiteboard-canvas" aria-label="Draw your working here"></canvas>' +
+          '<canvas class="qb-whiteboard-canvas" tabindex="0" aria-label="Draw your working here. E for eraser, P for pen."></canvas>' +
         '</div>' +
       '</div>';
 
@@ -342,19 +344,24 @@
     function undoLastAction() {
       if (accountState().readOnly || !actions.length) return;
       resetInteraction();
-      actions.pop();
+      var undone = actions.pop();
+      board.querySelector('.qb-whiteboard-gesture-status').textContent = undone.type === 'stroke-erase' ? 'Erasure undone. Your writing is restored.' : '';
       redraw();
       updateButtons();
       scheduleSave();
     }
 
     card.addEventListener('keydown', function (event) {
-      if (board.hidden || event.defaultPrevented || event.isComposing ||
-          !(event.metaKey || event.ctrlKey) || event.shiftKey || event.altKey ||
-          event.key.toLowerCase() !== 'z') return;
-      if (event.target.isContentEditable || event.target.closest('input, textarea, select')) return;
-      event.preventDefault();
-      undoLastAction();
+      if (board.hidden || accountState().readOnly || event.defaultPrevented || event.isComposing || event.altKey) return;
+      if (event.target.isContentEditable || event.target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]')) return;
+      var key = event.key.toLowerCase();
+      if ((event.metaKey || event.ctrlKey) && !event.shiftKey && key === 'z') {
+        event.preventDefault();
+        undoLastAction();
+      } else if (!event.metaKey && !event.ctrlKey && !event.shiftKey && (key === 'e' || key === 'p')) {
+        event.preventDefault();
+        setMode(key === 'e' ? 'precision-eraser' : 'pen');
+      }
     });
 
     function visibleStrokeState() {
@@ -713,7 +720,7 @@
 
     canvas.addEventListener('pointerdown', function (event) {
       if (event.pointerType === 'mouse' && event.button !== 0) return;
-      if (board.hidden) return;
+      if (board.hidden || accountState().readOnly) return;
       // A pen takes priority over a finger/palm that landed first. Never let
       // stale touch state lock out the next stylus stroke.
       if (event.pointerType === 'pen') {
@@ -726,6 +733,7 @@
       if (event.pointerType === 'touch' && activePointerType === 'pen') return;
       if (event.pointerType !== 'touch' && (touchGesture || touches.size)) return;
       event.preventDefault();
+      board.querySelector('.qb-whiteboard-gesture-status').textContent = '';
       if (event.pointerType === 'touch') {
         touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
         capturePointer(event.pointerId);
@@ -740,6 +748,7 @@
       if (activePointer !== null) return;
       activePointer = event.pointerId;
       activePointerType = event.pointerType;
+      canvas.focus({ preventScroll: true });
       capturePointer(event.pointerId);
       var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'precision-eraser' : mode;
       if (pointerMode === 'pan') {
@@ -857,6 +866,23 @@
       if (activeStroke) appendStrokeSamples(event);
       if (activeStrokeErase) eraseWholeStrokes(event);
       if (activeStroke && activeStroke.mode === 'highlighter') redraw();
+      if (event.type === 'pointerup' && activeStroke && activeStroke.mode === 'pen' &&
+          !activeStroke.straightened && window.MrFlynnWhiteboardGestures) {
+        var visible = visibleStrokeState();
+        var paperPoint = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight }; };
+        var candidates = actions.slice(visible.start).filter(function (candidate) {
+          return candidate !== activeStroke && candidate.type === 'stroke' && candidate.mode !== 'eraser' && !visible.hidden.has(candidate.id);
+        }).map(function (candidate) { return { id: candidate.id, points: candidate.points.map(paperPoint) }; });
+        var erased = window.MrFlynnWhiteboardGestures.scribbleTargets(activeStroke.points.map(paperPoint), candidates);
+        if (erased.length) {
+          // Replace the gesture with one ordinary, persistent undoable erasure.
+          activeStrokeErase = { type: 'stroke-erase', strokeIds: erased };
+          actions.splice(actions.indexOf(activeStroke), 1, activeStrokeErase);
+          activeStroke = null;
+          redraw();
+          board.querySelector('.qb-whiteboard-gesture-status').textContent = 'Scribble erased. Undo restores your writing.';
+        }
+      }
       var completedAction = activeStroke || activeStrokeErase || (activeImage && activeImage.action);
       var changed = Boolean(activeStroke || activeImage || (activeStrokeErase && activeStrokeErase.strokeIds.length));
       activePointer = null;
