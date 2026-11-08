@@ -1213,6 +1213,9 @@
         var key = String(part || '').trim();
         if (key && nextParts.indexOf(key) === -1) nextParts.push(key);
       });
+      Object.keys(partDocuments).forEach(function (key) {
+        if (nextParts.indexOf(key) === -1) nextParts.push(key);
+      });
       if (nextParts.length < 2) {
         availableParts = [];
         activePartKey = '';
@@ -1634,6 +1637,9 @@
             if (stored.parts[partKey] && typeof stored.parts[partKey] === 'object') partDocuments[String(partKey)] = stored.parts[partKey];
           });
           var storedPartKeys = Object.keys(partDocuments);
+          storedPartKeys.forEach(function (key) {
+            if (availableParts.indexOf(key) === -1) availableParts.push(key);
+          });
           // A student may have chosen a part while the saved document was loading.
           // Keep that choice even when that part does not have working yet.
           var restoredPartKey = availableParts.indexOf(activePartKey) !== -1

@@ -1,0 +1,468 @@
+{
+  "M14TZ1HL_P2_Q12": {
+    "a(i)": {
+      "answers": [
+        "-1"
+      ]
+    },
+    "d(i)": {
+      "answers": [
+        "x=-3; x=-1; x=1; x=3"
+      ]
+    },
+    "d(ii)": {
+      "answers": [
+        "x=-4; x=-2; x=0; x=2; x=4"
+      ]
+    },
+    "e(i)": {
+      "answers": [
+        "N=2n+1"
+      ],
+      "options": [
+        "N=2n+1",
+        "N=2n",
+        "N=n+1",
+        "N=2n-1",
+        "N=n^2+1"
+      ]
+    }
+  },
+  "M14TZ2HL_P1_Q11": {
+    "a(ii)": {
+      "answers": [
+        "0.016"
+      ]
+    }
+  },
+  "M14TZ2HL_P1_Q14": {
+    "c(i)": {
+      "answers": [
+        "0"
+      ]
+    },
+    "d(ii)": {
+      "answers": [
+        "-π/2"
+      ]
+    },
+    "d(i)": {
+      "mode": "whiteboard"
+    }
+  },
+  "M14TZ2HL_P2_Q1": {
+    "a(i)": {
+      "answers": [
+        "2835"
+      ]
+    }
+  },
+  "M14TZ2HL_P2_Q6": {
+    "a(i)": {
+      "answers": [
+        "0.0138"
+      ],
+      "options": [
+        "0.0138",
+        "0.276",
+        "0.0415",
+        "0.064",
+        "0.216"
+      ]
+    }
+  },
+  "M14TZ2HL_P2_Q11": {
+    "c(i)": {
+      "answers": [
+        "0.860"
+      ]
+    }
+  },
+  "M14TZ2HL_P2_Q12": {
+    "b(i)": {
+      "answers": [
+        "k*(5x/sqrt(202500+x^2)-1)"
+      ]
+    },
+    "e(i)": {
+      "answers": [
+        "260"
+      ]
+    },
+    "b(ii)": {
+      "mode": "whiteboard"
+    }
+  },
+  "A_M25TZ3HL_P2_Q11": {
+    "a(i)": {
+      "answers": [
+        "0.467"
+      ]
+    },
+    "c(i)": {
+      "answers": [
+        "0.104"
+      ],
+      "options": [
+        "0.104",
+        "0.577",
+        "0.12",
+        "0.08",
+        "0.20"
+      ]
+    }
+  },
+  "H_M16TZ2HL_P1_Q11": {
+    "b(i)": {
+      "answers": [
+        "2/(π*(3cos(2h)+4)^2)"
+      ]
+    }
+  },
+  "A_N23TZ1SL_P2_Q1": {
+    "a(i)": {
+      "answers": [
+        "-1"
+      ]
+    }
+  },
+  "A_M24TZ1SL_P1_Q7": {
+    "a(i)": {
+      "answers": [
+        "3x^2-10x+3"
+      ]
+    }
+  },
+  "A_M23TZ1SL_P1_Q8": {
+    "a(i)": {
+      "answers": [
+        "48"
+      ]
+    }
+  },
+  "A_M22TZ1SL_P1_Q8": {
+    "b(ii)": {
+      "answers": [
+        "-2/5"
+      ]
+    }
+  },
+  "A_N22TZ0SL_P1_Q8": {
+    "a(i)": {
+      "answers": [
+        "-3"
+      ]
+    },
+    "a(ii)": {
+      "answers": [
+        "1/3"
+      ]
+    }
+  },
+  "A_M23TZ1SL_P2_Q8": {
+    "a(i)": {
+      "answers": [
+        "16"
+      ]
+    }
+  },
+  "A_M23TZ2SL_P2_Q9": {
+    "a(i)": {
+      "answers": [
+        "6/n"
+      ],
+      "options": [
+        "6/n",
+        "5/n",
+        "1/n",
+        "6/(n-1)",
+        "30/(n*(n-1))"
+      ]
+    }
+  },
+  "A_M24TZ1SL_P2_Q9": {
+    "a(i)": {
+      "answers": [
+        "73.6°; 40.4°"
+      ]
+    },
+    "c": {
+      "answers": [
+        "20.3 m; 12.5 m"
+      ],
+      "options": [
+        "20.3 m; 12.5 m",
+        "20.3 m; 6.23 m",
+        "10.2 m; 12.5 m",
+        "20.3 m; 25.0 m",
+        "40.7 m; 12.5 m"
+      ]
+    }
+  },
+  "A_N23TZ1SL_P2_Q9": {
+    "c(ii)": {
+      "answers": [
+        "0.0143"
+      ]
+    }
+  },
+  "W_M24TZ1AIHL_P2_Q4": {
+    "a(i)": {
+      "answers": [
+        "0.8"
+      ],
+      "options": [
+        "0.8",
+        "0.2",
+        "0.4",
+        "0.6",
+        "0.08"
+      ]
+    },
+    "a(ii)": {
+      "answers": [
+        "0.4"
+      ],
+      "options": [
+        "0.4",
+        "0.6",
+        "0.2",
+        "0.8",
+        "0.08"
+      ]
+    },
+    "a(iii)": {
+      "answers": [
+        "0.6"
+      ],
+      "options": [
+        "0.6",
+        "0.4",
+        "0.8",
+        "0.2",
+        "0.08"
+      ]
+    }
+  },
+  "V_M24TZ1AISL_P2_Q4": {
+    "a(i)": {
+      "answers": [
+        "0.8"
+      ],
+      "options": [
+        "0.8",
+        "0.2",
+        "0.25",
+        "0.75",
+        "0.05"
+      ]
+    },
+    "a(ii)": {
+      "answers": [
+        "0.25"
+      ],
+      "options": [
+        "0.25",
+        "0.75",
+        "0.2",
+        "0.8",
+        "0.05"
+      ]
+    }
+  },
+  "4MA1_2019J_2HR_Q5": {
+    "b(i)": {
+      "answers": [
+        "154 m"
+      ]
+    }
+  },
+  "4MA1_2019J_2HR_Q14": {
+    "a(i)": {
+      "answers": [
+        "a^2"
+      ],
+      "options": [
+        "a^2",
+        "2a",
+        "a+2",
+        "a^3",
+        "3a^2"
+      ]
+    },
+    "a(ii)": {
+      "answers": [
+        "a*b^4"
+      ],
+      "options": [
+        "a*b^4",
+        "a^4*b",
+        "4a*b",
+        "a*b^3",
+        "a+b^4"
+      ]
+    }
+  },
+  "4MA1_2019M_1H_Q22": {
+    "b(i)": {
+      "answers": [
+        "(x-3)^2+1"
+      ]
+    }
+  },
+  "4MA1_2019M_1HR_Q21": {
+    "a(i)": {
+      "answers": [
+        "(9,3)"
+      ]
+    }
+  },
+  "4MA1_2020J_1HR_Q18": {
+    "a(i)": {
+      "answers": [
+        "-0.6"
+      ]
+    }
+  },
+  "4MA1_2021M_2H_Q9": {
+    "i": {
+      "answers": [
+        "(x+6)*(x-4)"
+      ]
+    }
+  },
+  "4MA1_2021N_1H_Q9": {
+    "i": {
+      "answers": [
+        "-2≤x<4"
+      ]
+    },
+    "ii": {
+      "mode": "whiteboard"
+    }
+  },
+  "4MA1_2021N_1H_Q14": {
+    "a(i)": {
+      "answers": [
+        "b-a"
+      ],
+      "options": [
+        "b-a",
+        "a-b",
+        "a+b",
+        "2b-a",
+        "b-2a"
+      ]
+    },
+    "a(ii)": {
+      "answers": [
+        "4b-2a"
+      ],
+      "options": [
+        "4b-2a",
+        "2b-4a",
+        "2b-2a",
+        "4b+2a",
+        "-4b+2a"
+      ]
+    }
+  },
+  "4MA1_2021N_2H_Q8": {
+    "b(i)": {
+      "answers": [
+        "(x+4)*(x-9)"
+      ]
+    }
+  },
+  "4MA1_2022J_1H_Q6": {
+    "b(i)": {
+      "answers": [
+        "(y-7)*(y+5)"
+      ]
+    }
+  },
+  "4MA1_2022J_1H_Q23": {
+    "i": {
+      "answers": [
+        "(-4,7)"
+      ]
+    }
+  },
+  "4MA1_2023J_1HR_Q8": {
+    "b(ii)": {
+      "answers": [
+        "y=6; y=-3"
+      ]
+    }
+  },
+  "4MA1_2023J_2H_Q14": {
+    "a(i)": {
+      "answers": [
+        "140°"
+      ]
+    },
+    "a(ii)": {
+      "mode": "whiteboard"
+    }
+  },
+  "M15TZ2AISL_P1_Q2": {
+    "a(i)": {
+      "mode": "whiteboard"
+    },
+    "a(ii)": {
+      "mode": "whiteboard"
+    }
+  },
+  "N20TZ0AISL_P2_Q2": {
+    "e": {
+      "mode": "whiteboard"
+    }
+  },
+  "N11TZ0AISL_P2_Q2": {
+    "b": {
+      "mode": "whiteboard"
+    }
+  },
+  "M14TZ2HL_P2_Q13": {
+    "b(i)": {
+      "answers": [
+        "latex:u=2e^{\\frac{i\\pi}{3}};\\quad v=\\sqrt{2}e^{-\\frac{i\\pi}{4}}"
+      ],
+      "options": [
+        "latex:u=2e^{\\frac{i\\pi}{3}};\\quad v=\\sqrt{2}e^{-\\frac{i\\pi}{4}}",
+        "latex:u=2e^{-\\frac{i\\pi}{3}};\\quad v=\\sqrt{2}e^{-\\frac{i\\pi}{4}}",
+        "latex:u=2e^{\\frac{i\\pi}{3}};\\quad v=\\sqrt{2}e^{\\frac{i\\pi}{4}}",
+        "latex:u=\\sqrt{2}e^{\\frac{i\\pi}{3}};\\quad v=2e^{-\\frac{i\\pi}{4}}",
+        "latex:u=2e^{\\frac{i\\pi}{6}};\\quad v=\\sqrt{2}e^{-\\frac{i\\pi}{4}}"
+      ]
+    }
+  },
+  "A_N21TZ0HL_P2_Q11": {
+    "a(i)": {
+      "answers": [
+        "latex:\\overrightarrow{DE}=\\begin{pmatrix}-1\\\\-4\\\\-5\\end{pmatrix};\\quad\\overrightarrow{DF}=\\begin{pmatrix}3\\\\-5\\\\-2\\end{pmatrix}"
+      ],
+      "options": [
+        "latex:\\overrightarrow{DE}=\\begin{pmatrix}-1\\\\-4\\\\-5\\end{pmatrix};\\quad\\overrightarrow{DF}=\\begin{pmatrix}3\\\\-5\\\\-2\\end{pmatrix}",
+        "latex:\\overrightarrow{DE}=\\begin{pmatrix}1\\\\4\\\\5\\end{pmatrix};\\quad\\overrightarrow{DF}=\\begin{pmatrix}3\\\\-5\\\\-2\\end{pmatrix}",
+        "latex:\\overrightarrow{DE}=\\begin{pmatrix}-1\\\\-4\\\\-5\\end{pmatrix};\\quad\\overrightarrow{DF}=\\begin{pmatrix}-3\\\\5\\\\2\\end{pmatrix}",
+        "latex:\\overrightarrow{DE}=\\begin{pmatrix}3\\\\4\\\\1\\end{pmatrix};\\quad\\overrightarrow{DF}=\\begin{pmatrix}7\\\\3\\\\4\\end{pmatrix}",
+        "latex:\\overrightarrow{DE}=\\begin{pmatrix}3\\\\-5\\\\-2\\end{pmatrix};\\quad\\overrightarrow{DF}=\\begin{pmatrix}-1\\\\-4\\\\-5\\end{pmatrix}"
+      ]
+    }
+  },
+  "H_M14TZ1SL_P1_Q8": {
+    "d(i)": {
+      "answers": [
+        "matrix(0;-1;1)"
+      ],
+      "options": [
+        "matrix(0;-1;1)",
+        "matrix(1;0;1)",
+        "matrix(0;1;1)",
+        "matrix(1;-1;0)",
+        "matrix(1;1;1)"
+      ]
+    }
+  }
+}

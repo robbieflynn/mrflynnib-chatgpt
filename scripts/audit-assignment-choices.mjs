@@ -1,9 +1,31 @@
+import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import assert from "node:assert/strict";
 
 const require = createRequire(import.meta.url);
 const choices = require("../public/question-bank/assignment-choice-utils.js");
+const reviewedSharedFixes = JSON.parse(readFileSync("question-bank-data/reviewed-shared-answer-fixes.json", "utf8"));
+const reviewedSharedSources = JSON.parse(readFileSync("question-bank-data/reviewed-shared-answer-sources.json", "utf8"));
+
+function reviewedChoiceSet(questionId, label, prompt, fallback) {
+  const reviewed = reviewedSharedFixes[questionId]?.[label];
+  if (!reviewed) return fallback();
+  if (reviewed.mode === "whiteboard") return null;
+  const set = reviewed.options
+    ? { acceptedAnswers: reviewed.answers, options: reviewed.options, correctOption: 0 }
+    : choices.generateChoiceSet(reviewed.answers, `${questionId}:${label}`, prompt);
+  assert(set, `Reviewed answer needs explicit choices: ${questionId} ${label}`);
+  assert(choices.validateChoiceSet(set.acceptedAnswers, set.options, set.correctOption), `Unsafe reviewed choices: ${questionId} ${label}`);
+  return set;
+}
+
+function requireSharedSourceReview(question, label, prompt, rows) {
+  const questionId = question.id;
+  const fingerprint = createHash("sha256").update(JSON.stringify([question.body || question.title || "", prompt, rows])).digest("hex");
+  assert.equal(reviewedSharedSources[questionId]?.[label], fingerprint,
+    `Unreviewed shared mark scheme: ${questionId} ${label}. Review the prompt and ALL sibling answers before updating the source approval.`);
+}
 
 assert.equal(choices.latexToPlain(String.raw`\dfrac12r^2\sin\theta`), "(1/2)*r^2sintheta");
 assert.equal(choices.toLatex("(1/2)*r^2sintheta"), String.raw`\left(\frac{1}{2}\right)\times r^{2}\sin \theta `);
@@ -514,19 +536,21 @@ function assignmentPartConfigs(question) {
         const labelledRows = directlyLabelledRows.length ? directlyLabelledRows : rowsForSubpart(rows, nestedLabel);
         const nestedRows = labelledRows.length ? labelledRows : rows;
         const label = topLabel ? `${topLabel}(${nestedLabel})` : nestedLabel;
+        if (!labelledRows.length || reviewedSharedSources[question.id]?.[label]) requireSharedSourceReview(question, label, prompt, rows);
         const accepted = choices.extractAcceptedAnswers(nestedRows, nestedPrompt);
         configs.push({
           label,
           prompt: nestedPrompt,
           accepted,
           rows: nestedRows,
-          choices: hasSharedWhiteboardInstruction(prompt)
+          choices: reviewedChoiceSet(question.id, label, nestedPrompt, () => hasSharedWhiteboardInstruction(prompt)
             ? null
-            : manualChoiceSet(question.id, label) || choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`),
+            : manualChoiceSet(question.id, label) || choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`)),
         });
       }
     } else {
       const label = topLabel || "answer";
+      if (reviewedSharedSources[question.id]?.[label]) requireSharedSourceReview(question, label, prompt, rows);
       const accepted = choices.extractAcceptedAnswers(rows, prompt);
       if (question.id === "M17TZ1HL_P1_Q1" && part === "") {
         assert.deepEqual(accepted, ["60"], `An intermediate logarithm step was selected: ${JSON.stringify(accepted)}`);
@@ -557,7 +581,7 @@ function assignmentPartConfigs(question) {
         prompt,
         accepted,
         rows,
-        choices: manualChoiceSet(question.id, label) || choiceSetForRows(rows, prompt, `${question.id}:${label}`),
+        choices: reviewedChoiceSet(question.id, label, prompt, () => manualChoiceSet(question.id, label) || choiceSetForRows(rows, prompt, `${question.id}:${label}`)),
       });
     }
   }
