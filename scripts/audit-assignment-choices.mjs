@@ -209,6 +209,16 @@ function choiceSetForRows(rows, prompt, seed) {
 }
 
 function manualChoiceSet(questionId, label) {
+  // The shared (a) mark scheme has no roman labels. Its final row is sin(2φ),
+  // which must never become the answer to the earlier sin(φ) subpart.
+  if (questionId === "A_M23TZ2SL_P1_Q8" && label === "a(i)") {
+    return {
+      acceptedAnswers: ["sqrt(7)/4"],
+      options: ["sqrt(7)/4", "3*sqrt(7)/8", "sqrt(7)/8", "-sqrt(7)/4", "7/16"],
+      correctOption: 0,
+    };
+  }
+
   if (questionId === "N12TZ0HL_P1_Q7" && label === "b") {
     return {
       acceptedAnswers: [
@@ -1545,6 +1555,13 @@ for (const [label, path] of banks) {
   let bankQuestionsWithWhiteboard = 0;
   for (const question of questions) {
     const configs = assignmentPartConfigs(question);
+    if (question.id === "A_M23TZ2SL_P1_Q8") {
+      const first = configs.find((part) => part.label === "a(i)").choices;
+      const second = configs.find((part) => part.label === "a(ii)").choices;
+      assert.equal(first.options[first.correctOption], "sqrt(7)/4", "sin(phi) must not use the double-angle answer");
+      assert.equal(second.options[second.correctOption], "(3*sqrt(7))/8");
+    }
+
     fixedAssignmentConfigs[label === "IB" ? "ib" : "igcse"][question.id] = fixedResponseConfig(question.id, configs);
     if (label === "IGCSE" && question.id === "4MA1_2020N_1H_Q7") {
       const nestedSolution = configs.find((config) => config.label === "c(ii)");
