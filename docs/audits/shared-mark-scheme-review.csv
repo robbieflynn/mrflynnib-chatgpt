@@ -1,0 +1,176 @@
+bank,question,part,status,current,expected,note
+IB,M12TZ2HL_P1_Q12,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M12TZ2HL_P1_Q12,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ1HL_P2_Q5,b(i),matches_source,latex:V=\pi\displaystyle\int_{\frac{\pi}{2}}^{3\frac{\pi}{2}}\Big(x^2-(x+2\cos x)^2\Big)dx,latex:V=\pi\displaystyle\int_{\frac{\pi}{2}}^{3\frac{\pi}{2}}\Big(x^2-(x+2\cos x)^2\Big)dx,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q5,b(ii),matches_source,6π^2,6π^2,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q10,b(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ1HL_P2_Q10,b(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ1HL_P2_Q10,b(iii),matches_source,"(1.44, 8.47)","(1.44, 8.47)","Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q11,b(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ1HL_P2_Q11,b(ii),matches_source,b=76-30mu,b=76-30mu,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q11,c(i),matches_source,2.34,2.34,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q11,c(ii),matches_source,0.241,0.241,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q12,a(i),wrong_answer,3,-1,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ1HL_P2_Q12,a(ii),matches_source,3,3,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q12,b(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ1HL_P2_Q12,b(ii),matches_source,x=±1,x=±1,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q12,c(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ1HL_P2_Q12,c(ii),matches_source,x=0;±2,x=0;±2,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q12,d(i),wrong_answer,x=0;±2;±4;±6;±8,"x = ±1, ±3",The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ1HL_P2_Q12,d(ii),wrong_answer,x=0;±2;±4;±6;±8,"x = 0, ±2, ±4",The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ1HL_P2_Q12,d(iii),matches_source,x=0;±2;±4;±6;±8,x=0;±2;±4;±6;±8,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ1HL_P2_Q12,e(i),wrong_answer,2n(n+1),N = 2n + 1,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ1HL_P2_Q12,e(ii),matches_source,2n(n+1),2n(n+1),"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P1_Q11,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ2HL_P1_Q11,a(ii),wrong_answer,0.75,0.016,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P1_Q11,a(iii),matches_source,0.75,0.75,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P1_Q11,b(i),matches_source,12/35,12/35,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P1_Q11,b(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ2HL_P1_Q11,b(iii),matches_source,9/7,9/7,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P1_Q12,d(i),matches_source,k=2,k=2,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P1_Q12,d(ii),matches_source,"P=(9,3,-2)","P=(9,3,-2)","Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P1_Q14,c(i),wrong_answer,f(1)=(π)/4+(π)/4,f′(x) = 0,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P1_Q14,c(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ2HL_P1_Q14,d(i),cross_part_content,"Nigel is correct; arctan(x) and 1/x are both odd, and the sum of a composition of odd functions is odd; Hence f(x)=-(π)/2 for x<0","Nigel is correct, with an odd-function justification.",Correct reasoning is mixed with the next subpart’s negative-domain result. Separate the two.
+IB,M14TZ2HL_P1_Q14,d(ii),wrong_answer,x<0,-π/2,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P2_Q1,a(i),answer_form,sum_(n=1)^27(7+7n),2835,"The selected sigma expression is mathematically equivalent, but this part asks for the sum; sigma notation is requested in the following part."
+IB,M14TZ2HL_P2_Q1,a(ii),matches_source,sum_(n=1)^27(7+7n),sum_(n=1)^27(7+7n),"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P2_Q6,a(i),wrong_answer,0.276,0.013824 (0.0138 to 3 sf),The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P2_Q6,a(ii),matches_source,0.276,0.276,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P2_Q7,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ2HL_P2_Q7,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M14TZ2HL_P2_Q11,c(i),wrong_answer,0.826,0.860,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P2_Q11,c(ii),matches_source,0.826,0.826,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P2_Q12,b(i),wrong_answer,dC/dx>0,k(5x/sqrt(202500+x²) - 1),The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P2_Q12,b(ii),wrong_answer,x=92,"x ≈ 91.9 m, with a minimum justification",The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P2_Q12,e(i),wrong_answer,x=4.17%,260 m,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P2_Q12,e(ii),matches_source,4.17%,4.17%,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M14TZ2HL_P2_Q13,b(i),wrong_answer,32 rad,u = 2 cis(π/3); v = sqrt(2) cis(-π/4),The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M14TZ2HL_P2_Q13,b(ii),matches_source,32,32,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M15TZ2HL_P1_Q12,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M15TZ2HL_P1_Q12,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M15TZ2HL_P1_Q12,a(iii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_N25TZ1HL_P1_Q5,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_N25TZ1HL_P1_Q5,a(ii),matches_source,b=21,b=21,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M25TZ3HL_P2_Q11,a(i),wrong_answer,0.323,0.467,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_M25TZ3HL_P2_Q11,a(ii),matches_source,0.323,0.323,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M25TZ3HL_P2_Q11,c(i),wrong_answer,0.577,0.104,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_M25TZ3HL_P2_Q11,c(ii),matches_source,0.577,0.577,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N21TZ0HL_P2_Q11,a(i),wrong_answer,-51,"DE = (-1,-4,-5); DF = (3,-5,-2)",The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_N21TZ0HL_P2_Q11,a(ii),matches_source,-17x-17y+17z=-51,-17x-17y+17z=-51,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N21TZ0HL_P2_Q11,c(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_N21TZ0HL_P2_Q11,c(ii),matches_source,"(4, -1.5, -0.5)","(4, -1.5, -0.5)","Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,H_M16TZ2HL_P1_Q11,b(i),wrong_answer,dh/dt = 0.0398,dh/dt = 2/[π(3 cos(2h)+4)²],The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,H_M16TZ2HL_P1_Q11,b(ii),matches_source,dh/dt = 0.0398,dh/dt = 0.0398,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,H_M14TZ1SL_P1_Q8,d(i),wrong_answer,60° rad,"A direction vector proportional to (0,-1,1)",The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,H_M14TZ1SL_P1_Q8,d(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,H_M15TZ1SL_P1_Q8,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,H_M15TZ1SL_P1_Q8,a(ii),matches_source,2.45,2.45,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,H_M11TZ1SL_P1_Q10,b(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,H_M11TZ1SL_P1_Q10,b(ii),matches_source,v = 1.57,v = 1.57,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N23TZ1SL_P2_Q1,a(i),wrong_answer,1,-1,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_N23TZ1SL_P2_Q1,a(ii),matches_source,1,1,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M24TZ1SL_P2_Q7,c(i),matches_source,r(x)=-p(x) + 10,r(x)=-p(x) + 10,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M24TZ1SL_P2_Q7,c(ii),matches_source,0 ≤ x ≤ 5,0 ≤ x ≤ 5,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M24TZ1SL_P1_Q7,a(i),wrong_answer,6x - 10,3x² - 10x + 3,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_M24TZ1SL_P1_Q7,a(ii),matches_source,6x - 10,6x - 10,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M23TZ1SL_P1_Q8,a(i),wrong_answer,36,48,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_M23TZ1SL_P1_Q8,a(ii),matches_source,36,36,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M23TZ2SL_P1_Q8,a(i),matches_source,sqrt(7)/4,sqrt(7)/4,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M23TZ2SL_P1_Q8,a(ii),matches_source,(3*sqrt(7))/8,(3*sqrt(7))/8,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N23TZ1SL_P2_Q4,b(i),matches_source,r=4.680714,r=4.680714,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N23TZ1SL_P2_Q4,b(ii),matches_source,68.8 m,68.8 m,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M22TZ1SL_P1_Q8,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_M22TZ1SL_P1_Q8,a(ii),matches_source,y = e^4,y = e^4,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M22TZ1SL_P1_Q8,b(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_M22TZ1SL_P1_Q8,b(ii),wrong_answer,n = 10,k = -2/5,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_M22TZ1SL_P1_Q8,b(iii),matches_source,n=10,n=10,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M23TZ2SL_P2_Q8,b(i),matches_source,a = -0.4,a = -0.4,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M23TZ2SL_P2_Q8,b(ii),matches_source,b = 0.8,b = 0.8,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N21TZ0SL_P1_Q8,d(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_N21TZ0SL_P1_Q8,d(ii),matches_source,p=252; q=294,p=252; q=294,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N22TZ0SL_P1_Q8,a(i),wrong_answer,x = 6,-3,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_N22TZ0SL_P1_Q8,a(ii),wrong_answer,x = 6,1/3,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_N22TZ0SL_P1_Q8,a(iii),matches_source,x = 6,x = 6,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N22TZ0SL_P1_Q8,b(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_N22TZ0SL_P1_Q8,b(ii),matches_source,3,3,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N25TZ3SL_P2_Q8,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_N25TZ3SL_P2_Q8,a(ii),matches_source,A = 135 cm^2,A = 135 cm^2,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M23TZ1SL_P2_Q8,a(i),wrong_answer,q=120,p = 16,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_M23TZ1SL_P2_Q8,a(ii),matches_source,q=120,q=120,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M23TZ1SL_P2_Q8,c(i),matches_source,x=16,x=16,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M23TZ1SL_P2_Q8,c(ii),matches_source,16/200,16/200,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M24TZ1SL_P2_Q6,c(i),matches_source,predicting a javelin distance from a discus distance requires the regression line of x on y; rearranging the line of y on x does not give this line,predicting a javelin distance from a discus distance requires the regression line of x on y; rearranging the line of y on x does not give this line,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M24TZ1SL_P2_Q6,c(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_M23TZ2SL_P2_Q9,a(i),wrong_answer,P(FF)=30/(n^2-n),6/n,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_M23TZ2SL_P2_Q9,a(ii),matches_source,P(FF)=30/(n^2-n),P(FF)=30/(n^2-n),"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_M24TZ1SL_P2_Q9,a(i),wrong_answer,527 m^2,73.6° AND 40.4°,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,A_M24TZ1SL_P2_Q9,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,A_N23TZ1SL_P2_Q9,c(i),matches_source,0.0103,0.0103,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,A_N23TZ1SL_P2_Q9,c(ii),wrong_answer,0.0103,0.0143,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,W_M23TZ1AIHL_P2_Q4,b(i),matches_source,a = 11,a = 11,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,W_M23TZ1AIHL_P2_Q4,b(ii),matches_source,b = 23,b = 23,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,W_M23TZ1AIHL_P2_Q4,b(iii),matches_source,c = 13,c = 13,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,W_M23TZ1AIHL_P2_Q4,b(iv),matches_source,d = 19,d = 19,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,W_M24TZ1AIHL_P2_Q4,a(i),combined_answers,0.8 (ii) 0.4 (iii) 0.6,0.8,All three answers and part labels are combined into each individual answer option.
+IB,W_M24TZ1AIHL_P2_Q4,a(ii),combined_answers,0.8 (ii) 0.4 (iii) 0.6,0.4,All three answers and part labels are combined into each individual answer option.
+IB,W_M24TZ1AIHL_P2_Q4,a(iii),combined_answers,0.8 (ii) 0.4 (iii) 0.6,0.6,All three answers and part labels are combined into each individual answer option.
+IB,W_M22TZ1AIHL_P1_Q10,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,W_M22TZ1AIHL_P1_Q10,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,W_M22TZ1AIHL_P1_Q10,a(iii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,W_M24TZ1AIHL_P1_Q15,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,W_M24TZ1AIHL_P1_Q15,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,W_SPECAIHL_P1_Q15X1,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,W_SPECAIHL_P1_Q15X1,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IB,M18TZ2AISL_P2_Q1,a(i),matches_source,a = 0.2,a = 0.2,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M18TZ2AISL_P2_Q1,a(ii),matches_source,b = 0.85,b = 0.85,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,N20TZ0AISL_P2_Q2,e(i),false_subpart,58/100 × 45/100 ≠ 17/100,Keep the original single reasoning question; do not split its references to earlier parts.,References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration.
+IB,N20TZ0AISL_P2_Q2,e(ii),false_subpart,they are not independent; 58/100 × 45/100 ≠ 17/100 OR 0.261 ≠ 0.17,Keep the original single reasoning question; do not split its references to earlier parts.,References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration.
+IB,M15TZ2AISL_P1_Q2,a(i),wrong_answer,30°,80 m placed on TB,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,M15TZ2AISL_P1_Q2,a(ii),response_mode,30°,Mark 30° in the correct position on the diagram.,"The value is correct, but choosing a number does not fulfil the shared instruction to annotate the diagram. Review both parts as drawing tasks."
+IB,N11TZ0AISL_P2_Q2,b(i),false_subpart,Pam is not correct,Keep the original single reasoning question; do not split its references to earlier parts.,References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration.
+IB,N11TZ0AISL_P2_Q2,b(ii),false_subpart,Pam is not correct,Keep the original single reasoning question; do not split its references to earlier parts.,References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration.
+IB,N11TZ0AISL_P2_Q2,b(iii),false_subpart,1/20 ≠ 1/4 × 9/40; Pam is not correct,Keep the original single reasoning question; do not split its references to earlier parts.,References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration.
+IB,M12TZ2AISL_P1_Q3,a(i),matches_source,a = 8,a = 8,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,M12TZ2AISL_P1_Q3,a(ii),matches_source,b = 5,b = 5,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IB,V_M24TZ1AISL_P2_Q4,a(i),wrong_answer,0.75,0.8,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,V_M24TZ1AISL_P2_Q4,a(ii),wrong_answer,0.75,0.25,The selected answer does not answer this subpart; shared rows contain the intended result.
+IB,V_M24TZ1AISL_P2_Q4,a(iii),matches_source,0.75,0.75,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2019J_2HR_Q5,b(i),wrong_answer,332°,154 m (source accepts 150–158 m),The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2019J_2HR_Q5,b(ii),matches_source,332°,332°,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2019J_2HR_Q14,a(i),wrong_answer,b/3,a²,The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2019J_2HR_Q14,a(ii),wrong_answer,b/3,ab⁴,The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2019J_2HR_Q14,a(iii),matches_source,b/3,b/3,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2019M_1H_Q22,b(i),wrong_answer,matrix(3;1),(x-3)² + 1,The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2019M_1H_Q22,b(ii),matches_source,Translation 3 units right and 1 units up,Translation 3 units right and 1 units up,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2019M_1HR_Q21,a(i),wrong_answer,"(4,9)","(9,3)",The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2019M_1HR_Q21,a(ii),matches_source,"(4,9)","(4,9)","Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2020J_1H_Q20,i,whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2020J_1H_Q20,ii,whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2020J_1HR_Q18,a(i),wrong_answer,y=-0.6x+3.6,Gradient approximately -0.6 (source permits -0.4 to -0.7 with suitable working),The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2020J_1HR_Q18,a(ii),matches_source,y=-0.6x+3.6,y=-0.6x+3.6,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2021M_2H_Q9,i,wrong_answer,x=-6,(x+6)(x-4),The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2021M_2H_Q9,ii,matches_source,x=-6; x=4,x=-6; x=4,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2021N_1H_Q9,i,wrong_answer,-2,-2 ≤ x < 4,The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2021N_1H_Q9,ii,response_mode,-2,"Number line: closed endpoint at -2, open endpoint at 4, interval between them.",A scalar -2 cannot represent the requested number-line drawing; use whiteboard.
+IGCSE,4MA1_2021N_1H_Q14,a(i),wrong_answer,2bold(b)-3bold(a),b-a,The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2021N_1H_Q14,a(ii),wrong_answer,2bold(b)-3bold(a),4b-2a,The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2021N_1H_Q14,a(iii),matches_source,2bold(b)-3bold(a),2bold(b)-3bold(a),"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2021N_2H_Q8,b(i),wrong_answer,x=-4,(x+4)(x-9),The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2021N_2H_Q8,b(ii),matches_source,x=-4; x=9,x=-4; x=9,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2022J_1H_Q6,b(i),wrong_answer,y=7,(y-7)(y+5),The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2022J_1H_Q6,b(ii),matches_source,y=7; y=-5,y=7; y=-5,"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2022J_1H_Q23,i,wrong_answer,"(5,10)","(-4,7)",The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2022J_1H_Q23,ii,matches_source,"(5,10)","(5,10)","Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2023J_1HR_Q8,b(i),matches_source,(y-6)*(y+3),(y-6)*(y+3),"Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+IGCSE,4MA1_2023J_1HR_Q8,b(ii),wrong_answer,(y-6)*(y+3),y = 6 OR y = -3,The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2023J_2H_Q14,a(i),wrong_answer,180°,140°,The selected answer does not answer this subpart; shared rows contain the intended result.
+IGCSE,4MA1_2023J_2H_Q14,a(ii),cross_part_content,140°; Opposite angles of a cyclic quadrilateral add to 180°,Opposite angles of a cyclic quadrilateral add to 180°.,The reason is correct but bundled with the preceding numerical answer.
+IGCSE,4MA1_2023J_2HR_Q15,b(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2023J_2HR_Q15,b(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2024M_2H_Q2,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2024M_2H_Q2,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2024M_2H_Q2,a(iii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2024N_2H_Q7,a(i),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2024N_2H_Q7,a(ii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
+IGCSE,4MA1_2024N_2H_Q7,a(iii),whiteboard,,No automatic answer key,No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour.
