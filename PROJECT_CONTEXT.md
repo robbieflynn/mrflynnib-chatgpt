@@ -18,7 +18,7 @@ On 6 November 2026, Rob clarified that easier erasing primarily means using the 
 
 On 8 November 2026, Rob requested and authorised immediate publication of up-and-down as well as left-and-right scribble erasing, visible pen-width choices, and removal of whiteboard scribble instructions and erasure messages. Preserve undo, saved stroke widths, multipart isolation, and compatible hardware erasing.
 
-On 8 November 2026, Rob requested recognisable pen, eraser and undo icons, a pen cursor and size-aware circular eraser cursor, eraser sizes and whole-stroke mode grouped under Eraser, lasso selection for moving handwriting, scribble erasure of all enclosed writing, and stable side-by-side divider resizing. Keep moves and erasures undoable and preserve saved work and multipart isolation. Prepare the new toolbar and lasso for preview review before publication.
+On 8 November 2026, Rob requested recognisable pen, eraser and undo icons, a pen cursor and size-aware circular eraser cursor, eraser sizes and whole-stroke mode grouped under Eraser, lasso selection for moving handwriting, scribble erasure of all enclosed writing, and stable side-by-side divider resizing. Keep moves and erasures undoable and preserve saved work and multipart isolation. After the preview was provided, Rob authorised publication on 8 November 2026.
 
 ## Purpose of this file
 
