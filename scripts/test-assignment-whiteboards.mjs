@@ -206,4 +206,22 @@ assert.deepEqual(JSON.parse(JSON.stringify((await snapshot()).parts.a)), JSON.pa
 account(true);
 assert.equal(action('lasso').disabled, true, 'submitted work cannot be moved');
 console.log('PASS: lasso selection, move, save/reopen/undo, cancellation, multipart isolation and eraser sizes');
+// A corrected question may remove bogus subpart labels. Keep their saved work
+// accessible and serialised after the canonical part list changes.
+account(false);
+send({type:'mrflynnib-whiteboard-save-result',questionId:'q1',ok:true});
+load({version:6,parts:{a:stroke('#2563eb'),'e(i)':stroke('#dc2626'),'e(ii)':stroke('#15803d')}});
+child.dispatchEvent(new child.CustomEvent('mrflynnib-whiteboard-parts',{detail:{questionId:'q1',parts:['a','e'],partKey:'e',open:true}}));
+for (const label of ['(e)(i)','(e)(ii)']) {
+ const button=buttons().find(button=>button.textContent===label);
+ assert(button, 'old part remains available after correction: '+label);
+ button.click();
+}
+child.dispatchEvent(new child.CustomEvent('mrflynnib-whiteboard-parts',{detail:{questionId:'q1',parts:['a','e'],partKey:'e',open:true}}));
+action('pen').click();gesture([[20,20],[40,40]]);
+const retained=await snapshot();
+assert.equal(retained.parts['e(i)'].actions[0].colour,'#dc2626');
+assert.equal(retained.parts['e(ii)'].actions[0].colour,'#15803d');
+assert(retained.parts.e.actions.length>0);
+console.log('PASS: removed subpart whiteboards remain accessible and survive editing the corrected part');
 dom.window.close();

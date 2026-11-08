@@ -10,6 +10,7 @@ const checks = [
   ["Delayed whiteboard initialisation", "scripts/test-assignment-whiteboards.mjs", "--late-board"],
   ["Question-bank navigation regression", "scripts/test-bank-navigation.mjs"],
   ["Fixed assignment-answer audit", "scripts/audit-assignment-choices.mjs"],
+  ["Reviewed shared-answer repairs", "scripts/test-shared-answer-repairs.mjs"],
   ["Question-bank delivery audit", "scripts/verify-question-bank-delivery.mjs"],
   ["Course practice delivery", "scripts/test-course-practice-delivery.mjs"],
   ["Production build", "node_modules/next/dist/bin/next", "build", "--webpack"],
