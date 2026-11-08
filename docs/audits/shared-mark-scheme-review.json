@@ -1,0 +1,1577 @@
+[
+  {
+    "bank": "IB",
+    "question": "M12TZ2HL_P1_Q12",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M12TZ2HL_P1_Q12",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q5",
+    "part": "b(i)",
+    "status": "matches_source",
+    "current": "latex:V=\\pi\\displaystyle\\int_{\\frac{\\pi}{2}}^{3\\frac{\\pi}{2}}\\Big(x^2-(x+2\\cos x)^2\\Big)dx",
+    "expected": "latex:V=\\pi\\displaystyle\\int_{\\frac{\\pi}{2}}^{3\\frac{\\pi}{2}}\\Big(x^2-(x+2\\cos x)^2\\Big)dx",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q5",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "6π^2",
+    "expected": "6π^2",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q10",
+    "part": "b(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q10",
+    "part": "b(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q10",
+    "part": "b(iii)",
+    "status": "matches_source",
+    "current": "(1.44, 8.47)",
+    "expected": "(1.44, 8.47)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q11",
+    "part": "b(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q11",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "b=76-30mu",
+    "expected": "b=76-30mu",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q11",
+    "part": "c(i)",
+    "status": "matches_source",
+    "current": "2.34",
+    "expected": "2.34",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q11",
+    "part": "c(ii)",
+    "status": "matches_source",
+    "current": "0.241",
+    "expected": "0.241",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "3",
+    "expected": "-1",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "3",
+    "expected": "3",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "b(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "x=±1",
+    "expected": "x=±1",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "c(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "c(ii)",
+    "status": "matches_source",
+    "current": "x=0;±2",
+    "expected": "x=0;±2",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "d(i)",
+    "status": "wrong_answer",
+    "current": "x=0;±2;±4;±6;±8",
+    "expected": "x = ±1, ±3",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "d(ii)",
+    "status": "wrong_answer",
+    "current": "x=0;±2;±4;±6;±8",
+    "expected": "x = 0, ±2, ±4",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "d(iii)",
+    "status": "matches_source",
+    "current": "x=0;±2;±4;±6;±8",
+    "expected": "x=0;±2;±4;±6;±8",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "e(i)",
+    "status": "wrong_answer",
+    "current": "2n(n+1)",
+    "expected": "N = 2n + 1",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ1HL_P2_Q12",
+    "part": "e(ii)",
+    "status": "matches_source",
+    "current": "2n(n+1)",
+    "expected": "2n(n+1)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q11",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q11",
+    "part": "a(ii)",
+    "status": "wrong_answer",
+    "current": "0.75",
+    "expected": "0.016",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q11",
+    "part": "a(iii)",
+    "status": "matches_source",
+    "current": "0.75",
+    "expected": "0.75",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q11",
+    "part": "b(i)",
+    "status": "matches_source",
+    "current": "12/35",
+    "expected": "12/35",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q11",
+    "part": "b(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q11",
+    "part": "b(iii)",
+    "status": "matches_source",
+    "current": "9/7",
+    "expected": "9/7",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q12",
+    "part": "d(i)",
+    "status": "matches_source",
+    "current": "k=2",
+    "expected": "k=2",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q12",
+    "part": "d(ii)",
+    "status": "matches_source",
+    "current": "P=(9,3,-2)",
+    "expected": "P=(9,3,-2)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q14",
+    "part": "c(i)",
+    "status": "wrong_answer",
+    "current": "f(1)=(π)/4+(π)/4",
+    "expected": "f′(x) = 0",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q14",
+    "part": "c(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q14",
+    "part": "d(i)",
+    "status": "cross_part_content",
+    "current": "Nigel is correct; arctan(x) and 1/x are both odd, and the sum of a composition of odd functions is odd; Hence f(x)=-(π)/2 for x<0",
+    "expected": "Nigel is correct, with an odd-function justification.",
+    "note": "Correct reasoning is mixed with the next subpart’s negative-domain result. Separate the two."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P1_Q14",
+    "part": "d(ii)",
+    "status": "wrong_answer",
+    "current": "x<0",
+    "expected": "-π/2",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q1",
+    "part": "a(i)",
+    "status": "answer_form",
+    "current": "sum_(n=1)^27(7+7n)",
+    "expected": "2835",
+    "note": "The selected sigma expression is mathematically equivalent, but this part asks for the sum; sigma notation is requested in the following part."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q1",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "sum_(n=1)^27(7+7n)",
+    "expected": "sum_(n=1)^27(7+7n)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q6",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "0.276",
+    "expected": "0.013824 (0.0138 to 3 sf)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q6",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "0.276",
+    "expected": "0.276",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q7",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q7",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q11",
+    "part": "c(i)",
+    "status": "wrong_answer",
+    "current": "0.826",
+    "expected": "0.860",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q11",
+    "part": "c(ii)",
+    "status": "matches_source",
+    "current": "0.826",
+    "expected": "0.826",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q12",
+    "part": "b(i)",
+    "status": "wrong_answer",
+    "current": "dC/dx>0",
+    "expected": "k(5x/sqrt(202500+x²) - 1)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q12",
+    "part": "b(ii)",
+    "status": "wrong_answer",
+    "current": "x=92",
+    "expected": "x ≈ 91.9 m, with a minimum justification",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q12",
+    "part": "e(i)",
+    "status": "wrong_answer",
+    "current": "x=4.17%",
+    "expected": "260 m",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q12",
+    "part": "e(ii)",
+    "status": "matches_source",
+    "current": "4.17%",
+    "expected": "4.17%",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q13",
+    "part": "b(i)",
+    "status": "wrong_answer",
+    "current": "32 rad",
+    "expected": "u = 2 cis(π/3); v = sqrt(2) cis(-π/4)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M14TZ2HL_P2_Q13",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "32",
+    "expected": "32",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M15TZ2HL_P1_Q12",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M15TZ2HL_P1_Q12",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M15TZ2HL_P1_Q12",
+    "part": "a(iii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N25TZ1HL_P1_Q5",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N25TZ1HL_P1_Q5",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "b=21",
+    "expected": "b=21",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M25TZ3HL_P2_Q11",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "0.323",
+    "expected": "0.467",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M25TZ3HL_P2_Q11",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "0.323",
+    "expected": "0.323",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M25TZ3HL_P2_Q11",
+    "part": "c(i)",
+    "status": "wrong_answer",
+    "current": "0.577",
+    "expected": "0.104",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M25TZ3HL_P2_Q11",
+    "part": "c(ii)",
+    "status": "matches_source",
+    "current": "0.577",
+    "expected": "0.577",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N21TZ0HL_P2_Q11",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "-51",
+    "expected": "DE = (-1,-4,-5); DF = (3,-5,-2)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N21TZ0HL_P2_Q11",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "-17x-17y+17z=-51",
+    "expected": "-17x-17y+17z=-51",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N21TZ0HL_P2_Q11",
+    "part": "c(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N21TZ0HL_P2_Q11",
+    "part": "c(ii)",
+    "status": "matches_source",
+    "current": "(4, -1.5, -0.5)",
+    "expected": "(4, -1.5, -0.5)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "H_M16TZ2HL_P1_Q11",
+    "part": "b(i)",
+    "status": "wrong_answer",
+    "current": "dh/dt = 0.0398",
+    "expected": "dh/dt = 2/[π(3 cos(2h)+4)²]",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "H_M16TZ2HL_P1_Q11",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "dh/dt = 0.0398",
+    "expected": "dh/dt = 0.0398",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "H_M14TZ1SL_P1_Q8",
+    "part": "d(i)",
+    "status": "wrong_answer",
+    "current": "60° rad",
+    "expected": "A direction vector proportional to (0,-1,1)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "H_M14TZ1SL_P1_Q8",
+    "part": "d(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "H_M15TZ1SL_P1_Q8",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "H_M15TZ1SL_P1_Q8",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "2.45",
+    "expected": "2.45",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "H_M11TZ1SL_P1_Q10",
+    "part": "b(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "H_M11TZ1SL_P1_Q10",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "v = 1.57",
+    "expected": "v = 1.57",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N23TZ1SL_P2_Q1",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "1",
+    "expected": "-1",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N23TZ1SL_P2_Q1",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "1",
+    "expected": "1",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M24TZ1SL_P2_Q7",
+    "part": "c(i)",
+    "status": "matches_source",
+    "current": "r(x)=-p(x) + 10",
+    "expected": "r(x)=-p(x) + 10",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M24TZ1SL_P2_Q7",
+    "part": "c(ii)",
+    "status": "matches_source",
+    "current": "0 ≤ x ≤ 5",
+    "expected": "0 ≤ x ≤ 5",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M24TZ1SL_P1_Q7",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "6x - 10",
+    "expected": "3x² - 10x + 3",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M24TZ1SL_P1_Q7",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "6x - 10",
+    "expected": "6x - 10",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ1SL_P1_Q8",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "36",
+    "expected": "48",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ1SL_P1_Q8",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "36",
+    "expected": "36",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ2SL_P1_Q8",
+    "part": "a(i)",
+    "status": "matches_source",
+    "current": "sqrt(7)/4",
+    "expected": "sqrt(7)/4",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ2SL_P1_Q8",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "(3*sqrt(7))/8",
+    "expected": "(3*sqrt(7))/8",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N23TZ1SL_P2_Q4",
+    "part": "b(i)",
+    "status": "matches_source",
+    "current": "r=4.680714",
+    "expected": "r=4.680714",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N23TZ1SL_P2_Q4",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "68.8 m",
+    "expected": "68.8 m",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M22TZ1SL_P1_Q8",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M22TZ1SL_P1_Q8",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "y = e^4",
+    "expected": "y = e^4",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M22TZ1SL_P1_Q8",
+    "part": "b(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M22TZ1SL_P1_Q8",
+    "part": "b(ii)",
+    "status": "wrong_answer",
+    "current": "n = 10",
+    "expected": "k = -2/5",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M22TZ1SL_P1_Q8",
+    "part": "b(iii)",
+    "status": "matches_source",
+    "current": "n=10",
+    "expected": "n=10",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ2SL_P2_Q8",
+    "part": "b(i)",
+    "status": "matches_source",
+    "current": "a = -0.4",
+    "expected": "a = -0.4",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ2SL_P2_Q8",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "b = 0.8",
+    "expected": "b = 0.8",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N21TZ0SL_P1_Q8",
+    "part": "d(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N21TZ0SL_P1_Q8",
+    "part": "d(ii)",
+    "status": "matches_source",
+    "current": "p=252; q=294",
+    "expected": "p=252; q=294",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N22TZ0SL_P1_Q8",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "x = 6",
+    "expected": "-3",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N22TZ0SL_P1_Q8",
+    "part": "a(ii)",
+    "status": "wrong_answer",
+    "current": "x = 6",
+    "expected": "1/3",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N22TZ0SL_P1_Q8",
+    "part": "a(iii)",
+    "status": "matches_source",
+    "current": "x = 6",
+    "expected": "x = 6",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N22TZ0SL_P1_Q8",
+    "part": "b(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N22TZ0SL_P1_Q8",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "3",
+    "expected": "3",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N25TZ3SL_P2_Q8",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N25TZ3SL_P2_Q8",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "A = 135 cm^2",
+    "expected": "A = 135 cm^2",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ1SL_P2_Q8",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "q=120",
+    "expected": "p = 16",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ1SL_P2_Q8",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "q=120",
+    "expected": "q=120",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ1SL_P2_Q8",
+    "part": "c(i)",
+    "status": "matches_source",
+    "current": "x=16",
+    "expected": "x=16",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ1SL_P2_Q8",
+    "part": "c(ii)",
+    "status": "matches_source",
+    "current": "16/200",
+    "expected": "16/200",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M24TZ1SL_P2_Q6",
+    "part": "c(i)",
+    "status": "matches_source",
+    "current": "predicting a javelin distance from a discus distance requires the regression line of x on y; rearranging the line of y on x does not give this line",
+    "expected": "predicting a javelin distance from a discus distance requires the regression line of x on y; rearranging the line of y on x does not give this line",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M24TZ1SL_P2_Q6",
+    "part": "c(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ2SL_P2_Q9",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "P(FF)=30/(n^2-n)",
+    "expected": "6/n",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M23TZ2SL_P2_Q9",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "P(FF)=30/(n^2-n)",
+    "expected": "P(FF)=30/(n^2-n)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M24TZ1SL_P2_Q9",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "527 m^2",
+    "expected": "73.6° AND 40.4°",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "A_M24TZ1SL_P2_Q9",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N23TZ1SL_P2_Q9",
+    "part": "c(i)",
+    "status": "matches_source",
+    "current": "0.0103",
+    "expected": "0.0103",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "A_N23TZ1SL_P2_Q9",
+    "part": "c(ii)",
+    "status": "wrong_answer",
+    "current": "0.0103",
+    "expected": "0.0143",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M23TZ1AIHL_P2_Q4",
+    "part": "b(i)",
+    "status": "matches_source",
+    "current": "a = 11",
+    "expected": "a = 11",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M23TZ1AIHL_P2_Q4",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "b = 23",
+    "expected": "b = 23",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M23TZ1AIHL_P2_Q4",
+    "part": "b(iii)",
+    "status": "matches_source",
+    "current": "c = 13",
+    "expected": "c = 13",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M23TZ1AIHL_P2_Q4",
+    "part": "b(iv)",
+    "status": "matches_source",
+    "current": "d = 19",
+    "expected": "d = 19",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M24TZ1AIHL_P2_Q4",
+    "part": "a(i)",
+    "status": "combined_answers",
+    "current": "0.8 (ii) 0.4 (iii) 0.6",
+    "expected": "0.8",
+    "note": "All three answers and part labels are combined into each individual answer option."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M24TZ1AIHL_P2_Q4",
+    "part": "a(ii)",
+    "status": "combined_answers",
+    "current": "0.8 (ii) 0.4 (iii) 0.6",
+    "expected": "0.4",
+    "note": "All three answers and part labels are combined into each individual answer option."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M24TZ1AIHL_P2_Q4",
+    "part": "a(iii)",
+    "status": "combined_answers",
+    "current": "0.8 (ii) 0.4 (iii) 0.6",
+    "expected": "0.6",
+    "note": "All three answers and part labels are combined into each individual answer option."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M22TZ1AIHL_P1_Q10",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M22TZ1AIHL_P1_Q10",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M22TZ1AIHL_P1_Q10",
+    "part": "a(iii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M24TZ1AIHL_P1_Q15",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "W_M24TZ1AIHL_P1_Q15",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "W_SPECAIHL_P1_Q15X1",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "W_SPECAIHL_P1_Q15X1",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IB",
+    "question": "M18TZ2AISL_P2_Q1",
+    "part": "a(i)",
+    "status": "matches_source",
+    "current": "a = 0.2",
+    "expected": "a = 0.2",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M18TZ2AISL_P2_Q1",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "b = 0.85",
+    "expected": "b = 0.85",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "N20TZ0AISL_P2_Q2",
+    "part": "e(i)",
+    "status": "false_subpart",
+    "current": "58/100 × 45/100 ≠ 17/100",
+    "expected": "Keep the original single reasoning question; do not split its references to earlier parts.",
+    "note": "References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration."
+  },
+  {
+    "bank": "IB",
+    "question": "N20TZ0AISL_P2_Q2",
+    "part": "e(ii)",
+    "status": "false_subpart",
+    "current": "they are not independent; 58/100 × 45/100 ≠ 17/100 OR 0.261 ≠ 0.17",
+    "expected": "Keep the original single reasoning question; do not split its references to earlier parts.",
+    "note": "References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration."
+  },
+  {
+    "bank": "IB",
+    "question": "M15TZ2AISL_P1_Q2",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "30°",
+    "expected": "80 m placed on TB",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "M15TZ2AISL_P1_Q2",
+    "part": "a(ii)",
+    "status": "response_mode",
+    "current": "30°",
+    "expected": "Mark 30° in the correct position on the diagram.",
+    "note": "The value is correct, but choosing a number does not fulfil the shared instruction to annotate the diagram. Review both parts as drawing tasks."
+  },
+  {
+    "bank": "IB",
+    "question": "N11TZ0AISL_P2_Q2",
+    "part": "b(i)",
+    "status": "false_subpart",
+    "current": "Pam is not correct",
+    "expected": "Keep the original single reasoning question; do not split its references to earlier parts.",
+    "note": "References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration."
+  },
+  {
+    "bank": "IB",
+    "question": "N11TZ0AISL_P2_Q2",
+    "part": "b(ii)",
+    "status": "false_subpart",
+    "current": "Pam is not correct",
+    "expected": "Keep the original single reasoning question; do not split its references to earlier parts.",
+    "note": "References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration."
+  },
+  {
+    "bank": "IB",
+    "question": "N11TZ0AISL_P2_Q2",
+    "part": "b(iii)",
+    "status": "false_subpart",
+    "current": "1/20 ≠ 1/4 × 9/40; Pam is not correct",
+    "expected": "Keep the original single reasoning question; do not split its references to earlier parts.",
+    "note": "References to earlier roman-numbered parts have been parsed as new question parts. Rebuild the parent prompt and its answer configuration."
+  },
+  {
+    "bank": "IB",
+    "question": "M12TZ2AISL_P1_Q3",
+    "part": "a(i)",
+    "status": "matches_source",
+    "current": "a = 8",
+    "expected": "a = 8",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "M12TZ2AISL_P1_Q3",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "b = 5",
+    "expected": "b = 5",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IB",
+    "question": "V_M24TZ1AISL_P2_Q4",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "0.75",
+    "expected": "0.8",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "V_M24TZ1AISL_P2_Q4",
+    "part": "a(ii)",
+    "status": "wrong_answer",
+    "current": "0.75",
+    "expected": "0.25",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IB",
+    "question": "V_M24TZ1AISL_P2_Q4",
+    "part": "a(iii)",
+    "status": "matches_source",
+    "current": "0.75",
+    "expected": "0.75",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019J_2HR_Q5",
+    "part": "b(i)",
+    "status": "wrong_answer",
+    "current": "332°",
+    "expected": "154 m (source accepts 150–158 m)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019J_2HR_Q5",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "332°",
+    "expected": "332°",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019J_2HR_Q14",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "b/3",
+    "expected": "a²",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019J_2HR_Q14",
+    "part": "a(ii)",
+    "status": "wrong_answer",
+    "current": "b/3",
+    "expected": "ab⁴",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019J_2HR_Q14",
+    "part": "a(iii)",
+    "status": "matches_source",
+    "current": "b/3",
+    "expected": "b/3",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019M_1H_Q22",
+    "part": "b(i)",
+    "status": "wrong_answer",
+    "current": "matrix(3;1)",
+    "expected": "(x-3)² + 1",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019M_1H_Q22",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "Translation 3 units right and 1 units up",
+    "expected": "Translation 3 units right and 1 units up",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019M_1HR_Q21",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "(4,9)",
+    "expected": "(9,3)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2019M_1HR_Q21",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "(4,9)",
+    "expected": "(4,9)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2020J_1H_Q20",
+    "part": "i",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2020J_1H_Q20",
+    "part": "ii",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2020J_1HR_Q18",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "y=-0.6x+3.6",
+    "expected": "Gradient approximately -0.6 (source permits -0.4 to -0.7 with suitable working)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2020J_1HR_Q18",
+    "part": "a(ii)",
+    "status": "matches_source",
+    "current": "y=-0.6x+3.6",
+    "expected": "y=-0.6x+3.6",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021M_2H_Q9",
+    "part": "i",
+    "status": "wrong_answer",
+    "current": "x=-6",
+    "expected": "(x+6)(x-4)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021M_2H_Q9",
+    "part": "ii",
+    "status": "matches_source",
+    "current": "x=-6; x=4",
+    "expected": "x=-6; x=4",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021N_1H_Q9",
+    "part": "i",
+    "status": "wrong_answer",
+    "current": "-2",
+    "expected": "-2 ≤ x < 4",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021N_1H_Q9",
+    "part": "ii",
+    "status": "response_mode",
+    "current": "-2",
+    "expected": "Number line: closed endpoint at -2, open endpoint at 4, interval between them.",
+    "note": "A scalar -2 cannot represent the requested number-line drawing; use whiteboard."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021N_1H_Q14",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "2bold(b)-3bold(a)",
+    "expected": "b-a",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021N_1H_Q14",
+    "part": "a(ii)",
+    "status": "wrong_answer",
+    "current": "2bold(b)-3bold(a)",
+    "expected": "4b-2a",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021N_1H_Q14",
+    "part": "a(iii)",
+    "status": "matches_source",
+    "current": "2bold(b)-3bold(a)",
+    "expected": "2bold(b)-3bold(a)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021N_2H_Q8",
+    "part": "b(i)",
+    "status": "wrong_answer",
+    "current": "x=-4",
+    "expected": "(x+4)(x-9)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2021N_2H_Q8",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "x=-4; x=9",
+    "expected": "x=-4; x=9",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2022J_1H_Q6",
+    "part": "b(i)",
+    "status": "wrong_answer",
+    "current": "y=7",
+    "expected": "(y-7)(y+5)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2022J_1H_Q6",
+    "part": "b(ii)",
+    "status": "matches_source",
+    "current": "y=7; y=-5",
+    "expected": "y=7; y=-5",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2022J_1H_Q23",
+    "part": "i",
+    "status": "wrong_answer",
+    "current": "(5,10)",
+    "expected": "(-4,7)",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2022J_1H_Q23",
+    "part": "ii",
+    "status": "matches_source",
+    "current": "(5,10)",
+    "expected": "(5,10)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2023J_1HR_Q8",
+    "part": "b(i)",
+    "status": "matches_source",
+    "current": "(y-6)*(y+3)",
+    "expected": "(y-6)*(y+3)",
+    "note": "Selected result matches the relevant subpart in the supplied prompt and mark scheme. This is a mapping review, not an independent proof of every source answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2023J_1HR_Q8",
+    "part": "b(ii)",
+    "status": "wrong_answer",
+    "current": "(y-6)*(y+3)",
+    "expected": "y = 6 OR y = -3",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2023J_2H_Q14",
+    "part": "a(i)",
+    "status": "wrong_answer",
+    "current": "180°",
+    "expected": "140°",
+    "note": "The selected answer does not answer this subpart; shared rows contain the intended result."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2023J_2H_Q14",
+    "part": "a(ii)",
+    "status": "cross_part_content",
+    "current": "140°; Opposite angles of a cyclic quadrilateral add to 180°",
+    "expected": "Opposite angles of a cyclic quadrilateral add to 180°.",
+    "note": "The reason is correct but bundled with the preceding numerical answer."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2023J_2HR_Q15",
+    "part": "b(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2023J_2HR_Q15",
+    "part": "b(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2024M_2H_Q2",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2024M_2H_Q2",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2024M_2H_Q2",
+    "part": "a(iii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2024N_2H_Q7",
+    "part": "a(i)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2024N_2H_Q7",
+    "part": "a(ii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  },
+  {
+    "bank": "IGCSE",
+    "question": "4MA1_2024N_2H_Q7",
+    "part": "a(iii)",
+    "status": "whiteboard",
+    "current": "",
+    "expected": "No automatic answer key",
+    "note": "No multiple-choice answer to assess. Whiteboard presence is not a verification of the mathematics or saved-work behaviour."
+  }
+]
