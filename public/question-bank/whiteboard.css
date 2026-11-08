@@ -597,3 +597,7 @@
 
 .qb-whiteboard-gesture-status { color: #175a3f; font-size: 12px; font-weight: 600; }
 .qb-whiteboard-gesture-status:empty { display: none; }
+
+.qb-whiteboard-pen-sizes { display: flex; gap: 4px; padding-left: 6px; border-left: 1px solid #dce3ec; }
+.qb-whiteboard-pen-sizes .qb-whiteboard-tool { min-width: 40px; padding: 8px; }
+.qb-whiteboard-pen-sizes span { display: block; width: 22px; background: currentColor; border-radius: 8px; }

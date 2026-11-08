@@ -14,3 +14,9 @@ const rotate = p => ({x:p.y,y:p.x});
 assert.deepEqual(scribbleTargets(zig.map(rotate),[{id:'vertical',points:target.points.map(rotate)}]),['vertical']);
 assert.deepEqual(scribbleTargets(zig,[]),[], 'scribbling on blank paper remains ink');
 console.log('PASS: scribble recognition, vertical gesture, normal writing and nearby/long-line protection');
+
+const wideVertical = [p(30,30),p(50,100),p(70,30),p(90,100),p(110,30),p(130,100),p(150,30)];
+const word = {id:'word',points:[p(40,65),p(140,65)]};
+assert.deepEqual(scribbleTargets(wideVertical,[word]),['word'], 'vertical scrubbing across a wide word');
+assert.deepEqual(scribbleTargets(wideVertical.map(rotate),[{id:'word',points:word.points.map(rotate)}]),['word'], 'horizontal scrubbing across tall writing');
+assert.deepEqual(scribbleTargets(wideVertical,[{id:'axis',points:[p(0,65),p(500,65)]}]),[], 'protect crossing graph axes');

@@ -94,6 +94,12 @@
           toolButton('pen', 'Pen', true, 'Pen (P): draw, then hold at the end to make a straight line') +
           toolButton('precision-eraser', 'Eraser', false, 'Eraser (E): rub out part of your writing') +
           toolButton('undo', 'Undo', undefined, 'Undo the last change (Ctrl+Z or Command+Z)') +
+          '<div class="qb-whiteboard-pen-sizes" role="group" aria-label="Pen size">' +
+            [1.8, 3.6, 6, 9].map(function (size, index) {
+              var label = ['Fine', 'Medium', 'Thick', 'Bold'][index];
+              return '<button type="button" class="qb-whiteboard-tool" data-pen-size="' + size + '" aria-label="' + label + ' pen" title="' + label + ' pen" aria-pressed="' + (size === 3.6) + '"><span aria-hidden="true" style="height:' + size + 'px"></span></button>';
+            }).join('') +
+          '</div>' +
         '</div>' +
         '<div class="qb-whiteboard-tools" role="toolbar" aria-label="Whiteboard tools">' +
           '<div class="qb-whiteboard-paper-tools" role="group" aria-label="Paper style">' +
@@ -130,8 +136,6 @@
           toolButton('clear', 'Clear') +
           '<button type="button" class="qb-whiteboard-tool qb-whiteboard-close" data-whiteboard-action="close" aria-label="Close whiteboard">&times;</button>' +
         '</div>' +
-        '<div class="qb-whiteboard-straight-hint">Scribble back and forth over writing to erase it. Undo restores it. Hold at the end to straighten a line.</div>' +
-        '<div class="qb-whiteboard-gesture-status" role="status" aria-live="polite"></div>' +
       '</div>' +
       '<div class="qb-whiteboard-viewport">' +
         '<div class="qb-whiteboard-surface">' +
@@ -183,6 +187,7 @@
     var touchGesture = false;
     var mode = 'pen';
     var colour = '#000000';
+    var penSize = 3.6;
     var zoom = 1;
     var pageWidth = 1400;
     var pageHeight = 2240;
@@ -250,6 +255,7 @@
             id: action.id,
             mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
             colour: action.colour,
+            penSize: action.penSize || 3.6,
             straightened: Boolean(action.straightened),
             points: action.points.map(function (point) { return { x: compactCoordinate(point.x), y: compactCoordinate(point.y) }; })
           };
@@ -344,8 +350,7 @@
     function undoLastAction() {
       if (accountState().readOnly || !actions.length) return;
       resetInteraction();
-      var undone = actions.pop();
-      board.querySelector('.qb-whiteboard-gesture-status').textContent = undone.type === 'stroke-erase' ? 'Erasure undone. Your writing is restored.' : '';
+      actions.pop();
       redraw();
       updateButtons();
       scheduleSave();
@@ -414,7 +419,7 @@
       // those strokes as true black too, so existing work becomes clearer.
       ctx.strokeStyle = stroke.colour === '#0d152e' ? '#000000' : stroke.colour;
       // Tool widths are measured on the paper, so existing and new ink scale together.
-      ctx.lineWidth = (stroke.mode === 'eraser' ? 24 : stroke.mode === 'highlighter' ? 26 : 3.6) * zoom;
+      ctx.lineWidth = (stroke.mode === 'eraser' ? 24 : stroke.mode === 'highlighter' ? 26 : (stroke.penSize || 3.6)) * zoom;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.beginPath();
@@ -733,7 +738,6 @@
       if (event.pointerType === 'touch' && activePointerType === 'pen') return;
       if (event.pointerType !== 'touch' && (touchGesture || touches.size)) return;
       event.preventDefault();
-      board.querySelector('.qb-whiteboard-gesture-status').textContent = '';
       if (event.pointerType === 'touch') {
         touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
         capturePointer(event.pointerId);
@@ -789,6 +793,7 @@
         id: nextStrokeId(),
         mode: pointerMode === 'precision-eraser' ? 'eraser' : pointerMode,
         colour: pointerMode === 'highlighter' ? '#facc15' : colour,
+        penSize: penSize,
         points: [pointFromEvent(event)]
       };
       actions.push(activeStroke);
@@ -880,7 +885,6 @@
           actions.splice(actions.indexOf(activeStroke), 1, activeStrokeErase);
           activeStroke = null;
           redraw();
-          board.querySelector('.qb-whiteboard-gesture-status').textContent = 'Scribble erased. Undo restores your writing.';
         }
       }
       var completedAction = activeStroke || activeStrokeErase || (activeImage && activeImage.action);
@@ -1033,6 +1037,7 @@
             id: typeof action.id === 'string' && action.id ? action.id : nextStrokeId(),
             mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
             colour: typeof action.colour === 'string' ? action.colour : '#000000',
+            penSize: [1.8, 3.6, 6, 9].indexOf(action.penSize) !== -1 ? action.penSize : 3.6,
             straightened: Boolean(action.straightened),
             points: action.points.slice(0, 10000).map(function (point) {
               return { x: Number(point.x) || 0, y: Number(point.y) || 0 };
@@ -1219,6 +1224,15 @@
         return;
       }
       if (accountState().readOnly && !event.target.closest('[data-whiteboard-action="zoom-in"], [data-whiteboard-action="zoom-out"], [data-whiteboard-action="expand"], [data-whiteboard-action="close"]')) return;
+      var sizeChoice = event.target.closest('[data-pen-size]');
+      if (sizeChoice) {
+        penSize = Number(sizeChoice.getAttribute('data-pen-size'));
+        board.querySelectorAll('[data-pen-size]').forEach(function (choice) {
+          choice.setAttribute('aria-pressed', String(choice === sizeChoice));
+        });
+        setMode('pen');
+        return;
+      }
       var colourChoice = event.target.closest('[data-whiteboard-colour]');
       if (colourChoice) {
         colour = colourChoice.getAttribute('data-whiteboard-colour');

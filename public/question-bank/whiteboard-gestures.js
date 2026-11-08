@@ -20,10 +20,17 @@
     if (points.length < 6 || points.length > 5000) return [];
     var box = bounds(points);
     var width = box.right - box.left, height = box.bottom - box.top;
-    var major = Math.max(width, height), minor = Math.min(width, height);
-    if (major < 24 || major > 360 || minor > Math.min(110, major * .8)) return [];
-    var axis = width >= height ? 'x' : 'y';
-    var threshold = Math.max(12, major * .35);
+    if (Math.max(width, height) > 360) return [];
+    // A vertical scrub can travel sideways across a word. Check reversals on
+    // both axes instead of assuming the longest dimension is the scrub direction.
+    var horizontal = targetsOnAxis(points, strokes, box, 'x', width);
+    var vertical = targetsOnAxis(points, strokes, box, 'y', height);
+    return Array.from(new Set(horizontal.concat(vertical)));
+  }
+
+  function targetsOnAxis(points, strokes, box, axis, extent) {
+    if (extent < 24) return [];
+    var threshold = Math.max(12, extent * .35);
     var turning = [points[0]], extreme = points[0], direction = 0;
     for (var i = 1; i < points.length; i++) {
       var point = points[i], delta = point[axis] - extreme[axis];

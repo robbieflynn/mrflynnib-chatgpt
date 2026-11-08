@@ -149,5 +149,23 @@ for (const pointerType of ['mouse', 'touch', 'pen']) {
  gesture([[30,40],[130,45],[30,50],[130,55],[30,60],[130,65],[30,70]], { pointerType });
  assert.equal((await snapshot()).parts.a.actions.at(-1).mode, 'highlighter', 'highlighting never becomes scribble erase');
 }
+action('clear').click(); action('pen').click();
+gesture([[40,65],[140,65]]);
+gesture([[30,30],[50,100],[70,30],[90,100],[110,30],[130,100],[150,30]]);
+assert.equal((await snapshot()).parts.a.actions.at(-1).type, 'stroke-erase', 'wide vertical scrub uses real pointer handlers');
+assert.equal(child.document.querySelector('.qb-whiteboard-straight-hint'), null);
+assert.equal(child.document.querySelector('.qb-whiteboard-gesture-status'), null);
+for (const size of [1.8, 3.6, 6, 9]) {
+ child.document.querySelector(`[data-pen-size="${size}"]`).click();
+ gesture([[300,100],[330,120]]);
+ const saved = await snapshot();
+ assert.equal(saved.parts.a.actions.at(-1).penSize, size);
+ load(saved);
+ assert.equal((await snapshot()).parts.a.actions.at(-1).penSize, size, 'saved width survives reopen');
+ assert.equal(ctx.lineWidth, size, 'restored width is rendered');
+}
+account(true);
+for (const button of child.document.querySelectorAll('[data-pen-size]')) assert.equal(button.disabled, true);
+console.log('PASS: vertical scrubbing, pen widths, saved widths and quiet controls');
 console.log('PASS: real scribble handlers, save/reopen/undo, multipart isolation and pen-back signals');
 dom.window.close();
