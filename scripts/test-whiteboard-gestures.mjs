@@ -20,3 +20,6 @@ const word = {id:'word',points:[p(40,65),p(140,65)]};
 assert.deepEqual(scribbleTargets(wideVertical,[word]),['word'], 'vertical scrubbing across a wide word');
 assert.deepEqual(scribbleTargets(wideVertical.map(rotate),[{id:'word',points:word.points.map(rotate)}]),['word'], 'horizontal scrubbing across tall writing');
 assert.deepEqual(scribbleTargets(wideVertical,[{id:'axis',points:[p(0,65),p(500,65)]}]),[], 'protect crossing graph axes');
+
+const letters = [45, 85, 125].map((x,i) => ({id: String(i), points: [p(x,50), p(x,80)]}));
+assert.deepEqual(scribbleTargets(wideVertical, letters), ['0','1','2'], 'all separate letters inside the scrub are removed');
