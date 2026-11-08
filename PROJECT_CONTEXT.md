@@ -16,6 +16,8 @@ On 6 November 2026, Rob requested easier access to erasing while writing on the 
 
 On 6 November 2026, Rob clarified that easier erasing primarily means using the back of a compatible pen and scribbling over existing writing, as in GoodNotes. Preserve temporary hardware eraser handling, add conservative undoable scribble-to-erase, and keep it in preview until reviewed. Hardware behaviour must be checked with Rob’s actual pen rather than claimed from simulated events.
 
+On 8 November 2026, Rob requested and authorised immediate publication of up-and-down as well as left-and-right scribble erasing, visible pen-width choices, and removal of whiteboard scribble instructions and erasure messages. Preserve undo, saved stroke widths, multipart isolation, and compatible hardware erasing.
+
 ## Purpose of this file
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.
