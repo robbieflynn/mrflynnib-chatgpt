@@ -97,10 +97,9 @@
           toolButton('precision-eraser', 'Eraser', false, 'Eraser (E): rub out part of your writing') +
           toolButton('lasso', 'Lasso', false, 'Select writing and drag to move it') +
           toolButton('undo', 'Undo', undefined, 'Undo the last change (Ctrl+Z or Command+Z)') +
-          '<div class="qb-whiteboard-pen-sizes" role="group" aria-label="Pen size">' +
-            [1.8, 3.6, 6, 9].map(function (size, index) {
-              var label = ['Fine', 'Medium', 'Thick', 'Bold'][index];
-              return '<button type="button" class="qb-whiteboard-tool" data-pen-size="' + size + '" aria-label="' + label + ' pen" title="' + label + ' pen" aria-pressed="' + (size === 3.6) + '"><span aria-hidden="true" style="height:' + size + 'px"></span></button>';
+          '<div class="qb-whiteboard-sizes" role="group" aria-label="Pen size">' +
+            ['Fine', 'Medium', 'Thick', 'Bold'].map(function (label, index) {
+              return '<button type="button" class="qb-whiteboard-tool" data-tool-size="' + index + '" aria-label="' + label + ' pen" title="' + label + ' pen" aria-pressed="' + (index === 1) + '"><span aria-hidden="true"></span></button>';
             }).join('') +
           '</div>' +
         '</div>' +
@@ -112,7 +111,6 @@
           '</div>' +
           toolButton('highlighter', 'Highlighter', false) +
           '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type" hidden>' +
-            [12, 24, 48].map(function (size, index) { return '<button type="button" class="qb-whiteboard-tool" data-eraser-size="' + size + '" aria-pressed="' + (size === 24) + '">' + ['Small', 'Medium', 'Large'][index] + '</button>'; }).join('') +
             toolButton('stroke-eraser', 'Erase whole stroke', false, 'Remove a whole pen or highlighter stroke') +
           '</div>' +
           toolButton('pan', 'Pan', false) +
@@ -201,13 +199,61 @@
     overlay.setAttribute('aria-hidden', 'true');
     surface.appendChild(overlay);
 
+    var penSizes = [1.8, 3.6, 6, 9];
+    var eraserSizes = [12, 24, 36, 48];
+    var cursorTool = 'pen';
+    var cursor = document.createElement('div');
+    cursor.className = 'qb-whiteboard-pointer';
+    cursor.setAttribute('aria-hidden', 'true');
+    cursor.hidden = true;
+    surface.appendChild(cursor);
+
+    function hideCursor() {
+      cursor.hidden = true;
+      canvas.style.cursor = cursorTool === 'pan' ? 'grab' : cursorTool === 'move-image' ? 'move' : 'crosshair';
+    }
     function updateCursor(tool) {
-      tool = tool || mode;
-      var size = Math.max(8, Math.min(120, eraserSize * zoom));
-      var svg = tool === 'precision-eraser' || tool === 'stroke-eraser'
-        ? '<svg xmlns="http://www.w3.org/2000/svg" width="' + (size + 4) + '" height="' + (size + 4) + '"><circle cx="' + (size / 2 + 2) + '" cy="' + (size / 2 + 2) + '" r="' + size / 2 + '" fill="white" fill-opacity=".6" stroke="#475569"/></svg>'
-        : '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M2 28 8 14 21 1l9 9-14 13Z" fill="white" stroke="#172554" stroke-width="2"/><path d="m2 28 6-2-4-4Z" fill="' + colour + '"/></svg>';
-      canvas.style.cursor = tool === 'pan' ? 'grab' : tool === 'move-image' ? 'move' : tool === 'lasso' ? 'crosshair' : 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '") ' + (tool.indexOf('eraser') >= 0 ? Math.round(size / 2 + 2) + ' ' + Math.round(size / 2 + 2) : '2 28') + ', crosshair';
+      cursorTool = tool || mode;
+      var erasing = cursorTool === 'precision-eraser' || cursorTool === 'stroke-eraser';
+      var size = erasing ? eraserSize * zoom : 20;
+      cursor.classList.toggle('qb-whiteboard-pointer-eraser', erasing);
+      cursor.style.width = size + 'px';
+      cursor.style.height = size + 'px';
+      cursor.innerHTML = erasing ? '' : '<svg viewBox="0 0 20 20" fill="none"><path d="m2 18 2-6L14 2a2 2 0 0 1 3 3L7 15Z" fill="white" stroke="#334155" stroke-width="1.2"/><path d="m2 18 2-6 3 3Z" fill="' + colour + '"/><path d="m12 4 3 3" stroke="#334155" stroke-width="1.2"/></svg>';
+      hideCursor();
+    }
+    function positionCursor(event) {
+      if (event.pointerType === 'touch' || board.hidden || accountState().readOnly ||
+          ['pen', 'highlighter', 'precision-eraser', 'stroke-eraser'].indexOf(cursorTool) < 0) return hideCursor();
+      var rect = viewport.getBoundingClientRect();
+      if (event.clientX < rect.left + viewport.clientLeft || event.clientX >= rect.left + viewport.clientLeft + viewport.clientWidth ||
+          event.clientY < rect.top + viewport.clientTop || event.clientY >= rect.top + viewport.clientTop + viewport.clientHeight) return hideCursor();
+      var paper = surface.getBoundingClientRect();
+      cursor.style.left = (event.clientX - paper.left) + 'px';
+      cursor.style.top = (event.clientY - paper.top) + 'px';
+      cursor.hidden = false;
+      canvas.style.cursor = 'none';
+    }
+    canvas.addEventListener('pointerenter', positionCursor);
+    canvas.addEventListener('pointerleave', hideCursor);
+    viewport.addEventListener('scroll', hideCursor, { passive: true });
+    window.addEventListener('scroll', hideCursor, { passive: true });
+
+    function updateSizeButtons() {
+      var erasing = mode === 'precision-eraser' || mode === 'stroke-eraser';
+      var sizes = erasing ? eraserSizes : penSizes;
+      var labels = erasing ? ['Small', 'Medium', 'Large', 'Extra large'] : ['Fine', 'Medium', 'Thick', 'Bold'];
+      var group = board.querySelector('.qb-whiteboard-sizes');
+      group.setAttribute('aria-label', erasing ? 'Eraser size' : 'Pen size');
+      group.classList.toggle('qb-whiteboard-sizes-eraser', erasing);
+      group.querySelectorAll('[data-tool-size]').forEach(function (button, index) {
+        var label = labels[index] + (erasing ? ' eraser' : ' pen');
+        button.setAttribute('aria-label', label);
+        button.title = label;
+        button.setAttribute('aria-pressed', String(sizes[index] === (erasing ? eraserSize : penSize)));
+        button.disabled = accountState().readOnly || (!erasing && mode !== 'pen');
+        button.querySelector('span').style.height = (erasing ? 5 + index * 3 : penSizes[index]) + 'px';
+      });
     }
     function selectionBounds() {
       var bounds = null;
@@ -380,6 +426,7 @@
     }
 
     function resetInteraction(preserveSelection) {
+      hideCursor();
       if (selectionDrag) {
         actions.forEach(function (a) { if (selection.indexOf(a.id) >= 0) a.points.forEach(function (p) { p.x -= selectionDrag.dx; p.y -= selectionDrag.dy; }); });
         selectionDrag = null; redraw();
@@ -461,6 +508,7 @@
     }
 
     function updateButtons() {
+      updateSizeButtons();
       undo.disabled = Boolean(accountState().readOnly) || actions.length === 0;
       clear.disabled = Boolean(accountState().readOnly) || !hasVisibleWork();
     }
@@ -818,6 +866,7 @@
       capturePointer(event.pointerId);
       var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'precision-eraser' : mode;
       updateCursor(pointerMode);
+      positionCursor(event);
       if (pointerMode === 'lasso') {
         var lp = pointFromEvent(event), bounds = selectionBounds();
         if (bounds && lp.x >= bounds.left - 8 / baseWidth && lp.x <= bounds.right + 8 / baseWidth && lp.y >= bounds.top - 8 / baseHeight && lp.y <= bounds.bottom + 8 / baseHeight) {
@@ -875,6 +924,7 @@
     // Listen on the window as a fallback when pointer capture is unavailable.
     // The initiating pointer ID still owns the stroke, so hover cannot draw.
     window.addEventListener('pointermove', function (event) {
+      if (event.target === canvas || event.pointerId === activePointer) positionCursor(event);
       // Some stylus/browser combinations report buttons=0 while the pen is
       // still touching the screen. Pointerup/pointercancel are authoritative
       // for pens; using the mouse hover safeguard for them turns every stroke
@@ -963,6 +1013,7 @@
         selectionDrag = null; drawSelection();
       }
       updateCursor();
+      if (event.type !== 'pointercancel') positionCursor(event);
       if (activeStroke) appendStrokeSamples(event);
       if (activeStrokeErase) eraseWholeStrokes(event);
       if (activeStroke && activeStroke.mode === 'highlighter') redraw();
@@ -1013,6 +1064,7 @@
     function setMode(nextMode) {
       resetInteraction();
       mode = nextMode;
+      updateSizeButtons();
       selection = []; lasso = null; drawSelection();
       board.querySelector('[data-whiteboard-action="lasso"]').setAttribute('aria-pressed', String(mode === 'lasso'));
       board.querySelector('.qb-whiteboard-eraser-tools').hidden = mode !== 'precision-eraser' && mode !== 'stroke-eraser';
@@ -1332,19 +1384,13 @@
         return;
       }
       if (accountState().readOnly && !event.target.closest('[data-whiteboard-action="zoom-in"], [data-whiteboard-action="zoom-out"], [data-whiteboard-action="expand"], [data-whiteboard-action="close"]')) return;
-      var eraserChoice = event.target.closest('[data-eraser-size]');
-      if (eraserChoice) {
-        eraserSize = Number(eraserChoice.getAttribute('data-eraser-size'));
-        board.querySelectorAll('[data-eraser-size]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === eraserChoice)); });
-        setMode('precision-eraser'); return;
-      }
-      var sizeChoice = event.target.closest('[data-pen-size]');
+      var sizeChoice = event.target.closest('[data-tool-size]');
       if (sizeChoice) {
-        penSize = Number(sizeChoice.getAttribute('data-pen-size'));
-        board.querySelectorAll('[data-pen-size]').forEach(function (choice) {
-          choice.setAttribute('aria-pressed', String(choice === sizeChoice));
-        });
-        setMode('pen');
+        var sizeIndex = Number(sizeChoice.getAttribute('data-tool-size'));
+        if (mode === 'precision-eraser' || mode === 'stroke-eraser') eraserSize = eraserSizes[sizeIndex];
+        else if (mode === 'pen') penSize = penSizes[sizeIndex];
+        updateSizeButtons();
+        updateCursor();
         return;
       }
       var colourChoice = event.target.closest('[data-whiteboard-colour]');
