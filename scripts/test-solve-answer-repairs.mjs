@@ -56,6 +56,17 @@ for(const k of [-1,0,1,8,9,10,15,16,17]) {
  assert.equal(count===2,k===0||(k>=9&&k<16));
 }
 expect('N20TZ0HL_P1_Q8','b','0<k≤2');
+// Worked-solution prose is inserted as HTML before maths rendering. A literal
+// '<k' would become a tag and silently swallow the corrected interval.
+const solutionSource=readFileSync('public/question-bank/solutions/aa-hl/N20TZ0HL_P1_Q8.js','utf8');
+const solution=JSON.parse(solutionSource.slice(solutionSource.indexOf('{'),solutionSource.lastIndexOf('}')+1));
+const finalPart=solution.s.solution.find(p=>p.part==='b');
+const {JSDOM}=require('jsdom');
+for(const text of [finalPart.answer,finalPart.steps.at(-1).text,finalPart.steps.at(-1).work]) {
+ const dom=new JSDOM('<div></div>');const element=dom.window.document.querySelector('div');element.innerHTML=text;
+ assert.equal(element.textContent,text,'The final interval was swallowed as HTML');dom.window.close();
+}
+
 for(const k of [-100,-1,0,.1,1,1.9,2,2.1,100]) {
  const c=1/(k-1), exists=k!==1&&c>=-1&&c<=1&&c!==0&&c!==1;
  assert.equal(!exists,k>0&&k<=2);
