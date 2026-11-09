@@ -6,6 +6,7 @@ import { delimiter, dirname } from "node:path";
 const checks = [
   ["Lint", "node_modules/eslint/bin/eslint.js", "."],
   ["Whiteboard scribble recognition", "scripts/test-whiteboard-gestures.mjs"],
+  ["Assignment retry regression", "scripts/test-assignment-retries.mjs"],
   ["Assignment whiteboard regression", "scripts/test-assignment-whiteboards.mjs"],
   ["Delayed whiteboard initialisation", "scripts/test-assignment-whiteboards.mjs", "--late-board"],
   ["Question-bank navigation regression", "scripts/test-bank-navigation.mjs"],
