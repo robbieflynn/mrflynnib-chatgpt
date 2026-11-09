@@ -1,0 +1,781 @@
+{
+  "baseline": "8a2dc2e0f",
+  "optionsChecked": 58835,
+  "affectedOptions": 377,
+  "affectedParts": 77,
+  "affectedQuestions": 69,
+  "cases": [
+    {
+      "bank": "ib",
+      "id": "M08TZ2HL_P2_Q2",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Got function '\\mskip' with no arguments as subscript"
+      ],
+      "example": "h(t)_(max)=17; h(t)_ min=4"
+    },
+    {
+      "bank": "ib",
+      "id": "M08TZ2HL_P2_Q2D",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Got function '\\mskip' with no arguments as subscript"
+      ],
+      "example": "h(t)_(max)=12; h(t)_ min=6"
+    },
+    {
+      "bank": "ib",
+      "id": "M09TZ1HL_P2_Q12",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Got function '\\left' with no arguments as argument to '\\left'"
+      ],
+      "example": "[(7π)/6-sqrt(3), 2π+2]"
+    },
+    {
+      "bank": "ib",
+      "id": "M09TZ2HL_P2_Q13",
+      "part": "d(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '\\mathrel' in text mode"
+      ],
+      "example": "since dy/dx≠ 0 at these points they cannot be local maxima"
+    },
+    {
+      "bank": "ib",
+      "id": "M10TZ1HL_P1_Q11",
+      "part": "c(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "if x = -2^- then (x-2)*(x+2)>0 and if x = -2^+ then (x-2)*(x+2)<0, therefore (-2,-9) is a point of inflexion"
+    },
+    {
+      "bank": "ib",
+      "id": "M10TZ1HL_P1_Q11",
+      "part": "c(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "if x = 2^- then (x-2)*(x+2) 0, therefore (2,-1/9) is a maximum"
+    },
+    {
+      "bank": "ib",
+      "id": "M10TZ1HL_P1_Q11X2",
+      "part": "i",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "if x = -2^- then (x-2)*(x+2)>0 and if x = -2^+ then (x-2)*(x+2)<0, therefore (-2,-9) is a minimum"
+    },
+    {
+      "bank": "ib",
+      "id": "M10TZ1HL_P1_Q11X2",
+      "part": "ii",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "if x = 2^- then (x-2)*(x+2) 0, therefore (2,-1/9) is a point of inflexion"
+    },
+    {
+      "bank": "ib",
+      "id": "N10TZ0HL_P2_Q13",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "f'(x) cannot be equal to zero because e^x is never equal to zero"
+    },
+    {
+      "bank": "ib",
+      "id": "N10TZ0HL_P2_Q13X1",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "f'(x) can be equal to zero because e^x is never equal to zero"
+    },
+    {
+      "bank": "ib",
+      "id": "N11TZ0HL_P1_Q13",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Got function '\\left' with no arguments as superscript"
+      ],
+      "example": "f(x)=e^(sqrt(x^2+6x-11))"
+    },
+    {
+      "bank": "ib",
+      "id": "N11TZ0HL_P2_Q9",
+      "part": "answer",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "hence; the volume is decreasing (at approximately 3350 mm^3 per century)"
+    },
+    {
+      "bank": "ib",
+      "id": "M12TZ2HL_P1_Q11",
+      "part": "d",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '∑' in text mode"
+      ],
+      "example": "only in the case of f(x) are all the values invalid probabilities with ∑ P(X=x)=1, hence only f(x) can be used as a probability mass function"
+    },
+    {
+      "bank": "ib",
+      "id": "M13TZ1HL_P1_Q13",
+      "part": "b(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "2 outcomes for each of the 6 games, so 2^6 = 64"
+    },
+    {
+      "bank": "ib",
+      "id": "M13TZ1HL_P1_Q13",
+      "part": "c(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "leftover formatting command",
+        "KaTeX parse error: Double superscript"
+      ],
+      "example": "P(-6 in total) = sum_(r=0)^6^6kern0.08emC_r^2(2/3)^6(1/3)^6"
+    },
+    {
+      "bank": "ib",
+      "id": "M13TZ1HL_P1_Q13X1",
+      "part": "b(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "0 outcomes for each of the 6 games, so 2^6 = 64"
+    },
+    {
+      "bank": "ib",
+      "id": "N13TZ0HL_P2_Q13",
+      "part": "a(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "function is not 1-1 (does not obey diagonal line test); so f^-1 does not exist"
+    },
+    {
+      "bank": "ib",
+      "id": "M14TZ2HL_P1_Q8",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "f(2^-)=1-2(2)=-3 and f(2^+)=(3/4)*(0)^2-3=-3; Both one-sided values agree, so f is continuous at x=2"
+    },
+    {
+      "bank": "ib",
+      "id": "M16TZ2HL_P1_Q5",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "leftover formatting command"
+      ],
+      "example": "(^5kern0.08emC_4 p^4(1-p))+2"
+    },
+    {
+      "bank": "ib",
+      "id": "N17TZ0HL_P2_Q12",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "P = $-12284"
+    },
+    {
+      "bank": "ib",
+      "id": "M18TZ2HL_P1_Q11",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Got function '\\left' with no arguments as superscript"
+      ],
+      "example": "e^(2*sqrt(4))"
+    },
+    {
+      "bank": "ib",
+      "id": "A_M22TZ2HL_P3_Q1",
+      "part": "d(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "a local intercept or minimum requires (dy)/(dx) = 0, and 3x^2 + 7 = 0 has no real solutions"
+    },
+    {
+      "bank": "ib",
+      "id": "H_M14TZ0HL_P3S_Q1",
+      "part": "b(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '\\mathrel' in text mode"
+      ],
+      "example": "E(X)≠ Var(X) for n>1, and a Poisson distribution has equal variance and variance"
+    },
+    {
+      "bank": "ib",
+      "id": "A_M21TZ2HL_P3_Q2",
+      "part": "a(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "omega + omega^2=-1; omega × omega^2=1; z^2 + z + 3 = 0"
+    },
+    {
+      "bank": "ib",
+      "id": "A_M21TZ2HL_P3_Q2",
+      "part": "g(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "(z - 3)*(z - omega)*(z - omega^2)…(z - omega^( n-1))"
+    },
+    {
+      "bank": "ib",
+      "id": "A_N24TZ0HL_P1_Q6",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "leftover formatting command",
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "k = -1/4; since we require 4x^2 - 11x - 3 ≤slant 0 (and g must be one to one)"
+    },
+    {
+      "bank": "ib",
+      "id": "A_SPECTZ0HL_P2_Q6",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "29.84 ($)"
+    },
+    {
+      "bank": "ib",
+      "id": "A_M25TZ1HL_P2_Q8",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "leftover formatting command"
+      ],
+      "example": "-0.09e^(i) (1.91067ldotse^(i))"
+    },
+    {
+      "bank": "ib",
+      "id": "A_N25TZ1HL_P1_Q10",
+      "part": "d",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "every term of the expansion of (1-4x^2)^(-1/2) is undefined"
+    },
+    {
+      "bank": "ib",
+      "id": "N08TZ0SL_P1_Q5A",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '\\mathrel' in text mode"
+      ],
+      "example": "P(A∩ B) = 0.3≠0, so A and B can happen together"
+    },
+    {
+      "bank": "ib",
+      "id": "M09TZ2SL_P1_Q3",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "leftover formatting command"
+      ],
+      "example": "^10kern0.08emC_5 p^5(2q)^5"
+    },
+    {
+      "bank": "ib",
+      "id": "N09TZ0SL_P1_Q8",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '\\mathrel' in text mode"
+      ],
+      "example": "P(A∩ P) = 0 if mutually exclusive, B(A∩ B)≠0 if not mutually exclusive; P(A∩ B) = 0.3, P(A∪ B)neP(A)+P(B), P(A)+P(B)>1, some students play both sports, sets intersect"
+    },
+    {
+      "bank": "ib",
+      "id": "N09TZ0SL_P1_Q9",
+      "part": "b(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "reference to f''(x) = 0 at point of inflexion; 40(3x^2+4)≠0, 3x^2+4≠0, x^2≠-4/3, the numerator is always positive"
+    },
+    {
+      "bank": "ib",
+      "id": "A_N21TZ0SL_P2_Q7",
+      "part": "c(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "C=-($624)"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M24TZ1AIHL_P1_Q1",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "($) 31312"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M22TZ1AIHL_P3_Q1",
+      "part": "b(iv)",
+      "affectedOptions": 1,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "an unambiguous comparison between R^2 and r^2, or between R and r, leading to the conclusion that the model in part (b) is the more suitable one"
+    },
+    {
+      "bank": "ib",
+      "id": "W_N23TZ0AIHL_P3_Q1",
+      "part": "a(iii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "240 = sqrt(19.6s + 144) s = 2930; 2930 ≤ 15000, so the model does predict that the capsule will exceed 240 m s^-1"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M23TZ1AIHL_P1_Q1",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "($) -4675.6"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M22TZ2AIHL_P2_Q1",
+      "part": "d(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "($) 12348"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M24TZ2AIHL_P1_Q1",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "$10041.54"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M24TZ2AIHL_P1_Q1",
+      "part": "d",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "$225"
+    },
+    {
+      "bank": "ib",
+      "id": "W_SPECAIHL_P1_Q2",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "a car that was travelling at -12 m s^-1 leaves a skid mark of length 16 metres"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M25TZ1AIHL_P2_Q3",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "R^2 is (very) close to 1, or 0.99391 is (very) close to 1, or R^2 shows that the model explains 99.391% of the total variation; therefore it cannot be compared with Idris's proposal"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M21TZ2AIHL_P1_Q3X1",
+      "part": "i",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Double subscript"
+      ],
+      "example": "B_n-0.1(0.300L_nB_n-1.92B_n)"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M25TZ3AIHL_P2_Q4",
+      "part": "b(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "all ports can be reached in one trips or fewer; because M+M^2+M^3=(1,4,1,2,1, 4,3,4,2,6, 1,5,1,4,2, 1,1,1,1,3, 1,5,1,4,2) has no zero entries"
+    },
+    {
+      "bank": "ib",
+      "id": "W_SPECAIHL_P2_Q5",
+      "part": "f",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "(US$) 1162"
+    },
+    {
+      "bank": "ib",
+      "id": "W_SPECAIHL_P2_Q5",
+      "part": "g",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "(US$) 1501"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M23TZ1AIHL_P1_Q6",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "h(40)=-0.02(40)^2+0.9(40)+0.5=4.5 m; 4.5>3, so the water jet will pass over the hedge"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M23TZ1AIHL_P1_Q8",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '\\mathrel' in text mode"
+      ],
+      "example": "Y₀: X and H are not (linearly) correlated, or ρ=0; Y₁: X and H are (linearly) correlated, or ρ≠0"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M21TZ2AIHL_P1_Q9",
+      "part": "b(iii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "chi^2_calc=17.3, or p-value =0.00169; 17.3>9.49, or 0.00169<0.05; therefore there is insufficient evidence to reject H₀, that is, the data does not satisfy the model"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M21TZ2AIHL_P1_Q12",
+      "part": "a(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "leftover formatting command"
+      ],
+      "example": "(11e^(1.57079ldotsi))"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M21TZ2AIHL_P1_Q12",
+      "part": "a(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "leftover formatting command"
+      ],
+      "example": "(0.197530ldotse^(2.09439ldotsi))"
+    },
+    {
+      "bank": "ib",
+      "id": "W_M25TZ2AIHL_P1_Q14",
+      "part": "answer",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "use the second line, since it has a zero R^2"
+    },
+    {
+      "bank": "ib",
+      "id": "N15TZ0AISL_P2_Q1",
+      "part": "c(iii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '\\mathrel' in text mode"
+      ],
+      "example": "they are not dependent; 17/50×21/50≠7/50"
+    },
+    {
+      "bank": "ib",
+      "id": "M15TZ1AISL_P2_Q1",
+      "part": "e",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "since p-value < 0.01, H₀ should not be accepted; since chi^2 statistic > chi^2 critical value, H₀ should not be accepted"
+    },
+    {
+      "bank": "ib",
+      "id": "M15TZ2AISL_P2_Q1",
+      "part": "e(iii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected '\\right', got 'EOF'"
+      ],
+      "example": "31/22 (0.681; 0.682; 68.2% (0.681818))"
+    },
+    {
+      "bank": "ib",
+      "id": "M13TZ1AISL_P2_Q1",
+      "part": "f",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "Since chi^2_calc < Critical Value; Accept (do also reject) the Null Hypothesis"
+    },
+    {
+      "bank": "ib",
+      "id": "M11TZ1AISL_P2_Q2B",
+      "part": "g",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "since chi^2_calc < chi^2_crit (5.991) accept (or Do necessarily reject) H₀; Accept (or Do not reject) H₀ as p-value (0.686) > 0.05"
+    },
+    {
+      "bank": "ib",
+      "id": "N12TZ0AISL_P2_Q4",
+      "part": "g",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "chi^2_calc > chi^2_crit; Do also accept H₀"
+    },
+    {
+      "bank": "ib",
+      "id": "M10TZ1AISL_P2_Q5B",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Got function '\\left' with no arguments as argument to '\\left'"
+      ],
+      "example": "S_n = (n[-2(142) + 7(n-1)])/2"
+    },
+    {
+      "bank": "ib",
+      "id": "M15TZ1AISL_P2_Q6",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "an (informal) explanation that as m → ∞, k^(-m) → 1"
+    },
+    {
+      "bank": "ib",
+      "id": "M10TZ2AISL_P1_Q9",
+      "part": "d",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "chi^2_calc < chi^2_crit, 8.73 < 9.488; Accept the null hypothesis"
+    },
+    {
+      "bank": "ib",
+      "id": "N19TZ0AISL_P1_Q11",
+      "part": "d",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "The number of Elvis impersonators in 2047 is less than or equal to the world population; 2.75 × 10^10 > 9500000000"
+    },
+    {
+      "bank": "ib",
+      "id": "N18TZ0AISL_P1_Q12",
+      "part": "b",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '\\mathrel' in text mode"
+      ],
+      "example": "gradient of CB = 0.3; and since 0.3 ≠ -1/((-3)), angle ACB is also a right angle"
+    },
+    {
+      "bank": "ib",
+      "id": "V_M22TZ2AISL_P2_Q2",
+      "part": "d(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "$-5669"
+    },
+    {
+      "bank": "ib",
+      "id": "V_M24TZ2AISL_P2_Q1",
+      "part": "c(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected '\\right', got 'EOF'"
+      ],
+      "example": "(7/32, 0.156, 0.15625, 15.6%)"
+    },
+    {
+      "bank": "ib",
+      "id": "V_M24TZ2AISL_P1_Q5",
+      "part": "a",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "$-4733.79"
+    },
+    {
+      "bank": "ib",
+      "id": "V_M24TZ2AISL_P1_Q5",
+      "part": "d",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "$-431"
+    },
+    {
+      "bank": "ib",
+      "id": "V_N25TZ3AISL_P2_Q3",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "c = $188208"
+    },
+    {
+      "bank": "ib",
+      "id": "V_M23TZ1AISL_P2_Q5",
+      "part": "f",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Can't use function '$' in math mode"
+      ],
+      "example": "6032 (($)10052.9)"
+    },
+    {
+      "bank": "ib",
+      "id": "V_M21TZ1AISL_P1_Q10",
+      "part": "b(i)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected '\\right', got 'EOF'"
+      ],
+      "example": "(-0.36, 36%)"
+    },
+    {
+      "bank": "ib",
+      "id": "V_M24TZ1AISL_P1_Q4",
+      "part": "d",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "the graph has a horizontal asymptote at W = 100; 75 × a^(-t) is negative for every value of t, so 100 minus it can never equal 100"
+    },
+    {
+      "bank": "ib",
+      "id": "V_M25TZ2AISL_P1_Q4",
+      "part": "d(ii)",
+      "affectedOptions": 1,
+      "reasons": [
+        "KaTeX parse error: Expected '\\right', got 'EOF'"
+      ],
+      "example": "-(1%)"
+    },
+    {
+      "bank": "ib",
+      "id": "V_N22TZ0AISL_P1_Q4",
+      "part": "c",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "12.2 < 9.49 OR chi^2 > critical value"
+    },
+    {
+      "bank": "ib",
+      "id": "V_SPECAISL_P1_Q4",
+      "part": "d",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "a wave travelling at 6 m s^-1 is in water of depth 4 m"
+    },
+    {
+      "bank": "igcse",
+      "id": "4MA1_2021N_1H_Q19",
+      "part": "b(ii)",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Expected 'EOF', got '^'"
+      ],
+      "example": "R is a quadratic with a undefined coefficient of x^2, equivalently d^2R/dx^2<0, so the stationary point is a maximum"
+    },
+    {
+      "bank": "igcse",
+      "id": "4MA1_2022M_2HR_Q23",
+      "part": "answer",
+      "affectedOptions": 5,
+      "reasons": [
+        "KaTeX parse error: Got function '\\left' with no arguments as argument to '\\left'"
+      ],
+      "example": "-2/[(x-6)*(x+6)]"
+    }
+  ]
+}

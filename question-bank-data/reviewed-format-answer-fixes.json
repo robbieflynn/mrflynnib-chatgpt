@@ -1,0 +1,588 @@
+{
+  "W_M21TZ2AIHL_P1_Q12": {
+    "sourceSha256": "84e509ae07348faca280a7d440dec7ba8cdda37173e3a6940cfa59f6e1e45251",
+    "parts": {
+      "a(i)": {
+        "answers": [
+          "8e^(iπ/2)"
+        ],
+        "options": [
+          "11e^(iπ/2)",
+          "8e^(iπ/2)",
+          "17e^(iπ/2)",
+          "-8e^(iπ/2)",
+          "5e^(iπ/2)"
+        ],
+        "correctOption": 1,
+        "previousOptions": [
+          "(11e^(1.57079ldotsi))",
+          "(8e^(1.57079ldotsi))",
+          "(17e^(1.57079ldotsi))",
+          "(-8e^(1.57079ldotsi))",
+          "(5e^(1.57079ldotsi))"
+        ]
+      },
+      "a(ii)": {
+        "answers": [
+          "(16/81)*e^(2iπ/3)"
+        ],
+        "options": [
+          "(16/81)*e^(2iπ/3)",
+          "(16/81)*e^(iπ/3)",
+          "(16/81)*e^(-2iπ/3)",
+          "(4/9)*e^(2iπ/3)",
+          "(81/16)*e^(2iπ/3)"
+        ],
+        "correctOption": 0,
+        "previousOptions": [
+          "(0.197530ldotse^(2.09439ldotsi))",
+          "(-1.80247ldotse^(2.09439ldotsi))",
+          "(-0.19753ldotse^(2.09439ldotsi))",
+          "(1.39506ldotse^(2.09439ldotsi))",
+          "(2.19753ldotse^(2.09439ldotsi))"
+        ]
+      }
+    }
+  },
+  "A_M25TZ1HL_P2_Q8": {
+    "sourceSha256": "715dd5d03b99514a99799445d0ad363b134fd286532287e4f156b10fe71d8859",
+    "parts": {
+      "b": {
+        "answers": [
+          "1.91e^(i)"
+        ],
+        "options": [
+          "-0.09e^(i)",
+          "1.91e^(i)",
+          "3.91e^(i)",
+          "-1.91e^(i)",
+          "4.82e^(i)"
+        ],
+        "correctOption": 1,
+        "previousOptions": [
+          "-0.09e^(i) (1.91067ldotse^(i))",
+          "1.91e^(i) (1.91067ldotse^(i))",
+          "3.91e^(i) (1.91067ldotse^(i))",
+          "-1.91e^(i) (1.91067ldotse^(i))",
+          "4.82e^(i) (1.91067ldotse^(i))"
+        ]
+      }
+    }
+  },
+  "M13TZ1HL_P1_Q13": {
+    "sourceSha256": "5fa1e43841665d3184603874a5bd1b0921642945d6261397b7c174a4e7282f17",
+    "parts": {
+      "c(ii)": {
+        "answers": [
+          "latex:\\sum_{r=0}^{6}\\binom{6}{r}^2\\left(\\frac{2}{3}\\right)^6\\left(\\frac{1}{3}\\right)^6"
+        ],
+        "options": [
+          "latex:\\sum_{r=0}^{5}\\binom{6}{r}^2\\left(\\frac{2}{3}\\right)^6\\left(\\frac{1}{3}\\right)^6",
+          "latex:\\sum_{r=0}^{6}\\binom{6}{r}^2\\left(\\frac{2}{3}\\right)^6\\left(\\frac{1}{3}\\right)^6",
+          "latex:\\sum_{r=0}^{6}\\binom{6}{r}\\left(\\frac{2}{3}\\right)^6\\left(\\frac{1}{3}\\right)^6",
+          "latex:\\sum_{r=0}^{6}\\binom{6}{r}^2\\left(\\frac{2}{3}\\right)^5\\left(\\frac{1}{3}\\right)^7",
+          "latex:\\sum_{r=0}^{6}\\binom{6}{r}^2\\left(\\frac{2}{3}\\right)^7\\left(\\frac{1}{3}\\right)^5"
+        ],
+        "correctOption": 1,
+        "previousOptions": [
+          "P(-6 in total) = sum_(r=0)^6^6kern0.08emC_r^2(2/3)^6(1/3)^6",
+          "P(6 in total) = sum_(r=0)^6^6kern0.08emC_r^2(2/3)^6(1/3)^6",
+          "P(13 in total) = sum_(r=0)^6^6kern0.08emC_r^2(2/3)^6(1/3)^6",
+          "P(4 in total) = sum_(r=0)^6^6kern0.08emC_r^2(2/3)^6(1/3)^6",
+          "P(8 in total) = sum_(r=0)^6^6kern0.08emC_r^2(2/3)^6(1/3)^6"
+        ]
+      },
+      "c(i)": {
+        "answers": [
+          "r=2; s=6; t=6",
+          "r=4; s=6; t=6"
+        ],
+        "options": [
+          "r=2; s=6; t=6",
+          "r=1; s=6; t=6",
+          "r=2; s=4; t=2",
+          "r=2; s=2; t=4",
+          "r=2; s=12; t=12"
+        ],
+        "correctOption": 0,
+        "previousOptions": [
+          "r=2",
+          "r=-1",
+          "r=4",
+          "r=5",
+          "r=1"
+        ]
+      }
+    }
+  },
+  "M16TZ2HL_P1_Q5": {
+    "sourceSha256": "64c278a7c3bb93651c3b94dcc0f8244ab8f787bb751bc077d535ed5a7c78f4c0",
+    "parts": {
+      "a": {
+        "answers": [
+          "5p^4(1-p)"
+        ],
+        "options": [
+          "5p(1-p)^4",
+          "p^4(1-p)",
+          "5p^4(1-p)",
+          "5p^3(1-p)^2",
+          "p^5"
+        ],
+        "correctOption": 2,
+        "previousOptions": [
+          "(^5kern0.08emC_4 p^4(1-p))+2",
+          "3*(^5kern0.08emC_4 p^4(1-p))",
+          "^5kern0.08emC_4 p^4(1-p)",
+          "(^5kern0.08emC_4 p^4(1-p))-3",
+          "^-5kern0.08emC_4 p^4(1-p)"
+        ]
+      },
+      "b(ii)": {
+        "answers": [
+          "4"
+        ],
+        "options": [
+          "4",
+          "1",
+          "9",
+          "2",
+          "6"
+        ],
+        "correctOption": 0,
+        "previousOptions": [
+          "p=4",
+          "p=1",
+          "p=9",
+          "p=2",
+          "p=6"
+        ]
+      }
+    }
+  },
+  "M09TZ2SL_P1_Q3": {
+    "sourceSha256": "42f48ae57474f59aa5b6b7d68dac7e6e26c80f66257f20e1cb1be18aa8738eeb",
+    "parts": {
+      "c": {
+        "answers": [
+          "252p^5(2q)^5"
+        ],
+        "options": [
+          "252p^5(2q)^5",
+          "504p^5(2q)^5",
+          "252p^5(2q)^5-3",
+          "-252p^5(2q)^5",
+          "252p^5(2q)^5+2"
+        ],
+        "correctOption": 0,
+        "previousOptions": [
+          "^10kern0.08emC_5 p^5(2q)^5",
+          "2*(^10kern0.08emC_5 p^5(2q)^5)",
+          "(^10kern0.08emC_5 p^5(2q)^5)-3",
+          "-(^10kern0.08emC_5 p^5(2q)^5)",
+          "(^10kern0.08emC_5 p^5(2q)^5)+2"
+        ]
+      }
+    }
+  },
+  "A_N24TZ0HL_P1_Q6": {
+    "sourceSha256": "f60ccbaad62893b79a03bdcd0d80c6a6aedcf8cc493562cfe89a2078ee3cec1e",
+    "parts": {
+      "b": {
+        "answers": [
+          "k = -1/4; since we require 4x^2 - 11x - 3 ≥ 0 (and g must be one to one)"
+        ],
+        "options": [
+          "k = -1/4; since we require 4x^2 - 11x - 3 ≤ 0 (and g must be one to one)",
+          "k = -1/4; since we require 4x^2 - 11x - 3 ≥ 0 (and g must be one to one)",
+          "k = 1/4; since we require 4x^2 - 11x - 3 ≥ 0 (and g must be one to one)",
+          "k = -3/4; since we require 4x^2 - 11x - 3 ≥ 0 (and g must be one to one)",
+          "k = -1/4; since we require 4x^2 - 11x - 3 > 0 (and g must be one to one)"
+        ],
+        "correctOption": 1,
+        "previousOptions": [
+          "k = -1/4; since we require 4x^2 - 11x - 3 ≤slant 0 (and g must be one to one)",
+          "k = -1/4; since we require 4x^2 - 11x - 3 ≥slant 0 (and g must be one to one)",
+          "k = 1/4; since we require 4x^2 - 11x - 3 ≥slant 0 (and g must be one to one)",
+          "k = -3/4; since we require 4x^2 - 11x - 3 ≥slant 0 (and g must be one to one)",
+          "k = -1/4; since we require 4x^2 - 11x - 3 >slant 0 (and g must be one to one)"
+        ]
+      }
+    }
+  },
+  "M11TZ1HL_P2_Q14": {
+    "sourceSha256": "65afb1e30c1a7e4ced71234decb511ecc5fb6956557e239cfcc3957e713b85da",
+    "parts": {
+      "a": {
+        "mode": "multiple_choice",
+        "answers": [
+          "(π h^2)/2",
+          "π[y^2/2]_0^h = (π h^2)/2"
+        ],
+        "options": [
+          "2/((π h^2))",
+          "(π h^2)/5",
+          "(π h^2)/4",
+          "(π h^2)/2",
+          "(-(π h^2))/2"
+        ],
+        "correctOption": 3,
+        "previousOptions": [
+          "2/((π h^2))",
+          "(π h^2)/5",
+          "(π h^2)/4",
+          "(π h^2)/2",
+          "(-(π h^2))/2"
+        ],
+        "note": "Preserve prepared content; renderer changes must not silently replace the choice set."
+      }
+    }
+  },
+  "N13TZ0HL_P1_Q8": {
+    "sourceSha256": "4992e4fb2ef106038b6fdff0c06584698ebd5ae7dbd0a2a3b170773c54763c7a",
+    "parts": {
+      "b": {
+        "answers": [
+          "latex:[-\\frac{1}{4},\\frac{3}{4}]"
+        ],
+        "options": [
+          "latex:[\\frac{1}{4},\\frac{3}{4}]",
+          "latex:[-\\frac{1}{4},\\frac{3}{4}]",
+          "latex:[-\\frac{1}{4},1]",
+          "latex:[-\\frac{3}{4},\\frac{1}{4}]",
+          "latex:[0,\\frac{3}{4}]"
+        ],
+        "correctOption": 1,
+        "previousOptions": [
+          "fin[1/4,3/4]",
+          "fin[-1/4,3/4]",
+          "fin[-1/6,3/4]",
+          "fin[-3/4,3/4]",
+          "fin[-1/2,3/4]"
+        ],
+        "note": "Reviewed against the complete source prompt and mark scheme; include the full required result."
+      }
+    }
+  },
+  "M14TZ2HL_P1_Q7": {
+    "sourceSha256": "3181d84f4438d3a1e5e258c29c40c07098f85514cac325ae2a2a9bc28dcaf1fd",
+    "parts": {
+      "b": {
+        "answers": [
+          "13*sqrt(2)*e^(-iπ/4)"
+        ],
+        "options": [
+          "13*sqrt(2)*e^(iπ/4)",
+          "13*e^(-iπ/4)",
+          "13*sqrt(2)*e^(-3iπ/4)",
+          "26*e^(-iπ/4)",
+          "13*sqrt(2)*e^(-iπ/4)"
+        ],
+        "correctOption": 4,
+        "previousOptions": [
+          "theta=-(π)/6",
+          "theta=-(π)/9",
+          "theta=-(π)/2",
+          "theta=((π))/4",
+          "theta=-(π)/4"
+        ],
+        "note": "Reviewed against the complete source prompt and mark scheme; include the full required result."
+      }
+    }
+  },
+  "M16TZ1HL_P1_Q13": {
+    "sourceSha256": "a56adbff458bbfc9368ec278d331fdc5c98857571dade7eab6eb019fe3c6d7f1",
+    "parts": {
+      "c(i)": {
+        "mode": "multiple_choice",
+        "answers": [
+          "1-1/e",
+          "I_0 = [-1/x]_1^e = 1-1/e"
+        ],
+        "options": [
+          "-1-1/e",
+          "(-1-1)/e",
+          "1-1/e",
+          "3-1/e",
+          "e/(1-1)"
+        ],
+        "correctOption": 2,
+        "previousOptions": [
+          "-1-1/e",
+          "(-1-1)/e",
+          "1-1/e",
+          "3-1/e",
+          "e/(1-1)"
+        ],
+        "note": "Preserve prepared content; renderer changes must not silently replace the choice set."
+      }
+    }
+  },
+  "M19TZ1HL_P2_Q2": {
+    "sourceSha256": "041fbc67134c573642f8cc939fa64f35fec90f5847940591dd833eedaf5efd89",
+    "parts": {
+      "a": {
+        "answers": [
+          "2e^(iπ/4); 2e^(-3iπ/4)"
+        ],
+        "options": [
+          "2e^(iπ/4); 2e^(-3iπ/4)",
+          "2e^(iπ/4); 2e^(3iπ/4)",
+          "4e^(iπ/4); 4e^(-3iπ/4)",
+          "2e^(iπ/2); 2e^(-iπ/2)",
+          "2e^(-iπ/4); 2e^(3iπ/4)"
+        ],
+        "correctOption": 0,
+        "previousOptions": [
+          "2e^(3.93i)",
+          "-2e^(3.93i)",
+          "5e^(3.93i)",
+          "0e^(3.93i)",
+          "4e^(3.93i)"
+        ],
+        "note": "Reviewed against the complete source prompt and mark scheme; include the full required result."
+      },
+      "b": {
+        "answers": [
+          "sqrt(2)+sqrt(2)i; -sqrt(2)-sqrt(2)i"
+        ],
+        "options": [
+          "sqrt(2)-sqrt(2)i; -sqrt(2)+sqrt(2)i",
+          "sqrt(2)+sqrt(2)i; -sqrt(2)-sqrt(2)i",
+          "2+2i; -2-2i",
+          "sqrt(2)+sqrt(2)i; -sqrt(2)+sqrt(2)i",
+          "sqrt(2)+sqrt(2)i; sqrt(2)-sqrt(2)i"
+        ],
+        "correctOption": 1,
+        "previousOptions": [
+          "z = -sqrt(5)-sqrt(2) i",
+          "z = -sqrt(2)-sqrt(2) i",
+          "z = -sqrt(4)-sqrt(2) i",
+          "z = -sqrt(2)-sqrt(4) i",
+          "z = -sqrt(2)-sqrt(5) i"
+        ],
+        "note": "Reviewed against the complete source prompt and mark scheme; include the full required result."
+      }
+    }
+  },
+  "A_M25TZ3HL_P1_Q8": {
+    "sourceSha256": "12806442e1d012f1614ba661af1e81b074b0088bb51e75718dc7b28e78696652",
+    "parts": {
+      "a": {
+        "answers": [
+          "2*sqrt(5)*e^(iπ/3)"
+        ],
+        "options": [
+          "2*sqrt(5)*e^(-iπ/3)",
+          "sqrt(5)*e^(iπ/3)",
+          "2*sqrt(5)*e^(iπ/3)",
+          "2*sqrt(5)*e^(iπ/6)",
+          "5*e^(iπ/3)"
+        ],
+        "correctOption": 2,
+        "previousOptions": [
+          "(π)/5",
+          "(π)/1",
+          "(π)/3",
+          "(-(π))/3",
+          "(π)/7"
+        ],
+        "note": "Reviewed against the complete source prompt and mark scheme; include the full required result."
+      }
+    }
+  },
+  "A_N25TZ1HL_P1_Q11": {
+    "sourceSha256": "786e9b202f99e1e1dcde7ae63925f2afe7a5b90c973418d8b9c2c64811f991b5",
+    "parts": {
+      "c": {
+        "mode": "whiteboard",
+        "answers": [],
+        "options": [],
+        "correctOption": null,
+        "previousOptions": [],
+        "note": "Preserve prepared content; renderer changes must not silently replace the choice set."
+      }
+    }
+  },
+  "A_M24TZ1HL_P1_Q12": {
+    "sourceSha256": "4667e7c3a8d66b776e79ec2707268a8379d89343b3b8a1502e4bf49a605766d4",
+    "parts": {
+      "e": {
+        "answers": [
+          "s'=4e^(8iπ/9); t'=4e^(-4iπ/9); v'=4e^(2iπ/9)"
+        ],
+        "options": [
+          "s'=4e^(7iπ/9); t'=4e^(-5iπ/9); v'=4e^(iπ/9)",
+          "s'=4e^(8iπ/9); t'=4e^(-4iπ/9); v'=4e^(2iπ/9)",
+          "s'=4e^(8iπ/9); t'=4e^(4iπ/9); v'=4e^(2iπ/9)",
+          "s'=2e^(8iπ/9); t'=2e^(-4iπ/9); v'=2e^(2iπ/9)",
+          "s'=4e^(2iπ/9); t'=4e^(-4iπ/9); v'=4e^(8iπ/9)"
+        ],
+        "correctOption": 1,
+        "previousOptions": [
+          "latex:v' = 6\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{6}}\\,\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{18}} = 4\\mathrm{e}^{2\\pi\\frac{\\mathrm{i}}{9}}",
+          "latex:v' = 4\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{6}}\\,\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{18}} = 4\\mathrm{e}^{2\\pi\\frac{\\mathrm{i}}{9}}",
+          "latex:v' = 2\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{6}}\\,\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{18}} = 4\\mathrm{e}^{2\\pi\\frac{\\mathrm{i}}{9}}",
+          "latex:v' = 9\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{6}}\\,\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{18}} = 4\\mathrm{e}^{2\\pi\\frac{\\mathrm{i}}{9}}",
+          "latex:v' = -4\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{6}}\\,\\mathrm{e}^{\\pi\\frac{\\mathrm{i}}{18}} = 4\\mathrm{e}^{2\\pi\\frac{\\mathrm{i}}{9}}"
+        ],
+        "note": "Reviewed against the complete source prompt and mark scheme; include the full required result."
+      }
+    }
+  },
+  "A_M22TZ2HL_P1_Q12": {
+    "sourceSha256": "e94eedd0cb7795549bb1b704fce5d890334cb8810ad7e8cf0bd493663d5aac45",
+    "parts": {
+      "c(i)": {
+        "mode": "multiple_choice",
+        "answers": [
+          "latex:w_1 = w_2\\text{e}^{\\text{i}2\\frac{\\pi}{3}}"
+        ],
+        "options": [
+          "latex:w_1 = w_2\\text{e}^{\\text{i}4\\frac{\\pi}{3}}",
+          "latex:w_1 = w_2\\text{e}^{\\text{i}5\\frac{\\pi}{3}}",
+          "latex:w_1 = w_2\\text{e}^{\\text{i}2\\frac{\\pi}{3}}",
+          "latex:w_1 = w_2\\text{e}^{\\text{i}-2\\frac{\\pi}{3}}",
+          "latex:w_1 = w_2\\text{e}^{\\text{i}0\\frac{\\pi}{3}}"
+        ],
+        "correctOption": 2,
+        "previousOptions": [
+          "latex:w_1 = w_2\\text{e}^{\\text{i}4\\frac{\\pi}{3}}",
+          "latex:w_1 = w_2\\text{e}^{\\text{i}5\\frac{\\pi}{3}}",
+          "latex:w_1 = w_2\\text{e}^{\\text{i}2\\frac{\\pi}{3}}",
+          "latex:w_1 = w_2\\text{e}^{\\text{i}-2\\frac{\\pi}{3}}",
+          "latex:w_1 = w_2\\text{e}^{\\text{i}0\\frac{\\pi}{3}}"
+        ],
+        "note": "Preserve prepared content; renderer changes must not silently replace the choice set."
+      }
+    }
+  },
+  "W_M25TZ3AIHL_P2_Q7": {
+    "sourceSha256": "705b1c20fc343861a47cd3d815915c8ef974906782efaa2d0d08f828f84a0401",
+    "parts": {
+      "a": {
+        "answers": [
+          "6e^(7iπ/18)"
+        ],
+        "options": [
+          "6e^(11iπ/18)",
+          "3e^(7iπ/18)",
+          "6e^(iπ/9)",
+          "6e^(-7iπ/18)",
+          "6e^(7iπ/18)"
+        ],
+        "correctOption": 4,
+        "previousOptions": [
+          "13",
+          "3",
+          "-6",
+          "8",
+          "6"
+        ],
+        "note": "Reviewed against the complete source prompt and mark scheme; include the full required result."
+      },
+      "c(i)": {
+        "answers": [
+          "6e^(7iπ/18)+4.5e^(iπ/2)+3.375e^(11iπ/18)"
+        ],
+        "options": [
+          "6e^(7iπ/18)+4.5e^(iπ/2)+3.375e^(7iπ/18)",
+          "6e^(7iπ/18)+4.5e^(iπ/2)+4.5e^(11iπ/18)",
+          "6e^(7iπ/18)+6e^(iπ/2)+6e^(11iπ/18)",
+          "6e^(7iπ/18)+4.5e^(iπ/2)+3.375e^(11iπ/18)",
+          "6e^(7iπ/18)+4.5e^(5iπ/18)+3.375e^(iπ/6)"
+        ],
+        "correctOption": 3,
+        "previousOptions": [
+          "(15π)/18",
+          "(-11π)/18",
+          "(23π)/18",
+          "(11π)/18",
+          "(7π)/18"
+        ],
+        "note": "Reviewed against the complete source prompt and mark scheme; include the full required result."
+      }
+    }
+  },
+  "W_N23TZ0AIHL_P1_Q8": {
+    "sourceSha256": "bd892a0aa500155dfd5941c15f0eaa6a24a018be7fb13af74fd78dceca2b00aa",
+    "parts": {
+      "a": {
+        "mode": "multiple_choice",
+        "answers": [
+          "2.83e^(2.36i)"
+        ],
+        "options": [
+          "6.66e^(2.36i)",
+          "0.83e^(2.36i)",
+          "4.83e^(2.36i)",
+          "2.83e^(2.36i)",
+          "-2.83e^(2.36i)"
+        ],
+        "correctOption": 3,
+        "previousOptions": [
+          "6.66e^(2.36i)",
+          "0.83e^(2.36i)",
+          "4.83e^(2.36i)",
+          "2.83e^(2.36i)",
+          "-2.83e^(2.36i)"
+        ],
+        "note": "Preserve prepared content; renderer changes must not silently replace the choice set."
+      }
+    }
+  },
+  "W_M24TZ2AIHL_P1_Q15": {
+    "sourceSha256": "7d1e872df8bba7ace905abd0711712dc7ad5ffa2ee73b60cce8bf35ef4f84041",
+    "parts": {
+      "a": {
+        "mode": "multiple_choice",
+        "answers": [
+          "latex:2\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}"
+        ],
+        "options": [
+          "latex:2\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}",
+          "latex:0\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}",
+          "latex:4\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}",
+          "latex:-2\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}",
+          "latex:5\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}"
+        ],
+        "correctOption": 0,
+        "previousOptions": [
+          "latex:2\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}",
+          "latex:0\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}",
+          "latex:4\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}",
+          "latex:-2\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}",
+          "latex:5\\mathrm{e}^{\\frac{\\pi}{3}\\mathrm{i}}"
+        ],
+        "note": "Preserve prepared content; renderer changes must not silently replace the choice set."
+      }
+    }
+  },
+  "W_SPECAIHL_P1_Q15": {
+    "sourceSha256": "a45ddf8e81d4218484bae831db96dcc7cec48efeccd4b35f2b380c674ef282b3",
+    "parts": {
+      "a(i)": {
+        "mode": "multiple_choice",
+        "answers": [
+          "2+2*sqrt(3)i; 8i; -8+8*sqrt(3)i"
+        ],
+        "options": [
+          "0+2*sqrt(3)i; 8i; -8+8*sqrt(3)i",
+          "4+2*sqrt(3)i; 8i; -8+8*sqrt(3)i",
+          "2+2*sqrt(3)i; 8i; -5+8*sqrt(3)i",
+          "2+2*sqrt(3)i; 8i; -8+8*sqrt(3)i",
+          "2+2*sqrt(3)i; 11i; -8+8*sqrt(3)i"
+        ],
+        "correctOption": 3,
+        "previousOptions": [
+          "0+2*sqrt(3)i; 8i; -8+8*sqrt(3)i",
+          "4+2*sqrt(3)i; 8i; -8+8*sqrt(3)i",
+          "2+2*sqrt(3)i; 8i; -5+8*sqrt(3)i",
+          "2+2*sqrt(3)i; 8i; -8+8*sqrt(3)i",
+          "2+2*sqrt(3)i; 11i; -8+8*sqrt(3)i"
+        ],
+        "note": "Preserve prepared content; renderer changes must not silently replace the choice set."
+      }
+    }
+  }
+}

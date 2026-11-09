@@ -8,7 +8,17 @@ const choices = require("../public/question-bank/assignment-choice-utils.js");
 const reviewedSharedFixes = JSON.parse(readFileSync("question-bank-data/reviewed-shared-answer-fixes.json", "utf8"));
 const reviewedSharedSources = JSON.parse(readFileSync("question-bank-data/reviewed-shared-answer-sources.json", "utf8"));
 
+const reviewedFormatFixes = JSON.parse(readFileSync("question-bank-data/reviewed-format-answer-fixes.json", "utf8"));
+const formatSourceQuestions = JSON.parse(readFileSync("question-bank-data/ib-seed.json", "utf8"));
+for (const [id, fix] of Object.entries(reviewedFormatFixes)) {
+  const source = formatSourceQuestions.find(question => question.id === id);
+  assert.equal(createHash("sha256").update(JSON.stringify(source)).digest("hex"), fix.sourceSha256, `Re-review changed formatting source: ${id}`);
+}
+
 function reviewedChoiceSet(questionId, label, prompt, fallback) {
+  const formatFix = reviewedFormatFixes[questionId]?.parts[label];
+  if (formatFix?.mode === "whiteboard") return null;
+  if (formatFix) return { acceptedAnswers: formatFix.answers, options: formatFix.options, correctOption: formatFix.correctOption };
   const reviewed = reviewedSharedFixes[questionId]?.[label];
   if (!reviewed) return fallback();
   if (reviewed.mode === "whiteboard") return null;
@@ -1720,6 +1730,8 @@ if (auditDetailModes.includes("6")) {
     });
 }
 assert.equal(choiceQualityIssues.length, 0, "The live assignment-choice audit found an unsafe or mismatched answer option.");
+
+if (process.env.ASSIGNMENT_CANDIDATE_OUTPUT) writeFileSync(process.env.ASSIGNMENT_CANDIDATE_OUTPUT, JSON.stringify(fixedAssignmentConfigs));
 
 const fixedAssignmentConfigSource = `${JSON.stringify(fixedAssignmentConfigs)}\n`;
 if (process.env.WRITE_ASSIGNMENT_CONFIGS === "1") {

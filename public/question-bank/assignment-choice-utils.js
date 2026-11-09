@@ -1,7 +1,8 @@
 (function (root, factory) {
   var api = factory(root);
   if (typeof module === "object" && module.exports) module.exports = api;
-  else root.MrFlynnAssignmentChoices = api;
+  // Generation and legacy repair are build-time tools, never browser APIs.
+  else root.MrFlynnAssignmentChoices = { renderAnswer: api.renderAnswer, shuffled: api.shuffled };
 }(typeof globalThis !== "undefined" ? globalThis : this, function (root) {
   "use strict";
 
@@ -2915,12 +2916,13 @@
     return depth === 0;
   }
 
-  function wrapsWholeExpression(value) {
-    if (value[0] !== "(" || value[value.length - 1] !== ")") return false;
+  function wrapsWholeExpression(value, open, close) {
+    open = open || "("; close = close || ")";
+    if (value[0] !== open || value[value.length - 1] !== close) return false;
     var depth = 0;
     for (var index = 0; index < value.length; index += 1) {
-      if (value[index] === "(") depth += 1;
-      if (value[index] === ")") depth -= 1;
+      if (value[index] === open) depth += 1;
+      if (value[index] === close) depth -= 1;
       if (depth === 0 && index < value.length - 1) return false;
     }
     return depth === 0;
@@ -2939,6 +2941,8 @@
 
   function atomToLatex(value) {
     return value
+      .replace(/_\s+(min|max)\b/g, "_($1)")
+      .replace(/_n(?=[A-Z])/g, "_{n}")
       .replace(/matrix\(([^()]*)\)/gi, function (_match, body) {
         return "\\begin{pmatrix}" + body.split(";").map(function (row) {
           return row.split(",").map(function (cell) { return expressionToLatex(cell.trim()) || cell.trim(); }).join("&");
@@ -2988,10 +2992,6 @@
       .replace(/\(([^()]+)\)/g, function (match, inner) {
         var rendered = expressionToLatex(inner);
         return rendered ? "\\left(" + rendered + "\\right)" : match;
-      })
-      .replace(/\[([^\[\]]+)\]/g, function (match, inner) {
-        var rendered = expressionToLatex(inner);
-        return rendered ? "[" + rendered + "]" : match;
       });
   }
 
@@ -2999,6 +2999,10 @@
     var expression = String(value || "").trim();
     if (!expression || !parenthesesAreBalanced(expression)) return null;
     expression = expression.replace(/(^|[=+\-;(])\s*(-?\d+(?:\.\d+)?\s*\/\s*-?\d+(?:\.\d+)?)\s+(?=[A-Za-z(])/g, "$1($2)*");
+    if (wrapsWholeExpression(expression, "[", "]")) {
+      var bracketed = expressionToLatex(expression.slice(1, -1));
+      return bracketed ? "[" + bracketed + "]" : null;
+    }
     if (wrapsWholeExpression(expression)) {
       var inner = expressionToLatex(expression.slice(1, -1));
       return inner ? "\\left(" + inner + "\\right)" : null;
@@ -3116,6 +3120,10 @@
       var numerator = expressionToLatex(expression.slice(0, divisionIndex));
       var denominator = expressionToLatex(expression.slice(divisionIndex + 1));
       return numerator && denominator ? "\\frac{" + numerator + "}{" + denominator + "}" : null;
+    }
+    var powers = topLevelPositions(expression, function (character) { return character === "^"; });
+    if (powers.length === 1 && wrapsWholeExpression(expression.slice(powers[0] + 1))) {
+      return expressionToLatex(expression.slice(0, powers[0])) + "^{" + expressionToLatex(expression.slice(powers[0] + 2, -1)) + "}";
     }
     return atomToLatex(expression);
   }
@@ -5103,7 +5111,11 @@
     return String(value || "")
       .replace(/\\/g, "")
       .replace(/[{}]/g, "")
-      .replace(/([%$&#_])/g, "\\$1");
+      .replace(/([%$&#_])/g, "\\$1")
+      .replace(/\^\(([^()]*)\)|\^([+-]?\d+|[A-Za-z]|[+-])/g, function (_match, group, atom) {
+        return "}^{" + (expressionToLatex(group || atom) || group || atom) + "}\\text{";
+      })
+      .replace(/[≠≤≥∑∫∏∈∉∩∪]/g, function (symbol) { return "}" + atomToLatex(symbol) + "\\text{"; });
   }
 
   function proseToLatex(value) {
@@ -5120,11 +5132,13 @@
     }
     var result = "";
     var start = 0;
-    var fractionPattern = /root\([^(),]+,[^()]+\)|sqrt\([^()]+\)|(?:\((?:[^()]|\([^()]*\))*\)|d(?:\^\d+)?[A-Za-z]|[-+]?[A-Za-z0-9.]+)\s*\/\s*(?:\((?:[^()]|\([^()]*\))*\)|d[A-Za-z](?:\^\d+)?|[-+]?[A-Za-z0-9.^-]+)/g;
+    var fractionPattern = /\^\([^()]*\)|root\([^(),]+,[^()]+\)|sqrt\([^()]+\)|(?:\((?:[^()]|\([^()]*\))*\)|d(?:\^\d+)?[A-Za-z]|[-+]?[A-Za-z0-9.]+)\s*\/\s*(?:\((?:[^()]|\([^()]*\))*\)|d[A-Za-z](?:\^\d+)?|[-+]?[A-Za-z0-9.^-]+)/g;
     var match;
     while ((match = fractionPattern.exec(answer))) {
       if (match.index > start) result += "\\text{" + escapeLatexText(answer.slice(start, match.index)) + "}";
-      if (/^(?:sqrt|root)\(/i.test(match[0])) {
+      if (match[0][0] === "^") {
+        result += "^{" + expressionToLatex(match[0].slice(2, -1)) + "}";
+      } else if (/^(?:sqrt|root)\(/i.test(match[0])) {
         result += expressionToLatex(match[0]) || "\\text{" + escapeLatexText(match[0]) + "}";
       } else {
         var fraction = match[0].split("/");
@@ -5140,8 +5154,8 @@
     return result || "\\text{" + escapeLatexText(answer) + "}";
   }
 
-  function toLatex(value) {
-    var answer = clean(value);
+  function answerToLatex(value) {
+    var answer = clean(value).replace(/_\s+(min|max)\b/g, "_($1)");
     if (isRawLatexAnswer(answer)) return rawLatexValue(answer);
     if (answer === "∅") return "\\varnothing";
     if (/\b(?:displaystyle)?int[_^(]/i.test(answer)) {
@@ -5179,6 +5193,10 @@
     var unitSuffix = answer.match(new RegExp("^(.+?)\\s+(" + UNIT_PATTERN + ")$", "i"));
     if (unitSuffix) return (expressionToLatex(unitSuffix[1]) || atomToLatex(unitSuffix[1])) + unitToLatex(unitSuffix[2]);
     return expressionToLatex(answer) || atomToLatex(answer);
+  }
+
+  function toLatex(value) {
+    return answerToLatex(value).replace(/(^|[^\\])([$%])/g, "$1\\$2");
   }
 
   function fallbackDisplay(value) {
