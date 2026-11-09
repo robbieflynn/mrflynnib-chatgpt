@@ -9,6 +9,7 @@ const checks = [
   ["Assignment whiteboard regression", "scripts/test-assignment-whiteboards.mjs"],
   ["Delayed whiteboard initialisation", "scripts/test-assignment-whiteboards.mjs", "--late-board"],
   ["Question-bank navigation regression", "scripts/test-bank-navigation.mjs"],
+  ["Formula booklet regression", "scripts/test-formula-booklets.mjs"],
   ["Fixed assignment-answer audit", "scripts/audit-assignment-choices.mjs"],
   ["Reviewed shared-answer repairs", "scripts/test-shared-answer-repairs.mjs"],
   ["Question-bank delivery audit", "scripts/verify-question-bank-delivery.mjs"],

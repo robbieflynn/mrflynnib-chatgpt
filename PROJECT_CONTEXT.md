@@ -20,6 +20,13 @@ On 8 November 2026, Rob requested and authorised immediate publication of up-and
 
 On 8 November 2026, Rob requested recognisable pen, eraser and undo icons, a pen cursor and size-aware circular eraser cursor, eraser sizes and whole-stroke mode grouped under Eraser, lasso selection for moving handwriting, scribble erasure of all enclosed writing, and stable side-by-side divider resizing. Keep moves and erasures undoable and preserve saved work and multipart isolation. After the preview was provided, Rob authorised publication on 8 November 2026.
 
+
+## Formula booklets, 9 November 2026
+
+Rob approved four course-specific formula booklets for AA HL, AA SL, AI HL and AI SL. Their mathematical content, descriptions, definitions, conditions, order and numbered groups must match the four PDFs he supplied; only the visual styling changes. Include Prior learning boxes. Do not paraphrase, add teaching hints, convergence advice or extra domain conditions. The reviewed transcription is stored in `question-bank-data/formula-booklets.json`; regenerate the four static documents with `node scripts/build-formula-booklets.mjs`. The source AA HL arctan derivative prints f′(y); it is retained as supplied and recorded privately in the content metadata. No original IB covers or logos are included.
+
+Rob requested a Formula booklet button wherever current IB questions appear, including the public bank, student assignments, submitted/teacher review, lesson practice and teacher selection views. Use the viewing course, including when practice reuses a question from another course. The shared IB bank renderer provides the button per question; a viewport-sized right-hand dialog hosts the matching booklet, with Topic 1–5 navigation and a full-width mobile view. Preserve question position, answers and whiteboard work when opening and closing. Load the selected booklet only on demand. The four IB booklets must not appear in IGCSE or legacy-course views. This feature is being prepared for preview review; production publication is not part of this change.
+
 ## Purpose of this file
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.
