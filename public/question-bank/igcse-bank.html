@@ -92434,6 +92434,10 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
     SUBPART_RE.lastIndex = 0;
     var chunks = [], labels = [], last = 0, m, expect = null;
     while((m = SUBPART_RE.exec(html))){
+      // References such as "parts (a)(i) and (a)(ii)" are prose, not
+      // new list items. Keep them intact before and within the actual list.
+      var before = html.slice(0, m.index).replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ');
+      if (!/<br\b|\n/i.test(m[0]) && /(?:\([a-z]\)|\bparts?\s*(?:(?:\([a-z]\))?\([ivx]+\)\s*(?:,|and|or|to|–|-)\s*)*)\s*$/i.test(before)) continue;
       var v = ROMAN[m[1]];
       if(expect === null) expect = v;          // a relettered extract may open at (ii)
       else if(v !== expect) break;
@@ -93193,10 +93197,10 @@ delete module.exports.diagram4ma1_2025m_2hr_q5;delete module.exports.diagram4ma1
 <script src="/question-bank/starred.js?v=3"></script>
 <script src="/question-bank/whiteboard-gestures.js?v=3"></script>
 <script src="/question-bank/whiteboard.js?v=39"></script>
-<script src="/question-bank/assignment-choice-utils.js?v=26"></script>
+<script src="/question-bank/assignment-choice-utils.js?v=27"></script>
 <script src="/question-bank/assignment-selector.js?v=32"></script>
 <script src="/question-bank/test-selector.js?v=11"></script>
-<script src="/question-bank/assignment-response.js?v=20"></script>
+<script src="/question-bank/assignment-response.js?v=22"></script>
 <script src="/question-bank/course-preview-lock.js?v=3"></script>
 <script src="/question-bank/navigation-memory.js?v=1"></script>
 </body>

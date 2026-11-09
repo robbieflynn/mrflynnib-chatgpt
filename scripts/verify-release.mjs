@@ -10,6 +10,8 @@ const checks = [
   ["Delayed whiteboard initialisation", "scripts/test-assignment-whiteboards.mjs", "--late-board"],
   ["Question-bank navigation regression", "scripts/test-bank-navigation.mjs"],
   ["Formula booklet regression", "scripts/test-formula-booklets.mjs"],
+  ["Question subpart formatting", "scripts/test-question-subparts.mjs"],
+  ["Stored answer rendering", "scripts/test-stored-answer-rendering.mjs"],
   ["Fixed assignment-answer audit", "scripts/audit-assignment-choices.mjs"],
   ["Reviewed shared-answer repairs", "scripts/test-shared-answer-repairs.mjs"],
   ["Question-bank delivery audit", "scripts/verify-question-bank-delivery.mjs"],
