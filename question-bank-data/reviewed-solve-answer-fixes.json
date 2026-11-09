@@ -1,0 +1,604 @@
+{
+  "N09TZ0SL_P1_Q6": {
+    "answer": {
+      "answers": [
+        "x=π"
+      ],
+      "options": [
+        "x=π",
+        "x=0; x=2π",
+        "x=π/2; x=3π/2",
+        "x=π; x=2π",
+        "x=5/2; x=-1"
+      ],
+      "verification": "With c=cos x the equation is (2c-5)(c+1)=0. Reject c=5/2; c=-1 gives only x=pi on [0,2pi].",
+      "sourceSha256": "e2829b9d6c608b319bb870f4fd68f746cd16f92f3ac940e19bfa24b71663280c"
+    }
+  },
+  "M19TZ2HL_P2_Q5": {
+    "b": {
+      "answers": [
+        "x=π/12; x=13π/12"
+      ],
+      "options": [
+        "x=π/12; x=13π/12",
+        "x=π/12",
+        "x=13π/12",
+        "x=π/6; x=7π/6",
+        "x=5π/12; x=17π/12"
+      ],
+      "verification": "The ratio is tan(x+pi/4) on its domain; tan x=2-sqrt(3). Both pi/12 and 13pi/12 satisfy the original denominator restriction. No other roots in [0,2pi).",
+      "sourceSha256": "3bb57c6220084a23e241eded68113304236ae4671e6bcf0f1a29179b0a9922db"
+    }
+  },
+  "M17TZ2SL_P1_Q7": {
+    "answer": {
+      "answers": [
+        "x=25π/12; x=29π/12"
+      ],
+      "options": [
+        "x=25π/12; x=29π/12",
+        "x=π/12; x=5π/12",
+        "x=25π/12",
+        "x=29π/12",
+        "x=13π/6; x=7π/3"
+      ],
+      "verification": "Logs require sin x>0 and cos x>0. sin(2x)=1/2 with 4pi<2x<5pi gives exactly 25pi/12 and 29pi/12.",
+      "sourceSha256": "f487fc3d2ce4055ba249c4e07b407bb92f5501f5f3305bd512c81c3247296bb8"
+    }
+  },
+  "N09TZ0HL_P2_Q1": {
+    "answer": {
+      "answers": [
+        "49/27<k<3"
+      ],
+      "options": [
+        "49/27<k<3",
+        "49/27≤k≤3",
+        "k<49/27",
+        "k>3",
+        "49/27<k≤3"
+      ],
+      "verification": "Cubic stationary points x=-1 and 1/3 have values 3 and 49/27. Three distinct intersections occur strictly between these levels.",
+      "sourceSha256": "33a19f7c023baac46f61d5020a7fa93089a5732a50a0cd37d497d6a7ec68f17e"
+    }
+  },
+  "N11TZ0HL_P1_Q9": {
+    "a": {
+      "answers": [
+        "-1/3≤y≤1"
+      ],
+      "options": [
+        "-1/3≤y≤1",
+        "-1/3<y<1",
+        "y≤-1/3 or y≥1",
+        "0≤y≤1",
+        "-1≤y≤1/3"
+      ],
+      "verification": "Discriminant -(3y+1)(y-1)>=0. At y=0 equation becomes -x-1=0 and still has a real root, so zero stays included.",
+      "sourceSha256": "6f5a409297ecdaf21036f9af326322a4b0f98ac5d2783737ff6b3748c1da8a07"
+    }
+  },
+  "M13TZ1HL_P2_Q9": {
+    "b": {
+      "answers": [
+        "k=3/2"
+      ],
+      "options": [
+        "k=3/2",
+        "k=-3/2",
+        "k=3",
+        "k=0",
+        "k=1/2"
+      ],
+      "verification": "Squared separation is (4k^2-12k+12)/9, minimized at k=3/2.",
+      "sourceSha256": "bb52dd4ec940764cc9708d9ceddc1bd2c427c8821b9b9cf0bdf68f89c3002654"
+    }
+  },
+  "M13TZ2HL_P2_Q12": {
+    "a(iii)": {
+      "answers": [
+        "A=1"
+      ],
+      "options": [
+        "A=1",
+        "A=-1",
+        "A=0",
+        "A=2",
+        "A=1/2"
+      ],
+      "verification": "Integration gives y^2=sin(2x)+A; (cos x+sin x)^2=1+sin(2x) fixes A=1.",
+      "sourceSha256": "79cacdd8e61774863b4e6ae4a358f148bc3b8c14954fb8d299cc572e668164c3"
+    }
+  },
+  "M14TZ2HL_P2_Q13": {
+    "e": {
+      "answers": [
+        "b=-4; c=10; d=-12; e=8"
+      ],
+      "options": [
+        "b=-4; c=10; d=-12; e=8",
+        "b=4; c=10; d=12; e=8",
+        "b=-4; c=6; d=-12; e=8",
+        "b=-2; c=10; d=-6; e=8",
+        "b=-4; c=10; d=-12; e=4"
+      ],
+      "verification": "Real coefficients force conjugate pairs. Multiply (z^2-2z+4)(z^2-2z+2).",
+      "sourceSha256": "cae6a74801e9ea136462e56fc642a4265fb6e9e118cc8d0716167703252bfd64"
+    }
+  },
+  "M16TZ1HL_P2_Q9": {
+    "a": {
+      "answers": [
+        "c-i; 2-i*d"
+      ],
+      "options": [
+        "c-i; 2-i*d",
+        "c+i; 2+i*d",
+        "-c-i; -2-i*d",
+        "c-i; 2+i*d",
+        "-c+i; 2-i*d"
+      ],
+      "verification": "The missing roots are the complex conjugates c-i and 2-id, as all polynomial coefficients are real.",
+      "sourceSha256": "5d469b9b65c53bb40f7ce117acf1e3d8b53e96b5415ad54e09ca7eca668b8faf"
+    }
+  },
+  "N20TZ0HL_P1_Q8": {
+    "b": {
+      "answers": [
+        "0<k≤2"
+      ],
+      "options": [
+        "0<k≤2",
+        "0<k<2",
+        "0≤k≤2",
+        "k≤0 or k>2",
+        "k<0 or k≥2"
+      ],
+      "verification": "Original domain excludes cos x=0 and cos x=1. Image is (-infinity,0] union (2,infinity), so no solution iff 0<k<=2. This corrects an endpoint omission in the source mark scheme; the worked solution already explains it.",
+      "sourceSha256": "8943bade6b44de478d945668d3eb4233358488ee755759ca5576ec9ffd313aed"
+    }
+  },
+  "A_M24TZ2HL_P1_Q5": {
+    "b(iii)": {
+      "answers": [
+        "0<m<1/3"
+      ],
+      "options": [
+        "0<m<1/3",
+        "0≤m≤1/3",
+        "m<0",
+        "m>1/3",
+        "0<m≤1/3"
+      ],
+      "verification": "Clearing x!=2 gives x(3mx+2-6m)=0. Roots 0 and 2-2/(3m) are distinct and nonpositive exactly when 0<m<1/3.",
+      "sourceSha256": "220506636db2d13b705c64dc4bc70712bcc85271170f06d83c6cda5a23314c57"
+    }
+  },
+  "A_M25TZ2HL_P1_Q5": {
+    "b": {
+      "answers": [
+        "m<-12 or 4<m<6"
+      ],
+      "options": [
+        "m<-12 or 4<m<6",
+        "m<-12 or m>4",
+        "-12<m<4",
+        "4<m≤6",
+        "m<6"
+      ],
+      "verification": "Discriminant (m+12)(m-4)>0 and product 12-2m>0. Intersect the two conditions; exclude repeated roots and zero root.",
+      "sourceSha256": "9afc6b3f5629f27bd7fd35e50b2bf6f08ee4edcb4ba3fec6fd0835c922ff4659"
+    }
+  },
+  "A_N21TZ0HL_P1_Q7": {
+    "a": {
+      "answers": [
+        "k<0 or k>2/3"
+      ],
+      "options": [
+        "k<0 or k>2/3",
+        "k>2/3",
+        "0<k<2/3",
+        "k≤0 or k≥2/3",
+        "k<0"
+      ],
+      "verification": "Discriminant 20k(3k-2)>0 gives both branches; k=0 is not a quadratic and k=2/3 has a repeated root.",
+      "sourceSha256": "f642f1a6a03aa0da23b1313a931e32a29d7df4c7dbf862228f68653fdd2d41c3"
+    }
+  },
+  "A_M23TZ1HL_P1_Q8": {
+    "b": {
+      "answers": [
+        "k=0 or 9≤k<16"
+      ],
+      "options": [
+        "k=0 or 9≤k<16",
+        "9≤k<16",
+        "0<k<9",
+        "k=0 or 9<k≤16",
+        "0≤k<16"
+      ],
+      "verification": "Even graph g has two preimages at levels -4<c<3, one at -4, none at 3. Squaring gives exactly two at k=0 and 9<=k<16, four at 0<k<9, one at 16.",
+      "sourceSha256": "44c4681be663e33a95c446fddd8daa5dad18be0da1a5887b1cc5d0b0fd5b9c37"
+    }
+  },
+  "A_M25TZ3HL_P1_Q8": {
+    "b": {
+      "answers": [
+        "latex:\\left\\{\\mathrm{e}^{-13\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{-1\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{11\\pi\\mathrm{i}/18}\\right\\}"
+      ],
+      "options": [
+        "latex:\\left\\{\\mathrm{e}^{-13\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{-1\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{11\\pi\\mathrm{i}/18}\\right\\}",
+        "latex:\\left\\{\\mathrm{e}^{-13\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{-1\\pi\\mathrm{i}/18}\\right\\}",
+        "latex:\\left\\{\\mathrm{e}^{13\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{1\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{-11\\pi\\mathrm{i}/18}\\right\\}",
+        "latex:\\left\\{\\mathrm{e}^{-12\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{0\\pi\\mathrm{i}/18},\\ \\mathrm{e}^{12\\pi\\mathrm{i}/18}\\right\\}",
+        "latex:\\left\\{2\\mathrm{e}^{-13\\pi\\mathrm{i}/18},\\ 2\\mathrm{e}^{-1\\pi\\mathrm{i}/18},\\ 2\\mathrm{e}^{11\\pi\\mathrm{i}/18}\\right\\}"
+      ],
+      "verification": "All 3 roots have modulus 1 and arguments [-13, -1, 11]*pi/18; each lies in (-pi,pi], is distinct, and its 3th power equals exp(-i*pi/6). Degree 3 proves completeness.",
+      "sourceSha256": "3a605edfa4a314570a77c0d016497d6e9c9b5229f4b6d5a66fb9a2c70358e1cc"
+    }
+  },
+  "A_N25TZ1HL_P1_Q11": {
+    "c": {
+      "answers": [
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{-5\\pi\\mathrm{i}/8},\\ \\sqrt{2}\\mathrm{e}^{3\\pi\\mathrm{i}/8}\\right\\}"
+      ],
+      "options": [
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{-5\\pi\\mathrm{i}/8},\\ \\sqrt{2}\\mathrm{e}^{3\\pi\\mathrm{i}/8}\\right\\}",
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{-5\\pi\\mathrm{i}/8}\\right\\}",
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{5\\pi\\mathrm{i}/8},\\ \\sqrt{2}\\mathrm{e}^{-3\\pi\\mathrm{i}/8}\\right\\}",
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{-4\\pi\\mathrm{i}/8},\\ \\sqrt{2}\\mathrm{e}^{4\\pi\\mathrm{i}/8}\\right\\}",
+        "latex:\\left\\{2\\sqrt{2}\\mathrm{e}^{-5\\pi\\mathrm{i}/8},\\ 2\\sqrt{2}\\mathrm{e}^{3\\pi\\mathrm{i}/8}\\right\\}"
+      ],
+      "verification": "All 2 roots have modulus \\sqrt{2} and arguments [-5, 3]*pi/8; each lies in (-pi,pi], is distinct, and its 2th power equals -sqrt(2)+i*sqrt(2). Degree 2 proves completeness.",
+      "sourceSha256": "b8259486282ced7fef2a86a42cff385d460e1e9cd8b5072dddd7ce4984f495a4"
+    }
+  },
+  "A_SPECTZ0HL_P1_Q11": {
+    "b": {
+      "answers": [
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{-8\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{-2\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{4\\pi\\mathrm{i}/9}\\right\\}"
+      ],
+      "options": [
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{-8\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{-2\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{4\\pi\\mathrm{i}/9}\\right\\}",
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{-8\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{-2\\pi\\mathrm{i}/9}\\right\\}",
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{8\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{2\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{-4\\pi\\mathrm{i}/9}\\right\\}",
+        "latex:\\left\\{\\sqrt{2}\\mathrm{e}^{-7\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{-1\\pi\\mathrm{i}/9},\\ \\sqrt{2}\\mathrm{e}^{5\\pi\\mathrm{i}/9}\\right\\}",
+        "latex:\\left\\{2\\sqrt{2}\\mathrm{e}^{-8\\pi\\mathrm{i}/9},\\ 2\\sqrt{2}\\mathrm{e}^{-2\\pi\\mathrm{i}/9},\\ 2\\sqrt{2}\\mathrm{e}^{4\\pi\\mathrm{i}/9}\\right\\}"
+      ],
+      "verification": "All 3 roots have modulus \\sqrt{2} and arguments [-8, -2, 4]*pi/9; each lies in (-pi,pi], is distinct, and its 3th power equals -sqrt(2)-i*sqrt(6). Degree 3 proves completeness.",
+      "sourceSha256": "604e98a07f499ce11a827d5a5c9a5f488716014094b245b0cba6fa3048877aa5"
+    }
+  },
+  "A_M22TZ1HL_P2_Q8": {
+    "a": {
+      "answers": [
+        "(3m-21)/m"
+      ],
+      "options": [
+        "(3m-21)/m",
+        "(21-3m)/m",
+        "(5-m)/m",
+        "3m-21",
+        "(3m+21)/m"
+      ],
+      "verification": "Vieta product c/a=(3m-21)/m for a genuine quadratic m!=0.",
+      "sourceSha256": "ba713b9d14af5a30b3ea467c8ce7beadec452f905c9159104ff763aa467b4a72"
+    },
+    "b": {
+      "answers": [
+        "0<m<7"
+      ],
+      "options": [
+        "0<m<7",
+        "0≤m≤7",
+        "m<0 or m>7",
+        "m>7",
+        "0<m≤7"
+      ],
+      "verification": "Negative product (3m-21)/m<0 forces two real roots of opposite sign; exactly 0<m<7.",
+      "sourceSha256": "ba713b9d14af5a30b3ea467c8ce7beadec452f905c9159104ff763aa467b4a72"
+    }
+  },
+  "A_M25TZ2HL_P1_Q12": {
+    "d": {
+      "answers": [
+        "p=100; q=10; r=1"
+      ],
+      "options": [
+        "p=100; q=10; r=1",
+        "p=1; q=10; r=100",
+        "p=100; q=-10; r=1",
+        "p=10; q=100; r=1",
+        "p=100; q=10; r=-1"
+      ],
+      "verification": "Substitute z=1/w and multiply by w^4: 100w^4+10w^2+1=0. Other nonzero integer multiples are valid but none of the distractors is proportional.",
+      "sourceSha256": "97492812465c7b29adcca5a9422c8312827eb0ab7108fadee8e3bfb19711d8d3"
+    },
+    "b(i)": {
+      "answers": [
+        "z_1=sqrt(10)/2+sqrt(30)/2*i; z_2=-sqrt(10)/2-sqrt(30)/2*i"
+      ],
+      "options": [
+        "z_1=sqrt(10)/2+sqrt(30)/2*i; z_2=-sqrt(10)/2-sqrt(30)/2*i",
+        "z_1=sqrt(10)/2+sqrt(30)/2*i",
+        "z_2=-sqrt(10)/2-sqrt(30)/2*i",
+        "z_1=sqrt(10)/2-sqrt(30)/2*i; z_2=-sqrt(10)/2+sqrt(30)/2*i",
+        "z_1=sqrt(30)/2+sqrt(10)/2*i; z_2=-sqrt(30)/2-sqrt(10)/2*i"
+      ],
+      "verification": "For a+bi squaring gives real a^2-b^2=-5 and imaginary2ab=+/-5sqrt(3). Magnitude squared a^2+b^2=10, so a=sqrt(10)/2,b=+/-sqrt(30)/2. Second root is negative of first; labels require positive real first.",
+      "sourceSha256": "97492812465c7b29adcca5a9422c8312827eb0ab7108fadee8e3bfb19711d8d3"
+    },
+    "b(ii)": {
+      "answers": [
+        "z_3=sqrt(10)/2-sqrt(30)/2*i; z_4=-sqrt(10)/2+sqrt(30)/2*i"
+      ],
+      "options": [
+        "z_3=sqrt(10)/2-sqrt(30)/2*i; z_4=-sqrt(10)/2+sqrt(30)/2*i",
+        "z_3=sqrt(10)/2-sqrt(30)/2*i",
+        "z_4=-sqrt(10)/2+sqrt(30)/2*i",
+        "z_3=sqrt(10)/2+sqrt(30)/2*i; z_4=-sqrt(10)/2-sqrt(30)/2*i",
+        "z_3=sqrt(30)/2-sqrt(10)/2*i; z_4=-sqrt(30)/2+sqrt(10)/2*i"
+      ],
+      "verification": "For a+bi squaring gives real a^2-b^2=-5 and imaginary2ab=+/-5sqrt(3). Magnitude squared a^2+b^2=10, so a=sqrt(10)/2,b=+/-sqrt(30)/2. Second root is negative of first; labels require positive real first.",
+      "sourceSha256": "97492812465c7b29adcca5a9422c8312827eb0ab7108fadee8e3bfb19711d8d3"
+    }
+  },
+  "A_M25TZ3HL_P1_Q12": {
+    "c": {
+      "answers": [
+        "w_1=1+i; w_2=4-2i"
+      ],
+      "options": [
+        "w_1=1+i; w_2=4-2i",
+        "w_1=1+i",
+        "w_1=4-2i",
+        "w_1=1-i; w_2=4+2i",
+        "w_1=1+i; w_2=4+2i"
+      ],
+      "verification": "Subtract locus equations: u+v=2. Substitution gives (u-1)(u-4)=0, hence (u,v)=(1,1),(4,-2). Both satisfy original ratio equality and w!=3.",
+      "sourceSha256": "86c87381b1a667ef1ca8bd8a1a5fd94fd48fdf09b5ab941f79f7d9498cc515d4"
+    }
+  },
+  "A_N21TZ0HL_P1_Q12": {
+    "a(ii)": {
+      "answers": [
+        "latex:u_2=4+2\\mathrm{e}^{\\mathrm{i}\\pi/2},\\quad u_3=4+2\\mathrm{e}^{11\\mathrm{i}\\pi/6}"
+      ],
+      "options": [
+        "latex:u_2=4+2\\mathrm{e}^{\\mathrm{i}\\pi/2},\\quad u_3=4+2\\mathrm{e}^{11\\mathrm{i}\\pi/6}",
+        "latex:u_2=4+2\\mathrm{e}^{\\mathrm{i}\\pi/6},\\quad u_3=4+2\\mathrm{e}^{7\\mathrm{i}\\pi/6}",
+        "latex:u_2=4+2\\mathrm{e}^{3\\mathrm{i}\\pi/2},\\quad u_3=4+2\\mathrm{e}^{\\mathrm{i}\\pi/2}",
+        "latex:u_2=4+2\\mathrm{e}^{\\mathrm{i}\\pi/2},\\quad u_3=4+2\\mathrm{e}^{7\\mathrm{i}\\pi/6}",
+        "latex:u_2=4+\\mathrm{e}^{\\mathrm{i}\\pi/2},\\quad u_3=4+\\mathrm{e}^{11\\mathrm{i}\\pi/6}"
+      ],
+      "verification": "Cube-root arguments pi/2,7pi/6,11pi/6 with radius2. Known u1 is7pi/6; remaining roots are pi/2 (positive imaginary) and11pi/6 (negative imaginary).",
+      "sourceSha256": "7b7c3a45e500ec398315f8400951af9620239d912b2b31d80d99046e3e20f641"
+    }
+  },
+  "M10TZ2SL_P2_Q10": {
+    "d": {
+      "answers": [
+        "w=2.69 or w<0"
+      ],
+      "options": [
+        "w=2.69 or w<0",
+        "w=2.69",
+        "w<0",
+        "0<w<2.69",
+        "w≤0 or w=2.69"
+      ],
+      "verification": "g prime is even, zero at 0 and two nonzero points, tends to -infinity at both domain edges, and has one maximum on each half with height 2.685186774... (3sf 2.69). Two intersections exactly below0 or at that maximum, not at0.",
+      "sourceSha256": "9abb363cd78a9022fa85aac170dd7f47f86c5797ebe201a5f076c62c39c89bf3"
+    }
+  },
+  "M11TZ1SL_P1_Q7": {
+    "b": {
+      "answers": [
+        "p≥0"
+      ],
+      "options": [
+        "p≥0",
+        "p>0",
+        "p≤0",
+        "p<0",
+        "p≥1"
+      ],
+      "verification": "Discriminant gives k=1/2 (k!=0); f(x)=(x-1)^2 has range [0,infinity).",
+      "sourceSha256": "213056592e1dc558384213ba0e3d5c673b0955c774426810b2446b4657705f60"
+    }
+  },
+  "N12TZ0SL_P1_Q7": {
+    "answer": {
+      "answers": [
+        "-5/2<k<5/2"
+      ],
+      "options": [
+        "-5/2<k<5/2",
+        "-5/2≤k≤5/2",
+        "k<-5/2 or k>5/2",
+        "0<k<5/2",
+        "-5/2<k≤5/2"
+      ],
+      "verification": "Discriminant 25-4k^2>0 gives an open interval; both endpoints produce a repeated root.",
+      "sourceSha256": "d8d2c4aca415e88761c27071c8aed86f5c2a475de3fba37c3aacbe7e4722ebb2"
+    }
+  },
+  "N13TZ0SL_P1_Q7": {
+    "answer": {
+      "answers": [
+        "k≠2"
+      ],
+      "options": [
+        "k≠2",
+        "k>2",
+        "k<2",
+        "k=2",
+        "k≠-2"
+      ],
+      "verification": "Polynomial is (x+k)(x+2), so roots -k,-2 are distinct iff k!=2, with k real.",
+      "sourceSha256": "4258dd535b3a52da97c9714e40ae9442331a1cce4b7b27273eeb2dd7fe279894"
+    }
+  },
+  "M14TZ2SL_P1_Q8": {
+    "e": {
+      "answers": [
+        "g(x)=-3x^2+6x+3"
+      ],
+      "options": [
+        "g(x)=-3x^2+6x+3",
+        "g(x)=3x^2-6x+9",
+        "g(x)=-3x^2+6x-3",
+        "g(x)=-3x^2-6x+3",
+        "g(x)=3x^2+6x+3"
+      ],
+      "verification": "Equal roots force p=3. Reflection followed by vertical translation gives -f(x)+6=-3x^2+6x+3.",
+      "sourceSha256": "31308ec1cd0894e5ddbc45276ea96df26ad3d16e13319c2b8f214cb3df555794"
+    }
+  },
+  "M17TZ2SL_P2_Q6": {
+    "c": {
+      "answers": [
+        "-1<k≤3"
+      ],
+      "options": [
+        "-1<k≤3",
+        "-1≤k≤3",
+        "-1<k<3",
+        "k>3",
+        "k≤-1"
+      ],
+      "verification": "On [0,2.25], quartic decreases from3 to-1 at sqrt2 then increases above3. Two distinct intersections for -1<k<=3, including x=0 at3.",
+      "sourceSha256": "3443e8995ace5964fe9ee44950779814b05cace53d6b20900f34e12f3e474128"
+    }
+  },
+  "W_N23TZ0AIHL_P3_Q1": {
+    "c(i)": {
+      "answers": [
+        "latex:v=\\sqrt{\\frac{g-(g-144k)\\mathrm{e}^{-2ks}}{k}}"
+      ],
+      "options": [
+        "latex:v=\\sqrt{\\frac{g-(g-144k)\\mathrm{e}^{-2ks}}{k}}",
+        "latex:v=\\sqrt{\\frac{g-(g-144k)\\mathrm{e}^{2ks}}{k}}",
+        "latex:v=\\sqrt{\\frac{g-(g-12k)\\mathrm{e}^{-2ks}}{k}}",
+        "latex:v=\\sqrt{\\frac{g+(g-144k)\\mathrm{e}^{-2ks}}{k}}",
+        "latex:v=\\sqrt{\\frac{g-(g-144k)\\mathrm{e}^{-ks}}{k}}"
+      ],
+      "verification": "Set u=v^2. u prime=2g-2ku; u(0)=144 gives u=g/k+(144-g/k)exp(-2ks). Positive speed selects positive square root only.",
+      "sourceSha256": "c8b1c6efa47292d9ec102200862f11d46c14ecc7b40663583d604272d848bb2b"
+    }
+  },
+  "W_M21TZ1AIHL_P1_Q15": {
+    "b": {
+      "answers": [
+        "y=x+1+π"
+      ],
+      "options": [
+        "y=x+1+π",
+        "y=x+1-π",
+        "y=x+1",
+        "y=-x+1+π",
+        "y=x+π"
+      ],
+      "verification": "Stationarity requires x-y+1=n*pi; maxima have odd n. Given two plotted solution branches select n=-1, hence y=x+1+pi (other maximum lines belong to other branches).",
+      "sourceSha256": "a02662b564d3b8b757f23620fef688a0b420629c02f4cfb4e168950f69e91913"
+    }
+  },
+  "M18TZ2AISL_P2_Q6": {
+    "f": {
+      "answers": [
+        "6<k<7"
+      ],
+      "options": [
+        "6<k<7",
+        "6≤k≤7",
+        "k<6 or k>7",
+        "6<k≤7",
+        "6≤k<7"
+      ],
+      "verification": "Derivative6(x-1)(x-2); local max7 at1 and min6 at2. Domain(-1,3) reaches below6/above7 so exactly3 distinct roots only between6 and7.",
+      "sourceSha256": "33d3ac24f991760ec25099aa98d26d8b53e545126ee6194fc09d4d4efe862e19"
+    }
+  },
+  "M17TZ2AISL_P2_Q6": {
+    "g": {
+      "answers": [
+        "5<m<21"
+      ],
+      "options": [
+        "5<m<21",
+        "5≤m≤21",
+        "m<5",
+        "m>21",
+        "5<m≤21"
+      ],
+      "verification": "With a=8, f=21-(x^2-4)^2. Four distinct real roots require 0<sqrt(21-m)<4, hence5<m<21.",
+      "sourceSha256": "84e9aee54508a5ae4010280bce68529f19916e151e54c9c8ca2ca0e873153c57"
+    }
+  },
+  "M17TZ1AISL_P1_Q12": {
+    "c": {
+      "answers": [
+        "-2<k<6"
+      ],
+      "options": [
+        "-2<k<6",
+        "-2≤k≤6",
+        "k<-2 or k>6",
+        "-2<k≤6",
+        "-2≤k<6"
+      ],
+      "verification": "Stationary points imply a=1,b=2,c=4. x+2+4/x has range(-infinity,-2] union[6,infinity), so missing levels are(-2,6).",
+      "sourceSha256": "e9266d6ca974dc5bab14319da47e637b2860c0e8273816b41a31f0727a968c9e"
+    }
+  },
+  "N18TZ0HL_P1_Q11": {
+    "b(ii)": {
+      "answers": [
+        "(sqrt(6)+sqrt(2))/4"
+      ],
+      "options": [
+        "(sqrt(6)+sqrt(2))/4",
+        "(sqrt(6)-sqrt(2))/4",
+        "(sqrt(6)+sqrt(2))/2",
+        "(sqrt(3)+sqrt(2))/4",
+        "(sqrt(6)+sqrt(3))/4"
+      ],
+      "verification": "cos(pi/4-pi/6)=sqrt(2)/2*sqrt(3)/2+sqrt(2)/2*1/2. Both radicals and denominator retained.",
+      "sourceSha256": "160fad19a095988f196b7504fe2a93597f6763955474135b40fa012842bae08b"
+    }
+  },
+  "W_M23TZ2AIHL_P2_Q5": {
+    "c(ii)": {
+      "answers": [
+        "matrix(0.2;0.45;0.35)"
+      ],
+      "options": [
+        "matrix(0.2;0.45;0.35)",
+        "matrix(0.2;0.35;0.45)",
+        "matrix(0.45;0.2;0.35)",
+        "matrix(0.35;0.45;0.2)",
+        "matrix(1/3;1/3;1/3)"
+      ],
+      "verification": "Solve (T-I)u=0 with sum(u)=1 for column-stochastic T=[[.92,.02,.02],[.06,.95,.03],[.02,.03,.95]]. Rank2 gives unique steady state(.2,.45,.35).",
+      "sourceSha256": "fa675654e7531862e28002b248c4869a6967bb9ae0f612cc12000a9d3e6f9452"
+    }
+  },
+  "W_M21TZ2AIHL_P1_Q16": {
+    "b": {
+      "answers": [
+        "latex:3.08\\%\\quad\\text{(or }2.86\\%\\text{ using }1.37\\text{)}"
+      ],
+      "options": [
+        "latex:3.08\\%\\quad\\text{(or }2.86\\%\\text{ using }1.37\\text{)}",
+        "0.308%",
+        "30.8%",
+        "5.00%",
+        "1.00%"
+      ],
+      "verification": "Euler h=.1 yields1.366900..., exact exp(exp(sin(.3))-1)=1.410332.... Relative error3.07953...%; using allowed rounded1.37 gives2.85976...%. Offer both so earlier rounding cannot hide the valid answer.",
+      "sourceSha256": "def4e90faa36c79f1ca8675790382ffa69d5bfb3b4a98f6d465fa252faf07504"
+    }
+  }
+}
