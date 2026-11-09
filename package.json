@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "build:formula-booklets": "node scripts/build-formula-booklets.mjs",
+    "test:formula-booklets": "node scripts/test-formula-booklets.mjs",
     "generate:assignment-configs": "WRITE_ASSIGNMENT_CONFIGS=1 node scripts/audit-assignment-choices.mjs",
     "question-bank:optimize": "node scripts/optimize-question-bank-delivery.mjs && node scripts/verify-question-bank-delivery.mjs",
     "question-bank:verify": "node scripts/verify-question-bank-delivery.mjs",

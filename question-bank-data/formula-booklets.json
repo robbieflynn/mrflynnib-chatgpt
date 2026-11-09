@@ -1,0 +1,4432 @@
+{
+  "title": "Mr Flynn IB Formula booklet",
+  "topics": [
+    "Number and algebra",
+    "Functions",
+    "Geometry and trigonometry",
+    "Statistics and probability",
+    "Calculus"
+  ],
+  "courses": {
+    "AA HL": [
+      [
+        {
+          "section": "1.2",
+          "items": [
+            {
+              "label": "The nth term of an arithmetic sequence",
+              "formulas": [
+                "u_n=u_1+(n-1)d"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                0
+              ]
+            },
+            {
+              "label": "The sum of n terms of an arithmetic sequence",
+              "formulas": [
+                "S_n=\\frac n2\\bigl(2u_1+(n-1)d\\bigr);\\quad S_n=\\frac n2(u_1+u_n)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.3",
+          "items": [
+            {
+              "label": "The nth term of a geometric sequence",
+              "formulas": [
+                "u_n=u_1r^{n-1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                2
+              ]
+            },
+            {
+              "label": "The sum of n terms of a finite geometric sequence",
+              "formulas": [
+                "S_n=\\frac{u_1(r^n-1)}{r-1}=\\frac{u_1(1-r^n)}{1-r},\\quad r\\ne1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.8",
+          "items": [
+            {
+              "label": "The sum of an infinite geometric sequence",
+              "formulas": [
+                "S_\\infty=\\frac{u_1}{1-r},\\quad |r|<1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                6
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.4",
+          "items": [
+            {
+              "label": "Compound interest",
+              "formulas": [
+                "FV=PV\\times\\left(1+\\frac{r}{100k}\\right)^{kn}"
+              ],
+              "note": "where \\(FV\\) is the future value, \\(PV\\) is the present value, \\(n\\) is the number of years, \\(k\\) is the number of compounding periods per year, \\(r\\%\\) is the nominal annual rate of interest",
+              "join": null,
+              "source_entry_ids": [
+                4
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.5",
+          "items": [
+            {
+              "label": "Exponents and logarithms",
+              "formulas": [
+                "a^x=b\\iff x=\\log_a b"
+              ],
+              "note": "where \\(a>0,\\ b>0,\\ a\\ne1\\)",
+              "join": null,
+              "source_entry_ids": [
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.7",
+          "items": [
+            {
+              "label": "Exponents and logarithms",
+              "formulas": [
+                "\\log_a xy=\\log_a x+\\log_a y",
+                "\\log_a\\frac xy=\\log_a x-\\log_a y",
+                "\\log_a x^m=m\\log_a x",
+                "\\log_a x=\\frac{\\log_b x}{\\log_b a}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                7,
+                8,
+                9,
+                10
+              ]
+            },
+            {
+              "label": "Exponential and logarithmic functions",
+              "formulas": [
+                "a^x=e^{x\\ln a};\\quad \\log_a(a^x)=x=a^{\\log_a x}"
+              ],
+              "note": "where \\(a,x>0,\\ a\\ne1\\)",
+              "join": null,
+              "source_entry_ids": [
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.9",
+          "items": [
+            {
+              "label": "Binomial theorem \\(n\\in\\mathbb N\\)",
+              "formulas": [
+                "(a+b)^n=a^n+{}^nC_1a^{n-1}b+\\cdots+{}^nC_ra^{n-r}b^r+\\cdots+b^n",
+                "{}^nC_r=\\frac{n!}{r!(n-r)!}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                12,
+                13
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.10",
+          "items": [
+            {
+              "label": "Combinations",
+              "formulas": [
+                "{}^nC_r=\\frac{n!}{r!(n-r)!}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                15
+              ]
+            },
+            {
+              "label": "Permutations",
+              "formulas": [
+                "{}^nP_r=\\frac{n!}{(n-r)!}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                16
+              ]
+            },
+            {
+              "label": "Extension of binomial theorem, \\(n\\in\\mathbb Q\\)",
+              "formulas": [
+                "(a+b)^n=a^n\\left(1+n\\left(\\frac ba\\right)+\\frac{n(n-1)}{2!}\\left(\\frac ba\\right)^2+\\cdots\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                17
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.12",
+          "items": [
+            {
+              "label": "Complex numbers",
+              "formulas": [
+                "z=a+bi"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                18
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.13",
+          "items": [
+            {
+              "label": "Modulus-argument (polar) and exponential (Euler) form",
+              "formulas": [
+                "z=r(\\cos\\theta+i\\sin\\theta)=re^{i\\theta}=r\\operatorname{cis}\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                19
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.14",
+          "items": [
+            {
+              "label": "De Moivre’s theorem",
+              "formulas": [
+                "[r(\\cos\\theta+i\\sin\\theta)]^n=r^n(\\cos n\\theta+i\\sin n\\theta)=r^ne^{in\\theta}=r^n\\operatorname{cis}n\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                20
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "2.1",
+          "items": [
+            {
+              "label": "Equations of a straight line",
+              "formulas": [
+                "y=mx+c;\\quad ax+by+d=0;\\quad y-y_1=m(x-x_1)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                25
+              ]
+            },
+            {
+              "label": "Gradient formula",
+              "formulas": [
+                "m=\\frac{y_2-y_1}{x_2-x_1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                26
+              ]
+            }
+          ]
+        },
+        {
+          "section": "2.6",
+          "items": [
+            {
+              "label": "Axis of symmetry of the graph of a quadratic function",
+              "formulas": [
+                "f(x)=ax^2+bx+c\\implies\\text{axis of symmetry is }x=-\\frac b{2a}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                27
+              ]
+            }
+          ]
+        },
+        {
+          "section": "2.7",
+          "items": [
+            {
+              "label": "Solutions of a quadratic equation",
+              "formulas": [
+                "ax^2+bx+c=0\\implies x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a},\\quad a\\ne0"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                28
+              ]
+            },
+            {
+              "label": "Discriminant",
+              "formulas": [
+                "\\Delta=b^2-4ac"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                29
+              ]
+            }
+          ]
+        },
+        {
+          "section": "2.12",
+          "items": [
+            {
+              "label": "Sum and product of the roots of polynomial equations of the form \\(\\displaystyle\\sum_{r=0}^n a_rx^r=0\\)",
+              "formulas": [
+                "\\text{Sum is }-\\frac{a_{n-1}}{a_n};\\quad\\text{product is }\\frac{(-1)^na_0}{a_n}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                30
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "Prior learning",
+          "items": [
+            {
+              "label": "Area of a parallelogram",
+              "formulas": [
+                "A=bh"
+              ],
+              "note": "where \\(b\\) is the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                32
+              ]
+            },
+            {
+              "label": "Area of a triangle",
+              "formulas": [
+                "A=\\frac12(bh)"
+              ],
+              "note": "where \\(b\\) is the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                33
+              ]
+            },
+            {
+              "label": "Area of a trapezoid",
+              "formulas": [
+                "A=\\frac12(a+b)h"
+              ],
+              "note": "where \\(a\\) and \\(b\\) are the parallel sides, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                34
+              ]
+            },
+            {
+              "label": "Area of a circle",
+              "formulas": [
+                "A=\\pi r^2"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                35
+              ]
+            },
+            {
+              "label": "Circumference of a circle",
+              "formulas": [
+                "C=2\\pi r"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                36
+              ]
+            },
+            {
+              "label": "Volume of a cuboid",
+              "formulas": [
+                "V=lwh"
+              ],
+              "note": "where \\(l\\) is the length, \\(w\\) is the width, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                37
+              ]
+            },
+            {
+              "label": "Volume of a cylinder",
+              "formulas": [
+                "V=\\pi r^2h"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                38
+              ]
+            },
+            {
+              "label": "Volume of a prism",
+              "formulas": [
+                "V=Ah"
+              ],
+              "note": "where \\(A\\) is the area of cross-section, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                39
+              ]
+            },
+            {
+              "label": "Area of the curved surface of a cylinder",
+              "formulas": [
+                "A=2\\pi rh"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                40
+              ]
+            },
+            {
+              "label": "Distance between two points \\((x_1,y_1)\\) and \\((x_2,y_2)\\)",
+              "formulas": [
+                "d=\\sqrt{(x_1-x_2)^2+(y_1-y_2)^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                41
+              ]
+            },
+            {
+              "label": "Coordinates of the midpoint of a line segment with endpoints \\((x_1,y_1)\\) and \\((x_2,y_2)\\)",
+              "formulas": [
+                "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2}\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                42
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.1",
+          "items": [
+            {
+              "label": "Distance between two points \\((x_1,y_1,z_1)\\) and \\((x_2,y_2,z_2)\\)",
+              "formulas": [
+                "d=\\sqrt{(x_1-x_2)^2+(y_1-y_2)^2+(z_1-z_2)^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                43
+              ]
+            },
+            {
+              "label": "Coordinates of the midpoint of a line segment with endpoints \\((x_1,y_1,z_1)\\) and \\((x_2,y_2,z_2)\\)",
+              "formulas": [
+                "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2},\\frac{z_1+z_2}{2}\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                44
+              ]
+            },
+            {
+              "label": "Volume of a right-pyramid",
+              "formulas": [
+                "V=\\frac13 Ah"
+              ],
+              "note": "where \\(A\\) is the area of the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                45
+              ]
+            },
+            {
+              "label": "Volume of a right cone",
+              "formulas": [
+                "V=\\frac13\\pi r^2h"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                46
+              ]
+            },
+            {
+              "label": "Area of the curved surface of a cone",
+              "formulas": [
+                "A=\\pi rl"
+              ],
+              "note": "where \\(r\\) is the radius, \\(l\\) is the slant height",
+              "join": null,
+              "source_entry_ids": [
+                47
+              ]
+            },
+            {
+              "label": "Volume of a sphere",
+              "formulas": [
+                "V=\\frac43\\pi r^3"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                48
+              ]
+            },
+            {
+              "label": "Surface area of a sphere",
+              "formulas": [
+                "A=4\\pi r^2"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                49
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.2",
+          "items": [
+            {
+              "label": "Sine rule",
+              "formulas": [
+                "\\frac a{\\sin A}=\\frac b{\\sin B}=\\frac c{\\sin C}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                50
+              ]
+            },
+            {
+              "label": "Cosine rule",
+              "formulas": [
+                "c^2=a^2+b^2-2ab\\cos C;\\quad\\cos C=\\frac{a^2+b^2-c^2}{2ab}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                51
+              ]
+            },
+            {
+              "label": "Area of a triangle",
+              "formulas": [
+                "A=\\frac12 ab\\sin C"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                52
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.4",
+          "items": [
+            {
+              "label": "Length of an arc",
+              "formulas": [
+                "l=r\\theta"
+              ],
+              "note": "where \\(r\\) is the radius, \\(\\theta\\) is the angle measured in radians",
+              "join": null,
+              "source_entry_ids": [
+                55
+              ]
+            },
+            {
+              "label": "Area of a sector",
+              "formulas": [
+                "A=\\frac12r^2\\theta"
+              ],
+              "note": "where \\(r\\) is the radius, \\(\\theta\\) is the angle measured in radians",
+              "join": null,
+              "source_entry_ids": [
+                56
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.5",
+          "items": [
+            {
+              "label": "Identity for \\(\\tan\\theta\\)",
+              "formulas": [
+                "\\tan\\theta=\\frac{\\sin\\theta}{\\cos\\theta}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                57
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.6",
+          "items": [
+            {
+              "label": "Pythagorean identity",
+              "formulas": [
+                "\\cos^2\\theta+\\sin^2\\theta=1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                58
+              ]
+            },
+            {
+              "label": "Double angle identities",
+              "formulas": [
+                "\\sin2\\theta=2\\sin\\theta\\cos\\theta",
+                "\\cos2\\theta=\\cos^2\\theta-\\sin^2\\theta=2\\cos^2\\theta-1=1-2\\sin^2\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                59,
+                60
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.9",
+          "items": [
+            {
+              "label": "Reciprocal trigonometric identities",
+              "formulas": [
+                "\\sec\\theta=\\frac1{\\cos\\theta};\\quad\\operatorname{cosec}\\theta=\\frac1{\\sin\\theta}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                61
+              ]
+            },
+            {
+              "label": "Pythagorean identities",
+              "formulas": [
+                "1+\\tan^2\\theta=\\sec^2\\theta;\\quad1+\\cot^2\\theta=\\operatorname{cosec}^2\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                62
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.10",
+          "items": [
+            {
+              "label": "Compound angle identities",
+              "formulas": [
+                "\\sin(A\\pm B)=\\sin A\\cos B\\pm\\cos A\\sin B",
+                "\\cos(A\\pm B)=\\cos A\\cos B\\mp\\sin A\\sin B",
+                "\\tan(A\\pm B)=\\frac{\\tan A\\pm\\tan B}{1\\mp\\tan A\\tan B}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                63,
+                64,
+                65
+              ]
+            },
+            {
+              "label": "Double angle identity for tan",
+              "formulas": [
+                "\\tan2\\theta=\\frac{2\\tan\\theta}{1-\\tan^2\\theta}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                66
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.12",
+          "items": [
+            {
+              "label": "Magnitude of a vector",
+              "formulas": [
+                "|\\mathbf v|=\\sqrt{v_1^2+v_2^2+v_3^2},\\quad\\text{where }\\mathbf v=\\begin{pmatrix}v_1\\\\v_2\\\\v_3\\end{pmatrix}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                73
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.13",
+          "items": [
+            {
+              "label": "Scalar product",
+              "formulas": [
+                "\\mathbf v\\cdot\\mathbf w=v_1w_1+v_2w_2+v_3w_3,\\quad\\text{where }\\mathbf v=\\begin{pmatrix}v_1\\\\v_2\\\\v_3\\end{pmatrix},\\quad\\mathbf w=\\begin{pmatrix}w_1\\\\w_2\\\\w_3\\end{pmatrix}",
+                "\\mathbf v\\cdot\\mathbf w=|\\mathbf v||\\mathbf w|\\cos\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                74,
+                75
+              ],
+              "formula_notes": [
+                "",
+                "where \\(\\theta\\) is the angle between \\(\\mathbf v\\) and \\(\\mathbf w\\)"
+              ]
+            },
+            {
+              "label": "Angle between two vectors",
+              "formulas": [
+                "\\cos\\theta=\\frac{v_1w_1+v_2w_2+v_3w_3}{|\\mathbf v||\\mathbf w|}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                76
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.14",
+          "items": [
+            {
+              "label": "Vector equation of a line",
+              "formulas": [
+                "\\mathbf r=\\mathbf a+\\lambda\\mathbf b"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                77
+              ]
+            },
+            {
+              "label": "Parametric form of the equation of a line",
+              "formulas": [
+                "x=x_0+\\lambda l;\\quad y=y_0+\\lambda m;\\quad z=z_0+\\lambda n"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                78
+              ]
+            },
+            {
+              "label": "Cartesian equations of a line",
+              "formulas": [
+                "\\frac{x-x_0}{l}=\\frac{y-y_0}{m}=\\frac{z-z_0}{n}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                82
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.16",
+          "items": [
+            {
+              "label": "Vector product",
+              "formulas": [
+                "\\mathbf v\\times\\mathbf w=\\begin{pmatrix}v_2w_3-v_3w_2\\\\v_3w_1-v_1w_3\\\\v_1w_2-v_2w_1\\end{pmatrix},\\quad\\text{where }\\mathbf v=\\begin{pmatrix}v_1\\\\v_2\\\\v_3\\end{pmatrix},\\quad\\mathbf w=\\begin{pmatrix}w_1\\\\w_2\\\\w_3\\end{pmatrix}",
+                "|\\mathbf v\\times\\mathbf w|=|\\mathbf v||\\mathbf w|\\sin\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                79,
+                80
+              ],
+              "formula_notes": [
+                "",
+                "where \\(\\theta\\) is the angle between \\(\\mathbf v\\) and \\(\\mathbf w\\)"
+              ]
+            },
+            {
+              "label": "Area of a parallelogram",
+              "formulas": [
+                "A=|\\mathbf v\\times\\mathbf w|"
+              ],
+              "note": "where \\(\\mathbf v\\) and \\(\\mathbf w\\) form two adjacent sides of a parallelogram",
+              "join": null,
+              "source_entry_ids": [
+                81
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.17",
+          "items": [
+            {
+              "label": "Vector equation of a plane",
+              "formulas": [
+                "\\mathbf r=\\mathbf a+\\lambda\\mathbf b+\\mu\\mathbf c"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                83
+              ]
+            },
+            {
+              "label": "Equation of a plane (using the normal vector)",
+              "formulas": [
+                "\\mathbf r\\cdot\\mathbf n=\\mathbf a\\cdot\\mathbf n"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                84
+              ]
+            },
+            {
+              "label": "Cartesian equation of a plane",
+              "formulas": [
+                "ax+by+cz=d"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                85
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "4.2",
+          "items": [
+            {
+              "label": "Interquartile range",
+              "formulas": [
+                "\\mathrm{IQR}=Q_3-Q_1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                86
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.3",
+          "items": [
+            {
+              "label": "Mean, \\(\\bar x\\), of a set of data",
+              "formulas": [
+                "\\bar x=\\frac{\\sum_{i=1}^k f_ix_i}{n},\\quad\\text{where }n=\\sum_{i=1}^k f_i"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                87
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.5",
+          "items": [
+            {
+              "label": "Probability of an event \\(A\\)",
+              "formulas": [
+                "P(A)=\\frac{n(A)}{n(U)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                88
+              ]
+            },
+            {
+              "label": "Complementary events",
+              "formulas": [
+                "P(A)+P(A')=1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                89
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.6",
+          "items": [
+            {
+              "label": "Combined events",
+              "formulas": [
+                "P(A\\cup B)=P(A)+P(B)-P(A\\cap B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                90
+              ]
+            },
+            {
+              "label": "Mutually exclusive events",
+              "formulas": [
+                "P(A\\cup B)=P(A)+P(B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                91
+              ]
+            },
+            {
+              "label": "Conditional probability",
+              "formulas": [
+                "P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                92
+              ]
+            },
+            {
+              "label": "Independent events",
+              "formulas": [
+                "P(A\\cap B)=P(A)P(B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                93
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.7",
+          "items": [
+            {
+              "label": "Expected value of a discrete random variable \\(X\\)",
+              "formulas": [
+                "E(X)=\\sum_{i=1}^k x_iP(X=x_i)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                94
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.8",
+          "items": [
+            {
+              "label": "Binomial distribution \\(X\\sim\\mathrm B(n,p)\\)",
+              "formulas": [],
+              "note": "",
+              "join": null,
+              "source_entry_ids": []
+            },
+            {
+              "label": "Mean",
+              "formulas": [
+                "E(X)=np"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                95
+              ]
+            },
+            {
+              "label": "Variance",
+              "formulas": [
+                "\\operatorname{Var}(X)=np(1-p)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                96
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.12",
+          "items": [
+            {
+              "label": "Standardized normal variable",
+              "formulas": [
+                "z=\\frac{x-\\mu}{\\sigma}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                97
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.13",
+          "items": [
+            {
+              "label": "Bayes’ theorem",
+              "formulas": [
+                "P(B\\mid A)=\\frac{P(B)P(A\\mid B)}{P(B)P(A\\mid B)+P(B')P(A\\mid B')}",
+                "P(B_i\\mid A)=\\frac{P(B_i)P(A\\mid B_i)}{P(B_1)P(A\\mid B_1)+P(B_2)P(A\\mid B_2)+P(B_3)P(A\\mid B_3)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                98,
+                99
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.14",
+          "items": [
+            {
+              "label": "Variance \\(\\sigma^2\\)",
+              "formulas": [
+                "\\sigma^2=\\frac{\\sum_{i=1}^k f_i(x_i-\\mu)^2}{n}=\\frac{\\sum_{i=1}^k f_ix_i^2}{n}-\\mu^2"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                100
+              ]
+            },
+            {
+              "label": "Standard deviation \\(\\sigma\\)",
+              "formulas": [
+                "\\sigma=\\sqrt{\\frac{\\sum_{i=1}^k f_i(x_i-\\mu)^2}{n}}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                101
+              ]
+            },
+            {
+              "label": "Linear transformation of a single random variable",
+              "formulas": [
+                "E(aX+b)=aE(X)+b",
+                "\\operatorname{Var}(aX+b)=a^2\\operatorname{Var}(X)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                106,
+                107
+              ]
+            },
+            {
+              "label": "Expected value of a continuous random variable \\(X\\)",
+              "formulas": [
+                "E(X)=\\mu=\\int_{-\\infty}^{\\infty}xf(x)\\,dx"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                102
+              ]
+            },
+            {
+              "label": "Variance",
+              "formulas": [
+                "\\operatorname{Var}(X)=E[(X-\\mu)^2]=E(X^2)-[E(X)]^2"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                103
+              ]
+            },
+            {
+              "label": "Variance of a discrete random variable \\(X\\)",
+              "formulas": [
+                "\\operatorname{Var}(X)=\\sum(x-\\mu)^2P(X=x)=\\sum x^2P(X=x)-\\mu^2"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                104
+              ]
+            },
+            {
+              "label": "Variance of a continuous random variable \\(X\\)",
+              "formulas": [
+                "\\operatorname{Var}(X)=\\int_{-\\infty}^{\\infty}(x-\\mu)^2f(x)\\,dx=\\int_{-\\infty}^{\\infty}x^2f(x)\\,dx-\\mu^2"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                105
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "5.12",
+          "items": [
+            {
+              "label": "Derivative of \\(f(x)\\) from first principles",
+              "formulas": [
+                "y=f(x)\\implies\\frac{dy}{dx}=f\\prime(x)=\\lim_{h\\to0}\\left(\\frac{f(x+h)-f(x)}h\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                136
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.3",
+          "items": [
+            {
+              "label": "Derivative of \\(x^n\\)",
+              "formulas": [
+                "f(x)=x^n\\implies f'(x)=nx^{n-1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                114
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.6",
+          "items": [
+            {
+              "label": "Derivative of \\(\\sin x\\)",
+              "formulas": [
+                "f(x)=\\sin x\\implies f'(x)=\\cos x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                117
+              ]
+            },
+            {
+              "label": "Derivative of \\(\\cos x\\)",
+              "formulas": [
+                "f(x)=\\cos x\\implies f'(x)=-\\sin x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                118
+              ]
+            },
+            {
+              "label": "Derivative of \\(e^x\\)",
+              "formulas": [
+                "f(x)=e^x\\implies f'(x)=e^x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                119
+              ]
+            },
+            {
+              "label": "Derivative of \\(\\ln x\\)",
+              "formulas": [
+                "f(x)=\\ln x\\implies f'(x)=\\frac1x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                120
+              ]
+            },
+            {
+              "label": "Chain rule",
+              "formulas": [
+                "y=g(u),\\ \\text{where }u=f(x)\\implies\\frac{dy}{dx}=\\frac{dy}{du}\\times\\frac{du}{dx}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                121
+              ]
+            },
+            {
+              "label": "Product rule",
+              "formulas": [
+                "y=uv\\implies\\frac{dy}{dx}=u\\frac{dv}{dx}+v\\frac{du}{dx}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                122
+              ]
+            },
+            {
+              "label": "Quotient rule",
+              "formulas": [
+                "y=\\frac uv\\implies\\frac{dy}{dx}=\\frac{v\\frac{du}{dx}-u\\frac{dv}{dx}}{v^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                123
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.15",
+          "items": [
+            {
+              "label": "Standard derivatives",
+              "formulas": [
+                "f(x)=\\tan x\\implies f'(x)=\\sec^2x",
+                "f(x)=\\sec x\\implies f'(x)=\\sec x\\tan x",
+                "f(x)=\\operatorname{cosec}x\\implies f'(x)=-\\operatorname{cosec}x\\cot x",
+                "f(x)=\\cot x\\implies f'(x)=-\\operatorname{cosec}^2x",
+                "f(x)=a^x\\implies f\\prime(x)=a^x(\\ln a)",
+                "f(x)=\\log_a x\\implies f'(x)=\\frac1{x\\ln a}",
+                "f(x)=\\arcsin x\\implies f'(x)=\\frac1{\\sqrt{1-x^2}}",
+                "f(x)=\\arccos x\\implies f'(x)=-\\frac1{\\sqrt{1-x^2}}",
+                "f(x)=\\arctan x\\implies f\\prime(y)=\\frac1{1+x^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                137,
+                138,
+                139,
+                140,
+                141,
+                142,
+                143,
+                144,
+                145
+              ],
+              "formula_labels": [
+                "\\(\\tan x\\)",
+                "\\(\\sec x\\)",
+                "\\(\\operatorname{cosec}x\\)",
+                "\\(\\cot x\\)",
+                "\\(a^x\\)",
+                "\\(\\log_a x\\)",
+                "\\(\\arcsin x\\)",
+                "\\(\\arccos x\\)",
+                "\\(\\arctan x\\)"
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.9",
+          "items": [
+            {
+              "label": "Acceleration",
+              "formulas": [
+                "a=\\frac{dv}{dt}=\\frac{d^2s}{dt^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                124
+              ]
+            },
+            {
+              "label": "Distance travelled from \\(t_1\\) to \\(t_2\\)",
+              "formulas": [
+                "\\text{distance}=\\int_{t_1}^{t_2}|v(t)|\\,dt"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                127
+              ]
+            },
+            {
+              "label": "Displacement from \\(t_1\\) to \\(t_2\\)",
+              "formulas": [
+                "\\text{displacement}=\\int_{t_1}^{t_2}v(t)\\,dt"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                128
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.5",
+          "items": [
+            {
+              "label": "Integral of \\(x^n\\)",
+              "formulas": [
+                "\\int x^n\\,dx=\\frac{x^{n+1}}{n+1}+C,\\quad n\\ne-1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                115
+              ]
+            },
+            {
+              "label": "Area between a curve \\(y=f(x)\\) and the x-axis, where \\(f(x)>0\\)",
+              "formulas": [
+                "A=\\int_a^b y\\,dx"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                116
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.10",
+          "items": [
+            {
+              "label": "Standard integrals",
+              "formulas": [
+                "\\int\\frac1x\\,dx=\\ln|x|+C",
+                "\\int\\sin x\\,dx=-\\cos x+C",
+                "\\int\\cos x\\,dx=\\sin x+C",
+                "\\int e^x\\,dx=e^x+C"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                129,
+                130,
+                131,
+                132
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.15",
+          "items": [
+            {
+              "label": "Standard integrals",
+              "formulas": [
+                "\\int a^x\\,dx=\\frac1{\\ln a}a^x+C",
+                "\\int\\frac1{a^2+x^2}\\,dx=\\frac1a\\arctan\\left(\\frac xa\\right)+C",
+                "\\int\\frac1{\\sqrt{a^2-x^2}}\\,dx=\\arcsin\\left(\\frac xa\\right)+C,\\quad |x|<a"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                146,
+                147,
+                148
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.16",
+          "items": [
+            {
+              "label": "Integration by parts",
+              "formulas": [
+                "\\int u\\frac{dv}{dx}\\,dx=uv-\\int v\\frac{du}{dx}\\,dx\\quad\\text{or}\\quad\\int u\\,dv=uv-\\int v\\,du"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                149
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.11",
+          "items": [
+            {
+              "label": "Area of region enclosed by a curve and x-axis",
+              "formulas": [
+                "A=\\int_a^b|y|\\,dx"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                133
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.17",
+          "items": [
+            {
+              "label": "Area of region enclosed by a curve and y-axis",
+              "formulas": [
+                "A=\\int_a^b|x|\\,dy"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                150
+              ]
+            },
+            {
+              "label": "Volume of revolution about the x or y-axes",
+              "formulas": [
+                "V=\\int_a^b\\pi y^2\\,dx",
+                "V=\\int_a^b\\pi x^2\\,dy"
+              ],
+              "note": "",
+              "join": "or",
+              "source_entry_ids": [
+                151,
+                152
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.18",
+          "items": [
+            {
+              "label": "Euler’s method",
+              "formulas": [
+                "y_{n+1}=y_n+h\\times f(x_n,y_n);\\quad x_{n+1}=x_n+h"
+              ],
+              "note": "where \\(h\\) is a constant (step length)",
+              "join": null,
+              "source_entry_ids": [
+                153
+              ]
+            },
+            {
+              "label": "Integrating factor for \\(y\\prime+P(x)y=Q(x)\\)",
+              "formulas": [
+                "e^{\\int P(x)\\,dx}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                154
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.19",
+          "items": [
+            {
+              "label": "Maclaurin series",
+              "formulas": [
+                "f(x)=f(0)+xf'(0)+\\frac{x^2}{2!}f''(0)+\\cdots"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                155
+              ]
+            },
+            {
+              "label": "Maclaurin series for special functions",
+              "formulas": [
+                "e^x=1+x+\\frac{x^2}{2!}+\\cdots",
+                "\\ln(1+x)=x-\\frac{x^2}{2}+\\frac{x^3}{3}-\\cdots",
+                "\\sin x=x-\\frac{x^3}{3!}+\\frac{x^5}{5!}-\\cdots",
+                "\\cos x=1-\\frac{x^2}{2!}+\\frac{x^4}{4!}-\\cdots",
+                "\\arctan x=x-\\frac{x^3}{3}+\\frac{x^5}{5}-\\cdots"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                156,
+                157,
+                158,
+                159,
+                160
+              ]
+            }
+          ]
+        }
+      ]
+    ],
+    "AA SL": [
+      [
+        {
+          "section": "1.2",
+          "items": [
+            {
+              "label": "The nth term of an arithmetic sequence",
+              "formulas": [
+                "u_n=u_1+(n-1)d"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                0
+              ]
+            },
+            {
+              "label": "The sum of n terms of an arithmetic sequence",
+              "formulas": [
+                "S_n=\\frac n2\\bigl(2u_1+(n-1)d\\bigr);\\quad S_n=\\frac n2(u_1+u_n)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.3",
+          "items": [
+            {
+              "label": "The nth term of a geometric sequence",
+              "formulas": [
+                "u_n=u_1r^{n-1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                2
+              ]
+            },
+            {
+              "label": "The sum of n terms of a finite geometric sequence",
+              "formulas": [
+                "S_n=\\frac{u_1(r^n-1)}{r-1}=\\frac{u_1(1-r^n)}{1-r},\\quad r\\ne1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.8",
+          "items": [
+            {
+              "label": "The sum of an infinite geometric sequence",
+              "formulas": [
+                "S_\\infty=\\frac{u_1}{1-r},\\quad |r|<1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                6
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.4",
+          "items": [
+            {
+              "label": "Compound interest",
+              "formulas": [
+                "FV=PV\\times\\left(1+\\frac{r}{100k}\\right)^{kn}"
+              ],
+              "note": "where \\(FV\\) is the future value, \\(PV\\) is the present value, \\(n\\) is the number of years, \\(k\\) is the number of compounding periods per year, \\(r\\%\\) is the nominal annual rate of interest",
+              "join": null,
+              "source_entry_ids": [
+                4
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.5",
+          "items": [
+            {
+              "label": "Exponents and logarithms",
+              "formulas": [
+                "a^x=b\\iff x=\\log_a b"
+              ],
+              "note": "where \\(a>0,\\ b>0,\\ a\\ne1\\)",
+              "join": null,
+              "source_entry_ids": [
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.7",
+          "items": [
+            {
+              "label": "Exponents and logarithms",
+              "formulas": [
+                "\\log_a xy=\\log_a x+\\log_a y",
+                "\\log_a\\frac xy=\\log_a x-\\log_a y",
+                "\\log_a x^m=m\\log_a x",
+                "\\log_a x=\\frac{\\log_b x}{\\log_b a}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                7,
+                8,
+                9,
+                10
+              ]
+            },
+            {
+              "label": "Exponential and logarithmic functions",
+              "formulas": [
+                "a^x=e^{x\\ln a};\\quad \\log_a(a^x)=x=a^{\\log_a x}"
+              ],
+              "note": "where \\(a,x>0,\\ a\\ne1\\)",
+              "join": null,
+              "source_entry_ids": [
+                11
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.9",
+          "items": [
+            {
+              "label": "Binomial theorem \\(n\\in\\mathbb N\\)",
+              "formulas": [
+                "(a+b)^n=a^n+{}^nC_1a^{n-1}b+\\cdots+{}^nC_ra^{n-r}b^r+\\cdots+b^n",
+                "{}^nC_r=\\frac{n!}{r!(n-r)!}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                12,
+                13
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "2.1",
+          "items": [
+            {
+              "label": "Equations of a straight line",
+              "formulas": [
+                "y=mx+c;\\quad ax+by+d=0;\\quad y-y_1=m(x-x_1)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                25
+              ]
+            },
+            {
+              "label": "Gradient formula",
+              "formulas": [
+                "m=\\frac{y_2-y_1}{x_2-x_1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                26
+              ]
+            }
+          ]
+        },
+        {
+          "section": "2.6",
+          "items": [
+            {
+              "label": "Axis of symmetry of the graph of a quadratic function",
+              "formulas": [
+                "f(x)=ax^2+bx+c\\implies\\text{axis of symmetry is }x=-\\frac b{2a}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                27
+              ]
+            }
+          ]
+        },
+        {
+          "section": "2.7",
+          "items": [
+            {
+              "label": "Solutions of a quadratic equation",
+              "formulas": [
+                "ax^2+bx+c=0\\implies x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a},\\quad a\\ne0"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                28
+              ]
+            },
+            {
+              "label": "Discriminant",
+              "formulas": [
+                "\\Delta=b^2-4ac"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                29
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "Prior learning",
+          "items": [
+            {
+              "label": "Area of a parallelogram",
+              "formulas": [
+                "A=bh"
+              ],
+              "note": "where \\(b\\) is the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                32
+              ]
+            },
+            {
+              "label": "Area of a triangle",
+              "formulas": [
+                "A=\\frac12(bh)"
+              ],
+              "note": "where \\(b\\) is the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                33
+              ]
+            },
+            {
+              "label": "Area of a trapezoid",
+              "formulas": [
+                "A=\\frac12(a+b)h"
+              ],
+              "note": "where \\(a\\) and \\(b\\) are the parallel sides, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                34
+              ]
+            },
+            {
+              "label": "Area of a circle",
+              "formulas": [
+                "A=\\pi r^2"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                35
+              ]
+            },
+            {
+              "label": "Circumference of a circle",
+              "formulas": [
+                "C=2\\pi r"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                36
+              ]
+            },
+            {
+              "label": "Volume of a cuboid",
+              "formulas": [
+                "V=lwh"
+              ],
+              "note": "where \\(l\\) is the length, \\(w\\) is the width, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                37
+              ]
+            },
+            {
+              "label": "Volume of a cylinder",
+              "formulas": [
+                "V=\\pi r^2h"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                38
+              ]
+            },
+            {
+              "label": "Volume of a prism",
+              "formulas": [
+                "V=Ah"
+              ],
+              "note": "where \\(A\\) is the area of cross-section, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                39
+              ]
+            },
+            {
+              "label": "Area of the curved surface of a cylinder",
+              "formulas": [
+                "A=2\\pi rh"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                40
+              ]
+            },
+            {
+              "label": "Distance between two points \\((x_1,y_1)\\) and \\((x_2,y_2)\\)",
+              "formulas": [
+                "d=\\sqrt{(x_1-x_2)^2+(y_1-y_2)^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                41
+              ]
+            },
+            {
+              "label": "Coordinates of the midpoint of a line segment with endpoints \\((x_1,y_1)\\) and \\((x_2,y_2)\\)",
+              "formulas": [
+                "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2}\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                42
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.1",
+          "items": [
+            {
+              "label": "Distance between two points \\((x_1,y_1,z_1)\\) and \\((x_2,y_2,z_2)\\)",
+              "formulas": [
+                "d=\\sqrt{(x_1-x_2)^2+(y_1-y_2)^2+(z_1-z_2)^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                43
+              ]
+            },
+            {
+              "label": "Coordinates of the midpoint of a line segment with endpoints \\((x_1,y_1,z_1)\\) and \\((x_2,y_2,z_2)\\)",
+              "formulas": [
+                "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2},\\frac{z_1+z_2}{2}\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                44
+              ]
+            },
+            {
+              "label": "Volume of a right-pyramid",
+              "formulas": [
+                "V=\\frac13 Ah"
+              ],
+              "note": "where \\(A\\) is the area of the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                45
+              ]
+            },
+            {
+              "label": "Volume of a right cone",
+              "formulas": [
+                "V=\\frac13\\pi r^2h"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                46
+              ]
+            },
+            {
+              "label": "Area of the curved surface of a cone",
+              "formulas": [
+                "A=\\pi rl"
+              ],
+              "note": "where \\(r\\) is the radius, \\(l\\) is the slant height",
+              "join": null,
+              "source_entry_ids": [
+                47
+              ]
+            },
+            {
+              "label": "Volume of a sphere",
+              "formulas": [
+                "V=\\frac43\\pi r^3"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                48
+              ]
+            },
+            {
+              "label": "Surface area of a sphere",
+              "formulas": [
+                "A=4\\pi r^2"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                49
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.2",
+          "items": [
+            {
+              "label": "Sine rule",
+              "formulas": [
+                "\\frac a{\\sin A}=\\frac b{\\sin B}=\\frac c{\\sin C}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                50
+              ]
+            },
+            {
+              "label": "Cosine rule",
+              "formulas": [
+                "c^2=a^2+b^2-2ab\\cos C;\\quad\\cos C=\\frac{a^2+b^2-c^2}{2ab}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                51
+              ]
+            },
+            {
+              "label": "Area of a triangle",
+              "formulas": [
+                "A=\\frac12 ab\\sin C"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                52
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.4",
+          "items": [
+            {
+              "label": "Length of an arc",
+              "formulas": [
+                "l=r\\theta"
+              ],
+              "note": "where \\(r\\) is the radius, \\(\\theta\\) is the angle measured in radians",
+              "join": null,
+              "source_entry_ids": [
+                55
+              ]
+            },
+            {
+              "label": "Area of a sector",
+              "formulas": [
+                "A=\\frac12r^2\\theta"
+              ],
+              "note": "where \\(r\\) is the radius, \\(\\theta\\) is the angle measured in radians",
+              "join": null,
+              "source_entry_ids": [
+                56
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.5",
+          "items": [
+            {
+              "label": "Identity for \\(\\tan\\theta\\)",
+              "formulas": [
+                "\\tan\\theta=\\frac{\\sin\\theta}{\\cos\\theta}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                57
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.6",
+          "items": [
+            {
+              "label": "Pythagorean identity",
+              "formulas": [
+                "\\cos^2\\theta+\\sin^2\\theta=1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                58
+              ]
+            },
+            {
+              "label": "Double angle identities",
+              "formulas": [
+                "\\sin2\\theta=2\\sin\\theta\\cos\\theta",
+                "\\cos2\\theta=\\cos^2\\theta-\\sin^2\\theta=2\\cos^2\\theta-1=1-2\\sin^2\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                59,
+                60
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "4.2",
+          "items": [
+            {
+              "label": "Interquartile range",
+              "formulas": [
+                "\\mathrm{IQR}=Q_3-Q_1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                86
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.3",
+          "items": [
+            {
+              "label": "Mean, \\(\\bar x\\), of a set of data",
+              "formulas": [
+                "\\bar x=\\frac{\\sum_{i=1}^k f_ix_i}{n},\\quad\\text{where }n=\\sum_{i=1}^k f_i"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                87
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.5",
+          "items": [
+            {
+              "label": "Probability of an event \\(A\\)",
+              "formulas": [
+                "P(A)=\\frac{n(A)}{n(U)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                88
+              ]
+            },
+            {
+              "label": "Complementary events",
+              "formulas": [
+                "P(A)+P(A')=1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                89
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.6",
+          "items": [
+            {
+              "label": "Combined events",
+              "formulas": [
+                "P(A\\cup B)=P(A)+P(B)-P(A\\cap B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                90
+              ]
+            },
+            {
+              "label": "Mutually exclusive events",
+              "formulas": [
+                "P(A\\cup B)=P(A)+P(B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                91
+              ]
+            },
+            {
+              "label": "Conditional probability",
+              "formulas": [
+                "P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                92
+              ]
+            },
+            {
+              "label": "Independent events",
+              "formulas": [
+                "P(A\\cap B)=P(A)P(B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                93
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.7",
+          "items": [
+            {
+              "label": "Expected value of a discrete random variable \\(X\\)",
+              "formulas": [
+                "E(X)=\\sum_{i=1}^k x_iP(X=x_i)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                94
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.8",
+          "items": [
+            {
+              "label": "Binomial distribution \\(X\\sim\\mathrm B(n,p)\\)",
+              "formulas": [],
+              "note": "",
+              "join": null,
+              "source_entry_ids": []
+            },
+            {
+              "label": "Mean",
+              "formulas": [
+                "E(X)=np"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                95
+              ]
+            },
+            {
+              "label": "Variance",
+              "formulas": [
+                "\\operatorname{Var}(X)=np(1-p)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                96
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.12",
+          "items": [
+            {
+              "label": "Standardized normal variable",
+              "formulas": [
+                "z=\\frac{x-\\mu}{\\sigma}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                97
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "5.3",
+          "items": [
+            {
+              "label": "Derivative of \\(x^n\\)",
+              "formulas": [
+                "f(x)=x^n\\implies f'(x)=nx^{n-1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                114
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.6",
+          "items": [
+            {
+              "label": "Derivative of \\(\\sin x\\)",
+              "formulas": [
+                "f(x)=\\sin x\\implies f'(x)=\\cos x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                117
+              ]
+            },
+            {
+              "label": "Derivative of \\(\\cos x\\)",
+              "formulas": [
+                "f(x)=\\cos x\\implies f'(x)=-\\sin x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                118
+              ]
+            },
+            {
+              "label": "Derivative of \\(e^x\\)",
+              "formulas": [
+                "f(x)=e^x\\implies f'(x)=e^x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                119
+              ]
+            },
+            {
+              "label": "Derivative of \\(\\ln x\\)",
+              "formulas": [
+                "f(x)=\\ln x\\implies f'(x)=\\frac1x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                120
+              ]
+            },
+            {
+              "label": "Chain rule",
+              "formulas": [
+                "y=g(u),\\ \\text{where }u=f(x)\\implies\\frac{dy}{dx}=\\frac{dy}{du}\\times\\frac{du}{dx}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                121
+              ]
+            },
+            {
+              "label": "Product rule",
+              "formulas": [
+                "y=uv\\implies\\frac{dy}{dx}=u\\frac{dv}{dx}+v\\frac{du}{dx}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                122
+              ]
+            },
+            {
+              "label": "Quotient rule",
+              "formulas": [
+                "y=\\frac uv\\implies\\frac{dy}{dx}=\\frac{v\\frac{du}{dx}-u\\frac{dv}{dx}}{v^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                123
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.9",
+          "items": [
+            {
+              "label": "Acceleration",
+              "formulas": [
+                "a=\\frac{dv}{dt}=\\frac{d^2s}{dt^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                124
+              ]
+            },
+            {
+              "label": "Distance travelled from \\(t_1\\) to \\(t_2\\)",
+              "formulas": [
+                "\\text{distance}=\\int_{t_1}^{t_2}|v(t)|\\,dt"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                127
+              ]
+            },
+            {
+              "label": "Displacement from \\(t_1\\) to \\(t_2\\)",
+              "formulas": [
+                "\\text{displacement}=\\int_{t_1}^{t_2}v(t)\\,dt"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                128
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.5",
+          "items": [
+            {
+              "label": "Integral of \\(x^n\\)",
+              "formulas": [
+                "\\int x^n\\,dx=\\frac{x^{n+1}}{n+1}+C,\\quad n\\ne-1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                115
+              ]
+            },
+            {
+              "label": "Area between a curve \\(y=f(x)\\) and the x-axis, where \\(f(x)>0\\)",
+              "formulas": [
+                "A=\\int_a^b y\\,dx"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                116
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.10",
+          "items": [
+            {
+              "label": "Standard integrals",
+              "formulas": [
+                "\\int\\frac1x\\,dx=\\ln|x|+C",
+                "\\int\\sin x\\,dx=-\\cos x+C",
+                "\\int\\cos x\\,dx=\\sin x+C",
+                "\\int e^x\\,dx=e^x+C"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                129,
+                130,
+                131,
+                132
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.11",
+          "items": [
+            {
+              "label": "Area of region enclosed by a curve and x-axis",
+              "formulas": [
+                "A=\\int_a^b|y|\\,dx"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                133
+              ]
+            }
+          ]
+        }
+      ]
+    ],
+    "AI HL": [
+      [
+        {
+          "section": "1.2",
+          "items": [
+            {
+              "label": "The nth term of an arithmetic sequence",
+              "formulas": [
+                "u_n=u_1+(n-1)d"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                0
+              ]
+            },
+            {
+              "label": "The sum of n terms of an arithmetic sequence",
+              "formulas": [
+                "S_n=\\frac n2\\bigl(2u_1+(n-1)d\\bigr);\\quad S_n=\\frac n2(u_1+u_n)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.3",
+          "items": [
+            {
+              "label": "The nth term of a geometric sequence",
+              "formulas": [
+                "u_n=u_1r^{n-1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                2
+              ]
+            },
+            {
+              "label": "The sum of n terms of a finite geometric sequence",
+              "formulas": [
+                "S_n=\\frac{u_1(r^n-1)}{r-1}=\\frac{u_1(1-r^n)}{1-r},\\quad r\\ne1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.11",
+          "items": [
+            {
+              "label": "The sum of an infinite geometric sequence",
+              "formulas": [
+                "S_\\infty=\\frac{u_1}{1-r},\\quad |r|<1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                6
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.4",
+          "items": [
+            {
+              "label": "Compound interest",
+              "formulas": [
+                "FV=PV\\times\\left(1+\\frac{r}{100k}\\right)^{kn}"
+              ],
+              "note": "where \\(FV\\) is the future value, \\(PV\\) is the present value, \\(n\\) is the number of years, \\(k\\) is the number of compounding periods per year, \\(r\\%\\) is the nominal annual rate of interest",
+              "join": null,
+              "source_entry_ids": [
+                4
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.5",
+          "items": [
+            {
+              "label": "Exponents and logarithms",
+              "formulas": [
+                "a^x=b\\iff x=\\log_a b"
+              ],
+              "note": "where \\(a>0,\\ b>0,\\ a\\ne1\\)",
+              "join": null,
+              "source_entry_ids": [
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.9",
+          "items": [
+            {
+              "label": "Laws of logarithms",
+              "formulas": [
+                "\\log_a xy=\\log_a x+\\log_a y",
+                "\\log_a\\frac xy=\\log_a x-\\log_a y",
+                "\\log_a x^m=m\\log_a x"
+              ],
+              "note": "for \\(a,x,y>0\\)",
+              "join": null,
+              "source_entry_ids": [
+                7,
+                8,
+                9
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.6",
+          "items": [
+            {
+              "label": "Percentage error",
+              "formulas": [
+                "\\varepsilon=\\left|\\frac{v_A-v_E}{v_E}\\right|\\times100\\%"
+              ],
+              "note": "where \\(v_E\\) is the exact value and \\(v_A\\) is the approximate value of \\(v\\)",
+              "join": null,
+              "source_entry_ids": [
+                14
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.12",
+          "items": [
+            {
+              "label": "Complex numbers",
+              "formulas": [
+                "z=a+bi"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                18
+              ]
+            },
+            {
+              "label": "Discriminant",
+              "formulas": [
+                "\\Delta=b^2-4ac"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                21
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.13",
+          "items": [
+            {
+              "label": "Modulus-argument (polar) and exponential (Euler) form",
+              "formulas": [
+                "z=r(\\cos\\theta+i\\sin\\theta)=re^{i\\theta}=r\\operatorname{cis}\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                19
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.14",
+          "items": [
+            {
+              "label": "Determinant of a \\(2\\times2\\) matrix",
+              "formulas": [
+                "A=\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}\\implies\\det A=|A|=ad-bc"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                22
+              ]
+            },
+            {
+              "label": "Inverse of a \\(2\\times2\\) matrix",
+              "formulas": [
+                "A=\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}\\implies A^{-1}=\\frac1{\\det A}\\begin{pmatrix}d&-b\\\\-c&a\\end{pmatrix},\\quad ad\\ne bc"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                23
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.15",
+          "items": [
+            {
+              "label": "Power formula for a matrix",
+              "formulas": [
+                "M^n=PD^nP^{-1}"
+              ],
+              "note": "where \\(P\\) is the matrix of eigenvectors and \\(D\\) is the diagonal matrix of eigenvalues",
+              "join": null,
+              "source_entry_ids": [
+                24
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "Prior learning",
+          "items": [
+            {
+              "label": "Solutions of a quadratic equation",
+              "formulas": [
+                "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a},\\quad a\\ne0"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                28
+              ],
+              "before": "The solutions of \\(ax^2+bx+c=0\\) are"
+            }
+          ]
+        },
+        {
+          "section": "2.1",
+          "items": [
+            {
+              "label": "Equations of a straight line",
+              "formulas": [
+                "y=mx+c;\\quad ax+by+d=0;\\quad y-y_1=m(x-x_1)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                25
+              ]
+            },
+            {
+              "label": "Gradient formula",
+              "formulas": [
+                "m=\\frac{y_2-y_1}{x_2-x_1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                26
+              ]
+            }
+          ]
+        },
+        {
+          "section": "2.5",
+          "items": [
+            {
+              "label": "Axis of symmetry of the graph of a quadratic function",
+              "formulas": [
+                "f(x)=ax^2+bx+c\\implies\\text{axis of symmetry is }x=-\\frac b{2a}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                27
+              ]
+            }
+          ]
+        },
+        {
+          "section": "2.9",
+          "items": [
+            {
+              "label": "Logistic function",
+              "formulas": [
+                "f(x)=\\frac{L}{1+Ce^{-kx}},\\quad L,k,C>0"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                31
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "Prior learning",
+          "items": [
+            {
+              "label": "Area of a parallelogram",
+              "formulas": [
+                "A=bh"
+              ],
+              "note": "where \\(b\\) is the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                32
+              ]
+            },
+            {
+              "label": "Area of a triangle",
+              "formulas": [
+                "A=\\frac12(bh)"
+              ],
+              "note": "where \\(b\\) is the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                33
+              ]
+            },
+            {
+              "label": "Area of a trapezoid",
+              "formulas": [
+                "A=\\frac12(a+b)h"
+              ],
+              "note": "where \\(a\\) and \\(b\\) are the parallel sides, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                34
+              ]
+            },
+            {
+              "label": "Area of a circle",
+              "formulas": [
+                "A=\\pi r^2"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                35
+              ]
+            },
+            {
+              "label": "Circumference of a circle",
+              "formulas": [
+                "C=2\\pi r"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                36
+              ]
+            },
+            {
+              "label": "Volume of a cuboid",
+              "formulas": [
+                "V=lwh"
+              ],
+              "note": "where \\(l\\) is the length, \\(w\\) is the width, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                37
+              ]
+            },
+            {
+              "label": "Volume of a cylinder",
+              "formulas": [
+                "V=\\pi r^2h"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                38
+              ]
+            },
+            {
+              "label": "Volume of prism",
+              "formulas": [
+                "V=Ah"
+              ],
+              "note": "where \\(A\\) is the area of cross-section, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                39
+              ]
+            },
+            {
+              "label": "Area of the curved surface of a cylinder",
+              "formulas": [
+                "A=2\\pi rh"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                40
+              ]
+            },
+            {
+              "label": "Distance between two points \\((x_1,y_1)\\) and \\((x_2,y_2)\\)",
+              "formulas": [
+                "d=\\sqrt{(x_1-x_2)^2+(y_1-y_2)^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                41
+              ]
+            },
+            {
+              "label": "Coordinates of the midpoint of a line segment with endpoints \\((x_1,y_1)\\) and \\((x_2,y_2)\\)",
+              "formulas": [
+                "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2}\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                42
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.1",
+          "items": [
+            {
+              "label": "Distance between two points \\((x_1,y_1,z_1)\\) and \\((x_2,y_2,z_2)\\)",
+              "formulas": [
+                "d=\\sqrt{(x_1-x_2)^2+(y_1-y_2)^2+(z_1-z_2)^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                43
+              ]
+            },
+            {
+              "label": "Coordinates of the midpoint of a line segment with endpoints \\((x_1,y_1,z_1)\\) and \\((x_2,y_2,z_2)\\)",
+              "formulas": [
+                "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2},\\frac{z_1+z_2}{2}\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                44
+              ]
+            },
+            {
+              "label": "Volume of a right-pyramid",
+              "formulas": [
+                "V=\\frac13 Ah"
+              ],
+              "note": "where \\(A\\) is the area of the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                45
+              ]
+            },
+            {
+              "label": "Volume of a right cone",
+              "formulas": [
+                "V=\\frac13\\pi r^2h"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                46
+              ]
+            },
+            {
+              "label": "Area of the curved surface of a cone",
+              "formulas": [
+                "A=\\pi rl"
+              ],
+              "note": "where \\(r\\) is the radius, \\(l\\) is the slant height",
+              "join": null,
+              "source_entry_ids": [
+                47
+              ]
+            },
+            {
+              "label": "Volume of a sphere",
+              "formulas": [
+                "V=\\frac43\\pi r^3"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                48
+              ]
+            },
+            {
+              "label": "Surface area of a sphere",
+              "formulas": [
+                "A=4\\pi r^2"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                49
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.2",
+          "items": [
+            {
+              "label": "Sine rule",
+              "formulas": [
+                "\\frac a{\\sin A}=\\frac b{\\sin B}=\\frac c{\\sin C}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                50
+              ]
+            },
+            {
+              "label": "Cosine rule",
+              "formulas": [
+                "c^2=a^2+b^2-2ab\\cos C;\\quad\\cos C=\\frac{a^2+b^2-c^2}{2ab}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                51
+              ]
+            },
+            {
+              "label": "Area of a triangle",
+              "formulas": [
+                "A=\\frac12 ab\\sin C"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                52
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.4",
+          "items": [
+            {
+              "label": "Length of an arc",
+              "formulas": [
+                "l=\\frac\\theta{360}\\times2\\pi r"
+              ],
+              "note": "where \\(\\theta\\) is the angle measured in degrees, \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                53
+              ]
+            },
+            {
+              "label": "Area of a sector",
+              "formulas": [
+                "A=\\frac\\theta{360}\\times\\pi r^2"
+              ],
+              "note": "where \\(\\theta\\) is the angle measured in degrees, \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                54
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.7",
+          "items": [
+            {
+              "label": "Length of an arc",
+              "formulas": [
+                "l=r\\theta"
+              ],
+              "note": "where \\(r\\) is the radius, \\(\\theta\\) is the angle measured in radians",
+              "join": null,
+              "source_entry_ids": [
+                55
+              ]
+            },
+            {
+              "label": "Area of a sector",
+              "formulas": [
+                "A=\\frac12r^2\\theta"
+              ],
+              "note": "where \\(r\\) is the radius, \\(\\theta\\) is the angle measured in radians",
+              "join": null,
+              "source_entry_ids": [
+                56
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.8",
+          "items": [
+            {
+              "label": "Identities",
+              "formulas": [
+                "\\cos^2\\theta+\\sin^2\\theta=1",
+                "\\tan\\theta=\\frac{\\sin\\theta}{\\cos\\theta}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                58,
+                57
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.9",
+          "items": [
+            {
+              "label": "Transformation matrices",
+              "formulas": [
+                "\\begin{pmatrix}\\cos2\\theta&\\sin2\\theta\\\\\\sin2\\theta&-\\cos2\\theta\\end{pmatrix}",
+                "\\begin{pmatrix}k&0\\\\0&1\\end{pmatrix}",
+                "\\begin{pmatrix}1&0\\\\0&k\\end{pmatrix}",
+                "\\begin{pmatrix}k&0\\\\0&k\\end{pmatrix}",
+                "\\begin{pmatrix}\\cos\\theta&-\\sin\\theta\\\\\\sin\\theta&\\cos\\theta\\end{pmatrix}",
+                "\\begin{pmatrix}\\cos\\theta&\\sin\\theta\\\\-\\sin\\theta&\\cos\\theta\\end{pmatrix}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                67,
+                68,
+                69,
+                70,
+                71,
+                72
+              ],
+              "formula_notes": [
+                "reflection in the line \\(y=(\\tan\\theta)x\\)",
+                "horizontal stretch / stretch parallel to x-axis with a scale factor of \\(k\\)",
+                "vertical stretch / stretch parallel to y-axis with a scale factor of \\(k\\)",
+                "enlargement, with a scale factor of \\(k\\), centre (0, 0)",
+                "anticlockwise / counter-clockwise rotation of angle \\(\\theta\\) about the origin \\((\\theta>0)\\)",
+                "clockwise rotation of angle \\(\\theta\\) about the origin \\((\\theta>0)\\)"
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.10",
+          "items": [
+            {
+              "label": "Magnitude of a vector",
+              "formulas": [
+                "|\\mathbf v|=\\sqrt{v_1^2+v_2^2+v_3^2},\\quad\\text{where }\\mathbf v=\\begin{pmatrix}v_1\\\\v_2\\\\v_3\\end{pmatrix}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                73
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.11",
+          "items": [
+            {
+              "label": "Vector equation of a line",
+              "formulas": [
+                "\\mathbf r=\\mathbf a+\\lambda\\mathbf b"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                77
+              ]
+            },
+            {
+              "label": "Parametric form of the equation of a line",
+              "formulas": [
+                "x=x_0+\\lambda l;\\quad y=y_0+\\lambda m;\\quad z=z_0+\\lambda n"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                78
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.13",
+          "items": [
+            {
+              "label": "Scalar product",
+              "formulas": [
+                "\\mathbf v\\cdot\\mathbf w=v_1w_1+v_2w_2+v_3w_3,\\quad\\text{where }\\mathbf v=\\begin{pmatrix}v_1\\\\v_2\\\\v_3\\end{pmatrix},\\quad\\mathbf w=\\begin{pmatrix}w_1\\\\w_2\\\\w_3\\end{pmatrix}",
+                "\\mathbf v\\cdot\\mathbf w=|\\mathbf v||\\mathbf w|\\cos\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                74,
+                75
+              ],
+              "formula_notes": [
+                "",
+                "where \\(\\theta\\) is the angle between \\(\\mathbf v\\) and \\(\\mathbf w\\)"
+              ]
+            },
+            {
+              "label": "Angle between two vectors",
+              "formulas": [
+                "\\cos\\theta=\\frac{v_1w_1+v_2w_2+v_3w_3}{|\\mathbf v||\\mathbf w|}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                76
+              ]
+            },
+            {
+              "label": "Vector product",
+              "formulas": [
+                "\\mathbf v\\times\\mathbf w=\\begin{pmatrix}v_2w_3-v_3w_2\\\\v_3w_1-v_1w_3\\\\v_1w_2-v_2w_1\\end{pmatrix},\\quad\\text{where }\\mathbf v=\\begin{pmatrix}v_1\\\\v_2\\\\v_3\\end{pmatrix},\\quad\\mathbf w=\\begin{pmatrix}w_1\\\\w_2\\\\w_3\\end{pmatrix}",
+                "|\\mathbf v\\times\\mathbf w|=|\\mathbf v||\\mathbf w|\\sin\\theta"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                79,
+                80
+              ],
+              "formula_notes": [
+                "",
+                "where \\(\\theta\\) is the angle between \\(\\mathbf v\\) and \\(\\mathbf w\\)"
+              ]
+            },
+            {
+              "label": "Area of a parallelogram",
+              "formulas": [
+                "A=|\\mathbf v\\times\\mathbf w|"
+              ],
+              "note": "where \\(\\mathbf v\\) and \\(\\mathbf w\\) form two adjacent sides of a parallelogram",
+              "join": null,
+              "source_entry_ids": [
+                81
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "4.2",
+          "items": [
+            {
+              "label": "Interquartile range",
+              "formulas": [
+                "\\mathrm{IQR}=Q_3-Q_1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                86
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.3",
+          "items": [
+            {
+              "label": "Mean, \\(\\bar x\\), of a set of data",
+              "formulas": [
+                "\\bar x=\\frac{\\sum_{i=1}^k f_ix_i}{n},\\quad\\text{where }n=\\sum_{i=1}^k f_i"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                87
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.5",
+          "items": [
+            {
+              "label": "Probability of an event \\(A\\)",
+              "formulas": [
+                "P(A)=\\frac{n(A)}{n(U)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                88
+              ]
+            },
+            {
+              "label": "Complementary events",
+              "formulas": [
+                "P(A)+P(A')=1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                89
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.6",
+          "items": [
+            {
+              "label": "Combined events",
+              "formulas": [
+                "P(A\\cup B)=P(A)+P(B)-P(A\\cap B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                90
+              ]
+            },
+            {
+              "label": "Mutually exclusive events",
+              "formulas": [
+                "P(A\\cup B)=P(A)+P(B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                91
+              ]
+            },
+            {
+              "label": "Conditional probability",
+              "formulas": [
+                "P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                92
+              ]
+            },
+            {
+              "label": "Independent events",
+              "formulas": [
+                "P(A\\cap B)=P(A)P(B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                93
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.7",
+          "items": [
+            {
+              "label": "Expected value of a discrete random variable \\(X\\)",
+              "formulas": [
+                "E(X)=\\sum_{i=1}^k x_iP(X=x_i)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                94
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.8",
+          "items": [
+            {
+              "label": "Binomial distribution \\(X\\sim\\mathrm B(n,p)\\)",
+              "formulas": [],
+              "note": "",
+              "join": null,
+              "source_entry_ids": []
+            },
+            {
+              "label": "Mean",
+              "formulas": [
+                "E(X)=np"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                95
+              ]
+            },
+            {
+              "label": "Variance",
+              "formulas": [
+                "\\operatorname{Var}(X)=np(1-p)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                96
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.14",
+          "items": [
+            {
+              "label": "Linear transformation of a single random variable",
+              "formulas": [
+                "E(aX+b)=aE(X)+b",
+                "\\operatorname{Var}(aX+b)=a^2\\operatorname{Var}(X)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                106,
+                107
+              ]
+            },
+            {
+              "label": "Linear combinations of \\(n\\) independent random variables, \\(X_1,X_2,\\ldots,X_n\\)",
+              "formulas": [
+                "E(a_1X_1\\pm a_2X_2\\pm\\cdots\\pm a_nX_n)=a_1E(X_1)\\pm a_2E(X_2)\\pm\\cdots\\pm a_nE(X_n)",
+                "\\operatorname{Var}(a_1X_1\\pm a_2X_2\\pm\\cdots\\pm a_nX_n)=a_1^2\\operatorname{Var}(X_1)+a_2^2\\operatorname{Var}(X_2)+\\cdots+a_n^2\\operatorname{Var}(X_n)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                108,
+                109
+              ]
+            },
+            {
+              "label": "Sample statistics",
+              "formulas": [],
+              "note": "",
+              "join": null,
+              "source_entry_ids": []
+            },
+            {
+              "label": "Unbiased estimate of population variance \\(s_{n-1}^2\\)",
+              "formulas": [
+                "s_{n-1}^2=\\frac n{n-1}s_n^2"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                110
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.17",
+          "items": [
+            {
+              "label": "Poisson distribution \\(X\\sim\\operatorname{Po}(m)\\)",
+              "formulas": [],
+              "note": "",
+              "join": null,
+              "source_entry_ids": []
+            },
+            {
+              "label": "Mean",
+              "formulas": [
+                "E(X)=m"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                111
+              ]
+            },
+            {
+              "label": "Variance",
+              "formulas": [
+                "\\operatorname{Var}(X)=m"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                112
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.19",
+          "items": [
+            {
+              "label": "Transition matrices",
+              "formulas": [
+                "T^n\\mathbf s_0=\\mathbf s_n"
+              ],
+              "note": "where \\(\\mathbf s_0\\) is the initial state",
+              "join": null,
+              "source_entry_ids": [
+                113
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "5.3",
+          "items": [
+            {
+              "label": "Derivative of \\(x^n\\)",
+              "formulas": [
+                "f(x)=x^n\\implies f'(x)=nx^{n-1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                114
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.9",
+          "items": [
+            {
+              "label": "Derivative of \\(\\sin x\\)",
+              "formulas": [
+                "f(x)=\\sin x\\implies f'(x)=\\cos x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                117
+              ]
+            },
+            {
+              "label": "Derivative of \\(\\cos x\\)",
+              "formulas": [
+                "f(x)=\\cos x\\implies f'(x)=-\\sin x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                118
+              ]
+            },
+            {
+              "label": "Derivative of \\(\\tan x\\)",
+              "formulas": [
+                "f(x)=\\tan x\\implies f'(x)=\\frac1{\\cos^2x}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                125
+              ]
+            },
+            {
+              "label": "Derivative of \\(e^x\\)",
+              "formulas": [
+                "f(x)=e^x\\implies f'(x)=e^x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                119
+              ]
+            },
+            {
+              "label": "Derivative of \\(\\ln x\\)",
+              "formulas": [
+                "f(x)=\\ln x\\implies f'(x)=\\frac1x"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                120
+              ]
+            },
+            {
+              "label": "Chain rule",
+              "formulas": [
+                "y=g(u),\\ \\text{where }u=f(x)\\implies\\frac{dy}{dx}=\\frac{dy}{du}\\,\\frac{du}{dx}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                121
+              ]
+            },
+            {
+              "label": "Product rule",
+              "formulas": [
+                "y=uv\\implies\\frac{dy}{dx}=u\\frac{dv}{dx}+v\\frac{du}{dx}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                122
+              ]
+            },
+            {
+              "label": "Quotient rule",
+              "formulas": [
+                "y=\\frac uv\\implies\\frac{dy}{dx}=\\frac{v\\frac{du}{dx}-u\\frac{dv}{dx}}{v^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                123
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.5",
+          "items": [
+            {
+              "label": "Integral of \\(x^n\\)",
+              "formulas": [
+                "\\int x^n\\,dx=\\frac{x^{n+1}}{n+1}+C,\\quad n\\ne-1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                115
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.8",
+          "items": [
+            {
+              "label": "The trapezoidal rule",
+              "formulas": [
+                "\\int_a^b y\\,dx\\approx\\frac12h\\bigl((y_0+y_n)+2(y_1+y_2+\\cdots+y_{n-1})\\bigr),\\quad\\text{where }h=\\frac{b-a}{n}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                134
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.11",
+          "items": [
+            {
+              "label": "Standard integrals",
+              "formulas": [
+                "\\int\\frac1x\\,dx=\\ln|x|+C",
+                "\\int\\sin x\\,dx=-\\cos x+C",
+                "\\int\\cos x\\,dx=\\sin x+C",
+                "\\int\\frac1{\\cos^2x}\\,dx=\\tan x+C",
+                "\\int e^x\\,dx=e^x+C"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                129,
+                130,
+                131,
+                135,
+                132
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.12",
+          "items": [
+            {
+              "label": "Area of region enclosed by a curve and x or y-axes",
+              "formulas": [
+                "A=\\int_a^b|y|\\,dx",
+                "A=\\int_a^b|x|\\,dy"
+              ],
+              "note": "",
+              "join": "or",
+              "source_entry_ids": [
+                133,
+                150
+              ]
+            },
+            {
+              "label": "Volume of revolution about x or y-axes",
+              "formulas": [
+                "V=\\int_a^b\\pi y^2\\,dx",
+                "V=\\int_a^b\\pi x^2\\,dy"
+              ],
+              "note": "",
+              "join": "or",
+              "source_entry_ids": [
+                151,
+                152
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.13",
+          "items": [
+            {
+              "label": "Acceleration",
+              "formulas": [
+                "a=\\frac{dv}{dt}=\\frac{d^2s}{dt^2}=v\\frac{dv}{ds}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                126
+              ]
+            },
+            {
+              "label": "Distance travelled from \\(t_1\\) to \\(t_2\\)",
+              "formulas": [
+                "\\text{distance}=\\int_{t_1}^{t_2}|v(t)|\\,dt"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                127
+              ]
+            },
+            {
+              "label": "Displacement from \\(t_1\\) to \\(t_2\\)",
+              "formulas": [
+                "\\text{displacement}=\\int_{t_1}^{t_2}v(t)\\,dt"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                128
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.16",
+          "items": [
+            {
+              "label": "Euler’s method",
+              "formulas": [
+                "y_{n+1}=y_n+h\\times f(x_n,y_n);\\quad x_{n+1}=x_n+h"
+              ],
+              "note": "where \\(h\\) is a constant (step length)",
+              "join": null,
+              "source_entry_ids": [
+                153
+              ]
+            },
+            {
+              "label": "Euler’s method for coupled systems",
+              "formulas": [
+                "\\begin{aligned}x_{n+1}&=x_n+h\\times f_1(x_n,y_n,t_n)\\\\y_{n+1}&=y_n+h\\times f_2(x_n,y_n,t_n)\\\\t_{n+1}&=t_n+h\\end{aligned}"
+              ],
+              "note": "where \\(h\\) is a constant (step length)",
+              "join": null,
+              "source_entry_ids": [
+                161
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.17",
+          "items": [
+            {
+              "label": "Exact solution for coupled linear differential equations",
+              "formulas": [
+                "\\mathbf x=Ae^{\\lambda_1t}\\mathbf p_1+Be^{\\lambda_2t}\\mathbf p_2"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                162
+              ]
+            }
+          ]
+        }
+      ]
+    ],
+    "AI SL": [
+      [
+        {
+          "section": "1.2",
+          "items": [
+            {
+              "label": "The nth term of an arithmetic sequence",
+              "formulas": [
+                "u_n=u_1+(n-1)d"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                0
+              ]
+            },
+            {
+              "label": "The sum of n terms of an arithmetic sequence",
+              "formulas": [
+                "S_n=\\frac n2\\bigl(2u_1+(n-1)d\\bigr);\\quad S_n=\\frac n2(u_1+u_n)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.3",
+          "items": [
+            {
+              "label": "The nth term of a geometric sequence",
+              "formulas": [
+                "u_n=u_1r^{n-1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                2
+              ]
+            },
+            {
+              "label": "The sum of n terms of a finite geometric sequence",
+              "formulas": [
+                "S_n=\\frac{u_1(r^n-1)}{r-1}=\\frac{u_1(1-r^n)}{1-r},\\quad r\\ne1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.4",
+          "items": [
+            {
+              "label": "Compound interest",
+              "formulas": [
+                "FV=PV\\times\\left(1+\\frac{r}{100k}\\right)^{kn}"
+              ],
+              "note": "where \\(FV\\) is the future value, \\(PV\\) is the present value, \\(n\\) is the number of years, \\(k\\) is the number of compounding periods per year, \\(r\\%\\) is the nominal annual rate of interest",
+              "join": null,
+              "source_entry_ids": [
+                4
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.5",
+          "items": [
+            {
+              "label": "Exponents and logarithms",
+              "formulas": [
+                "a^x=b\\iff x=\\log_a b"
+              ],
+              "note": "where \\(a>0,\\ b>0,\\ a\\ne1\\)",
+              "join": null,
+              "source_entry_ids": [
+                5
+              ]
+            }
+          ]
+        },
+        {
+          "section": "1.6",
+          "items": [
+            {
+              "label": "Percentage error",
+              "formulas": [
+                "\\varepsilon=\\left|\\frac{v_A-v_E}{v_E}\\right|\\times100\\%"
+              ],
+              "note": "where \\(v_E\\) is the exact value and \\(v_A\\) is the approximate value of \\(v\\)",
+              "join": null,
+              "source_entry_ids": [
+                14
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "2.1",
+          "items": [
+            {
+              "label": "Equations of a straight line",
+              "formulas": [
+                "y=mx+c;\\quad ax+by+d=0;\\quad y-y_1=m(x-x_1)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                25
+              ]
+            },
+            {
+              "label": "Gradient formula",
+              "formulas": [
+                "m=\\frac{y_2-y_1}{x_2-x_1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                26
+              ]
+            }
+          ]
+        },
+        {
+          "section": "2.5",
+          "items": [
+            {
+              "label": "Axis of symmetry of the graph of a quadratic function",
+              "formulas": [
+                "f(x)=ax^2+bx+c\\implies\\text{axis of symmetry is }x=-\\frac b{2a}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                27
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "Prior learning",
+          "items": [
+            {
+              "label": "Area of a parallelogram",
+              "formulas": [
+                "A=bh"
+              ],
+              "note": "where \\(b\\) is the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                32
+              ]
+            },
+            {
+              "label": "Area of a triangle",
+              "formulas": [
+                "A=\\frac12(bh)"
+              ],
+              "note": "where \\(b\\) is the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                33
+              ]
+            },
+            {
+              "label": "Area of a trapezoid",
+              "formulas": [
+                "A=\\frac12(a+b)h"
+              ],
+              "note": "where \\(a\\) and \\(b\\) are the parallel sides, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                34
+              ]
+            },
+            {
+              "label": "Area of a circle",
+              "formulas": [
+                "A=\\pi r^2"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                35
+              ]
+            },
+            {
+              "label": "Circumference of a circle",
+              "formulas": [
+                "C=2\\pi r"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                36
+              ]
+            },
+            {
+              "label": "Volume of a cuboid",
+              "formulas": [
+                "V=lwh"
+              ],
+              "note": "where \\(l\\) is the length, \\(w\\) is the width, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                37
+              ]
+            },
+            {
+              "label": "Volume of a cylinder",
+              "formulas": [
+                "V=\\pi r^2h"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                38
+              ]
+            },
+            {
+              "label": "Volume of prism",
+              "formulas": [
+                "V=Ah"
+              ],
+              "note": "where \\(A\\) is the area of cross-section, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                39
+              ]
+            },
+            {
+              "label": "Area of the curved surface of a cylinder",
+              "formulas": [
+                "A=2\\pi rh"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                40
+              ]
+            },
+            {
+              "label": "Distance between two points \\((x_1,y_1)\\) and \\((x_2,y_2)\\)",
+              "formulas": [
+                "d=\\sqrt{(x_1-x_2)^2+(y_1-y_2)^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                41
+              ]
+            },
+            {
+              "label": "Coordinates of the midpoint of a line segment with endpoints \\((x_1,y_1)\\) and \\((x_2,y_2)\\)",
+              "formulas": [
+                "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2}\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                42
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.1",
+          "items": [
+            {
+              "label": "Distance between two points \\((x_1,y_1,z_1)\\) and \\((x_2,y_2,z_2)\\)",
+              "formulas": [
+                "d=\\sqrt{(x_1-x_2)^2+(y_1-y_2)^2+(z_1-z_2)^2}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                43
+              ]
+            },
+            {
+              "label": "Coordinates of the midpoint of a line segment with endpoints \\((x_1,y_1,z_1)\\) and \\((x_2,y_2,z_2)\\)",
+              "formulas": [
+                "\\left(\\frac{x_1+x_2}{2},\\frac{y_1+y_2}{2},\\frac{z_1+z_2}{2}\\right)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                44
+              ]
+            },
+            {
+              "label": "Volume of a right-pyramid",
+              "formulas": [
+                "V=\\frac13 Ah"
+              ],
+              "note": "where \\(A\\) is the area of the base, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                45
+              ]
+            },
+            {
+              "label": "Volume of a right cone",
+              "formulas": [
+                "V=\\frac13\\pi r^2h"
+              ],
+              "note": "where \\(r\\) is the radius, \\(h\\) is the height",
+              "join": null,
+              "source_entry_ids": [
+                46
+              ]
+            },
+            {
+              "label": "Area of the curved surface of a cone",
+              "formulas": [
+                "A=\\pi rl"
+              ],
+              "note": "where \\(r\\) is the radius, \\(l\\) is the slant height",
+              "join": null,
+              "source_entry_ids": [
+                47
+              ]
+            },
+            {
+              "label": "Volume of a sphere",
+              "formulas": [
+                "V=\\frac43\\pi r^3"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                48
+              ]
+            },
+            {
+              "label": "Surface area of a sphere",
+              "formulas": [
+                "A=4\\pi r^2"
+              ],
+              "note": "where \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                49
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.2",
+          "items": [
+            {
+              "label": "Sine rule",
+              "formulas": [
+                "\\frac a{\\sin A}=\\frac b{\\sin B}=\\frac c{\\sin C}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                50
+              ]
+            },
+            {
+              "label": "Cosine rule",
+              "formulas": [
+                "c^2=a^2+b^2-2ab\\cos C;\\quad\\cos C=\\frac{a^2+b^2-c^2}{2ab}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                51
+              ]
+            },
+            {
+              "label": "Area of a triangle",
+              "formulas": [
+                "A=\\frac12 ab\\sin C"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                52
+              ]
+            }
+          ]
+        },
+        {
+          "section": "3.4",
+          "items": [
+            {
+              "label": "Length of an arc",
+              "formulas": [
+                "l=\\frac\\theta{360}\\times2\\pi r"
+              ],
+              "note": "where \\(\\theta\\) is the angle measured in degrees, \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                53
+              ]
+            },
+            {
+              "label": "Area of a sector",
+              "formulas": [
+                "A=\\frac\\theta{360}\\times\\pi r^2"
+              ],
+              "note": "where \\(\\theta\\) is the angle measured in degrees, \\(r\\) is the radius",
+              "join": null,
+              "source_entry_ids": [
+                54
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "4.2",
+          "items": [
+            {
+              "label": "Interquartile range",
+              "formulas": [
+                "\\mathrm{IQR}=Q_3-Q_1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                86
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.3",
+          "items": [
+            {
+              "label": "Mean, \\(\\bar x\\), of a set of data",
+              "formulas": [
+                "\\bar x=\\frac{\\sum_{i=1}^k f_ix_i}{n},\\quad\\text{where }n=\\sum_{i=1}^k f_i"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                87
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.5",
+          "items": [
+            {
+              "label": "Probability of an event \\(A\\)",
+              "formulas": [
+                "P(A)=\\frac{n(A)}{n(U)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                88
+              ]
+            },
+            {
+              "label": "Complementary events",
+              "formulas": [
+                "P(A)+P(A')=1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                89
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.6",
+          "items": [
+            {
+              "label": "Combined events",
+              "formulas": [
+                "P(A\\cup B)=P(A)+P(B)-P(A\\cap B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                90
+              ]
+            },
+            {
+              "label": "Mutually exclusive events",
+              "formulas": [
+                "P(A\\cup B)=P(A)+P(B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                91
+              ]
+            },
+            {
+              "label": "Conditional probability",
+              "formulas": [
+                "P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                92
+              ]
+            },
+            {
+              "label": "Independent events",
+              "formulas": [
+                "P(A\\cap B)=P(A)P(B)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                93
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.7",
+          "items": [
+            {
+              "label": "Expected value of a discrete random variable \\(X\\)",
+              "formulas": [
+                "E(X)=\\sum_{i=1}^k x_iP(X=x_i)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                94
+              ]
+            }
+          ]
+        },
+        {
+          "section": "4.8",
+          "items": [
+            {
+              "label": "Binomial distribution \\(X\\sim\\mathrm B(n,p)\\)",
+              "formulas": [],
+              "note": "",
+              "join": null,
+              "source_entry_ids": []
+            },
+            {
+              "label": "Mean",
+              "formulas": [
+                "E(X)=np"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                95
+              ]
+            },
+            {
+              "label": "Variance",
+              "formulas": [
+                "\\operatorname{Var}(X)=np(1-p)"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                96
+              ]
+            }
+          ]
+        }
+      ],
+      [
+        {
+          "section": "5.3",
+          "items": [
+            {
+              "label": "Derivative of \\(x^n\\)",
+              "formulas": [
+                "f(x)=x^n\\implies f'(x)=nx^{n-1}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                114
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.5",
+          "items": [
+            {
+              "label": "Integral of \\(x^n\\)",
+              "formulas": [
+                "\\int x^n\\,dx=\\frac{x^{n+1}}{n+1}+C,\\quad n\\ne-1"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                115
+              ]
+            },
+            {
+              "label": "Area of region enclosed by a curve \\(y=f(x)\\) and the x-axis, where \\(f(x)>0\\)",
+              "formulas": [
+                "A=\\int_a^b y\\,dx"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                116
+              ]
+            }
+          ]
+        },
+        {
+          "section": "5.8",
+          "items": [
+            {
+              "label": "The trapezoidal rule",
+              "formulas": [
+                "\\int_a^b y\\,dx\\approx\\frac12h\\bigl((y_0+y_n)+2(y_1+y_2+\\cdots+y_{n-1})\\bigr),\\quad\\text{where }h=\\frac{b-a}{n}"
+              ],
+              "note": "",
+              "join": null,
+              "source_entry_ids": [
+                134
+              ]
+            }
+          ]
+        }
+      ]
+    ]
+  },
+  "scope": "Formula-table wording, notation, section order and grouping from the supplied PDFs. Original covers, branding, contents-page pagination and running footers are not reproduced.",
+  "source_quirks": [
+    {
+      "course": "AA HL",
+      "pdf_page": 11,
+      "section": "5.15",
+      "note": "The supplied PDF prints f′(y) in the arctan x derivative row. Retained as printed, rather than silently replacing it with f′(x). This audit note is not displayed in the booklet."
+    }
+  ]
+}
