@@ -247,8 +247,9 @@
 
   function isQuestionFinished(item) {
     if (!item) return false;
-    if (item.questionId && completedQuestionIds.has(String(item.questionId))) return true;
-    if (item.responseType === "teacher_review") return Boolean(item.response);
+    // Legacy progress can be marked complete after the first wrong answer.
+    // Automatically checked questions must use their own saved attempts instead.
+    if (item.responseType === "teacher_review") return Boolean(item.response) || completedQuestionIds.has(String(item.questionId));
     if (item.responseType === "multipart") {
       var definitions = multipartDefinitions(item);
       var states = item.response && item.response._partStates && typeof item.response._partStates === "object" ? item.response._partStates : {};
@@ -843,7 +844,11 @@
           };
         } else {
           item.response = event.data.response; item.isCorrect = event.data.isCorrect;
-          if (event.data.result === "retry" || event.data.result === "incorrect_final" || event.data.result === "correct") item.attemptCount = Number(item.attemptCount || 0) + 1;
+          // A retry result always means one attempt remains. Do not count the
+          // acknowledgement twice if saved state arrived before its reply.
+          if (event.data.result === "retry") item.attemptCount = 1;
+          else if (event.data.result === "incorrect_final") item.attemptCount = 2;
+          else if (event.data.result === "correct") item.attemptCount = Math.min(2, Number(item.attemptCount || 0) + 1);
         }
         if (isQuestionFinished(item)) completedQuestionIds.add(String(event.data.questionId));
         if (event.data.result === "correct") playFeedback(true);
