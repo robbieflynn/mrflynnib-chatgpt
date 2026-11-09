@@ -34,7 +34,7 @@ for(const [id,label,r,angles,den,n,target] of [
  const text=answer(id,label);
  assert.equal((text.match(/mathrm\{e\}/g)||[]).length,n);
  assert.equal(angles.length,n);assert.equal(new Set(angles).size,n);
- for(const a of angles) {assert(a/den>-1&&a/den<=1);assert(text.includes(`${a}\\pi\\mathrm{i}/${den}`));near(r**n*Math.cos(n*a*Math.PI/den),target[0]);near(r**n*Math.sin(n*a*Math.PI/den),target[1]);}
+ for(const a of angles) {assert(a/den>-1&&a/den<=1);assert(text.includes(`\\frac{${a}\\pi\\mathrm{i}}{${den}}`));near(r**n*Math.cos(n*a*Math.PI/den),target[0]);near(r**n*Math.sin(n*a*Math.PI/den),target[1]);}
 }
 for(const [label,sign] of [['b(i)',1],['b(ii)',-1]]) {
  const a=Math.sqrt(10)/2,b=sign*Math.sqrt(30)/2;
