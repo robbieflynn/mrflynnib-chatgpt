@@ -97,10 +97,15 @@
           toolButton('precision-eraser', 'Eraser', false, 'Eraser (E): rub out part of your writing') +
           toolButton('lasso', 'Lasso', false, 'Select writing and drag to move it') +
           toolButton('undo', 'Undo', undefined, 'Undo the last change (Ctrl+Z or Command+Z)') +
+          '<div class="qb-whiteboard-size-controls">' +
           '<div class="qb-whiteboard-sizes" role="group" aria-label="Pen size">' +
             ['Fine', 'Medium', 'Thick', 'Bold'].map(function (label, index) {
               return '<button type="button" class="qb-whiteboard-tool" data-tool-size="' + index + '" aria-label="' + label + ' pen" title="' + label + ' pen" aria-pressed="' + (index === 1) + '"><span aria-hidden="true"></span></button>';
             }).join('') +
+          '</div>' +
+          '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type" hidden>' +
+            toolButton('stroke-eraser', 'Erase whole stroke', false, 'Remove a whole pen or highlighter stroke') +
+          '</div>' +
           '</div>' +
         '</div>' +
         '<div class="qb-whiteboard-tools" role="toolbar" aria-label="Whiteboard tools">' +
@@ -110,9 +115,6 @@
             toolButton('blank-paper', 'Blank', false) +
           '</div>' +
           toolButton('highlighter', 'Highlighter', false) +
-          '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type" hidden>' +
-            toolButton('stroke-eraser', 'Erase whole stroke', false, 'Remove a whole pen or highlighter stroke') +
-          '</div>' +
           toolButton('pan', 'Pan', false) +
           toolButton('move-image', 'Move image', false) +
           toolButton('copy-question', 'Copy question', false, 'Copy the complete question onto this whiteboard') +

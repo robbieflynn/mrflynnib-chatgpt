@@ -613,3 +613,6 @@
 .qb-whiteboard-pointer[hidden] { display: none; }
 .qb-whiteboard-pointer svg { display: block; width: 100%; height: 100%; }
 .qb-whiteboard-pointer-eraser { transform: translate(-50%, -50%); border: 1px solid #475569; border-radius: 50%; background: rgb(255 255 255 / 40%); }
+
+.qb-whiteboard-size-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 100%; }
+.qb-whiteboard-quick-tools .qb-whiteboard-eraser-tools { padding: 0; border: 0; }

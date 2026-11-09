@@ -29,7 +29,7 @@ Rob requested a Formula booklet button wherever current IB questions appear, inc
 
 Rob refined the Formula booklet button to match its neighbouring question controls: the same compact height, pill shape and spacing, with a small book icon and a restrained blue outline.
 
-On 9 November 2026, Rob requested fixing the pen cursor disappearing while writing, replacing the oversized pen cursor with a compact indicator, and one shared size selector for Pen and Eraser. The selected tool determines which size is changed; changing eraser size must not switch to Pen. Preserve saved drawings, independent pen/eraser size choices, undo, multipart work and pen-back erasing.
+On 9 November 2026, Rob requested fixing the pen cursor disappearing while writing, replacing the oversized pen cursor with a compact indicator, and one shared size selector for Pen and Eraser. When Eraser is selected, place Erase whole stroke directly beside the four size choices in the same drawing toolbar, rather than among the general whiteboard tools. The regular Eraser provides precision erasing. The selected tool determines which size is changed; changing eraser size must not switch to Pen. Preserve saved drawings, independent pen/eraser size choices, undo, multipart work and pen-back erasing.
 
 ## Purpose of this file
 
