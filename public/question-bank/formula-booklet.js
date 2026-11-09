@@ -34,7 +34,7 @@
     if (!doc.querySelector('link[data-formula-styles]')) {
       var style = doc.createElement('link');
       style.rel = 'stylesheet';
-      style.href = '/question-bank/formula-booklet.css?v=1';
+      style.href = '/question-bank/formula-booklet.css?v=2';
       style.setAttribute('data-formula-styles', '');
       doc.head.appendChild(style);
     }

@@ -27,6 +27,8 @@ Rob approved four course-specific formula booklets for AA HL, AA SL, AI HL and A
 
 Rob requested a Formula booklet button wherever current IB questions appear, including the public bank, student assignments, submitted/teacher review, lesson practice and teacher selection views. Use the viewing course, including when practice reuses a question from another course. The shared IB bank renderer provides the button per question; a viewport-sized right-hand dialog hosts the matching booklet, with Topic 1–5 navigation and a full-width mobile view. Preserve question position, answers and whiteboard work when opening and closing. Load the selected booklet only on demand. The four IB booklets must not appear in IGCSE or legacy-course views. This feature is being prepared for preview review; production publication is not part of this change.
 
+Rob refined the Formula booklet button to match its neighbouring question controls: the same compact height, pill shape and spacing, with a small book icon and a restrained blue outline.
+
 ## Purpose of this file
 
 This is the durable product memory for MrFlynnIB. Future Codex tasks must read it before making decisions. It captures the important context from earlier ChatGPT and Codex conversations so Rob does not need to explain the business repeatedly. It is a living summary, not a verbatim transcript; update it when lasting decisions change.
