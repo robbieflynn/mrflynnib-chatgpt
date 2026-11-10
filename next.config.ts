@@ -19,6 +19,7 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  outputFileTracingIncludes: { "/api/assignments/*/hints": ["./public/question-bank/solutions/**/*.js"] },
   async redirects() {
     return [
       // These two self-contained banks were superseded by the current course-aware
