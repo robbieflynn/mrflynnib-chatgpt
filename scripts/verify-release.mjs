@@ -5,6 +5,8 @@ import { delimiter, dirname } from "node:path";
 
 const checks = [
   ["Lint", "node_modules/eslint/bin/eslint.js", "."],
+  ["Student access classification", "scripts/test-student-access.mjs"],
+  ["Student directory filters", "scripts/test-student-directory.mjs"],
   ["Whiteboard scribble recognition", "scripts/test-whiteboard-gestures.mjs"],
   ["Assignment whiteboard regression", "scripts/test-assignment-whiteboards.mjs"],
   ["Delayed whiteboard initialisation", "scripts/test-assignment-whiteboards.mjs", "--late-board"],
