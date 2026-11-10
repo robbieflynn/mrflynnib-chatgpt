@@ -23,15 +23,15 @@ export default async function StudentAccountsPage({ searchParams }: { searchPara
   for (const table of ["platform_entitlements", "organization_license_seats"]) {
     for (let offset = 0; ; offset += 500) {
       const fields = table === "platform_entitlements"
-        ? "id,user_id,product_code,status,source,starts_at,expires_at"
+        ? "id,user_id,product_code,status,source,starts_at,expires_at,livemode:metadata->>livemode"
         : "license_id,user_id,revoked_at,organization_licenses(product_code,status,starts_at,ends_at)";
       const request = supabase.from(table).select(fields);
       const ordered = table === "platform_entitlements" ? request.order("id") : request.order("license_id").order("user_id");
       const result = await ordered.range(offset, offset + 499);
       if (result.error) { accessError = true; break; }
       for (const value of result.data || []) {
-        const row = value as unknown as StudentAccessRecord & { user_id: string; revoked_at?: string; organization_licenses?: { product_code: string; status: string; starts_at: string; ends_at: string | null } };
-        let record: StudentAccessRecord = row;
+        const row = value as unknown as StudentAccessRecord & { user_id: string; livemode?: string; revoked_at?: string; organization_licenses?: { product_code: string; status: string; starts_at: string; ends_at: string | null } };
+        let record: StudentAccessRecord = { product_code: row.product_code, source: row.source === "stripe" && row.livemode === "false" ? "stripe_test" : row.source, status: row.status, starts_at: row.starts_at, expires_at: row.expires_at };
         if (table === "organization_license_seats") {
           const licence = row.organization_licenses;
           if (!licence || row.revoked_at) continue;
