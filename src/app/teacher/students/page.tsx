@@ -4,7 +4,6 @@ import { AccountMenu } from "@/components/account-menu";
 import { StudentAccountDirectory } from "@/components/student-account-directory";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { requireAdmin } from "@/lib/account-access";
-import { createAdminClient } from "@/lib/supabase/admin";
 import type { StudentAccessRecord } from "@/lib/student-accounts";
 import { studentAccountSummaries } from "@/lib/student-accounts";
 
@@ -18,7 +17,6 @@ export default async function StudentAccountsPage({ searchParams }: { searchPara
   const now = Date.now();
   const { data, error } = await supabase.rpc("admin_student_accounts");
   const accounts = studentAccountSummaries(data);
-  const admin = createAdminClient();
   let accessError = false;
   // Paginate both sources: Supabase caps rows even when no limit is requested.
   const accessByUser = new Map<string, StudentAccessRecord[]>();
@@ -27,7 +25,7 @@ export default async function StudentAccountsPage({ searchParams }: { searchPara
       const fields = table === "platform_entitlements"
         ? "id,user_id,product_code,status,source,starts_at,expires_at"
         : "license_id,user_id,revoked_at,organization_licenses(product_code,status,starts_at,ends_at)";
-      const request = admin.from(table).select(fields);
+      const request = supabase.from(table).select(fields);
       const ordered = table === "platform_entitlements" ? request.order("id") : request.order("license_id").order("user_id");
       const result = await ordered.range(offset, offset + 499);
       if (result.error) { accessError = true; break; }
