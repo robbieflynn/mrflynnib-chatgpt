@@ -13,6 +13,9 @@ export const metadata: Metadata = { title: "Student accounts", robots: { index: 
 export default async function StudentAccountsPage({ searchParams }: { searchParams: Promise<{ error?: string; success?: string }> }) {
   const { supabase } = await requireAdmin();
   const message = await searchParams;
+  // Server request snapshot keeps expiry classification consistent across all rows.
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
   const { data, error } = await supabase.rpc("admin_student_accounts");
   const accounts = studentAccountSummaries(data);
   const admin = createAdminClient();
@@ -66,7 +69,7 @@ export default async function StudentAccountsPage({ searchParams }: { searchPara
         <div className="dashboard-section-heading"><div><p className="eyebrow">Account directory</p><h2>All student accounts</h2></div><p className="muted">{confirmedCount} of {accounts.length} have confirmed their email address. Times are shown in Dubai time.</p></div>
         {error ? <p className="form-message form-error">Student accounts could not be loaded just now. Please reload the page.</p> : null}
         {accessError ? <p className="form-message form-error">Access details could not be loaded. Reload to view access filters and expiry dates.</p> : null}
-        {!error ? <StudentAccountDirectory accounts={accounts} now={Date.now()} /> : null}
+        {!error ? <StudentAccountDirectory accounts={accounts} now={now} /> : null}
         <div className="cluster"><Link className="button button-secondary button-small" href="/teacher">Back to teacher dashboard</Link><Link className="button button-secondary button-small" href="/teacher/accounts">View teacher accounts</Link></div>
       </Container>
     </section>
