@@ -217,7 +217,6 @@ export function AccountMenu({
             {showNavigation ? <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link> : null}
             <Link href={settingsHref} role="menuitem" onClick={() => setOpen(false)}>Account settings</Link>
             <Link href={accessHref} role="menuitem" onClick={() => setOpen(false)}>Manage access</Link>
-            {showNavigation ? <Link href={displayedAccount.curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"} role="menuitem" onClick={() => setOpen(false)}>Previous Teachable course</Link> : null}
           </nav> : null}
           {!isPlatformReview ? <button className="account-menu-signout" type="button" role="menuitem" disabled={signingOut} onClick={signOut}>
             <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8 4H4v12h4M12 6l4 4-4 4M16 10H8" /></svg>

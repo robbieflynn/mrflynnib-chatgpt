@@ -66,7 +66,6 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <div className="stack"><Eyebrow>Course access</Eyebrow><h2>One complete course. Two simple options.</h2><p>Try representative lessons first, then choose the access length that suits you.</p></div>
             <ul className="access-plan-list">{product.plans.map((plan) => <li className={plan.badge ? "access-plan-recommended" : ""} key={plan.id}><div><strong>{plan.label}</strong>{plan.badge ? <span>{plan.badge}</span> : null}<small>Complete course access. One payment.</small></div><b>US${plan.priceUsd}</b></li>)}</ul>
             <ButtonLink href={`/account/access?course=${product.id}`}>Try lessons and choose access</ButtonLink>
-            <ButtonLink href="/go/my-courses" secondary>Already enrolled on Teachable?</ButtonLink>
             <small>Secure checkout uses your Mr Flynn IB account. No automatic renewal.</small>
           </aside>
         </Container>

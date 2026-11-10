@@ -92,16 +92,6 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="legacy-course-strip" aria-label="Previous Teachable course access">
-        <Container>
-          <p><strong>Already paid on Teachable?</strong> Sign in or create your new account with the same email address. After you confirm it, a matching active course is added automatically, with no new payment.</p>
-          <div className="legacy-course-actions">
-            <Link href="/account?source=teachable">Use my Teachable email <span aria-hidden="true">→</span></Link>
-            <Link className="legacy-course-secondary" href="/go/my-courses">Open previous course <span aria-hidden="true">↗</span></Link>
-          </div>
-        </Container>
-      </section>
-
       <section className="section offers-section" id="offers">
         <Container className="stack-xl">
           <div className="homepage-route-heading">
