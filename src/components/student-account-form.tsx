@@ -279,7 +279,6 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
       {mode === "reset" || mode === "resend" ? <button className="account-text-button" type="button" onClick={() => { setMode("sign-in"); setError(null); setMessage(null); }}>Back to sign in</button> : null}
       <div className="account-legacy-route">
         <span><strong>Already paid on Teachable?</strong><small>Use the same email address in this form. After confirmation, any matching active course is added automatically without another payment.</small></span>
-        <Link href={curriculum === "igcse" ? "/go/igcse-course" : "/go/my-courses"}>Open previous course <span aria-hidden="true">↗</span></Link>
       </div>
       <p className="small muted">This is the separate {curriculum === "igcse" ? "IGCSE" : "IB"} Mathematics account area. {mode === "sign-in" && curriculum === "ib" ? "Sign in normally whether your access is Free or Plus. " : "Student accounts save question-bank progress and whiteboard working. Teacher accounts open the teacher dashboard and classroom tools. "}Creating an account does not subscribe you to marketing emails.</p>
       <p className="small muted">By creating an account, you agree to the <Link className="text-link" href={`${legalBase}/terms`}>Terms of Use</Link> and acknowledge the <Link className="text-link" href={`${legalBase}/privacy`}>Privacy Policy</Link>.</p>

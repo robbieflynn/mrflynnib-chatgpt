@@ -358,10 +358,6 @@ function configureCurriculumExperience(curriculum) {
   document.title = isIgcse ? "IGCSE Mathematics course | Mr Flynn" : "My learning | Mr Flynn IB";
   document.getElementById("brandLearningHomeLink").setAttribute("aria-label", isIgcse ? "Back to IGCSE Mathematics" : "Back to My learning");
   signOutDestination = isIgcse ? "/igcse/account" : "/account";
-  const legacyCourseHref = isIgcse ? "/go/igcse-course" : "/go/my-courses";
-  document.getElementById("topbarLegacyCourseLink").href = legacyCourseHref;
-  document.getElementById("topbarLegacyCourseLink").hidden = isIgcse;
-  document.getElementById("legacyCourseLink").href = legacyCourseHref;
   const hasPastPapers = enrolledCourseDefinitions.some((definition) => pastPaperLibrary.courses?.[definition.code]);
   document.querySelectorAll('[data-view="pastPapers"]').forEach((element) => { element.hidden = !hasPastPapers; });
   document.querySelector(".study-paths")?.classList.toggle("is-single-path", !hasPastPapers);
@@ -1352,7 +1348,6 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("coursesEyebrow").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
   document.getElementById("coursesTitle").textContent = isIgcse ? "Your IGCSE Mathematics course" : "Choose your course";
   document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three free lessons in every syllabus topic.";
-  document.getElementById("teachableMigrationNote").hidden = isIgcse;
   document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
 }
 

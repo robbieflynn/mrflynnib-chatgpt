@@ -94,7 +94,7 @@ export const faqs = [
   {
     question: "Where are the courses hosted?",
     answer:
-      "Course lessons and student access are provided through your Mr Flynn IB account on MrFlynnIB.com, with secure video delivery through Bunny Stream. Teachable remains available as a legacy option during the transition.",
+      "Course lessons and student access are provided through your Mr Flynn IB account on MrFlynnIB.com, with secure video delivery through Bunny Stream.",
   },
   {
     question: "Which IB Mathematics courses are covered?",
@@ -114,7 +114,7 @@ export const faqs = [
   {
     question: "I am already enrolled. How do I access my lessons?",
     answer:
-      "Sign in or create a Mr Flynn IB account using the same email address as your Teachable account. After you confirm the address, any matching active course is added automatically without another payment. The legacy Teachable site also remains available during the transition.",
+      "Sign in or create a Mr Flynn IB account using the same email address as your Teachable account. After you confirm the address, any matching active course is added automatically without another payment.",
   },
   {
     question: "How can I find out about tutoring?",
