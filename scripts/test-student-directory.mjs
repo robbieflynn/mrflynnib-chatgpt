@@ -14,9 +14,9 @@ const React = require("react");
 const { createRoot } = require("react-dom/client");
 function load(file, overrides = {}) {
   const code = ts.transpileModule(readFileSync(file, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
-  const module = { exports: {} };
-  new Function("require", "module", "exports", code)((name) => overrides[name] || require(name), module, module.exports);
-  return module.exports;
+  const testModule = { exports: {} };
+  new Function("require", "module", "exports", code)((name) => overrides[name] || require(name), testModule, testModule.exports);
+  return testModule.exports;
 }
 const access = load("src/lib/student-accounts.ts");
 const { StudentAccountDirectory } = load("src/components/student-account-directory.tsx", {
