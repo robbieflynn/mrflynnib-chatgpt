@@ -682,3 +682,7 @@ Teachers can reuse an existing assignment in another compatible class. Reuse cop
 ## Teachable link placement, 10 November 2026
 
 Rob approved removing visible Teachable links everywhere except one shared-footer link labelled **Previous courses (Teachable)**. This supersedes earlier requirements for previous-course links on the homepage, account entry, account menus, course pages and access-management pages. Main course and login actions lead into the native Mr Flynn IB platform. Preserve old bookmarked redirect routes, verified entitlement migration, manual access checks and accurate historical purchase/privacy disclosures. This is a navigation cleanup, not closure of Teachable or removal of existing customers’ access.
+
+## Complete student directory, 10 November 2026
+
+Rob requested fixing the registered-student total stopping at 1,000. The administrator directory must load every student across API result batches and verify completeness against an exact database count. Search, filters and summary statistics must cover the complete directory. Preserve administrator-only access. A failed or inconsistent batch must show a retry message rather than a partial total or a misleading zero.
