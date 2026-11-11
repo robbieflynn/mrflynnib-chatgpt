@@ -4,7 +4,7 @@ import { IgcseQuestionBankEmbed } from "@/components/igcse-question-bank-embed";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { getQuestionBankDashboardLink } from "@/lib/question-bank-dashboard-link";
 
-export const metadata: Metadata = { title: "Free Edexcel IGCSE Mathematics question bank", description: "Practise Edexcel IGCSE Mathematics questions by topic and difficulty, with complete mark schemes." };
+export const metadata: Metadata = { title: "Edexcel IGCSE Mathematics question bank", description: "Practise Edexcel IGCSE Mathematics questions by topic and difficulty, with complete mark schemes." };
 
 export default async function IgcseQuestionBankPage({ searchParams }: { searchParams: Promise<{ topic?: string | string[]; subtopic?: string | string[] }> }) {
   const filters = await searchParams;

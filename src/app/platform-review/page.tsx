@@ -45,7 +45,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
   const courseName = isIgcse ? "Edexcel IGCSE Mathematics" : "Analysis & Approaches HL";
   const continueTopic = isIgcse ? "Topic 1 · Number" : "Topic 1 · Number and algebra";
   const continueLesson = isIgcse ? "Surds (Expanding Brackets)" : "More exponents";
-  const continueDetail = "Free lesson · Video and practice included";
+  const continueDetail = "Sample lesson · Video and practice included";
   const freeLessonCount = isIgcse ? 18 : 15;
   const freeLessonPercentage = isIgcse ? 6 : 7;
   const freeLessonProgress = isIgcse ? "22deg" : "25deg";
@@ -57,7 +57,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
     <section className={`dashboard-hero student-dashboard-hero student-home-v2-hero platform-review-student-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
       <Container className="dashboard-hero-shell">
         <div className="dashboard-account-row">
-          <div className="platform-access-summary"><span>Free account</span><small>Full question bank and classroom access</small><Link href={isIgcse ? "/igcse/courses" : "/account/access"}>{isIgcse ? "Open course" : "Explore course access"}</Link></div>
+          <div className="platform-access-summary"><span>Standard account</span><small>Full question bank and classroom access</small><Link href={isIgcse ? "/igcse/courses" : "/account/access"}>{isIgcse ? "Open course" : "Explore course access"}</Link></div>
           <div className="platform-review-account"><span>MF</span><strong>Maya Flynn</strong><small>Student</small></div>
         </div>
         <div className="dashboard-hero-layout">
@@ -77,13 +77,13 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <article className="student-continue-card">
             <div className="student-continue-copy"><span className="student-focus-label">Continue learning</span><small>{continueTopic}</small><h2>{continueLesson}</h2><p>{continueDetail}</p><Link className="student-inline-action" href={courseReviewHref}>Open lesson <span aria-hidden="true">→</span></Link></div>
             {!isIgcse ? <Image src="/learn/assets/course-aa-hl.png" alt="" width={250} height={250} loading="eager" /> : <div className="student-continue-symbol" aria-hidden="true">x²</div>}
-            <div className="student-continue-meter"><span><strong>1 of {freeLessonCount}</strong> free lessons complete</span><i><b style={{ width: `${freeLessonPercentage}%` }} /></i></div>
+            <div className="student-continue-meter"><span><strong>1 of {freeLessonCount}</strong> sample lessons complete</span><i><b style={{ width: `${freeLessonPercentage}%` }} /></i></div>
           </article>
         </section>
 
         <nav className="student-platform-nav student-platform-nav-v2" aria-label="Your learning areas">
-          <Link className="is-course" href={courseReviewHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>3 free lessons in every topic</small></span><b aria-hidden="true">→</b></Link>
-          <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>All questions free</small></span><b aria-hidden="true">→</b></Link>
+          <Link className="is-course" href={courseReviewHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>3 sample lessons in every topic</small></span><b aria-hidden="true">→</b></Link>
+          <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Practice by topic</small></span><b aria-hidden="true">→</b></Link>
           <Link className="is-assignments" href="#assignments"><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>Two due soon</small></span><b aria-hidden="true">↓</b></Link>
           <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
         </nav>
@@ -100,9 +100,9 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Your progress</h2></div><p className="muted">Course lessons and question-bank practice are kept separate, so each number is meaningful.</p></div>
           <div className="student-progress-grid student-progress-grid-v2">
             <article className="student-progress-summary is-course-progress">
-              <div><p className="student-dashboard-kicker">Free course preview</p><strong className="student-progress-number">1 of {freeLessonCount}</strong><span>{courseName}</span></div>
+              <div><p className="student-dashboard-kicker">Course preview</p><strong className="student-progress-number">1 of {freeLessonCount}</strong><span>{courseName}</span></div>
               <div className="student-progress-ring" style={{ "--student-progress": freeLessonProgress } as CSSProperties}><span>{freeLessonPercentage}%</span></div>
-              <dl><div><dt>Lessons watched</dt><dd>1</dd></div><div><dt>Practice sets</dt><dd>1</dd></div><div><dt>Free lessons left</dt><dd>{freeLessonCount - 1}</dd></div></dl>
+              <dl><div><dt>Lessons watched</dt><dd>1</dd></div><div><dt>Practice sets</dt><dd>1</dd></div><div><dt>Sample lessons left</dt><dd>{freeLessonCount - 1}</dd></div></dl>
               <Link className="student-inline-action" href={courseReviewHref}>Continue course →</Link>
             </article>
             <article className="student-progress-summary is-bank-progress">
@@ -115,7 +115,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
         </section>
 
         <section className="student-resource-row" aria-label="More ways to learn">
-          {!isIgcse ? <Link className="student-resource-card is-papers" href={`${courseReviewHref}&course=aa-hl&view=past-papers`}><span className="student-resource-icon" aria-hidden="true">P</span><span><small>Exam preparation</small><strong>Past-paper solutions</strong><em>Specimen and May 2021 are free</em></span><b aria-hidden="true">→</b></Link> : <Link className="student-resource-card is-papers" href={questionBankHref}><span className="student-resource-icon" aria-hidden="true">Q</span><span><small>Independent practice</small><strong>Question bank</strong><em>Filter by topic and difficulty</em></span><b aria-hidden="true">→</b></Link>}
+          {!isIgcse ? <Link className="student-resource-card is-papers" href={`${courseReviewHref}&course=aa-hl&view=past-papers`}><span className="student-resource-icon" aria-hidden="true">P</span><span><small>Exam preparation</small><strong>Past-paper solutions</strong><em>Specimen and May 2021 samples</em></span><b aria-hidden="true">→</b></Link> : <Link className="student-resource-card is-papers" href={questionBankHref}><span className="student-resource-icon" aria-hidden="true">Q</span><span><small>Independent practice</small><strong>Question bank</strong><em>Filter by topic and difficulty</em></span><b aria-hidden="true">→</b></Link>}
           <Link className="student-resource-card is-saved" href={questionBankHref}><span className="student-resource-icon" aria-hidden="true">18</span><span><small>Your work</small><strong>Saved whiteboards</strong><em>Continue from any device</em></span><b aria-hidden="true">→</b></Link>
         </section>
 
@@ -125,7 +125,7 @@ function StudentHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
           <details className="join-class-panel"><summary>Join another class<span aria-hidden="true">+</span></summary><div className="join-class-form"><label className="field"><span>Class code</span><input aria-label="Example class code" placeholder="ABC1234" readOnly /></label><button className="button button-small" type="button">Join class</button></div></details>
         </section>
 
-        {isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Course access</span><h2>Continue your IGCSE course</h2><p>Your IGCSE question bank, classes and assignments are free. Explore the IGCSE course lessons and past-paper solutions through your Mr Flynn account.</p></div><Link className="button button-secondary" href="/igcse/courses">Open course</Link></section> : <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your complete question bank, classes and assignments stay free. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href="/account/access">See Plus access</Link></section>}
+        {isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Course access</span><h2>Continue your IGCSE course</h2><p>Your account includes the IGCSE question bank, classes and assignments. Explore the IGCSE course lessons and past-paper solutions through your Mr Flynn account.</p></div><Link className="button button-secondary" href="/igcse/courses">Open course</Link></section> : <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Standard account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your account includes the question bank, classes and assignments. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href="/account/access">See Plus access</Link></section>}
       </Container>
     </section>
   </>;
@@ -149,7 +149,7 @@ function TeacherHome({ curriculum }: { curriculum: "ib" | "igcse" }) {
   const course = isIgcse ? "IGCSE" : "AA HL";
   const className = isIgcse ? "Year 11 IGCSE" : "Year 12 AA HL";
   return <>
-    <section className={`dashboard-hero teacher-dashboard-hero ${isIgcse ? "teacher-dashboard-hero-igcse" : ""}`}><Container className="dashboard-hero-shell"><div className="dashboard-account-row"><div className="platform-access-summary teacher-early-access"><span>Free teacher account</span><small>Classes, assignments and Test Maker included</small><Link href={isIgcse ? "/igcse/schools" : "/schools"}>School access</Link></div><div className="platform-review-account"><span>RF</span><strong>Mr Flynn</strong><small>Teacher</small></div></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">{isIgcse ? "IGCSE" : "IB"} teacher dashboard</span><h1>Welcome, Mr Flynn</h1><p>Create and manage your own classes. Students join with the code you share.</p></div><div className="dashboard-hero-stats"><div><strong>2</strong><span>classes</span></div><div><strong>38</strong><span>students</span></div><div><strong>9</strong><span>assignments</span></div></div></div></Container></section>
+    <section className={`dashboard-hero teacher-dashboard-hero ${isIgcse ? "teacher-dashboard-hero-igcse" : ""}`}><Container className="dashboard-hero-shell"><div className="dashboard-account-row"><div className="platform-access-summary teacher-early-access"><span>Teacher account</span><small>Classes, assignments and Test Maker included</small><Link href={isIgcse ? "/igcse/schools" : "/schools"}>School access</Link></div><div className="platform-review-account"><span>RF</span><strong>Mr Flynn</strong><small>Teacher</small></div></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">{isIgcse ? "IGCSE" : "IB"} teacher dashboard</span><h1>Welcome, Mr Flynn</h1><p>Create and manage your own classes. Students join with the code you share.</p></div><div className="dashboard-hero-stats"><div><strong>2</strong><span>classes</span></div><div><strong>38</strong><span>students</span></div><div><strong>9</strong><span>assignments</span></div></div></div></Container></section>
     <section className={`section-tight teacher-dashboard ${isIgcse ? "igcse-teacher-dashboard" : ""}`}><Container className="stack-xl">
       <section className="teacher-tool-banner"><div className="teacher-tool-banner-icon" aria-hidden="true">T</div><div><p className="eyebrow">Teacher tools</p><h2>{isIgcse ? "IGCSE" : "IB"} Test Maker</h2><p>Select questions, then save, reuse and print a formatted paper, mark scheme and question-level analysis.</p></div><Link className="button" href={isIgcse ? "/igcse/teacher/test-maker" : "/teacher/test-maker"}>Open Test Maker</Link></section>
       <div className="teacher-layout"><div className="stack-lg"><div className="dashboard-section-heading"><div><p className="eyebrow">Classes and assignments</p><h2>Your classes</h2></div><p className="muted">Open a class to set work, share its joining code and review student progress.</p></div><div className="teacher-class-grid"><Link className="teacher-class-card" href={reviewHref(curriculum, "teacher", "class")}><div className="teacher-class-card-top"><DashboardIcon name="class" /><span className="badge">{course}</span></div><h3>{className}</h3><div className="teacher-card-stats"><span><strong>22</strong> students</span><span><strong>6</strong> assignments</span></div><small className="teacher-class-code">Class code <strong>A7K9P2</strong></small><span className="text-link">Open class</span></Link><Link className="teacher-class-card" href={reviewHref(curriculum, "teacher", "class")}><div className="teacher-class-card-top"><DashboardIcon name="class" /><span className="badge">{course}</span></div><h3>Revision group</h3><div className="teacher-card-stats"><span><strong>16</strong> students</span><span><strong>3</strong> assignments</span></div><small className="teacher-class-code">Class code <strong>M4T8Q1</strong></small><span className="text-link">Open class</span></Link></div></div><aside className="account-card teacher-create-panel stack"><DashboardIcon name="add" /><div><p className="eyebrow">New class</p><h3>Create a class</h3><p className="muted small">Each teacher creates and manages their own classes.</p></div><label className="field"><span>Class name</span><input value={className} readOnly /></label><label className="field"><span>Course</span><select value={course} disabled><option>{course}</option></select></label><button className="button" type="button">Create class</button></aside></div>

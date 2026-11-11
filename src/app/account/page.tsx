@@ -89,7 +89,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       : isPlusJourney
         ? "Choose Student or Teacher below to see the right Plus access. Your account keeps course access, lesson progress and question-bank work together."
         : isSignUpJourney
-          ? "Choose Student or Teacher, then choose Free or Plus."
+          ? "Choose Student or Teacher, then choose Standard or Plus."
           : "Sign in to continue to your learning or teaching space.";
     return (
       <>
@@ -97,7 +97,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <Container className="stack-sm"><Eyebrow>{isIgcseJourney ? "IGCSE Mathematics account" : isTeacherJourney ? "Teacher account" : isTeachableJourney ? "Existing Teachable student" : isPlusJourney ? "Mr Flynn IB Plus" : isSignUpJourney ? "Create account" : "Sign in"}</Eyebrow><h1>{title}</h1><p>{isIgcseJourney ? isSignUpJourney ? "Create your account, or sign in with the same email and password you use for Mr Flynn IB." : "Sign in with your Mr Flynn account to open the IGCSE learning or teaching area." : intro}</p></Container>
         </section>
         <section className="section-tight account-entry-section"><Container className="stack-xl">
-          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} curriculumOverride={isIgcseJourney ? "igcse" : undefined} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Add Teacher Plus at any time for all four IB courses.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and teachers.</p><ul><li>Student Plus includes every Free feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
+          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} curriculumOverride={isIgcseJourney ? "igcse" : undefined} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Add Teacher Plus at any time for all four IB courses.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and teachers.</p><ul><li>Student Plus includes every Standard feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
         </Container></section>
       </>
     );
@@ -135,7 +135,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               {accountError ? <p className="form-message form-error">{accountError}</p> : null}
               <div className="stack-sm">
                 <h2>Keep everything in one account</h2>
-                <p>Your question-bank progress and saved work will remain in place. Approved-school teachers activate immediately; other free teacher accounts are sent to Mr Flynn for approval.</p>
+                <p>Your question-bank progress and saved work will remain in place. Approved-school teachers activate immediately; other teacher accounts are sent to Mr Flynn for approval.</p>
               </div>
               <div className="teacher-access-gate-actions">
                 <form action={requestTeacherAccess}><input name="curriculum" type="hidden" value={isIgcse ? "igcse" : "ib"} /><button className="button" type="submit">Request teacher access</button></form>
@@ -151,7 +151,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (teacherRequested) {
     const studentDashboardHref = isIgcse ? "/igcse/account" : "/account";
     return <>
-      <PageHero eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"} title="Your teacher request has been sent" intro="Mr Flynn will review your free teacher account request. You will receive access after it is approved." />
+      <PageHero eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"} title="Your teacher request has been sent" intro="Mr Flynn will review your teacher account request. You will receive access after it is approved." />
       <section className="section-tight"><Container className="narrow"><div className="account-card teacher-access-gate stack-lg"><h2>Your existing work is safe</h2><p>You can continue using your student learning area while the request is waiting.</p><Link className="button button-secondary" href={studentDashboardHref}>Return to learning</Link></div></Container></section>
     </>;
   }
@@ -214,7 +214,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             <button className="button" name="destination" type="submit" value="home">Continue to my learning home</button>
             <button className="button button-secondary" name="destination" type="submit" value="plus">Continue to Plus options</button>
           </div>
-          <p className="small muted"><strong>One account, whichever route you choose.</strong> Starting free does not prevent you upgrading later. If you already have verified paid or school access, it remains attached to this account.</p>
+          <p className="small muted"><strong>One account, whichever route you choose.</strong> You can upgrade to Plus later. If you already have verified paid or school access, it remains attached to this account.</p>
         </form>
       </Container></section>
     </>;
@@ -337,7 +337,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const completedLessonIds = new Set((lessonProgressRows ?? []).filter((row) => row.completed).map((row) => row.lesson_id));
   const completedLessons = availableLessonIds.filter((lessonId) => completedLessonIds.has(lessonId)).length;
   const courseLessonPercentage = percentage(completedLessons, availableLessonIds.length);
-  const courseLessonLabel = access.paid ? "course lessons" : "free lessons";
+  const courseLessonLabel = access.paid ? "course lessons" : "sample lessons";
   const lastLessonAvailable = Boolean(coursePlatformState?.last_lesson_id && availableLessonIds.includes(coursePlatformState.last_lesson_id));
   return (
     <>
@@ -383,7 +383,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               </div>
             </article>
             <article className="student-continue-card">
-              <div className="student-continue-copy"><span className="student-focus-label">Continue learning</span><small>{progressLabel}</small><h2>{lastLessonAvailable ? "Continue your last lesson" : "Open your course"}</h2><p>{access.paid ? "Every video lesson and its extra practice are unlocked." : "Three complete lessons in every topic are free."}</p><Link className="student-inline-action" href={courseLearningHref}>{lastLessonAvailable ? "Continue course" : "Choose a lesson"} <span aria-hidden="true">→</span></Link></div>
+              <div className="student-continue-copy"><span className="student-focus-label">Continue learning</span><small>{progressLabel}</small><h2>{lastLessonAvailable ? "Continue your last lesson" : "Open your course"}</h2><p>{access.paid ? "Every video lesson and its extra practice are unlocked." : "Try three complete sample lessons in every topic."}</p><Link className="student-inline-action" href={courseLearningHref}>{lastLessonAvailable ? "Continue course" : "Choose a lesson"} <span aria-hidden="true">→</span></Link></div>
               {!isIgcse ? <Image src={`/learn/assets/course-${selectedCourse.slug}.png`} alt="" width={250} height={250} /> : <div className="student-continue-symbol student-continue-igcse" aria-hidden="true"><strong>IGCSE</strong><span>Mathematics</span></div>}
               <div className="student-continue-meter"><span><strong>{completedLessons} of {availableLessonIds.length}</strong> {courseLessonLabel} complete</span><i><b style={{ width: `${courseLessonPercentage}%` }} /></i></div>
             </article>
@@ -391,7 +391,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
           <nav className="student-platform-nav student-platform-nav-v2" aria-label="Your learning areas">
             <Link className="is-course" href={courseLearningHref}><DashboardIcon name="book" /><span><strong>My course</strong><small>{isIgcse ? "Lessons and past-paper solutions" : `${selectedCourse.code} lessons and past-paper solutions`}</small></span><b aria-hidden="true">→</b></Link>
-            <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>All questions free</small></span><b aria-hidden="true">→</b></Link>
+            <Link className="is-question-bank" href={questionBankHref}><DashboardIcon name="progress" /><span><strong>Question bank</strong><small>Practice by topic</small></span><b aria-hidden="true">→</b></Link>
             <Link className="is-assignments" href={assignmentsHref}><DashboardIcon name="assignment" /><span><strong>Assignments</strong><small>{activeAssignments.length ? `${activeAssignments.length} ${activeAssignments.length === 1 ? "task" : "tasks"} due` : completedAssignments.length ? `${completedAssignments.length} past ${completedAssignments.length === 1 ? "assignment" : "assignments"}` : "No work due"}</small></span><b aria-hidden="true">→</b></Link>
             <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
           </nav>
@@ -418,9 +418,9 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Your progress</h2></div><p className="muted">Course lessons and question-bank practice are shown separately, so each number is meaningful.</p></div>
             <div className="student-progress-grid student-progress-grid-v2">
               <article className="student-progress-summary is-course-progress">
-                <div><p className="student-dashboard-kicker">{access.paid ? "Course progress" : "Free course preview"}</p><strong className="student-progress-number">{completedLessons} of {availableLessonIds.length}</strong><span>{isIgcse ? "IGCSE Mathematics" : `${selectedCourse.pathway} ${selectedCourse.level}`}</span></div>
+                <div><p className="student-dashboard-kicker">{access.paid ? "Course progress" : "Course preview"}</p><strong className="student-progress-number">{completedLessons} of {availableLessonIds.length}</strong><span>{isIgcse ? "IGCSE Mathematics" : `${selectedCourse.pathway} ${selectedCourse.level}`}</span></div>
                 <div className="student-progress-ring" style={{ "--student-progress": `${courseLessonPercentage * 3.6}deg` } as CSSProperties}><span>{courseLessonPercentage}%</span></div>
-                <dl><div><dt>Lessons completed</dt><dd>{completedLessons}</dd></div><div><dt>{access.paid ? "Lessons remaining" : "Free lessons remaining"}</dt><dd>{Math.max(0, availableLessonIds.length - completedLessons)}</dd></div><div><dt>Access</dt><dd>{access.paid ? "Plus" : "Free"}</dd></div></dl>
+                <dl><div><dt>Lessons completed</dt><dd>{completedLessons}</dd></div><div><dt>{access.paid ? "Lessons remaining" : "Sample lessons remaining"}</dt><dd>{Math.max(0, availableLessonIds.length - completedLessons)}</dd></div><div><dt>Access</dt><dd>{access.paid ? "Plus" : "Standard"}</dd></div></dl>
                 <Link className="student-inline-action" href={courseLearningHref}>Continue course →</Link>
               </article>
               <article className="student-progress-summary is-bank-progress">
@@ -502,7 +502,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           </section>
 
           <section className="student-resource-row" aria-label="More ways to learn">
-            <Link className="student-resource-card is-papers" href={`${courseLearningHref}${courseLearningHref.includes("?") ? "&" : "?"}view=past-papers`}><span className="student-resource-icon" aria-hidden="true">P</span><span><small>Exam preparation</small><strong>Past-paper solutions</strong><em>{isIgcse ? "Work through exam-style questions" : "Specimen and May 2021 are free"}</em></span><b aria-hidden="true">→</b></Link>
+            <Link className="student-resource-card is-papers" href={`${courseLearningHref}${courseLearningHref.includes("?") ? "&" : "?"}view=past-papers`}><span className="student-resource-icon" aria-hidden="true">P</span><span><small>Exam preparation</small><strong>Past-paper solutions</strong><em>{isIgcse ? "Work through exam-style questions" : "Specimen and May 2021 samples"}</em></span><b aria-hidden="true">→</b></Link>
             <Link className="student-resource-card is-saved" href={questionBankHref}><span className="student-resource-icon" aria-hidden="true">{whiteboardCount ?? 0}</span><span><small>Your work</small><strong>Saved whiteboards</strong><em>Continue from any device</em></span><b aria-hidden="true">→</b></Link>
           </section>
 
@@ -527,7 +527,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </details>
           </section>
 
-          {!access.paid && !isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Free account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your complete question bank, classes and assignments stay free. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href={upgradeHref}>See Plus access</Link></section> : null}
+          {!access.paid && !isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Standard account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your account includes the question bank, classes and assignments. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href={upgradeHref}>See Plus access</Link></section> : null}
 
         </Container>
       </section>
