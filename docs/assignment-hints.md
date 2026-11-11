@@ -22,3 +22,7 @@ The API returns only revealed steps, plus availability/count metadata. Complete 
 - `npm run lint`, `npm run build`, question-bank delivery audit, normal and delayed assignment whiteboard tests.
 
 Before release, test an authenticated disposable assignment in the shared preview: switch hints on, reveal two steps as its student, refresh, confirm counts in both teacher views, disable hints, submit and reopen. The local browser fixture uses sample data and is not evidence of this authenticated round trip.
+
+## Signed-in verification, 11 November 2026
+
+Using the existing disposable QA class and Robbie test account, two hints were revealed and restored after refresh. The approved submission retained both steps and the server rejected an additional request. Teacher summary and per-question review both reported exactly two hints; switching hints off persisted. A stale client reveal button after submission was found and corrected by responding to the trusted parent assignment-state message; its regression checks cover preserving steps and reloading availability when work is returned. Full release verification passed after this correction. Final returned-work checks and production verification remain pending.
