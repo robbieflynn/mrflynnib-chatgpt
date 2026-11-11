@@ -31,9 +31,9 @@ export function currentStudentAccess(records: StudentAccessRecord[], now: number
 }
 
 export const studentAccessFilters: Record<string, string> = {
-  all: "All access", plus: "Plus (any source)", free: "Free",
+  all: "All access", plus: "Plus (any source)", free: "Standard",
   stripe: "Paid individually (Stripe)", stripe_test: "Test payment", licence: "School licence",
-  school: "Approved school (free)", teachable: "Transferred from Teachable",
+  school: "Approved school (complimentary)", teachable: "Transferred from Teachable",
   admin: "Complimentary", promotion: "Access code / promotion", expired: "Expired access",
 };
 

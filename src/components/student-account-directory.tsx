@@ -114,7 +114,7 @@ export function StudentAccountDirectory({ accounts, now }: { accounts: StudentAc
           {filteredAccounts.map((account) => <tr key={account.user_id}>
             <td><strong>{account.display_name || "Student"}</strong><small>Registered {dateTime(account.created_at)}</small></td>
             <td><span className="status-pill">{account.curriculum === "igcse" ? "IGCSE" : "IB"}</span></td>
-            <td>{account.access ? <><strong>{currentStudentAccess(account.access, now).length ? "Plus" : "Free"}</strong>{account.access.map((record, index) => {
+            <td>{account.access ? <><strong>{currentStudentAccess(account.access, now).length ? "Plus" : "Standard"}</strong>{account.access.map((record, index) => {
               const active = currentStudentAccess([record], now).length > 0;
               const days = record.expires_at ? Math.ceil((Date.parse(record.expires_at) - now) / 86400000) : null;
               return <small key={index}>{record.product_code.replaceAll("_", " ")} · {studentAccessFilters[record.source] || record.source}<br />
