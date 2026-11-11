@@ -35,9 +35,16 @@ where coalesce(c.bank,'ib')='ib'
 do $$ begin
  if exists (select 1 from solve_targets t left join public.assignment_answer_keys k
    on k.assignment_id=t.assignment_id and k.question_id=t.question_id
-   where k.assignment_id is null or (t.type='multipart' and jsonb_typeof(k.accepted_answers) is distinct from 'object'))
+   where t.type='multipart' and (k.assignment_id is null or jsonb_typeof(k.accepted_answers) is distinct from 'object'))
  then raise exception 'Unexpected or missing existing answer key. Review before applying solve upgrades.'; end if;
 end $$;
+
+-- Whole-question written-work tasks legitimately have no answer-key row.
+-- Create only those newly automatic keys; missing multipart keys still abort above.
+insert into public.assignment_answer_keys (assignment_id,question_id,accepted_answers,correct_option)
+select t.assignment_id,t.question_id,t.keys,t.correct from solve_targets t
+where t.type='multiple_choice'
+on conflict (assignment_id,question_id) do nothing;
 
 update public.assignment_answer_keys k set
  accepted_answers=case when t.type='multipart' then k.accepted_answers || t.keys else t.keys end,
