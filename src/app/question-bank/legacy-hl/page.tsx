@@ -14,7 +14,7 @@ export default function LegacyQuestionBankPage() {
         <Container className="question-bank-hero-grid">
           <div className="stack-lg">
             <Breadcrumbs items={[{ label: "Question bank", href: "/question-bank" }, { label: "Legacy HL archive" }]} />
-            <div className="cluster"><span className="free-pill">Free for students</span><Eyebrow>Legacy HL archive</Eyebrow></div>
+            <div className="cluster"><Eyebrow>Legacy HL archive</Eyebrow></div>
             <h1>Practise the question. Understand the method.</h1>
             <p className="lede">Search Legacy HL Mathematics questions by topic, paper and difficulty, then open a complete worked mark scheme when you are ready.</p>
             <p className="qb-collection-note">This separate archive contains questions from four May 2014 papers. It is not labelled as a current AA or AI course.</p>

@@ -242,5 +242,5 @@ body.practice-expanded::before { content: ""; position: fixed; z-index: 119; ins
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
 .course-card.is-sample .course-card-art { position: relative; }
-.course-card.is-sample .course-card-art::after { content: "Free samples"; position: absolute; right: 12px; top: 12px; padding: 6px 9px; border-radius: 999px; background: rgba(6,23,45,.9); color: white; font-size: 8px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
+.course-card.is-sample .course-card-art::after { content: "Sample lessons"; position: absolute; right: 12px; top: 12px; padding: 6px 9px; border-radius: 999px; background: rgba(6,23,45,.9); color: white; font-size: 8px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
 .video-loading .primary-button { margin-top: 10px; text-decoration: none; pointer-events: auto; }
