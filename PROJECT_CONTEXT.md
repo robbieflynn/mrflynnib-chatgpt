@@ -686,3 +686,11 @@ Rob approved removing visible Teachable links everywhere except one shared-foote
 ## Complete student directory, 10 November 2026
 
 Rob requested fixing the registered-student total stopping at 1,000. The administrator directory must load every student across API result batches and verify completeness against an exact database count. Search, filters and summary statistics must cover the complete directory. Preserve administrator-only access. A failed or inconsistent batch must show a retry message rather than a partial total or a misleading zero.
+
+## Assignment hints, 10 November 2026
+
+Rob requested optional progressive hints during assignments and explicitly confirmed an **Allow hints** setting controlled by the teacher. Each request reveals the next existing authored worked-solution step, with its original words, maths and associated diagram. Never generate new hint content during student use. Record hints separately from answers so teachers can see usage per student and question before and after submission. Preserve usage when the assignment is returned or hints are switched off. New assignments default to hints off; reused and shadow assignments copy the source setting. Hints do not unlock the complete mark scheme or change attempts, scores, completion or whiteboards. Prepare this feature for preview review before publication.
+
+On 10 November 2026, Rob explicitly approved applying the assignment-hint database update to the shared Ireland database so preview testing can proceed. The update was applied and its default-off setting and access controls verified. This approval does not authorise merging PR #250 or publishing the website feature.
+
+On 11 November 2026, Rob approved careful publication of the pending access-filter, assignment-hint, second-attempt, reviewed-solve-answer and wording previews. Reconcile each with current main and complete its release checks; the earlier preview-only restrictions are superseded by this approval.
