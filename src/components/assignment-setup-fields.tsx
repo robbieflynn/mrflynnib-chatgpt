@@ -8,6 +8,7 @@ type AssignmentSetupDraft = {
   dueDate: string;
   instructions: string;
   feedbackMode: string;
+  allowHints: boolean;
 };
 
 type AssignmentSetupFieldsProps = {
@@ -15,11 +16,12 @@ type AssignmentSetupFieldsProps = {
   initialTitle?: string;
   initialInstructions?: string;
   initialFeedbackMode?: string;
+  initialAllowHints?: boolean;
 };
 
 const defaultAssignmentInstructions = "Complete the questions and show your working on the whiteboard or paper.";
 
-export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstructions = defaultAssignmentInstructions, initialFeedbackMode = "after_question" }: AssignmentSetupFieldsProps) {
+export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstructions = defaultAssignmentInstructions, initialFeedbackMode = "after_question", initialAllowHints = false }: AssignmentSetupFieldsProps) {
   const fieldsRef = useRef<HTMLDivElement>(null);
   const storageKey = `mrflynnib-assignment-setup:${draftId}`;
   const defaultFeedbackMode = isAssignmentFeedbackMode(initialFeedbackMode) ? initialFeedbackMode : "after_question";
@@ -30,6 +32,8 @@ export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstr
     try {
       const saved = JSON.parse(window.sessionStorage.getItem(storageKey) || "null") as Partial<AssignmentSetupDraft> | null;
       if (!saved) return;
+      const hints = fields.querySelector<HTMLInputElement>('input[name="allowHints"]');
+      if (hints && typeof saved.allowHints === "boolean") hints.checked = saved.allowHints;
       const title = fields.querySelector<HTMLInputElement>('input[name="title"]');
       const dueDate = fields.querySelector<HTMLInputElement>('input[name="dueDate"]');
       const instructions = fields.querySelector<HTMLTextAreaElement>('textarea[name="instructions"]');
@@ -50,8 +54,9 @@ export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstr
     const dueDate = fields.querySelector<HTMLInputElement>('input[name="dueDate"]')?.value || "";
     const instructions = fields.querySelector<HTMLTextAreaElement>('textarea[name="instructions"]')?.value || "";
     const feedbackMode = fields.querySelector<HTMLInputElement>('input[name="feedbackMode"]:checked')?.value || "after_question";
+    const allowHints = fields.querySelector<HTMLInputElement>('input[name="allowHints"]')?.checked ?? false;
     try {
-      window.sessionStorage.setItem(storageKey, JSON.stringify({ title, dueDate, instructions, feedbackMode } satisfies AssignmentSetupDraft));
+      window.sessionStorage.setItem(storageKey, JSON.stringify({ title, dueDate, instructions, feedbackMode, allowHints } satisfies AssignmentSetupDraft));
     } catch {
       // Draft saving is a convenience. The form remains usable if browser storage is unavailable.
     }
@@ -63,6 +68,7 @@ export function AssignmentSetupFields({ draftId, initialTitle = "", initialInstr
       <label className="field"><span>Due date <small className="muted">(optional)</small></span><input name="dueDate" type="date" /></label>
       <label className="field field-full"><span>Instructions <small className="muted">(optional)</small></span><textarea name="instructions" defaultValue={initialInstructions} maxLength={1500} placeholder={defaultAssignmentInstructions} /></label>
       <fieldset className="assignment-feedback-settings field-full"><legend>Mark schemes and worked solutions</legend><p>Choose when students can open the complete feedback for each question. You can change this after publishing.</p><div className="assignment-feedback-options">{assignmentFeedbackOptions.map((option) => <label className="assignment-feedback-option" key={option.value}><input name="feedbackMode" type="radio" value={option.value} defaultChecked={option.value === defaultFeedbackMode} /><span><strong>{option.label}</strong><small>{option.description}</small></span></label>)}</div></fieldset>
+      <label className="assignment-feedback-option field-full"><input name="allowHints" type="checkbox" defaultChecked={initialAllowHints} /><span><strong>Allow hints</strong><small>Students can reveal one worked-solution step at a time. You can see how many hints they use, even before they submit.</small></span></label>
     </div>
   );
 }

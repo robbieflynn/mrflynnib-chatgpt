@@ -118,6 +118,7 @@ export async function createAssignment(formData: FormData) {
     status: "published",
     show_mark_scheme: feedbackMode !== "hidden",
     feedback_mode: feedbackMode,
+    allow_hints: formData.get("allowHints") === "on",
     published_at: new Date().toISOString(),
   }).select("id").single();
   if (error || !assignment) redirect(messagePath(`/teacher/classes/${classId}/assignments/new`, "error", "The assignment could not be published."));
@@ -240,6 +241,7 @@ export async function updateAssignmentFeedbackMode(formData: FormData) {
     .from("assignments")
     .update({
       feedback_mode: requestedFeedbackMode,
+      allow_hints: formData.get("allowHints") === "on",
       show_mark_scheme: requestedFeedbackMode !== "hidden",
       updated_at: new Date().toISOString(),
     })
