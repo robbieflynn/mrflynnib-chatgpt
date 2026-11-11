@@ -14,6 +14,7 @@ const checks = [
   ["Stored answer rendering", "scripts/test-stored-answer-rendering.mjs"],
   ["Fixed assignment-answer audit", "scripts/audit-assignment-choices.mjs"],
   ["Reviewed shared-answer repairs", "scripts/test-shared-answer-repairs.mjs"],
+  ["Reviewed solve-answer coverage", "scripts/test-solve-answer-repairs.mjs"],
   ["Question-bank delivery audit", "scripts/verify-question-bank-delivery.mjs"],
   ["Course practice delivery", "scripts/test-course-practice-delivery.mjs"],
   ["Production build", "node_modules/next/dist/bin/next", "build", "--webpack"],

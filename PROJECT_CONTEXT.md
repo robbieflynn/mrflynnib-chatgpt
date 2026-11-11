@@ -686,3 +686,6 @@ Rob approved removing visible Teachable links everywhere except one shared-foote
 ## Complete student directory, 10 November 2026
 
 Rob requested fixing the registered-student total stopping at 1,000. The administrator directory must load every student across API result batches and verify completeness against an exact database count. Search, filters and summary statistics must cover the complete directory. Preserve administrator-only access. A failed or inconsistent batch must show a retry message rather than a partial total or a misleading zero.
+## Solve-answer review, 9 November 2026
+
+Rob requested fixing the whiteboard-only trigonometric solve question reported by a student and reviewing other whiteboard-only solve questions, explicitly without making the changes live. Suitable solve questions should let students check the complete final answer, including every root, disjoint interval and valid endpoint, while proof and drawing requirements remain written work. The preview review is documented in `docs/audits/solve-whiteboard-audit.md`; its 38 reviewed answer upgrades are source-fingerprinted and must not be treated as a complete independent mathematical audit of every platform question. Publication and the prepared existing-assignment configuration migration remain withheld until Rob approves.
