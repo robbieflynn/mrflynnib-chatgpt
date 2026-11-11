@@ -40,7 +40,7 @@ export default function TermsPage() {
 
           <section className="stack">
             <h2 style={{ fontSize: "2rem" }}>Question bank accounts</h2>
-            <p>The question banks remain publicly viewable. A free student account lets you save completed-question progress and editable whiteboard working. You are responsible for keeping your sign-in details secure and for the information saved through your account.</p>
+            <p>The question banks remain publicly viewable. A student account lets you save completed-question progress and editable whiteboard working. You are responsible for keeping your sign-in details secure and for the information saved through your account.</p>
             <p>Saved working is a study aid. Although reasonable steps are taken to protect and retain it, you should keep a separate copy of anything important. Account features may change as the service develops.</p>
           </section>
 

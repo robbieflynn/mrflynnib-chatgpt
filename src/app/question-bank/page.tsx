@@ -5,7 +5,7 @@ import { questionBankCourses } from "@/lib/question-bank-courses";
 import { getQuestionBankDashboardLink } from "@/lib/question-bank-dashboard-link";
 
 export const metadata: Metadata = {
-  title: "Free IB Mathematics question bank",
+  title: "IB Mathematics question bank",
   description: "Choose your IB Mathematics course and practise with the Mr Flynn IB question bank.",
 };
 

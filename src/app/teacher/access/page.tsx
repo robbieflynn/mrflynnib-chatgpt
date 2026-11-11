@@ -34,11 +34,11 @@ export default async function TeacherAccessPage({ searchParams }: { searchParams
       <article className={`access-course-card teacher-plus-card ${active ? "has-access" : ""}`}>
         <div><span className="course-detail-code">Teacher Plus</span><small>{active ? "Active" : "$99 · 1 year"}</small></div>
         <h2>{teacherPlusProduct.title}</h2>
-        <p>Your free teacher account still includes classes, assignments and the IB Test Maker. Teacher Plus adds the complete teaching and learning content for all four IB courses.</p>
+        <p>Your teacher account still includes classes, assignments and the IB Test Maker. Teacher Plus adds the complete teaching and learning content for all four IB courses.</p>
         <ul className="teacher-plus-list"><li>AA HL and AA SL</li><li>AI HL and AI SL</li><li>Every video lesson and its extra practice</li></ul>
         {active ? <div className="stack-sm"><p className="form-message form-success">Teacher Plus is active{active.expires_at ? ` until ${new Date(active.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : ""}.</p><Link className="button" href="/learn/index.html?curriculum=ib&amp;view=courses">Open all courses</Link></div> : <CourseCheckoutButton productId={teacherPlusProduct.id} plans={teacherPlusProduct.plans.map(({ id, label, priceUsd }) => ({ id, label, priceUsd }))} />}
       </article>
-      <p className="small muted">Teacher Plus activates as soon as secure payment succeeds. Your free classroom tools remain available whether or not you add Plus.</p>
+      <p className="small muted">Teacher Plus activates as soon as secure payment succeeds. Your classroom tools remain available whether or not you add Plus.</p>
     </Container></section>
   </>;
 }

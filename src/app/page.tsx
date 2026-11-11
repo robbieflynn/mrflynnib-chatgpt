@@ -108,7 +108,7 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
-          <Link className="home-teacher-note" href="/account?next=/teacher&mode=sign-up"><span><strong>For teachers</strong>Create classes, set assignments and build printable tests for free.</span><b>Create a teacher account <i aria-hidden="true">→</i></b></Link>
+          <Link className="home-teacher-note" href="/account?next=/teacher&mode=sign-up"><span><strong>For teachers</strong>Create classes, set assignments and build printable tests.</span><b>Create a teacher account <i aria-hidden="true">→</i></b></Link>
         </Container>
       </section>
 
@@ -116,7 +116,7 @@ export default function HomePage() {
         <Container className="checklist-grid">
           <div className="checklist-promo">
             <div className="stack checklist-copy">
-              <Eyebrow>Free syllabus checklists</Eyebrow>
+              <Eyebrow>Syllabus checklists</Eyebrow>
               <h2>Know exactly what you need to cover.</h2>
               <p className="lede">Choose your IB Mathematics course and download the complete syllabus checklist immediately.</p>
               <div className="checklist-courses" aria-label="Available syllabus checklists"><span>AA HL</span><span>AA SL</span><span>AI HL</span><span>AI SL</span></div>
@@ -144,7 +144,7 @@ export default function HomePage() {
                 </a>
               ))}
             </div>
-            <p className="checklist-download-note">Free to save, print and use as your personal topic tracker.</p>
+            <p className="checklist-download-note">Save, print and use as your personal topic tracker.</p>
           </div>
         </Container>
       </section>
