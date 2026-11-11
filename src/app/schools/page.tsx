@@ -18,7 +18,7 @@ export default function SchoolsPage() {
             <h1>Better tools for teachers. Clearer support for students.</h1>
             <p className="lede">Create classes, set assignments, review student progress, build assessments and give students access to complete IB Mathematics courses.</p>
             <div className="cluster">
-              <ButtonLink href="/account?next=/teacher&mode=sign-up">Create a free teacher account</ButtonLink>
+              <ButtonLink href="/account?next=/teacher&mode=sign-up">Create a teacher account</ButtonLink>
               <ButtonLink href="#school-enquiry" secondary>Ask about school access</ButtonLink>
             </div>
           </div>
@@ -30,7 +30,7 @@ export default function SchoolsPage() {
           <div className="stack-lg">
             <Eyebrow>Teacher tools</Eyebrow>
             <h2>Everything you need to set work and see how students are doing.</h2>
-            <p className="lede">Teachers can start with a free account. If your school also wants complete course access for students, ask us about a school setup.</p>
+            <p className="lede">Teachers can start with an account. If your school also wants complete course access for students, ask us about a school setup.</p>
           </div>
           <div className="school-simple-list">
             <ul className="check-list">
