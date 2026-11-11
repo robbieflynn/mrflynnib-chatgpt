@@ -391,19 +391,6 @@
       }
     }
   },
-  "A_N25TZ1HL_P1_Q11": {
-    "sourceSha256": "786e9b202f99e1e1dcde7ae63925f2afe7a5b90c973418d8b9c2c64811f991b5",
-    "parts": {
-      "c": {
-        "mode": "whiteboard",
-        "answers": [],
-        "options": [],
-        "correctOption": null,
-        "previousOptions": [],
-        "note": "Preserve prepared content; renderer changes must not silently replace the choice set."
-      }
-    }
-  },
   "A_M24TZ1HL_P1_Q12": {
     "sourceSha256": "4667e7c3a8d66b776e79ec2707268a8379d89343b3b8a1502e4bf49a605766d4",
     "parts": {

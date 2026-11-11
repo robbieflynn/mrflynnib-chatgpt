@@ -698,3 +698,7 @@ Rob requested optional progressive hints during assignments and explicitly confi
 On 10 November 2026, Rob explicitly approved applying the assignment-hint database update to the shared Ireland database so preview testing can proceed. The update was applied and its default-off setting and access controls verified. This approval does not authorise merging PR #250 or publishing the website feature.
 
 On 11 November 2026, Rob approved careful publication of the pending access-filter, assignment-hint, second-attempt, reviewed-solve-answer and wording previews. Reconcile each with current main and complete its release checks; the earlier preview-only restrictions are superseded by this approval.
+
+## Solve-answer review, 9 November 2026
+
+Rob requested fixing the whiteboard-only trigonometric solve question reported by a student and reviewing other whiteboard-only solve questions, explicitly without making the changes live. Suitable solve questions should let students check the complete final answer, including every root, disjoint interval and valid endpoint, while proof and drawing requirements remain written work. The preview review is documented in `docs/audits/solve-whiteboard-audit.md`; its 38 reviewed answer upgrades are source-fingerprinted and must not be treated as a complete independent mathematical audit of every platform question. Publication and the prepared existing-assignment configuration migration remain withheld until Rob approves.
