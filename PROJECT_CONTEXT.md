@@ -690,3 +690,7 @@ Rob approved removing visible Teachable links everywhere except one shared-foote
 ## Complete student directory, 10 November 2026
 
 Rob requested fixing the registered-student total stopping at 1,000. The administrator directory must load every student across API result batches and verify completeness against an exact database count. Search, filters and summary statistics must cover the complete directory. Preserve administrator-only access. A failed or inconsistent batch must show a retry message rather than a partial total or a misleading zero.
+
+## Whiteboard pen tools, 11 November 2026
+
+Rob requested whole-stroke erasing as the initial default, with the selected eraser type and size retained when switching to Pen and back. Select replaces the separate Lasso and Move image controls: it moves enclosed handwriting and copied questions/diagrams, including direct dragging of an image. Precision cuts must leave independently erasable stroke pieces, with the cut and subsequent moves undoable after saving. Large scribble erasing must work beyond the former 360-paper-pixel limit. Keep ink sharp as the workspace grows by rendering the visible viewport at screen resolution while preserving paper coordinates, zoom, multipart isolation and saved work. This change is prepared for preview review; physical pen and iPad testing remains separate from simulated input checks.
