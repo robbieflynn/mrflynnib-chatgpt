@@ -2,7 +2,7 @@
 
 import { useDeferredValue, useMemo, useState } from "react";
 import { changeAccountRole } from "@/app/teacher/actions";
-import type { StudentAccountSummary } from "@/lib/student-accounts";
+import { currentStudentAccess, matchesStudentAccess, studentAccessFilters, type StudentAccountSummary } from "@/lib/student-accounts";
 
 type CurriculumFilter = "all" | "ib" | "igcse";
 type ConfirmationFilter = "all" | "confirmed" | "unconfirmed";
@@ -22,7 +22,8 @@ function dateTime(value: string | null) {
   return value ? dateTimeFormatter.format(new Date(value)) : "Not yet";
 }
 
-export function StudentAccountDirectory({ accounts }: { accounts: StudentAccountSummary[] }) {
+export function StudentAccountDirectory({ accounts, now }: { accounts: StudentAccountSummary[]; now: number }) {
+  const [accessFilter, setAccessFilter] = useState("all");
   const [query, setQuery] = useState("");
   const [curriculum, setCurriculum] = useState<CurriculumFilter>("all");
   const [confirmation, setConfirmation] = useState<ConfirmationFilter>("all");
@@ -40,7 +41,7 @@ export function StudentAccountDirectory({ accounts }: { accounts: StudentAccount
       const isInClass = Number(account.class_count) > 0;
       const matchesClass = classFilter === "all"
         || (classFilter === "in_class" ? isInClass : !isInClass);
-      return matchesQuery && matchesCurriculum && matchesConfirmation && matchesClass;
+      return matchesStudentAccess(account.access, accessFilter, now) && matchesQuery && matchesCurriculum && matchesConfirmation && matchesClass;
     })
     .sort((left, right) => {
       if (sortOrder === "name") {
@@ -51,15 +52,16 @@ export function StudentAccountDirectory({ accounts }: { accounts: StudentAccount
       }
       const difference = new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
       return sortOrder === "oldest" ? -difference : difference;
-    }), [accounts, classFilter, confirmation, curriculum, deferredQuery, sortOrder]);
+    }), [accounts, accessFilter, now, classFilter, confirmation, curriculum, deferredQuery, sortOrder]);
 
-  const filtersActive = Boolean(query.trim())
+  const filtersActive = Boolean(query.trim()) || accessFilter !== "all"
     || curriculum !== "all"
     || confirmation !== "all"
     || classFilter !== "all"
     || sortOrder !== "newest";
 
   function resetFilters() {
+    setAccessFilter("all");
     setQuery("");
     setCurriculum("all");
     setConfirmation("all");
@@ -73,6 +75,9 @@ export function StudentAccountDirectory({ accounts }: { accounts: StudentAccount
         <span>Search students</span>
         <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Name or email address" />
       </label>
+      <label><span>Access</span><select value={accessFilter} onChange={(event) => setAccessFilter(event.target.value)}>
+        {Object.entries(studentAccessFilters).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+      </select></label>
       <label>
         <span>Area</span>
         <select value={curriculum} onChange={(event) => setCurriculum(event.target.value as CurriculumFilter)}>
@@ -104,18 +109,25 @@ export function StudentAccountDirectory({ accounts }: { accounts: StudentAccount
     </div>
     <div className="teacher-account-table-wrap">
       <table className="teacher-account-table student-account-table">
-        <thead><tr><th>Student</th><th>Area</th><th>Email</th><th>Last sign-in</th><th>Classes</th><th>Learning activity</th><th>Account type</th></tr></thead>
+        <thead><tr><th>Student</th><th>Area</th><th>Access and expiry</th><th>Email</th><th>Last sign-in</th><th>Classes</th><th>Learning activity</th><th>Account type</th></tr></thead>
         <tbody>
           {filteredAccounts.map((account) => <tr key={account.user_id}>
             <td><strong>{account.display_name || "Student"}</strong><small>Registered {dateTime(account.created_at)}</small></td>
             <td><span className="status-pill">{account.curriculum === "igcse" ? "IGCSE" : "IB"}</span></td>
+            <td>{account.access ? <><strong>{currentStudentAccess(account.access, now).length ? "Plus" : "Free"}</strong>{account.access.map((record, index) => {
+              const active = currentStudentAccess([record], now).length > 0;
+              const days = record.expires_at ? Math.ceil((Date.parse(record.expires_at) - now) / 86400000) : null;
+              return <small key={index}>{record.product_code.replaceAll("_", " ")} · {studentAccessFilters[record.source] || record.source}<br />
+                {record.status !== "active" ? record.status : active ? "Active" : Date.parse(record.starts_at) > now ? "Scheduled" : "Expired"} · {record.expires_at ? `Ends ${dateTime(record.expires_at)}${active ? ` (${days} days left)` : ""}` : "No expiry"}
+              </small>;
+            })}</> : "Access unavailable"}</td>
             <td><strong className="teacher-account-email">{account.email}</strong><span className={`account-state-badge ${account.email_confirmed_at ? "is-positive" : "is-waiting"}`}>{account.email_confirmed_at ? "Confirmed" : "Awaiting confirmation"}</span></td>
             <td>{dateTime(account.last_sign_in_at)}</td>
             <td><strong>{Number(account.class_count) || 0}</strong><small>{Number(account.class_count) === 1 ? "class joined" : "classes joined"}</small></td>
             <td><strong>{Number(account.completed_question_count) || 0} completed questions</strong><small>{Number(account.submitted_assignment_count) || 0} submitted assignments</small></td>
             <td><form action={changeAccountRole} className="teacher-account-actions"><input name="accountId" type="hidden" value={account.user_id} /><input name="role" type="hidden" value="teacher" /><input name="returnTo" type="hidden" value="/teacher/students" /><button className="text-button" type="submit" onClick={(event) => { if (!window.confirm(`Change ${account.display_name || account.email} to a teacher account? Their existing progress, classes and access will be kept.`)) event.preventDefault(); }}>Make teacher</button></form></td>
           </tr>)}
-          {!filteredAccounts.length ? <tr><td className="teacher-account-empty" colSpan={7}>{accounts.length ? "No student accounts match those filters." : "No student accounts have been recorded."}</td></tr> : null}
+          {!filteredAccounts.length ? <tr><td className="teacher-account-empty" colSpan={8}>{accounts.length ? "No student accounts match those filters." : "No student accounts have been recorded."}</td></tr> : null}
         </tbody>
       </table>
     </div>
