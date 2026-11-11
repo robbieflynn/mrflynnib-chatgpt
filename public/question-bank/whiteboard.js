@@ -94,8 +94,8 @@
         '</div>' +
         '<div class="qb-whiteboard-quick-tools" role="toolbar" aria-label="Drawing tools">' +
           toolButton('pen', 'Pen', true, 'Pen (P): draw, then hold at the end to make a straight line') +
-          toolButton('precision-eraser', 'Eraser', false, 'Eraser (E): rub out part of your writing') +
-          toolButton('lasso', 'Lasso', false, 'Select writing and drag to move it') +
+          toolButton('precision-eraser', 'Eraser', false, 'Eraser (E): use your selected eraser') +
+          toolButton('lasso', 'Select', false, 'Select writing, questions or images and drag to move them') +
           toolButton('undo', 'Undo', undefined, 'Undo the last change (Ctrl+Z or Command+Z)') +
           '<div class="qb-whiteboard-size-controls">' +
           '<div class="qb-whiteboard-sizes" role="group" aria-label="Pen size">' +
@@ -104,6 +104,7 @@
             }).join('') +
           '</div>' +
           '<div class="qb-whiteboard-eraser-tools" role="group" aria-label="Eraser type" hidden>' +
+            toolButton('partial-eraser', 'Erase part', false, 'Rub out part of a stroke') +
             toolButton('stroke-eraser', 'Erase whole stroke', false, 'Remove a whole pen or highlighter stroke') +
           '</div>' +
           '</div>' +
@@ -116,7 +117,6 @@
           '</div>' +
           toolButton('highlighter', 'Highlighter', false) +
           toolButton('pan', 'Pan', false) +
-          toolButton('move-image', 'Move image', false) +
           toolButton('copy-question', 'Copy question', false, 'Copy the complete question onto this whiteboard') +
           '<div class="qb-whiteboard-colours" role="group" aria-label="Pen colour">' +
             colourButton('#000000', 'Black', true) +
@@ -193,6 +193,7 @@
     var colour = '#000000';
     var penSize = 3.6;
     var eraserSize = 24;
+    var preferredEraser = 'stroke-eraser';
     var selection = [];
     var lasso = null;
     var selectionDrag = null;
@@ -257,11 +258,21 @@
         button.querySelector('span').style.height = (erasing ? 5 + index * 3 : penSizes[index]) + 'px';
       });
     }
+    function objectPoints(action) {
+      return action.type === 'image' ? [{ x: action.x, y: action.y }, { x: action.x + action.width, y: action.y }, { x: action.x + action.width, y: action.y + action.height }, { x: action.x, y: action.y + action.height }] : action.points || [];
+    }
+    function translateObjects(ids, dx, dy) {
+      actions.forEach(function (a) {
+        if (ids.indexOf(a.id) < 0) return;
+        if (a.type === 'image') { a.x += dx; a.y += dy; }
+        else if (a.points) a.points.forEach(function (p) { p.x += dx; p.y += dy; });
+      });
+    }
     function selectionBounds() {
       var bounds = null;
       actions.forEach(function (a) {
         if (selection.indexOf(a.id) < 0) return;
-        a.points.forEach(function (p) {
+        objectPoints(a).forEach(function (p) {
           if (!bounds) bounds = { left: p.x, right: p.x, top: p.y, bottom: p.y };
           bounds.left = Math.min(bounds.left, p.x); bounds.right = Math.max(bounds.right, p.x);
           bounds.top = Math.min(bounds.top, p.y); bounds.bottom = Math.max(bounds.bottom, p.y);
@@ -342,12 +353,12 @@
           if (action.type === 'move-strokes') return { type: 'move-strokes', strokeIds: action.strokeIds, dx: action.dx, dy: action.dy };
           if (action.type === 'clear') return { type: 'clear' };
           if (action.type === 'stroke-erase') return {
-            type: 'stroke-erase',
+            type: 'stroke-erase', groupId: action.groupId,
             strokeIds: action.strokeIds.slice(0, 1000)
           };
           if (action.type === 'stroke') return {
             type: 'stroke',
-            id: action.id,
+            id: action.id, groupId: action.groupId,
             mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
             colour: action.colour,
             penSize: action.penSize || 3.6,
@@ -356,7 +367,7 @@
             points: action.points.map(function (point) { return { x: compactCoordinate(point.x), y: compactCoordinate(point.y) }; })
           };
           return {
-            type: 'image', source: action.source,
+            type: 'image', id: action.id, source: action.source,
             x: compactCoordinate(action.x), y: compactCoordinate(action.y),
             width: compactCoordinate(action.width), height: compactCoordinate(action.height)
           };
@@ -430,7 +441,7 @@
     function resetInteraction(preserveSelection) {
       hideCursor();
       if (selectionDrag) {
-        actions.forEach(function (a) { if (selection.indexOf(a.id) >= 0) a.points.forEach(function (p) { p.x -= selectionDrag.dx; p.y -= selectionDrag.dy; }); });
+        translateObjects(selection, -selectionDrag.dx, -selectionDrag.dy);
         selectionDrag = null; redraw();
       }
       lasso = null; if (preserveSelection !== true) selection = []; drawSelection();
@@ -453,9 +464,8 @@
       if (accountState().readOnly || !actions.length) return;
       resetInteraction();
       var undone = actions.pop();
-      if (undone.type === 'move-strokes') actions.forEach(function (a) {
-        if (undone.strokeIds.indexOf(a.id) >= 0) a.points.forEach(function (p) { p.x -= undone.dx; p.y -= undone.dy; });
-      });
+      if (undone.type === 'move-strokes') translateObjects(undone.strokeIds, -undone.dx, -undone.dy);
+      if (undone.groupId) while (actions.length && actions[actions.length - 1].groupId === undone.groupId) actions.pop();
       selection = []; drawSelection();
       redraw();
       updateButtons();
@@ -471,7 +481,7 @@
         undoLastAction();
       } else if (!event.metaKey && !event.ctrlKey && !event.shiftKey && (key === 'e' || key === 'p')) {
         event.preventDefault();
-        setMode(key === 'e' ? 'precision-eraser' : 'pen');
+        setMode(key === 'e' ? preferredEraser : 'pen');
       }
     });
 
@@ -517,8 +527,8 @@
 
     function drawStrokePoints(stroke, points) {
       if (!points.length) return;
-      var width = canvas.clientWidth;
-      var height = canvas.clientHeight;
+      var width = (baseWidth * zoom);
+      var height = (baseHeight * zoom);
       ctx.save();
       ctx.globalCompositeOperation = stroke.mode === 'eraser' ? 'destination-out' : 'source-over';
       ctx.globalAlpha = stroke.mode === 'highlighter' ? .32 : 1;
@@ -545,9 +555,10 @@
     }
 
     function drawStrokeIncrement(stroke, points) {
-      if (!points.length || !canvas.clientWidth || !canvas.clientHeight) return;
+      if (!points.length || !(baseWidth * zoom) || !(baseHeight * zoom)) return;
       ctx.save();
-      ctx.scale(canvas.width / canvas.clientWidth, canvas.height / canvas.clientHeight);
+      ctx.scale(renderRatio, renderRatio);
+      ctx.translate(-renderLeft, -renderTop);
       drawStrokePoints(stroke, points);
       ctx.restore();
     }
@@ -558,10 +569,10 @@
       imageCtx.globalCompositeOperation = 'source-over';
       imageCtx.drawImage(
         action.image,
-        action.x * canvas.clientWidth,
-        action.y * canvas.clientHeight,
-        action.width * canvas.clientWidth,
-        action.height * canvas.clientHeight
+        action.x * (baseWidth * zoom),
+        action.y * (baseHeight * zoom),
+        action.width * (baseWidth * zoom),
+        action.height * (baseHeight * zoom)
       );
       imageCtx.restore();
     }
@@ -571,8 +582,10 @@
       imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
       ctx.save();
       imageCtx.save();
-      ctx.scale(canvas.width / canvas.clientWidth, canvas.height / canvas.clientHeight);
-      imageCtx.scale(imageCanvas.width / imageCanvas.clientWidth, imageCanvas.height / imageCanvas.clientHeight);
+      ctx.scale(renderRatio, renderRatio);
+      ctx.translate(-renderLeft, -renderTop);
+      imageCtx.scale(renderRatio, renderRatio);
+      imageCtx.translate(-renderLeft, -renderTop);
       var visible = visibleStrokeState();
       actions.slice(visible.start).forEach(function (action) {
         if (action.type === 'image') drawImage(action);
@@ -582,31 +595,23 @@
       imageCtx.restore();
     }
 
+    var renderLeft = 0, renderTop = 0, renderRatio = 1;
     function resize() {
-      var clientWidth = Math.max(1, canvas.clientWidth);
-      var clientHeight = Math.max(1, canvas.clientHeight);
-      // A full-size sheet at Retina resolution is taller than the reliable
-      // canvas limit on some iPads and allocates a very large bitmap twice.
-      // Keep the backing stores comfortably inside Safari's limits while the
-      // CSS-sized paper and saved coordinates remain unchanged.
-      var maxDimension = 8192;
-      var maxPixels = 10000000;
-      var ratio = Math.min(
-        window.devicePixelRatio || 1,
-        2,
-        maxDimension / clientWidth,
-        maxDimension / clientHeight,
-        Math.sqrt(maxPixels / (clientWidth * clientHeight))
-      );
-      var width = Math.max(1, Math.round(canvas.clientWidth * ratio));
-      var height = Math.max(1, Math.round(canvas.clientHeight * ratio));
-      if (canvas.width === width && canvas.height === height) return;
-      canvas.width = width;
-      canvas.height = height;
-      imageCanvas.width = width;
-      imageCanvas.height = height;
+      if (board.hidden) return;
+      var width = Math.max(1, Math.min(baseWidth * zoom, viewport.clientWidth));
+      var height = Math.max(1, Math.min(baseHeight * zoom, viewport.clientHeight));
+      var ratio = Math.min(window.devicePixelRatio || 1, 3, 8192 / width, 8192 / height, Math.sqrt(10000000 / (width * height)));
+      var left = viewport.scrollLeft, top = viewport.scrollTop;
+      renderLeft = left; renderTop = top; renderRatio = ratio;
+      [canvas, imageCanvas].forEach(function (layer) {
+        layer.style.width = width + 'px'; layer.style.height = height + 'px';
+        layer.style.left = left + 'px'; layer.style.top = top + 'px';
+        if (layer.width !== Math.round(width * ratio)) layer.width = Math.round(width * ratio);
+        if (layer.height !== Math.round(height * ratio)) layer.height = Math.round(height * ratio);
+      });
       redraw();
     }
+    viewport.addEventListener('scroll', resize, { passive: true });
 
     function imageUrlForSource(source) {
       var trimmed = typeof source === 'string' ? source.trim() : '';
@@ -639,7 +644,7 @@
       if (board.hidden) open.click();
       requestAnimationFrame(function () {
         resize();
-        if (canvas.clientWidth > 20 && canvas.clientHeight > 20) {
+        if (viewport.clientWidth > 20 && viewport.clientHeight > 20) {
           callback();
           return;
         }
@@ -652,7 +657,7 @@
     }
 
     function pointFromEvent(event) {
-      var rect = canvas.getBoundingClientRect();
+      var rect = surface.getBoundingClientRect();
       return {
         x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
         y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
@@ -684,8 +689,8 @@
         var point = pointFromEvent(sample);
         var last = activeStroke.points[activeStroke.points.length - 1];
         var distance = Math.hypot(
-          (point.x - last.x) * canvas.clientWidth,
-          (point.y - last.y) * canvas.clientHeight
+          (point.x - last.x) * (baseWidth * zoom),
+          (point.y - last.y) * (baseHeight * zoom)
         );
         if (distance < .75) return;
         activeStroke.points.push(point);
@@ -702,8 +707,8 @@
       var first = activeStroke.points[0];
       var last = activeStroke.points[activeStroke.points.length - 1];
       var length = Math.hypot(
-        (last.x - first.x) * canvas.clientWidth,
-        (last.y - first.y) * canvas.clientHeight
+        (last.x - first.x) * (baseWidth * zoom),
+        (last.y - first.y) * (baseHeight * zoom)
       );
       if (length < 24) {
         clearStraightHold();
@@ -715,8 +720,8 @@
       // radius as the same hold, instead of restarting the timer forever.
       var holdTolerance = 8;
       var stayedWithinHold = straightHoldPoint && straightHoldStrokeId === activeStroke.id && Math.hypot(
-        (last.x - straightHoldPoint.x) * canvas.clientWidth,
-        (last.y - straightHoldPoint.y) * canvas.clientHeight
+        (last.x - straightHoldPoint.x) * (baseWidth * zoom),
+        (last.y - straightHoldPoint.y) * (baseHeight * zoom)
       ) <= holdTolerance;
       if (stayedWithinHold && straightTimer !== null) return;
 
@@ -729,8 +734,8 @@
         if (!activeStroke || activeStroke !== heldStroke || activeStroke.mode !== 'pen' || activeStroke.straightened) return;
         var endpoint = activeStroke.points[activeStroke.points.length - 1];
         var movementDuringHold = Math.hypot(
-          (endpoint.x - straightHoldPoint.x) * canvas.clientWidth,
-          (endpoint.y - straightHoldPoint.y) * canvas.clientHeight
+          (endpoint.x - straightHoldPoint.x) * (baseWidth * zoom),
+          (endpoint.y - straightHoldPoint.y) * (baseHeight * zoom)
         );
         if (movementDuringHold > holdTolerance) return;
         activeStroke.straightened = true;
@@ -752,7 +757,7 @@
     function strokeTouchesPoint(stroke, point, radius) {
       if (!stroke.points.length) return false;
       var pixelPoints = stroke.points.map(function (strokePoint) {
-        return { x: strokePoint.x * canvas.clientWidth, y: strokePoint.y * canvas.clientHeight };
+        return { x: strokePoint.x * (baseWidth * zoom), y: strokePoint.y * (baseHeight * zoom) };
       });
       if (pixelPoints.length === 1) return Math.hypot(point.x - pixelPoints[0].x, point.y - pixelPoints[0].y) <= radius;
       for (var i = 1; i < pixelPoints.length; i++) {
@@ -766,7 +771,7 @@
       var visible = visibleStrokeState();
       var newlyErased = false;
       eventSamples(event).forEach(function (sample) {
-        var rect = canvas.getBoundingClientRect();
+        var rect = surface.getBoundingClientRect();
         var point = { x: sample.clientX - rect.left, y: sample.clientY - rect.top };
         var radius = eraserSize / 2 * zoom;
         for (var i = actions.length - 1; i >= visible.start; i--) {
@@ -791,9 +796,29 @@
       return newlyErased;
     }
 
+    function splitErasedStrokes(eraser) {
+      if (!window.MrFlynnWhiteboardGestures) return;
+      var state = visibleStrokeState(), groupId = nextStrokeId(), removed = [], fragments = [];
+      var toPaper = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight }; };
+      actions.slice(state.start).forEach(function (a) {
+        if (a.type !== 'stroke' || a.mode === 'eraser' || state.hidden.has(a.id)) return;
+        var pieces = window.MrFlynnWhiteboardGestures.cutStroke(a.points.map(toPaper), eraser.points.map(toPaper), (eraser.eraserSize || 24) / 2 + (a.mode === 'highlighter' ? 13 : (a.penSize || 3.6) / 2));
+        if (!pieces) return;
+        removed.push(a.id);
+        pieces.forEach(function (points) {
+          fragments.push(Object.assign({}, a, { id: nextStrokeId(), groupId: groupId, straightened: false, points: points.map(function (p) { return { x: p.x / baseWidth, y: p.y / baseHeight }; }) }));
+        });
+      });
+      var index = actions.indexOf(eraser);
+      if (index < 0) return;
+      actions.splice(index, 1);
+      if (removed.length) actions.push.apply(actions, [{ type: 'stroke-erase', strokeIds: removed, groupId: groupId }].concat(fragments));
+      redraw(); updateButtons();
+    }
+
     function startPinch() {
       var points = Array.from(touches.values()).slice(0, 2);
-      var rect = canvas.getBoundingClientRect();
+      var rect = surface.getBoundingClientRect();
       var midX = (points[0].x + points[1].x) / 2;
       var midY = (points[0].y + points[1].y) / 2;
       pinch = {
@@ -806,7 +831,7 @@
 
     function cancelTouchAction() {
       if (selectionDrag) {
-        actions.forEach(function (a) { if (selection.indexOf(a.id) >= 0) a.points.forEach(function (p) { p.x -= selectionDrag.dx; p.y -= selectionDrag.dy; }); });
+        translateObjects(selection, -selectionDrag.dx, -selectionDrag.dy);
         selectionDrag = null;
       }
       lasso = null; drawSelection();
@@ -873,7 +898,11 @@
         var lp = pointFromEvent(event), bounds = selectionBounds();
         if (bounds && lp.x >= bounds.left - 8 / baseWidth && lp.x <= bounds.right + 8 / baseWidth && lp.y >= bounds.top - 8 / baseHeight && lp.y <= bounds.bottom + 8 / baseHeight) {
           selectionDrag = { start: lp, dx: 0, dy: 0, bounds: bounds };
-        } else { selection = []; lasso = [lp]; }
+        } else {
+          var hit = visibleImages().slice().reverse().find(function (a) { return lp.x >= a.x && lp.x <= a.x + a.width && lp.y >= a.y && lp.y <= a.y + a.height; });
+          if (hit) { selection = [hit.id]; selectionDrag = { start: lp, dx: 0, dy: 0, bounds: selectionBounds() }; }
+          else { selection = []; lasso = [lp]; }
+        }
         drawSelection(); return;
       }
       if (pointerMode === 'pan') {
@@ -959,7 +988,7 @@
         var p = pointFromEvent(event), d = selectionDrag, b = d.bounds;
         var dx = Math.max(-b.left, Math.min(1 - b.right, p.x - d.start.x));
         var dy = Math.max(-b.top, Math.min(1 - b.bottom, p.y - d.start.y));
-        actions.forEach(function (a) { if (selection.indexOf(a.id) >= 0) a.points.forEach(function (point) { point.x += dx - d.dx; point.y += dy - d.dy; }); });
+        translateObjects(selection, dx - d.dx, dy - d.dy);
         d.dx = dx; d.dy = dy; redraw(); drawSelection(); return;
       }
       if (activePan) {
@@ -1002,14 +1031,14 @@
       if (lasso) {
         if (event.type === 'pointerup' && lasso.length >= 3) {
           var state = visibleStrokeState();
-          selection = actions.slice(state.start).filter(function (a) { return a.type === 'stroke' && !state.hidden.has(a.id) && a.points.length && a.points.every(insideLasso); }).map(function (a) { return a.id; });
+          selection = actions.slice(state.start).filter(function (a) { return (a.type === 'image' || (a.type === 'stroke' && a.mode !== 'eraser' && !state.hidden.has(a.id))) && objectPoints(a).length && objectPoints(a).every(insideLasso); }).map(function (a) { return a.id; });
         }
         lasso = null; drawSelection();
       }
       if (selectionDrag) {
         var drag = selectionDrag;
         if (event.type === 'pointercancel') {
-          actions.forEach(function (a) { if (selection.indexOf(a.id) >= 0) a.points.forEach(function (p) { p.x -= drag.dx; p.y -= drag.dy; }); });
+          translateObjects(selection, -drag.dx, -drag.dy);
           redraw();
         } else if (drag.dx || drag.dy) { actions.push({ type: 'move-strokes', strokeIds: selection.slice(), dx: drag.dx, dy: drag.dy }); scheduleSave(); updateButtons(); }
         selectionDrag = null; drawSelection();
@@ -1035,6 +1064,7 @@
           redraw();
         }
       }
+      if (activeStroke && activeStroke.mode === 'eraser') splitErasedStrokes(activeStroke);
       var completedAction = activeStroke || activeStrokeErase || (activeImage && activeImage.action);
       var changed = Boolean(activeStroke || activeImage || (activeStrokeErase && activeStrokeErase.strokeIds.length));
       activePointer = null;
@@ -1066,6 +1096,7 @@
     function setMode(nextMode) {
       resetInteraction();
       mode = nextMode;
+      if (mode === 'precision-eraser' || mode === 'stroke-eraser') preferredEraser = mode;
       updateSizeButtons();
       selection = []; lasso = null; drawSelection();
       board.querySelector('[data-whiteboard-action="lasso"]').setAttribute('aria-pressed', String(mode === 'lasso'));
@@ -1076,7 +1107,7 @@
       board.querySelector('[data-whiteboard-action="precision-eraser"]').setAttribute('aria-pressed', String(mode === 'precision-eraser' || mode === 'stroke-eraser'));
       board.querySelector('[data-whiteboard-action="stroke-eraser"]').setAttribute('aria-pressed', String(mode === 'stroke-eraser'));
       board.querySelector('[data-whiteboard-action="pan"]').setAttribute('aria-pressed', String(mode === 'pan'));
-      board.querySelector('[data-whiteboard-action="move-image"]').setAttribute('aria-pressed', String(mode === 'move-image'));
+      board.querySelector('[data-whiteboard-action="partial-eraser"]').setAttribute('aria-pressed', String(mode === 'precision-eraser'));
       canvas.classList.toggle('qb-whiteboard-panning', mode === 'pan');
       canvas.classList.toggle('qb-whiteboard-moving-image', mode === 'move-image');
       canvas.classList.toggle('qb-whiteboard-erasing', mode === 'precision-eraser' || mode === 'stroke-eraser');
@@ -1185,7 +1216,7 @@
         if (action.type === 'clear') restored.push({ type: 'clear' });
         if (action.type === 'stroke-erase' && Array.isArray(action.strokeIds)) {
           restored.push({
-            type: 'stroke-erase',
+            type: 'stroke-erase', groupId: action.groupId,
             strokeIds: action.strokeIds.slice(0, 1000).map(String)
           });
         }
@@ -1193,10 +1224,11 @@
           restored.push({
             type: 'stroke',
             id: typeof action.id === 'string' && action.id ? action.id : nextStrokeId(),
+            groupId: typeof action.groupId === 'string' ? action.groupId : undefined,
             mode: action.mode === 'eraser' ? 'eraser' : action.mode === 'highlighter' ? 'highlighter' : 'pen',
             colour: typeof action.colour === 'string' ? action.colour : '#000000',
             penSize: [1.8, 3.6, 6, 9].indexOf(action.penSize) !== -1 ? action.penSize : 3.6,
-            eraserSize: [12, 24, 48].indexOf(action.eraserSize) >= 0 ? action.eraserSize : 24,
+            eraserSize: [12, 24, 36, 48].indexOf(action.eraserSize) >= 0 ? action.eraserSize : 24,
             straightened: Boolean(action.straightened),
             points: action.points.slice(0, 10000).map(function (point) {
               return { x: Number(point.x) || 0, y: Number(point.y) || 0 };
@@ -1205,7 +1237,7 @@
         }
         if (action.type === 'image' && typeof action.source === 'string') {
           var imageAction = {
-            type: 'image', image: null, source: action.source,
+            type: 'image', id: action.id || nextStrokeId(), image: null, source: action.source,
             x: Number(action.x) || 0, y: Number(action.y) || 0,
             width: Number(action.width) || .5, height: Number(action.height) || .2
           };
@@ -1407,6 +1439,8 @@
       var button = event.target.closest('[data-whiteboard-action]');
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
+      if (action === 'partial-eraser') setMode('precision-eraser');
+      if (action === 'precision-eraser') action = preferredEraser;
       if (action === 'lasso' || action === 'pen' || action === 'highlighter' || action === 'precision-eraser' || action === 'stroke-eraser' || action === 'pan' || action === 'move-image') setMode(action);
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
@@ -1435,26 +1469,26 @@
             callback(false);
             return;
           }
-          var availableWidth = Math.max(1, Math.min(canvas.clientWidth, viewport.clientWidth) * .84);
+          var availableWidth = Math.max(1, Math.min((baseWidth * zoom), viewport.clientWidth) * .84);
           var naturalWidth = image.naturalWidth || sourceWidth || availableWidth;
           var naturalHeight = image.naturalHeight || sourceHeight || 240;
           var scale = Math.min(1, availableWidth / naturalWidth, (maximumHeight || 380) / naturalHeight);
           var drawWidth = naturalWidth * scale;
           var drawHeight = naturalHeight * scale;
           var visibleTop = Math.max(18, viewport.scrollTop + 24);
-          var drawTop = Math.min(visibleTop, canvas.clientHeight - drawHeight - 18);
+          var drawTop = Math.min(visibleTop, (baseHeight * zoom) - drawHeight - 18);
           var visibleLeft = Math.max(18, viewport.scrollLeft + 24);
-          var drawLeft = Math.min(visibleLeft, canvas.clientWidth - drawWidth - 18);
+          var drawLeft = Math.min(visibleLeft, (baseWidth * zoom) - drawWidth - 18);
           var placedImages = visibleImages();
           var overlap = true;
-          while (overlap && drawTop + drawHeight <= canvas.clientHeight - 18) {
+          while (overlap && drawTop + drawHeight <= (baseHeight * zoom) - 18) {
             overlap = false;
             for (var i = 0; i < placedImages.length; i++) {
               var placed = placedImages[i];
-              var placedLeft = placed.x * canvas.clientWidth;
-              var placedTop = placed.y * canvas.clientHeight;
-              var placedRight = placedLeft + placed.width * canvas.clientWidth;
-              var placedBottom = placedTop + placed.height * canvas.clientHeight;
+              var placedLeft = placed.x * (baseWidth * zoom);
+              var placedTop = placed.y * (baseHeight * zoom);
+              var placedRight = placedLeft + placed.width * (baseWidth * zoom);
+              var placedBottom = placedTop + placed.height * (baseHeight * zoom);
               if (drawLeft < placedRight + 18 && drawLeft + drawWidth > placedLeft - 18 &&
                   drawTop < placedBottom + 18 && drawTop + drawHeight > placedTop - 18) {
                 drawTop = placedBottom + 24;
@@ -1463,15 +1497,15 @@
               }
             }
           }
-          drawTop = Math.min(drawTop, canvas.clientHeight - drawHeight - 18);
+          drawTop = Math.min(drawTop, (baseHeight * zoom) - drawHeight - 18);
           actions.push({
-            type: 'image',
+            type: 'image', id: nextStrokeId(),
             image: image,
             source: source,
-            x: drawLeft / canvas.clientWidth,
-            y: drawTop / canvas.clientHeight,
-            width: drawWidth / canvas.clientWidth,
-            height: drawHeight / canvas.clientHeight
+            x: drawLeft / (baseWidth * zoom),
+            y: drawTop / (baseHeight * zoom),
+            width: drawWidth / (baseWidth * zoom),
+            height: drawHeight / (baseHeight * zoom)
           });
           redraw();
           updateButtons();

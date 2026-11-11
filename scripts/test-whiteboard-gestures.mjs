@@ -23,3 +23,17 @@ assert.deepEqual(scribbleTargets(wideVertical,[{id:'axis',points:[p(0,65),p(500,
 
 const letters = [45, 85, 125].map((x,i) => ({id: String(i), points: [p(x,50), p(x,80)]}));
 assert.deepEqual(scribbleTargets(wideVertical, letters), ['0','1','2'], 'all separate letters inside the scrub are removed');
+
+for (const scale of [4, 8]) {
+ const scaled = point => p(point.x * scale, point.y * scale);
+ assert.deepEqual(scribbleTargets(zig.map(scaled), [{id:'large',points:[p(80,45),p(80,65)].map(scaled)}]), ['large'], 'large scribbles erase');
+ assert.deepEqual(scribbleTargets(zig.map(scaled).slice(0,4), [{id:'large',points:[p(80,45),p(80,65)].map(scaled)}]), [], 'large ordinary zigzags remain ink');
+}
+const {cutStroke} = gestures;
+const pieces = cutStroke([p(0,50),p(200,50)], [p(100,0),p(100,100)], 12);
+assert.equal(pieces.length,2,'a sparse straight line is cut into two pieces');
+assert(pieces[0].at(-1).x < 88 && pieces[1][0].x > 112);
+assert.equal(cutStroke([p(0,0),p(200,0)],[p(50,100)],12),null,'unaffected ink stays unchanged');
+assert.deepEqual(cutStroke([p(50,50)],[p(50,50)],12),[],'a dot can be erased');
+assert.equal(cutStroke([p(0,50),p(200,50)],[p(50,50),p(150,50)],12).length,2,'eraser cuts along its full path');
+console.log('PASS: large scribbles and precision cuts on sparse lines, dots and swept erasers');
