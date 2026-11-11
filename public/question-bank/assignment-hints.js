@@ -5,6 +5,7 @@
   if (!assignmentId || params.get("assignmentWork") !== "1" || params.get("assignmentView") !== "step" || parent === window) return;
   var endpoint = "/api/assignments/" + encodeURIComponent(assignmentId) + "/hints";
   var records = new Map();
+  var assignmentSubmitted = false;
   var style = document.createElement("style");
   style.textContent = ".qb-hints{margin:16px 0;padding:16px;border:1px solid #c7d9e9;border-radius:12px;background:#f7faff;color:#203449;font:500 14px/1.55 var(--ui);min-width:0}.qb-hints[hidden]{display:none}.qb-hints h3{font-size:15px;margin:0 0 5px}.qb-hints p{margin:6px 0}.qb-hints button{margin-top:10px;padding:9px 15px;border:1px solid #8dafcd;border-radius:999px;background:white;color:#164972;font:700 13px var(--ui);cursor:pointer;min-height:40px}.qb-hints button:focus-visible{outline:3px solid #63a5db;outline-offset:3px}.qb-hints button:disabled{opacity:.6;cursor:wait}.qb-hint-step{border-top:1px solid #d9e5ef;padding:12px 0;margin-top:10px;overflow-wrap:anywhere}.qb-hint-step img,.qb-hint-step svg{max-width:100%;height:auto}.qb-hint-step .katex-display{overflow-x:auto;overflow-y:hidden}.qb-hint-label{font-size:12px;color:#496780;margin-bottom:5px}.qb-hint-error{color:#9b3030}.qb-hint-note{color:#526b7c;font-size:12px}";
   document.head.appendChild(style);
@@ -13,6 +14,7 @@
   }
   function draw(record) {
     var panel = record.panel, data = record.data;
+    if (data && assignmentSubmitted) { data.submitted = true; data.canReveal = false; }
     panel.replaceChildren();
     panel.hidden = Boolean(data && !data.enabled && !data.steps.length && !record.error);
     if (panel.hidden) return;
@@ -71,6 +73,16 @@
       if (!card.contains(record.panel)) (card.querySelector(".qb-question-pane") || card).appendChild(record.panel);
     });
   }
+  window.addEventListener("message", function (event) {
+    if (event.origin !== location.origin || event.source !== parent || !event.data || event.data.type !== "mrflynnib-assignment-response-state") return;
+    var submitted = Boolean(event.data.assignmentSubmitted);
+    if (submitted === assignmentSubmitted) return;
+    assignmentSubmitted = submitted;
+    records.forEach(function (record) {
+      if (submitted) { record.error = ""; draw(record); }
+      else load(record, false);
+    });
+  });
   var scheduled = false;
   new MutationObserver(function (changes) {
     if (changes.every(function (change) { return change.target.closest && change.target.closest(".qb-hints"); })) return;
