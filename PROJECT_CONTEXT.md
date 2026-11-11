@@ -681,6 +681,8 @@ IGCSE past papers use the session names **January**, **Summer** and **November**
 
 Teachers can reuse an existing assignment in another compatible class. Reuse copies the exact question list, title, instructions and feedback setting into a new editable draft, while leaving the due date and audience for the teacher to choose again. Never copy student answers, progress, submissions or whiteboards. Keep **Create shadow task** separate: shadow tasks deliberately choose different matched questions, while reuse preserves the original questions.
 
+On 10 November 2026, Rob requested access filters in the administrator student directory and visibility of paid-access duration. Distinguish active Plus from Free and show entitlement sources and each course's stored expiry and days remaining. Do not infer payment from Plus status, approved free-school domains, class membership, Teachable transfers or a school licence alone.
+
 ## Teachable link placement, 10 November 2026
 
 Rob approved removing visible Teachable links everywhere except one shared-footer link labelled **Previous courses (Teachable)**. This supersedes earlier requirements for previous-course links on the homepage, account entry, account menus, course pages and access-management pages. Main course and login actions lead into the native Mr Flynn IB platform. Preserve old bookmarked redirect routes, verified entitlement migration, manual access checks and accurate historical purchase/privacy disclosures. This is a navigation cleanup, not closure of Teachable or removal of existing customers’ access.
