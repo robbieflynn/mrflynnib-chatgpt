@@ -105,8 +105,11 @@ export async function grantCourseAccess(formData: FormData) {
     .maybeSingle();
   if (existing) redirect(`${adminPath}?success=already-active`);
 
-  const defaultDays = productCode === teacherPlusProduct.productCode ? 365 : 730;
-  const accessDays = accessDaysFromForm(formData.get("accessDays"), defaultDays);
+  const duration = String(formData.get("accessDays") || "");
+  if (duration !== "lifetime" && (!/^\d+$/.test(duration) || Number(duration) < 1 || Number(duration) > 3650)) {
+    redirect(`${adminPath}?error=invalid-duration`);
+  }
+  const accessDays = duration === "lifetime" ? null : Number(duration);
   const now = new Date();
   const expiresAt = accessDays ? new Date(now.getTime() + accessDays * 86_400_000).toISOString() : null;
   const { error } = await admin.from("platform_entitlements").insert({

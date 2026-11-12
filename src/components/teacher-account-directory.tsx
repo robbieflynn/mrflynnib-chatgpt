@@ -2,6 +2,8 @@
 
 import { useDeferredValue, useMemo, useState } from "react";
 import { changeAccountRole, reviewTeacherApplication } from "@/app/teacher/actions";
+import { currentStudentAccess, studentAccessFilters } from "@/lib/student-accounts";
+import { courseProducts } from "@/lib/platform-products";
 import type { TeacherAccountSummary } from "@/lib/teacher-accounts";
 
 type CurriculumFilter = "all" | "ib" | "igcse";
@@ -28,7 +30,7 @@ function accessLabel(status: TeacherAccountSummary["teacher_status"]) {
   return "Awaiting approval";
 }
 
-export function TeacherAccountDirectory({ accounts, initialAccess = "all" }: { accounts: TeacherAccountSummary[]; initialAccess?: AccessFilter }) {
+export function TeacherAccountDirectory({ accounts, now, initialAccess = "all" }: { accounts: TeacherAccountSummary[]; now: number; initialAccess?: AccessFilter }) {
   const [query, setQuery] = useState("");
   const [curriculum, setCurriculum] = useState<CurriculumFilter>("all");
   const [access, setAccess] = useState<AccessFilter>(initialAccess);
@@ -88,9 +90,9 @@ export function TeacherAccountDirectory({ accounts, initialAccess = "all" }: { a
         </select>
       </label>
       <label>
-        <span>Access</span>
+        <span>Teacher status</span>
         <select value={access} onChange={(event) => setAccess(event.target.value as AccessFilter)}>
-          <option value="all">All access states</option>
+          <option value="all">All teacher states</option>
           <option value="pending">Awaiting approval</option>
           <option value="approved">Active teacher</option>
           <option value="rejected">Declined</option>
@@ -117,21 +119,41 @@ export function TeacherAccountDirectory({ accounts, initialAccess = "all" }: { a
       <span><strong>{filteredAccounts.length}</strong> {filteredAccounts.length === 1 ? "teacher" : "teachers"} shown</span>
       {filtersActive ? <button type="button" onClick={resetFilters}>Reset filters</button> : null}
     </div>
+    <p className="muted">Teacher approval is separate from course access. Teachable transfers and administrator grants do not by themselves confirm a payment.</p>
     <div className="teacher-account-table-wrap">
       <table className="teacher-account-table">
-        <thead><tr><th>Teacher</th><th>Area</th><th>Email</th><th>Access</th><th>Last sign-in</th><th>Activity</th><th>Admin notice</th><th>Account type</th></tr></thead>
+        <thead><tr><th>Teacher</th><th>Area</th><th>Email</th><th>Teacher status</th><th>Course access, source and expiry</th><th>Last sign-in</th><th>Activity</th><th>Admin notice</th><th>Account type</th></tr></thead>
         <tbody>
           {filteredAccounts.map((account) => <tr key={account.user_id}>
             <td><strong>{account.display_name || "Teacher applicant"}</strong><small>Registered {dateTime(account.created_at)}</small></td>
             <td><span className="status-pill">{account.curriculum === "igcse" ? "IGCSE" : "IB"}</span></td>
             <td><strong className="teacher-account-email">{account.email}</strong><span className={`account-state-badge ${account.email_confirmed_at ? "is-positive" : "is-waiting"}`}>{account.email_confirmed_at ? "Confirmed" : "Awaiting confirmation"}</span></td>
             <td><span className={`account-state-badge is-${account.teacher_status}`}>{accessLabel(account.teacher_status)}</span>{account.teacher_status === "pending" && account.email_confirmed_at ? <form action={reviewTeacherApplication} className="teacher-account-actions"><input name="applicantId" type="hidden" value={account.user_id} /><input name="returnTo" type="hidden" value="/teacher/accounts?access=pending" /><button className="text-button" name="decision" type="submit" value="approve">Approve teacher</button><button className="text-button is-danger" name="decision" type="submit" value="decline">Keep as student</button></form> : null}</td>
+            <td>{account.access ? <>
+              <strong>{(() => {
+                const active = currentStudentAccess(account.access, now);
+                const codes = new Set(active.map((record) => record.product_code));
+                const allIB = codes.has("teacher_plus_ib") && account.role === "teacher" || codes.has("student_all_courses_ib") || courseProducts.filter((course) => course.curriculum === "ib").every((course) => codes.has(course.productCode));
+                return allIB ? "Full IB access: all four courses" : active.length ? "Active course access" : "Standard access only";
+              })()}</strong>
+              {account.access.map((record, index) => {
+                const active = currentStudentAccess([record], now).length > 0;
+                const label = record.product_code === "teacher_plus_ib" ? "Teacher Plus: AA HL, AA SL, AI HL, AI SL"
+                  : record.product_code === "student_all_courses_ib" ? "All four IB courses"
+                  : record.product_code === "teacher_plus_igcse" ? "IGCSE Teacher Plus"
+                  : courseProducts.find((course) => course.productCode === record.product_code)?.shortTitle || record.product_code.replaceAll("_", " ");
+                const source = record.source === "admin" ? "Administrator grant" : studentAccessFilters[record.source] || record.source;
+                const state = record.status !== "active" ? record.status : active ? "Active" : Date.parse(record.starts_at) > now ? "Scheduled" : "Expired";
+                return <small key={index}><strong>{label}</strong><br />{source}<br />{state} · {record.expires_at ? `Ends ${dateTime(record.expires_at)}${active ? ` (${Math.ceil((Date.parse(record.expires_at) - now) / 86400000)} days left)` : ""}` : "No expiry"}</small>;
+              })}
+              <a className="text-link" href={`/teacher/platform-access?q=${encodeURIComponent(account.email)}`}>Manage course access</a>
+            </> : "Access unavailable"}</td>
             <td>{dateTime(account.last_sign_in_at)}</td>
             <td><strong>{Number(account.class_count) || 0} classes</strong><small>{Number(account.assignment_count) || 0} assignments · {Number(account.saved_test_count) || 0} saved tests</small></td>
             <td>{account.teacher_notification_sent_at ? <><span className="account-state-badge is-positive">Sent</span><small>{dateTime(account.teacher_notification_sent_at)}</small></> : <span className="account-state-badge is-waiting">Not sent</span>}</td>
             <td>{account.role === "teacher" ? <form action={changeAccountRole} className="teacher-account-actions"><input name="accountId" type="hidden" value={account.user_id} /><input name="role" type="hidden" value="student" /><input name="returnTo" type="hidden" value="/teacher/accounts" /><button className="text-button is-danger" type="submit" onClick={(event) => { if (!window.confirm(`Change ${account.display_name || account.email} to a student account? Their existing progress, classes and access will be kept.`)) event.preventDefault(); }}>Change to student</button></form> : <span className="muted">Student</span>}</td>
           </tr>)}
-          {!filteredAccounts.length ? <tr><td className="teacher-account-empty" colSpan={8}>{accounts.length ? "No teacher registrations match those filters." : "No teacher registrations have been recorded."}</td></tr> : null}
+          {!filteredAccounts.length ? <tr><td className="teacher-account-empty" colSpan={9}>{accounts.length ? "No teacher registrations match those filters." : "No teacher registrations have been recorded."}</td></tr> : null}
         </tbody>
       </table>
     </div>
