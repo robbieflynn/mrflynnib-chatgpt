@@ -39,9 +39,10 @@
     document.documentElement.classList.remove('qb-pen-writing');
   }
   function guardPen(board, down) {
+    if (penGuardOwner === board && penGuardDown && down) return;
     window.clearTimeout(penGuardTimer);
     penGuardOwner = board; penGuardDown = down;
-    document.documentElement.classList.add('qb-pen-writing');
+    if (!document.documentElement.classList.contains('qb-pen-writing')) document.documentElement.classList.add('qb-pen-writing');
     if (!down) penGuardTimer = window.setTimeout(clearPenGuard, 350);
   }
   function penGuarded() {
