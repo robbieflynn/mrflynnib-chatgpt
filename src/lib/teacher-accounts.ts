@@ -1,4 +1,6 @@
+import type { StudentAccessRecord } from "@/lib/student-accounts";
 export type TeacherAccountSummary = {
+  access?: StudentAccessRecord[];
   user_id: string;
   display_name: string;
   email: string;

@@ -724,3 +724,5 @@ On 12 November 2026, Rob approved publishing the compact icon toolbar, More and 
 ## Custom access periods, 12 November 2026
 
 Rob requested custom day counts for individual administrator course-access grants so existing paid access periods can be retained when expanding course access or changing account roles. Allow a validated whole number of days alongside the existing presets and no-expiry option. Role approval and paid course access remain separate.
+
+On 12 November 2026, Rob authorised publication of teacher-directory course access, access source, expiry and remaining days alongside a separately labelled teacher approval status. Show administrator grants as grants, not automatically as complimentary or paid. Preserve transferred enrolments and distinguish a verified payment from an access entitlement.
