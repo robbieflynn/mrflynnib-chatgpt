@@ -730,3 +730,9 @@ Rob reiterated that entering IGCSE from the homepage and signing in must keep st
 Rob requested custom day counts for individual administrator course-access grants so existing paid access periods can be retained when expanding course access or changing account roles. Allow a validated whole number of days alongside the existing presets and no-expiry option. Role approval and paid course access remain separate.
 
 On 12 November 2026, Rob authorised publication of teacher-directory course access, access source, expiry and remaining days alongside a separately labelled teacher approval status. Show administrator grants as grants, not automatically as complimentary or paid. Preserve transferred enrolments and distinguish a verified payment from an access entitlement.
+
+## Whiteboard preferences and hold shapes, 12 November 2026
+
+Rob requested removing the Working space heading and putting drawing, position, zoom and save status in one compact row, with saved status on the right. Narrow boards may scroll the toolbar horizontally to preserve tap targets. Remember pen colour/width, eraser width/type and pressure setting across questions and refreshes on the same browser. Add a Pressure sensitivity On/Off control in More. Pinch or Ctrl/Command+wheel over the working surface should zoom only the board around the cursor; ordinary scrolling remains available. Holding after a roughly circular stroke snaps it to a circle; held straight lines and circles use uniform width even with pressure enabled. Keep saved drawings, undo, read-only review and multipart isolation intact.
+
+Rob clarified that draw-and-hold should tidy basic shapes, including squares, rectangles and triangles as well as circles and lines. Preserve rotated rectangles and triangle proportions. On 12 November 2026 he authorised publishing these additions together with the compact one-row toolbar, remembered preferences and pressure/zoom fixes in PR #258.

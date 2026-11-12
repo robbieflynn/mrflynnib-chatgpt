@@ -9,6 +9,24 @@
   var layoutStorageKey = assignmentWhiteboard ? 'mrflynnib-whiteboard-layout-assignment' : 'mrflynnib-whiteboard-layout-question-bank';
   var whiteboardLayout = assignmentWhiteboard ? 'below' : 'side';
   var strokeSequence = 0;
+  var preferencesKey = 'mrflynnib-whiteboard-tools-v1';
+  function readToolPreferences(value) {
+    var p = value || {};
+    return {
+      colour: ['#000000','#2563eb','#dc2626','#15803d','#7e22ce','#ea580c'].indexOf(p.colour) >= 0 ? p.colour : '#000000',
+      penSize: [1.8,3.6,6,9].indexOf(p.penSize) >= 0 ? p.penSize : 3.6,
+      eraserSize: [12,24,36,48].indexOf(p.eraserSize) >= 0 ? p.eraserSize : 24,
+      eraser: p.eraser === 'precision-eraser' ? p.eraser : 'stroke-eraser',
+      pressure: p.pressure !== false
+    };
+  }
+  var toolPreferences = readToolPreferences();
+  try { toolPreferences = readToolPreferences(JSON.parse(localStorage.getItem(preferencesKey))); } catch { /* Use defaults if storage is unavailable. */ }
+  window.addEventListener('storage', function (event) {
+    if (event.key !== preferencesKey) return;
+    try { toolPreferences = readToolPreferences(JSON.parse(event.newValue)); } catch { return; }
+    window.dispatchEvent(new CustomEvent('mrflynnib-tool-preferences'));
+  });
 
   function nextStrokeId() {
     strokeSequence += 1;
@@ -94,7 +112,7 @@
           '<div class="qb-whiteboard-part-buttons"></div>' +
         '</div>' +
         '<div class="qb-whiteboard-quick-tools" role="toolbar" aria-label="Drawing tools">' +
-          toolButton('pen', 'Pen', true, 'Pen (P): draw, then hold at the end to make a straight line') +
+          toolButton('pen', 'Pen', true, 'Pen (P): draw, then hold to tidy a line, circle, square, rectangle or triangle') +
           toolButton('precision-eraser', 'Eraser', false, 'Eraser (E): use your selected eraser') +
           toolButton('lasso', 'Select', false, 'Select writing, questions or images and drag to move them') +
           toolButton('undo', 'Undo', undefined, 'Undo the last change (Ctrl+Z or Command+Z)') +
@@ -184,6 +202,13 @@
     morePanel.hidden = true;
     morePanel.setAttribute('role', 'group');
     morePanel.setAttribute('aria-label', 'More whiteboard options');
+    morePanel.insertAdjacentHTML('beforeend', toolButton('pressure', 'Pressure sensitivity', true));
+    var savedStatus = board.querySelector('.qb-whiteboard-save-status');
+    quickTools.appendChild(board.querySelector('.qb-whiteboard-layout-tools'));
+    quickTools.appendChild(board.querySelector('.qb-whiteboard-zoom-tools'));
+    quickTools.appendChild(savedStatus);
+    quickTools.appendChild(board.querySelector('.qb-whiteboard-close'));
+    heading.remove();
 
     var resizer = document.createElement('div');
     resizer.className = 'qb-whiteboard-resizer';
@@ -230,6 +255,7 @@
     var penSize = 3.6;
     var eraserSize = 24;
     var preferredEraser = 'stroke-eraser';
+    var pressureEnabled = true;
     var selection = [];
     var lasso = null;
     var selectionDrag = null;
@@ -247,6 +273,29 @@
     cursor.hidden = true;
     surface.appendChild(cursor);
 
+    function applyToolPreferences() {
+      colour = toolPreferences.colour;
+      penSize = toolPreferences.penSize;
+      eraserSize = toolPreferences.eraserSize;
+      preferredEraser = toolPreferences.eraser;
+      pressureEnabled = toolPreferences.pressure;
+      if (activePointer === null && (mode === 'precision-eraser' || mode === 'stroke-eraser') && mode !== preferredEraser) setMode(preferredEraser);
+      board.querySelector('[data-whiteboard-action="pressure"]').setAttribute('aria-pressed', String(pressureEnabled));
+      board.querySelector('[data-whiteboard-action="pressure"]').textContent = 'Pressure sensitivity: ' + (pressureEnabled ? 'On' : 'Off');
+      board.querySelectorAll('[data-whiteboard-colour]').forEach(function (button) {
+        button.setAttribute('aria-pressed', String(button.getAttribute('data-whiteboard-colour') === colour));
+      });
+      updateSizeButtons();
+      updateCursor();
+    }
+    function saveToolPreferences() {
+      toolPreferences = { colour: colour, penSize: penSize, eraserSize: eraserSize, eraser: preferredEraser, pressure: pressureEnabled };
+      try { localStorage.setItem(preferencesKey, JSON.stringify(toolPreferences)); } catch { /* Keep preferences for this visit. */ }
+      window.dispatchEvent(new CustomEvent('mrflynnib-tool-preferences', { detail: board }));
+    }
+    window.addEventListener('mrflynnib-tool-preferences', function (event) {
+      if (event.detail !== board) applyToolPreferences();
+    });
     function hideCursor() {
       cursor.hidden = true;
       canvas.style.cursor = cursorTool === 'pan' ? 'grab' : cursorTool === 'move-image' ? 'move' : 'crosshair';
@@ -377,6 +426,7 @@
 
     function setSaveStatus(text, state) {
       saveStatus.textContent = text;
+      saveStatus.title = text;
       saveStatus.setAttribute('data-state', state || 'idle');
     }
 
@@ -597,7 +647,7 @@
       ctx.lineWidth = (stroke.mode === 'eraser' ? (stroke.eraserSize || 24) : stroke.mode === 'highlighter' ? 26 : (stroke.penSize || 3.6)) * zoom;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
-      if (stroke.mode === 'pen' && points.some(function (p) { return Number.isFinite(p.p); })) {
+      if (stroke.mode === 'pen' && !stroke.straightened && points.some(function (p) { return Number.isFinite(p.p); })) {
         // Opaque tapered segments keep live ink and saved redraws identical.
         ctx.fillStyle = ctx.strokeStyle;
         function radius(p) { return ctx.lineWidth * (.35 + 1.3 * (Number.isFinite(p.p) ? p.p : .5)) / 2; }
@@ -746,7 +796,7 @@
         x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
         y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
       };
-      if (event.pointerType === 'pen' && Number.isFinite(event.pressure) && event.pressure > 0) point.p = Math.min(1, event.pressure);
+      if (pressureEnabled && event.pointerType === 'pen' && Number.isFinite(event.pressure) && event.pressure > 0) point.p = Math.min(1, event.pressure);
       return point;
     }
 
@@ -764,6 +814,7 @@
     function appendStrokeSamples(event) {
       if (!activeStroke) return;
       var samples = eventSamples(event);
+      if (activeStroke.shape && activeStroke.shape !== 'line') return;
       if (activeStroke.straightened) {
         var endpoint = pointFromEvent(samples[samples.length - 1]);
         if (!Number.isFinite(endpoint.p) && Number.isFinite(activeStroke.points[1].p)) endpoint.p = activeStroke.points[1].p;
@@ -799,7 +850,7 @@
         (last.x - first.x) * (baseWidth * zoom),
         (last.y - first.y) * (baseHeight * zoom)
       );
-      if (length < 24) {
+      if (length < 24 && activeStroke.points.length < 12) {
         clearStraightHold();
         return;
       }
@@ -827,8 +878,11 @@
           (endpoint.y - straightHoldPoint.y) * (baseHeight * zoom)
         );
         if (movementDuringHold > holdTolerance) return;
+        var fitted = window.MrFlynnWhiteboardGestures && window.MrFlynnWhiteboardGestures.holdShape(activeStroke.points.map(function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight }; }));
+        if (!fitted) return;
         activeStroke.straightened = true;
-        activeStroke.points = [activeStroke.points[0], endpoint];
+        activeStroke.shape = fitted.type;
+        activeStroke.points = fitted.points.map(function (p) { return { x: p.x / baseWidth, y: p.y / baseHeight }; });
         redraw();
       }, 500);
     }
@@ -1186,7 +1240,7 @@
       resetInteraction();
       if (nextMode !== mode) closeToolPanels();
       mode = nextMode;
-      if (mode === 'precision-eraser' || mode === 'stroke-eraser') preferredEraser = mode;
+      if ((mode === 'precision-eraser' || mode === 'stroke-eraser') && preferredEraser !== mode) { preferredEraser = mode; saveToolPreferences(); }
       updateSizeButtons();
       selection = []; lasso = null; drawSelection();
       board.querySelector('[data-whiteboard-action="lasso"]').setAttribute('aria-pressed', String(mode === 'lasso'));
@@ -1461,6 +1515,22 @@
       updateSurfaceSize();
     }
 
+    viewport.addEventListener('wheel', function (event) {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      if (activePointer !== null) return;
+      var rect = viewport.getBoundingClientRect();
+      var x = event.clientX - rect.left - viewport.clientLeft;
+      var y = event.clientY - rect.top - viewport.clientTop;
+      var paperX = (viewport.scrollLeft + x) / zoom;
+      var paperY = (viewport.scrollTop + y) / zoom;
+      var delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? rect.height : 1);
+      setZoom(zoom * Math.exp(-Math.max(-150, Math.min(150, delta)) * .003));
+      viewport.scrollLeft = paperX * zoom - x;
+      viewport.scrollTop = paperY * zoom - y;
+      hideCursor();
+    }, { passive: false });
+
     function syncExpandedState(expanded) {
       card.classList.toggle('qb-whiteboard-expanded', expanded);
       document.body.classList.toggle('qb-whiteboard-fullscreen', expanded);
@@ -1522,6 +1592,7 @@
         var sizeIndex = Number(sizeChoice.getAttribute('data-tool-size'));
         if (mode === 'precision-eraser' || mode === 'stroke-eraser') eraserSize = eraserSizes[sizeIndex];
         else if (mode === 'pen') penSize = penSizes[sizeIndex];
+        saveToolPreferences();
         updateSizeButtons();
         updateCursor();
         return;
@@ -1532,6 +1603,7 @@
         Array.prototype.forEach.call(board.querySelectorAll('[data-whiteboard-colour]'), function (choice) {
           choice.setAttribute('aria-pressed', String(choice === colourChoice));
         });
+        saveToolPreferences();
         setMode('pen');
         return;
       }
@@ -1550,6 +1622,7 @@
         board.querySelector('.qb-whiteboard-tool-settings').hidden = false;
         board.querySelector('[data-whiteboard-panel="settings"]').setAttribute('aria-expanded', 'true');
       }
+      if (action === 'pressure') { pressureEnabled = !pressureEnabled; saveToolPreferences(); applyToolPreferences(); }
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
       if (action === 'zoom-out') setZoom(zoom - .25);
@@ -1794,6 +1867,7 @@
       var direction = event.key === 'ArrowLeft' ? 40 : -40;
       resizeSplit(currentWidth + direction);
     });
+    applyToolPreferences();
     setZoom(1);
     updateCursor();
     updateButtons();
