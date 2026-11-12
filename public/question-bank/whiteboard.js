@@ -149,6 +149,42 @@
         '</div>' +
       '</div>';
 
+    // Keep core actions in view; secondary choices use labelled disclosures.
+    var heading = board.querySelector('.qb-whiteboard-heading-row');
+    var quickTools = board.querySelector('.qb-whiteboard-quick-tools');
+    var morePanel = board.querySelector('.qb-whiteboard-tools');
+    var settingsPanel = document.createElement('div');
+    settingsPanel.className = 'qb-whiteboard-tool-settings';
+    settingsPanel.hidden = true;
+    settingsPanel.setAttribute('role', 'group');
+    settingsPanel.setAttribute('aria-label', 'Drawing tool settings');
+    settingsPanel.appendChild(board.querySelector('.qb-whiteboard-size-controls'));
+    settingsPanel.appendChild(board.querySelector('.qb-whiteboard-colours'));
+    quickTools.after(settingsPanel);
+    quickTools.insertBefore(board.querySelector('[data-whiteboard-action="highlighter"]'), board.querySelector('[data-whiteboard-action="undo"]'));
+    var viewTools = document.createElement('div');
+    viewTools.className = 'qb-whiteboard-view-tools';
+    viewTools.appendChild(board.querySelector('.qb-whiteboard-zoom-tools'));
+    viewTools.appendChild(board.querySelector('.qb-whiteboard-close'));
+    heading.appendChild(viewTools);
+    var settingsButton = document.createElement('button');
+    settingsButton.type = 'button';
+    settingsButton.className = 'qb-whiteboard-tool qb-whiteboard-settings-toggle';
+    settingsButton.setAttribute('data-whiteboard-panel', 'settings');
+    settingsButton.setAttribute('aria-expanded', 'false');
+    settingsButton.textContent = 'Pen settings \u25be';
+    quickTools.appendChild(settingsButton);
+    var moreButton = document.createElement('button');
+    moreButton.type = 'button';
+    moreButton.className = 'qb-whiteboard-tool';
+    moreButton.setAttribute('data-whiteboard-panel', 'more');
+    moreButton.setAttribute('aria-expanded', 'false');
+    moreButton.textContent = 'More \u25be';
+    quickTools.appendChild(moreButton);
+    morePanel.hidden = true;
+    morePanel.setAttribute('role', 'group');
+    morePanel.setAttribute('aria-label', 'More whiteboard options');
+
     var resizer = document.createElement('div');
     resizer.className = 'qb-whiteboard-resizer';
     resizer.setAttribute('role', 'separator');
@@ -242,8 +278,28 @@
     viewport.addEventListener('scroll', hideCursor, { passive: true });
     window.addEventListener('scroll', hideCursor, { passive: true });
 
+    function closeToolPanels() {
+      board.querySelector('.qb-whiteboard-tool-settings').hidden = true;
+      board.querySelector('.qb-whiteboard-tools').hidden = true;
+      board.querySelectorAll('[data-whiteboard-panel]').forEach(function (button) { button.setAttribute('aria-expanded', 'false'); });
+      requestAnimationFrame(resize);
+    }
+    function toggleToolPanel(name) {
+      var panel = board.querySelector(name === 'settings' ? '.qb-whiteboard-tool-settings' : '.qb-whiteboard-tools');
+      var wasOpen = !panel.hidden;
+      closeToolPanels();
+      panel.hidden = wasOpen;
+      board.querySelector('[data-whiteboard-panel="' + name + '"]').setAttribute('aria-expanded', String(!wasOpen));
+      requestAnimationFrame(resize);
+    }
     function updateSizeButtons() {
       var erasing = mode === 'precision-eraser' || mode === 'stroke-eraser';
+      var settingsToggle = board.querySelector('[data-whiteboard-panel="settings"]');
+      settingsToggle.hidden = !erasing && mode !== 'pen';
+      settingsToggle.textContent = erasing ? 'Eraser settings \u25be' : 'Pen settings \u25be';
+      settingsToggle.style.setProperty('--tool-colour', erasing ? '#64748b' : colour);
+      settingsToggle.disabled = Boolean(accountState().readOnly);
+      board.querySelector('.qb-whiteboard-colours').hidden = erasing;
       var sizes = erasing ? eraserSizes : penSizes;
       var labels = erasing ? ['Small', 'Medium', 'Large', 'Extra large'] : ['Fine', 'Medium', 'Thick', 'Bold'];
       var group = board.querySelector('.qb-whiteboard-sizes');
@@ -332,7 +388,7 @@
         svg.setAttribute('tabindex', readOnly ? '-1' : '0');
         svg.setAttribute('aria-disabled', String(readOnly));
       });
-      Array.prototype.forEach.call(board.querySelectorAll('button:not([data-whiteboard-layout]):not(.qb-whiteboard-close):not(.qb-whiteboard-part-button):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
+      Array.prototype.forEach.call(board.querySelectorAll('button:not([data-whiteboard-layout]):not([data-whiteboard-panel="more"]):not(.qb-whiteboard-close):not(.qb-whiteboard-part-button):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
       updateButtons();
       if (readOnly) setSaveStatus('Read only', 'saved');
       else if (!account.configured) setSaveStatus('Saving coming soon', 'idle');
@@ -1095,6 +1151,7 @@
 
     function setMode(nextMode) {
       resetInteraction();
+      if (nextMode !== mode) closeToolPanels();
       mode = nextMode;
       if (mode === 'precision-eraser' || mode === 'stroke-eraser') preferredEraser = mode;
       updateSizeButtons();
@@ -1388,11 +1445,15 @@
     }
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && card.classList.contains('qb-whiteboard-expanded')) setExpanded(false);
+      if (event.key !== 'Escape') return;
+      var activePanel = board.querySelector('[data-whiteboard-panel][aria-expanded="true"]');
+      if (activePanel) { closeToolPanels(); activePanel.focus(); return; }
+      if (card.classList.contains('qb-whiteboard-expanded')) setExpanded(false);
     });
 
     open.addEventListener('click', function () {
       resetInteraction();
+      closeToolPanels();
       var willOpen = board.hidden;
       board.hidden = !willOpen;
       card.classList.toggle('qb-whiteboard-open', willOpen);
@@ -1412,6 +1473,11 @@
     });
 
     board.addEventListener('click', function (event) {
+      var panelChoice = event.target.closest('[data-whiteboard-panel]');
+      if (panelChoice) {
+        if (!accountState().readOnly || panelChoice.getAttribute('data-whiteboard-panel') === 'more') toggleToolPanel(panelChoice.getAttribute('data-whiteboard-panel'));
+        return;
+      }
       var layoutChoice = event.target.closest('[data-whiteboard-layout]');
       if (layoutChoice) {
         applyWhiteboardLayout(layoutChoice.getAttribute('data-whiteboard-layout'), true);
@@ -1439,9 +1505,18 @@
       var button = event.target.closest('[data-whiteboard-action]');
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
+      var eraserOption = action === 'partial-eraser' || action === 'stroke-eraser';
+      if ((action === 'pen' && mode === 'pen') || (action === 'precision-eraser' && (mode === 'precision-eraser' || mode === 'stroke-eraser'))) {
+        toggleToolPanel('settings');
+        return;
+      }
       if (action === 'partial-eraser') setMode('precision-eraser');
       if (action === 'precision-eraser') action = preferredEraser;
       if (action === 'lasso' || action === 'pen' || action === 'highlighter' || action === 'precision-eraser' || action === 'stroke-eraser' || action === 'pan' || action === 'move-image') setMode(action);
+      if (eraserOption) {
+        board.querySelector('.qb-whiteboard-tool-settings').hidden = false;
+        board.querySelector('[data-whiteboard-panel="settings"]').setAttribute('aria-expanded', 'true');
+      }
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
       if (action === 'zoom-out') setZoom(zoom - .25);

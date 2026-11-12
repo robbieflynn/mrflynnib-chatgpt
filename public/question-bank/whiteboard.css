@@ -524,3 +524,32 @@
 @media (max-width: 820px) {
   .qb-whiteboard-fullscreen .qb-card.qb-whiteboard-expanded .qb-question-workspace { padding: 10px; }
 }
+
+/* A compact writing palette with secondary choices disclosed on demand. */
+.qb-whiteboard-tool-settings[hidden],
+.qb-whiteboard-tools[hidden],
+.qb-whiteboard-colours[hidden],
+.qb-whiteboard-tool[hidden] { display: none; }
+.qb-whiteboard-tool-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0 2px;
+  border-top: 1px solid #dce3ec;
+}
+.qb-whiteboard-view-tools { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.qb-whiteboard-quick-tools { align-items: center; gap: 6px; }
+.qb-whiteboard-quick-tools .qb-whiteboard-tool { min-width: 0; }
+.qb-whiteboard-settings-toggle::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--tool-colour, #000);
+  margin-right: 6px;
+}
+.qb-whiteboard-tools { padding-top: 10px; border-top: 1px solid #dce3ec; }
+.qb-whiteboard-tools [data-whiteboard-action="clear"] { margin-left: auto; color: #933535; }
+.qb-whiteboard-tool-settings .qb-whiteboard-sizes { border-left: 0; padding-left: 0; }

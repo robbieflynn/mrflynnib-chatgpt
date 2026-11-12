@@ -4,7 +4,7 @@
 
 The current board mixes drawing, drawing settings, paper, navigation and window layout in a large wrapping header. Pen users see four widths, six colours, paper choices, page controls and zoom at the same time as core tools. Narrowing the board makes that header taller and reduces writing space. The issue is hierarchy and simultaneous choices, rather than too many useful capabilities.
 
-The requested layout repair groups Expand/Collapse with Position, restores a draggable and keyboard-accessible divider in expanded Side view, and honours Below in expanded view. It keeps the header scrollable on small views so drawing space and all controls remain available. The wider changes below are proposals, not implemented.
+The requested layout repair groups Expand/Collapse with Position, restores a draggable and keyboard-accessible divider in expanded Side view, and honours Below in expanded view. It keeps the header scrollable on small views so drawing space and all controls remain available. Rob subsequently requested implementing the toolbar simplification. The preview now contains the compact drawing row, on-demand Pen/Eraser settings, a More disclosure and separate zoom/window controls. Highlighter retains its existing yellow fixed-width behaviour; Copy question remains available in More. The broader reference ideas below describe the audit direction.
 
 ## Reference patterns
 
@@ -29,4 +29,4 @@ Avoid adding a second “simple/advanced” mode or student toolbar customisatio
 
 Do not lose remembered tool settings, independently erasable cut fragments, large-scribble erasure, sharp viewport rendering, hold-to-straighten, image/ink selection, undo, zoom, paper expansion, saved work or multipart isolation. Teacher and submitted-student review must retain view controls without enabling editing.
 
-Before publishing a wider redesign, review a preview at laptop, portrait tablet and landscape tablet sizes. Test actual Apple Pencil/palm behaviour separately from browser automation. Measure whether a student can write, erase, undo, move a copied question and change question/board proportions without instruction. No replacement engine, licence purchase or broader toolbar redesign is included in the layout repair.
+Before publishing a wider redesign, review a preview at laptop, portrait tablet and landscape tablet sizes. Test actual Apple Pencil/palm behaviour separately from browser automation. Measure whether a student can write, erase, undo, move a copied question and change question/board proportions without instruction. No replacement engine or licence purchase is included.
