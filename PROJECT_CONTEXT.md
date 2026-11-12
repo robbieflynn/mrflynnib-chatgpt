@@ -721,6 +721,10 @@ Rob further requested compact icon-only Pen, Highlighter, Eraser, Select and Und
 
 On 12 November 2026, Rob approved publishing the compact icon toolbar, More and contextual settings, expanded layout repair, and pressure-sensitive pen after reviewing the updated preview. Publish PR #253 and verify the production page; physical stylus testing remains separate from automated pressure checks.
 
+## IGCSE navigation isolation, 12 November 2026
+
+Rob reiterated that entering IGCSE from the homepage and signing in must keep students in IGCSE, including the top Question bank link, Learning home, course player, current assignments and submitted-work review. Returning to IB must be deliberate via the public entry journey. IGCSE student assignments now have canonical `/igcse/assignments` routes within the existing IGCSE shell; old shared assignment links resolve to the correct curriculum after authorised lookup. Preserve shared authentication and existing assignment IDs, answers, progress and whiteboards.
+
 ## Custom access periods, 12 November 2026
 
 Rob requested custom day counts for individual administrator course-access grants so existing paid access periods can be retained when expanding course access or changing account roles. Allow a validated whole number of days alongside the existing presets and no-expiry option. Role approval and paid course access remain separate.

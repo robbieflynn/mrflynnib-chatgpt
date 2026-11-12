@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { sendTeacherApplicationEmail } from "@/lib/teacher-application-email";
-import { ensurePartnerSchoolTeacherRole } from "@/lib/partner-school-teacher";
+import { ensurePartnerSchoolTeacherRole, isAutomaticPartnerSchoolTeacher } from "@/lib/partner-school-teacher";
 
 export type Curriculum = "ib" | "igcse";
 
@@ -13,10 +13,10 @@ export async function requireSignedIn(nextPath = "/teacher", curriculum?: Curric
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect(`${accountPath(curriculum || (nextPath.startsWith("/igcse") ? "igcse" : "ib"))}?next=${encodeURIComponent(nextPath)}`);
-  let { data: accountProfile } = await supabase.from("profiles").select("role,display_name,curriculum,teacher_status,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
-  if (accountProfile?.role === "student" && await ensurePartnerSchoolTeacherRole(user)) {
+  let { data: accountProfile } = await supabase.from("profiles").select("role,display_name,curriculum,teacher_status,teacher_requested_at,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
+  if (accountProfile?.role === "student" && isAutomaticPartnerSchoolTeacher(user, accountProfile) && await ensurePartnerSchoolTeacherRole(user)) {
     await supabase.rpc("claim_school_plus_access");
-    const { data: repairedProfile } = await supabase.from("profiles").select("role,display_name,curriculum,teacher_status,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
+    const { data: repairedProfile } = await supabase.from("profiles").select("role,display_name,curriculum,teacher_status,teacher_requested_at,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
     accountProfile = repairedProfile;
   }
   return { supabase, user, profile: accountProfile };
@@ -39,7 +39,7 @@ export async function requireTeacher(nextPath = "/teacher", curriculum?: Curricu
     redirect(`${destination}?teacher=requested`);
   }
 
-  const { data: approvedProfile } = await supabase.from("profiles").select("role,display_name,curriculum,teacher_status,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
+  const { data: approvedProfile } = await supabase.from("profiles").select("role,display_name,curriculum,teacher_status,teacher_requested_at,teacher_notification_sent_at").eq("user_id", user.id).maybeSingle();
   if (approvedProfile?.role !== "teacher" && approvedProfile?.role !== "admin") {
     redirect(`${destination}?teacher=access-required&error=${encodeURIComponent("Your teacher account could not be opened. Please try again.")}`);
   }
