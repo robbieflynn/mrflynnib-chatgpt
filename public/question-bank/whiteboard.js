@@ -35,12 +35,12 @@
   }
 
   function toolButton(action, label, pressed, description) {
-    var paths = { pen: 'm16 3 5 5L8 21H3v-5L16 3Zm-2 2 5 5M3 16l5 5', 'precision-eraser': 'm15 3 6 6-11 12H5l-4-4L15 3ZM7 11l7 7M10 21h12', undo: 'M9 4 3 10l6 6M3 10h11a7 7 0 0 1 0 14', lasso: 'M8 18c-9-1-8-14 4-15s15 13 3 15H8c-5 0-5 5-1 5 3 0 4-3 1-5' };
+    var paths = { highlighter: 'm15 3 6 6-9 9-6-6 9-9ZM6 12l-3 6 3 3 6-3M3 21h7', pen: 'm16 3 5 5L8 21H3v-5L16 3Zm-2 2 5 5M3 16l5 5', 'precision-eraser': 'm15 3 6 6-11 12H5l-4-4L15 3ZM7 11l7 7M10 21h12', undo: 'M9 4 3 10l6 6M3 10h11a7 7 0 0 1 0 14', lasso: 'M8 18c-9-1-8-14 4-15s15 13 3 15H8c-5 0-5 5-1 5 3 0 4-3 1-5' };
     var icon = paths[action] ? '<svg viewBox="0 0 24 26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="' + paths[action] + '"/></svg>' : '';
     return '<button type="button" class="qb-whiteboard-tool" data-whiteboard-action="' + action + '"' +
       (pressed !== undefined ? ' aria-pressed="' + pressed + '"' : '') +
-      (description ? ' aria-label="' + description + '" title="' + description + '"' : '') +
-      '>' + icon + label + '</button>';
+      ((description || icon) ? ' aria-label="' + (description || label) + '" title="' + (description || label) + '"' : '') +
+      '>' + icon + '<span class="qb-whiteboard-tool-label">' + label + '</span></button>';
   }
 
   function colourButton(value, label, selected) {
@@ -161,7 +161,7 @@
     settingsPanel.appendChild(board.querySelector('.qb-whiteboard-size-controls'));
     settingsPanel.appendChild(board.querySelector('.qb-whiteboard-colours'));
     quickTools.after(settingsPanel);
-    quickTools.insertBefore(board.querySelector('[data-whiteboard-action="highlighter"]'), board.querySelector('[data-whiteboard-action="undo"]'));
+    quickTools.insertBefore(board.querySelector('[data-whiteboard-action="highlighter"]'), board.querySelector('[data-whiteboard-action="precision-eraser"]'));
     var viewTools = document.createElement('div');
     viewTools.className = 'qb-whiteboard-view-tools';
     viewTools.appendChild(board.querySelector('.qb-whiteboard-zoom-tools'));
@@ -296,7 +296,9 @@
       var erasing = mode === 'precision-eraser' || mode === 'stroke-eraser';
       var settingsToggle = board.querySelector('[data-whiteboard-panel="settings"]');
       settingsToggle.hidden = !erasing && mode !== 'pen';
-      settingsToggle.textContent = erasing ? 'Eraser settings \u25be' : 'Pen settings \u25be';
+      settingsToggle.textContent = '\u25be';
+      settingsToggle.setAttribute('aria-label', erasing ? 'Eraser settings' : 'Pen settings');
+      settingsToggle.title = erasing ? 'Eraser settings' : 'Pen settings';
       settingsToggle.style.setProperty('--tool-colour', erasing ? '#64748b' : colour);
       settingsToggle.disabled = Boolean(accountState().readOnly);
       board.querySelector('.qb-whiteboard-colours').hidden = erasing;
@@ -420,7 +422,7 @@
             penSize: action.penSize || 3.6,
             eraserSize: action.eraserSize || 24,
             straightened: Boolean(action.straightened),
-            points: action.points.map(function (point) { return { x: compactCoordinate(point.x), y: compactCoordinate(point.y) }; })
+            points: action.points.map(function (point) { return Object.assign({ x: compactCoordinate(point.x), y: compactCoordinate(point.y) }, Number.isFinite(point.p) ? { p: compactCoordinate(point.p) } : {}); })
           };
           return {
             type: 'image', id: action.id, source: action.source,
@@ -595,6 +597,32 @@
       ctx.lineWidth = (stroke.mode === 'eraser' ? (stroke.eraserSize || 24) : stroke.mode === 'highlighter' ? 26 : (stroke.penSize || 3.6)) * zoom;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
+      if (stroke.mode === 'pen' && points.some(function (p) { return Number.isFinite(p.p); })) {
+        // Opaque tapered segments keep live ink and saved redraws identical.
+        ctx.fillStyle = ctx.strokeStyle;
+        function radius(p) { return ctx.lineWidth * (.35 + 1.3 * (Number.isFinite(p.p) ? p.p : .5)) / 2; }
+        function cap(p) {
+          ctx.beginPath(); ctx.arc(p.x * width, p.y * height, radius(p), 0, Math.PI * 2); ctx.fill();
+        }
+        cap(points[0]);
+        for (var j = 1; j < points.length; j++) {
+          var a = points[j - 1], b = points[j];
+          var dx = (b.x - a.x) * width, dy = (b.y - a.y) * height;
+          var length = Math.hypot(dx, dy);
+          if (length) {
+            var nx = -dy / length, ny = dx / length, ra = radius(a), rb = radius(b);
+            ctx.beginPath();
+            ctx.moveTo(a.x * width + nx * ra, a.y * height + ny * ra);
+            ctx.lineTo(b.x * width + nx * rb, b.y * height + ny * rb);
+            ctx.lineTo(b.x * width - nx * rb, b.y * height - ny * rb);
+            ctx.lineTo(a.x * width - nx * ra, a.y * height - ny * ra);
+            ctx.closePath(); ctx.fill();
+          }
+          cap(b);
+        }
+        ctx.restore();
+        return;
+      }
       ctx.beginPath();
       var first = points[0];
       ctx.moveTo(first.x * width, first.y * height);
@@ -714,10 +742,12 @@
 
     function pointFromEvent(event) {
       var rect = surface.getBoundingClientRect();
-      return {
+      var point = {
         x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
         y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
       };
+      if (event.pointerType === 'pen' && Number.isFinite(event.pressure) && event.pressure > 0) point.p = Math.min(1, event.pressure);
+      return point;
     }
 
     function eventSamples(event) {
@@ -735,7 +765,9 @@
       if (!activeStroke) return;
       var samples = eventSamples(event);
       if (activeStroke.straightened) {
-        activeStroke.points[1] = pointFromEvent(samples[samples.length - 1]);
+        var endpoint = pointFromEvent(samples[samples.length - 1]);
+        if (!Number.isFinite(endpoint.p) && Number.isFinite(activeStroke.points[1].p)) endpoint.p = activeStroke.points[1].p;
+        activeStroke.points[1] = endpoint;
         redraw();
         return;
       }
@@ -744,6 +776,7 @@
       samples.forEach(function (sample) {
         var point = pointFromEvent(sample);
         var last = activeStroke.points[activeStroke.points.length - 1];
+        if (!Number.isFinite(point.p) && Number.isFinite(last.p)) point.p = last.p;
         var distance = Math.hypot(
           (point.x - last.x) * (baseWidth * zoom),
           (point.y - last.y) * (baseHeight * zoom)
@@ -855,14 +888,14 @@
     function splitErasedStrokes(eraser) {
       if (!window.MrFlynnWhiteboardGestures) return;
       var state = visibleStrokeState(), groupId = nextStrokeId(), removed = [], fragments = [];
-      var toPaper = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight }; };
+      var toPaper = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight, p: p.p }; };
       actions.slice(state.start).forEach(function (a) {
         if (a.type !== 'stroke' || a.mode === 'eraser' || state.hidden.has(a.id)) return;
         var pieces = window.MrFlynnWhiteboardGestures.cutStroke(a.points.map(toPaper), eraser.points.map(toPaper), (eraser.eraserSize || 24) / 2 + (a.mode === 'highlighter' ? 13 : (a.penSize || 3.6) / 2));
         if (!pieces) return;
         removed.push(a.id);
         pieces.forEach(function (points) {
-          fragments.push(Object.assign({}, a, { id: nextStrokeId(), groupId: groupId, straightened: false, points: points.map(function (p) { return { x: p.x / baseWidth, y: p.y / baseHeight }; }) }));
+          fragments.push(Object.assign({}, a, { id: nextStrokeId(), groupId: groupId, straightened: false, points: points.map(function (p) { return { x: p.x / baseWidth, y: p.y / baseHeight, p: p.p }; }) }));
         });
       });
       var index = actions.indexOf(eraser);
@@ -1107,7 +1140,7 @@
       if (event.type === 'pointerup' && activeStroke && activeStroke.mode === 'pen' &&
           !activeStroke.straightened && window.MrFlynnWhiteboardGestures) {
         var visible = visibleStrokeState();
-        var paperPoint = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight }; };
+        var paperPoint = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight, p: p.p }; };
         var candidates = actions.slice(visible.start).filter(function (candidate) {
           return candidate !== activeStroke && candidate.type === 'stroke' && candidate.mode !== 'eraser' && !visible.hidden.has(candidate.id);
         }).map(function (candidate) { return { id: candidate.id, points: candidate.points.map(paperPoint) }; });
@@ -1288,7 +1321,7 @@
             eraserSize: [12, 24, 36, 48].indexOf(action.eraserSize) >= 0 ? action.eraserSize : 24,
             straightened: Boolean(action.straightened),
             points: action.points.slice(0, 10000).map(function (point) {
-              return { x: Number(point.x) || 0, y: Number(point.y) || 0 };
+              return Object.assign({ x: Number(point.x) || 0, y: Number(point.y) || 0 }, Number.isFinite(point.p) ? { p: Math.max(0, Math.min(1, point.p)) } : {});
             })
           });
         }

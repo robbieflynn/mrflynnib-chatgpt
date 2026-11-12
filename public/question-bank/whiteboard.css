@@ -553,3 +553,19 @@
 .qb-whiteboard-tools { padding-top: 10px; border-top: 1px solid #dce3ec; }
 .qb-whiteboard-tools [data-whiteboard-action="clear"] { margin-left: auto; color: #933535; }
 .qb-whiteboard-tool-settings .qb-whiteboard-sizes { border-left: 0; padding-left: 0; }
+
+/* Compact icons retain names for assistive technology and hover tooltips. */
+.qb-whiteboard-quick-tools > .qb-whiteboard-tool:has(svg) { width: 36px; min-height: 36px; padding: 7px; }
+.qb-whiteboard-quick-tools > .qb-whiteboard-tool:has(svg) .qb-whiteboard-tool-label { display: none; }
+.qb-whiteboard-quick-tools > .qb-whiteboard-tool svg { display: block; width: 20px; height: 20px; margin: 0; }
+.qb-whiteboard-quick-tools > .qb-whiteboard-tool { min-height: 36px; padding: 7px 10px; }
+.qb-whiteboard-header { padding: 8px 10px; gap: 6px; }
+.qb-whiteboard-sizes .qb-whiteboard-tool { min-width: 32px; min-height: 32px; padding: 6px; }
+.qb-whiteboard-tool-settings { padding-top: 6px; gap: 8px; }
+.qb-whiteboard-colour { width: 26px; height: 26px; }
+.qb-whiteboard-quick-tools > [data-whiteboard-panel][aria-expanded="true"] { background: #e2ebf6; border-color: #407dc4; }
+@media (pointer: coarse) {
+  .qb-whiteboard-quick-tools > .qb-whiteboard-tool:has(svg) { width: 44px; min-height: 44px; }
+  .qb-whiteboard-quick-tools > .qb-whiteboard-tool,
+  .qb-whiteboard-sizes .qb-whiteboard-tool { min-height: 40px; min-width: 40px; }
+}

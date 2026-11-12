@@ -75,7 +75,8 @@
       else {
         // Keep original bends without storing hundreds of collinear samples.
         var a=piece[piece.length-2], b=piece[piece.length-1];
-        if (a && b && Math.abs((b.x-a.x)*(p.y-b.y)-(b.y-a.y)*(p.x-b.x)) < 0.000001 && (b.x-a.x)*(p.x-b.x)+(b.y-a.y)*(p.y-b.y) >= 0) piece[piece.length-1]=p;
+        var pressureLinear = !Number.isFinite(p.p) || (a && b && Math.abs(b.p - (a.p + (p.p - a.p) * Math.hypot(b.x-a.x,b.y-a.y) / (Math.hypot(p.x-a.x,p.y-a.y) || 1))) < .002);
+        if (a && b && pressureLinear && Math.abs((b.x-a.x)*(p.y-b.y)-(b.y-a.y)*(p.x-b.x)) < 0.000001 && (b.x-a.x)*(p.x-b.x)+(b.y-a.y)*(p.y-b.y) >= 0) piece[piece.length-1]=p;
         else piece.push(p);
       }
     }
@@ -83,7 +84,14 @@
     for(var i=1;i<points.length;i++) {
       var a=points[i-1], b=points[i];
       var steps=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/2));
-      for(var j=1;j<=steps;j++) sample({x:a.x+(b.x-a.x)*j/steps,y:a.y+(b.y-a.y)*j/steps});
+      for(var j=1;j<=steps;j++) {
+        var point={x:a.x+(b.x-a.x)*j/steps,y:a.y+(b.y-a.y)*j/steps};
+        if (Number.isFinite(a.p) || Number.isFinite(b.p)) {
+          var pa=Number.isFinite(a.p) ? a.p : .5, pb=Number.isFinite(b.p) ? b.p : .5;
+          point.p=pa+(pb-pa)*j/steps;
+        }
+        sample(point);
+      }
     }
     if(piece.length) pieces.push(piece);
     return touched ? pieces : null;

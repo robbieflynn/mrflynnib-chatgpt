@@ -17,7 +17,7 @@ This comparison uses current official documentation and a source review of our s
 ## Recommended simple default
 
 1. View row: Position, Side, Below, Expand/Collapse. Keep close reachable here, plus saved status and active question part.
-2. Drawing row: Pen, Eraser, Select, Highlighter, Undo. Keep labels alongside recognisable icons. Preserve Select for both handwriting and copied question images.
+2. Drawing row: Pen, Eraser, Select, Highlighter, Undo. Rob subsequently chose compact icons for the core tools, with accessible names and hover tooltips. Put Highlighter directly beside Pen. Preserve Select for both handwriting and copied question images.
 3. Tap an already selected tool to open its settings: pen width and colour; highlighter width and colour; eraser type and size. Keep selected settings across tool switches and show a small current-colour/width indicator. Whole-stroke erasing remains the initial default.
 4. More menu: paper style, Add below, Add right, Pan and Clear. Keep Pan available for mouse and accessibility users; do not make navigation depend on undiscoverable gestures. Keep Clear visibly distinct from ordinary settings and preserve undo.
 5. Copy question: keep a clear action near the question, so it reads as a question action rather than another drawing tool. Preserve diagram import.
@@ -30,3 +30,7 @@ Avoid adding a second “simple/advanced” mode or student toolbar customisatio
 Do not lose remembered tool settings, independently erasable cut fragments, large-scribble erasure, sharp viewport rendering, hold-to-straighten, image/ink selection, undo, zoom, paper expansion, saved work or multipart isolation. Teacher and submitted-student review must retain view controls without enabling editing.
 
 Before publishing a wider redesign, review a preview at laptop, portrait tablet and landscape tablet sizes. Test actual Apple Pencil/palm behaviour separately from browser automation. Measure whether a student can write, erase, undo, move a copied question and change question/board proportions without instruction. No replacement engine or licence purchase is included.
+
+## Pressure-sensitive ink
+
+Rob requested natural stylus pressure. Store optional per-point pressure and render tapered opaque pen strokes. Preserve the values through save/reload, selection moves, hold-to-straighten and precision-cut interpolation. Older strokes and mouse input keep fixed widths. A browser reports hardware pressure in the range 0–1; unsupported devices cannot supply pressure variation. [Pointer Events specification](https://www.w3.org/TR/pointerevents/). Automated checks cover rendering and persistence; they do not verify physical Apple Pencil or Wacom feel.
