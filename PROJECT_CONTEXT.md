@@ -720,3 +720,7 @@ Rob subsequently requested implementing the simplification, clarifying that the 
 Rob further requested compact icon-only Pen, Highlighter, Eraser, Select and Undo controls, with Highlighter directly beside Pen, smaller settings, and pressure-sensitive pen strokes. Keep accessible names/tooltips and usable touch targets. Supported stylus pressure varies ink width; mouse/unsupported input and older saved strokes retain fixed widths. Persist pressure through save/reload, selection moves, straightening, precision cuts and undo. Physical stylus feel requires device testing.
 
 On 12 November 2026, Rob approved publishing the compact icon toolbar, More and contextual settings, expanded layout repair, and pressure-sensitive pen after reviewing the updated preview. Publish PR #253 and verify the production page; physical stylus testing remains separate from automated pressure checks.
+
+## Custom access periods, 12 November 2026
+
+Rob requested custom day counts for individual administrator course-access grants so existing paid access periods can be retained when expanding course access or changing account roles. Allow a validated whole number of days alongside the existing presets and no-expiry option. Role approval and paid course access remain separate.
