@@ -569,3 +569,14 @@
   .qb-whiteboard-quick-tools > .qb-whiteboard-tool,
   .qb-whiteboard-sizes .qb-whiteboard-tool { min-height: 40px; min-width: 40px; }
 }
+
+/* Keep the default header to one row; narrow boards can scroll its controls. */
+.qb-whiteboard-quick-tools { flex-wrap: nowrap; overflow-x: auto; width: 100%; padding: 2px 0; }
+.qb-whiteboard-quick-tools > * { flex-shrink: 0; }
+.qb-whiteboard-quick-tools .qb-whiteboard-layout-tools { flex-wrap: nowrap; margin-left: 6px; }
+.qb-whiteboard-quick-tools .qb-whiteboard-layout-tools .qb-whiteboard-tool { min-height: 30px; padding: 5px 8px; font-size: 11px; }
+.qb-whiteboard-quick-tools .qb-whiteboard-zoom-tools .qb-whiteboard-tool { min-height: 28px; min-width: 28px; padding: 4px; }
+.qb-whiteboard-quick-tools .qb-whiteboard-zoom-tools { margin-left: 4px; }
+.qb-whiteboard-save-status { margin-left: auto; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; color: #5a6478; }
+.qb-whiteboard-quick-tools > .qb-whiteboard-close { padding: 5px 8px; min-height: 30px; }
+.qb-whiteboard-header { gap: 4px; }

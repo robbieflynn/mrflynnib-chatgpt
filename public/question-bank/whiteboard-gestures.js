@@ -97,7 +97,35 @@
     return touched ? pieces : null;
   }
 
-  var api = { scribbleTargets: scribbleTargets, cutStroke: cutStroke };
+  function holdShape(points) {
+    if (points.length < 2) return null;
+    var first=points[0], last=points[points.length-1], box=bounds(points);
+    var width=box.right-box.left, height=box.bottom-box.top, cx=(box.left+box.right)/2, cy=(box.top+box.bottom)/2;
+    var radius=(width+height)/4, path=0;
+    for(var i=1;i<points.length;i++) path+=Math.hypot(points[i].x-points[i-1].x,points[i].y-points[i-1].y);
+    var distance=Math.hypot(last.x-first.x,last.y-first.y);
+    if(points.length>=12 && radius>=12 && width/height>.75 && width/height<1.33 && distance<radius*.4 && path>radius*5 && path<radius*8) {
+      var error=0, sectors=new Set(), winding=0;
+      for(var j=0;j<points.length;j++) {
+        var p=points[j], angle=Math.atan2(p.y-cy,p.x-cx);
+        error+=Math.pow(Math.hypot(p.x-cx,p.y-cy)-radius,2);
+        sectors.add(Math.floor((angle+Math.PI)*6/Math.PI)%12);
+        if(j) { var prev=points[j-1]; winding+=(prev.x-cx)*(p.y-cy)-(p.x-cx)*(prev.y-cy); }
+      }
+      if(Math.sqrt(error/points.length)<radius*.18 && sectors.size>=11) {
+        var start=Math.atan2(first.y-cy,first.x-cx), circle=[];
+        for(var k=0;k<=64;k++) { var a=start+(winding<0?-1:1)*Math.PI*2*k/64; circle.push({x:cx+radius*Math.cos(a),y:cy+radius*Math.sin(a)}); }
+        return {type:'circle',points:circle};
+      }
+    }
+    if(distance>=24 && path<=distance*1.2) {
+      var deviation=points.every(function(p){return Math.abs((last.x-first.x)*(first.y-p.y)-(first.x-p.x)*(last.y-first.y))/distance<=Math.max(8,distance*.12);});
+      if(deviation) return {type:'line',points:[first,last]};
+    }
+    return null;
+  }
+
+  var api = { holdShape: holdShape, scribbleTargets: scribbleTargets, cutStroke: cutStroke };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.MrFlynnWhiteboardGestures = api;
 })(typeof window !== 'undefined' ? window : this);

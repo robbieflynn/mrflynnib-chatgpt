@@ -37,3 +37,12 @@ assert.equal(cutStroke([p(0,0),p(200,0)],[p(50,100)],12),null,'unaffected ink st
 assert.deepEqual(cutStroke([p(50,50)],[p(50,50)],12),[],'a dot can be erased');
 assert.equal(cutStroke([p(0,50),p(200,50)],[p(50,50),p(150,50)],12).length,2,'eraser cuts along its full path');
 console.log('PASS: large scribbles and precision cuts on sparse lines, dots and swept erasers');
+
+const loop=Array.from({length:49},(_,i)=>p(100+60*Math.cos(i*Math.PI/24),100+60*Math.sin(i*Math.PI/24)));
+assert.equal(gestures.holdShape(loop).type,'circle');
+assert.equal(gestures.holdShape(loop.map((v,i)=>p(v.x+Math.sin(i*3)*3,v.y+Math.cos(i*4)*3))).type,'circle');
+assert.equal(gestures.holdShape(loop.slice(0,30)),null,'open arcs stay handwriting');
+assert.equal(gestures.holdShape(loop.map(v=>p(v.x*2,v.y))),null,'elongated ovals do not become circles');
+assert.equal(gestures.holdShape(zig),null,'scribbles do not become shapes');
+assert.equal(gestures.holdShape([p(10,10),p(50,12),p(100,10)]).type,'line');
+console.log('PASS: held circles/lines and conservative rejection of arcs, ovals and scribbles');
