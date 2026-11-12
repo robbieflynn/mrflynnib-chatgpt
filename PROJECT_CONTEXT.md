@@ -720,3 +720,7 @@ Rob subsequently requested implementing the simplification, clarifying that the 
 Rob further requested compact icon-only Pen, Highlighter, Eraser, Select and Undo controls, with Highlighter directly beside Pen, smaller settings, and pressure-sensitive pen strokes. Keep accessible names/tooltips and usable touch targets. Supported stylus pressure varies ink width; mouse/unsupported input and older saved strokes retain fixed widths. Persist pressure through save/reload, selection moves, straightening, precision cuts and undo. Physical stylus feel requires device testing.
 
 On 12 November 2026, Rob approved publishing the compact icon toolbar, More and contextual settings, expanded layout repair, and pressure-sensitive pen after reviewing the updated preview. Publish PR #253 and verify the production page; physical stylus testing remains separate from automated pressure checks.
+
+## IGCSE navigation isolation, 12 November 2026
+
+Rob reiterated that entering IGCSE from the homepage and signing in must keep students in IGCSE, including the top Question bank link, Learning home, course player, current assignments and submitted-work review. Returning to IB must be deliberate via the public entry journey. IGCSE student assignments now have canonical `/igcse/assignments` routes within the existing IGCSE shell; old shared assignment links resolve to the correct curriculum after authorised lookup. Preserve shared authentication and existing assignment IDs, answers, progress and whiteboards.

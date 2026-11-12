@@ -322,7 +322,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const completedAssignments = studentAssignments
     .filter((assignment) => assignment.submissionStatus === "submitted")
     .sort((first, second) => new Date(second.submittedAt || 0).getTime() - new Date(first.submittedAt || 0).getTime());
-  const assignmentsHref = isIgcse ? "/assignments?curriculum=igcse" : "/assignments";
+  const assignmentsHref = isIgcse ? "/igcse/assignments" : "/assignments";
   const nextAssignment = activeAssignments[0];
   const firstIncompleteTopic = courseProgress.topics.find((topic) => topic.questionIds.some((id) => !completedQuestionIds.has(id)));
   const firstIncompleteSubtopic = firstIncompleteTopic?.subtopics.find((subtopic) => subtopic.questionIds.some((id) => !completedQuestionIds.has(id)));
@@ -379,7 +379,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               </div>
               <div className="student-focus-footer">
                 <div><span><strong>{nextAssignment ? `${nextAssignment.progressCount} of ${nextAssignment.questionCount}` : `${courseCompleted.toLocaleString("en-GB")} completed`}</strong> {nextAssignment ? "questions" : "question-bank questions"}</span><i><b style={{ width: `${nextAssignment?.assignmentPercentage ?? coursePercentage}%` }} /></i></div>
-                <Link className="button student-focus-button" href={nextAssignment ? `/assignments/${nextAssignment.id}` : continueLearningHref}>{nextAssignment ? nextAssignment.progressCount ? "Continue assignment" : "Start assignment" : "Continue practising"} <span aria-hidden="true">→</span></Link>
+                <Link className="button student-focus-button" href={nextAssignment ? `${assignmentsHref}/${nextAssignment.id}` : continueLearningHref}>{nextAssignment ? nextAssignment.progressCount ? "Continue assignment" : "Start assignment" : "Continue practising"} <span aria-hidden="true">→</span></Link>
               </div>
             </article>
             <article className="student-continue-card">
@@ -401,7 +401,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
             <div className="student-assignment-list">
               {activeAssignments.map((assignment, assignmentIndex) => {
-                return <Link className={`student-assignment-card ${assignmentIndex === 0 ? "is-urgent" : ""}`} href={`/assignments/${assignment.id}`} key={assignment.id}>
+                return <Link className={`student-assignment-card ${assignmentIndex === 0 ? "is-urgent" : ""}`} href={`${assignmentsHref}/${assignment.id}`} key={assignment.id}>
                   <span className="student-assignment-status"><i style={{ width: `${assignment.assignmentPercentage}%` }} /></span>
                   <div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{dueDateLabel(assignment.due_at)}</span></div>
                   <div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div>
@@ -411,7 +411,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
               })}
               {!activeAssignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>{assignments.length ? "Everything is submitted" : "No assignments yet"}</strong><p>{assignments.length ? "Nice work. Your next assignment will appear here when it is set." : "Your teacher's assignments will appear here."}</p></div></div> : null}
             </div>
-            {completedAssignments.length ? <div className="student-past-assignments stack"><div className="student-past-assignments-heading"><div><span>Past assignments</span><strong>Review your submitted work</strong></div><Link href={assignmentsHref}>View all {completedAssignments.length} →</Link></div><div className="student-assignment-list">{completedAssignments.slice(0, 3).map((assignment) => <Link className="student-assignment-card is-complete" href={`/assignments/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{assignment.submittedAt ? `Submitted ${new Date(assignment.submittedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "Submitted"}</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Review</span><span aria-hidden="true">→</span></Link>)}</div></div> : null}
+            {completedAssignments.length ? <div className="student-past-assignments stack"><div className="student-past-assignments-heading"><div><span>Past assignments</span><strong>Review your submitted work</strong></div><Link href={assignmentsHref}>View all {completedAssignments.length} →</Link></div><div className="student-assignment-list">{completedAssignments.slice(0, 3).map((assignment) => <Link className="student-assignment-card is-complete" href={`${assignmentsHref}/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{assignment.submittedAt ? `Submitted ${new Date(assignment.submittedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "Submitted"}</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Review</span><span aria-hidden="true">→</span></Link>)}</div></div> : null}
           </section>
 
           <section className="student-progress-overview student-home-section stack-lg" id="progress" aria-labelledby="student-progress-heading">

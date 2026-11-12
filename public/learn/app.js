@@ -1413,6 +1413,7 @@ async function bootstrapAccount() {
     document.getElementById("primaryLearningHomeLink").href = platformAccount.links.account;
     document.getElementById("topbarLearningHomeLink").href = platformAccount.links.account;
     document.getElementById("brandLearningHomeLink").href = platformAccount.links.account;
+    document.getElementById("courseBackButton").href = platformAccount.links.account;
     syncQuestionBankLink();
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
     configureTeacherCourseSwitcher();

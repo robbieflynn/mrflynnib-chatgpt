@@ -54,7 +54,7 @@ export async function GET(request: Request) {
     links: {
       account: curriculum === "igcse" ? "/igcse/account" : "/account",
       questionBank: curriculum === "igcse" ? "/igcse/question-bank" : "/question-bank",
-      assignments: curriculum === "igcse" ? "/igcse/account#assignments" : "/account#assignments",
+      assignments: curriculum === "igcse" ? "/igcse/assignments" : "/account#assignments",
       access: curriculum === "igcse" ? "/igcse/account/access" : "/account/access",
     },
   }, { headers: { "Cache-Control": "private, no-store" } });
