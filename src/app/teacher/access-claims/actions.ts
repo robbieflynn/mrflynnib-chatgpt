@@ -16,6 +16,7 @@ export async function reviewAccessClaim(formData: FormData) {
     const { data: migration, error: migrationError } = await admin.from("course_access_migrations")
       .select("starts_at,expires_at,status").eq("normalized_email", claim.email.trim().toLowerCase()).eq("product_code", claim.product_code).maybeSingle();
     if (migrationError) redirect("/teacher/access-claims?error=save");
+    if (migration?.status === "expired") redirect("/teacher/access-claims?error=expiry");
     const originalExpiry = String(formData.get("originalExpiry") || "").trim();
     const verifiedNoExpiry = formData.get("verifiedNoExpiry") === "on";
     const knownMigration = migration && ["verified", "claimed"].includes(migration.status);
