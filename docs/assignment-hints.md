@@ -26,3 +26,9 @@ Before release, test an authenticated disposable assignment in the shared previe
 ## Signed-in verification, 11 November 2026
 
 Using the existing disposable QA class and Robbie test account, two hints were revealed and restored after refresh. The approved submission retained both steps and the server rejected an additional request. Teacher summary and per-question review both reported exactly two hints; switching hints off persisted. A stale client reveal button after submission was found and corrected by responding to the trusted parent assignment-state message; its regression checks cover preserving steps and reloading availability when work is returned. Full release verification passed after this correction. Final returned-work checks and production verification remain pending.
+
+## Approved release verification, 12 November 2026
+
+Rob explicitly approved production publication of hints, the retry fix and reviewed solve answers together. The release is reconciled with the live pen-tools update. Full release verification, hint UI/API tests, and isolated hint and solve database tests passed. In the signed-in preview, returned QA work retained two hints, revealed the third, restored it after refresh, and reported three in the teacher matrix. Hints were switched off again on that QA assignment. A separate prepared QA task confirmed first-wrong retry, correct second attempt and consecutive multipart saves.
+
+The existing-assignment solve migration was rehearsed with rollback, then applied to six assignment-question copies on 12 November. Protected response, attempt/progress, submission and submitted-whiteboard checksums remained unchanged; the post-check found zero remaining eligible copies.
