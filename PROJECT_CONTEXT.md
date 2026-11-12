@@ -710,3 +710,13 @@ Rob requested fixing the whiteboard-only trigonometric solve question reported b
 ## Approved assignment release, 12 November 2026
 
 Rob explicitly authorised publishing all three pending changes: the second-attempt lockout repair, the 38 reviewed IB answer-part upgrades, and optional teacher-controlled assignment hints. This supersedes the earlier preview-only restrictions and includes the necessary existing-assignment configuration update while preserving responses, attempts, submissions, progress and whiteboards. Finish relevant verification and publish without requesting further release approval.
+
+## Whiteboard layout and simplification, 12 November 2026
+
+Rob deferred adopting tldraw because of its cost. Keep the existing whiteboard. Place Expand/Collapse beside Position; expanded mode must honour Side/Below and allow the side divider to move so students can choose how much question or working space they see. Preserve drawings and saved-work behaviour while changing the layout. Rob also requested an audit against Apple Notes, Goodnotes and tldraw to reduce overwhelming controls. The broader toolbar simplification is a recommendation for review, not an approved redesign; see `docs/audits/whiteboard-controls-audit.md`.
+
+Rob subsequently requested implementing the simplification, clarifying that the layout-only preview was insufficient. Keep Pen, Eraser, Select, Highlighter and Undo prominent. Put paper, extra space, Pan, Copy question and Clear in More; keep zoom and window layout separately accessible. Pen and Eraser settings open on demand, including by tapping the active tool. Preserve remembered settings and existing drawing behaviour. This supersedes the recommendation-only scope above.
+
+Rob further requested compact icon-only Pen, Highlighter, Eraser, Select and Undo controls, with Highlighter directly beside Pen, smaller settings, and pressure-sensitive pen strokes. Keep accessible names/tooltips and usable touch targets. Supported stylus pressure varies ink width; mouse/unsupported input and older saved strokes retain fixed widths. Persist pressure through save/reload, selection moves, straightening, precision cuts and undo. Physical stylus feel requires device testing.
+
+On 12 November 2026, Rob approved publishing the compact icon toolbar, More and contextual settings, expanded layout repair, and pressure-sensitive pen after reviewing the updated preview. Publish PR #253 and verify the production page; physical stylus testing remains separate from automated pressure checks.

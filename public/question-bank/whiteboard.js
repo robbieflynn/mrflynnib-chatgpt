@@ -35,12 +35,12 @@
   }
 
   function toolButton(action, label, pressed, description) {
-    var paths = { pen: 'm16 3 5 5L8 21H3v-5L16 3Zm-2 2 5 5M3 16l5 5', 'precision-eraser': 'm15 3 6 6-11 12H5l-4-4L15 3ZM7 11l7 7M10 21h12', undo: 'M9 4 3 10l6 6M3 10h11a7 7 0 0 1 0 14', lasso: 'M8 18c-9-1-8-14 4-15s15 13 3 15H8c-5 0-5 5-1 5 3 0 4-3 1-5' };
+    var paths = { highlighter: 'm15 3 6 6-9 9-6-6 9-9ZM6 12l-3 6 3 3 6-3M3 21h7', pen: 'm16 3 5 5L8 21H3v-5L16 3Zm-2 2 5 5M3 16l5 5', 'precision-eraser': 'm15 3 6 6-11 12H5l-4-4L15 3ZM7 11l7 7M10 21h12', undo: 'M9 4 3 10l6 6M3 10h11a7 7 0 0 1 0 14', lasso: 'M8 18c-9-1-8-14 4-15s15 13 3 15H8c-5 0-5 5-1 5 3 0 4-3 1-5' };
     var icon = paths[action] ? '<svg viewBox="0 0 24 26" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="' + paths[action] + '"/></svg>' : '';
     return '<button type="button" class="qb-whiteboard-tool" data-whiteboard-action="' + action + '"' +
       (pressed !== undefined ? ' aria-pressed="' + pressed + '"' : '') +
-      (description ? ' aria-label="' + description + '" title="' + description + '"' : '') +
-      '>' + icon + label + '</button>';
+      ((description || icon) ? ' aria-label="' + (description || label) + '" title="' + (description || label) + '"' : '') +
+      '>' + icon + '<span class="qb-whiteboard-tool-label">' + label + '</span></button>';
   }
 
   function colourButton(value, label, selected) {
@@ -86,6 +86,7 @@
             '<span>Position</span>' +
             '<button type="button" class="qb-whiteboard-tool" data-whiteboard-layout="side" aria-pressed="' + (whiteboardLayout === 'side') + '">Side</button>' +
             '<button type="button" class="qb-whiteboard-tool" data-whiteboard-layout="below" aria-pressed="' + (whiteboardLayout === 'below') + '">Below</button>' +
+            toolButton('expand', 'Expand', false) +
           '</div>' +
         '</div>' +
         '<div class="qb-whiteboard-part-tools" role="group" aria-label="Whiteboard question part" hidden>' +
@@ -136,7 +137,6 @@
             toolButton('add-page', 'Add below') +
             toolButton('add-space-right', 'Add right') +
           '</div>' +
-          toolButton('expand', 'Expand', false) +
           toolButton('clear', 'Clear') +
           '<button type="button" class="qb-whiteboard-tool qb-whiteboard-close" data-whiteboard-action="close" aria-label="Close whiteboard">&times;</button>' +
         '</div>' +
@@ -148,6 +148,42 @@
           '<canvas class="qb-whiteboard-canvas" tabindex="0" aria-label="Draw your working here. E for eraser, P for pen."></canvas>' +
         '</div>' +
       '</div>';
+
+    // Keep core actions in view; secondary choices use labelled disclosures.
+    var heading = board.querySelector('.qb-whiteboard-heading-row');
+    var quickTools = board.querySelector('.qb-whiteboard-quick-tools');
+    var morePanel = board.querySelector('.qb-whiteboard-tools');
+    var settingsPanel = document.createElement('div');
+    settingsPanel.className = 'qb-whiteboard-tool-settings';
+    settingsPanel.hidden = true;
+    settingsPanel.setAttribute('role', 'group');
+    settingsPanel.setAttribute('aria-label', 'Drawing tool settings');
+    settingsPanel.appendChild(board.querySelector('.qb-whiteboard-size-controls'));
+    settingsPanel.appendChild(board.querySelector('.qb-whiteboard-colours'));
+    quickTools.after(settingsPanel);
+    quickTools.insertBefore(board.querySelector('[data-whiteboard-action="highlighter"]'), board.querySelector('[data-whiteboard-action="precision-eraser"]'));
+    var viewTools = document.createElement('div');
+    viewTools.className = 'qb-whiteboard-view-tools';
+    viewTools.appendChild(board.querySelector('.qb-whiteboard-zoom-tools'));
+    viewTools.appendChild(board.querySelector('.qb-whiteboard-close'));
+    heading.appendChild(viewTools);
+    var settingsButton = document.createElement('button');
+    settingsButton.type = 'button';
+    settingsButton.className = 'qb-whiteboard-tool qb-whiteboard-settings-toggle';
+    settingsButton.setAttribute('data-whiteboard-panel', 'settings');
+    settingsButton.setAttribute('aria-expanded', 'false');
+    settingsButton.textContent = 'Pen settings \u25be';
+    quickTools.appendChild(settingsButton);
+    var moreButton = document.createElement('button');
+    moreButton.type = 'button';
+    moreButton.className = 'qb-whiteboard-tool';
+    moreButton.setAttribute('data-whiteboard-panel', 'more');
+    moreButton.setAttribute('aria-expanded', 'false');
+    moreButton.textContent = 'More \u25be';
+    quickTools.appendChild(moreButton);
+    morePanel.hidden = true;
+    morePanel.setAttribute('role', 'group');
+    morePanel.setAttribute('aria-label', 'More whiteboard options');
 
     var resizer = document.createElement('div');
     resizer.className = 'qb-whiteboard-resizer';
@@ -242,8 +278,30 @@
     viewport.addEventListener('scroll', hideCursor, { passive: true });
     window.addEventListener('scroll', hideCursor, { passive: true });
 
+    function closeToolPanels() {
+      board.querySelector('.qb-whiteboard-tool-settings').hidden = true;
+      board.querySelector('.qb-whiteboard-tools').hidden = true;
+      board.querySelectorAll('[data-whiteboard-panel]').forEach(function (button) { button.setAttribute('aria-expanded', 'false'); });
+      requestAnimationFrame(resize);
+    }
+    function toggleToolPanel(name) {
+      var panel = board.querySelector(name === 'settings' ? '.qb-whiteboard-tool-settings' : '.qb-whiteboard-tools');
+      var wasOpen = !panel.hidden;
+      closeToolPanels();
+      panel.hidden = wasOpen;
+      board.querySelector('[data-whiteboard-panel="' + name + '"]').setAttribute('aria-expanded', String(!wasOpen));
+      requestAnimationFrame(resize);
+    }
     function updateSizeButtons() {
       var erasing = mode === 'precision-eraser' || mode === 'stroke-eraser';
+      var settingsToggle = board.querySelector('[data-whiteboard-panel="settings"]');
+      settingsToggle.hidden = !erasing && mode !== 'pen';
+      settingsToggle.textContent = '\u25be';
+      settingsToggle.setAttribute('aria-label', erasing ? 'Eraser settings' : 'Pen settings');
+      settingsToggle.title = erasing ? 'Eraser settings' : 'Pen settings';
+      settingsToggle.style.setProperty('--tool-colour', erasing ? '#64748b' : colour);
+      settingsToggle.disabled = Boolean(accountState().readOnly);
+      board.querySelector('.qb-whiteboard-colours').hidden = erasing;
       var sizes = erasing ? eraserSizes : penSizes;
       var labels = erasing ? ['Small', 'Medium', 'Large', 'Extra large'] : ['Fine', 'Medium', 'Thick', 'Bold'];
       var group = board.querySelector('.qb-whiteboard-sizes');
@@ -332,7 +390,7 @@
         svg.setAttribute('tabindex', readOnly ? '-1' : '0');
         svg.setAttribute('aria-disabled', String(readOnly));
       });
-      Array.prototype.forEach.call(board.querySelectorAll('button:not([data-whiteboard-layout]):not(.qb-whiteboard-close):not(.qb-whiteboard-part-button):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
+      Array.prototype.forEach.call(board.querySelectorAll('button:not([data-whiteboard-layout]):not([data-whiteboard-panel="more"]):not(.qb-whiteboard-close):not(.qb-whiteboard-part-button):not([data-whiteboard-action="zoom-in"]):not([data-whiteboard-action="zoom-out"]):not([data-whiteboard-action="expand"])'), function(button){ button.disabled = readOnly; });
       updateButtons();
       if (readOnly) setSaveStatus('Read only', 'saved');
       else if (!account.configured) setSaveStatus('Saving coming soon', 'idle');
@@ -364,7 +422,7 @@
             penSize: action.penSize || 3.6,
             eraserSize: action.eraserSize || 24,
             straightened: Boolean(action.straightened),
-            points: action.points.map(function (point) { return { x: compactCoordinate(point.x), y: compactCoordinate(point.y) }; })
+            points: action.points.map(function (point) { return Object.assign({ x: compactCoordinate(point.x), y: compactCoordinate(point.y) }, Number.isFinite(point.p) ? { p: compactCoordinate(point.p) } : {}); })
           };
           return {
             type: 'image', id: action.id, source: action.source,
@@ -539,6 +597,32 @@
       ctx.lineWidth = (stroke.mode === 'eraser' ? (stroke.eraserSize || 24) : stroke.mode === 'highlighter' ? 26 : (stroke.penSize || 3.6)) * zoom;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
+      if (stroke.mode === 'pen' && points.some(function (p) { return Number.isFinite(p.p); })) {
+        // Opaque tapered segments keep live ink and saved redraws identical.
+        ctx.fillStyle = ctx.strokeStyle;
+        function radius(p) { return ctx.lineWidth * (.35 + 1.3 * (Number.isFinite(p.p) ? p.p : .5)) / 2; }
+        function cap(p) {
+          ctx.beginPath(); ctx.arc(p.x * width, p.y * height, radius(p), 0, Math.PI * 2); ctx.fill();
+        }
+        cap(points[0]);
+        for (var j = 1; j < points.length; j++) {
+          var a = points[j - 1], b = points[j];
+          var dx = (b.x - a.x) * width, dy = (b.y - a.y) * height;
+          var length = Math.hypot(dx, dy);
+          if (length) {
+            var nx = -dy / length, ny = dx / length, ra = radius(a), rb = radius(b);
+            ctx.beginPath();
+            ctx.moveTo(a.x * width + nx * ra, a.y * height + ny * ra);
+            ctx.lineTo(b.x * width + nx * rb, b.y * height + ny * rb);
+            ctx.lineTo(b.x * width - nx * rb, b.y * height - ny * rb);
+            ctx.lineTo(a.x * width - nx * ra, a.y * height - ny * ra);
+            ctx.closePath(); ctx.fill();
+          }
+          cap(b);
+        }
+        ctx.restore();
+        return;
+      }
       ctx.beginPath();
       var first = points[0];
       ctx.moveTo(first.x * width, first.y * height);
@@ -658,10 +742,12 @@
 
     function pointFromEvent(event) {
       var rect = surface.getBoundingClientRect();
-      return {
+      var point = {
         x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
         y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height))
       };
+      if (event.pointerType === 'pen' && Number.isFinite(event.pressure) && event.pressure > 0) point.p = Math.min(1, event.pressure);
+      return point;
     }
 
     function eventSamples(event) {
@@ -679,7 +765,9 @@
       if (!activeStroke) return;
       var samples = eventSamples(event);
       if (activeStroke.straightened) {
-        activeStroke.points[1] = pointFromEvent(samples[samples.length - 1]);
+        var endpoint = pointFromEvent(samples[samples.length - 1]);
+        if (!Number.isFinite(endpoint.p) && Number.isFinite(activeStroke.points[1].p)) endpoint.p = activeStroke.points[1].p;
+        activeStroke.points[1] = endpoint;
         redraw();
         return;
       }
@@ -688,6 +776,7 @@
       samples.forEach(function (sample) {
         var point = pointFromEvent(sample);
         var last = activeStroke.points[activeStroke.points.length - 1];
+        if (!Number.isFinite(point.p) && Number.isFinite(last.p)) point.p = last.p;
         var distance = Math.hypot(
           (point.x - last.x) * (baseWidth * zoom),
           (point.y - last.y) * (baseHeight * zoom)
@@ -799,14 +888,14 @@
     function splitErasedStrokes(eraser) {
       if (!window.MrFlynnWhiteboardGestures) return;
       var state = visibleStrokeState(), groupId = nextStrokeId(), removed = [], fragments = [];
-      var toPaper = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight }; };
+      var toPaper = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight, p: p.p }; };
       actions.slice(state.start).forEach(function (a) {
         if (a.type !== 'stroke' || a.mode === 'eraser' || state.hidden.has(a.id)) return;
         var pieces = window.MrFlynnWhiteboardGestures.cutStroke(a.points.map(toPaper), eraser.points.map(toPaper), (eraser.eraserSize || 24) / 2 + (a.mode === 'highlighter' ? 13 : (a.penSize || 3.6) / 2));
         if (!pieces) return;
         removed.push(a.id);
         pieces.forEach(function (points) {
-          fragments.push(Object.assign({}, a, { id: nextStrokeId(), groupId: groupId, straightened: false, points: points.map(function (p) { return { x: p.x / baseWidth, y: p.y / baseHeight }; }) }));
+          fragments.push(Object.assign({}, a, { id: nextStrokeId(), groupId: groupId, straightened: false, points: points.map(function (p) { return { x: p.x / baseWidth, y: p.y / baseHeight, p: p.p }; }) }));
         });
       });
       var index = actions.indexOf(eraser);
@@ -1051,7 +1140,7 @@
       if (event.type === 'pointerup' && activeStroke && activeStroke.mode === 'pen' &&
           !activeStroke.straightened && window.MrFlynnWhiteboardGestures) {
         var visible = visibleStrokeState();
-        var paperPoint = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight }; };
+        var paperPoint = function (p) { return { x: p.x * baseWidth, y: p.y * baseHeight, p: p.p }; };
         var candidates = actions.slice(visible.start).filter(function (candidate) {
           return candidate !== activeStroke && candidate.type === 'stroke' && candidate.mode !== 'eraser' && !visible.hidden.has(candidate.id);
         }).map(function (candidate) { return { id: candidate.id, points: candidate.points.map(paperPoint) }; });
@@ -1095,6 +1184,7 @@
 
     function setMode(nextMode) {
       resetInteraction();
+      if (nextMode !== mode) closeToolPanels();
       mode = nextMode;
       if (mode === 'precision-eraser' || mode === 'stroke-eraser') preferredEraser = mode;
       updateSizeButtons();
@@ -1231,7 +1321,7 @@
             eraserSize: [12, 24, 36, 48].indexOf(action.eraserSize) >= 0 ? action.eraserSize : 24,
             straightened: Boolean(action.straightened),
             points: action.points.slice(0, 10000).map(function (point) {
-              return { x: Number(point.x) || 0, y: Number(point.y) || 0 };
+              return Object.assign({ x: Number(point.x) || 0, y: Number(point.y) || 0 }, Number.isFinite(point.p) ? { p: Math.max(0, Math.min(1, point.p)) } : {});
             })
           });
         }
@@ -1388,11 +1478,15 @@
     }
 
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && card.classList.contains('qb-whiteboard-expanded')) setExpanded(false);
+      if (event.key !== 'Escape') return;
+      var activePanel = board.querySelector('[data-whiteboard-panel][aria-expanded="true"]');
+      if (activePanel) { closeToolPanels(); activePanel.focus(); return; }
+      if (card.classList.contains('qb-whiteboard-expanded')) setExpanded(false);
     });
 
     open.addEventListener('click', function () {
       resetInteraction();
+      closeToolPanels();
       var willOpen = board.hidden;
       board.hidden = !willOpen;
       card.classList.toggle('qb-whiteboard-open', willOpen);
@@ -1412,6 +1506,11 @@
     });
 
     board.addEventListener('click', function (event) {
+      var panelChoice = event.target.closest('[data-whiteboard-panel]');
+      if (panelChoice) {
+        if (!accountState().readOnly || panelChoice.getAttribute('data-whiteboard-panel') === 'more') toggleToolPanel(panelChoice.getAttribute('data-whiteboard-panel'));
+        return;
+      }
       var layoutChoice = event.target.closest('[data-whiteboard-layout]');
       if (layoutChoice) {
         applyWhiteboardLayout(layoutChoice.getAttribute('data-whiteboard-layout'), true);
@@ -1439,9 +1538,18 @@
       var button = event.target.closest('[data-whiteboard-action]');
       if (!button) return;
       var action = button.getAttribute('data-whiteboard-action');
+      var eraserOption = action === 'partial-eraser' || action === 'stroke-eraser';
+      if ((action === 'pen' && mode === 'pen') || (action === 'precision-eraser' && (mode === 'precision-eraser' || mode === 'stroke-eraser'))) {
+        toggleToolPanel('settings');
+        return;
+      }
       if (action === 'partial-eraser') setMode('precision-eraser');
       if (action === 'precision-eraser') action = preferredEraser;
       if (action === 'lasso' || action === 'pen' || action === 'highlighter' || action === 'precision-eraser' || action === 'stroke-eraser' || action === 'pan' || action === 'move-image') setMode(action);
+      if (eraserOption) {
+        board.querySelector('.qb-whiteboard-tool-settings').hidden = false;
+        board.querySelector('[data-whiteboard-panel="settings"]').setAttribute('aria-expanded', 'true');
+      }
       if (action === 'squared-paper') setPaper('squared');
       if (action === 'blank-paper') setPaper('blank');
       if (action === 'zoom-out') setZoom(zoom - .25);
@@ -1647,16 +1755,27 @@
     });
 
     window.addEventListener('resize', resize);
+    function resizeSplit(width) {
+      var workspace = card.querySelector('.qb-question-workspace');
+      var style = window.getComputedStyle(workspace);
+      var available = workspace.getBoundingClientRect().width - parseFloat(style.paddingLeft || 0) - parseFloat(style.paddingRight || 0);
+      // Store a proportion so a split remains usable after expanding or rotating.
+      var questionMin = Math.min(280, available * .3);
+      var boardMin = Math.min(320, available * .4);
+      var nextWidth = Math.max(boardMin, Math.min(available - questionMin - 28, width));
+      workspace.style.setProperty('--whiteboard-width', (nextWidth / available * 100) + '%');
+      resizer.setAttribute('aria-valuenow', String(Math.round(nextWidth / available * 100)));
+      requestAnimationFrame(resize);
+    }
     resizer.addEventListener('pointerdown', function (event) {
-      if (window.matchMedia('(max-width: 820px)').matches) return;
+      if (card.classList.contains('qb-whiteboard-below') || (window.matchMedia('(max-width: 820px)').matches && !card.classList.contains('qb-whiteboard-expanded'))) return;
       event.preventDefault();
       resizer.setPointerCapture(event.pointerId);
       var workspace = card.querySelector('.qb-question-workspace');
       var rect = workspace.getBoundingClientRect();
+      var rightPadding = parseFloat(window.getComputedStyle(workspace).paddingRight || 0);
       function resizeBoard(moveEvent) {
-        var boardWidth = Math.max(320, Math.min(rect.width - 308, rect.right - moveEvent.clientX - 14));
-        workspace.style.setProperty('--whiteboard-width', boardWidth + 'px');
-        requestAnimationFrame(resize);
+        resizeSplit(rect.right - rightPadding - moveEvent.clientX - 14);
       }
       function finishResize(upEvent) {
         if (resizer.hasPointerCapture(upEvent.pointerId)) resizer.releasePointerCapture(upEvent.pointerId);
@@ -1671,12 +1790,9 @@
     resizer.addEventListener('keydown', function (event) {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
-      var workspace = card.querySelector('.qb-question-workspace');
       var currentWidth = board.getBoundingClientRect().width;
       var direction = event.key === 'ArrowLeft' ? 40 : -40;
-      var nextWidth = Math.max(320, Math.min(workspace.getBoundingClientRect().width - 308, currentWidth + direction));
-      workspace.style.setProperty('--whiteboard-width', nextWidth + 'px');
-      requestAnimationFrame(resize);
+      resizeSplit(currentWidth + direction);
     });
     setZoom(1);
     updateCursor();
