@@ -28,6 +28,51 @@
     window.dispatchEvent(new CustomEvent('mrflynnib-tool-preferences'));
   });
 
+  // Surface palms can arrive between strokes or beyond the canvas edge.
+  // Keep native touch scrolling disabled before those contacts begin; cancelling
+  // pointerdown alone cannot cancel the browser's native touch panning.
+  var penGuardOwner = null, penGuardDown = false, penGuardTimer = null;
+  var ignoredPalmPointers = new Set();
+  function clearPenGuard() {
+    window.clearTimeout(penGuardTimer);
+    penGuardOwner = null; penGuardDown = false;
+    document.documentElement.classList.remove('qb-pen-writing');
+  }
+  function guardPen(board, down) {
+    window.clearTimeout(penGuardTimer);
+    penGuardOwner = board; penGuardDown = down;
+    document.documentElement.classList.add('qb-pen-writing');
+    if (!down) penGuardTimer = window.setTimeout(clearPenGuard, 350);
+  }
+  function penGuarded() {
+    return penGuardOwner && penGuardOwner.isConnected && !penGuardOwner.hidden;
+  }
+  document.addEventListener('pointerdown', function (event) {
+    if (event.pointerType !== 'touch' || !penGuarded()) return;
+    ignoredPalmPointers.add(event.pointerId);
+    event.preventDefault(); event.stopImmediatePropagation();
+  }, true);
+  ['pointermove', 'pointerup', 'pointercancel'].forEach(function (type) {
+    window.addEventListener(type, function (event) {
+      if (!ignoredPalmPointers.has(event.pointerId)) return;
+      if (type !== 'pointermove') ignoredPalmPointers.delete(event.pointerId);
+      event.preventDefault(); event.stopImmediatePropagation();
+    }, { capture: true, passive: false });
+  });
+  ['touchstart', 'touchmove'].forEach(function (type) {
+    document.addEventListener(type, function (event) {
+      if (penGuarded() || ignoredPalmPointers.size) event.preventDefault();
+    }, { capture: true, passive: false });
+  });
+  window.addEventListener('wheel', function (event) {
+    if (!penGuarded()) return;
+    event.preventDefault(); event.stopImmediatePropagation();
+  }, { capture: true, passive: false });
+  function abandonPenGuard() { clearPenGuard(); ignoredPalmPointers.clear(); }
+  window.addEventListener('blur', abandonPenGuard);
+  window.addEventListener('pagehide', abandonPenGuard);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) abandonPenGuard(); });
+
   function nextStrokeId() {
     strokeSequence += 1;
     return 'stroke-' + Date.now().toString(36) + '-' + strokeSequence.toString(36);
@@ -322,7 +367,10 @@
       cursor.hidden = false;
       canvas.style.cursor = 'none';
     }
-    canvas.addEventListener('pointerenter', positionCursor);
+    canvas.addEventListener('pointerenter', function (event) {
+      if (event.pointerType === 'pen' && !board.hidden && !accountState().readOnly) guardPen(board, penGuardOwner === board && penGuardDown);
+      positionCursor(event);
+    });
     canvas.addEventListener('pointerleave', hideCursor);
     viewport.addEventListener('scroll', hideCursor, { passive: true });
     window.addEventListener('scroll', hideCursor, { passive: true });
@@ -547,6 +595,7 @@
     }
 
     function resetInteraction(preserveSelection) {
+      if (penGuardOwner === board) clearPenGuard();
       hideCursor();
       if (selectionDrag) {
         translateObjects(selection, -selectionDrag.dx, -selectionDrag.dy);
@@ -1032,7 +1081,8 @@
       if (activePointer !== null) return;
       activePointer = event.pointerId;
       activePointerType = event.pointerType;
-      canvas.focus({ preventScroll: true });
+      if (event.pointerType === 'pen') guardPen(board, true);
+      if (document.activeElement !== canvas) canvas.focus({ preventScroll: true });
       capturePointer(event.pointerId);
       var pointerMode = event.pointerType === 'pen' && (event.button === 5 || (event.buttons & 32)) ? 'precision-eraser' : mode;
       updateCursor(pointerMode);
@@ -1098,6 +1148,7 @@
     // Listen on the window as a fallback when pointer capture is unavailable.
     // The initiating pointer ID still owns the stroke, so hover cannot draw.
     window.addEventListener('pointermove', function (event) {
+      if (event.pointerType === 'pen' && !board.hidden && !accountState().readOnly && (event.target === canvas || event.pointerId === activePointer)) guardPen(board, activePointerType === 'pen');
       if (event.target === canvas || event.pointerId === activePointer) positionCursor(event);
       // Some stylus/browser combinations report buttons=0 while the pen is
       // still touching the screen. Pointerup/pointercancel are authoritative
@@ -1171,6 +1222,7 @@
         }
       }
       if (event.pointerId !== activePointer) return;
+      if (event.pointerType === 'pen' && penGuardOwner === board) guardPen(board, false);
       if (lasso) {
         if (event.type === 'pointerup' && lasso.length >= 3) {
           var state = visibleStrokeState();

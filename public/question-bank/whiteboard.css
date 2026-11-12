@@ -580,3 +580,7 @@
 .qb-whiteboard-save-status { margin-left: auto; max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; color: #5a6478; }
 .qb-whiteboard-quick-tools > .qb-whiteboard-close { padding: 5px 8px; min-height: 30px; }
 .qb-whiteboard-header { gap: 4px; }
+
+/* Pen proximity protects palm contacts outside the drawing canvas too. */
+html.qb-pen-writing, html.qb-pen-writing * { touch-action: none !important; }
+.qb-whiteboard-viewport { touch-action: none; }

@@ -429,4 +429,39 @@ const scroll=new child.WheelEvent('wheel',{deltaY:40,cancelable:true});viewport.
 assert.equal(child.document.querySelector('.qb-whiteboard-title'),null,'working-space heading removed');
 assert.ok(child.document.querySelector('.qb-whiteboard-quick-tools .qb-whiteboard-save-status'));
 console.log('PASS: stored tool preferences, pressure toggle, uniform held lines, circles, undo and board-only wheel zoom');
+// Surface palms can land outside the canvas and outlive a lifted nib.
+action('clear').click();action('pen').click();
+const penClass=()=>child.document.documentElement.classList.contains('qb-pen-writing');
+const touchAt=(type,id,target=canvas)=>{
+ const event=new child.Event(type,{bubbles:true,cancelable:true});
+ Object.assign(event,{pointerId:id,pointerType:'touch',clientX:130,clientY:140,button:0,buttons:1});
+ target.dispatchEvent(event);return event;
+};
+const wheelAt=()=>{const e=new child.WheelEvent('wheel',{deltaY:60,bubbles:true,cancelable:true});viewport.dispatchEvent(e);return e;};
+pointer('pointerdown',80,90);assert.ok(penClass());
+assert.equal(touchAt('pointerdown',51).defaultPrevented,true,'palm on ink cannot start pinch');
+assert.equal(touchAt('pointerdown',52,child.document.querySelector('.qb-question-pane')).defaultPrevented,true,'palm beyond canvas is rejected');
+assert.equal(wheelAt().defaultPrevented,true,'scroll input is blocked during pen contact');
+pointer('pointermove',160,160,{buttons:0});
+assert.ok(penClass(),'Surface buttons=0 does not release scroll protection');
+pointer('pointerup',180,170);assert.ok(penClass(),'short gaps between strokes remain protected');
+assert.equal(wheelAt().defaultPrevented,true);
+await new Promise(resolve=>setTimeout(resolve,380));
+assert.equal(penClass(),false,'deliberate scrolling resumes after pen lifts');
+assert.equal(wheelAt().defaultPrevented,false);
+assert.equal(touchAt('pointermove',51,child).defaultPrevented,true,'ignored palm cannot resume mid-contact');
+touchAt('pointerup',51,child);touchAt('pointercancel',52,child);
+const penOnly=await snapshot();assert.equal(penOnly.parts.a.actions.at(-1).mode,'pen');
+assert.ok(penOnly.parts.a.actions.at(-1).points.length>=3,'palm did not interrupt the pen');
+// Two fingers still zoom after the guard clears.
+const zoomBeforeTouch=child.document.querySelector('.qb-whiteboard-zoom-label').textContent;
+pointer('pointerdown',100,100,{pointerType:'touch',pointerId:61});
+pointer('pointerdown',200,100,{pointerType:'touch',pointerId:62});
+pointer('pointermove',260,100,{pointerType:'touch',pointerId:62});
+assert.notEqual(child.document.querySelector('.qb-whiteboard-zoom-label').textContent,zoomBeforeTouch);
+pointer('pointerup',100,100,{pointerType:'touch',pointerId:61});pointer('pointerup',260,100,{pointerType:'touch',pointerId:62});
+pointer('pointerdown',80,90);child.dispatchEvent(new child.Event('blur'));
+assert.equal(penClass(),false,'focus loss releases the guard');
+assert.equal(wheelAt().defaultPrevented,false);
+console.log('PASS: Surface palm rejection, pen hover gaps, wheel guard, buttons=0, touch zoom recovery and blur cleanup');
 dom.window.close();
