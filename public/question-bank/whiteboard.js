@@ -86,6 +86,7 @@
             '<span>Position</span>' +
             '<button type="button" class="qb-whiteboard-tool" data-whiteboard-layout="side" aria-pressed="' + (whiteboardLayout === 'side') + '">Side</button>' +
             '<button type="button" class="qb-whiteboard-tool" data-whiteboard-layout="below" aria-pressed="' + (whiteboardLayout === 'below') + '">Below</button>' +
+            toolButton('expand', 'Expand', false) +
           '</div>' +
         '</div>' +
         '<div class="qb-whiteboard-part-tools" role="group" aria-label="Whiteboard question part" hidden>' +
@@ -136,7 +137,6 @@
             toolButton('add-page', 'Add below') +
             toolButton('add-space-right', 'Add right') +
           '</div>' +
-          toolButton('expand', 'Expand', false) +
           toolButton('clear', 'Clear') +
           '<button type="button" class="qb-whiteboard-tool qb-whiteboard-close" data-whiteboard-action="close" aria-label="Close whiteboard">&times;</button>' +
         '</div>' +
@@ -1647,16 +1647,27 @@
     });
 
     window.addEventListener('resize', resize);
+    function resizeSplit(width) {
+      var workspace = card.querySelector('.qb-question-workspace');
+      var style = window.getComputedStyle(workspace);
+      var available = workspace.getBoundingClientRect().width - parseFloat(style.paddingLeft || 0) - parseFloat(style.paddingRight || 0);
+      // Store a proportion so a split remains usable after expanding or rotating.
+      var questionMin = Math.min(280, available * .3);
+      var boardMin = Math.min(320, available * .4);
+      var nextWidth = Math.max(boardMin, Math.min(available - questionMin - 28, width));
+      workspace.style.setProperty('--whiteboard-width', (nextWidth / available * 100) + '%');
+      resizer.setAttribute('aria-valuenow', String(Math.round(nextWidth / available * 100)));
+      requestAnimationFrame(resize);
+    }
     resizer.addEventListener('pointerdown', function (event) {
-      if (window.matchMedia('(max-width: 820px)').matches) return;
+      if (card.classList.contains('qb-whiteboard-below') || (window.matchMedia('(max-width: 820px)').matches && !card.classList.contains('qb-whiteboard-expanded'))) return;
       event.preventDefault();
       resizer.setPointerCapture(event.pointerId);
       var workspace = card.querySelector('.qb-question-workspace');
       var rect = workspace.getBoundingClientRect();
+      var rightPadding = parseFloat(window.getComputedStyle(workspace).paddingRight || 0);
       function resizeBoard(moveEvent) {
-        var boardWidth = Math.max(320, Math.min(rect.width - 308, rect.right - moveEvent.clientX - 14));
-        workspace.style.setProperty('--whiteboard-width', boardWidth + 'px');
-        requestAnimationFrame(resize);
+        resizeSplit(rect.right - rightPadding - moveEvent.clientX - 14);
       }
       function finishResize(upEvent) {
         if (resizer.hasPointerCapture(upEvent.pointerId)) resizer.releasePointerCapture(upEvent.pointerId);
@@ -1671,12 +1682,9 @@
     resizer.addEventListener('keydown', function (event) {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
-      var workspace = card.querySelector('.qb-question-workspace');
       var currentWidth = board.getBoundingClientRect().width;
       var direction = event.key === 'ArrowLeft' ? 40 : -40;
-      var nextWidth = Math.max(320, Math.min(workspace.getBoundingClientRect().width - 308, currentWidth + direction));
-      workspace.style.setProperty('--whiteboard-width', nextWidth + 'px');
-      requestAnimationFrame(resize);
+      resizeSplit(currentWidth + direction);
     });
     setZoom(1);
     updateCursor();

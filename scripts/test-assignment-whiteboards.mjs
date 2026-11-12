@@ -294,4 +294,26 @@ assert.equal(canvas.width,1600); assert.equal(canvas.height,1200);
 viewport.scrollLeft=900; viewport.scrollTop=1400; viewport.dispatchEvent(new child.Event('scroll'));
 assert.equal(canvas.style.left,'900px'); assert.equal(canvas.style.top,'1400px');
 console.log('PASS: independent cut pieces, atomic undo after reload, image selection and viewport-resolution rendering');
+
+// Position remains independent of expansion, including read-only teacher review.
+const layoutButton = position => child.document.querySelector(`[data-whiteboard-layout="${position}"]`);
+const layoutCard = child.document.querySelector('.qb-card');
+assert.ok(action('expand').closest('.qb-whiteboard-layout-tools'), 'Expand is beside Position');
+account(true);
+layoutButton('side').click();
+action('expand').click();
+assert.ok(layoutCard.classList.contains('qb-whiteboard-expanded'));
+layoutButton('below').click();
+assert.ok(layoutCard.classList.contains('qb-whiteboard-expanded'));
+assert.ok(layoutCard.classList.contains('qb-whiteboard-below'));
+layoutButton('side').click();
+assert.equal(layoutCard.classList.contains('qb-whiteboard-below'), false);
+const divider = child.document.querySelector('.qb-whiteboard-resizer');
+key(divider, 'ArrowRight');
+assert.match(child.document.querySelector('.qb-question-workspace').style.getPropertyValue('--whiteboard-width'), /%$/, 'split scales with the viewport');
+action('expand').click();
+assert.equal(layoutCard.classList.contains('qb-whiteboard-expanded'), false);
+assert.equal(action('pen').disabled, true, 'layout changes preserve read-only protection');
+console.log('PASS: grouped expand control, expanded position switching, proportional split and read-only layout access');
+
 dom.window.close();
