@@ -144,7 +144,7 @@ export function TeacherAccountDirectory({ accounts, now, initialAccess = "all" }
                   : courseProducts.find((course) => course.productCode === record.product_code)?.shortTitle || record.product_code.replaceAll("_", " ");
                 const source = record.source === "admin" ? "Administrator grant" : studentAccessFilters[record.source] || record.source;
                 const state = record.status !== "active" ? record.status : active ? "Active" : Date.parse(record.starts_at) > now ? "Scheduled" : "Expired";
-                return <small key={index}><strong>{label}</strong>{source}<br />{state} · {record.expires_at ? `Ends ${dateTime(record.expires_at)}${active ? ` (${Math.ceil((Date.parse(record.expires_at) - now) / 86400000)} days left)` : ""}` : "No expiry"}</small>;
+                return <small key={index}><strong>{label}</strong><br />{source}<br />{state} · {record.expires_at ? `Ends ${dateTime(record.expires_at)}${active ? ` (${Math.ceil((Date.parse(record.expires_at) - now) / 86400000)} days left)` : ""}` : "No expiry"}</small>;
               })}
               <a className="text-link" href={`/teacher/platform-access?q=${encodeURIComponent(account.email)}`}>Manage course access</a>
             </> : "Access unavailable"}</td>
