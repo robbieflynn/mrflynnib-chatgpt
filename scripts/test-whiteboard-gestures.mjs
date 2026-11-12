@@ -46,3 +46,30 @@ assert.equal(gestures.holdShape(loop.map(v=>p(v.x*2,v.y))),null,'elongated ovals
 assert.equal(gestures.holdShape(zig),null,'scribbles do not become shapes');
 assert.equal(gestures.holdShape([p(10,10),p(50,12),p(100,10)]).type,'line');
 console.log('PASS: held circles/lines and conservative rejection of arcs, ovals and scribbles');
+
+function outline(vertices) {
+ return vertices.flatMap((a,i)=>{const b=vertices[(i+1)%vertices.length];return Array.from({length:12},(_,j)=>p(a.x+(b.x-a.x)*j/12,a.y+(b.y-a.y)*j/12));}).concat([vertices[0]]);
+}
+for(const [type,vertices] of [
+ ['square',[p(30,30),p(130,30),p(130,130),p(30,130)]],
+ ['rectangle',[p(30,30),p(210,30),p(210,130),p(30,130)]],
+ ['triangle',[p(30,160),p(100,30),p(200,160)]]
+]) {
+ for(const angle of [0,.42,1.3]) for(const direction of [1,-1]) for(const start of [0,7]) {
+  let trace=outline(vertices).slice(0,-1).map((v,i)=>p(v.x+Math.sin(i*2)*1.5,v.y+Math.cos(i*3)*1.5));
+  trace=trace.slice(start).concat(trace.slice(0,start));if(direction<0) trace.reverse();trace.push(trace[0]);
+  trace=trace.map(v=>p(v.x*Math.cos(angle)-v.y*Math.sin(angle),v.x*Math.sin(angle)+v.y*Math.cos(angle)));
+  const shape=gestures.holdShape(trace);
+  assert.equal(shape?.type,type,`${type}, rotated ${angle}, direction ${direction}, start ${start}`);
+  assert.equal(shape.points.length,type==='triangle'?4:5);
+  assert.deepEqual(shape.points[0],shape.points.at(-1));
+  if(type!=='triangle') {
+   const [a,b,c]=shape.points, ab=p(b.x-a.x,b.y-a.y),bc=p(c.x-b.x,c.y-b.y);
+   assert.ok(Math.abs(ab.x*bc.x+ab.y*bc.y)<1e-8,'rectangle corners are perpendicular');
+   if(type==='square') assert.ok(Math.abs(Math.hypot(ab.x,ab.y)-Math.hypot(bc.x,bc.y))<1e-8);
+  }
+ }
+}
+assert.equal(gestures.holdShape(outline([p(0,0),p(160,160),p(0,160),p(160,0)])),null,'crossed bow tie remains ink');
+assert.equal(gestures.holdShape(outline([p(0,0),p(200,0),p(140,100),p(60,100)])),null,'trapezium is not forced into a rectangle');
+console.log('PASS: noisy rotated squares, rectangles and triangles, both directions and mid-side starts; rejected crossed/unsupported shapes');

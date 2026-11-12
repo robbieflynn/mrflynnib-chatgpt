@@ -406,6 +406,21 @@ const radii=circle.points.map(p=>Math.hypot(p.x*shapeWidth-250,p.y*shapeHeight-2
 assert.ok(Math.max(...radii)-Math.min(...radii)<.1);
 send({type:'mrflynnib-whiteboard-save-result',questionId:'q1',ok:true});load(circleDoc);action('undo').click();
 assert.equal((await snapshot()).parts.a.actions.at(-1).type,'clear','circle is one undoable stroke after reload');
+for(const vertices of [[[60,60],[200,60],[200,200],[60,200]],[[60,60],[260,60],[260,180],[60,180]],[[60,200],[140,60],[250,200]]]) {
+ action('clear').click();
+ const trace=vertices.flatMap((a,i)=>{const b=vertices[(i+1)%vertices.length];return Array.from({length:10},(_,j)=>[a[0]+(b[0]-a[0])*j/10,a[1]+(b[1]-a[1])*j/10]);}).concat([vertices[0]]);
+ trace.forEach(([x,y],i)=>pointer(i?'pointermove':'pointerdown',x,y,{pressure:.7}));
+ await new Promise(resolve=>setTimeout(resolve,550));
+ pointer('pointermove',vertices[0][0]+1,vertices[0][1]+1,{pressure:.9});
+ pointer('pointerup',vertices[0][0]+1,vertices[0][1]+1,{pressure:0});
+ const doc=await snapshot(),shape=doc.parts.a.actions.at(-1);
+ assert.equal(shape.straightened,true);assert.equal(shape.points.length,vertices.length+1,'held polygon survives nib movement');
+ assert.deepEqual(shape.points[0],shape.points.at(-1),'polygon stays closed');
+ assert.ok(shape.points.every(p=>p.p===undefined),'tidied shape has even width');
+ send({type:'mrflynnib-whiteboard-save-result',questionId:'q1',ok:true});load(doc);action('undo').click();
+ assert.equal((await snapshot()).parts.a.actions.at(-1).type,'clear','polygon undoes as one stroke after reload');
+}
+console.log('PASS: held squares, rectangles and triangles, nib jitter, uniform width and saved undo');
 const oldZoom=child.document.querySelector('.qb-whiteboard-zoom-label').textContent;
 const wheel=new child.WheelEvent('wheel',{deltaY:-40,ctrlKey:true,clientX:200,clientY:200,cancelable:true});
 viewport.dispatchEvent(wheel);assert.equal(wheel.defaultPrevented,true);

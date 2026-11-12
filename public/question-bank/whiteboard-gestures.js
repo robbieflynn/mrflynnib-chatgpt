@@ -97,6 +97,60 @@
     return touched ? pieces : null;
   }
 
+  // Simplify the closed outline, then accept only a clean convex triangle or
+  // near-right-angled quadrilateral. Curves and scribbles retain their ink.
+  function heldPolygon(points, diagonal, path) {
+    function segmentDistance(p, a, b) {
+      var dx=b.x-a.x, dy=b.y-a.y, length=dx*dx+dy*dy;
+      var t=length ? Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/length)) : 0;
+      return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy);
+    }
+    function simplify(list) {
+      var index=0, maximum=diagonal*.035;
+      for(var i=1;i<list.length-1;i++) {
+        var d=segmentDistance(list[i],list[0],list[list.length-1]);
+        if(d>maximum) { maximum=d; index=i; }
+      }
+      if(!index) return [list[0],list[list.length-1]];
+      return simplify(list.slice(0,index+1)).slice(0,-1).concat(simplify(list.slice(index)));
+    }
+    var box0=bounds(points), mx=(box0.left+box0.right)/2, my=(box0.top+box0.bottom)/2, anchor=0;
+    for(var n=1;n<points.length;n++) if(Math.hypot(points[n].x-mx,points[n].y-my)>Math.hypot(points[anchor].x-mx,points[anchor].y-my)) anchor=n;
+    points=points.slice(anchor).concat(points.slice(0,anchor));
+    points.push(points[0]);
+    var split=1;
+    for(var i=2;i<points.length;i++) if(Math.hypot(points[i].x-points[0].x,points[i].y-points[0].y)>Math.hypot(points[split].x-points[0].x,points[split].y-points[0].y)) split=i;
+    var vertices=simplify(points.slice(0,split+1)).slice(0,-1).concat(simplify(points.slice(split).concat([points[0]])).slice(0,-1));
+    // A stroke can start halfway along a side rather than at a corner.
+    for(var changed=true;changed && vertices.length>3;) {
+      changed=false;
+      for(var j=0;j<vertices.length;j++) if(segmentDistance(vertices[j],vertices[(j+vertices.length-1)%vertices.length],vertices[(j+1)%vertices.length])<diagonal*.035) {
+        vertices.splice(j,1); changed=true; break;
+      }
+    }
+    if(vertices.length!==3 && vertices.length!==4) return null;
+    var perimeter=0, turn=0, angles=[];
+    for(var k=0;k<vertices.length;k++) {
+      var a=vertices[k], b=vertices[(k+1)%vertices.length], c=vertices[(k+2)%vertices.length];
+      var dx=b.x-a.x, dy=b.y-a.y, ex=c.x-b.x, ey=c.y-b.y;
+      var length=Math.hypot(dx,dy), nextLength=Math.hypot(ex,ey), cross=dx*ey-dy*ex;
+      if(length<Math.max(12,diagonal*.12) || Math.abs(cross)/(length*nextLength)<.25 || (turn && cross*turn<0)) return null;
+      turn=cross; perimeter+=length; angles.push(Math.atan2(dy,dx));
+      if(vertices.length===4 && Math.abs(dx*ex+dy*ey)/(length*nextLength)>.25) return null;
+    }
+    if(path>perimeter*1.18 || path<perimeter*.85) return null;
+    if(vertices.length===3) return {type:'triangle',points:vertices.concat([vertices[0]])};
+    // Fit perpendicular axes, retaining rotation, then equalise near-square sides.
+    var angle=Math.atan2(angles.reduce(function(sum,a){return sum+Math.sin(4*a);},0),angles.reduce(function(sum,a){return sum+Math.cos(4*a);},0))/4;
+    var cos=Math.cos(angle), sin=Math.sin(angle);
+    var projected=vertices.map(function(p){return {x:p.x*cos+p.y*sin,y:-p.x*sin+p.y*cos};});
+    var box=bounds(projected), w=box.right-box.left, h=box.bottom-box.top, cx=(box.left+box.right)/2, cy=(box.top+box.bottom)/2;
+    var square=Math.abs(w-h)/Math.max(w,h)<.15;
+    if(square) w=h=(w+h)/2;
+    var corners=[{x:cx-w/2,y:cy-h/2},{x:cx+w/2,y:cy-h/2},{x:cx+w/2,y:cy+h/2},{x:cx-w/2,y:cy+h/2}].map(function(p){return {x:p.x*cos-p.y*sin,y:p.x*sin+p.y*cos};});
+    return {type:square?'square':'rectangle',points:corners.concat([corners[0]])};
+  }
+
   function holdShape(points) {
     if (points.length < 2) return null;
     var first=points[0], last=points[points.length-1], box=bounds(points);
@@ -104,6 +158,11 @@
     var radius=(width+height)/4, path=0;
     for(var i=1;i<points.length;i++) path+=Math.hypot(points[i].x-points[i-1].x,points[i].y-points[i-1].y);
     var distance=Math.hypot(last.x-first.x,last.y-first.y);
+    var diagonal=Math.hypot(width,height);
+    if(points.length>=6 && Math.min(width,height)>=20 && distance<diagonal*.12) {
+      var polygon=heldPolygon(points,diagonal,path);
+      if(polygon) return polygon;
+    }
     if(points.length>=12 && radius>=12 && width/height>.75 && width/height<1.33 && distance<radius*.4 && path>radius*5 && path<radius*8) {
       var error=0, sectors=new Set(), winding=0;
       for(var j=0;j<points.length;j++) {

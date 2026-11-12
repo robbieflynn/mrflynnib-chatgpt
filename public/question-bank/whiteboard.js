@@ -112,7 +112,7 @@
           '<div class="qb-whiteboard-part-buttons"></div>' +
         '</div>' +
         '<div class="qb-whiteboard-quick-tools" role="toolbar" aria-label="Drawing tools">' +
-          toolButton('pen', 'Pen', true, 'Pen (P): draw, then hold to straighten a line or circle') +
+          toolButton('pen', 'Pen', true, 'Pen (P): draw, then hold to tidy a line, circle, square, rectangle or triangle') +
           toolButton('precision-eraser', 'Eraser', false, 'Eraser (E): use your selected eraser') +
           toolButton('lasso', 'Select', false, 'Select writing, questions or images and drag to move them') +
           toolButton('undo', 'Undo', undefined, 'Undo the last change (Ctrl+Z or Command+Z)') +
@@ -814,7 +814,7 @@
     function appendStrokeSamples(event) {
       if (!activeStroke) return;
       var samples = eventSamples(event);
-      if (activeStroke.shape === 'circle') return;
+      if (activeStroke.shape && activeStroke.shape !== 'line') return;
       if (activeStroke.straightened) {
         var endpoint = pointFromEvent(samples[samples.length - 1]);
         if (!Number.isFinite(endpoint.p) && Number.isFinite(activeStroke.points[1].p)) endpoint.p = activeStroke.points[1].p;
