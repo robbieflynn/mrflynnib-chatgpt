@@ -91168,6 +91168,10 @@
           [
             "<b>Note:</b> Award A1 for \\(0\\) and \\(2\\) seen as critical values, A1 for correct inequalities. These may also be expressed as ‘\\(k>0\\) and \\(k<2\\)’.",
             ""
+          ],
+          [
+            "<b>Domain correction:</b> The complete answer is \\(0<k\\le2\\). The value \\(k=2\\) would require \\(\\cos x=1\\), where the original denominator is zero. The value \\(k=0\\) is attained at \\(x=\\pi\\), so it is excluded from the no-solution interval.",
+            ""
           ]
         ]
       ]

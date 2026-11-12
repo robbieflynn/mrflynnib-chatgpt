@@ -694,3 +694,19 @@ Rob requested fixing the registered-student total stopping at 1,000. The adminis
 ## Whiteboard pen tools, 11 November 2026
 
 Rob requested whole-stroke erasing as the initial default, with the selected eraser type and size retained when switching to Pen and back. Select replaces the separate Lasso and Move image controls: it moves enclosed handwriting and copied questions/diagrams, including direct dragging of an image. Precision cuts must leave independently erasable stroke pieces, with the cut and subsequent moves undoable after saving. Large scribble erasing must work beyond the former 360-paper-pixel limit. Keep ink sharp as the workspace grows by rendering the visible viewport at screen resolution while preserving paper coordinates, zoom, multipart isolation and saved work. Rob approved production publication on 11 November 2026 after the preview was prepared and release checks passed. Physical pen and iPad testing remains separate from simulated input checks.
+
+## Assignment hints, 10 November 2026
+
+Rob requested optional progressive hints during assignments and explicitly confirmed an **Allow hints** setting controlled by the teacher. Each request reveals the next existing authored worked-solution step, with its original words, maths and associated diagram. Never generate new hint content during student use. Record hints separately from answers so teachers can see usage per student and question before and after submission. Preserve usage when the assignment is returned or hints are switched off. New assignments default to hints off; reused and shadow assignments copy the source setting. Hints do not unlock the complete mark scheme or change attempts, scores, completion or whiteboards. Prepare this feature for preview review before publication.
+
+On 10 November 2026, Rob explicitly approved applying the assignment-hint database update to the shared Ireland database so preview testing can proceed. The update was applied and its default-off setting and access controls verified. This approval does not authorise merging PR #250 or publishing the website feature.
+
+On 11 November 2026, Rob approved careful publication of the pending access-filter, assignment-hint, second-attempt, reviewed-solve-answer and wording previews. Reconcile each with current main and complete its release checks; the earlier preview-only restrictions are superseded by this approval.
+
+## Solve-answer review, 9 November 2026
+
+Rob requested fixing the whiteboard-only trigonometric solve question reported by a student and reviewing other whiteboard-only solve questions, explicitly without making the changes live. Suitable solve questions should let students check the complete final answer, including every root, disjoint interval and valid endpoint, while proof and drawing requirements remain written work. The preview review is documented in `docs/audits/solve-whiteboard-audit.md`; its 38 reviewed answer upgrades are source-fingerprinted and must not be treated as a complete independent mathematical audit of every platform question. Publication and the prepared existing-assignment configuration migration remain withheld until Rob approves.
+
+## Approved assignment release, 12 November 2026
+
+Rob explicitly authorised publishing all three pending changes: the second-attempt lockout repair, the 38 reviewed IB answer-part upgrades, and optional teacher-controlled assignment hints. This supersedes the earlier preview-only restrictions and includes the necessary existing-assignment configuration update while preserving responses, attempts, submissions, progress and whiteboards. Finish relevant verification and publish without requesting further release approval.
