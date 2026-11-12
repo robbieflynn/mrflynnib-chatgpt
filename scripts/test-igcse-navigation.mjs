@@ -90,3 +90,31 @@ const ibMarkup = renderToStaticMarkup(await detail(props));
 assert.match(ibMarkup, /href="\/assignments"/);
 assert.deepEqual(signInArgs, ['/assignments/test-assignment', 'ib']);
 console.log('PASS: old IGCSE links redirect with messages preserved; IGCSE sign-in/return routes stay scoped; IB assignments cannot render inside the IGCSE shell.');
+
+// Basic student access must not require administrator credentials. Only a confirmed
+// approved-school teacher request may enter the existing role-repair path.
+const partnerExports = {};
+new Function('require', 'exports', ts.transpileModule(readFileSync('src/lib/partner-school-teacher.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(() => ({}), partnerExports);
+for (const fixture of [
+  { email: 'student@example.com', account_type: 'student', status: 'none', requested: null, repairs: 0 },
+  { email: 'student@jess.sch.ae', account_type: 'student', status: 'none', requested: null, repairs: 0 },
+  { email: 'teacher@example.com', account_type: 'teacher', status: 'pending', requested: '2026-10-01', repairs: 0 },
+  { email: 'teacher@jess.sch.ae', account_type: 'teacher', status: 'none', requested: null, repairs: 1 },
+  { email: 'teacher@jess.sch.ae', account_type: 'student', status: 'pending', requested: '2026-10-01', repairs: 1 },
+]) {
+  let repairs = 0;
+  const user = { id: 'test-user', email: fixture.email, email_confirmed_at: '2026-10-01', user_metadata: { account_type: fixture.account_type } };
+  const profile = { role: 'student', teacher_status: fixture.status, teacher_requested_at: fixture.requested };
+  const chain = new Proxy({}, { get: (_, name) => name === 'then' ? resolve => resolve({ data: profile }) : () => chain });
+  const exports = {};
+  const fakeRequire = name => name.endsWith('/partner-school-teacher')
+    ? { isAutomaticPartnerSchoolTeacher: partnerExports.isAutomaticPartnerSchoolTeacher, ensurePartnerSchoolTeacherRole: async () => { repairs++; return false; } }
+    : name.endsWith('/supabase/server')
+      ? { createClient: async () => ({ auth: { getUser: async () => ({ data: { user } }) }, from: () => chain }) }
+      : {};
+  new Function('require', 'exports', ts.transpileModule(readFileSync('src/lib/account-access.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(fakeRequire, exports);
+  const session = await exports.requireSignedIn('/igcse/assignments/test', 'igcse');
+  assert.equal(session.user.id, 'test-user');
+  assert.equal(repairs, fixture.repairs, `teacher repair eligibility: ${fixture.email}/${fixture.account_type}/${fixture.status}`);
+}
+console.log('PASS: ordinary students need no admin role-repair access; confirmed approved-school teacher metadata and pending requests still reconcile.');
