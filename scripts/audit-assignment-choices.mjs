@@ -15,11 +15,21 @@ for (const [id, fix] of Object.entries(reviewedFormatFixes)) {
   assert.equal(createHash("sha256").update(JSON.stringify(source)).digest("hex"), fix.sourceSha256, `Re-review changed formatting source: ${id}`);
 }
 
-function reviewedChoiceSet(questionId, label, prompt, fallback) {
+const reviewedSolveFixes = JSON.parse(readFileSync("question-bank-data/reviewed-solve-answer-fixes.json", "utf8"));
+
+function reviewedChoiceSet(question, label, prompt, fallback) {
+  const questionId = question.id;
+  const solve = reviewedSolveFixes[questionId]?.[label];
+  if (solve) {
+    const fingerprint = createHash("sha256").update(JSON.stringify([
+      question.body || question.title || "", question.parts || [], question.markscheme,
+    ])).digest("hex");
+    assert.equal(solve.sourceSha256, fingerprint, `Solve source changed: ${questionId} ${label}. Independently recheck every root and domain restriction.`);
+  }
   const formatFix = reviewedFormatFixes[questionId]?.parts[label];
   if (formatFix?.mode === "whiteboard") return null;
   if (formatFix) return { acceptedAnswers: formatFix.answers, options: formatFix.options, correctOption: formatFix.correctOption };
-  const reviewed = reviewedSharedFixes[questionId]?.[label];
+  const reviewed = solve || reviewedSharedFixes[questionId]?.[label];
   if (!reviewed) return fallback();
   if (reviewed.mode === "whiteboard") return null;
   const set = reviewed.options
@@ -553,7 +563,7 @@ function assignmentPartConfigs(question) {
           prompt: nestedPrompt,
           accepted,
           rows: nestedRows,
-          choices: reviewedChoiceSet(question.id, label, nestedPrompt, () => hasSharedWhiteboardInstruction(prompt)
+          choices: reviewedChoiceSet(question, label, nestedPrompt, () => hasSharedWhiteboardInstruction(prompt)
             ? null
             : manualChoiceSet(question.id, label) || choiceSetForRows(nestedRows, nestedPrompt, `${question.id}:${label}`)),
         });
@@ -591,7 +601,7 @@ function assignmentPartConfigs(question) {
         prompt,
         accepted,
         rows,
-        choices: reviewedChoiceSet(question.id, label, prompt, () => manualChoiceSet(question.id, label) || choiceSetForRows(rows, prompt, `${question.id}:${label}`)),
+        choices: reviewedChoiceSet(question, label, prompt, () => manualChoiceSet(question.id, label) || choiceSetForRows(rows, prompt, `${question.id}:${label}`)),
       });
     }
   }

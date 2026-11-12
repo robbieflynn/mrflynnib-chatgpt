@@ -20,6 +20,7 @@
     "test:smoke": "node scripts/smoke-platform.mjs",
     "test:load": "node scripts/smoke-platform.mjs --load",
     "captions": "node scripts/manage-video-captions.mjs",
+    "test:assignment-hints": "node scripts/test-assignment-hints.mjs && node scripts/test-assignment-hints-api.mjs",
     "test:assignment-whiteboards": "node scripts/test-assignment-whiteboards.mjs && node scripts/test-assignment-whiteboards.mjs --late-board"
   },
   "dependencies": {
