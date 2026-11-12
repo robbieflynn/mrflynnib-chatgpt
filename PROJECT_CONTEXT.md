@@ -726,3 +726,10 @@ On 12 November 2026, Rob approved publishing the compact icon toolbar, More and 
 Rob requested custom day counts for individual administrator course-access grants so existing paid access periods can be retained when expanding course access or changing account roles. Allow a validated whole number of days alongside the existing presets and no-expiry option. Role approval and paid course access remain separate.
 
 On 12 November 2026, Rob authorised publication of teacher-directory course access, access source, expiry and remaining days alongside a separately labelled teacher approval status. Show administrator grants as grants, not automatically as complimentary or paid. Preserve transferred enrolments and distinguish a verified payment from an access entitlement.
+
+
+## Original transfer expiry and account visibility, 12 November 2026
+
+Rob confirmed that all Teachable transfers, for students and teachers alike, must preserve their original verified expiry timestamps rather than receive a fresh two-year period. Show course access status and expiry in the dashboard account menu, keeping different course end dates distinct and displaying no-expiry access explicitly. Teacher approval remains separate from course access and payment. Manual transfer approvals must use verified imported dates when available, otherwise require the original expiry or explicit verification that the original enrolment had no expiry. Do not revive expired transfers.
+
+The live audit found 87 issued migration entitlements, all with exact source expiry matches, and 98 claimed records covered by the separately approved no-expiry school-domain arrangement. There were no issued manual Teachable transfers. Siddharth Garg’s administrator Teacher Plus grant was aligned to his latest original Teachable expiry, 16 September 2028 at 07:22:02 UTC, preserving access to all four IB courses.

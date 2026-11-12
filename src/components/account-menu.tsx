@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/client";
-import { platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
+import { courseAccessStatuses, platformAccessSummary, type CourseAccessStatus, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
 
 type AccountSummary = {
   displayName: string;
@@ -14,6 +14,8 @@ type AccountSummary = {
   curriculum: "ib" | "igcse";
   teacherStatus?: "none" | "pending" | "approved" | "rejected" | null;
   accessLabel?: string | null;
+  accessStatuses?: CourseAccessStatus[];
+  accessUnavailable?: boolean;
 };
 
 type AccountMenuProps = {
@@ -75,7 +77,7 @@ export function AccountMenu({
         return;
       }
 
-      const [{ data: profile }, { data: entitlements }, { data: schoolSeats }] = await Promise.all([
+      const [{ data: profile }, { data: entitlements, error: entitlementError }, { data: schoolSeats, error: schoolError }] = await Promise.all([
         supabase
           .from("profiles")
           .select("role,display_name,teacher_status")
@@ -113,7 +115,9 @@ export function AccountMenu({
         role,
         curriculum: routeCurriculum,
         teacherStatus: profile?.teacher_status,
-        accessLabel: access.paid ? access.label : null,
+        accessLabel: entitlementError || schoolError ? null : access.paid ? access.label : null,
+        accessUnavailable: Boolean(entitlementError || schoolError),
+        accessStatuses: courseAccessStatuses(entitlements as PlatformEntitlement[] | null, schoolSeats as PlatformLicenseSeat[] | null, routeCurriculum, role),
       });
     }
 
@@ -121,11 +125,15 @@ export function AccountMenu({
     const { data: authListener } = supabase.auth.onAuthStateChange(() => void loadAccount());
     const refreshAccess = () => void loadAccount();
     window.addEventListener("platform-access-updated", refreshAccess);
+    window.addEventListener("focus", refreshAccess);
+    const refreshInterval = window.setInterval(refreshAccess, 60_000);
 
     return () => {
       active = false;
       authListener.subscription.unsubscribe();
       window.removeEventListener("platform-access-updated", refreshAccess);
+      window.removeEventListener("focus", refreshAccess);
+      window.clearInterval(refreshInterval);
     };
   }, [isPlatformReview, routeCurriculum]);
 
@@ -212,6 +220,10 @@ export function AccountMenu({
             <span><small>{teacherApprovalPending ? "Awaiting teacher approval" : displayedAccount.accessLabel ? `${displayedAccount.accessLabel} · ${roleLabel}` : `${isPlatformReview ? "Example" : "Signed in as"} ${roleLabel.toLowerCase()}`}</small><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span></span>
           </div>
           {teacherApprovalPending ? <div className="account-menu-pending-note" role="status"><strong>Your teacher request is waiting for approval.</strong><span>You can keep using the student learning area while you wait.</span></div> : null}
+          {!isPlatformReview ? <section className="account-menu-access" aria-label="Your course access">
+            <strong>Course access</strong>
+            {displayedAccount.accessUnavailable ? <p>Access details are temporarily unavailable. Please try again.</p> : displayedAccount.accessStatuses?.length ? <ul>{displayedAccount.accessStatuses.map((access) => <li key={access.label}><span><strong>{access.label}</strong><small>{access.status}</small></span><span>{access.detail}</span></li>)}</ul> : <p>No active course access. Your Standard account has no expiry.</p>}
+          </section> : null}
           {!isPlatformReview ? <nav className="account-menu-navigation" aria-label="Account navigation">
             <Link href={accountHome} role="menuitem" onClick={() => setOpen(false)}>{isTeacher ? "Teacher home" : "Learning home"}</Link>
             {showNavigation ? <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link> : null}

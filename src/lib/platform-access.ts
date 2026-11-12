@@ -103,3 +103,43 @@ export function platformAccessSummary(
     paid: true,
   };
 }
+
+
+export type CourseAccessStatus = { label: string; status: "Active" | "Expired" | "Upcoming"; detail: string };
+
+/** Describe effective course access, including overlapping grants, without implying payment. */
+export function courseAccessStatuses(
+  entitlements: PlatformEntitlement[] | null | undefined,
+  schoolSeats: PlatformLicenseSeat[] | null | undefined,
+  curriculum: "ib" | "igcse",
+  role: "student" | "teacher" | "admin",
+  now = new Date(),
+): CourseAccessStatus[] {
+  const courses = curriculum === "ib"
+    ? [["course_ib_aa_hl", "AA HL"], ["course_ib_aa_sl", "AA SL"], ["course_ib_ai_hl", "AI HL"], ["course_ib_ai_sl", "AI SL"]]
+    : [["course_igcse", "IGCSE Mathematics"]];
+  if (role === "admin") return [{ label: curriculum === "ib" ? "All four IB courses" : "IGCSE Mathematics", status: "Active", detail: "Administrator access · No expiry" }];
+  const records = [...(entitlements ?? []), ...activeSchoolEntitlements(schoolSeats)];
+  const formatDate = (value: string) => new Date(value).toLocaleString("en-GB", {
+    day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Dubai",
+  }) + " Dubai time";
+  const expiry = (record: PlatformEntitlement) => record.expires_at ? new Date(record.expires_at).getTime() : Infinity;
+  const rows: CourseAccessStatus[] = [];
+  for (const [code, label] of courses) {
+    const matching = records.filter((record) => (record.status === "active" || record.status === "expired") && (
+      record.product_code === code
+      || (curriculum === "ib" && record.product_code === "student_all_courses_ib")
+      || (role === "teacher" && record.product_code === `teacher_plus_${curriculum}`)
+    ));
+    const active = matching.filter((record) => isActive(record, now)).sort((a, b) => expiry(b) - expiry(a));
+    const future = matching.filter((record) => record.status === "active" && new Date(record.starts_at).getTime() > now.getTime() && expiry(record) > new Date(record.starts_at).getTime()).sort((a, b) => Date.parse(a.starts_at) - Date.parse(b.starts_at));
+    const past = matching.filter((record) => expiry(record) <= now.getTime()).sort((a, b) => expiry(b) - expiry(a));
+    if (active[0]) rows.push({ label, status: "Active", detail: active[0].expires_at ? `Ends ${formatDate(active[0].expires_at)}` : "No expiry" });
+    else if (future[0]) rows.push({ label, status: "Upcoming", detail: `Starts ${formatDate(future[0].starts_at)}${future[0].expires_at ? ` · Ends ${formatDate(future[0].expires_at)}` : " · No expiry"}` });
+    else if (past[0]?.expires_at) rows.push({ label, status: "Expired", detail: `Ended ${formatDate(past[0].expires_at)}` });
+  }
+  if (curriculum === "ib" && rows.length === 4 && rows.every((row) => row.status === rows[0].status && row.detail === rows[0].detail)) {
+    return [{ ...rows[0], label: "All four IB courses" }];
+  }
+  return rows;
+}
