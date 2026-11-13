@@ -9,6 +9,7 @@
   var layoutStorageKey = assignmentWhiteboard ? 'mrflynnib-whiteboard-layout-assignment' : 'mrflynnib-whiteboard-layout-question-bank';
   var whiteboardLayout = assignmentWhiteboard ? 'below' : 'side';
   var strokeSequence = 0;
+  var boardDisposers = new Set();
   var preferencesKey = 'mrflynnib-whiteboard-tools-v1';
   function readToolPreferences(value) {
     var p = value || {};
@@ -229,8 +230,34 @@
     var surface = board.querySelector('.qb-whiteboard-surface');
     var pageGuides = board.querySelector('.qb-whiteboard-page-guides');
     var viewport = board.querySelector('.qb-whiteboard-viewport');
-    var ctx = canvas.getContext('2d');
-    var imageCtx = imageCanvas.getContext('2d');
+    // Keep lightweight controls ready, but allocate drawing contexts on demand.
+    var ctx = null, imageCtx = null;
+    var disposed = false;
+    var listeners = [];
+    function listen(target, name, handler, options) {
+      target.addEventListener(name, handler, options);
+      listeners.push(function () { target.removeEventListener(name, handler, options); });
+    }
+    function releaseBuffers() {
+      canvas.width = canvas.height = imageCanvas.width = imageCanvas.height = 0;
+      ctx = imageCtx = null;
+    }
+    function disposeIfRemoved() {
+      if (card.isConnected && card.contains(board)) return;
+      if (disposed) return;
+      // Flush pending working through the existing durable parent save queue.
+      resetInteraction();
+      saveNow();
+      disposed = true;
+      listeners.forEach(function (remove) { remove(); });
+      listeners.length = 0;
+      if (sizeObserver) sizeObserver.disconnect();
+      cancelAnimationFrame(sizeFrame);
+      releaseBuffers();
+      boardDisposers.delete(disposeIfRemoved);
+    }
+    boardDisposers.add(disposeIfRemoved);
+    releaseBuffers();
     var actions = [];
     var questionId = card.getAttribute('data-id');
     var paperStyle = 'squared';
@@ -293,7 +320,7 @@
       try { localStorage.setItem(preferencesKey, JSON.stringify(toolPreferences)); } catch { /* Keep preferences for this visit. */ }
       window.dispatchEvent(new CustomEvent('mrflynnib-tool-preferences', { detail: board }));
     }
-    window.addEventListener('mrflynnib-tool-preferences', function (event) {
+    listen(window, 'mrflynnib-tool-preferences', function (event) {
       if (event.detail !== board) applyToolPreferences();
     });
     function hideCursor() {
@@ -325,7 +352,7 @@
     canvas.addEventListener('pointerenter', positionCursor);
     canvas.addEventListener('pointerleave', hideCursor);
     viewport.addEventListener('scroll', hideCursor, { passive: true });
-    window.addEventListener('scroll', hideCursor, { passive: true });
+    listen(window, 'scroll', hideCursor, { passive: true });
 
     function closeToolPanels() {
       board.querySelector('.qb-whiteboard-tool-settings').hidden = true;
@@ -689,6 +716,8 @@
     }
 
     function drawStrokeIncrement(stroke, points) {
+      if (disposed || board.hidden) return;
+      if (!ctx) resize();
       if (!points.length || !(baseWidth * zoom) || !(baseHeight * zoom)) return;
       ctx.save();
       ctx.scale(renderRatio, renderRatio);
@@ -712,6 +741,9 @@
     }
 
     function redraw() {
+      if (disposed || board.hidden) return;
+      if (!ctx) ctx = canvas.getContext('2d');
+      if (!imageCtx) imageCtx = imageCanvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       imageCtx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
       ctx.save();
@@ -751,7 +783,7 @@
 
     var renderLeft = 0, renderTop = 0, renderRatio = 1;
     function resize() {
-      if (board.hidden) return;
+      if (disposed || board.hidden) return;
       fitQuestionHeight();
       var width = Math.max(1, Math.min(baseWidth * zoom, viewport.clientWidth));
       var height = Math.max(1, Math.min(baseHeight * zoom, viewport.clientHeight));
@@ -785,17 +817,18 @@
       }
       image.onload = function () {
         releaseUrl();
-        onLoad(image);
+        if (!disposed) onLoad(image);
       };
       image.onerror = function () {
         releaseUrl();
-        if (onError) onError();
+        if (!disposed && onError) onError();
       };
       image.src = imageUrl.url;
       return image;
     }
 
     function whenWhiteboardIsReady(callback, attemptsLeft) {
+      if (disposed) return;
       if (board.hidden) open.click();
       requestAnimationFrame(function () {
         resize();
@@ -1118,7 +1151,7 @@
 
     // Listen on the window as a fallback when pointer capture is unavailable.
     // The initiating pointer ID still owns the stroke, so hover cannot draw.
-    window.addEventListener('pointermove', function (event) {
+    listen(window, 'pointermove', function (event) {
       if (event.target === canvas || event.pointerId === activePointer) positionCursor(event);
       // Some stylus/browser combinations report buttons=0 while the pen is
       // still touching the screen. Pointerup/pointercancel are authoritative
@@ -1244,18 +1277,18 @@
         scheduleSave();
       }
     }
-    window.addEventListener('pointerup', endStroke);
-    window.addEventListener('pointercancel', endStroke);
+    listen(window, 'pointerup', endStroke);
+    listen(window, 'pointercancel', endStroke);
     // Losing capture alone does not mean the pen has lifted. Keep accepting
     // matching moves until up/cancel, or clear on focus/visibility loss.
-    window.addEventListener('blur', resetInteraction);
-    document.addEventListener('visibilitychange', function () {
+    listen(window, 'blur', resetInteraction);
+    listen(document, 'visibilitychange', function () {
       if (document.hidden) {
         resetInteraction();
         saveNow();
       }
     });
-    window.addEventListener('pagehide', saveNow);
+    listen(window, 'pagehide', saveNow);
 
     function setMode(nextMode) {
       resetInteraction();
@@ -1594,7 +1627,7 @@
       requestAnimationFrame(restore);
     }
     ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (name) {
-      window.addEventListener(name, function () { restoreSequence++; }, { capture: true, passive: true });
+      listen(window, name, function () { restoreSequence++; }, { capture: true, passive: true });
     });
 
     function syncExpandedState(expanded) {
@@ -1624,7 +1657,7 @@
       syncExpandedState(expanded);
     }
 
-    document.addEventListener('keydown', function (event) {
+    listen(document, 'keydown', function (event) {
       if (event.key !== 'Escape') return;
       var activePanel = board.querySelector('[data-whiteboard-panel][aria-expanded="true"]');
       if (activePanel) { closeToolPanels(); activePanel.focus(); return; }
@@ -1642,12 +1675,12 @@
       open.textContent = willOpen ? 'Close whiteboard' : 'Open whiteboard';
       open.setAttribute('aria-expanded', String(willOpen));
       if (willOpen) requestAnimationFrame(resize);
-      else setExpanded(false);
+      else { setExpanded(false); releaseBuffers(); }
       if (willOpen) requestSavedDocument();
       if (!wasExpanded) restoreReadingPosition(position);
     });
 
-    window.addEventListener('mrflynnib-whiteboard-parts', function (event) {
+    listen(window, 'mrflynnib-whiteboard-parts', function (event) {
       var detail = event && event.detail;
       if (!detail || String(detail.questionId || '') !== questionId) return;
       configureParts(detail.parts, detail.partKey);
@@ -1907,7 +1940,7 @@
       }
     });
 
-    window.addEventListener('resize', resize);
+    listen(window, 'resize', resize);
     if (typeof ResizeObserver !== 'undefined') {
       var sizeFrame = 0;
       var sizeObserver = new ResizeObserver(function () {
@@ -1964,7 +1997,7 @@
     updateButtons();
     updateAccountStatus();
 
-    window.addEventListener('message', function (event) {
+    listen(window, 'message', function (event) {
       if (event.origin !== window.location.origin || event.source !== window.parent || !event.data) return;
       if (event.data.type === 'mrflynnib-account-state') {
         updateAccountStatus();
@@ -2029,6 +2062,7 @@
   }
 
   function scan() {
+    boardDisposers.forEach(function (dispose) { dispose(); });
     Array.prototype.forEach.call(list.querySelectorAll('.qb-card'), setupCard);
   }
 
@@ -2044,8 +2078,9 @@
   var scanScheduled = false;
   new MutationObserver(function (mutations) {
     var needsScan = mutations.some(function (mutation) {
-      return mutation.type === 'childList' && mutation.addedNodes.length > 0;
+      return mutation.type === 'childList' && (mutation.addedNodes.length > 0 || mutation.removedNodes.length > 0);
     });
+    if (needsScan) boardDisposers.forEach(function (dispose) { dispose(); });
     if (!needsScan || scanScheduled) return;
     scanScheduled = true;
     window.requestAnimationFrame(function () {
