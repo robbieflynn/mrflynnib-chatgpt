@@ -162,7 +162,7 @@ export function AccountMenu({
 
   const roleLabel = displayedAccount.role === "admin" ? "Administrator" : displayedAccount.role === "teacher" ? "Teacher" : "Student";
   const teacherApprovalPending = displayedAccount.role === "student" && displayedAccount.teacherStatus === "pending";
-  const accountStatusLabel = teacherApprovalPending ? "Awaiting teacher approval" : displayedAccount.accessLabel || roleLabel;
+  const accountStatusLabel = teacherApprovalPending ? "Awaiting teacher approval" : displayedAccount.accessLabel?.split(" · ")[0] || roleLabel;
   const isTeacher = displayedAccount.role === "teacher" || displayedAccount.role === "admin";
   const accountHome = isPlatformReview
     ? `/platform-review?curriculum=${displayedAccount.curriculum}&role=${isTeacher ? "teacher" : "student"}`

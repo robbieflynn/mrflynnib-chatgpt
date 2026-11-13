@@ -136,9 +136,9 @@ p { margin: 0; }
 .account-menu-trigger.is-teacher-pending { max-width: 220px; border-color: #dfc27d; background: #fff8e7; }
 .account-menu-trigger.is-teacher-pending .account-menu-trigger-copy small { color: #76530a; font-weight: 850; }
 .account-menu-avatar { width: 2rem; height: 2rem; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(145deg, #237fca, #155b9a); color: white; font-size: .68rem; font-weight: 900; letter-spacing: .02em; }
-.account-menu-trigger-copy { min-width: 0; display: grid; text-align: left; line-height: 1.12; }
+.account-menu-trigger-copy { flex: 1; min-width: 0; display: grid; text-align: left; line-height: 1.12; }
 .account-menu-trigger-copy strong { overflow: hidden; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
-.account-menu-trigger-copy small { color: var(--muted); font-size: .62rem; font-weight: 700; }
+.account-menu-trigger-copy small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: .62rem; font-weight: 700; }
 .account-menu-trigger > svg { width: .8rem; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .account-menu-panel { position: absolute; right: 0; top: calc(100% + .65rem); width: min(310px, calc(100vw - 2rem)); overflow: hidden; border: 1px solid #d5dcdf; border-radius: 1rem; background: white; box-shadow: 0 22px 60px rgba(11,21,48,.18); }
 .account-menu-identity { padding: 1rem; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; align-items: center; background: linear-gradient(145deg, #f2f8fd, #fff); border-bottom: 1px solid #e2e7e9; }
