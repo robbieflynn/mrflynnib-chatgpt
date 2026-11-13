@@ -18,8 +18,10 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
     const nextPath = typeof query.course === "string" ? `${accessPath}?course=${encodeURIComponent(query.course)}` : accessPath;
     const accountQuery = new URLSearchParams({ next: nextPath });
     if (curriculum === "ib") accountQuery.set("plan", "plus");
+    if (typeof query.course === "string") accountQuery.set("course", query.course);
     redirect(`${accountPath}?${accountQuery.toString()}`);
   }
+  if (curriculum === "ib" && ["teacher", "admin"].includes(session.profile?.role || "")) redirect("/teacher/access");
   return <CourseAccessView curriculum={curriculum} query={query} session={session} />;
 }
 

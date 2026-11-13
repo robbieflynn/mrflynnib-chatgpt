@@ -740,3 +740,5 @@ Rob clarified that draw-and-hold should tidy basic shapes, including squares, re
 ## Course-access design review, 13 November 2026
 
 Rob requested an audit and improvement of the oversized course-access page and buying journey. The prepared design uses a compact course switcher, one selected offer and purchase action, direct sample lessons, clear owned-course access and expandable account-support forms. Prices and entitlements are unchanged. This is a review proposal, not approval to publish. See `docs/audits/course-access-conversion.md` for scope, rationale and measurement limits.
+
+On 13 November 2026, Rob confirmed retaining Student Plus at US$79 for two years and Teacher Plus at US$99 for one year. He requested implementing the journey audit: teacher-specific upgrade routing and signup, explicit profile access, clearer upgrade benefits, and preserving the selected student course. Prepare these changes for review; production publication is not yet authorised.

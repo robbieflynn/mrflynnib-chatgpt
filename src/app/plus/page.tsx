@@ -21,7 +21,10 @@ export default async function PlusPage({ searchParams }: { searchParams: Promise
   if (hasSupabaseBrowserConfig()) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) redirect(nextPath);
+    if (user) {
+      const { data: profile } = await supabase.from("profiles").select("role").eq("user_id", user.id).maybeSingle();
+      redirect(["teacher", "admin"].includes(profile?.role || "") ? "/teacher/access" : nextPath);
+    }
   }
 
   const accountQuery = new URLSearchParams({ mode: "sign-up", plan: "plus", next: nextPath });

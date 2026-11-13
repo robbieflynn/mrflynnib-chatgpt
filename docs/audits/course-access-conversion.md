@@ -31,3 +31,9 @@ Local browser checks passed at desktop and 390px mobile widths: no horizontal ov
 ### Mobile example
 
 ![Mobile design review](images/course-access-mobile.png)
+
+## Journey follow-up
+
+Teacher upgrades now resolve to Teacher Plus from the lesson prompt, bootstrap account links, `/plus`, and direct student-access URLs. Checkout also redirects IB teacher/admin requests for student products to Teacher Plus before creating a Stripe session. Teacher-specific signup defaults to Teacher and cannot switch into student signup; Teacher Plus intent selects the Plus option. Generic signup retains both roles. Student dashboard and login redirects preserve course choice. Profile menus expose Standard or named Plus access with expiry/school detail. Dashboard upgrade links include price and duration.
+
+Validation adds `node scripts/test-access-journey.mjs`, covering every IB course for student/teacher/admin, IGCSE isolation, guest course preservation, expired access and plan labels. Live authenticated payment verification and funnel analytics collection remain outstanding; no claim of measured conversion improvement is made.

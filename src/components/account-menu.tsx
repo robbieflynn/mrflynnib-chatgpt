@@ -14,6 +14,7 @@ type AccountSummary = {
   curriculum: "ib" | "igcse";
   teacherStatus?: "none" | "pending" | "approved" | "rejected" | null;
   accessLabel?: string | null;
+  accessDetail?: string;
 };
 
 type AccountMenuProps = {
@@ -113,7 +114,8 @@ export function AccountMenu({
         role,
         curriculum: routeCurriculum,
         teacherStatus: profile?.teacher_status,
-        accessLabel: access.paid ? access.label : null,
+        accessLabel: access.label,
+        accessDetail: access.detail,
       });
     }
 
@@ -212,11 +214,12 @@ export function AccountMenu({
             <span><small>{teacherApprovalPending ? "Awaiting teacher approval" : displayedAccount.accessLabel ? `${displayedAccount.accessLabel} · ${roleLabel}` : `${isPlatformReview ? "Example" : "Signed in as"} ${roleLabel.toLowerCase()}`}</small><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span></span>
           </div>
           {teacherApprovalPending ? <div className="account-menu-pending-note" role="status"><strong>Your teacher request is waiting for approval.</strong><span>You can keep using the student learning area while you wait.</span></div> : null}
+          {!isPlatformReview ? <div className="account-menu-access-summary"><strong>Your access</strong><span>{displayedAccount.accessLabel || "Standard account"}</span><small>{displayedAccount.accessDetail}</small></div> : null}
           {!isPlatformReview ? <nav className="account-menu-navigation" aria-label="Account navigation">
             <Link href={accountHome} role="menuitem" onClick={() => setOpen(false)}>{isTeacher ? "Teacher home" : "Learning home"}</Link>
             {showNavigation ? <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link> : null}
             <Link href={settingsHref} role="menuitem" onClick={() => setOpen(false)}>Account settings</Link>
-            <Link href={accessHref} role="menuitem" onClick={() => setOpen(false)}>Manage access</Link>
+            <Link href={accessHref} role="menuitem" onClick={() => setOpen(false)}>Your access and Plus options</Link>
           </nav> : null}
           {!isPlatformReview ? <button className="account-menu-signout" type="button" role="menuitem" disabled={signingOut} onClick={signOut}>
             <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8 4H4v12h4M12 6l4 4-4 4M16 10H8" /></svg>

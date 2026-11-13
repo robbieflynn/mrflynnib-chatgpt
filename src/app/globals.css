@@ -3038,3 +3038,5 @@ a.teacher-list-row:hover { background: var(--sky); }
   .access-redesign-hero { padding-block: 1.25rem; }
   .access-redesign-hero .dashboard-account-row { margin-bottom: 1rem; }
 }
+.account-menu-access-summary { display: grid; gap: .3rem; padding: .8rem 1rem; border-bottom: 1px solid #dce4ee; color: var(--navy); font-size: .8rem; }
+.account-menu-access-summary small { color: var(--muted); }

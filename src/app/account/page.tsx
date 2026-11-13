@@ -225,7 +225,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   const bank = isIgcse ? "igcse" : "ib";
   const questionBankHref = isIgcse ? "/igcse/question-bank" : `/question-bank/${selectedCourse.slug}`;
   const progressLabel = isIgcse ? "IGCSE" : selectedCourse.code;
-  const upgradeHref = isIgcse ? "/igcse/account/access" : "/account/access";
+  const upgradeHref = isIgcse ? "/igcse/account/access" : `/account/access?course=${selectedCourse.slug}`;
   const completedQuestionIdsPromise = (async () => {
     const completedQuestionIds = new Set<string>();
     let pageStart = 0;
@@ -347,7 +347,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             <div className={`platform-access-summary ${access.paid ? "is-paid" : ""}`}>
               <span>{access.label}</span>
               <small>{access.detail}</small>
-              <Link href={upgradeHref}>{access.paid ? "Manage access" : isIgcse ? "Course access" : "Explore course access"}</Link>
+              <Link href={upgradeHref}>{access.paid ? "Manage access" : isIgcse ? "Course access" : "View Student Plus · $79 for 2 years"}</Link>
             </div>
             <AccountMenu signOutHref={isIgcse ? "/igcse/account" : "/account"} />
           </div>
@@ -527,7 +527,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </details>
           </section>
 
-          {!access.paid && !isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Standard account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your account includes the question bank, classes and assignments. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href={upgradeHref}>See Plus access</Link></section> : null}
+          {!access.paid && !isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Standard account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your account includes the question bank, classes and assignments. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href={upgradeHref}>View Student Plus · $79 for 2 years</Link></section> : null}
 
         </Container>
       </section>

@@ -33,7 +33,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
   const searchParams = useSearchParams();
   const curriculum = curriculumOverride ?? (searchParams.get("qualification") === "igcse" ? "igcse" : "ib");
   const teacherJourney = searchParams.get("next")?.includes("teacher") ?? false;
-  const plusJourney = searchParams.get("plan") === "plus" && curriculum === "ib";
+  const plusJourney = (searchParams.get("plan") === "plus" || searchParams.get("next") === "/teacher/access") && curriculum === "ib";
   const requestedCourse = searchParams.get("course");
   const requestedNext = searchParams.get("next");
   const nextPath = requestedNext?.startsWith("/")
@@ -199,7 +199,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         {mode === "sign-up" ? (
           <>
             <fieldset className="account-type-field"><legend>First, who is the account for?</legend><div className="account-type-options">
-              <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => { setAccountType("student"); setError(null); }} type="radio" value="student" /><span><strong>Student</strong><small>Choose the one course you are studying.</small></span></label>
+              {!teacherJourney ? <label className={accountType === "student" ? "is-selected" : ""}><input checked={accountType === "student"} name="accountType" onChange={() => { setAccountType("student"); setError(null); }} type="radio" value="student" /><span><strong>Student</strong><small>Choose the one course you are studying.</small></span></label> : null}
               <label className={accountType === "teacher" ? "is-selected" : ""}><input checked={accountType === "teacher"} name="accountType" onChange={() => { setAccountType("teacher"); setError(null); }} type="radio" value="teacher" /><span><strong>Teacher</strong><small>Create classes, set assignments and use the Test Maker.</small></span></label>
             </div></fieldset>
             {curriculum === "ib" ? <fieldset className="account-access-field"><legend>Then, choose your access</legend><div className="account-access-options">

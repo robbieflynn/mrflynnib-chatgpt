@@ -36,6 +36,9 @@ async function createCheckout(request: Request) {
   if (!session.user || !session.curriculum) {
     return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   }
+  if (product?.curriculum === "ib" && !teacherBundleRequested && ["teacher", "admin"].includes(session.profile?.role || "")) {
+    return NextResponse.json({ url: "/teacher/access" });
+  }
   const plan = getPaidProductPlan(product, typeof body.planId === "string" ? body.planId : "");
   if (!product) {
     return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
