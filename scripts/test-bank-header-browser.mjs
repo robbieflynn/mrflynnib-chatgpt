@@ -33,7 +33,8 @@ try {
       await first.locator(".qb-ms-toggle").click();
       await first.getByRole("button", { name: "Open whiteboard", exact: true }).click();
       await first.locator(".qb-whiteboard-open-button[aria-expanded=\"true\"]").waitFor();
-      await first.locator(".qb-whiteboard-open-button[aria-expanded=\"true\"]").click();
+      await first.locator(".qb-whiteboard-close").click();
+      await first.getByRole("button", { name: "Open whiteboard", exact: true }).waitFor();
       const search = bank.locator("#qb-search");
       await search.fill("zzzx-no-matching-question");
       await bank.locator(".qb-empty").waitFor();
