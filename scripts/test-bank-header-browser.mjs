@@ -63,7 +63,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
   for (const route of ["/question-bank/aa-hl", "/igcse/question-bank"]) {
     await page.goto(base + route);
-    const frame = page.frameLocator(".qb-bank-frame");
+    const frame = page.frameLocator(route.startsWith("/igcse/") ? ".igcse-qb-frame" : ".qb-bank-frame");
     await frame.locator(".qb-card").first().waitFor({ timeout: 60000 });
     let count = await frame.locator(".qb-card").count();
     for (let batch = 0; batch < 20 && count < 300; batch++) {
