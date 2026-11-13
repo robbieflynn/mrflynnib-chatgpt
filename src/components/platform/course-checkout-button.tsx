@@ -41,7 +41,7 @@ export function CourseCheckoutButton({ courseId, productId, plans, compact = fal
       <span><strong>${option.priceUsd}</strong><small>{option.label}</small></span>
       {option.badge ? <b>{option.badge}</b> : null}
     </label>)}</fieldset>}
-    <button className="button course-checkout-button" type="button" disabled={busy || !plan} onClick={startCheckout}>{busy ? "Opening secure checkout…" : compact ? `Get ${courseId?.toUpperCase().replace("-", " ")} Plus` : `Continue to secure checkout for $${plan?.priceUsd || ""}`}</button>
+    <button className="button course-checkout-button" type="button" disabled={busy || !plan} onClick={startCheckout}>{busy ? "Opening secure checkout…" : compact ? productId === "teacher-plus" ? "Get Teacher Plus" : `Get ${courseId?.toUpperCase().replace("-", " ")} Plus` : `Continue to secure checkout for $${plan?.priceUsd || ""}`}</button>
     <div className="checkout-reassurance"><span>One payment</span><span>No automatic renewal</span></div>
     {error ? <p className="form-message form-error" role="alert">{error}</p> : null}
   </div>;

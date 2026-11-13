@@ -3040,3 +3040,6 @@ a.teacher-list-row:hover { background: var(--sky); }
 }
 .account-menu-access-summary { display: grid; gap: .3rem; padding: .8rem 1rem; border-bottom: 1px solid #dce4ee; color: var(--navy); font-size: .8rem; }
 .account-menu-access-summary small { color: var(--muted); }
+.access-included-courses { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.8rem; }
+.access-included-courses span { padding: .65rem 1rem; border: 1px solid #dae2ee; border-radius: .55rem; background: #f7f9fd; color: #53647d; font-size: .8rem; font-weight: 750; }
+@media (max-width: 760px) { .access-included-courses { order: 0; margin-bottom: .75rem; } .access-included-courses span { flex: 1; text-align: center; padding-inline: .5rem; } }
