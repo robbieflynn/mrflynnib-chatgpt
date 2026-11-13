@@ -750,3 +750,8 @@ Rob rejected the unchanged Teacher Plus purchase layout on 13 November 2026 and 
 Rob requested retaining the same question and reading position when closing or collapsing a whiteboard. Side-by-side paper should fill the question height and respond to divider changes, preserving drawings. The account header should use a compact first-name greeting with a separate role-appropriate Plus upgrade action. My account collects access status, owned courses, expiry and settings; active course owners should not see the general student upgrade prompt, and Teacher Plus owners should not see the Teacher Plus prompt. Keep existing prices, access enforcement and checkout destinations.
 
 Rob requested removing the access-code / previous-purchase support section from My account on 13 November 2026. Keep this page focused on current access, courses and account details.
+
+
+## Navy question-bank headers, 13 November 2026
+
+Rob approved publication of a compact navy-and-blue header across AA HL, AA SL, AI HL and AI SL. Show the course code alone as the title, with white pathway letters and a light-blue level, a quiet question count, and a horizontal four-course switcher. Remove the repeated eyebrow, full pathway heading, descriptive sentence, Complete mark schemes and Save your progress badges, and duplicate dashboard button; retain the dashboard breadcrumb. This supersedes the earlier requirement to retain those badges. Prevent the standalone embedded heading flashing while public banks load, without changing assignment or practice rendering, saved work, filters or whiteboard behaviour. Rob explicitly requested release checks before publication.

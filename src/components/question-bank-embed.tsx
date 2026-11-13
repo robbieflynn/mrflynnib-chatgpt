@@ -6,6 +6,7 @@ import type { AssignmentFeedbackMode } from "@/lib/assignment-feedback";
 
 type QuestionBankEmbedProps = {
   course: "AA HL" | "AA SL" | "AI HL" | "AI SL";
+  deferUntilLoaded?: boolean;
   topic?: string;
   subtopic?: string;
   questionIds?: string[];
@@ -17,7 +18,7 @@ type QuestionBankEmbedProps = {
   initialQuestions?: AssignmentQuestionState[];
 };
 
-export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView, initialQuestions }: QuestionBankEmbedProps) {
+export function QuestionBankEmbed({ course, deferUntilLoaded = false, topic, subtopic, questionIds, assignmentId, viewedStudentId, feedbackMode = "immediate", assignmentSubmitted = false, assignmentView, initialQuestions }: QuestionBankEmbedProps) {
   const query = new URLSearchParams({ course, embedded: "1", whiteboard: "6" });
   if (topic) query.set("topic", topic);
   if (subtopic) query.set("subtopic", subtopic);
@@ -28,6 +29,9 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   }
   if (assignmentId && feedbackMode === "hidden" && !viewedStudentId) query.set("solutions", "0");
   if (assignmentView) query.set("assignmentView", assignmentView);
+  const frameSource = `/question-bank/ib-bank.html?${query.toString()}`;
+  const [loadedSource, setLoadedSource] = useState("");
+  const frameReady = !deferUntilLoaded || loadedSource === frameSource;
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);
@@ -36,6 +40,21 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   const [frameHeight, setFrameHeight] = useState(620);
   const [whiteboardExpanded, setWhiteboardExpanded] = useState(false);
   useQuestionBankAccount(frameRef, "ib", assignmentId, { feedbackMode, assignmentSubmitted, initialQuestions, viewedStudentId });
+
+  useEffect(() => {
+    if (!deferUntilLoaded) return;
+    // A cached iframe can finish loading before React hydrates its onLoad listener.
+    const frame = frameRef.current;
+    try {
+      if (frame?.contentDocument?.readyState === "complete"
+        && frame.contentWindow?.location.href === new URL(frameSource, window.location.origin).href) {
+        const readyFrame = requestAnimationFrame(() => setLoadedSource(frameSource));
+        return () => cancelAnimationFrame(readyFrame);
+      }
+    } catch {
+      // The onLoad handler also reveals browser error pages rather than trapping a blank frame.
+    }
+  }, [deferUntilLoaded, frameSource]);
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
@@ -106,22 +125,24 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   }, [assignmentView, loadMoreIfNeeded]);
 
   return (
-    <div style={{ height: `${frameHeight}px` }}>
+    <div style={{ height: `${frameHeight}px`, position: "relative" }} aria-busy={!frameReady}>
+    {!frameReady ? <p role="status" style={{ position: "absolute", top: "1.5rem", left: "1.5rem", color: "#52647b" }}>Loading questions…</p> : null}
     <iframe
       allowFullScreen
       className="qb-bank-frame"
       loading="eager"
       ref={frameRef}
       scrolling="no"
-      src={`/question-bank/ib-bank.html?${query.toString()}`}
-      style={whiteboardExpanded ? {
+      src={frameSource}
+      onLoad={() => setLoadedSource(frameSource)}
+      style={{ visibility: frameReady ? "visible" : "hidden", ...(whiteboardExpanded ? {
         position: "fixed",
         inset: 0,
         zIndex: 10000,
         width: "100vw",
         height: "100dvh",
         background: "#fff",
-      } : { height: `${frameHeight}px` }}
+      } : { height: `${frameHeight}px` }) }}
       title={`${course} question bank`}
     />
     </div>
