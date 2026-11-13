@@ -748,3 +748,5 @@ Rob rejected the unchanged Teacher Plus purchase layout on 13 November 2026 and 
 ## Whiteboard continuity and account navigation, 13 November 2026
 
 Rob requested retaining the same question and reading position when closing or collapsing a whiteboard. Side-by-side paper should fill the question height and respond to divider changes, preserving drawings. The account header should use a compact first-name greeting with a separate role-appropriate Plus upgrade action. My account collects access status, owned courses, expiry and settings; active course owners should not see the general student upgrade prompt, and Teacher Plus owners should not see the Teacher Plus prompt. Keep existing prices, access enforcement and checkout destinations.
+
+Rob requested removing the access-code / previous-purchase support section from My account on 13 November 2026. Keep this page focused on current access, courses and account details.

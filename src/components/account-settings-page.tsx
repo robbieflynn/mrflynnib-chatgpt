@@ -68,10 +68,6 @@ export function AccountSettingsView({ curriculum, session }: AccountSettingsPage
           </div>
           <AccountSettingsPasswordForm />
         </Container>
-        <Container className="account-settings-footer">
-          <p><strong>Have an access code or a previous purchase?</strong> Manage course access to redeem your code or request an access check.</p>
-          <div className="cluster"><Link className="button button-secondary" href={homeHref}>Return to {isTeacher ? "teacher home" : "learning home"}</Link><Link className="text-link" href={accessHref}>Manage access</Link></div>
-        </Container>
       </section>
     </>
   );
