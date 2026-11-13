@@ -1,12 +1,12 @@
 export const platformProductLabels: Record<string, string> = {
-  course_ib_aa_hl: "Mr Flynn IB Plus",
-  course_ib_aa_sl: "Mr Flynn IB Plus",
-  course_ib_ai_hl: "Mr Flynn IB Plus",
-  course_ib_ai_sl: "Mr Flynn IB Plus",
+  course_ib_aa_hl: "Student Plus · AA HL",
+  course_ib_aa_sl: "Student Plus · AA SL",
+  course_ib_ai_hl: "Student Plus · AI HL",
+  course_ib_ai_sl: "Student Plus · AI SL",
   course_igcse: "Mr Flynn IB Plus",
   question_bank_plus_ib: "Question Bank Plus",
   question_bank_plus_igcse: "Question Bank Plus",
-  teacher_plus_ib: "Teacher Plus",
+  teacher_plus_ib: "Teacher Plus · all four IB courses",
   teacher_plus_igcse: "Teacher Plus",
   student_all_courses_ib: "Student Plus — all four IB courses",
 };

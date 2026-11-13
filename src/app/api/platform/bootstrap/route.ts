@@ -55,7 +55,7 @@ export async function GET(request: Request) {
       account: curriculum === "igcse" ? "/igcse/account" : "/account",
       questionBank: curriculum === "igcse" ? "/igcse/question-bank" : "/question-bank",
       assignments: curriculum === "igcse" ? "/igcse/assignments" : "/account#assignments",
-      access: curriculum === "igcse" ? "/igcse/account/access" : "/account/access",
+      access: curriculum === "igcse" ? "/igcse/account/access" : ["teacher", "admin"].includes(session.profile?.role || "") ? "/teacher/access" : "/account/access",
     },
   }, { headers: { "Cache-Control": "private, no-store" } });
 }

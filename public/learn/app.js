@@ -622,6 +622,7 @@ function renderCourse() {
 }
 
 function plusAccessHref() {
+  if (platformAccount?.curriculum === "ib" && ["teacher", "admin"].includes(platformAccount.user?.role)) return "/teacher/access";
   const isIgcse = currentCourseId === "igcse";
   if (guestMode) return isIgcse ? "/igcse/account?mode=sign-up&next=/igcse/account/access" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
   const base = isIgcse ? "/igcse/account/access" : "/account/access";
@@ -1404,6 +1405,8 @@ async function bootstrapAccount() {
     document.getElementById("accountName").textContent = platformAccount.user.displayName;
     document.getElementById("accountRole").textContent = `${platformAccount.user.role === "admin" ? "Administrator" : platformAccount.user.role === "teacher" ? "Teacher" : "Student"} account`;
     document.getElementById("accessLink").textContent = platformAccount.access?.label || "Standard account";
+    document.getElementById("accessLink").title = platformAccount.access?.detail || "Your access";
+    document.getElementById("manageAccessLink").textContent = "Your access and Plus options";
     document.getElementById("accessLink").classList.toggle("is-plus", Boolean(platformAccount.access?.label?.includes("Plus")));
     document.getElementById("accessLink").href = platformAccount.links.access;
     document.getElementById("manageAccessLink").href = platformAccount.links.access;

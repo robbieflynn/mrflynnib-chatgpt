@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { AccountMenu } from "@/components/account-menu";
 import { CourseCheckoutButton } from "@/components/platform/course-checkout-button";
 import { CheckoutActivationNotice } from "@/components/platform/checkout-activation-notice";
-import { Container, Eyebrow } from "@/components/ui";
+import { Container } from "@/components/ui";
 import type { Curriculum } from "@/lib/account-access";
 import { getPlatformAccess } from "@/lib/platform-server";
 import { getCourseProduct, productsForCurriculum } from "@/lib/platform-products";
@@ -13,17 +13,30 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
   const query = await searchParams;
   const accountPath = curriculum === "igcse" ? "/igcse/account" : "/account";
   const accessPath = curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
-  const learnPath = curriculum === "igcse" ? "/igcse/learn" : "/learn";
   const session = await getPlatformAccess(curriculum);
   if (!session.user || !session.curriculum) {
-    const accountQuery = new URLSearchParams({ next: accessPath });
+    const nextPath = typeof query.course === "string" ? `${accessPath}?course=${encodeURIComponent(query.course)}` : accessPath;
+    const accountQuery = new URLSearchParams({ next: nextPath });
     if (curriculum === "ib") accountQuery.set("plan", "plus");
+    if (typeof query.course === "string") accountQuery.set("course", query.course);
     redirect(`${accountPath}?${accountQuery.toString()}`);
   }
+  if (curriculum === "ib" && ["teacher", "admin"].includes(session.profile?.role || "")) redirect("/teacher/access");
+  return <CourseAccessView curriculum={curriculum} query={query} session={session} />;
+}
+
+export function CourseAccessView({ curriculum, query, session }: {
+  curriculum: Curriculum;
+  query: Record<string, string | string[] | undefined>;
+  session: Pick<Awaited<ReturnType<typeof getPlatformAccess>>, "profile" | "access" | "ownedCourses">;
+}) {
+  const accountPath = curriculum === "igcse" ? "/igcse/account" : "/account";
+  const accessPath = curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
+  const learnPath = curriculum === "igcse" ? "/igcse/learn" : "/learn";
   const products = productsForCurriculum(curriculum);
   const requestedProduct = getCourseProduct(typeof query.course === "string" ? query.course : "");
   const selectedProduct = requestedProduct?.curriculum === curriculum ? requestedProduct : null;
-  const visibleProducts = selectedProduct ? [selectedProduct] : products;
+  const focusedProduct = selectedProduct ?? products.find((product) => session.ownedCourses.some((course) => course.id === product.id)) ?? products[0];
   const owned = new Set(session.profile?.role === "admin" ? products.map((course) => course.id) : session.ownedCourses.map((course) => course.id));
   const claim = typeof query.claim === "string" ? query.claim : "";
   const checkoutSessionId = typeof query.session_id === "string" ? query.session_id : "";
@@ -35,12 +48,12 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
   const successCourseHref = checkoutProduct ? `${learnPath}?course=${checkoutProduct.id}` : `${learnPath}?view=courses`;
   const checkoutCourseName = checkoutProduct?.shortTitle ?? (curriculum === "igcse" ? "IGCSE Mathematics" : "Plus");
   return <>
-    <section className={`dashboard-hero student-dashboard-hero access-page-hero ${checkoutSucceeded ? "is-checkout-complete" : ""} ${curriculum === "igcse" ? "student-dashboard-hero-igcse" : ""}`}>
-      <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">{checkoutSucceeded ? checkoutReady ? "Purchase complete" : "Payment received" : curriculum === "igcse" ? "IGCSE course access" : "Mr Flynn IB Plus"}</span><h1>{checkoutSucceeded ? checkoutReady ? "You’re all set." : `We’re activating your ${checkoutCourseName} course.` : curriculum === "igcse" ? "Your Edexcel IGCSE Mathematics course" : selectedProduct ? `Unlock the complete ${selectedProduct.shortTitle} course` : "Choose your complete course"}</h1><p>{checkoutSucceeded ? checkoutReady ? `Thank you. The complete ${checkoutCourseName} course is now unlocked on this account.` : "Your purchase was successful. Course access normally appears within a few seconds." : curriculum === "igcse" ? "Your IGCSE course, question bank, classes and assignments stay together in the IGCSE Mathematics area." : "Every video lesson and the full set of extra practice attached to the course. Two years of access with one payment and no automatic renewal."}</p></div></Container>
+    <section className={`dashboard-hero student-dashboard-hero access-page-hero access-redesign-hero ${checkoutSucceeded ? "is-checkout-complete" : ""} ${curriculum === "igcse" ? "student-dashboard-hero-igcse" : ""}`}>
+      <Container className="dashboard-hero-shell"><div className="dashboard-account-row"><Link className="dashboard-back-link" href={accountPath}>← Learning home</Link><AccountMenu signOutHref={accountPath} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">{checkoutSucceeded ? checkoutReady ? "Purchase complete" : "Payment received" : curriculum === "igcse" ? "IGCSE course access" : "Mr Flynn IB Plus"}</span><h1>{checkoutSucceeded ? checkoutReady ? "You’re all set." : `We’re activating your ${checkoutCourseName} course.` : curriculum === "igcse" ? "Your Edexcel IGCSE Mathematics course" : selectedProduct ? owned.has(selectedProduct.id) ? `Your ${selectedProduct.shortTitle} course is ready` : `Unlock the complete ${selectedProduct.shortTitle} course` : session.ownedCourses.length ? "Your course access" : "Your next step in IB Maths"}</h1><p>{checkoutSucceeded ? checkoutReady ? `Thank you. The complete ${checkoutCourseName} course is now unlocked on this account.` : "Your purchase was successful. Course access normally appears within a few seconds." : curriculum === "igcse" ? "Your IGCSE course, question bank, classes and assignments stay together in the IGCSE Mathematics area." : session.ownedCourses.length ? "Open your course below, or explore another IB Mathematics course." : "Build your understanding with complete video lessons and extra practice, all in one place."}</p></div></Container>
     </section>
     {checkoutSucceeded ? <section className="section-tight platform-access-page platform-access-complete"><Container className="checkout-complete-shell">
       {checkoutReady ? <div className="checkout-complete-actions"><div className="checkout-complete-status"><span aria-hidden="true">✓</span><p><strong>{checkoutCourseName} Plus is active</strong><small>Every lesson and its extra practice are ready.</small></p></div><div className="cluster"><Link className="button" href={successCourseHref}>Start learning</Link><Link className="button button-secondary" href={accountPath}>Learning home</Link></div></div> : <CheckoutActivationNotice sessionId={checkoutSessionId} accessPath={accessPath} title={`The complete ${checkoutCourseName} course`} openHref={successCourseHref} />}
-    </Container></section> : <section className="section-tight platform-access-page"><Container className="stack-xl">
+    </Container></section> : <section className="section-tight platform-access-page access-redesign"><Container className="access-review-shell">
       {query.checkout === "cancelled" ? <p className="form-message">Checkout was cancelled. You have not been charged.</p> : null}
       {claim === "sent" ? <p className="form-message form-success">Transfer request sent. We will verify your existing Teachable enrolment and add access to this account.</p> : null}
       {claim === "already-pending" ? <p className="form-message">Your Teachable transfer request is already waiting for review.</p> : null}
@@ -53,16 +66,29 @@ export async function CourseAccessPage({ curriculum, searchParams }: { curriculu
       {codeStatus === "course_required" ? <p className="form-message form-error">Choose the one IB course you want this code to unlock, then try again.</p> : null}
       {["invalid", "unavailable", "error"].includes(codeStatus) ? <p className="form-message form-error">That access code is invalid, expired or no longer available.</p> : null}
       {teacherApprovalPending ? <div className="teacher-pending-note" role="status"><strong>Your teacher request is awaiting approval.</strong><span>You can keep using the student learning area while you wait. This account will change to a teacher account as soon as it is approved.</span></div> : null}
-      <div className="platform-access-intro"><div><Eyebrow>Current access</Eyebrow><h2>{session.access?.label || "Standard account"}</h2><p>{session.access?.detail || "Complete question bank and classroom tools"}</p></div>{session.access?.paid ? <div className="access-plus-summary"><strong>Plus is active</strong><span>Complete lessons and lesson practice are unlocked for your course.</span></div> : <div className="access-free-summary"><strong>Standard account</strong><span>Question bank, classes, assignments and saved work</span></div>}</div>
-      {curriculum === "ib" ? <nav className="access-course-selector" aria-label="Choose course">{products.map((product) => <Link aria-current={product.id === selectedProduct?.id ? "page" : undefined} className={product.id === selectedProduct?.id ? "is-selected" : ""} href={`${accessPath}?course=${product.id}`} key={product.id}><strong>{product.shortTitle}</strong><span>{product.title}</span></Link>)}</nav> : null}
-      <div className={`access-course-grid ${selectedProduct ? "is-focused" : ""}`}>{visibleProducts.map((product) => {
-        const hasAccess = owned.has(product.id);
-        return <article className={`access-course-card ${hasAccess ? "has-access" : ""}`} key={product.id}><div><span className="course-detail-code">{product.shortTitle}</span><small>{hasAccess ? "Course access active" : curriculum === "igcse" ? "Course preview" : "Mr Flynn IB Plus"}</small></div><h2>{product.title}</h2><p>The complete video course, with every lesson and the full set of extra practice questions inside it.</p>{hasAccess ? <Link className="button" href={`${learnPath}?course=${product.id}`}>Open course</Link> : product.plans.length ? <CourseCheckoutButton courseId={product.id} plans={product.plans.map(({ id, label, priceUsd, badge }) => ({ id, label, priceUsd, badge }))} /> : <div className="stack-sm"><p className="small muted">Explore the IGCSE course structure and open the sample lessons.</p><Link className="button" href="/igcse/learn">Open the IGCSE course</Link></div>}</article>;
-      })}</div>
-      <div className="access-support-grid">
-        <article className="card stack"><Eyebrow>Already paid on Teachable?</Eyebrow><h2>Your access should appear automatically.</h2><p>Use the same confirmed email address as your Teachable account. A matching valid paid or code enrolment is added without another payment and keeps its remaining access period.</p><div className="stack-sm"><h3>Can&apos;t see your course?</h3><p className="small muted">Send a request and we will check the enrolment manually.</p></div><form className="stack" action={requestTeachableTransfer}><label>Course<select name="courseId" required>{products.map((product) => <option value={product.id} key={product.id}>{product.shortTitle}</option>)}</select></label><label>Anything we should know? <span className="muted">(optional)</span><textarea name="note" rows={3} /></label><button className="button button-secondary" type="submit">Request an access check</button></form></article>
+      <div className="access-status-line"><span><strong>{session.access?.label || "Standard account"}</strong><span>{session.access?.detail || "Question bank, classes, assignments and saved work"}</span></span><Link href={accountPath}>Back to learning <span aria-hidden="true">↗</span></Link></div>
+      <div className="access-offer-layout">
+        <div className="access-offer-main">
+          {curriculum === "ib" ? <nav className="access-course-tabs" aria-label="Choose your IB course">{products.map((product) => <Link aria-current={product.id === focusedProduct.id ? "page" : undefined} href={`${accessPath}?course=${product.id}`} key={product.id}><span>{product.shortTitle}</span>{owned.has(product.id) ? <span className="access-tab-owned" aria-label="Access active">✓</span> : null}</Link>)}</nav> : null}
+          <article className="access-offer-copy">
+            <span className="access-offer-label">{focusedProduct.shortTitle} · {owned.has(focusedProduct.id) ? "Access active" : "Complete course"}</span>
+            <h2>{focusedProduct.title}</h2>
+            <p>Clear explanations. Practice that puts them to work.</p>
+            <ul className="access-benefits">
+              <li><span aria-hidden="true">01</span><div><strong>Learn every topic</strong><p>Work through the complete video course with Mr Flynn IB, at your own pace.</p></div></li>
+              <li><span aria-hidden="true">02</span><div><strong>Put each lesson into practice</strong><p>Build your understanding with the extra practice attached to the lessons.</p></div></li>
+              <li><span aria-hidden="true">03</span><div><strong>Keep your learning together</strong><p>Your lessons sit alongside your question bank, classes and saved work.</p></div></li>
+            </ul>
+          </article>
+        </div>
+        <aside className={`access-purchase-panel ${owned.has(focusedProduct.id) ? "has-access" : ""}`} aria-label={`${focusedProduct.shortTitle} access`}>
+          {owned.has(focusedProduct.id) ? <><span className="access-active-badge">✓ Access active</span><h3>Your course is ready.</h3><p>Every video lesson and its extra practice are unlocked.</p><Link className="button" href={`${learnPath}?course=${focusedProduct.id}`}>Open {focusedProduct.shortTitle} course</Link><small>No additional purchase needed.</small></> : <><span className="access-offer-label">{focusedProduct.shortTitle} Plus</span><h3>The complete course</h3><p>Access for one selected course.</p>{focusedProduct.plans.length ? <CourseCheckoutButton key={focusedProduct.id} courseId={focusedProduct.id} compact plans={focusedProduct.plans.map(({ id, label, priceUsd }) => ({ id, label, priceUsd }))} /> : <p>Browse the course and its sample lessons below.</p>}<Link className="access-sample-link" href={`${learnPath}?course=${focusedProduct.id}`}>Explore sample lessons <span aria-hidden="true">→</span></Link></>}
+        </aside>
       </div>
-      <article className="access-code-card"><div><Eyebrow>Have an access code?</Eyebrow><h2>Unlock your course</h2><p>Enter the code supplied by Mr Flynn IB or your school. If your student code works with any IB course, choose the one course you want before redeeming it. That choice is then fixed.</p></div><form action={redeemAccessCode}><input name="curriculum" type="hidden" value={curriculum} />{curriculum === "ib" ? <label><span>Course to unlock</span><select name="courseId" defaultValue={selectedProduct?.id || products[0]?.id} required>{products.map((product) => <option value={product.id} key={product.id}>{product.shortTitle} — {product.title}</option>)}</select></label> : <input name="courseId" type="hidden" value={products[0]?.id || "igcse"} />}<label><span>Access code</span><input name="accessCode" autoCapitalize="characters" autoComplete="off" placeholder="MFI-…" required /></label><button className="button" type="submit">Redeem code</button></form></article>
+      <div className="access-help">
+        <details open={Boolean(codeStatus)}><summary>Have a school or access code?</summary><div className="access-help-content"><p>{curriculum === "ib" ? "Enter your code below. For a student code that covers any one IB course, your course choice is fixed when you redeem it." : "Enter the code supplied by Mr Flynn IB or your school to unlock your IGCSE course."}</p><form className="access-code-form" action={redeemAccessCode}><input name="curriculum" type="hidden" value={curriculum} />{curriculum === "ib" ? <label>Course to unlock<select name="courseId" defaultValue={focusedProduct.id} key={focusedProduct.id} required>{products.map((product) => <option value={product.id} key={product.id}>{product.shortTitle}</option>)}</select></label> : <input name="courseId" type="hidden" value={products[0]?.id || "igcse"} />}<label>Access code<input name="accessCode" autoCapitalize="characters" autoComplete="off" placeholder="MFI-…" required /></label><button className="button button-secondary" type="submit">Redeem code</button></form></div></details>
+        <details open={Boolean(claim)}><summary>Already purchased a course?</summary><div className="access-help-content"><p>Use the same confirmed email as your previous Teachable purchase. A verified enrollment keeps its remaining access period. If your course is missing, request an access check.</p><form className="access-transfer-form" action={requestTeachableTransfer}><label>Course<select name="courseId" defaultValue={focusedProduct.id} key={focusedProduct.id} required>{products.map((product) => <option value={product.id} key={product.id}>{product.shortTitle}</option>)}</select></label><label>Anything we should know? (optional)<textarea name="note" rows={3} /></label><button className="button button-secondary" type="submit">Request an access check</button></form></div></details>
+      </div>
     </Container></section>}
   </>;
 }

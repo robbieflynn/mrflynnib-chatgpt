@@ -2958,3 +2958,88 @@ a.teacher-list-row:hover { background: var(--sky); }
 .mark-scheme-policy > .assignment-access-settings { display: grid; gap: .75rem; }
 .mark-scheme-policy .assignment-hints-setting { display: flex; align-items: center; gap: .5rem; font-size: .85rem; letter-spacing: 0; text-transform: none; color: var(--ink); }
 .assignment-hints-setting input { width: 1.05rem; height: 1.05rem; accent-color: var(--workspace-accent); }
+
+/* Course access: one course, one primary action, secondary account help. */
+.access-redesign-hero { padding-bottom: 1.8rem; background: #f6f8fc; color: var(--navy); border-bottom: 1px solid #e0e6ef; }
+.access-redesign-hero .dashboard-hero-shell { max-width: 1080px; }
+.access-redesign-hero .dashboard-hero-copy { max-width: 720px; }
+.access-redesign-hero .dashboard-hero-copy h1 { color: var(--navy); font-size: clamp(1.7rem, 3vw, 2.35rem); letter-spacing: -.035em; }
+.access-redesign-hero .dashboard-hero-copy p { color: var(--muted); max-width: 640px; font-size: .95rem; }
+.access-redesign-hero .dashboard-back-link { color: var(--navy); }
+.access-redesign-hero .dashboard-role-label { color: #315da3; }
+.access-redesign { background: #fff; padding-block: 0 3.5rem; }
+.access-review-shell { max-width: 1080px; }
+.access-review-shell > .form-message, .access-review-shell > .teacher-pending-note { margin-top: 1rem; }
+.access-status-line { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.15rem 0; border-bottom: 1px solid #e0e6ef; font-size: .75rem; }
+.access-status-line > span { display: grid; gap: .2rem; }
+.access-status-line strong { color: var(--navy); }
+.access-status-line span span { color: var(--muted); }
+.access-status-line > a { flex-shrink: 0; color: #315da3; padding-block: .65rem; }
+.access-offer-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; align-items: start; gap: clamp(2rem, 5vw, 4.5rem); padding: 2rem 0; }
+.access-course-tabs { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.8rem; }
+.access-course-tabs a { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 44px; padding: .55rem 1rem; border-radius: .55rem; border: 1px solid #dae2ee; color: #53647d; font-size: .8rem; font-weight: 750; }
+.access-course-tabs a[aria-current="page"] { background: #eaf1ff; color: #214e9c; border-color: #91b0e5; }
+.access-course-tabs a:hover { border-color: #315da3; }
+.access-tab-owned { color: #157854; }
+.access-offer-label { display: block; font-size: .7rem; font-weight: 800; color: #315da3; letter-spacing: .075em; text-transform: uppercase; }
+.access-offer-copy h2 { margin: .6rem 0; font-size: clamp(1.55rem, 2.8vw, 2rem); line-height: 1.2; letter-spacing: -.025em; }
+.access-offer-copy > p { margin: 0; color: var(--muted); font-size: .9rem; }
+.access-benefits { display: grid; gap: 1.35rem; margin: 1.8rem 0 0; padding: 0; list-style: none; }
+.access-benefits li { display: flex; align-items: start; gap: .85rem; }
+.access-benefits li > span { display: grid; place-items: center; flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: #eef3fa; color: #52719a; font-size: .65rem; font-weight: 800; }
+.access-benefits strong { color: var(--navy); font-size: .88rem; }
+.access-benefits p { margin: .25rem 0 0; color: var(--muted); font-size: .8rem; line-height: 1.6; }
+.access-purchase-panel { padding: 1.65rem; border: 1px solid #d4deed; border-radius: 1rem; background: #f7f9fd; box-shadow: 0 12px 32px #173c7010; }
+.access-purchase-panel h3 { margin: .6rem 0 .35rem; font-size: 1.15rem; letter-spacing: -.02em; }
+.access-purchase-panel > p { color: var(--muted); font-size: .8rem; margin: 0 0 1rem; }
+.access-purchase-panel .course-checkout { gap: .9rem; padding-top: 0; }
+.access-purchase-panel .course-single-plan { padding: .75rem 0; border: 0; background: transparent; }
+.access-purchase-panel .course-single-plan strong { font-size: 2.6rem; font-weight: 750; letter-spacing: -.05em; }
+.access-purchase-panel .course-single-plan small { font-size: .8rem; }
+.access-redesign .button { min-height: 44px; padding: .65rem 1rem; font-size: .8rem; border-radius: .55rem; }
+.access-purchase-panel .button { width: 100%; }
+.access-purchase-panel .checkout-reassurance { flex-direction: column; align-items: center; gap: .3rem; font-size: .7rem; }
+.access-sample-link { display: block; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #dce4ee; text-align: center; color: #315da3; font-size: .78rem; }
+.access-purchase-panel.has-access { background: #f3faf7; border-color: #bcdccd; }
+.access-active-badge { color: #196849; font-size: .75rem; font-weight: 750; }
+.access-purchase-panel > small { display: block; margin-top: .8rem; text-align: center; color: var(--muted); }
+.access-help { border-top: 1px solid #dce4ee; }
+.access-help details { border-bottom: 1px solid #dce4ee; }
+.access-help summary { cursor: pointer; padding: 1rem 0; color: var(--navy); font-size: .83rem; font-weight: 700; }
+.access-help-content { padding: 0 0 1.5rem; max-width: 720px; }
+.access-help-content p { color: var(--muted); font-size: .8rem; line-height: 1.6; }
+.access-help label { display: grid; gap: .4rem; font-size: .75rem; font-weight: 700; color: var(--navy); }
+.access-help input, .access-help select, .access-help textarea { width: 100%; min-width: 0; min-height: 44px; padding: .65rem .75rem; border: 1px solid #bac8da; border-radius: .5rem; color: var(--ink); background: #fff; font: inherit; }
+.access-code-form { display: grid; grid-template-columns: 1fr 1.5fr auto; align-items: end; gap: .8rem; }
+.access-transfer-form { display: grid; gap: .8rem; }
+.access-transfer-form .button { justify-self: start; }
+.access-redesign a:focus-visible, .access-redesign summary:focus-visible, .access-redesign button:focus-visible { outline: 3px solid #376cc1; outline-offset: 4px; }
+@media (max-width: 760px) {
+  .access-offer-layout { grid-template-columns: 1fr; gap: 1.5rem; padding-block: 1.5rem; }
+  .access-purchase-panel { max-width: none; }
+  .access-course-tabs { gap: .35rem; margin-bottom: 1.4rem; }
+  .access-course-tabs a { flex: 1; padding-inline: .5rem; }
+  .access-benefits { gap: 1rem; margin-top: 1.3rem; }
+  .access-status-line { align-items: start; }
+  .access-status-line > a { font-size: .7rem; }
+  .access-code-form { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .access-offer-main, .access-offer-copy { display: contents; }
+  .access-offer-layout { gap: .75rem; }
+  .access-course-tabs { order: 0; margin-bottom: .75rem; }
+  .access-offer-copy > .access-offer-label { order: 1; }
+  .access-offer-copy h2 { order: 2; max-width: none; margin: 0; }
+  .access-offer-copy > p { order: 3; }
+  .access-purchase-panel { order: 4; margin-top: .5rem; }
+  .access-benefits { order: 5; margin-block: 1rem; }
+}
+@media (max-width: 760px) {
+  .access-redesign-hero { padding-block: 1.25rem; }
+  .access-redesign-hero .dashboard-account-row { margin-bottom: 1rem; }
+}
+.account-menu-access-summary { display: grid; gap: .3rem; padding: .8rem 1rem; border-bottom: 1px solid #dce4ee; color: var(--navy); font-size: .8rem; }
+.account-menu-access-summary small { color: var(--muted); }
+.access-included-courses { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1.8rem; }
+.access-included-courses span { padding: .65rem 1rem; border: 1px solid #dae2ee; border-radius: .55rem; background: #f7f9fd; color: #53647d; font-size: .8rem; font-weight: 750; }
+@media (max-width: 760px) { .access-included-courses { order: 0; margin-bottom: .75rem; } .access-included-courses span { flex: 1; text-align: center; padding-inline: .5rem; } }
