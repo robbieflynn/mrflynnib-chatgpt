@@ -90,6 +90,8 @@ export function platformAccessSummary(
       label: "Standard account",
       detail: "Complete question bank and classroom tools",
       paid: false,
+      hasCourseAccess: false,
+      hasTeacherPlus: false,
     };
   }
 
@@ -101,5 +103,7 @@ export function platformAccessSummary(
       ? `Active until ${new Date(primary.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}`
       : "Active",
     paid: true,
+    hasCourseAccess: courseAccess.length > 0,
+    hasTeacherPlus: active.some((item) => item.product_code === `teacher_plus_${curriculum || "ib"}`),
   };
 }

@@ -18,6 +18,7 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(760);
   const loadingMoreRef = useRef(false);
+  const expandedRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(760);
   const [whiteboardExpanded, setWhiteboardExpanded] = useState(false);
@@ -25,7 +26,7 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
-    if (!frame || loadingMoreRef.current || !hasMoreRef.current) return;
+    if (!frame || expandedRef.current || loadingMoreRef.current || !hasMoreRef.current) return;
 
     const distanceFromViewport =
       frame.getBoundingClientRect().top + frameHeightRef.current - window.innerHeight;
@@ -46,10 +47,11 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
       const frame = frameRef.current;
       if (event.origin !== window.location.origin || event.source !== frame?.contentWindow) return;
       if (event.data?.type === "mrflynnib-whiteboard-expanded") {
-        setWhiteboardExpanded(Boolean(event.data.expanded));
+        expandedRef.current = Boolean(event.data.expanded);
+        setWhiteboardExpanded(expandedRef.current);
         return;
       }
-      if (event.data?.type !== "mrflynnib-question-bank-height") return;
+      if (event.data?.type !== "mrflynnib-question-bank-height" || expandedRef.current) return;
 
       const nextHeight = Number(event.data.height);
       if (Number.isFinite(nextHeight)) {
@@ -91,6 +93,7 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
   }, [assignmentView, loadMoreIfNeeded]);
 
   return (
+    <div style={{ height: `${frameHeight}px` }}>
     <iframe
       allowFullScreen
       className="igcse-qb-frame"
@@ -108,5 +111,6 @@ export function IgcseQuestionBankEmbed({ topic, subtopic, questionIds, assignmen
       } : { height: `${frameHeight}px` }}
       title="Edexcel IGCSE Mathematics question bank"
     />
+    </div>
   );
 }
