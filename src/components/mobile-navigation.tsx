@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { navItems } from "@/lib/site";
-import { HeaderAccountLink } from "@/components/header-account-link";
+import { AccountMenu } from "@/components/account-menu";
 
 export function MobileNavigation() {
   const [open, setOpen] = useState(false);
@@ -52,7 +52,7 @@ export function MobileNavigation() {
             <Link href="/go/ib-tutors" className="tuition-nav" onClick={closeMenu}>One-to-One tuition</Link>
             <Link href="/contact" onClick={closeMenu}>Contact</Link>
             <Suspense fallback={<Link className="mobile-account-link" href="/account" onClick={closeMenu}>Log in</Link>}>
-              <HeaderAccountLink className="mobile-account-link" onNavigate={closeMenu} />
+              <AccountMenu className="mobile-account-controls" signedOutClassName="mobile-account-link" showNavigation showSignedOut onNavigate={closeMenu} />
             </Suspense>
           </nav>
         </>

@@ -31,6 +31,7 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   const frameRef = useRef<HTMLIFrameElement>(null);
   const frameHeightRef = useRef(620);
   const loadingMoreRef = useRef(false);
+  const expandedRef = useRef(false);
   const hasMoreRef = useRef(true);
   const [frameHeight, setFrameHeight] = useState(620);
   const [whiteboardExpanded, setWhiteboardExpanded] = useState(false);
@@ -38,7 +39,7 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
 
   const loadMoreIfNeeded = useCallback(() => {
     const frame = frameRef.current;
-    if (!frame || loadingMoreRef.current || !hasMoreRef.current) return;
+    if (!frame || expandedRef.current || loadingMoreRef.current || !hasMoreRef.current) return;
 
     const distanceFromViewport =
       frame.getBoundingClientRect().top + frameHeightRef.current - window.innerHeight;
@@ -59,10 +60,11 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
       const frame = frameRef.current;
       if (event.origin !== window.location.origin || event.source !== frame?.contentWindow) return;
       if (event.data?.type === "mrflynnib-whiteboard-expanded") {
-        setWhiteboardExpanded(Boolean(event.data.expanded));
+        expandedRef.current = Boolean(event.data.expanded);
+        setWhiteboardExpanded(expandedRef.current);
         return;
       }
-      if (event.data?.type !== "mrflynnib-question-bank-height") return;
+      if (event.data?.type !== "mrflynnib-question-bank-height" || expandedRef.current) return;
 
       const nextHeight = Number(event.data.height);
       if (Number.isFinite(nextHeight)) {
@@ -104,6 +106,7 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
   }, [assignmentView, loadMoreIfNeeded]);
 
   return (
+    <div style={{ height: `${frameHeight}px` }}>
     <iframe
       allowFullScreen
       className="qb-bank-frame"
@@ -121,5 +124,6 @@ export function QuestionBankEmbed({ course, topic, subtopic, questionIds, assign
       } : { height: `${frameHeight}px` }}
       title={`${course} question bank`}
     />
+    </div>
   );
 }

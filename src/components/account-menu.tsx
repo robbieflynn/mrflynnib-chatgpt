@@ -7,7 +7,7 @@ import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/client";
 import { platformAccessSummary, type PlatformEntitlement, type PlatformLicenseSeat } from "@/lib/platform-access";
 
-type AccountSummary = {
+export type AccountSummary = {
   displayName: string;
   email: string;
   role: "student" | "teacher" | "admin";
@@ -15,15 +15,19 @@ type AccountSummary = {
   teacherStatus?: "none" | "pending" | "approved" | "rejected" | null;
   accessLabel?: string | null;
   accessDetail?: string;
+  hasCourseAccess?: boolean;
+  hasTeacherPlus?: boolean;
 };
 
 type AccountMenuProps = {
+  initialAccount?: AccountSummary;
   signOutHref?: string;
   showNavigation?: boolean;
   className?: string;
   signedOutClassName?: string;
   signedOutLabel?: string;
   showSignedOut?: boolean;
+  onNavigate?: () => void;
 };
 
 function initials(name: string, email: string) {
@@ -33,12 +37,14 @@ function initials(name: string, email: string) {
 }
 
 export function AccountMenu({
+  initialAccount,
   signOutHref = "/account",
   showNavigation = false,
   className = "",
   signedOutClassName = "button button-small header-login-button",
   signedOutLabel = "Log in",
   showSignedOut = false,
+  onNavigate,
 }: AccountMenuProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -46,7 +52,7 @@ export function AccountMenu({
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelId = useId();
-  const [account, setAccount] = useState<AccountSummary | null | undefined>(undefined);
+  const [account, setAccount] = useState<AccountSummary | null | undefined>(initialAccount);
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const isPlatformReview = pathname === "/platform-review";
@@ -116,6 +122,8 @@ export function AccountMenu({
         teacherStatus: profile?.teacher_status,
         accessLabel: access.label,
         accessDetail: access.detail,
+        hasCourseAccess: access.hasCourseAccess,
+        hasTeacherPlus: access.hasTeacherPlus,
       });
     }
 
@@ -157,12 +165,11 @@ export function AccountMenu({
     if (!showSignedOut) return null;
     const isIgcse = pathname.startsWith("/igcse");
     const href = isIgcse ? "/igcse/account" : "/account";
-    return <Link className={signedOutClassName} href={href}>{signedOutLabel}</Link>;
+    return <Link className={signedOutClassName} href={href} onClick={onNavigate}>{signedOutLabel}</Link>;
   }
 
   const roleLabel = displayedAccount.role === "admin" ? "Administrator" : displayedAccount.role === "teacher" ? "Teacher" : "Student";
   const teacherApprovalPending = displayedAccount.role === "student" && displayedAccount.teacherStatus === "pending";
-  const accountStatusLabel = teacherApprovalPending ? "Awaiting teacher approval" : displayedAccount.accessLabel?.split(" · ")[0] || roleLabel;
   const isTeacher = displayedAccount.role === "teacher" || displayedAccount.role === "admin";
   const accountHome = isPlatformReview
     ? `/platform-review?curriculum=${displayedAccount.curriculum}&role=${isTeacher ? "teacher" : "student"}`
@@ -177,6 +184,11 @@ export function AccountMenu({
     : isTeacher ? "/teacher/access" : "/account/access";
   const settingsHref = displayedAccount.curriculum === "igcse" ? "/igcse/account/settings" : "/account/settings";
 
+  const canUpgrade = !isPlatformReview && displayedAccount.role !== "admin" && !(isTeacher ? displayedAccount.hasTeacherPlus : displayedAccount.hasCourseAccess);
+  const upgradeLabel = displayedAccount.curriculum === "igcse" ? "Upgrade to Plus" : isTeacher ? "Upgrade to Teacher Plus" : "Upgrade to IB Plus";
+  const firstName = displayedAccount.displayName.trim().split(/\s+/)[0] || "there";
+  function navigate() { setOpen(false); onNavigate?.(); }
+
   async function signOut() {
     setSigningOut(true);
     const { error } = await createClient().auth.signOut();
@@ -186,12 +198,14 @@ export function AccountMenu({
     }
     setOpen(false);
     setAccount(null);
+    onNavigate?.();
     router.push(signOutHref);
     router.refresh();
   }
 
   return (
-    <div className={`account-menu ${className}`.trim()} ref={menuRef}>
+    <div className={`account-controls ${className}`.trim()}>
+    <div className="account-menu" ref={menuRef}>
       <button
         ref={triggerRef}
         className={`account-menu-trigger ${teacherApprovalPending ? "is-teacher-pending" : ""}`.trim()}
@@ -202,8 +216,7 @@ export function AccountMenu({
         aria-label={`Open account menu for ${displayedAccount.displayName}`}
         onClick={() => setOpen((current) => !current)}
       >
-        <span className="account-menu-avatar" aria-hidden="true">{initials(displayedAccount.displayName, displayedAccount.email)}</span>
-        <span className="account-menu-trigger-copy"><strong>{displayedAccount.displayName}</strong><small>{accountStatusLabel}</small></span>
+        <span className="account-greeting">Hi, <strong>{firstName}</strong></span>
         <svg aria-hidden="true" viewBox="0 0 16 16"><path d="m4 6 4 4 4-4" /></svg>
       </button>
 
@@ -214,12 +227,10 @@ export function AccountMenu({
             <span><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span><small>{isPlatformReview ? `Example ${roleLabel.toLowerCase()}` : roleLabel}</small></span>
           </div>
           {teacherApprovalPending ? <div className="account-menu-pending-note" role="status"><strong>Your teacher request is waiting for approval.</strong><span>You can keep using the student learning area while you wait.</span></div> : null}
-          {!isPlatformReview ? <div className="account-menu-access-summary"><strong>Your access</strong><span>{displayedAccount.accessLabel || "Standard account"}</span><small>{displayedAccount.accessDetail}</small></div> : null}
           {!isPlatformReview ? <nav className="account-menu-navigation" aria-label="Account navigation">
-            <Link href={accountHome} role="menuitem" onClick={() => setOpen(false)}>{isTeacher ? "Teacher home" : "Learning home"}</Link>
-            {showNavigation ? <Link href={coursesHref} role="menuitem" onClick={() => setOpen(false)}>Courses</Link> : null}
-            <Link href={settingsHref} role="menuitem" onClick={() => setOpen(false)}>Account settings</Link>
-            <Link href={accessHref} role="menuitem" onClick={() => setOpen(false)}>Your access and Plus options</Link>
+            <Link href={settingsHref} role="menuitem" onClick={navigate}>My account</Link>
+            <Link href={accountHome} role="menuitem" onClick={navigate}>{isTeacher ? "Teacher home" : "My learning"}</Link>
+            {showNavigation ? <Link href={coursesHref} role="menuitem" onClick={navigate}>Courses</Link> : null}
           </nav> : null}
           {!isPlatformReview ? <button className="account-menu-signout" type="button" role="menuitem" disabled={signingOut} onClick={signOut}>
             <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M8 4H4v12h4M12 6l4 4-4 4M16 10H8" /></svg>
@@ -227,6 +238,8 @@ export function AccountMenu({
           </button> : null}
         </div>
       ) : null}
+    </div>
+    {canUpgrade ? <Link className="account-upgrade-button" href={accessHref} onClick={navigate}>{upgradeLabel}</Link> : null}
     </div>
   );
 }

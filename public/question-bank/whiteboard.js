@@ -729,9 +729,30 @@
       imageCtx.restore();
     }
 
+    // Size from the question, not the board, to avoid a resize feedback loop.
+    function fitQuestionHeight() {
+      var side = !card.classList.contains('qb-whiteboard-below') &&
+        !card.classList.contains('qb-whiteboard-expanded') && window.innerWidth > 820 &&
+        !document.body.classList.contains('qb-assignment-overview-mode');
+      if (!side) {
+        viewport.style.removeProperty('height');
+        viewport.style.removeProperty('max-height');
+        return;
+      }
+      var question = card.querySelector('.qb-question-pane');
+      var header = board.querySelector('.qb-whiteboard-header');
+      var height = Math.max(620, Math.ceil(question.getBoundingClientRect().height - header.getBoundingClientRect().height - 2));
+      // Add paper without moving existing ink. Never shrink saved paper when
+      // the question becomes shorter or the divider moves back.
+      if (height > baseHeight * zoom && pageCount < 8) setPageCount(Math.ceil(height / (pageHeight * zoom)), true);
+      viewport.style.height = Math.min(height, baseHeight * zoom) + 'px';
+      viewport.style.maxHeight = 'none';
+    }
+
     var renderLeft = 0, renderTop = 0, renderRatio = 1;
     function resize() {
       if (board.hidden) return;
+      fitQuestionHeight();
       var width = Math.max(1, Math.min(baseWidth * zoom, viewport.clientWidth));
       var height = Math.max(1, Math.min(baseHeight * zoom, viewport.clientHeight));
       var ratio = Math.min(window.devicePixelRatio || 1, 3, 8192 / width, 8192 / height, Math.sqrt(10000000 / (width * height)));
@@ -1531,7 +1552,58 @@
       hideCursor();
     }, { passive: false });
 
+    var readingPosition = null;
+    var restoreSequence = 0;
+    function captureReadingPosition() {
+      var host = window, frame = null;
+      try {
+        if (window.parent !== window && window.parent.location.origin === window.location.origin) {
+          host = window.parent; frame = window.frameElement;
+        }
+      } catch { /* A standalone board owns its own scrollbar. */ }
+      var frameTop = frame ? frame.getBoundingClientRect().top : 0;
+      var question = card.querySelector('.qb-question-pane');
+      var candidates = Array.prototype.slice.call(question.querySelectorAll('p, li, .qb-part, .qb-diagram'));
+      var anchor = candidates.find(function (node) { return frameTop + node.getBoundingClientRect().bottom > 100; }) || candidates[candidates.length - 1] || card;
+      return { host: host, frame: frame, anchor: anchor, offset: frameTop + anchor.getBoundingClientRect().top };
+    }
+    function restoreReadingPosition(position) {
+      if (!position) return;
+      var sequence = ++restoreSequence;
+      var attempts = 0;
+      function restore() {
+        if (sequence !== restoreSequence || !card.isConnected || !position.anchor.isConnected) return;
+        var host = position.host;
+        // React restores the iframe to normal flow after the collapse message.
+        // Measuring while it is still fixed gives a false page offset.
+        if (position.frame && host.getComputedStyle(position.frame).position === 'fixed') {
+          if (++attempts < 15) window.setTimeout(restore, 40);
+          return;
+        }
+        var frameTop = position.frame ? position.frame.getBoundingClientRect().top : 0;
+        // Keep the same paragraph at the reading position after column reflow.
+        var target = host.scrollY + frameTop + position.anchor.getBoundingClientRect().top - position.offset;
+        var root = host.document.documentElement;
+        var previousBehavior = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';
+        host.scrollTo({ top: Math.max(0, target), behavior: 'instant' });
+        root.style.scrollBehavior = previousBehavior;
+        // Embedded height messages and React layout settle asynchronously.
+        if (++attempts < 15) window.setTimeout(restore, 40);
+      }
+      requestAnimationFrame(restore);
+    }
+    ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach(function (name) {
+      window.addEventListener(name, function () { restoreSequence++; }, { capture: true, passive: true });
+    });
+
     function syncExpandedState(expanded) {
+      var wasExpanded = card.classList.contains('qb-whiteboard-expanded');
+      if (expanded && !wasExpanded) {
+        readingPosition = captureReadingPosition();
+        card.style.minHeight = card.getBoundingClientRect().height + 'px';
+      }
+
       card.classList.toggle('qb-whiteboard-expanded', expanded);
       document.body.classList.toggle('qb-whiteboard-fullscreen', expanded);
       var button = board.querySelector('[data-whiteboard-action="expand"]');
@@ -1539,6 +1611,11 @@
       button.textContent = expanded ? 'Collapse' : 'Expand';
       if (window.parent !== window) {
         window.parent.postMessage({ type: 'mrflynnib-whiteboard-expanded', expanded: expanded }, window.location.origin);
+      }
+      if (!expanded && wasExpanded) {
+        card.style.removeProperty('min-height');
+        restoreReadingPosition(readingPosition);
+        readingPosition = null;
       }
       requestAnimationFrame(resize);
     }
@@ -1555,6 +1632,8 @@
     });
 
     open.addEventListener('click', function () {
+      var wasExpanded = card.classList.contains('qb-whiteboard-expanded');
+      var position = wasExpanded ? null : captureReadingPosition();
       resetInteraction();
       closeToolPanels();
       var willOpen = board.hidden;
@@ -1565,6 +1644,7 @@
       if (willOpen) requestAnimationFrame(resize);
       else setExpanded(false);
       if (willOpen) requestSavedDocument();
+      if (!wasExpanded) restoreReadingPosition(position);
     });
 
     window.addEventListener('mrflynnib-whiteboard-parts', function (event) {
@@ -1828,6 +1908,17 @@
     });
 
     window.addEventListener('resize', resize);
+    if (typeof ResizeObserver !== 'undefined') {
+      var sizeFrame = 0;
+      var sizeObserver = new ResizeObserver(function () {
+        cancelAnimationFrame(sizeFrame);
+        sizeFrame = requestAnimationFrame(resize);
+        if (!card.isConnected) sizeObserver.disconnect();
+      });
+      sizeObserver.observe(card.querySelector('.qb-question-pane'));
+      sizeObserver.observe(board.querySelector('.qb-whiteboard-header'));
+      sizeObserver.observe(viewport);
+    }
     function resizeSplit(width) {
       var workspace = card.querySelector('.qb-question-workspace');
       var style = window.getComputedStyle(workspace);

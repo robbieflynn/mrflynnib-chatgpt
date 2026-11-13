@@ -744,3 +744,7 @@ Rob requested an audit and improvement of the oversized course-access page and b
 On 13 November 2026, Rob confirmed retaining Student Plus at US$79 for two years and Teacher Plus at US$99 for one year. He requested implementing the journey audit: teacher-specific upgrade routing and signup, explicit profile access, clearer upgrade benefits, and preserving the selected student course. Prepare these changes for review; production publication is not yet authorised.
 
 Rob rejected the unchanged Teacher Plus purchase layout on 13 November 2026 and requested visual consistency with the reviewed student access page. Use the same restrained headings, compact included-course labels, two-column offer and price panel, and smaller purchase/open-course actions. Keep the US$99 one-year offer and existing checkout/access logic. This remains a preview for review.
+
+## Whiteboard continuity and account navigation, 13 November 2026
+
+Rob requested retaining the same question and reading position when closing or collapsing a whiteboard. Side-by-side paper should fill the question height and respond to divider changes, preserving drawings. The account header should use a compact first-name greeting with a separate role-appropriate Plus upgrade action. My account collects access status, owned courses, expiry and settings; active course owners should not see the general student upgrade prompt, and Teacher Plus owners should not see the Teacher Plus prompt. Keep existing prices, access enforcement and checkout destinations.
