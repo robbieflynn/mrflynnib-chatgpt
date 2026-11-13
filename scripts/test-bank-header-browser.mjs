@@ -32,8 +32,8 @@ try {
       assert.equal(await first.locator(".qb-markscheme").isVisible(), true);
       await first.locator(".qb-ms-toggle").click();
       await first.getByRole("button", { name: "Open whiteboard", exact: true }).click();
-      await first.getByRole("button", { name: "Close whiteboard", exact: true }).waitFor();
-      await first.getByRole("button", { name: "Close whiteboard", exact: true }).click();
+      await first.locator(".qb-whiteboard-open-button").getByText("Close whiteboard", { exact: true }).waitFor();
+      await first.locator(".qb-whiteboard-open-button").getByText("Close whiteboard", { exact: true }).click();
       const search = bank.locator("#qb-search");
       await search.fill("zzzx-no-matching-question");
       await bank.locator(".qb-empty").waitFor();
