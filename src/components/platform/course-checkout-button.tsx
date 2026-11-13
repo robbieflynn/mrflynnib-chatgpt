@@ -4,7 +4,7 @@ import { useState } from "react";
 
 type CheckoutPlan = { id: string; label: string; priceUsd: number; badge?: string };
 
-export function CourseCheckoutButton({ courseId, productId, plans }: { courseId?: string; productId?: string; plans: CheckoutPlan[] }) {
+export function CourseCheckoutButton({ courseId, productId, plans, compact = false }: { courseId?: string; productId?: string; plans: CheckoutPlan[]; compact?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [selectedPlan, setSelectedPlan] = useState(plans.find((plan) => plan.badge)?.id || plans[0]?.id || "");
@@ -32,16 +32,16 @@ export function CourseCheckoutButton({ courseId, productId, plans }: { courseId?
   }
   const plan = plans.find((option) => option.id === selectedPlan) || plans[0];
   const singlePlan = plans.length === 1 ? plans[0] : null;
-  return <div className="course-checkout stack-sm">
+  return <div className={`course-checkout stack-sm ${compact ? "is-compact" : ""}`}>
     {singlePlan ? <div className="course-single-plan">
-      <span><strong>${singlePlan.priceUsd}</strong><small>{singlePlan.label} access</small></span>
+      <span><strong>{compact ? "US" : ""}${singlePlan.priceUsd}</strong><small>{singlePlan.label} access</small></span>
       {singlePlan.badge ? <b>{singlePlan.badge}</b> : null}
     </div> : <fieldset className="course-plan-options"><legend>Choose access length</legend>{plans.map((option) => <label className={`course-plan-option ${selectedPlan === option.id ? "is-selected" : ""}`} key={option.id}>
       <input checked={selectedPlan === option.id} name={`plan-${courseId || productId}`} onChange={() => setSelectedPlan(option.id)} type="radio" value={option.id} />
       <span><strong>${option.priceUsd}</strong><small>{option.label}</small></span>
       {option.badge ? <b>{option.badge}</b> : null}
     </label>)}</fieldset>}
-    <button className="button course-checkout-button" type="button" disabled={busy || !plan} onClick={startCheckout}>{busy ? "Opening secure checkout…" : `Continue to secure checkout for $${plan?.priceUsd || ""}`}</button>
+    <button className="button course-checkout-button" type="button" disabled={busy || !plan} onClick={startCheckout}>{busy ? "Opening secure checkout…" : compact ? `Get ${courseId?.toUpperCase().replace("-", " ")} Plus` : `Continue to secure checkout for $${plan?.priceUsd || ""}`}</button>
     <div className="checkout-reassurance"><span>One payment</span><span>No automatic renewal</span></div>
     {error ? <p className="form-message form-error" role="alert">{error}</p> : null}
   </div>;
