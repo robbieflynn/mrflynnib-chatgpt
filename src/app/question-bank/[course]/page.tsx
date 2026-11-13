@@ -1,8 +1,9 @@
+import "../compact-header.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { QuestionBankEmbed } from "@/components/question-bank-embed";
-import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, Container } from "@/components/ui";
 import { getQuestionBankCourse, questionBankCourses } from "@/lib/question-bank-courses";
 import { getQuestionBankDashboardLink } from "@/lib/question-bank-dashboard-link";
 
@@ -36,22 +37,16 @@ export default async function CourseQuestionBankPage({ params, searchParams }: {
 
   return (
     <>
-      <section className="qb-course-page-hero">
-        <Container className="stack-lg">
+      <section className="qb-course-page-hero qb-course-page-hero-compact">
+        <Container className="qb-course-header-inner">
           <Breadcrumbs items={[{ ...dashboardLink, label: learningHomeLabel }, { label: "Question bank", href: "/question-bank" }, { label: course.code }]} />
           <div className="qb-course-page-heading">
-            <div className="stack qb-course-title-block">
-              <div className="qb-course-meta"><Eyebrow>{course.code} question bank</Eyebrow></div>
-              <h1>{course.pathway} {course.level}</h1>
-              <p className="lede">
-                {course.questionCount?.toLocaleString("en-GB")} questions, organised by topic, paper and difficulty, with complete mark schemes.
-              </p>
-              <div className="qb-course-highlights" aria-label="Question bank features"><span>Complete mark schemes</span><span>Save your progress</span></div>
+            <div className="qb-course-title-block">
+              <h1>{course.code.split(" ")[0]} <span>{course.code.split(" ")[1]}</span></h1>
+              <p className="qb-course-count">{course.questionCount?.toLocaleString("en-GB")} questions</p>
             </div>
             <div className="qb-course-page-actions">
-              <Link className="button button-secondary button-small qb-dashboard-return" href={dashboardLink.href}>← {learningHomeLabel}</Link>
               <nav className="qb-course-switcher" aria-label="Change question bank course">
-                <span>Change course</span>
                 <div>
                   {questionBankCourses.map((item) => (
                     item.available
@@ -66,7 +61,7 @@ export default async function CourseQuestionBankPage({ params, searchParams }: {
       </section>
 
       <section className="qb-course-content">
-        <QuestionBankEmbed course={course.code} topic={topic} subtopic={subtopic} />
+        <QuestionBankEmbed deferUntilLoaded course={course.code} topic={topic} subtopic={subtopic} />
       </section>
     </>
   );
