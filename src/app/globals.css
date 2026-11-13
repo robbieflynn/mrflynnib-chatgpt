@@ -141,10 +141,10 @@ p { margin: 0; }
 .account-menu-trigger-copy small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: .62rem; font-weight: 700; }
 .account-menu-trigger > svg { width: .8rem; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .account-menu-panel { position: absolute; right: 0; top: calc(100% + .65rem); width: min(310px, calc(100vw - 2rem)); overflow: hidden; border: 1px solid #d5dcdf; border-radius: 1rem; background: white; box-shadow: 0 22px 60px rgba(11,21,48,.18); }
-.account-menu-identity { padding: 1rem; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; align-items: center; background: linear-gradient(145deg, #f2f8fd, #fff); border-bottom: 1px solid #e2e7e9; }
+.account-menu-identity { padding: 1.2rem 1rem; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; align-items: center; background: linear-gradient(145deg, #f2f8fd, #fff); border-bottom: 1px solid #e2e7e9; }
 .account-menu-avatar-large { width: 2.6rem; height: 2.6rem; font-size: .78rem; }
-.account-menu-identity > span:last-child { min-width: 0; display: grid; line-height: 1.3; }
-.account-menu-identity small { color: var(--teal-dark); font-size: .65rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+.account-menu-identity > span:last-child { min-width: 0; display: grid; gap: .25rem; line-height: 1.4; }
+.account-menu-identity small { color: var(--teal-dark); font-size: .68rem; font-weight: 700; overflow-wrap: anywhere; }
 .account-menu-identity strong { overflow: hidden; font-size: .92rem; text-overflow: ellipsis; white-space: nowrap; }
 .account-menu-identity span span { overflow-wrap: anywhere; color: var(--muted); font-size: .75rem; }
 .account-menu-pending-note { padding: .8rem 1rem; display: grid; gap: .18rem; border-bottom: 1px solid #ead8ab; background: #fff8e7; color: var(--ink-2); }

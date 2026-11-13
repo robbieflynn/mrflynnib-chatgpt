@@ -211,7 +211,7 @@ export function AccountMenu({
         <div className="account-menu-panel" id={panelId} role="menu">
           <div className="account-menu-identity">
             <span className="account-menu-avatar account-menu-avatar-large" aria-hidden="true">{initials(displayedAccount.displayName, displayedAccount.email)}</span>
-            <span><small>{teacherApprovalPending ? "Awaiting teacher approval" : displayedAccount.accessLabel ? `${displayedAccount.accessLabel} · ${roleLabel}` : `${isPlatformReview ? "Example" : "Signed in as"} ${roleLabel.toLowerCase()}`}</small><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span></span>
+            <span><strong>{displayedAccount.displayName}</strong><span>{displayedAccount.email}</span><small>{isPlatformReview ? `Example ${roleLabel.toLowerCase()}` : roleLabel}</small></span>
           </div>
           {teacherApprovalPending ? <div className="account-menu-pending-note" role="status"><strong>Your teacher request is waiting for approval.</strong><span>You can keep using the student learning area while you wait.</span></div> : null}
           {!isPlatformReview ? <div className="account-menu-access-summary"><strong>Your access</strong><span>{displayedAccount.accessLabel || "Standard account"}</span><small>{displayedAccount.accessDetail}</small></div> : null}
