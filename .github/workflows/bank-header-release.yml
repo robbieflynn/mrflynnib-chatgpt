@@ -1,0 +1,34 @@
+name: Question bank header release checks
+on:
+  push:
+    branches: [agent/navy-question-bank-header]
+  pull_request:
+    paths:
+      - 'src/app/question-bank/**'
+      - 'src/components/question-bank-embed.tsx'
+      - 'scripts/test-bank-header-browser.mjs'
+      - '.github/workflows/bank-header-release.yml'
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock
+      - run: npm run verify:release
+      - run: npm install --no-save --no-package-lock playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - name: Exercise production build
+        run: |
+          npm run start > /tmp/bank-header-server.log 2>&1 &
+          node scripts/test-bank-header-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bank-header-browser-results
+          path: test-results/bank-header
