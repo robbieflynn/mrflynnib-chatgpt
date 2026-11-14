@@ -1,11 +1,9 @@
 import type { User } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-const automaticTeacherDomains = new Set([
-  "jess.sch.ae",
-  "beausoleil.ch",
-  "westminsteracademy.org.uk",
-]);
+import { approvedSchools } from "@/lib/approved-schools";
+
+const automaticTeacherDomains = new Set<string>(approvedSchools.map((school) => school.domain));
 
 type TeacherIntentProfile = {
   role: string | null;

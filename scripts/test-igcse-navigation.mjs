@@ -94,7 +94,9 @@ console.log('PASS: old IGCSE links redirect with messages preserved; IGCSE sign-
 // Basic student access must not require administrator credentials. Only a confirmed
 // approved-school teacher request may enter the existing role-repair path.
 const partnerExports = {};
-new Function('require', 'exports', ts.transpileModule(readFileSync('src/lib/partner-school-teacher.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(() => ({}), partnerExports);
+const schoolExports = {};
+new Function('exports', ts.transpileModule(readFileSync('src/lib/approved-schools.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(schoolExports);
+new Function('require', 'exports', ts.transpileModule(readFileSync('src/lib/partner-school-teacher.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(name => name.endsWith('/approved-schools') ? schoolExports : {}, partnerExports);
 for (const fixture of [
   { email: 'student@example.com', account_type: 'student', status: 'none', requested: null, repairs: 0 },
   { email: 'student@jess.sch.ae', account_type: 'student', status: 'none', requested: null, repairs: 0 },
