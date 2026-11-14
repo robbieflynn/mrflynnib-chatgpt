@@ -24,6 +24,7 @@ await db.exec(schema.slice(schema.indexOf("create or replace function public.sch
 await db.exec(readFileSync("supabase/migrations/20261114_admin_student_course.sql", "utf8"));
 await db.exec("alter table profiles add column display_name text, add column email text");
 await db.exec(readFileSync("supabase/migrations/20261114_admin_student_course_details.sql", "utf8"));
+await db.exec(readFileSync("supabase/migrations/20261114_admin_course_access_mismatch.sql", "utf8"));
 const admin = "00000000-0000-0000-0000-000000000001";
 const student = "00000000-0000-0000-0000-000000000002";
 await db.query("insert into auth.users values ($1,'admin@example.test',now(),'{}',now()),($2,'student@example.test',now(),'{\"primary_course\":\"aa-hl\",\"display_name\":\"Test\"}',now())",[admin,student]);
@@ -61,6 +62,17 @@ assert.deepEqual({...moved,product_code:paid.product_code,updated_at:paid.update
 assert.equal(moved.product_code,"course_ib_ai_sl");
 assert.equal((await row("select product_code from platform_entitlements where status='revoked'")).product_code,"course_ib_aa_hl");
 assert.equal((await row("select count(*)::int n from platform_entitlements where product_code='course_ib_ai_hl'")).n,1);
+await reset();
+await db.query("update auth.users set raw_user_meta_data='{\"primary_course\":\"aa-sl\"}' where id=$1",[student]);
+await db.query("insert into platform_entitlements(user_id,product_code,status,source,starts_at,expires_at,external_provider,external_reference) values ($1,'course_ib_aa_hl','active','stripe',now(),now()+interval '2 years','stripe','mismatch-payment')",[student]);
+const mismatchBefore = await row("select * from platform_entitlements");
+await assert.rejects(change("aa-sl","aa-sl"),/course_changed/,"old form cannot report a false success");
+await change("aa-sl","aa-hl");
+const mismatchAfter = await row("select * from platform_entitlements");
+assert.equal(mismatchAfter.product_code,"course_ib_aa_sl");
+assert.deepEqual({...mismatchAfter,product_code:mismatchBefore.product_code,updated_at:mismatchBefore.updated_at},mismatchBefore,"mismatched preference transfer preserves paid access exactly");
+await change("aa-sl","aa-sl");
+assert.equal((await row("select count(*)::int n from student_course_changes")).n,1,"retry does not duplicate transfer");
 await reset();
 await db.query("update auth.users set email='student@jess.sch.ae' where id=$1",[student]);
 await db.query("select upsert_school_plus_access($1)",[student]);

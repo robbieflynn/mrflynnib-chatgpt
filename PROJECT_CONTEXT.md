@@ -819,3 +819,8 @@ Rob requested a quieter question-bank selection page: retain the Home / Question
 ## Administrator course changes, 14 November 2026
 
 Rob requested a Change course action in the student directory. Administrators can change an IB student's selected course and move current or scheduled individual access from the old course while preserving exact expiry, entitlement identity and payment references. Keep prior progress, whiteboards, assignments and class memberships intact, and clear only the current lesson selection. Standard accounts remain Standard; all-course and unrelated access are unchanged. Approved-domain access follows the new course. Course-specific allocated school seats require their separate licence allocation workflow. Both administrator-only database migrations were installed and the dedicated test student's AA HL → AA SL → AA HL journey verified. Rob approved publishing after successful checks.
+
+
+## Course preference and paid-access mismatch, 14 November 2026
+
+An IB student's selected course can differ from the course covered by their paid access. Administration must display both explicitly. When there is exactly one active or scheduled unexpired IB Plus course, use that course as the transfer source, even if the preference already matches the destination. Preserve exact entitlement identity, payment references and expiry. Continue to reject stale forms and protect allocated school seats. Never treat an unchanged preference as proof that a paid-access transfer has completed.
