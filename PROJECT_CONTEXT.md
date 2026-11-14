@@ -824,3 +824,12 @@ Rob requested a Change course action in the student directory. Administrators ca
 ## Course preference and paid-access mismatch, 14 November 2026
 
 An IB student's selected course can differ from the course covered by their paid access. Administration must display both explicitly. When there is exactly one active or scheduled unexpired IB Plus course, use that course as the transfer source, even if the preference already matches the destination. Preserve exact entitlement identity, payment references and expiry. Continue to reject stale forms and protect allocated school seats. Never treat an unchanged preference as proof that a paid-access transfer has completed.
+
+
+## Pricing and card-free trials, 14 November 2026
+
+Rob requested preparation of IB single-course Plus at US$69 for one year (365 days) or US$79 for two years (730 days), with the two-year offer the primary student option. Teacher Plus covers all four IB courses at US$99 for one year or US$150 for two years. All are single payments without automatic renewal. Teachers may purchase the single-course option while keeping their teacher role; offer this as a quiet alternative on Teacher Plus. IGCSE prices are unchanged. This supersedes previous single-duration pricing decisions.
+
+Rob requested the free trial with no card details required. The implementation uses an explicit seven-day trial for either one IB course or approved Teacher Plus, one trial per account across IB products, beginning only when started. This seven-day teacher duration is an implementation assumption, not a separately confirmed fourteen-day offer. Trials end automatically and preserve saved work. A distinct audit record and expiring promotion entitlement must never replace paid, migrated, granted or school access. Paid checkout remains available during a trial. No question-bank locks or assignment restrictions are part of this change.
+
+This is preparation and preview only; no production publication or production database/payment configuration change is authorized by this preparation request. Before release, install the additive trial migration and configure/test the four US$69 one-year Stripe prices plus the US$150 two-year Teacher Plus price in the appropriate environment. See docs/pricing-trial-release.md.

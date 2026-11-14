@@ -157,7 +157,7 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
         setMode("resend");
         setMessage(accountType === "teacher"
           ? wantsPlus
-            ? "Check your email to confirm your account. You can then continue straight to secure Teacher Plus checkout."
+            ? "Check your email to confirm your account. You can then view Teacher Plus plans or start your free trial."
             : "Check your email to confirm your account. Approved-school teachers open immediately; other teacher accounts are sent to Mr Flynn for approval."
           : "Check your email to confirm your account, then return here to sign in.");
       }
@@ -211,14 +211,14 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
               <label className={accessChoice === "plus" ? "is-selected is-plus" : "is-plus"}>
                 <input checked={accessChoice === "plus"} name="accessChoice" onChange={() => { setAccessChoice("plus"); setError(null); }} type="radio" value="plus" />
                 <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "Full lessons, the full question bank and extra practice across all four IB courses" : "Full lessons, the full question bank and extra practice for one IB course"}</small></span>
-                <b>{accountType === "teacher" ? "$99 · 1 year" : "$79 · 2 years"}</b>
+                <b>{accountType === "teacher" ? "$99 / 1 year · $150 / 2 years" : "$69 / 1 year · $79 / 2 years"}</b>
               </label>
-            </div>{wantsPlus ? <small className="account-access-note">No payment is taken when you create the account. Secure checkout follows after your email is confirmed.</small> : null}</fieldset> : null}
+            </div>{wantsPlus ? <small className="account-access-note">No payment is taken when you create the account. After confirming your email, choose a plan or start a 7-day free trial. No card required for the trial.</small> : null}</fieldset> : null}
             {curriculum === "ib" ? accountType === "student" ? (
               <fieldset className="account-course-field">
                 <legend>Which course are you studying?</legend>
                 <p>{wantsPlus
-                  ? "Choose the course you want to unlock. Secure payment follows after your account is confirmed."
+                  ? "Choose the course you want to unlock. Review your access options after confirming your account."
                   : "Choose your course so your learning home opens in the right place."}</p>
                 <div className="account-course-options is-single">
                   {ibCourseChoices.map((course) => <label className={studentCourse === course.id ? "is-selected" : ""} key={course.id}>

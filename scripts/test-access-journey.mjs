@@ -20,7 +20,7 @@ const summary = context.exports.platformAccessSummary;
 const now = new Date('2026-11-13T00:00:00Z');
 const entitlement = code => ({product_code:code,status:'active',starts_at:'2026-01-01',expires_at:'2027-01-01'});
 assert.equal(summary([],[],now,'ib').label,'Standard account');
-assert.equal(summary([entitlement('course_ib_ai_sl')],[],now,'ib').label,'Student Plus · AI SL');
+assert.equal(summary([entitlement('course_ib_ai_sl')],[],now,'ib').label,'Single-course Plus · AI SL');
 assert.equal(summary([entitlement('teacher_plus_ib')],[],now,'ib').label,'Teacher Plus · all four IB courses');
 assert.equal(summary([entitlement('teacher_plus_ib')],[],now,'igcse').paid,false);
 assert.equal(summary([{...entitlement('course_ib_aa_hl'),expires_at:'2026-01-02'}],[],now,'ib').paid,false);

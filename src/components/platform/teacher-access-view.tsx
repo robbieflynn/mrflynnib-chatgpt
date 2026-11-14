@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { PlusTrialOffer } from "@/components/platform/plus-trial";
+import type { TrialState } from "@/lib/platform-trials";
 import { Container } from "@/components/ui";
 import { CourseCheckoutButton } from "@/components/platform/course-checkout-button";
 import { CheckoutActivationNotice } from "@/components/platform/checkout-activation-notice";
@@ -6,10 +8,12 @@ import { SchoolAccessInvitation } from "@/components/platform/school-access-invi
 import { teacherPlusProduct } from "@/lib/platform-products";
 import type { PlatformEntitlement } from "@/lib/platform-access";
 
-export function TeacherAccessView({ active, query }: {
+export function TeacherAccessView({ active, query, trialState }: {
+  trialState?: TrialState;
   active?: PlatformEntitlement;
   query: Record<string, string | string[] | undefined>;
 }) {
+  const trialOnly = active?.external_provider === "plus_trial";
   const courseHref = "/learn/index.html?curriculum=ib&view=courses";
   const expiry = active?.expires_at ? new Date(active.expires_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : null;
   return <>
@@ -39,9 +43,11 @@ export function TeacherAccessView({ active, query }: {
           </article>
         </div>
         <aside className={`access-purchase-panel ${active ? "has-access" : ""}`} aria-label="Teacher Plus access">
-          {active ? <><span className="access-active-badge">✓ Access active</span><h3>Your courses are ready.</h3><p>{expiry ? `Access until ${expiry}.` : "All four IB courses are unlocked."}</p><Link className="button" href={courseHref}>Open all courses</Link><small>No additional purchase needed.</small></> : <><span className="access-offer-label">Teacher Plus</span><h3>All four courses included</h3><p>Full lessons, question banks and extra practice across all four IB courses.</p><CourseCheckoutButton compact productId={teacherPlusProduct.id} plans={teacherPlusProduct.plans} /><Link className="access-sample-link" href={courseHref}>Explore sample lessons →</Link></>}
+          {active && !trialOnly ? <><span className="access-active-badge">✓ Access active</span><h3>Your courses are ready.</h3><p>{expiry ? `Access until ${expiry}.` : "All four IB courses are unlocked."}</p><Link className="button" href={courseHref}>Open all courses</Link><small>No additional purchase needed.</small></> : <><span className="access-offer-label">Teacher Plus</span><h3>All four courses included</h3><p>Full lessons, question banks and extra practice across all four IB courses.</p><CourseCheckoutButton compact productId={teacherPlusProduct.id} plans={teacherPlusProduct.plans} /><Link className="access-sample-link" href={courseHref}>Explore sample lessons →</Link></>}
+          <PlusTrialOffer state={trialState} productId="teacher-plus" />
         </aside>
       </div>
+      {!active || trialOnly ? <p className="single-course-alternative"><strong>Only need one course?</strong> Get single-course access for $69 for one year or $79 for two years, while keeping your teacher account. <Link className="text-link" href="/account/access?single=1">View single-course access →</Link></p> : null}
       {query.checkout !== "success" ? <SchoolAccessInvitation curriculum="ib" audience="teacher" /> : null}
       <div className="access-help"><details><summary>What happens to my existing teacher tools?</summary><div className="access-help-content"><p>Standard includes classroom tools and limited question-bank access. Teacher Plus adds full video lessons, the full question bank and extra lesson practice across all four IB courses.</p></div></details></div>
     </Container></section>

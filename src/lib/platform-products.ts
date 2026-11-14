@@ -19,7 +19,8 @@ export type CoursePlan = {
 };
 
 const ibStudentPlans: CoursePlan[] = [
-  { id: "two-years", label: "24 months", priceUsd: 79, accessDays: 730, stripePriceEnv: "", badge: "Complete access" },
+  { id: "one-year", label: "1 year", priceUsd: 69, accessDays: 365, stripePriceEnv: "" },
+  { id: "two-years", label: "2 years", priceUsd: 79, accessDays: 730, stripePriceEnv: "", badge: "Best value" },
 ];
 
 const igcsePlans: CoursePlan[] = [
@@ -47,7 +48,10 @@ export const teacherPlusProduct = {
   productCode: "teacher_plus_ib",
   shortTitle: "Teacher Plus",
   title: "All four IB Mathematics courses",
-  plans: [{ id: "one-year" as const, label: "12 months", priceUsd: 99, accessDays: 365, stripePriceEnv: "STRIPE_PRICE_TEACHER_PLUS_IB_ONE_YEAR" }],
+  plans: [
+    { id: "one-year", label: "1 year", priceUsd: 99, accessDays: 365, stripePriceEnv: "STRIPE_PRICE_TEACHER_PLUS_IB_ONE_YEAR" },
+    { id: "two-years", label: "2 years", priceUsd: 150, accessDays: 730, stripePriceEnv: "STRIPE_PRICE_TEACHER_PLUS_IB_TWO_YEARS", badge: "Best value" },
+  ] satisfies CoursePlan[],
 };
 
 export const studentAllCoursesProduct = {

@@ -36,9 +36,6 @@ async function createCheckout(request: Request) {
   if (!session.user || !session.curriculum) {
     return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   }
-  if (product?.curriculum === "ib" && !teacherBundleRequested && ["teacher", "admin"].includes(session.profile?.role || "")) {
-    return NextResponse.json({ url: "/teacher/access" });
-  }
   const plan = getPaidProductPlan(product, typeof body.planId === "string" ? body.planId : "");
   if (!product) {
     return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
@@ -47,9 +44,14 @@ async function createCheckout(request: Request) {
     return NextResponse.json({ error: "A teacher account is required." }, { status: 403 });
   }
   if (!plan) return NextResponse.json({ error: "Invalid access option" }, { status: 400 });
-  const alreadyOwned = teacherBundleRequested
-    ? session.entitlements.some((item) => item.product_code === teacherPlusProduct.productCode)
-    : session.ownedCourses.some((course) => course.id === product.id);
+  const isTeacher = ["teacher", "admin"].includes(session.profile?.role || "");
+  const alreadyOwned = session.profile?.role === "admin" || session.entitlements.some((item) => {
+    if (item.external_provider === "plus_trial") return false;
+    if (teacherBundleRequested) return item.product_code === teacherPlusProduct.productCode;
+    return item.product_code === product.productCode
+      || (isTeacher && item.product_code === `teacher_plus_${product.curriculum}`)
+      || (product.curriculum === "ib" && item.product_code === "student_all_courses_ib");
+  });
   if (alreadyOwned) {
     if (teacherBundleRequested) return NextResponse.json({ url: "/teacher/access" });
     return NextResponse.json({ url: product.curriculum === "igcse" ? "/igcse/learn" : "/learn" });
@@ -78,11 +80,11 @@ async function createCheckout(request: Request) {
   const accessPath = teacherBundleRequested ? "/teacher/access" : product.curriculum === "igcse" ? "/igcse/account/access" : "/account/access";
   const successUrl = new URL(accessPath, requestOrigin);
   successUrl.searchParams.set("checkout", "success");
-  if (!teacherBundleRequested) successUrl.searchParams.set("course", product.id);
+  if (!teacherBundleRequested) { successUrl.searchParams.set("course", product.id); successUrl.searchParams.set("single", "1"); }
   successUrl.searchParams.set("session_id", "{CHECKOUT_SESSION_ID}");
   const cancelUrl = new URL(accessPath, requestOrigin);
   cancelUrl.searchParams.set("checkout", "cancelled");
-  if (!teacherBundleRequested) cancelUrl.searchParams.set("course", product.id);
+  if (!teacherBundleRequested) { cancelUrl.searchParams.set("course", product.id); cancelUrl.searchParams.set("single", "1"); }
 
   const params = new URLSearchParams({
     mode: "payment",

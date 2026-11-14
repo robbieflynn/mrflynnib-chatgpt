@@ -1400,7 +1400,7 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
 function renderAccountHeader(account) {
   const teacher = account.user.role === "teacher" || account.user.role === "admin";
   const igcse = account.curriculum === "igcse";
-  const plus = account.user.role === "admin" || Boolean(teacher && !igcse ? account.access?.hasTeacherPlus : account.access?.hasCourseAccess);
+  const plus = account.user.role === "admin" || Boolean(account.access?.hasCourseAccess);
   const known = account.user.role === "admin" || Boolean(account.access);
   const home = igcse ? teacher ? "/igcse/teacher" : "/igcse/account" : teacher ? "/teacher" : "/account";
   account.links.account = home;

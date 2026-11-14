@@ -32,7 +32,7 @@ const grant=code=>({product_code:code,status:'active',starts_at:'2026-01-01',exp
 for(const [role,entitlements,seats,curriculum,expected] of [
  ['admin',[],[],'ib','plus'],['student',[],[],'ib','standard'],['teacher',[],[],'ib','standard'],
  ['student',[grant('course_ib_aa_hl')],[],'ib','plus'],['teacher',[grant('teacher_plus_ib')],[],'ib','plus'],
- ['teacher',[grant('course_ib_aa_hl')],[],'ib','standard'],
+ ['teacher',[grant('course_ib_aa_hl')],[],'ib','plus'],
  ['student',[{...grant('course_ib_aa_hl'),expires_at:'2026-01-02'}],[],'ib','standard'],
  ['student',[{...grant('course_ib_aa_hl'),starts_at:'2027-01-01'}],[],'ib','standard'],
  ['teacher',[],[{revoked_at:null,organization_licenses:{product_code:'teacher_plus_ib',status:'pilot',starts_at:'2026-01-01',ends_at:null}}],'ib','plus'],

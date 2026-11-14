@@ -23,7 +23,7 @@ export async function getPlatformAccess(requestedCurriculum?: PlatformCurriculum
     session.supabase.rpc("claim_school_plus_access"),
   ]);
   const [personalResult, schoolResult] = await Promise.all([
-    session.supabase.from("platform_entitlements").select("product_code,status,starts_at,expires_at").eq("user_id", session.user.id),
+    session.supabase.from("platform_entitlements").select("product_code,status,starts_at,expires_at,external_provider").eq("user_id", session.user.id),
     session.supabase.from("organization_license_seats").select("revoked_at,organization_licenses(product_code,status,starts_at,ends_at)").eq("user_id", session.user.id).is("revoked_at", null),
   ]);
   const personal = (personalResult.data || []) as PlatformEntitlement[];
