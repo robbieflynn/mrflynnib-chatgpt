@@ -3131,3 +3131,19 @@ a.teacher-list-row:hover { background: var(--sky); }
   .school-access-table th, .school-access-table td { padding: .7rem .65rem; }
   .school-access-table th:last-child, .school-access-table td:last-child { display: none; }
 }
+
+/* Compact, explicit student course checkout. */
+.access-offer-layout.is-choosing-course { grid-template-columns: 1fr; }
+.access-course-choice { max-width: 40rem; }
+.access-course-choice h2 { font-size: 1.25rem; margin: 0 0 .4rem; }
+.access-course-choice p { font-size: .9rem; color: var(--muted); margin: 0; }
+.student-dashboard-hero.access-redesign-hero .dashboard-hero-copy h1 { font-size: clamp(1.4rem, 2.5vw, 1.8rem); }
+.access-redesign .access-offer-copy h2 { font-size: clamp(1.25rem, 2vw, 1.55rem); }
+.access-redesign .access-purchase-panel { padding: 1.15rem; box-shadow: none; border-radius: .75rem; }
+.access-redesign .access-purchase-panel .course-single-plan strong { font-size: 2rem; }
+.checkout-course-confirmation { border-top: 1px solid #d4deed; padding-top: .85rem; }
+.checkout-course-confirmation p { margin: 0 0 .65rem; font-size: .85rem; line-height: 1.5; }
+.checkout-course-confirmation p strong, .checkout-course-confirmation p span { display: block; }
+.checkout-course-confirmation p span { color: var(--muted); font-size: .8rem; }
+.checkout-course-confirmation label { display: flex; align-items: flex-start; gap: .5rem; font-size: .8rem; line-height: 1.5; cursor: pointer; }
+.checkout-course-confirmation input[type="checkbox"] { width: 1rem; height: 1rem; margin: .15rem 0 0; flex: 0 0 1rem; accent-color: #237fca; }

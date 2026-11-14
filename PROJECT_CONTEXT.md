@@ -824,3 +824,8 @@ Rob requested a Change course action in the student directory. Administrators ca
 ## Course preference and paid-access mismatch, 14 November 2026
 
 An IB student's selected course can differ from the course covered by their paid access. Administration must display both explicitly. When there is exactly one active or scheduled unexpired IB Plus course, use that course as the transfer source, even if the preference already matches the destination. Preserve exact entitlement identity, payment references and expiry. Continue to reject stale forms and protect allocated school seats. Never treat an unchanged preference as proof that a paid-access transfer has completed.
+
+
+## Explicit course confirmation at checkout, 14 November 2026
+
+Rob requested explicit course choice before an IB student buys Plus, with a clear course-and-level confirmation next to checkout. Do not silently default new customers to AA HL. Preserve course-specific incoming links. Keep checkout compact, with modest headings, normal-sized copy and minimal panels; avoid oversized typography or large cards. Teacher all-course purchases remain separate. A non-production-only example checkout preview disables payment creation for design review.

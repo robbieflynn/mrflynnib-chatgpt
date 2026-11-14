@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { getCourseProduct } from "@/lib/platform-products";
 
 type CheckoutPlan = { id: string; label: string; priceUsd: number; badge?: string };
 
-export function CourseCheckoutButton({ courseId, productId, plans, compact = false }: { courseId?: string; productId?: string; plans: CheckoutPlan[]; compact?: boolean }) {
+export function CourseCheckoutButton({ courseId, productId, plans, compact = false, previewOnly = false }: { courseId?: string; productId?: string; plans: CheckoutPlan[]; compact?: boolean; previewOnly?: boolean }) {
+  const course = getCourseProduct(courseId);
+  const confirmCourse = !productId && course?.curriculum === "ib" ? course : null;
+  const [confirmed, setConfirmed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [selectedPlan, setSelectedPlan] = useState(plans.find((plan) => plan.badge)?.id || plans[0]?.id || "");
   async function startCheckout() {
+    if (previewOnly || (confirmCourse && !confirmed)) return;
     setBusy(true);
     setError("");
     try {
@@ -41,7 +46,11 @@ export function CourseCheckoutButton({ courseId, productId, plans, compact = fal
       <span><strong>${option.priceUsd}</strong><small>{option.label}</small></span>
       {option.badge ? <b>{option.badge}</b> : null}
     </label>)}</fieldset>}
-    <button className="button course-checkout-button" type="button" disabled={busy || !plan} onClick={startCheckout}>{busy ? "Opening secure checkout…" : compact ? productId === "teacher-plus" ? "Get Teacher Plus" : `Get ${courseId?.toUpperCase().replace("-", " ")} Plus` : `Continue to secure checkout for $${plan?.priceUsd || ""}`}</button>
+    {confirmCourse ? <div className="checkout-course-confirmation">
+      <p>You’re purchasing <strong>{confirmCourse.shortTitle} Plus</strong><span>{confirmCourse.title.replace(/ HL$/, " · Higher Level").replace(/ SL$/, " · Standard Level")}</span></p>
+      <label><input type="checkbox" checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} />This is the course I study</label>
+    </div> : null}
+    <button className="button course-checkout-button" type="button" disabled={busy || !plan || Boolean(confirmCourse && !confirmed)} onClick={startCheckout}>{busy ? "Opening secure checkout…" : compact ? productId === "teacher-plus" ? "Get Teacher Plus" : `Get ${courseId?.toUpperCase().replace("-", " ")} Plus` : `Continue to secure checkout for $${plan?.priceUsd || ""}`}</button>
     <div className="checkout-reassurance"><span>One payment</span><span>No automatic renewal</span></div>
     {error ? <p className="form-message form-error" role="alert">{error}</p> : null}
   </div>;
