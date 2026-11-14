@@ -251,6 +251,14 @@ p { margin: 0; }
 
 .page-hero { padding: 5rem 0 3.5rem; }
 .page-hero h1 { font-size: clamp(2.8rem, 6vw, 5.3rem); max-width: 15ch; }
+.page-hero-compact { padding: 2rem 0 1.25rem; }
+.page-hero-compact > .container { width: min(calc(100% - 2rem), 760px); gap: 1rem; }
+.page-hero-compact .stack { gap: .65rem; }
+.page-hero-compact .eyebrow { margin: 0; font-size: .7rem; }
+.page-hero-compact h1 { max-width: none; font-size: clamp(1.65rem, 3vw, 2rem); line-height: 1.25; letter-spacing: -.025em; }
+.page-hero-compact .lede { max-width: 65ch; font-size: .95rem; line-height: 1.6; }
+.page-hero-compact + .section-tight { padding-top: .5rem; }
+.teacher-access-gate .button { width: auto; align-self: start; font-size: .85rem; min-height: 44px; padding: .65rem 1rem; box-shadow: none; }
 .breadcrumbs { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .85rem; color: var(--muted); }
 .breadcrumbs > :not(:first-child)::before { content: "/"; margin-right: .5rem; color: currentColor; opacity: .65; }
 .breadcrumbs a:hover { color: var(--teal-dark); }
@@ -336,7 +344,7 @@ textarea { min-height: 130px; resize: vertical; }
 .account-text-button { width: fit-content; padding: 0; border: 0; background: transparent; color: var(--teal-dark); font-weight: 800; cursor: pointer; }
 .account-text-button:hover { text-decoration: underline; }
 .account-benefits { padding: clamp(1.2rem, 2vw, 2rem) 0; }
-.account-benefits h2 { font-size: clamp(2rem, 4vw, 3.4rem); }
+.account-benefits h2 { max-width: none; font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.3; }
 .account-benefits ul { display: grid; gap: .85rem; padding-left: 1.25rem; color: var(--ink-2); }
 .account-entry-hero { position: relative; overflow: hidden; padding: clamp(2.7rem, 6vw, 4.5rem) 0 clamp(2.2rem, 4vw, 3.2rem); border-bottom: 1px solid rgba(35,127,202,.13); background: radial-gradient(circle at 84% 16%, rgba(35,127,202,.15), transparent 28%), linear-gradient(135deg,#edf7ff,#fbfaf6 72%); }
 .account-entry-hero::after { content: "∑"; position: absolute; right: 5vw; bottom: -4.8rem; color: rgba(17,74,123,.04); font-family: Georgia,serif; font-size: clamp(9rem,20vw,16rem); pointer-events: none; }
@@ -366,7 +374,7 @@ textarea { min-height: 130px; resize: vertical; }
 .account-plan-switch a.is-plus small { color: #6248b5; }
 .account-plus-benefits { padding: clamp(1.35rem,3vw,2.25rem); border: 1px solid #d9d1f2; border-radius: 1.25rem; background: linear-gradient(145deg,#f8f6ff,#fff); }
 .account-plus-benefits h2, .account-plus-benefits p { margin: 0; }
-.account-plus-benefits h2 { font-size: clamp(2rem,4vw,3rem); }
+.account-plus-benefits h2 { max-width: none; font-size: clamp(1.25rem, 2vw, 1.5rem); line-height: 1.3; }
 .account-plus-mark { width: 3.4rem; height: 3.4rem; display: grid; place-items: center; border-radius: 1rem; background: linear-gradient(145deg,#8064dc,#523ba7); color: white; box-shadow: 0 12px 28px rgba(82,59,167,.2); font-size: 2rem; font-weight: 900; }
 .account-plus-form-note { margin: 0; padding: .8rem .9rem; display: grid; gap: .15rem; border-radius: .75rem; background: #f3f0ff; color: var(--navy); }
 .account-plus-form-note span { color: var(--muted); font-size: .76rem; line-height: 1.45; }

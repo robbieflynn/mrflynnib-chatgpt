@@ -42,9 +42,9 @@ export function Breadcrumbs({ items, homeHref = "/", homeLabel = "Home" }: { ite
   );
 }
 
-export function PageHero({ eyebrow, title, intro, breadcrumbLabel = eyebrow, homeHref = "/", homeLabel = "Home" }: { eyebrow: string; title: string; intro?: string; breadcrumbLabel?: string; homeHref?: string; homeLabel?: string }) {
+export function PageHero({ eyebrow, title, intro, breadcrumbLabel = eyebrow, homeHref = "/", homeLabel = "Home", compact = false }: { eyebrow: string; title: string; intro?: string; breadcrumbLabel?: string; homeHref?: string; homeLabel?: string; compact?: boolean }) {
   return (
-    <section className="page-hero">
+    <section className={`page-hero${compact ? " page-hero-compact" : ""}`}>
       <Container className="stack-lg">
         <Breadcrumbs homeHref={homeHref} homeLabel={homeLabel} items={[{ label: breadcrumbLabel }]} />
         <div className="stack">

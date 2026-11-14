@@ -64,7 +64,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (!hasSupabaseBrowserConfig()) {
     return (
       <>
-        <PageHero eyebrow={isTeacherJourney ? "Teacher account" : "Student account"} title="Accounts are being prepared" intro="The account service still needs its secure connection before you can sign in." homeHref={isIgcseJourney ? "/igcse" : "/"} homeLabel={isIgcseJourney ? "IGCSE home" : "Home"} />
+        <PageHero compact eyebrow={isTeacherJourney ? "Teacher account" : "Student account"} title="Accounts are being prepared" intro="The account service still needs its secure connection before you can sign in." homeHref={isIgcseJourney ? "/igcse" : "/"} homeLabel={isIgcseJourney ? "IGCSE home" : "Home"} />
         <section className="section-tight"><Container className="narrow"><div className="account-card"><p>No student information is being collected yet.</p></div></Container></section>
       </>
     );
@@ -83,7 +83,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         ? isSignUpJourney ? "Create your account for Plus" : "Sign in to continue to Plus"
         : isSignUpJourney ? "Create your account" : "Welcome back";
     const intro = isTeacherJourney
-      ? "Sign in to manage classes and assignments, or create a teacher account and begin straight away."
+      ? "Sign in to manage classes and assignments, or create an account to request teacher access."
       : isTeachableJourney
         ? "Sign in or create an account with the same email address you used on Teachable. After you confirm it, any matching active course is added automatically without another payment."
       : isPlusJourney
@@ -124,7 +124,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
     return (
       <>
-        <PageHero
+        <PageHero compact
           eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"}
           title="Create your teacher account"
           intro="Use this same account for the teacher dashboard, classes, assignments and Test Maker."
@@ -151,7 +151,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (teacherRequested) {
     const studentDashboardHref = isIgcse ? "/igcse/account" : "/account";
     return <>
-      <PageHero eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"} title="Your teacher request has been sent" intro="Mr Flynn will review your teacher account request. You will receive access after it is approved." />
+      <PageHero compact eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"} title="Teacher request sent" intro="Your request is awaiting review by Mr Flynn IB. Teacher tools will be available once it is approved." />
       <section className="section-tight"><Container className="narrow"><div className="account-card teacher-access-gate stack-lg"><h2>Your existing work is safe</h2><p>You can continue using your student learning area while the request is waiting.</p><Link className="button button-secondary" href={studentDashboardHref}>Return to learning</Link></div></Container></section>
     </>;
   }

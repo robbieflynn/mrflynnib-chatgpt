@@ -356,8 +356,11 @@ function configurePreviewMode() {
 function configureCurriculumExperience(curriculum) {
   const isIgcse = curriculum === "igcse";
   document.body.classList.toggle("igcse-learning", isIgcse);
-  document.title = isIgcse ? "IGCSE Mathematics course | Mr Flynn" : "My learning | Mr Flynn IB";
-  document.getElementById("brandLearningHomeLink").setAttribute("aria-label", isIgcse ? "Back to IGCSE Mathematics" : "Back to My learning");
+  document.title = isIgcse ? "IGCSE Mathematics course | Mr Flynn IB" : "Courses | Mr Flynn IB";
+  document.getElementById("brandLearningHomeLink").setAttribute("aria-label", ["teacher", "admin"].includes(platformAccount?.user.role) ? "Back to Teacher dashboard" : isIgcse ? "Back to IGCSE Mathematics" : "Back to My learning");
+  document.getElementById("siteCoursesLink").href = isIgcse ? "/learn/index.html?curriculum=igcse&course=igcse" : "/learn/index.html?curriculum=ib&view=courses";
+  document.getElementById("siteQuestionBankLink").href = isIgcse ? "/igcse/question-bank" : "/question-bank";
+  document.getElementById("siteSchoolsLink").href = isIgcse ? "/igcse/schools" : "/schools";
   signOutDestination = isIgcse ? "/igcse/account" : "/account";
   const hasPastPapers = enrolledCourseDefinitions.some((definition) => pastPaperLibrary.courses?.[definition.code]);
   document.querySelectorAll('[data-view="pastPapers"]').forEach((element) => { element.hidden = !hasPastPapers; });
@@ -1334,7 +1337,6 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("brandLearningHomeLink").href = homeHref;
   document.getElementById("topbarLearningHomeLink").href = homeHref;
   document.getElementById("topbarLearningHomeLink").textContent = isIgcse ? "← IGCSE home" : "← Mr Flynn IB";
-  document.querySelector(".topbar-context > span:last-of-type").textContent = "Course preview";
   document.getElementById("accessLink").textContent = isIgcse ? "Create account" : requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account?mode=sign-up" : requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
   document.getElementById("accessLink").classList.toggle("is-plus", !isIgcse);
@@ -1368,6 +1370,14 @@ function renderAccountHeader(account) {
   const known = account.user.role === "admin" || Boolean(account.access);
   const home = igcse ? teacher ? "/igcse/teacher" : "/igcse/account" : teacher ? "/teacher" : "/account";
   account.links.account = home;
+  const dashboardLabel = teacher ? "Teacher dashboard" : "My learning";
+  document.getElementById("primaryLearningHomeLink").querySelector("strong").textContent = dashboardLabel;
+  document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = teacher ? "Classes and teaching tools" : "Dashboard and assignments";
+  document.getElementById("courseBackButton").textContent = `← ${dashboardLabel}`;
+  document.getElementById("sidebar").setAttribute("aria-label", teacher ? "Teacher course navigation" : "Student navigation");
+  const classesLink = document.getElementById("siteClassesLink");
+  classesLink.hidden = !teacher;
+  classesLink.href = igcse ? "/igcse/teacher/classes" : "/teacher/classes";
   document.getElementById("accountName").textContent = account.user.displayName.trim().split(/\s+/)[0] || "Account";
   document.getElementById("accountRole").hidden = true;
   document.getElementById("accountButton").setAttribute("aria-label", `Open account menu for ${account.user.displayName}`);
@@ -1377,8 +1387,8 @@ function renderAccountHeader(account) {
   accessLink.classList.toggle("is-plus", plus);
   accessLink.href = plus || !known ? igcse ? "/igcse/account/settings" : "/account/settings" : account.links.access;
   document.getElementById("manageAccessLink").textContent = plus ? "Manage course access" : "Upgrade to Plus";
-  document.getElementById("topbarLearningHomeLink").textContent = teacher ? "← Teacher home" : "← My learning";
-  document.getElementById("learningHomeLink").textContent = teacher ? "Teacher home" : "My learning";
+  document.getElementById("topbarLearningHomeLink").textContent = teacher ? "← Teacher dashboard" : "← My learning";
+  document.getElementById("learningHomeLink").textContent = teacher ? "Teacher dashboard" : "My learning";
 }
 
 async function bootstrapAccount() {
@@ -1419,7 +1429,8 @@ async function bootstrapAccount() {
     currentCourse = courses[currentCourseId];
     if (!currentCourse) throw new Error("Your course could not be selected.");
     const savedLesson = platformAccount.state?.last_lesson_id || state.lastLesson;
-    currentLessonId = currentCourse.lessons.some((lesson) => lesson.id === savedLesson) ? savedLesson : currentCourse.lessons[0]?.id;
+    const availableLessons = hasCompleteCourseAccess(currentCourse) ? currentCourse.lessons : salesPreviewLessons(currentCourse);
+    currentLessonId = availableLessons.find((lesson) => lesson.id === savedLesson)?.id || availableLessons[0]?.id;
     currentTopic = getCurrentLesson()?.topic || 1;
     currentPastPaperCourse = currentCourse.code;
     const serverCompleted = (platformAccount.progress || []).filter((row) => row.completed).map((row) => row.lesson_id);
