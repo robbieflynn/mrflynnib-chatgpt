@@ -1,7 +1,6 @@
 import { AccessPeriodField } from "@/components/platform/access-period-field";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AccountMenu } from "@/components/account-menu";
 import { AccessCodeCreator } from "@/components/platform/access-code-creator";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { requireSignedIn } from "@/lib/account-access";
@@ -46,7 +45,7 @@ export default async function PlatformAccessAdminPage({ searchParams }: { search
   const { data: viewerProfile } = await supabase.from("profiles").select("role,display_name").eq("user_id", user.id).maybeSingle();
   if (viewerProfile?.role !== "admin") {
     return <>
-      <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row dashboard-account-row-with-breadcrumbs"><Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Platform access" }]} /><AccountMenu signOutHref="/account?next=/teacher/platform-access" /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">Administrator access</span><h1>Switch to the administrator account</h1><p>This page is available only to the main Mr Flynn IB administrator.</p></div></Container></section>
+      <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row dashboard-account-row-with-breadcrumbs"><Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Platform access" }]} /></div><div className="dashboard-hero-copy"><span className="dashboard-role-label">Administrator access</span><h1>Switch to the administrator account</h1><p>This page is available only to the main Mr Flynn IB administrator.</p></div></Container></section>
       <section className="section-tight"><Container className="narrow"><div className="account-card stack-lg"><div><p className="eyebrow">Current account</p><h2>{viewerProfile?.display_name || "Signed-in account"}</h2><p className="muted">{user.email || "No email address"} · {viewerProfile?.role || "student"}</p></div><p>Sign out using the account menu above, then sign in on this preview with <strong>mrflynnib@gmail.com</strong>. Your main account is already approved as an administrator.</p></div></Container></section>
     </>;
   }
@@ -78,7 +77,7 @@ export default async function PlatformAccessAdminPage({ searchParams }: { search
   const message = messageFor(query);
 
   return <>
-    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row dashboard-account-row-with-breadcrumbs"><Breadcrumbs items={[{ label: "Teacher dashboard", href: "/teacher" }, { label: "Platform access" }]} /><AccountMenu signOutHref="/account?next=/teacher/platform-access" /></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">Administrator</span><h1>Platform access</h1><p>Manage paid access, complimentary grants and secure redemption codes without editing the database directly.</p></div><div className="dashboard-hero-stats"><div><strong>{activeCount}</strong><span>active grants</span></div><div><strong>{purchases.filter((item) => item.status === "paid").length}</strong><span>live purchases</span></div><div><strong>{activeCodes}</strong><span>active codes</span></div></div></div></Container></section>
+    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row dashboard-account-row-with-breadcrumbs"><Breadcrumbs items={[{ label: "Teacher dashboard", href: "/teacher" }, { label: "Platform access" }]} /></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">Administrator</span><h1>Platform access</h1><p>Manage paid access, complimentary grants and secure redemption codes without editing the database directly.</p></div><div className="dashboard-hero-stats"><div><strong>{activeCount}</strong><span>active grants</span></div><div><strong>{purchases.filter((item) => item.status === "paid").length}</strong><span>live purchases</span></div><div><strong>{activeCodes}</strong><span>active codes</span></div></div></div></Container></section>
     <section className="section-tight teacher-dashboard platform-admin-page"><Container className="stack-xl">
       {message ? <p className={`form-message ${message.kind === "error" ? "form-error" : "form-success"}`}>{message.text}</p> : null}
       {codeError ? <p className="form-message form-error">The access-code database update has not been applied yet. Codes will appear here after the launch migration is installed.</p> : null}
@@ -95,4 +94,3 @@ export default async function PlatformAccessAdminPage({ searchParams }: { search
     </Container></section>
   </>;
 }
-

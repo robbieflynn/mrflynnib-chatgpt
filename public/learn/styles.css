@@ -244,3 +244,21 @@ body.practice-expanded::before { content: ""; position: fixed; z-index: 119; ins
 .course-card.is-sample .course-card-art { position: relative; }
 .course-card.is-sample .course-card-art::after { content: "Sample lessons"; position: absolute; right: 12px; top: 12px; padding: 6px 9px; border-radius: 999px; background: rgba(6,23,45,.9); color: white; font-size: 8px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
 .video-loading .primary-button { margin-top: 10px; text-decoration: none; pointer-events: auto; }
+
+
+/* Match the main site's compact account identity and visible access state. */
+.topbar-account { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.topbar-account .account-button { grid-template-columns: minmax(0, auto) 14px; min-height: 40px; padding: 7px 10px; border: 1px solid #d7e1eb; background: #fff; color: #132b48; }
+.topbar-account .account-button .avatar { display: none; }
+.topbar-account .account-button > span:nth-child(2) { display: block; min-width: 0; }
+.topbar-account .account-button strong { max-width: 110px; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar-account .account-button small[hidden] { display: none; }
+.topbar-account .access-pill { margin: 0; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; padding: 7px 11px; border-radius: 9px; background: #1769aa; color: #fff; font-size: 11px; }
+.topbar-account .access-pill.is-plus { color: #174e7b; background: #e8f3fc; border: 1px solid #bfd9ed; }
+.topbar-account .account-menu { right: 0; top: calc(100% + 8px); background: #fff; color: #132b48; width: min(260px, calc(100vw - 32px)); }
+.topbar-account :is(a,button):focus-visible { outline: 3px solid #2384cc; outline-offset: 3px; }
+@media (max-width: 680px) {
+ .topbar { height: auto; min-height: 64px; padding: 10px 16px; flex-wrap: wrap; gap: 8px; }
+ .topbar-account { margin-left: auto; }
+ .topbar-account .account-button strong { max-width: 85px; }
+}

@@ -107,3 +107,16 @@ export function platformAccessSummary(
     hasTeacherPlus: active.some((item) => item.product_code === `teacher_plus_${curriculum || "ib"}`),
   };
 }
+
+
+// Presentation only: this does not grant access or alter checkout eligibility.
+export function accountTier(
+  role: "student" | "teacher" | "admin",
+  access: { hasCourseAccess?: boolean; hasTeacherPlus?: boolean } | null | undefined,
+  curriculum: "ib" | "igcse" = "ib",
+): "plus" | "standard" | "unknown" {
+  if (role === "admin") return "plus";
+  if (!access) return "unknown";
+  return (role === "teacher" && curriculum === "ib" ? access.hasTeacherPlus : access.hasCourseAccess)
+    ? "plus" : "standard";
+}

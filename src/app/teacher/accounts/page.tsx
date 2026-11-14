@@ -1,7 +1,6 @@
 import type { StudentAccessRecord } from "@/lib/student-accounts";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AccountMenu } from "@/components/account-menu";
 import { TeacherAccountDirectory } from "@/components/teacher-account-directory";
 import { Breadcrumbs, Container } from "@/components/ui";
 import { requireAdmin } from "@/lib/account-access";
@@ -54,7 +53,7 @@ export default async function TeacherAccountsPage({ searchParams }: { searchPara
       <Container className="dashboard-hero-shell">
         <div className="dashboard-account-row dashboard-account-row-with-breadcrumbs">
           <Breadcrumbs items={[{ label: "Teacher dashboard", href: "/teacher" }, { label: "Teacher accounts" }]} />
-          <AccountMenu signOutHref="/account?next=/teacher" />
+
         </div>
         <div className="dashboard-hero-layout">
           <div className="dashboard-hero-copy"><span className="dashboard-role-label">Administrator</span><h1>Teacher accounts</h1><p>See every teacher registration, confirmation, approval and recent account activity in one place.</p></div>

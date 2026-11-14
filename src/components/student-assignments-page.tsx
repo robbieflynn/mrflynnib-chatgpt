@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { AccountMenu } from "@/components/account-menu";
 import { DashboardIcon } from "@/components/dashboard-icon";
 import { Container } from "@/components/ui";
 import { requireSignedIn } from "@/lib/account-access";
@@ -33,7 +32,6 @@ export async function StudentAssignmentsPage({ searchParams, igcseRoute = false 
   const assignmentsPath = isIgcse ? "/igcse/assignments" : "/assignments";
   const curriculum = isIgcse ? "igcse" : "ib";
   const learningHome = isIgcse ? "/igcse/account" : "/account";
-  const signOutHref = isIgcse ? "/igcse/account" : "/account";
   const { supabase, user } = await requireSignedIn(assignmentsPath, curriculum);
   const { data: memberships, error: membershipError } = await supabase
     .from("class_memberships")
@@ -98,7 +96,7 @@ export async function StudentAssignmentsPage({ searchParams, igcseRoute = false 
   return <>
     <section className={`dashboard-hero student-dashboard-hero student-assignments-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
       <Container className="dashboard-hero-shell">
-        <div className="dashboard-account-row"><Link className="dashboard-back-link" href={learningHome}>← Learning home</Link><AccountMenu signOutHref={signOutHref} /></div>
+        <div className="dashboard-account-row"><Link className="dashboard-back-link" href={learningHome}>← Learning home</Link></div>
         <div className="dashboard-hero-copy"><span className="dashboard-role-label">Assignments</span><h1>Your assignments</h1><p>Continue current work or return to anything you have already submitted.</p></div>
       </Container>
     </section>

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { AccountMenu } from "@/components/account-menu";
 import { Container } from "@/components/ui";
 import { CourseCheckoutButton } from "@/components/platform/course-checkout-button";
 import { CheckoutActivationNotice } from "@/components/platform/checkout-activation-notice";
@@ -15,7 +14,7 @@ export function TeacherAccessView({ active, query }: {
   return <>
     <section className="dashboard-hero access-page-hero access-redesign-hero">
       <Container className="dashboard-hero-shell">
-        <div className="dashboard-account-row"><Link className="dashboard-back-link" href="/teacher">← Teacher dashboard</Link><AccountMenu signOutHref="/account?next=/teacher" /></div>
+        <div className="dashboard-account-row"><Link className="dashboard-back-link" href="/teacher">← Teacher dashboard</Link></div>
         <div className="dashboard-hero-copy"><span className="dashboard-role-label">Teacher Plus</span><h1>{active ? "Your teaching resources are ready" : "Complete courses for your teaching"}</h1><p>Every video lesson and its extra practice across all four IB Mathematics courses.</p></div>
       </Container>
     </section>
