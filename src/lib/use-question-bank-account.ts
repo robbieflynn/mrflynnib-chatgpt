@@ -396,12 +396,12 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
       if (user && clientRef.current) {
         let pageStart = 0;
         while (true) {
-          let progressQuery = clientRef.current
+          const progressQuery = clientRef.current
             .from(assignmentId ? "assignment_question_progress" : "question_progress")
             .select("question_id")
             .eq(assignmentId ? "assignment_id" : "bank", assignmentId || bank)
+            .eq(assignmentId ? "student_id" : "user_id", viewedStudentId || user.id)
             .eq("completed", true);
-          if (assignmentId && viewedStudentId) progressQuery = progressQuery.eq("student_id", viewedStudentId);
           const { data, error } = await progressQuery.range(pageStart, pageStart + 999);
           if (cancelled) return;
           if (error || !data) break;
@@ -589,7 +589,9 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
         const localWhiteboards = readPendingRecords<PendingWhiteboardSave>(pendingWhiteboardStorageKey);
         const localWhiteboardKey = whiteboardSaveKey({ bank, questionId, userId: userRef.current.id });
         const localWhiteboard = localWhiteboards[localWhiteboardKey];
-        if (localWhiteboard) {
+        // Review must use the student's submitted snapshot (or live work), never
+        // the reviewing teacher's pending personal document for this question.
+        if (localWhiteboard && !viewedStudentId && !assignmentSubmitted) {
           send({ type: "mrflynnib-whiteboard-data", questionId, document: localWhiteboard.document, updatedAt: null, ok: true, pending: true });
           void deliverPendingWhiteboard(localWhiteboardKey, localWhiteboard);
           return;
@@ -612,12 +614,14 @@ export function useQuestionBankAccount(frameRef: RefObject<HTMLIFrameElement | n
             return;
           }
         }
-        let whiteboardQuery = clientRef.current
+        // RLS also permits teachers to read assigned students' work. Always
+        // select an owner explicitly; visibility is not personal ownership.
+        const whiteboardQuery = clientRef.current
           .from("whiteboard_documents")
           .select("document,updated_at")
+          .eq("user_id", viewedStudentId || userRef.current.id)
           .eq("bank", bank)
           .eq("question_id", questionId);
-        if (viewedStudentId) whiteboardQuery = whiteboardQuery.eq("user_id", viewedStudentId);
         const { data, error } = await whiteboardQuery.maybeSingle();
         send({
           type: "mrflynnib-whiteboard-data",
