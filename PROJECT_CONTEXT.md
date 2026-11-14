@@ -807,3 +807,7 @@ Rob requested removing the redundant dashboard buttons from the course top bar a
 Course practice must have enough horizontal space for questions and working, with a viewport-sized expanded practice view that scrolls through every question. Whiteboard Expand must expand the containing practice frame beyond the lesson column. Collapsing a whiteboard should return to the previous inline or expanded practice mode, without reloading the frame or losing working, and Close expanded view must also collapse an expanded whiteboard. Preserve assignment/public-bank behaviour, approved practice selections, stored answers and drawing persistence.
 
 On phone-sized screens, course-practice expansion places the question above a full-width drawing area and keeps the main drawing controls visible. Desktop retains Side/Below layout controls. These responsive rules apply only to lesson practice, leaving the separate question banks and assignments unchanged.
+
+## Question-bank chooser simplification, 14 November 2026
+
+Rob requested a quieter question-bank selection page: retain the Home / Question bank breadcrumbs, one compact “Choose your question bank” heading in the brand blue palette and the four existing course choices. Remove the repeated Question bank eyebrow, course-selection explanation, saved-work sentence and duplicate in-page My learning/sign-in controls. Account access remains in the shared navigation. Preserve all course destinations, verified counts and bank functionality.

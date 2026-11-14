@@ -1,35 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Breadcrumbs, Container, Eyebrow } from "@/components/ui";
+import { Breadcrumbs, Container } from "@/components/ui";
 import { questionBankCourses } from "@/lib/question-bank-courses";
-import { getQuestionBankDashboardLink } from "@/lib/question-bank-dashboard-link";
 
 export const metadata: Metadata = {
   title: "IB Mathematics question bank",
   description: "Choose your IB Mathematics course and practise with the Mr Flynn IB question bank.",
 };
 
-export default async function QuestionBankPage() {
-  const dashboardLink = await getQuestionBankDashboardLink({ curriculum: "ib" });
-  const dashboardLabel = dashboardLink.label === "Student dashboard" ? "My learning" : dashboardLink.label;
+export default function QuestionBankPage() {
   return (
     <section className="qb-index-hero">
       <Container className="qb-index-shell">
         <Breadcrumbs items={[{ label: "Question bank" }]} />
 
         <div className="qb-index-intro">
-          <Eyebrow>Question bank</Eyebrow>
-          <h1>Choose your question bank.</h1>
-          <p className="lede">Select your IB Mathematics course to see the questions that belong to your syllabus.</p>
-          <div className="qb-account-route">
-            <span>{dashboardLink.signedIn ? "Your completed questions and whiteboard working are saved to this account." : "Sign in to save completed questions and whiteboard working."}</span>
-            {dashboardLink.signedIn
-              ? <Link className="button button-small" href={dashboardLink.href}>{dashboardLabel}</Link>
-              : <div className="qb-account-actions">
-                <Link className="button button-small" href="/account">Student sign in</Link>
-                <Link className="button button-secondary button-small" href="/account?next=/teacher">Teacher sign in</Link>
-              </div>}
-          </div>
+          <h1>Choose your <span>question bank</span></h1>
         </div>
 
         <div className="qb-course-link-grid" aria-label="Choose your IB Mathematics course">
