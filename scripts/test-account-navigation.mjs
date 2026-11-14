@@ -49,8 +49,8 @@ for(const [role,entitlements,seats,curriculum,expected] of [
  assert.equal(document.querySelector('.account-home-link').getAttribute('href'),`${curriculum==='igcse'?'/igcse':''}/${teacher?'teacher':'account'}`);
  assert.equal(document.querySelector('.account-greeting').textContent,'Robert');
  assert.equal(Boolean(document.querySelector('.account-upgrade-button')),expected==='standard');
- if(expected==='plus')assert.equal(document.querySelector('.account-tier-badge').textContent,'Plus account');
- else assert.equal(document.querySelector('.account-upgrade-button').getAttribute('href'),curriculum==='igcse'?'/igcse/account/access':teacher?'/teacher/access':'/account/access');
+ assert.equal(document.querySelector('.account-tier-badge'),null,'Account status stays inside the dropdown');
+ if(expected==='standard')assert.equal(document.querySelector('.account-upgrade-button').getAttribute('href'),curriculum==='igcse'?'/igcse/account/access':teacher?'/teacher/access':'/account/access');
  const trigger=document.querySelector('button');
  await act(async()=>trigger.click());
  assert(document.querySelector('.account-menu-panel'));
@@ -68,7 +68,9 @@ for(const role of ['admin','teacher','student']) {
  const root=createRoot(document.getElementById('root'));
  await act(async()=>root.render(React.createElement(AccountMenu,{showNavigation:true,showSignedOut:true})));
  assert.equal(document.querySelector('.account-upgrade-button'),null,'Failed lookup must not sell an upgrade as if Standard');
- assert.equal(document.querySelector('.account-tier-badge').textContent,role==='admin'?'Plus account':'Check account access');
+ assert.equal(document.querySelector('.account-tier-badge'),null);
+ await act(async()=>document.querySelector('button').click());
+ assert.equal(document.querySelector('.account-menu-access-summary strong').textContent,role==='admin'?'Plus account':'Check account access');
  await act(async()=>root.unmount());
 }
 profileError={message:'Profile unavailable'};
