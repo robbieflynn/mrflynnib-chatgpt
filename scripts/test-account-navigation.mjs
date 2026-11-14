@@ -95,7 +95,7 @@ for(const role of ['admin','teacher','student']) for(const curriculum of ['ib','
  assert.equal(context.document.getElementById('siteClassesLink').getAttribute('href'),curriculum==='igcse'?'/igcse/teacher/classes':'/teacher/classes');
  assert.equal(context.document.getElementById('accountName').textContent,'Robert');
  assert.equal(context.document.getElementById('accessLink').textContent,plus||role==='admin'?'Plus account':'Upgrade to Plus');
- assert.equal(context.document.getElementById('topbarLearningHomeLink').textContent,role==='student'?'← My learning':'← Teacher dashboard');
+ assert.equal(context.document.getElementById('learningHomeLink').textContent,role==='student'?'My learning':'Teacher dashboard');
 }
 console.log('PASS: admin, paid, Standard, school, expired/future/revoked access, curriculum isolation, upgrade routes, failed lookups, dropdown, Escape/outside close, sign-out and course-player identity.');
 dom.window.close();player.window.close();

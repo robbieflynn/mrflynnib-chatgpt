@@ -7,9 +7,10 @@
   const destinations = {
     brandLearningHomeLink: "/igcse/account",
     primaryLearningHomeLink: "/igcse/account",
-    topbarLearningHomeLink: "/igcse/account",
     learningHomeLink: "/igcse/account",
-    courseBackButton: "/igcse/account",
+    siteCoursesLink: "/learn/index.html?curriculum=igcse&course=igcse",
+    siteQuestionBankLink: "/igcse/question-bank",
+    siteSchoolsLink: "/igcse/schools",
     questionBankLink: "/igcse/question-bank",
     assignmentsLink: "/igcse/assignments",
     accountSettingsLink: "/igcse/account/settings",

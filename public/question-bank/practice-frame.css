@@ -1,0 +1,17 @@
+/* A lesson already supplies its title and fixed question selection. */
+html.qb-course-practice body { margin: 0; background: transparent; }
+html.qb-course-practice #qbank-root { border: 0; border-radius: 0; background: transparent; }
+html.qb-course-practice :is(.qb-header, .qb-gate, .qb-controls) { display: none !important; }
+html.qb-course-practice .qb-list { padding: 14px; }
+html.qb-course-practice .qb-card { box-shadow: none; }
+@media (max-width: 620px) {
+  /* A phone cannot fit readable questions and a useful canvas side by side. */
+  html.qb-course-practice .qb-whiteboard-fullscreen .qb-card.qb-whiteboard-expanded .qb-question-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, .35fr) minmax(0, .65fr);
+  }
+  html.qb-course-practice .qb-whiteboard-fullscreen .qb-card.qb-whiteboard-expanded .qb-whiteboard-resizer,
+  html.qb-course-practice .qb-whiteboard-expanded [data-whiteboard-layout],
+  html.qb-course-practice .qb-whiteboard-expanded .qb-whiteboard-layout-tools > span { display: none; }
+  html.qb-course-practice .qb-whiteboard-expanded .qb-whiteboard-quick-tools { flex-wrap: wrap; overflow: visible; }
+}

@@ -23,7 +23,7 @@ for (const curriculum of ['igcse', 'ib']) {
     const href = id => w.document.getElementById(id).getAttribute('href');
     if (curriculum === 'igcse') {
       assert.equal(href('questionBankLink'), '/igcse/question-bank', 'IGCSE links must be safe before data or authentication loads');
-      assert.equal(href('courseBackButton'), '/igcse/account');
+      assert.equal(href('primaryLearningHomeLink'), '/igcse/account');
     }
     for (const name of libraries) w.eval(readFileSync(`public/learn/${name}`, 'utf8'));
     w.eval(app);
@@ -36,7 +36,7 @@ for (const curriculum of ['igcse', 'ib']) {
     }) });
     await new Promise(resolve => setTimeout(resolve, 100));
     assert.equal(href('questionBankLink'), curriculum === 'igcse' ? '/igcse/question-bank' : '/question-bank/aa-sl');
-    for (const id of ['courseBackButton', 'learningHomeLink', 'primaryLearningHomeLink', 'topbarLearningHomeLink', 'brandLearningHomeLink']) assert.equal(href(id), `${base}/${role === "teacher" ? "teacher" : "account"}`, `${curriculum} ${role}: ${id}`);
+    for (const id of ['learningHomeLink', 'primaryLearningHomeLink', 'brandLearningHomeLink']) assert.equal(href(id), `${base}/${role === "teacher" ? "teacher" : "account"}`, `${curriculum} ${role}: ${id}`);
     assert.equal(href('assignmentsLink'), `${base}/assignments`);
     if (curriculum === 'igcse') assert.equal(w.document.getElementById('teacherCourseSwitcher').hidden, true);
     dom.window.close();

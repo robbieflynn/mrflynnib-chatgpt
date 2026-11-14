@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex,nofollow" />
     <title>My learning | Mr Flynn IB</title>
     <link rel="icon" href="assets/mr-flynn-mark.png" />
-    <link rel="stylesheet" href="styles.css?v=20261114-course-nav" />
+    <link rel="stylesheet" href="styles.css?v=20261114-practice-layout" />
   </head>
   <body class="is-booting">
     <div class="learning-boot" id="learningBoot" role="status" aria-live="polite">
@@ -77,11 +77,7 @@
           <button class="icon-button menu-button" id="openMenu" type="button" aria-label="Open navigation">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
           </button>
-          <div class="topbar-context"><a class="topbar-home-link" id="topbarLearningHomeLink" href="/account">← Learning home</a></div>
-          <label class="teacher-course-switcher" id="teacherCourseSwitcher" hidden>
-            <span>Viewing course</span>
-            <select id="teacherCourseSelect" aria-label="Change IB Mathematics course"></select>
-          </label>
+
           <div class="topbar-account">
           <button class="account-button" id="accountButton" type="button" aria-controls="accountMenu" aria-expanded="false">
             <span class="avatar">RF</span>
@@ -174,20 +170,17 @@
 
         <section id="courseView" class="view">
           <header class="course-hero" id="courseHero">
-            <a class="back-button" id="courseBackButton" href="/account">← Learning home</a>
             <div class="course-hero-row">
               <div>
-                <span class="course-code" id="courseCode">AA SL</span>
-                <p class="eyebrow" id="courseFamily">IB Mathematics</p>
-                <h1 id="courseName">Analysis &amp; Approaches SL</h1>
-                <p id="courseSummary">A complete, structured course across all five syllabus topics.</p>
+                <h1 id="courseName">AA SL</h1>
               </div>
+          <label class="teacher-course-switcher" id="teacherCourseSwitcher" hidden>
+            <span>Viewing course</span>
+            <select id="teacherCourseSelect" aria-label="Change IB Mathematics course"></select>
+          </label>
               <div class="hero-stat"><strong id="coursePercent">0%</strong><span>complete</span></div>
             </div>
-            <div class="course-stats">
-              <span><strong id="courseLessonCount">0</strong> lessons</span>
-              <span><strong id="courseTopicCount">5</strong> topics</span>
-            </div>
+
             <div class="progress-track light"><span id="courseProgressBar"></span></div>
           </header>
 
@@ -212,24 +205,7 @@
                 <div><small>TOPIC</small><strong id="metaTopic">1 · Number and algebra</strong></div>
                 <div><small>DURATION</small><strong id="metaDuration">0 min</strong></div>
               </div>
-              <section class="lesson-practice" id="lessonPractice" hidden aria-labelledby="lessonPracticeTitle">
-                <div class="lesson-practice-head">
-                  <div>
-                    <p class="eyebrow">Lesson practice</p>
-                    <h3 id="lessonPracticeTitle">Practice this lesson</h3>
-                    <p id="lessonPracticeCopy">These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.</p>
-                  </div>
-                  <div class="lesson-practice-actions">
-                    <span class="practice-count" id="practiceCount">Practice questions</span>
-                    <button class="practice-expand-button" id="practiceExpandButton" type="button" aria-pressed="false">
-                      <span aria-hidden="true">⛶</span><span>Expand practice</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="practice-frame-wrap" id="practiceFrameWrap">
-                  <iframe id="practiceFrame" title="Lesson practice questions" loading="lazy"></iframe>
-                </div>
-              </section>
+
               <div class="lesson-navigation">
                 <button id="previousLesson" type="button">← Previous lesson</button>
                 <button id="nextLesson" type="button">Next lesson →</button>
@@ -248,6 +224,24 @@
               <div class="lesson-list" id="lessonList"></div>
             </aside>
           </div>
+              <section class="lesson-practice" id="lessonPractice" hidden aria-labelledby="lessonPracticeTitle">
+                <div class="lesson-practice-head">
+                  <div>
+                    <p class="eyebrow">Lesson practice</p>
+                    <h3 id="lessonPracticeTitle">Practice this lesson</h3>
+                    <p id="lessonPracticeCopy">These are questions from the Mr Flynn IB question bank, selected for this lesson. Try each one before opening its mark scheme.</p>
+                  </div>
+                  <div class="lesson-practice-actions">
+                    <span class="practice-count" id="practiceCount">Practice questions</span>
+                    <button class="practice-expand-button" id="practiceExpandButton" type="button" aria-pressed="false">
+                      <span aria-hidden="true">⛶</span><span>Expand practice</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="practice-frame-wrap" id="practiceFrameWrap">
+                  <iframe id="practiceFrame" title="Lesson practice questions" loading="lazy"></iframe>
+                </div>
+              </section>
         </section>
 
         <section id="pastPapersView" class="view">
@@ -330,12 +324,12 @@
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="navigation.js?v=20261112-igcse"></script>
+    <script src="navigation.js?v=20261114-practice-layout"></script>
     <script src="library-data.js"></script>
     <script src="igcse-library-data.js"></script>
     <script src="past-paper-data.js"></script>
     <script src="igcse-past-paper-data.js?v=20261027-2"></script>
     <script src="practice-data.js?v=20261021-9"></script>
-    <script src="app.js?v=20261114-course-nav"></script>
+    <script src="app.js?v=20261114-practice-layout"></script>
   </body>
 </html>
