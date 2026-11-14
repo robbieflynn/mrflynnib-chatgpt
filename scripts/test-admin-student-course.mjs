@@ -22,10 +22,12 @@ await db.exec(`
 const schema = readFileSync("supabase/schema.sql", "utf8");
 await db.exec(schema.slice(schema.indexOf("create or replace function public.school_plus_product_for_user"), schema.indexOf("create or replace function public.claim_school_plus_access")));
 await db.exec(readFileSync("supabase/migrations/20261114_admin_student_course.sql", "utf8"));
+await db.exec("alter table profiles add column display_name text, add column email text");
+await db.exec(readFileSync("supabase/migrations/20261114_admin_student_course_details.sql", "utf8"));
 const admin = "00000000-0000-0000-0000-000000000001";
 const student = "00000000-0000-0000-0000-000000000002";
 await db.query("insert into auth.users values ($1,'admin@example.test',now(),'{}',now()),($2,'student@example.test',now(),'{\"primary_course\":\"aa-hl\",\"display_name\":\"Test\"}',now())",[admin,student]);
-await db.query("insert into profiles values ($1,'admin','ib'),($2,'student','ib')",[admin,student]);
+await db.query("insert into profiles(user_id,role,curriculum) values ($1,'admin','ib'),($2,'student','ib')",[admin,student]);
 await db.query("insert into saved_work values ($1,'unchanged working')",[student]);
 const row = async (sql, args=[]) => (await db.query(sql,args)).rows[0];
 const login = async id => db.query("select set_config('test.uid',$1,false)",[id]);
@@ -37,10 +39,12 @@ const reset = async () => {
   await login(admin);
 };
 await login(student);
+await assert.rejects(db.query("select admin_student_course_details($1)",[student]),/admin_required/);
 await assert.rejects(change("aa-sl","aa-hl"),/admin_required/);
 await login(admin);
 await assert.rejects(change("igcse","aa-hl"),/invalid_course/);
 await assert.rejects(change("aa-sl","ai-hl"),/course_changed/);
+assert.equal((await row("select admin_student_course_details($1) details",[student])).details.primary_course,"aa-hl");
 await change("aa-sl","aa-hl");
 assert.equal((await row("select count(*)::int n from platform_entitlements")).n,0,"Standard remains Standard");
 assert.equal((await row("select raw_user_meta_data from auth.users where id=$1",[student])).raw_user_meta_data.display_name,"Test");
