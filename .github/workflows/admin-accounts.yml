@@ -1,0 +1,27 @@
+name: Account administration checks
+on:
+  pull_request:
+    paths:
+      - 'src/components/admin-navigation*'
+      - 'src/components/teacher-account-directory.tsx'
+      - 'src/lib/admin-account-tier.ts'
+      - 'src/app/teacher/**'
+      - 'src/app/school/access/page.tsx'
+      - 'scripts/test-admin-accounts.mjs'
+      - '.github/workflows/admin-accounts.yml'
+permissions:
+  contents: read
+jobs:
+  admin-accounts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-package-lock
+      - run: npm run lint
+      - run: node scripts/test-admin-accounts.mjs
+      - run: node scripts/test-account-navigation.mjs
+      - run: npm run build -- --webpack

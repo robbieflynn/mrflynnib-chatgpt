@@ -764,3 +764,8 @@ Rob requested one consistent top-bar account area for teachers and students: a v
 ## Quieter global navigation, 14 November 2026
 
 Rob found the boxed account controls too large and crowded. Keep My learning / Teacher home as a compact home link and the first name as a plain dropdown trigger. Keep Plus/Standard status inside that dropdown rather than a separate Plus account button. Standard accounts retain a prominent Upgrade to Plus action with the existing role-specific destination. Remove One-to-One tuition text from the header and mobile navigation while retaining the linked IB Tutors logo. Use a plain Contact link to reduce competing button styles. Preserve the corrected access classification, readable dropdown and curriculum isolation.
+
+
+## Unified account administration, 14 November 2026
+
+Rob requested one administration home for teacher approvals, student accounts, payments and course access, transfers and school licences, with consistent navigation between the existing secure tools. Teacher accounts must show explicit Plus/Standard status and independent tier, approval and access-source filters. Use the same role- and curriculum-aware tier definition as the account header; missing access data remains unknown. Keep approval, entitlement and verified payment distinct. Preserve existing grants, purchases, account roles and actions.
