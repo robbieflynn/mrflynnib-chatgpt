@@ -1,8 +1,8 @@
 export const platformProductLabels: Record<string, string> = {
-  course_ib_aa_hl: "Student Plus · AA HL",
-  course_ib_aa_sl: "Student Plus · AA SL",
-  course_ib_ai_hl: "Student Plus · AI HL",
-  course_ib_ai_sl: "Student Plus · AI SL",
+  course_ib_aa_hl: "Single-course Plus · AA HL",
+  course_ib_aa_sl: "Single-course Plus · AA SL",
+  course_ib_ai_hl: "Single-course Plus · AI HL",
+  course_ib_ai_sl: "Single-course Plus · AI SL",
   course_igcse: "Mr Flynn IB Plus",
   question_bank_plus_ib: "Question Bank Plus",
   question_bank_plus_igcse: "Question Bank Plus",
@@ -13,6 +13,7 @@ export const platformProductLabels: Record<string, string> = {
 
 export type PlatformEntitlement = {
   product_code: string;
+  external_provider?: string | null;
   status: string;
   starts_at: string;
   expires_at: string | null;
@@ -117,6 +118,5 @@ export function accountTier(
 ): "plus" | "standard" | "unknown" {
   if (role === "admin") return "plus";
   if (!access) return "unknown";
-  return (role === "teacher" && curriculum === "ib" ? access.hasTeacherPlus : access.hasCourseAccess)
-    ? "plus" : "standard";
+  return access.hasCourseAccess || (role === "teacher" && curriculum === "ib" && access.hasTeacherPlus) ? "plus" : "standard";
 }
