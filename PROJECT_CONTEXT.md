@@ -777,3 +777,12 @@ Rob found the boxed account controls too large and crowded. Keep My learning / T
 ## Unified account administration, 14 November 2026
 
 Rob requested one administration home for teacher approvals, student accounts, payments and course access, transfers and school licences, with consistent navigation between the existing secure tools. Teacher accounts must show explicit Plus/Standard status and independent tier, approval and access-source filters. Use the same role- and curriculum-aware tier definition as the account header; missing access data remains unknown. Keep approval, entitlement and verified payment distinct. Preserve existing grants, purchases, account roles and actions.
+
+
+## Sole administrator and compact cards, 14 November 2026
+
+Rob explicitly requested that `mrflynnib@gmail.com` be the only website administrator. With his explicit Supabase authorization, `rflynn@jess.sch.ae` was changed from `admin` to `teacher` in the production Ireland database, preserving its approved teacher status, user ID, account and data. A fresh database query verified exactly one administrator, the Gmail account, and that both authentication accounts remain present.
+
+Rob rejected oversized headings and large generic cards across the website, using the Payments & access forms and school-licence empty state as examples. Use compact product-scale titles, modest padding and restrained actions for reusable cards and operational screens. Preserve their functionality and use a preview before publishing this visual cleanup.
+
+The school-access investigation verified three existing approved-domain arrangements in production: JESS, Collège Alpin Beau Soleil and Westminster Academy. On 14 November, these had 130, 36 and 2 distinct accounts with current automatic school access respectively. These are live account counts, not contracted seat quantities. No separate `organization_licenses` records existed. The administrator school page must show approved-domain arrangements separately from allocated seat licences, and must not imply that the absence of a billing-contact membership means no schools have access. Preserve the existing domain rules, entitlements and billing-contact seat permissions.

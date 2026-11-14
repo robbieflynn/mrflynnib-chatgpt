@@ -9,7 +9,7 @@ export function AccessCodeCreator({ products }: { products: ProductOption[] }) {
   const initialState: AccessCodeActionState = { status: "idle" };
   const [state, action, pending] = useActionState(createAccessCode, initialState);
   return <div className="account-card stack-lg platform-admin-form-card">
-    <div><p className="eyebrow">Complimentary-access codes</p><h2>Create a redemption code</h2><p className="muted">Choose exactly what the code unlocks, how long access lasts and how many accounts may use it.</p></div>
+    <div><p className="eyebrow">Complimentary-access codes</p><h2>Create access code</h2><p className="muted">Choose the course, access period and number of uses.</p></div>
     {state.status === "success" && state.code ? <div className="access-code-result" role="status"><span>New code</span><strong>{state.code}</strong><p>{state.message}</p></div> : null}
     {state.status === "error" ? <p className="form-message form-error">{state.message}</p> : null}
     <form action={action} className="stack">
