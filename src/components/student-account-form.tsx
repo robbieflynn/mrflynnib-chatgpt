@@ -205,12 +205,12 @@ export function StudentAccountForm({ initialMode = "sign-in", curriculumOverride
             {curriculum === "ib" ? <fieldset className="account-access-field"><legend>Then, choose your access</legend><div className="account-access-options">
               <label className={accessChoice === "free" ? "is-selected" : ""}>
                 <input checked={accessChoice === "free"} name="accessChoice" onChange={() => { setAccessChoice("free"); setError(null); }} type="radio" value="free" />
-                <span><strong>Standard account</strong><small>{accountType === "teacher" ? "Question bank, classes, assignments and Test Maker" : "Question bank, whiteboards, classes and assignments"}</small></span>
+                <span><strong>Standard account</strong><small>Classroom tools and limited question bank</small></span>
                 <b>US$0</b>
               </label>
               <label className={accessChoice === "plus" ? "is-selected is-plus" : "is-plus"}>
                 <input checked={accessChoice === "plus"} name="accessChoice" onChange={() => { setAccessChoice("plus"); setError(null); }} type="radio" value="plus" />
-                <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "Everything in Standard, plus every lesson and its extra practice in all four IB courses" : "Everything in Standard, plus every lesson and its extra practice in one IB course"}</small></span>
+                <span><strong>{accountType === "teacher" ? "Teacher Plus" : "Mr Flynn IB Plus"}</strong><small>{accountType === "teacher" ? "Full lessons, the full question bank and extra practice across all four IB courses" : "Full lessons, the full question bank and extra practice for one IB course"}</small></span>
                 <b>{accountType === "teacher" ? "$99 · 1 year" : "$79 · 2 years"}</b>
               </label>
             </div>{wantsPlus ? <small className="account-access-note">No payment is taken when you create the account. Secure checkout follows after your email is confirmed.</small> : null}</fieldset> : null}

@@ -1,5 +1,9 @@
 # MrFlynnIB permanent project context
 
+## Revised Standard and Plus messaging, 14 November 2026
+
+Rob approved publishing the school-access invitation and requested that the website stop promising a complete or free question bank with Standard access. Standard should be described as **Classroom tools and limited question bank**, with selected sample lessons retained. Plus should explicitly include full video lessons, the full question bank and extra lesson practice, respecting the existing selected-course Student Plus and all-four-course Teacher Plus scope. This supersedes earlier wording that the complete question bank is free or included in Standard. This request changes customer-facing messaging only: exact Standard question limits and their enforcement remain to be defined; do not silently restrict existing access or alter prices, entitlements, classroom tools or checkout. Publication of this wording change and the school-access invitation is authorized.
+
 ## School-access invitation, 14 November 2026
 
 Rob requested a visible **Get school access** route on the individual course-access page, encouraging students to share the school offer with their maths teacher or head of department and teachers to explore it for their school. Keep this invitation compact and visible above the access-code/help disclosures, with benefits grounded in complete video courses and extra lesson practice. Use the same invitation on Teacher Plus, with teacher-specific wording. Link IB users to `/schools` and IGCSE users to `/igcse/schools`; do not send prospective schools to the private licence-management page. Keep individual purchase, redemption and existing access flows intact, and avoid inserting the invitation into purchase-confirmation states.

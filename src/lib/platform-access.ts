@@ -88,7 +88,7 @@ export function platformAccessSummary(
   if (!primary) {
     return {
       label: "Standard account",
-      detail: "Complete question bank and classroom tools",
+      detail: "Classroom tools and limited question bank",
       paid: false,
       hasCourseAccess: false,
       hasTeacherPlus: false,

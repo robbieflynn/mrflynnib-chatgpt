@@ -635,7 +635,7 @@ function showPlusPrompt() {
   document.getElementById("plusUpgradeLink").href = plusAccessHref();
   document.querySelector("#plusUpgradeDialog .eyebrow").textContent = isIgcse ? "IGCSE course access" : "Mr Flynn IB Plus";
   document.querySelector("#plusUpgradeDialog h2").textContent = isIgcse ? "Open the complete IGCSE lesson." : "Unlock the complete lesson.";
-  document.querySelector("#plusUpgradeDialog h2 + p").textContent = isIgcse ? "Create an IGCSE account to save progress and review the complete course access available to you." : "Plus unlocks the complete video course and all of the extra practice questions inside its lessons.";
+  document.querySelector("#plusUpgradeDialog h2 + p").textContent = isIgcse ? "Create an IGCSE account to save progress and review the complete course access available to you." : "Plus includes full video lessons, the full question bank and extra lesson practice for your course.";
   document.getElementById("plusUpgradeLink").textContent = isIgcse ? guestMode ? "Create IGCSE account" : "View course access" : guestMode ? "Create account for Plus" : "Choose Plus access";
   if (!dialog.open) dialog.showModal();
 }

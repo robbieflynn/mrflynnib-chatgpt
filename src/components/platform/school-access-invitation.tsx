@@ -10,8 +10,8 @@ export function SchoolAccessInvitation({ curriculum, audience = "student" }: {
     <div>
       <h2 id="school-access-invitation-heading">Bring Plus to your school</h2>
       <p>{audience === "teacher"
-        ? "Support your students with complete video courses and extra lesson practice, alongside your classroom tools. Explore school access with your head of department."
-        : "Help your whole class learn with complete video lessons and extra practice. Share our school options with your maths teacher or head of department."}</p>
+        ? "Support your students with full video courses, the full question bank and extra lesson practice, alongside your classroom tools. Explore school access with your head of department."
+        : "Help your whole class learn with full video lessons, the full question bank and extra practice. Share our school options with your maths teacher or head of department."}</p>
     </div>
     <Link className="button button-secondary" href={curriculum === "igcse" ? "/igcse/schools" : "/schools"}>Get school access <span aria-hidden="true">→</span></Link>
   </section>;

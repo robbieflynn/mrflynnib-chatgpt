@@ -109,7 +109,7 @@ export const faqs = [
   {
     question: "Does each access plan include the complete course?",
     answer:
-      "A Standard account includes the complete question bank, classroom tools and selected sample lessons. Student Plus includes everything in Standard, plus every lesson and its extra practice in one chosen IB course. Teacher Plus includes everything in Standard, plus every lesson and its extra practice in all four IB courses.",
+      "A Standard account includes classroom tools, limited question-bank access and selected sample lessons. Student Plus adds full video lessons, the full question bank and extra lesson practice for one chosen IB course. Teacher Plus includes these benefits across all four IB courses.",
   },
   {
     question: "I am already enrolled. How do I access my lessons?",

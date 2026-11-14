@@ -52,7 +52,7 @@ export function AccountSettingsView({ curriculum, session }: AccountSettingsPage
             const grants = entitlements.filter((item) => item.product_code === course.productCode || (isTeacher && item.product_code === `teacher_plus_${curriculum}`) || (curriculum === "ib" && item.product_code === "student_all_courses_ib"));
             const expiry = grants.some((item) => !item.expires_at) ? null : grants.map((item) => item.expires_at).filter((value): value is string => Boolean(value)).sort().at(-1);
             return <li key={course.id}><div><strong>{course.shortTitle}</strong><span>{profile?.role === "admin" ? "Administrator access" : expiry ? `Access until ${new Date(expiry).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "No expiry date"}</span></div><Link href={`${learnPath}?course=${course.id}`}>Open course →</Link></li>;
-          })}</ul> : <p className="account-standard-note">No complete courses are active on this account. Explore sample lessons, or choose Plus for complete course lessons and extra practice.</p>}
+          })}</ul> : <p className="account-standard-note">No complete courses are active on this account. Standard includes classroom tools and limited question-bank access. Choose Plus for full lessons, the full question bank and extra practice for your course.</p>}
         </Container>
         <Container className="account-settings-layout">
           <div className="account-settings-details stack-lg">
