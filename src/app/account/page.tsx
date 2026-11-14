@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Suspense, type CSSProperties } from "react";
 import { Container, Eyebrow, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
+import { StudentAssignmentOverview } from "@/components/student-assignment-overview";
 import { StudentAccountForm } from "@/components/student-account-form";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
@@ -386,23 +387,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
           </nav>
 
-          <section className="student-assignments student-home-section stack-lg" id="assignments">
-            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>{activeAssignments.length ? "Due soon" : "You're up to date"}</h2></div><div className="student-section-heading-actions"><p className="muted">Your current work is ordered by due date, so the most important task is always easy to find.</p><Link className="student-section-link" href={assignmentsHref}>View all assignments →</Link></div></div>
-            {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
-            <div className="student-assignment-list">
-              {activeAssignments.map((assignment, assignmentIndex) => {
-                return <Link className={`student-assignment-card ${assignmentIndex === 0 ? "is-urgent" : ""}`} href={`${assignmentsHref}/${assignment.id}`} key={assignment.id}>
-                  <span className="student-assignment-status"><i style={{ width: `${assignment.assignmentPercentage}%` }} /></span>
-                  <div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{dueDateLabel(assignment.due_at)}</span></div>
-                  <div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div>
-                  <span className="status-pill">{assignment.progressCount ? "Continue" : "Start"}</span>
-                  <span aria-hidden="true">→</span>
-                </Link>;
-              })}
-              {!activeAssignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>{assignments.length ? "Everything is submitted" : "No assignments yet"}</strong><p>{assignments.length ? "Nice work. Your next assignment will appear here when it is set." : "Your teacher's assignments will appear here."}</p></div></div> : null}
-            </div>
-            {completedAssignments.length ? <div className="student-past-assignments stack"><div className="student-past-assignments-heading"><div><span>Past assignments</span><strong>Review your submitted work</strong></div><Link href={assignmentsHref}>View all {completedAssignments.length} →</Link></div><div className="student-assignment-list">{completedAssignments.slice(0, 3).map((assignment) => <Link className="student-assignment-card is-complete" href={`${assignmentsHref}/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{assignment.submittedAt ? `Submitted ${new Date(assignment.submittedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "Submitted"}</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Review</span><span aria-hidden="true">→</span></Link>)}</div></div> : null}
-          </section>
+          <StudentAssignmentOverview
+            active={activeAssignments.map((assignment) => ({ ...assignment, className: classNames.get(assignment.class_id) || "Class", dateLabel: dueDateLabel(assignment.due_at) }))}
+            completed={completedAssignments.map((assignment) => ({ ...assignment, className: classNames.get(assignment.class_id) || "Class", dateLabel: assignment.submittedAt ? `Submitted ${new Date(assignment.submittedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "Submitted" }))}
+            assignmentsHref={assignmentsHref}
+            loadError={Boolean(assignmentLoadError)}
+          />
 
           <section className="student-progress-overview student-home-section stack-lg" id="progress" aria-labelledby="student-progress-heading">
             <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Your progress</h2></div><p className="muted">Course lessons and question-bank practice are shown separately, so each number is meaningful.</p></div>
