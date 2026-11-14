@@ -1,3 +1,4 @@
+import { AdminNavigation } from "@/components/admin-navigation";
 import { AccessPeriodField } from "@/components/platform/access-period-field";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -77,8 +78,8 @@ export default async function PlatformAccessAdminPage({ searchParams }: { search
   const message = messageFor(query);
 
   return <>
-    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row dashboard-account-row-with-breadcrumbs"><Breadcrumbs items={[{ label: "Teacher dashboard", href: "/teacher" }, { label: "Platform access" }]} /></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">Administrator</span><h1>Platform access</h1><p>Manage paid access, complimentary grants and secure redemption codes without editing the database directly.</p></div><div className="dashboard-hero-stats"><div><strong>{activeCount}</strong><span>active grants</span></div><div><strong>{purchases.filter((item) => item.status === "paid").length}</strong><span>live purchases</span></div><div><strong>{activeCodes}</strong><span>active codes</span></div></div></div></Container></section>
-    <section className="section-tight teacher-dashboard platform-admin-page"><Container className="stack-xl">
+    <section className="dashboard-hero teacher-dashboard-hero"><Container className="dashboard-hero-shell"><div className="dashboard-account-row dashboard-account-row-with-breadcrumbs"><Breadcrumbs items={[{ label: "Administration", href: "/teacher/administration" }, { label: "Platform access" }]} /></div><div className="dashboard-hero-layout"><div className="dashboard-hero-copy"><span className="dashboard-role-label">Administrator</span><h1>Platform access</h1><p>Manage paid access, complimentary grants and secure redemption codes without editing the database directly.</p></div><div className="dashboard-hero-stats"><div><strong>{activeCount}</strong><span>active grants</span></div><div><strong>{purchases.filter((item) => item.status === "paid").length}</strong><span>live purchases</span></div><div><strong>{activeCodes}</strong><span>active codes</span></div></div></div></Container></section>
+    <section className="section-tight teacher-dashboard platform-admin-page"><Container className="stack-xl"><AdminNavigation current="access" />
       {message ? <p className={`form-message ${message.kind === "error" ? "form-error" : "form-success"}`}>{message.text}</p> : null}
       {codeError ? <p className="form-message form-error">The access-code database update has not been applied yet. Codes will appear here after the launch migration is installed.</p> : null}
       <div className="platform-admin-action-grid">

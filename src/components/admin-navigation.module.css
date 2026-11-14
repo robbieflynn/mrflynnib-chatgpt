@@ -1,0 +1,11 @@
+.navigation { display:flex; flex-wrap:wrap; gap:.35rem; padding:.5rem; border:1px solid #dce5ef; border-radius:14px; background:#f4f7fb; }
+.navigation a { padding:.65rem .85rem; border-radius:9px; color:#304662; font-size:.9rem; font-weight:650; text-decoration:none; }
+.navigation a[aria-current="page"] { background:#112744; color:#fff; }
+.navigation a:hover { background:#e1eaf5; color:#112744; }
+.navigation a:focus-visible,.card:focus-visible { outline:3px solid #2689d5; outline-offset:3px; }
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:1rem; }
+.card { display:block; padding:1.5rem; border:1px solid #dce5ef; border-radius:16px; background:#fff; text-decoration:none; color:#112744; transition:border-color .15s,box-shadow .15s; }
+.card:hover { border-color:#82add2; box-shadow:0 8px 24px #1127440a; }
+.card h2 { display:flex; justify-content:space-between; gap:1rem; margin:0 0 .65rem; font-size:1.2rem; }
+.card h2 span { color:#2479b9; }
+.card p { margin:0; color:#596b80; font-size:.95rem; line-height:1.6; }

@@ -1,3 +1,4 @@
+import { AdminNavigation } from "@/components/admin-navigation";
 import type { StudentAccessRecord } from "@/lib/student-accounts";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -52,7 +53,7 @@ export default async function TeacherAccountsPage({ searchParams }: { searchPara
     <section className="dashboard-hero teacher-dashboard-hero">
       <Container className="dashboard-hero-shell">
         <div className="dashboard-account-row dashboard-account-row-with-breadcrumbs">
-          <Breadcrumbs items={[{ label: "Teacher dashboard", href: "/teacher" }, { label: "Teacher accounts" }]} />
+          <Breadcrumbs items={[{ label: "Administration", href: "/teacher/administration" }, { label: "Teacher accounts" }]} />
 
         </div>
         <div className="dashboard-hero-layout">
@@ -62,14 +63,14 @@ export default async function TeacherAccountsPage({ searchParams }: { searchPara
       </Container>
     </section>
     <section className="section-tight teacher-dashboard teacher-accounts-page">
-      <Container className="stack-xl">
+      <Container className="stack-xl"><AdminNavigation current="teachers" />
         {message.error ? <p className="form-message form-error">{message.error}</p> : null}
         {message.success ? <p className="form-message form-success">{message.success}</p> : null}
         <div className="dashboard-section-heading"><div><p className="eyebrow">Account directory</p><h2>All teacher registrations</h2></div><p className="muted">{confirmedCount} of {accounts.length} have confirmed their email address. Times are shown in Dubai time.</p></div>
         {error ? <p className="form-message form-error">Teacher accounts could not be loaded just now. Please reload the page.</p> : null}
         {accessError ? <p className="form-message form-error">Course access details could not be loaded. Reload to view access sources and expiry dates.</p> : null}
         {!error ? <TeacherAccountDirectory accounts={accounts} initialAccess={initialAccess} now={now} /> : null}
-        <div className="cluster"><Link className="button button-secondary button-small" href="/teacher">Back to teacher dashboard</Link><Link className="button button-secondary button-small" href="/teacher/students">View student accounts</Link></div>
+        <Link className="text-link" href="/teacher/administration">Back to administration</Link>
       </Container>
     </section>
   </>;
