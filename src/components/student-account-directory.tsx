@@ -1,6 +1,7 @@
 "use client";
 
 import { useDeferredValue, useMemo, useState } from "react";
+import Link from "next/link";
 import { changeAccountRole } from "@/app/teacher/actions";
 import { currentStudentAccess, matchesStudentAccess, studentAccessFilters, type StudentAccountSummary } from "@/lib/student-accounts";
 
@@ -113,7 +114,7 @@ export function StudentAccountDirectory({ accounts, now }: { accounts: StudentAc
         <tbody>
           {filteredAccounts.map((account) => <tr key={account.user_id}>
             <td><strong>{account.display_name || "Student"}</strong><small>Registered {dateTime(account.created_at)}</small></td>
-            <td><span className="status-pill">{account.curriculum === "igcse" ? "IGCSE" : "IB"}</span></td>
+            <td><span className="status-pill">{account.curriculum === "igcse" ? "IGCSE" : "IB"}</span>{account.curriculum === "ib" ? <small><Link className="text-link" href={`/teacher/students/${account.user_id}/course`}>Change course</Link></small> : null}</td>
             <td>{account.access ? <><strong>{currentStudentAccess(account.access, now).length ? "Plus" : "Standard"}</strong>{account.access.map((record, index) => {
               const active = currentStudentAccess([record], now).length > 0;
               const days = record.expires_at ? Math.ceil((Date.parse(record.expires_at) - now) / 86400000) : null;
