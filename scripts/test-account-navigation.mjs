@@ -90,9 +90,12 @@ const render=app.slice(app.indexOf('function renderAccountHeader('),app.indexOf(
 const context={document:player.window.document};vm.runInNewContext(render,context);
 for(const role of ['admin','teacher','student']) for(const curriculum of ['ib','igcse']) for(const plus of [false,true]) {
  context.renderAccountHeader({user:{role,displayName:'Robert Flynn'},curriculum,access:{hasCourseAccess:plus,hasTeacherPlus:plus},links:{access:curriculum==='igcse'?'/igcse/account/access':role==='student'?'/account/access':'/teacher/access'}});
+ assert.equal(context.document.getElementById('primaryLearningHomeLink').querySelector('strong').textContent,role==='student'?'My learning':'Teacher dashboard');
+ assert.equal(context.document.getElementById('siteClassesLink').hidden,role==='student');
+ assert.equal(context.document.getElementById('siteClassesLink').getAttribute('href'),curriculum==='igcse'?'/igcse/teacher/classes':'/teacher/classes');
  assert.equal(context.document.getElementById('accountName').textContent,'Robert');
  assert.equal(context.document.getElementById('accessLink').textContent,plus||role==='admin'?'Plus account':'Upgrade to Plus');
- assert.equal(context.document.getElementById('topbarLearningHomeLink').textContent,role==='student'?'← My learning':'← Teacher home');
+ assert.equal(context.document.getElementById('topbarLearningHomeLink').textContent,role==='student'?'← My learning':'← Teacher dashboard');
 }
 console.log('PASS: admin, paid, Standard, school, expired/future/revoked access, curriculum isolation, upgrade routes, failed lookups, dropdown, Escape/outside close, sign-out and course-player identity.');
 dom.window.close();player.window.close();

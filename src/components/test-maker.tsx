@@ -1321,7 +1321,7 @@ export function TestMaker({ initialSavedTests = [], bank = "ib" }: { initialSave
   const applicationsCourse = isApplicationsCourse(course);
   const setupSummary = igcse
     ? combinedPapers
-      ? "Build two separate calculator papers from the same complete question bank. You choose which paper receives every question."
+      ? "Build two separate calculator papers from the questions available to your account. You choose which paper receives every question."
       : "Build one complete calculator paper, with a formula sheet and answers written in the spaces provided."
     : combinedPapers
     ? "Paper 1 and Paper 2 are prepared as separate papers. Their marks are combined in one question-level analysis workbook."

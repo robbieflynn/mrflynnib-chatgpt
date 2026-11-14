@@ -1,0 +1,34 @@
+.overview { display: grid; gap: 1rem; }
+.heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; }
+.heading :global(.eyebrow) { margin-bottom: .4rem; }
+.heading h2 { max-width: none; font-size: clamp(1.35rem, 2.4vw, 1.75rem); line-height: 1.25; }
+.heading p:last-child { margin-top: .4rem; color: var(--muted); font-size: .85rem; }
+.heading > a { flex-shrink: 0; }
+.list { list-style: none; padding: 0; margin: 0; border: 1px solid #dce4eb; border-radius: .75rem; background: white; overflow: hidden; }
+.list li + li { border-top: 1px solid #e7ecf1; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, .3fr) 90px 90px; align-items: center; gap: 1rem; padding: .85rem 1rem; min-height: 70px; }
+.row:hover { background: #f3f7fc; }
+.row:focus-visible { outline: 3px solid #237fca; outline-offset: -3px; }
+.identity { min-width: 0; display: grid; gap: .1rem; }
+.identity small { color: var(--muted); font-size: .7rem; }
+.identity strong { font-size: .9rem; line-height: 1.4; overflow-wrap: anywhere; }
+.date { color: #53647d; font-size: .78rem; }
+.progress { display: flex; align-items: baseline; justify-content: end; gap: .3rem; font-variant-numeric: tabular-nums; }
+.progress strong { font-size: .85rem; }
+.progress small { color: var(--muted); font-size: .65rem; }
+.action { display: flex; justify-content: end; align-items: center; gap: .45rem; color: #1267ae; font-size: .78rem; font-weight: 750; }
+.more { justify-self: end; color: #1267ae; font-size: .8rem; font-weight: 700; }
+.more:focus-visible, .completed summary:focus-visible { outline: 3px solid #237fca; outline-offset: 3px; }
+.completed { border-top: 1px solid #dce4eb; }
+.completed summary { padding: .85rem 0; cursor: pointer; font-size: .85rem; font-weight: 700; }
+.completed summary > span { margin-left: .35rem; color: var(--muted); font-size: .75rem; font-weight: 500; }
+.completed > .more { display: block; padding-top: .8rem; text-align: right; }
+.empty { margin: 0; padding: 1rem; background: #f3f7fc; color: #53647d; border-radius: .6rem; font-size: .9rem; }
+@media (max-width: 700px) {
+  .heading { align-items: start; flex-direction: column; gap: .6rem; }
+  .row { grid-template-columns: minmax(0, 1fr) auto; gap: .4rem .8rem; padding: .85rem; }
+  .identity { grid-column: 1; grid-row: 1; }
+  .action { grid-column: 2; grid-row: 1; }
+  .date { grid-column: 1; grid-row: 2; }
+  .progress { grid-column: 2; grid-row: 2; }
+}

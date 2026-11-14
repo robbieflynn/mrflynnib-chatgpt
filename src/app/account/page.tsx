@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { Suspense, type CSSProperties } from "react";
 import { Container, Eyebrow, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
+import { StudentAssignmentOverview } from "@/components/student-assignment-overview";
 import { StudentAccountForm } from "@/components/student-account-form";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
@@ -63,7 +64,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (!hasSupabaseBrowserConfig()) {
     return (
       <>
-        <PageHero eyebrow={isTeacherJourney ? "Teacher account" : "Student account"} title="Accounts are being prepared" intro="The account service still needs its secure connection before you can sign in." homeHref={isIgcseJourney ? "/igcse" : "/"} homeLabel={isIgcseJourney ? "IGCSE home" : "Home"} />
+        <PageHero compact eyebrow={isTeacherJourney ? "Teacher account" : "Student account"} title="Accounts are being prepared" intro="The account service still needs its secure connection before you can sign in." homeHref={isIgcseJourney ? "/igcse" : "/"} homeLabel={isIgcseJourney ? "IGCSE home" : "Home"} />
         <section className="section-tight"><Container className="narrow"><div className="account-card"><p>No student information is being collected yet.</p></div></Container></section>
       </>
     );
@@ -82,7 +83,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
         ? isSignUpJourney ? "Create your account for Plus" : "Sign in to continue to Plus"
         : isSignUpJourney ? "Create your account" : "Welcome back";
     const intro = isTeacherJourney
-      ? "Sign in to manage classes and assignments, or create a teacher account and begin straight away."
+      ? "Sign in to manage classes and assignments, or create an account to request teacher access."
       : isTeachableJourney
         ? "Sign in or create an account with the same email address you used on Teachable. After you confirm it, any matching active course is added automatically without another payment."
       : isPlusJourney
@@ -96,7 +97,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           <Container className="stack-sm"><Eyebrow>{isIgcseJourney ? "IGCSE Mathematics account" : isTeacherJourney ? "Teacher account" : isTeachableJourney ? "Existing Teachable student" : isPlusJourney ? "Mr Flynn IB Plus" : isSignUpJourney ? "Create account" : "Sign in"}</Eyebrow><h1>{title}</h1><p>{isIgcseJourney ? isSignUpJourney ? "Create your account, or sign in with the same email and password you use for Mr Flynn IB." : "Sign in with your Mr Flynn account to open the IGCSE learning or teaching area." : intro}</p></Container>
         </section>
         <section className="section-tight account-entry-section"><Container className="stack-xl">
-          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} curriculumOverride={isIgcseJourney ? "igcse" : undefined} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Add Teacher Plus at any time for all four IB courses.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and teachers.</p><ul><li>Student Plus includes every Standard feature.</li><li>Student Plus adds every lesson and its extra practice in one chosen IB course.</li><li>Teacher Plus adds every lesson and its extra practice in all four IB courses.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
+          <div className={`account-layout ${hasSupportingPanel ? "" : "is-single"}`}><Suspense fallback={<div className="account-card">Loading account…</div>}><StudentAccountForm initialMode={isSignUpJourney ? "sign-up" : "sign-in"} curriculumOverride={isIgcseJourney ? "igcse" : undefined} /></Suspense>{isTeacherJourney ? <aside className="account-benefits stack"><h2>For teachers</h2><ul><li>Create classes and share joining codes.</li><li>Choose questions and set assignments.</li><li>Add Teacher Plus at any time for all four IB courses.</li></ul></aside> : isTeachableJourney ? <aside className="account-benefits stack"><h2>No need to buy again</h2><ul><li>Use the email address on your Teachable account.</li><li>Confirm the address if you are creating a new account.</li><li>Your matching active course is then added automatically.</li></ul><p className="small muted">If it does not appear, use Manage access to request a manual check.</p></aside> : isPlusJourney ? <aside className="account-benefits account-plus-benefits stack"><span className="account-plus-mark" aria-hidden="true">+</span><Eyebrow>Plus access</Eyebrow><h2>Mr Flynn IB Plus</h2><p>Complete course access for students and teachers.</p><ul><li>Student Plus includes every Standard feature.</li><li>Student Plus adds full lessons, the full question bank and extra practice for one chosen IB course.</li><li>Teacher Plus adds full lessons, the full question bank and extra practice across all four IB courses.</li></ul><Link className="text-link" href="/learn/index.html?curriculum=ib&amp;view=courses">View the courses</Link></aside> : null}</div>
         </Container></section>
       </>
     );
@@ -123,7 +124,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
 
     return (
       <>
-        <PageHero
+        <PageHero compact
           eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"}
           title="Create your teacher account"
           intro="Use this same account for the teacher dashboard, classes, assignments and Test Maker."
@@ -150,7 +151,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
   if (teacherRequested) {
     const studentDashboardHref = isIgcse ? "/igcse/account" : "/account";
     return <>
-      <PageHero eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"} title="Your teacher request has been sent" intro="Mr Flynn will review your teacher account request. You will receive access after it is approved." />
+      <PageHero compact eyebrow={isIgcse ? "IGCSE teacher access" : "Teacher access"} title="Teacher request sent" intro="Your request is awaiting review by Mr Flynn IB. Teacher tools will be available once it is approved." />
       <section className="section-tight"><Container className="narrow"><div className="account-card teacher-access-gate stack-lg"><h2>Your existing work is safe</h2><p>You can continue using your student learning area while the request is waiting.</p><Link className="button button-secondary" href={studentDashboardHref}>Return to learning</Link></div></Container></section>
     </>;
   }
@@ -386,23 +387,12 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             <Link className="is-progress" href="#progress"><DashboardIcon name="check" /><span><strong>My progress</strong><small>Course and questions</small></span><b aria-hidden="true">↓</b></Link>
           </nav>
 
-          <section className="student-assignments student-home-section stack-lg" id="assignments">
-            <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Assignments</p><h2>{activeAssignments.length ? "Due soon" : "You're up to date"}</h2></div><div className="student-section-heading-actions"><p className="muted">Your current work is ordered by due date, so the most important task is always easy to find.</p><Link className="student-section-link" href={assignmentsHref}>View all assignments →</Link></div></div>
-            {assignmentLoadError ? <p className="form-message form-error">Your assignments could not be refreshed just now. Please reload the page.</p> : null}
-            <div className="student-assignment-list">
-              {activeAssignments.map((assignment, assignmentIndex) => {
-                return <Link className={`student-assignment-card ${assignmentIndex === 0 ? "is-urgent" : ""}`} href={`${assignmentsHref}/${assignment.id}`} key={assignment.id}>
-                  <span className="student-assignment-status"><i style={{ width: `${assignment.assignmentPercentage}%` }} /></span>
-                  <div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{dueDateLabel(assignment.due_at)}</span></div>
-                  <div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div>
-                  <span className="status-pill">{assignment.progressCount ? "Continue" : "Start"}</span>
-                  <span aria-hidden="true">→</span>
-                </Link>;
-              })}
-              {!activeAssignments.length && !assignmentLoadError ? <div className="dashboard-empty-state compact"><DashboardIcon name="check" /><div><strong>{assignments.length ? "Everything is submitted" : "No assignments yet"}</strong><p>{assignments.length ? "Nice work. Your next assignment will appear here when it is set." : "Your teacher's assignments will appear here."}</p></div></div> : null}
-            </div>
-            {completedAssignments.length ? <div className="student-past-assignments stack"><div className="student-past-assignments-heading"><div><span>Past assignments</span><strong>Review your submitted work</strong></div><Link href={assignmentsHref}>View all {completedAssignments.length} →</Link></div><div className="student-assignment-list">{completedAssignments.slice(0, 3).map((assignment) => <Link className="student-assignment-card is-complete" href={`${assignmentsHref}/${assignment.id}`} key={assignment.id}><span className="student-assignment-status"><i style={{ width: "100%" }} /></span><div><small>{classNames.get(assignment.class_id)}</small><strong>{assignment.title}</strong><span>{assignment.submittedAt ? `Submitted ${new Date(assignment.submittedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "Submitted"}</span></div><div className="student-assignment-progress"><strong>{assignment.progressCount}/{assignment.questionCount}</strong><span>questions</span></div><span className="status-pill is-submitted">Review</span><span aria-hidden="true">→</span></Link>)}</div></div> : null}
-          </section>
+          <StudentAssignmentOverview
+            active={activeAssignments.map((assignment) => ({ ...assignment, className: classNames.get(assignment.class_id) || "Class", dateLabel: dueDateLabel(assignment.due_at) }))}
+            completed={completedAssignments.map((assignment) => ({ ...assignment, className: classNames.get(assignment.class_id) || "Class", dateLabel: assignment.submittedAt ? `Submitted ${new Date(assignment.submittedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}` : "Submitted" }))}
+            assignmentsHref={assignmentsHref}
+            loadError={Boolean(assignmentLoadError)}
+          />
 
           <section className="student-progress-overview student-home-section stack-lg" id="progress" aria-labelledby="student-progress-heading">
             <div className="dashboard-section-heading student-section-heading"><div><p className="eyebrow">Personal progress</p><h2 id="student-progress-heading">Your progress</h2></div><p className="muted">Course lessons and question-bank practice are shown separately, so each number is meaningful.</p></div>
@@ -517,7 +507,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
             </details>
           </section>
 
-          {!access.paid && !isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Standard account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Your account includes the question bank, classes and assignments. Plus unlocks every video lesson and the complete set of extra practice questions inside the lessons.</p></div><Link className="button button-secondary" href={upgradeHref}>View Student Plus · $79 for 2 years</Link></section> : null}
+          {!access.paid && !isIgcse ? <section className="platform-review-upgrade student-upgrade-v2"><div><span className="platform-review-card-label">Standard account</span><h2>Ready for Mr Flynn IB Plus?</h2><p>Standard includes classroom tools and limited question-bank access. Plus adds full video lessons, the full question bank and extra lesson practice for your course.</p></div><Link className="button button-secondary" href={upgradeHref}>View Student Plus · $79 for 2 years</Link></section> : null}
 
         </Container>
       </section>

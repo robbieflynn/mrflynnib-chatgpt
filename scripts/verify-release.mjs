@@ -4,8 +4,11 @@ import { spawnSync } from "node:child_process";
 import { delimiter, dirname } from "node:path";
 
 const checks = [
+  ["Student assignment overview", "scripts/test-student-assignment-overview.mjs"],
+  ["Course sample entry", "scripts/test-course-sample-entry.mjs"],
   ["IGCSE navigation isolation", "scripts/test-igcse-navigation.mjs"],
   ["Complete student directory count", "scripts/test-student-directory-count.mjs"],
+  ["Approved school account totals", "scripts/test-school-access-overview.mjs"],
   ["Lint", "node_modules/eslint/bin/eslint.js", "."],
   ["Student access classification", "scripts/test-student-access.mjs"],
   ["Student directory filters", "scripts/test-student-directory.mjs"],

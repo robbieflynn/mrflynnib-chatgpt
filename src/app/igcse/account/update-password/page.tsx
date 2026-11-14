@@ -11,5 +11,5 @@ export default async function IgcseUpdatePasswordPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/igcse/account");
 
-  return <><PageHero eyebrow="IGCSE Mathematics account" title="Choose a new password" intro="Enter a new password for your IGCSE Mathematics account." homeHref="/igcse" homeLabel="IGCSE home" /><section className="section-tight"><Container className="narrow"><UpdatePasswordForm destination="/igcse/account" /></Container></section></>;
+  return <><PageHero compact eyebrow="IGCSE Mathematics account" title="Choose a new password" intro="Enter a new password for your IGCSE Mathematics account." homeHref="/igcse" homeLabel="IGCSE home" /><section className="section-tight"><Container className="narrow"><UpdatePasswordForm destination="/igcse/account" /></Container></section></>;
 }

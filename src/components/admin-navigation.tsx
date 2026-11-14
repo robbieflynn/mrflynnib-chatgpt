@@ -6,7 +6,7 @@ export const administrationSections = [
   { key: "students", label: "Students", href: "/teacher/students", description: "Find student accounts, check course access and review account activity." },
   { key: "access", label: "Payments & access", href: "/teacher/platform-access", description: "Review purchases, grant course access and manage redemption codes." },
   { key: "transfers", label: "Access transfers", href: "/teacher/access-claims", description: "Review existing customers’ course-access requests." },
-  { key: "schools", label: "School licences", href: "/school/access", description: "Open your connected school licences and allocate student seats." },
+  { key: "schools", label: "Schools & licences", href: "/school/access", description: "Review approved school access and allocated course licences." },
 ] as const;
 
 export function AdminNavigation({ current }: { current: string }) {

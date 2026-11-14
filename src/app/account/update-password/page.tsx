@@ -10,5 +10,5 @@ export default async function UpdatePasswordPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/account");
-  return <><PageHero eyebrow="Student account" title="Choose a new password" intro="Enter a new password for your Mr Flynn IB student account." /><section className="section-tight"><Container className="narrow"><UpdatePasswordForm /></Container></section></>;
+  return <><PageHero compact eyebrow="Student account" title="Choose a new password" intro="Enter a new password for your Mr Flynn IB student account." /><section className="section-tight"><Container className="narrow"><UpdatePasswordForm /></Container></section></>;
 }

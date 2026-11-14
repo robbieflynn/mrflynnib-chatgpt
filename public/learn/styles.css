@@ -262,3 +262,17 @@ body.practice-expanded::before { content: ""; position: fixed; z-index: 119; ins
  .topbar-account { margin-left: auto; }
  .topbar-account .account-button strong { max-width: 85px; }
 }
+
+/* Keep the main website routes visible inside the course player. */
+.topbar { height: auto; min-height: 100px; flex-wrap: wrap; padding-block: 10px; gap: 8px 14px; }
+.site-course-nav { display: flex; flex: 0 0 100%; flex-wrap: wrap; align-items: center; gap: 4px 22px; }
+.site-course-nav a { display: inline-flex; align-items: center; min-height: 36px; color: var(--navy-900); font-size: 12px; font-weight: 750; text-decoration: none; }
+.site-course-nav a[hidden] { display: none; }
+.site-course-nav a[aria-current="page"] { color: var(--blue-700); text-decoration: underline; text-underline-offset: 6px; }
+.site-course-nav a:hover { color: var(--blue-700); }
+.site-course-nav a:focus-visible { outline: 3px solid #2384cc; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .site-course-nav { gap: 2px 16px; }
+  .site-course-nav a { font-size: 11px; min-height: 40px; }
+  .topbar-home-link { padding-inline: 8px; font-size: 10px; }
+}
