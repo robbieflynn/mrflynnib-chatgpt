@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process";
 import { delimiter, dirname } from "node:path";
 
 const checks = [
+  ["Whiteboard owner isolation", "scripts/test-whiteboard-ownership.mjs"],
   ["Course practice expansion and navigation", "scripts/test-course-practice-layout.mjs"],
   ["Student assignment overview", "scripts/test-student-assignment-overview.mjs"],
   ["Course sample entry", "scripts/test-course-sample-entry.mjs"],

@@ -1,5 +1,9 @@
 # MrFlynnIB permanent project context
 
+## Personal whiteboard ownership, 14 November 2026
+
+Rob confirmed that students' working must never appear in a teacher's personal whiteboard. Personal question-bank whiteboards and completion markers must explicitly select the signed-in owner, even when teacher permissions allow reading assigned students' work. Only deliberate individual-student review selects that student's records. Pending personal drafts must not override another student's review or an immutable submitted snapshot. Preserve all existing saved work; do not delete or reassign records while repairing this loading bug.
+
 ## Revised Standard and Plus messaging, 14 November 2026
 
 Rob approved publishing the school-access invitation and requested that the website stop promising a complete or free question bank with Standard access. Standard should be described as **Classroom tools and limited question bank**, with selected sample lessons retained. Plus should explicitly include full video lessons, the full question bank and extra lesson practice, respecting the existing selected-course Student Plus and all-four-course Teacher Plus scope. This supersedes earlier wording that the complete question bank is free or included in Standard. This request changes customer-facing messaging only: exact Standard question limits and their enforcement remain to be defined; do not silently restrict existing access or alter prices, entitlements, classroom tools or checkout. Publication of this wording change and the school-access invitation is authorized.
