@@ -16,13 +16,12 @@ export function SiteHeader() {
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navItems.filter((item) => item.href !== "/book").map((item) => <Link key={item.href} href={item.href}>{item.label}</Link>)}
-          <Link className="header-contact-button" href="/contact">Contact</Link>
+          <Link className="header-contact-link" href="/contact">Contact</Link>
           <Suspense fallback={<Link className="button button-small header-login-button" href="/account">Log in</Link>}>
             <AccountMenu className="header-account-menu" showNavigation showSignedOut />
           </Suspense>
         </nav>
         <div className="tuition-partner-group">
-          <Link href="/go/ib-tutors" className="header-tuition-link">One-to-One tuition</Link>
           <Link className="tuition-partner-logo" href="/go/ib-tutors" aria-label="Visit IB Tutors at The Tuition Centre">
             <Image src="/images/ib-tutors-logo.jpeg" alt="IB Tutors, from The Tuition Centre" width={1448} height={1086} priority />
           </Link>

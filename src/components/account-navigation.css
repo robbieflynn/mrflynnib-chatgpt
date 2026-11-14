@@ -1,25 +1,22 @@
 /* One readable account control, shared by teacher and student navigation. */
 .account-controls.account-navigation { gap: .65rem; align-items: center; }
 .account-controls.account-navigation .account-home-link {
-  display: inline-flex; align-items: center; justify-content: center; min-height: 42px;
-  padding: .55rem .8rem; border: 1px solid #c8dced; border-radius: .65rem;
+  display: inline-flex; align-items: center; justify-content: center; min-height: 34px;
+  padding: .35rem .65rem; border: 0; border-radius: 999px;
   background: #edf5fc; color: #174e7b; font-size: .8rem; font-weight: 750; white-space: nowrap;
 }
 .account-controls.account-navigation .account-home-link:hover { background: #dfeefb; color: #123c60; }
 .account-controls.account-navigation .account-menu-trigger {
-  min-height: 42px; padding: .55rem .7rem; border: 1px solid #d7e1eb; border-radius: .65rem;
-  background: #fff; color: #132b48; box-shadow: none;
+  min-height: 40px; padding: .4rem .2rem; border: 0; border-radius: .4rem;
+  background: transparent; color: #132b48; box-shadow: none;
 }
 .account-controls.account-navigation .account-menu-trigger:hover,
-.account-controls.account-navigation .account-menu-trigger[aria-expanded="true"] { background: #edf5fc; color: #132b48; border-color: #9abbd7; }
+.account-controls.account-navigation .account-menu-trigger[aria-expanded="true"] { background: #f0f5f9; color: #132b48; }
 .account-controls.account-navigation .account-greeting strong { color: #132b48; font-size: .86rem; font-weight: 750; }
-.account-controls.account-navigation .account-tier-badge,
 .account-controls.account-navigation .account-upgrade-button {
   display: inline-flex; align-items: center; justify-content: center; min-height: 42px;
-  padding: .55rem .8rem; border-radius: .65rem; font-size: .75rem; font-weight: 750; line-height: 1.3;
+  padding: .55rem 1rem; border-radius: 999px; font-size: .78rem; font-weight: 750; line-height: 1.3;
 }
-.account-controls.account-navigation .account-tier-badge { border: 1px solid #d5dfe8; color: #344b62; background: #f4f7fa; }
-.account-controls.account-navigation .account-tier-badge.is-plus { border-color: #bfd9ed; background: #e8f3fc; color: #174e7b; }
 .account-controls.account-navigation .account-upgrade-button { background: #1769aa; color: #fff; border: 1px solid #1769aa; }
 .account-controls.account-navigation .account-upgrade-button:hover { background: #114f82; color: #fff; }
 .account-controls.account-navigation .account-menu-panel {
@@ -40,7 +37,7 @@
 .mobile-account-controls .account-home-link { grid-row: 1; grid-column: 1 / -1; }
 .mobile-account-controls .account-menu { display: contents; }
 .mobile-account-controls .account-menu-trigger { grid-row: 2; grid-column: 1; }
-.mobile-account-controls :is(.account-tier-badge, .account-upgrade-button) { grid-row: 2; grid-column: 2; justify-self: start; }
+.mobile-account-controls .account-upgrade-button { grid-row: 2; grid-column: 2; justify-self: start; }
 .mobile-account-controls .account-menu-panel { position: static; grid-row: 3; grid-column: 1 / -1; width: 100%; max-height: none; }
 .igcse-section-nav { position: relative; z-index: 50; }
 .igcse-section-actions { min-width: 0; }

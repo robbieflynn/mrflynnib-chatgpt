@@ -49,7 +49,6 @@ export function MobileNavigation() {
           <nav id="mobile-navigation-panel" className="mobile-panel" aria-label="Mobile navigation">
             {navItems.filter((item) => item.href !== "/book").map((item) => <Link key={item.href} href={item.href} onClick={closeMenu}>{item.label}</Link>)}
             <Link href="/tutoring" onClick={closeMenu}>Tutoring</Link>
-            <Link href="/go/ib-tutors" className="tuition-nav" onClick={closeMenu}>One-to-One tuition</Link>
             <Link href="/contact" onClick={closeMenu}>Contact</Link>
             <Suspense fallback={<Link className="mobile-account-link" href="/account" onClick={closeMenu}>Log in</Link>}>
               <AccountMenu className="mobile-account-controls" signedOutClassName="mobile-account-link" showNavigation showSignedOut onNavigate={closeMenu} />

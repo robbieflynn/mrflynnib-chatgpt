@@ -263,7 +263,7 @@ export function AccountMenu({
         </div>
       ) : null}
     </div>
-    {canUpgrade ? <Link className="account-upgrade-button" href={accessHref} onClick={navigate}>{upgradeLabel}</Link> : <Link className={`account-tier-badge ${tier === "plus" ? "is-plus" : ""}`} href={settingsHref} onClick={navigate}>{tierLabel}</Link>}
+    {canUpgrade ? <Link className="account-upgrade-button" href={accessHref} onClick={navigate}>{upgradeLabel}</Link> : null}
     </div>
   );
 }
