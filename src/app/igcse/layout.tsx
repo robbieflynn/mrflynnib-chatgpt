@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { HeaderAccountLink } from "@/components/header-account-link";
+import { AccountMenu } from "@/components/account-menu";
 import { LogoLockup } from "@/components/logo";
 import { Container } from "@/components/ui";
 
@@ -32,7 +32,7 @@ export default function IgcseLayout({ children }: Readonly<{ children: React.Rea
           </nav>
           <div className="igcse-section-actions">
             <Suspense fallback={<Link className="button button-small" href="/igcse/account">Log in</Link>}>
-              <HeaderAccountLink className="button button-small" />
+              <AccountMenu className="igcse-header-account" showNavigation showSignedOut signOutHref="/igcse/account" />
             </Suspense>
           </div>
         </Container>

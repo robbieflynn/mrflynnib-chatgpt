@@ -1291,6 +1291,12 @@ document.getElementById("signOut").addEventListener("click", async () => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    if (!accountMenu.hidden) {
+      accountMenu.hidden = true;
+      accountButton.setAttribute("aria-expanded", "false");
+      accountButton.focus();
+      return;
+    }
     if (document.getElementById("lessonPractice").classList.contains("is-expanded")) {
       setPracticeExpanded(false);
       return;
@@ -1333,6 +1339,7 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account?mode=sign-up" : requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
   document.getElementById("accessLink").classList.toggle("is-plus", !isIgcse);
   accountButton.classList.add("is-guest");
+  document.getElementById("accountRole").hidden = false;
   document.querySelector(".avatar").textContent = "";
   document.getElementById("accountName").textContent = curriculumMismatch ? "Switch account" : "Log in";
   document.getElementById("accountRole").textContent = isIgcse ? "IGCSE Mathematics" : "Save your progress";
@@ -1352,6 +1359,26 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("coursesTitle").textContent = isIgcse ? "Your IGCSE Mathematics course" : "Choose your course";
   document.getElementById("coursesDescription").textContent = "Explore the complete course structure and try three sample lessons in every syllabus topic.";
   document.getElementById("sidebarCourseLabel").textContent = isIgcse ? "Edexcel IGCSE Mathematics" : "IB Mathematics courses";
+}
+
+function renderAccountHeader(account) {
+  const teacher = account.user.role === "teacher" || account.user.role === "admin";
+  const igcse = account.curriculum === "igcse";
+  const plus = account.user.role === "admin" || Boolean(teacher && !igcse ? account.access?.hasTeacherPlus : account.access?.hasCourseAccess);
+  const known = account.user.role === "admin" || Boolean(account.access);
+  const home = igcse ? teacher ? "/igcse/teacher" : "/igcse/account" : teacher ? "/teacher" : "/account";
+  account.links.account = home;
+  document.getElementById("accountName").textContent = account.user.displayName.trim().split(/\s+/)[0] || "Account";
+  document.getElementById("accountRole").hidden = true;
+  document.getElementById("accountButton").setAttribute("aria-label", `Open account menu for ${account.user.displayName}`);
+  const accessLink = document.getElementById("accessLink");
+  accessLink.textContent = plus ? "Plus account" : known ? "Upgrade to Plus" : "Check account access";
+  accessLink.title = account.user.role === "admin" ? "Administrator access" : account.access?.detail || "View your account access";
+  accessLink.classList.toggle("is-plus", plus);
+  accessLink.href = plus || !known ? igcse ? "/igcse/account/settings" : "/account/settings" : account.links.access;
+  document.getElementById("manageAccessLink").textContent = plus ? "Manage course access" : "Upgrade to Plus";
+  document.getElementById("topbarLearningHomeLink").textContent = teacher ? "← Teacher home" : "← My learning";
+  document.getElementById("learningHomeLink").textContent = teacher ? "Teacher home" : "My learning";
 }
 
 async function bootstrapAccount() {
@@ -1402,13 +1429,7 @@ async function bootstrapAccount() {
     saveState();
     document.querySelector(".avatar").textContent = platformAccount.user.initials;
     accountButton.classList.remove("is-guest");
-    document.getElementById("accountName").textContent = platformAccount.user.displayName;
-    document.getElementById("accountRole").textContent = `${platformAccount.user.role === "admin" ? "Administrator" : platformAccount.user.role === "teacher" ? "Teacher" : "Student"} account`;
-    document.getElementById("accessLink").textContent = platformAccount.access?.label || "Standard account";
-    document.getElementById("accessLink").title = platformAccount.access?.detail || "Your access";
-    document.getElementById("manageAccessLink").textContent = "Your access and Plus options";
-    document.getElementById("accessLink").classList.toggle("is-plus", Boolean(platformAccount.access?.label?.includes("Plus")));
-    document.getElementById("accessLink").href = platformAccount.links.access;
+    renderAccountHeader(platformAccount);
     document.getElementById("manageAccessLink").href = platformAccount.links.access;
     document.getElementById("accountSettingsLink").hidden = false;
     document.getElementById("accountSettingsLink").href = platformAccount.links.account.startsWith("/igcse") ? "/igcse/account/settings" : "/account/settings";

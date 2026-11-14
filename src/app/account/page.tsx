@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { Suspense, type CSSProperties } from "react";
 import { Container, Eyebrow, PageHero } from "@/components/ui";
 import { DashboardIcon } from "@/components/dashboard-icon";
-import { AccountMenu } from "@/components/account-menu";
 import { StudentAccountForm } from "@/components/student-account-form";
 import { createClient } from "@/lib/supabase/server";
 import { hasSupabaseBrowserConfig } from "@/lib/supabase/config";
@@ -195,7 +194,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
       <section className="account-course-setup-hero">
         <Container className="account-course-setup-hero-inner">
           <div className="stack-sm"><Eyebrow>Complete your learning home</Eyebrow><h1>Which IB Mathematics course are you studying?</h1><p>Your existing account and saved work stay exactly as they are. This choice simply opens the right course, question bank and progress view first.</p></div>
-          <AccountMenu signOutHref="/account" />
         </Container>
       </section>
       <section className="section-tight account-course-setup-section"><Container className="narrow">
@@ -343,14 +341,6 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     <>
       <section className={`dashboard-hero student-dashboard-hero student-home-v2-hero ${isIgcse ? "student-dashboard-hero-igcse" : ""}`}>
         <Container className="dashboard-hero-shell">
-          <div className="dashboard-account-row">
-            <div className={`platform-access-summary ${access.paid ? "is-paid" : ""}`}>
-              <span>{access.label}</span>
-              <small>{access.detail}</small>
-              <Link href={upgradeHref}>{access.paid ? "Manage access" : isIgcse ? "Course access" : "View Student Plus · $79 for 2 years"}</Link>
-            </div>
-            <AccountMenu signOutHref={isIgcse ? "/igcse/account" : "/account"} />
-          </div>
           <div className="dashboard-hero-layout">
             <div className="dashboard-hero-copy">
               <span className="dashboard-role-label">My learning</span>

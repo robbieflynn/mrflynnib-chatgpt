@@ -755,3 +755,8 @@ Rob requested removing the access-code / previous-purchase support section from 
 ## Navy question-bank headers, 13 November 2026
 
 Rob approved publication of a compact navy-and-blue header across AA HL, AA SL, AI HL and AI SL. Show the course code alone as the title, with white pathway letters and a light-blue level, a quiet question count, and a horizontal four-course switcher. Remove the repeated eyebrow, full pathway heading, descriptive sentence, Complete mark schemes and Save your progress badges, and duplicate dashboard button; retain the dashboard breadcrumb. This supersedes the earlier requirement to retain those badges. Prevent the standalone embedded heading flashing while public banks load, without changing assignment or practice rendering, saved work, filters or whiteboard behaviour. Rob explicitly requested release checks before publication.
+
+
+## Account navigation cleanup, 14 November 2026
+
+Rob requested one consistent top-bar account area for teachers and students: a visible Teacher home / My learning link, first name without the duplicated “Hi” greeting, and Plus account for active role-appropriate Plus access and administrators. Standard accounts receive a concise Upgrade to Plus action routed to their existing offer. Remove the large dashboard account/marketing banner and duplicate in-page account menus. Keep My account for full role, course and expiry details; keep dropdowns readable with explicit opaque surfaces and keyboard access. Administrator presentation must reflect existing administrative access without requiring a purchased Teacher Plus record. Preserve permissions, prices, payments, grants and curriculum isolation. Failed access lookups must not be presented as confirmed Standard access.
