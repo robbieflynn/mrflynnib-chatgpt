@@ -1,5 +1,9 @@
 # MrFlynnIB permanent project context
 
+## School-access invitation, 14 November 2026
+
+Rob requested a visible **Get school access** route on the individual course-access page, encouraging students to share the school offer with their maths teacher or head of department and teachers to explore it for their school. Keep this invitation compact and visible above the access-code/help disclosures, with benefits grounded in complete video courses and extra lesson practice. Use the same invitation on Teacher Plus, with teacher-specific wording. Link IB users to `/schools` and IGCSE users to `/igcse/schools`; do not send prospective schools to the private licence-management page. Keep individual purchase, redemption and existing access flows intact, and avoid inserting the invitation into purchase-confirmation states.
+
 Last updated: 10 November 2026
 
 On 25 October 2026, the production server architecture was aligned with the existing West EU Ireland Supabase project. Keep Vercel dynamic functions pinned to the Dublin `dub1` region through the version-controlled `vercel.json`; static assets continue to use Vercel's global CDN. Do not move or recreate the Supabase project merely to make this alignment. The repository includes read-only smoke and staged load checks for the public website, native course catalogue and assignment-save health path. Run those checks after infrastructure changes and before classroom use; they supplement rather than replace real authenticated assignment testing.

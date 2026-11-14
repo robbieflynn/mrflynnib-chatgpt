@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui";
 import { CourseCheckoutButton } from "@/components/platform/course-checkout-button";
 import { CheckoutActivationNotice } from "@/components/platform/checkout-activation-notice";
+import { SchoolAccessInvitation } from "@/components/platform/school-access-invitation";
 import { teacherPlusProduct } from "@/lib/platform-products";
 import type { PlatformEntitlement } from "@/lib/platform-access";
 
@@ -40,6 +41,7 @@ export function TeacherAccessView({ active, query }: {
           {active ? <><span className="access-active-badge">✓ Access active</span><h3>Your courses are ready.</h3><p>{expiry ? `Access until ${expiry}.` : "All four IB courses are unlocked."}</p><Link className="button" href={courseHref}>Open all courses</Link><small>No additional purchase needed.</small></> : <><span className="access-offer-label">Teacher Plus</span><h3>All four courses included</h3><p>One plan for AA and AI, at SL and HL.</p><CourseCheckoutButton compact productId={teacherPlusProduct.id} plans={teacherPlusProduct.plans} /><Link className="access-sample-link" href={courseHref}>Explore sample lessons →</Link></>}
         </aside>
       </div>
+      {query.checkout !== "success" ? <SchoolAccessInvitation curriculum="ib" audience="teacher" /> : null}
       <div className="access-help"><details><summary>What happens to my existing teacher tools?</summary><div className="access-help-content"><p>Your question bank, classes, assignments and Test Maker remain available with Standard access. Teacher Plus adds the complete video courses and extra lesson practice.</p></div></details></div>
     </Container></section>
   </>;

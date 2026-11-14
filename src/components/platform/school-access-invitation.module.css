@@ -1,0 +1,32 @@
+.invitation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.1rem 1.25rem;
+  border-left: 3px solid #237fca;
+  background: #f3f7fc;
+}
+
+.invitation h2 {
+  max-width: none;
+  margin: 0 0 .35rem;
+  font-size: 1.15rem;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -.02em;
+}
+
+.invitation p {
+  max-width: 78ch;
+  margin: 0;
+  color: #53647d;
+  font-size: .85rem;
+  line-height: 1.6;
+}
+
+.invitation > a { flex-shrink: 0; gap: .4rem; white-space: nowrap; }
+
+@media (max-width: 760px) {
+  .invitation { align-items: flex-start; flex-direction: column; gap: .85rem; padding: 1rem; }
+}
