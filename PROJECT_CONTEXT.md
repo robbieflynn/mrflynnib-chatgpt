@@ -811,3 +811,7 @@ On phone-sized screens, course-practice expansion places the question above a fu
 ## Question-bank chooser simplification, 14 November 2026
 
 Rob requested a quieter question-bank selection page: retain the Home / Question bank breadcrumbs, one compact “Choose your question bank” heading in the brand blue palette and the four existing course choices. Remove the repeated Question bank eyebrow, course-selection explanation, saved-work sentence and duplicate in-page My learning/sign-in controls. Account access remains in the shared navigation. Preserve all course destinations, verified counts and bank functionality.
+
+## Administrator course changes, 14 November 2026
+
+Rob requested a Change course action in the student directory. Administrators can change an IB student's selected course and move current or scheduled individual access from the old course while preserving exact expiry, entitlement identity and payment references. Keep prior progress, whiteboards, assignments and class memberships intact, and clear only the current lesson selection. Standard accounts remain Standard; all-course and unrelated access are unchanged. Approved-domain access follows the new course. Course-specific allocated school seats require their separate licence allocation workflow. Both administrator-only database migrations were installed and the dedicated test student's AA HL → AA SL → AA HL journey verified. Rob approved publishing after successful checks.
