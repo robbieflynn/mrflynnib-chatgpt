@@ -799,3 +799,11 @@ Rob reaffirmed that an unpaid teacher entering Courses should land directly on o
 ## Course navigation, 14 November 2026
 
 Rob requested that teacher accounts see **Teacher dashboard** rather than My learning inside the course player, and that the main site navigation remain visible while viewing courses. Keep Courses, Question bank, Schools and Contact visible, with Classes for teachers/administrators. Retain the course-specific sidebar and account controls, preserve IB/IGCSE destinations, and make the same routes accessible on mobile.
+
+## Course header and practice expansion, 14 November 2026
+
+Rob requested removing the redundant dashboard buttons from the course top bar and blue header. Keep one desktop navigation row containing the site links, account menu and Plus action. Put the teacher course selector in the compact blue header beside the short course title (for example AA SL) and percentage complete; remove repeated course badges, curriculum labels and descriptive copy. Retain the dashboard link in the sidebar.
+
+Course practice must have enough horizontal space for questions and working, with a viewport-sized expanded practice view that scrolls through every question. Whiteboard Expand must expand the containing practice frame beyond the lesson column. Collapsing a whiteboard should return to the previous inline or expanded practice mode, without reloading the frame or losing working, and Close expanded view must also collapse an expanded whiteboard. Preserve assignment/public-bank behaviour, approved practice selections, stored answers and drawing persistence.
+
+On phone-sized screens, course-practice expansion places the question above a full-width drawing area and keeps the main drawing controls visible. Desktop retains Side/Below layout controls. These responsive rules apply only to lesson practice, leaving the separate question banks and assignments unchanged.

@@ -337,18 +337,15 @@ function configurePreviewMode() {
   document.getElementById("coursesEyebrow").textContent = "My course";
   document.getElementById("coursesTitle").textContent = courses[currentCourseId].name;
   document.getElementById("coursesDescription").textContent = "Sample lessons are ready to watch. The complete syllabus stays visible so you can see exactly what full course access includes.";
-  document.getElementById("courseBackButton").textContent = "← Learning home";
   document.getElementById("summaryTopics").textContent = String(enrolledCourseDefinitions.reduce((total, definition) => total + courses[definition.id].topics.length, 0));
   document.getElementById("summaryTopicsLabel").textContent = "course topics";
   const reviewHome = `/platform-review?curriculum=${isIgcse ? "igcse" : "ib"}&role=student`;
-  document.getElementById("courseBackButton").href = reviewHome;
   syncQuestionBankLink();
   document.getElementById("assignmentsLink").href = `${reviewHome}&screen=assignment`;
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
   document.getElementById("manageAccessLink").href = isIgcse ? "/igcse/account/access" : "/account/access";
   document.getElementById("learningHomeLink").href = reviewHome;
   document.getElementById("primaryLearningHomeLink").href = reviewHome;
-  document.getElementById("topbarLearningHomeLink").href = reviewHome;
   document.getElementById("brandLearningHomeLink").href = reviewHome;
 }
 
@@ -365,8 +362,6 @@ function configureCurriculumExperience(curriculum) {
     const label = teacher ? "Teacher dashboard" : "My learning";
     document.getElementById("primaryLearningHomeLink").querySelector("strong").textContent = label;
     document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = teacher ? "Classes and teaching tools" : "Dashboard and assignments";
-    document.getElementById("topbarLearningHomeLink").textContent = `← ${label}`;
-    document.getElementById("courseBackButton").textContent = `← ${label}`;
     document.getElementById("learningHomeLink").textContent = label;
     document.getElementById("siteClassesLink").hidden = !teacher;
     document.getElementById("siteClassesLink").href = isIgcse ? "/igcse/teacher/classes" : "/teacher/classes";
@@ -620,13 +615,8 @@ function renderCourse() {
   const progressLessons = hasCompleteCourseAccess(currentCourse) ? currentCourse.lessons : salesPreviewLessons(currentCourse);
   const percentage = percentIn(progressLessons);
   document.getElementById("courseHero").className = `course-hero accent-${currentCourse.accent}`;
-  document.getElementById("courseCode").textContent = currentCourse.code;
-  document.getElementById("courseName").textContent = currentCourse.name;
-  document.getElementById("courseSummary").textContent = currentCourse.description;
-  document.getElementById("courseFamily").textContent = currentCourse.family || "IB Mathematics";
+  document.getElementById("courseName").textContent = currentCourse.id === "igcse" ? "IGCSE Mathematics" : currentCourse.code;
   document.getElementById("coursePercent").textContent = `${percentage}%`;
-  document.getElementById("courseLessonCount").textContent = currentCourse.lessons.length;
-  document.getElementById("courseTopicCount").textContent = currentCourse.topics.length;
   document.getElementById("topicStrip").style.setProperty("--topic-count", currentCourse.topics.length);
   document.getElementById("courseProgressBar").style.width = `${percentage}%`;
   renderTopicStrip();
@@ -729,7 +719,7 @@ function renderLessonPractice(lesson, locked = false) {
   const frame = document.getElementById("practiceFrame");
   const bankFile = practice.bankPath || "ib-bank.html";
   const url = new URL(`/question-bank/${bankFile}`, window.location.href);
-  url.searchParams.set("renderer", "20261105-practice");
+  url.searchParams.set("renderer", "20261114-practice-layout");
   url.searchParams.set("embedded", "1");
   url.searchParams.set("practice", "1");
   // Shared SL-and-HL lessons reuse the same question IDs, but each bank
@@ -768,6 +758,7 @@ function renderLessonPractice(lesson, locked = false) {
   url.searchParams.set("solutions", "1");
   if (locked) url.searchParams.set("plusPreview", "1");
   if (frame.src !== url.href) {
+    setPracticeExpanded(false);
     document.getElementById("practiceFrameWrap").style.height = "660px";
     frame.src = url.href;
   }
@@ -779,14 +770,46 @@ function syncPracticeFrameScroll(expanded) {
   frame.contentWindow.postMessage({ type: "mrflynnib-question-bank-scroll", enabled: expanded }, window.location.origin);
 }
 
-function setPracticeExpanded(expanded) {
+let practiceManuallyExpanded = false;
+let practiceWhiteboardExpanded = false;
+let practiceReturnScrollY = 0;
+
+function updatePracticeExpansion() {
+  const expanded = practiceManuallyExpanded || practiceWhiteboardExpanded;
   const panel = document.getElementById("lessonPractice");
   const button = document.getElementById("practiceExpandButton");
+  const wasExpanded = panel.classList.contains("is-expanded");
+  if (expanded && !wasExpanded) practiceReturnScrollY = window.scrollY;
   panel.classList.toggle("is-expanded", expanded);
   document.body.classList.toggle("practice-expanded", expanded);
+  if (expanded) {
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-modal", "true");
+  } else {
+    panel.removeAttribute("role");
+    panel.removeAttribute("aria-modal");
+  }
+  document.querySelectorAll(".sidebar, .topbar, .course-hero, .topic-strip, .learning-layout").forEach((element) => {
+    element.inert = expanded;
+  });
   button.setAttribute("aria-pressed", String(expanded));
   button.lastElementChild.textContent = expanded ? "Close expanded view" : "Expand practice";
   syncPracticeFrameScroll(expanded);
+  if (!expanded && wasExpanded) {
+    window.scrollTo({ top: practiceReturnScrollY, behavior: "instant" });
+    button.focus({ preventScroll: true });
+  }
+}
+
+function setPracticeExpanded(expanded) {
+  practiceManuallyExpanded = expanded;
+  if (!expanded && practiceWhiteboardExpanded) {
+    practiceWhiteboardExpanded = false;
+    document.getElementById("practiceFrame").contentWindow?.postMessage(
+      { type: "mrflynnib-practice-collapse-whiteboard" }, window.location.origin,
+    );
+  }
+  updatePracticeExpansion();
 }
 
 function renderLessonList(query = "") {
@@ -831,14 +854,27 @@ window.addEventListener("message", async (event) => {
   const message = event.data;
   if (!message?.type) return;
 
+  if (message.type === "mrflynnib-whiteboard-expanded") {
+    practiceWhiteboardExpanded = message.expanded === true;
+    updatePracticeExpansion();
+    return;
+  }
+  if (message.type === "mrflynnib-practice-close") {
+    setPracticeExpanded(false);
+    return;
+  }
   if (message.type === "mrflynnib-question-bank-height") {
-    const height = Math.min(Math.max(Number(message.height) || 660, 420), 5200);
-    document.getElementById("practiceFrameWrap").style.height = `${height}px`;
+    if (document.getElementById("lessonPractice").classList.contains("is-expanded")) return;
+    const height = Number(message.height);
+    if (Number.isFinite(height) && height > 0) {
+      document.getElementById("practiceFrameWrap").style.height = `${Math.max(Math.ceil(height) + 32, 420)}px`;
+    }
     return;
   }
 
   if (message.type === "mrflynnib-question-bank-ready") {
     sendPracticeAccountState(event.source);
+    syncPracticeFrameScroll(document.getElementById("lessonPractice").classList.contains("is-expanded"));
     return;
   }
 
@@ -1338,8 +1374,6 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("primaryLearningHomeLink").querySelector("small").textContent = curriculumMismatch ? `Switch to ${isIgcse ? "IGCSE" : "IB"}` : "Save your progress";
   document.getElementById("assignmentsLink").hidden = true;
   document.getElementById("brandLearningHomeLink").href = homeHref;
-  document.getElementById("topbarLearningHomeLink").href = homeHref;
-  document.getElementById("topbarLearningHomeLink").textContent = isIgcse ? "← IGCSE home" : "← Mr Flynn IB";
   document.getElementById("accessLink").textContent = isIgcse ? "Create account" : requestedView === "courses" ? "Explore Plus" : "Unlock with Plus";
   document.getElementById("accessLink").href = isIgcse ? "/igcse/account?mode=sign-up" : requestedView === "courses" ? "/plus" : `/plus?course=${encodeURIComponent(currentCourseId)}`;
   document.getElementById("accessLink").classList.toggle("is-plus", !isIgcse);
@@ -1352,8 +1386,6 @@ function configureGuestExperience({ curriculumMismatch = false, currentCurriculu
   document.getElementById("manageAccessLink").textContent = "Create account";
   document.getElementById("manageAccessLink").href = `${accountHref}?mode=sign-up`;
   document.getElementById("signOut").hidden = !curriculumMismatch;
-  document.getElementById("courseBackButton").textContent = isIgcse ? "← IGCSE home" : "← All courses";
-  document.getElementById("courseBackButton").href = isIgcse ? "/igcse" : "/learn/index.html?curriculum=ib&view=courses";
   document.getElementById("welcomeEyebrow").textContent = "Course preview";
   document.getElementById("welcomeTitle").textContent = isIgcse ? "Explore the IGCSE Mathematics course" : `Explore the ${currentCourse.code} course`;
   document.getElementById("welcomeCopy").textContent = "See the complete syllabus and try three carefully chosen lessons in every topic.";
@@ -1421,9 +1453,7 @@ async function bootstrapAccount() {
     document.getElementById("manageAccessLink").href = platformAccount.links.access;
     document.getElementById("learningHomeLink").href = platformAccount.links.account;
     document.getElementById("primaryLearningHomeLink").href = platformAccount.links.account;
-    document.getElementById("topbarLearningHomeLink").href = platformAccount.links.account;
     document.getElementById("brandLearningHomeLink").href = platformAccount.links.account;
-    document.getElementById("courseBackButton").href = platformAccount.links.account;
     syncQuestionBankLink();
     document.getElementById("assignmentsLink").href = platformAccount.links.assignments;
     configureTeacherCourseSwitcher();
